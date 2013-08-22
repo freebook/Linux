@@ -269,4 +269,8 @@ subnet 172.16.0.0/12
 		<para>http://hawt.io/</para>
 		<para>hawtio has lots of plugins such as: a git-based Dashboard and Wiki, logs, health, JMX, OSGi, Apache ActiveMQ, Apache Camel, Apache OpenEJB, Apache Tomcat, Jetty, JBoss and Fuse Fabric</para>
 	</section>
+	<section id="moloch">
+		<title>moloch</title>
+		<para><ulink url="https://github.com/aol/moloch" /></para>
+	</section>
 </chapter>
