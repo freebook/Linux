@@ -15,11 +15,11 @@
 	<!ENTITY BG7NYT "&Neo;">
 	<!ENTITY Netkiller "<emphasis><trademark>Netkiller</trademark></emphasis>">
 
-	<!ENTITY book.info.legalnotice 		SYSTEM "../common/book.info.legalnotice.xml">
-	<!ENTITY book.info.abstract.xml		SYSTEM "../common/book.info.abstract.xml">
+	<!ENTITY book.info.legalnotice 		SYSTEM "common/book.info.legalnotice.xml">
+	<!ENTITY book.info.abstract.xml		SYSTEM "common/book.info.abstract.xml">
 	<!ENTITY book.info.abstract 		SYSTEM "book.info.abstract.xml">
-	<!ENTITY about.me 					SYSTEM "../common/about.me.xml">
-	<!ENTITY book.dedication.xml       	SYSTEM "../common/book.dedication.xml">
+	<!ENTITY about.me 					SYSTEM "common/about.me.xml">
+	<!ENTITY book.dedication.xml       	SYSTEM "common/book.dedication.xml">
 
 	<!ENTITY book.preface 		SYSTEM "book.preface.xml">
 	<!ENTITY book.dedication 	SYSTEM "book.dedication.xml">

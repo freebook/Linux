@@ -1,2 +1,0 @@
-lighttpd,thttpd,shttpd
-failover,failback

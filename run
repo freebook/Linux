@@ -1,14 +1,13 @@
 #!/bin/bash
-cd xhtml
+mkdir -p tmp
+cd tmp
 
 export DSSSL=/usr/share/xml/docbook/stylesheet/nwalsh/xhtml/chunk.xsl
 
 #/usr/bin/xsltproc --stringparam html.stylesheet docbook.css ../../../docbook-xsl-1.73.2/xhtml/chunk.xsl ../book.xml
 /usr/bin/xsltproc --stringparam html.stylesheet docbook.css ${DSSSL} ../book.xml
 
-sed "s/{latest}/`date -u`/g" index.html >index.html.sed; mv index.html.sed index.html
-
-mv *.html /home/neo/workspace/Development/public_html/book/linux/
+sed -i "s/{latest}/`date -u`/g" index.html
 
 cd ..
 
