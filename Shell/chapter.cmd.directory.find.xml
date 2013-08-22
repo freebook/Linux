@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.cmd.directory.find.xml 634 2013-07-10 11:45:59Z netkiller $ -->
+<section id="find">
+	<title>find - search for files in a directory hierarchy</title>
+	<section id="find.name">
+		<title>name</title>
+		<para>Find every file under directory /usr ending in "stat".</para>
+		<screen>
+$ find /usr -name *stat
+/usr/src/linux-headers-2.6.24-22-generic/include/config/cpu/freq/stat
+/usr/bin/lnstat
+/usr/bin/sar.sysstat
+/usr/bin/mpstat
+/usr/bin/rtstat
+/usr/bin/nstat
+/usr/bin/lpstat
+/usr/bin/ctstat
+/usr/bin/stat
+/usr/bin/kpsestat
+/usr/bin/pidstat
+/usr/bin/iostat
+/usr/bin/vmstat
+/usr/lib/sysstat
+/usr/share/doc/sysstat
+/usr/share/gnome/help/battstat
+/usr/share/omf/battstat
+/usr/share/zsh/help/stat
+/usr/share/zsh/4.3.4/functions/Completion/Unix/_diffstat
+/usr/share/zsh/4.3.4/functions/Completion/Zsh/_stat
+/usr/share/zsh/4.3.4/functions/Zftp/zfstat
+		</screen>
+		<screen>
+find  \( -iname '*.jpg' -o -iname '*.png' -o -iname '*.gif'  \)
+
+find /www/images -type f \( -iname '*.js' -o -iname '*.css' -o -iname '*.html' \) | xargs tar -czf ~/images.tgz
+		</screen>
+	</section>
+	<section id="find.regex">
+		<title>regex</title>
+		<screen>
+find . -regex ".*\.\(jpg\|png\)"
+		</screen>
+		<para>下面regex与name作用相同</para>
+		<screen>
+find . -regex ".*\.\(txt\|sh\)"
+find . -name "*.sh" -o -name "*.txt"
+		</screen>
+	</section>
+	<section id="find.user">
+		<title>user</title>
+		<para>Find every file under /home and /var/www owned by the user neo.</para>
+		<screen>
+$ find /home -user neo
+$ find /var/www -user neo
+$ find . -user nobody -iname '*.php'
+		</screen>
+	</section>
+	<section id="find.perm">
+		<title>perm</title>
+		<screen>
+find ./ -perm -7 -print | xargs chmod o-w
+find . -perm -o=w
+		</screen>
+	</section>
+	<section id="find.type">
+		<title>type</title>
+		<section>
+			<title>分别设置文件与目录的权限</title>
+			<screen>
+find /usr/www/phpmyadmin -type d -exec chmod 755 {} \;
+find /usr/www/phpmyadmin -type f -exec chmod 644 {} \;
+			</screen>
+		</section>
+	</section>
+	<section id="find.delete">
+		<title>-delete</title>
+		<screen>
+# find /var/spool/clientmqueue/ -type f -delete
+		</screen>
+		<para>保留最近7天的问题，其他全部删除</para>
+		<screen>
+find . -type f -mtime +7 -delete
+		</screen>
+	</section>
+	<section id="find.exec">
+		<title>exec</title>
+		<para>替换文本</para>
+		<screen>
+# find ./ -exec grep str1 ‘{}’ \; -exec sed -i.bak s/str1/str2/g ‘{}’ \;
+		</screen>
+		<screen>
+find -exec ls -l {} \; | grep '2011-01-18'
+		</screen>
+	</section>
+	<section id="xargs">
+		<title>xargs</title>
+       	<screen>
+find /etc -type f|xargs md5sum
+		</screen>
+		<para>sha1sum</para>
+		<screen>
+find /etc -type f|xargs sha1sum
+		</screen>
+		<screen>
+find ./ -name "*html" | xargs -n 1 sed -i -e 's/aaa/bbb/g'
+		</screen>
+		<para></para>
+		<screen>
+find /tmp -name core -type f -print | xargs /bin/rm -f
+find . -type f -exec file '{}' \;
+		</screen>
+	</section>
+	<section id="find.path">
+		<title>排除目录</title>
+		<screen>
+find /usr/local -path "/usr/local/share" -prune -o -print
+
+find /usr/local \( -path /usr/local/bin -o -path /usr/local/sbin \) -prune -o -print
+
+find /usr/local \(-path /usr/local/dir1 -o -path /usr/local/file1 \) -prune -o -name "temp" -print
+		</screen>
+		<para>查找当前目录下的php文件,排除子目录templates_c, caches</para>
+		<screen>
+find . \( -path ./templates_c -o -path ./caches \) -prune -o -name "*.php" -print
+		</screen>
+	</section>
+	<section id="find.mtime">
+		<title>-mtime / -mmin</title>
+		<para>查询最近3天前内修改的文件</para>
+		<screen>
+find . -type f -mtime -3
+		</screen>
+		<para>3天前</para>
+		<screen>
+find . -type f -mtime +3
+		</screen>
+
+		<screen>
+# find . -mmin +5 -mmin -10
+		</screen>
+		<example>
+			<title>backup(find + tar)</title>
+			<screen>
+find / -type f -mtime -7 | xargs tar -rf weekly_incremental.tar
+gzip weekly_incremental.tar
+			</screen>
+		</example>
+	</section>
+	<section id="find.newer">
+		<title>--newer</title>
+		<screen>
+tar --newer="2011-07-04" -zcvf backup.tar.gz /var/www/
+tar cvzf foo.tgz /bak -N "2004-03-03 16:49:17"
+		</screen>
+	</section>
+	<section>
+		<title>-print / -printf</title>
+		<screen>
+[root@scientific ~]# find / -maxdepth 1 -name '[!.]*' -printf 'Name: %16f Size: %6s\n'
+Name:                / Size:   4096
+Name:             misc Size:      0
+Name:            media Size:   4096
+Name:             home Size:   4096
+Name:              dev Size:   3840
+Name:              net Size:      0
+Name:             proc Size:      0
+Name:             sbin Size:  12288
+Name:             root Size:   4096
+Name:              lib Size:   4096
+Name:           cgroup Size:   4096
+Name:              srv Size:   4096
+Name:              mnt Size:   4096
+Name:              etc Size:  12288
+Name:              usr Size:   4096
+Name:            lib64 Size:  12288
+Name:             boot Size:   1024
+Name:              var Size:   4096
+Name:          selinux Size:      0
+Name:              opt Size:   4096
+Name:              tmp Size:   4096
+Name:       lost+found Size:  16384
+Name:              sys Size:      0
+Name:              bin Size:   4096
+
+# find /etc/ -type f -printf "%CY-%Cm-%Cd %Cr %8s %f\n"
+		</screen>
+	</section>
+	<section>
+		<title>-size</title>
+		<para>查找0字节文件</para>
+		<screen>
+find /www -type f -size 0
+		</screen>
+	</section>
+</section>

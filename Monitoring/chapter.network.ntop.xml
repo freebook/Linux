@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="network.ntop">
+	<title>Ntop</title>
+	<subtitle>ntop - display network usage in web browser</subtitle>
+	<section id="ntop.install">
+		<title>Installation</title>
+		<section>
+			<title>Ubuntu</title>
+			<screen>
+$ sudo apt-get install ntop
+$ sudo apt-get install graphviz
+			</screen>
+			<para>设置管理员密码</para>
+			<screen>
+	        <![CDATA[
+  ┌───────────────────────────┤ Configuring ntop ├───────────────────────────┐
+  │ Please choose a password to be used for the privileged user "admin" in   │
+  │ ntop's web interface.                                                    │
+  │                                                                          │
+  │ Administrator password:                                                  │
+  │                                                                          │
+  │ ________________________________________________________________________ │
+  │                                                                          │
+  │                                  <Ok>                                    │
+  │                                                                          │
+  └──────────────────────────────────────────────────────────────────────────┘
+
+
+  ┌──────────────────────────┤ Configuring ntop ├───────────────────────────┐
+  │ Please enter the same password again to verify that you have typed it   │
+  │ correctly.                                                              │
+  │                                                                         │
+  │ Re-enter password to verify:                                            │
+  │                                                                         │
+  │ _______________________________________________________________________ │
+  │                                                                         │
+  │                                 <Ok>                                    │
+  │                                                                         │
+  └─────────────────────────────────────────────────────────────────────────┘
+			]]>
+			</screen>
+			<para>如果你忘记密码，可以使用下面命令重置密码</para>
+			<screen>
+$ sudo ntop --set-admin-password
+			</screen>
+			<screen>
+$ sudo /etc/init.d/ntop start
+			</screen>
+		</section>
+		<section>
+			<title>CentOS</title>
+			<para>5.x</para>
+			<screen>
+wget http://packages.sw.be/rpmforge-release/rpmforge-release-0.5.2-2.el5.rf.i386.rpm
+rpm -K rpmforge-release-0.5.2-2.el5.rf.i386.rpm
+rpm -i rpmforge-release-0.5.2-2.el5.rf.i386.rpm
+yum install ntop
+			</screen>
+			<para>设置管理员密码</para>
+			<screen>
+# ntop -A
+Tue May 22 13:03:34 2012  NOTE: Interface merge enabled by default
+Tue May 22 13:03:34 2012  Initializing gdbm databases
+
+
+ntop startup - waiting for user response!
+
+
+Please enter the password for the admin user:
+Please enter the password again:
+Tue May 22 13:03:40 2012  Admin user password has been set
+			</screen>
+
+			<para>备份配置文件</para>
+			<screen>
+# cp /etc/ntop.conf /etc/ntop.conf.old
+			</screen>
+			<para>/etc/sysconfig/iptables</para>
+			<screen>
+-A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 3000 -j ACCEPT
+service iptables restart
+			</screen>
+			<para>启动ntop</para>
+			<screen>
+# /usr/bin/ntop -d -L -u ntop -P /var/ntop --use-syslog=daemon
+or
+# /usr/bin/ntop -d -L -u ntop -P /var/ntop --skip-version-check --use-syslog=daemon
+			</screen>
+			<para>/etc/init.d/ntop 脚本有bug无法启动，需要如下修改</para>
+			<screen>
+# vim /etc/init.d/ntop
+start () {
+    echo -n $"Starting $prog: "
+    #daemon $prog -d -L @/etc/ntop.conf
+    daemon $prog  @/etc/ntop.conf
+			</screen>
+		</section>
+	</section>
+	<section id="ntop.webui">
+		<title>Web UI</title>
+		<para>http://localhost:3000/</para>
+	</section>
+	<section>
+		<title>Plugins</title>
+		<section>
+			<title>NetFlow</title>
+			<para></para>
+		</section>
+	</section>
+
+</section>

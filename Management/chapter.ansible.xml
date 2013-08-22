@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="ansible">
+	<title>ansible</title>
+	<para>http://ansible.github.com/</para>
+	<para>Ansible is a radically simple model-driven configuration management, deployment, and command execution framework. </para>
+	<section id="ansible.install">
+		<title>install</title>
+		<screen>
+yum install ansible
+		</screen>
+	</section>
+	<section id="ansible.first">
+		<title>Getting Started</title>
+		<para>Your first commands</para>
+		<para>/etc/ansible/hosts</para>
+		<screen>
+# vim /etc/ansible/hosts
+
+192.168.2.10
+192.168.2.11
+192.168.2.12
+192.168.2.13
+192.168.2.14
+192.168.2.15
+		</screen>
+		<para>创建SSH公钥与私钥</para>
+		<screen>
+ssh-keygen
+		</screen>
+		<para>将公钥文件复制到目标服务器</para>
+		<screen>
+ssh-copy-id root@192.168.2.10
+ssh-copy-id root@192.168.2.11
+ssh-copy-id root@192.168.2.12
+ssh-copy-id root@192.168.2.13
+ssh-copy-id root@192.168.2.14
+ssh-copy-id root@192.168.2.15
+		</screen>
+		<para>连接与验证测试 ansible all -m ping</para>
+		<screen>
+# ansible all -m ping
+192.168.2.10 | success >> {
+    "module": "ping",
+    "ping": "pong"
+}
+
+192.168.2.13 | success >> {
+    "module": "ping",
+    "ping": "pong"
+}
+
+192.168.2.14 | success >> {
+    "module": "ping",
+    "ping": "pong"
+}
+
+192.168.2.11 | success >> {
+    "module": "ping",
+    "ping": "pong"
+}
+
+192.168.2.15 | success >> {
+    "module": "ping",
+    "ping": "pong"
+}
+
+192.168.2.12 | success >> {
+    "module": "ping",
+    "ping": "pong"
+}
+		</screen>
+	</section>
+	<section id="ansible.command">
+		<title>ansible - run a command somewhere else</title>
+		<para>指定用户</para>
+		<screen>
+# ansible all -m ping -u root
+		</screen>
+	</section>
+	<section id="ansible.playbook">
+		<title>ansible-playbook - run an ansible playbook</title>
+		<para>定义组</para>
+		<screen>
+# cat /etc/ansible/hosts
+[www]
+192.168.2.23
+		</screen>
+		<para>创建yml文件</para>
+		<screen>
+# cat test.yml
+---
+- hosts: www
+  user: root
+  tasks:
+  - name: no selinux
+    action: command /usr/sbin/setenforce 0
+
+  - name: no iptables
+    action: service name=iptables state=stopped
+
+  - name: made up task just to show variables work here
+    action: command /bin/echo release is $release
+		</screen>
+		<para>执行任务</para>
+		<screen>
+# ansible-playbook test.yml -u root -T 1
+
+PLAY [www] *********************
+
+GATHERING FACTS *********************
+ok: [192.168.2.23]
+
+TASK: [no selinux] *********************
+ok: [192.168.2.23]
+
+TASK: [no iptables] *********************
+ok: [192.168.2.23]
+
+TASK: [made up task just to show variables work here] *********************
+ok: [192.168.2.23]
+
+PLAY RECAP *********************
+192.168.2.23                   : ok=4    changed=2    unreachable=0    failed=0
+		</screen>
+	</section>
+</chapter>
+<chapter id="capistrano">
+	<title>Capistrano</title>
+
+</chapter>

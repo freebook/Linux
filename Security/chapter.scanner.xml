@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="scanner">
+	<title>Vulnerability Scanner</title>
+	<section id="nessus">
+		<title>Nessus</title>
+		<para>http://www.nessus.org/</para>
+		<screen>
+[root@centos6 src]# rpm -ivh Nessus-4.4.1-es6.x86_64.rpm
+Preparing...                ########################################### [100%]
+   1:Nessus                 ########################################### [100%]
+nessusd (Nessus) 4.4.1 [build M15078] for Linux
+(C) 1998 - 2011 Tenable Network Security, Inc.
+
+Processing the Nessus plugins...
+[##################################################]
+
+All plugins loaded
+ - Please run /opt/nessus//sbin/nessus-adduser to add a user
+ - Register your Nessus scanner at http://www.nessus.org/register/ to obtain
+   all the newest plugins
+ - You can start nessusd by typing /sbin/service nessusd start
+		</screen>
+		<screen>
+[root@centos6 src]# /opt/nessus/sbin/nessus-adduser
+Login : admin
+Login password :
+Login password (again) :
+Do you want this user to be a Nessus 'admin' user ? (can upload plugins, etc...) (y/n) [n]: y
+User rules
+----------
+nessusd has a rules system which allows you to restrict the hosts
+that admin has the right to test. For instance, you may want
+him to be able to scan his own host only.
+
+Please see the nessus-adduser manual for the rules syntax
+
+Enter the rules for this user, and enter a BLANK LINE once you are done :
+(the user can have an empty rules set)
+
+
+
+Login             : admin
+Password         : ***********
+This user will have 'admin' privileges within the Nessus server
+Rules             :
+Is that ok ? (y/n) [y]
+User added
+		</screen>
+		<para>申请一个验证吗<ulink url="http://www.nessus.org/products/nessus/nessus-plugins/obtain-an-activation-code"></ulink>会发送到你的邮箱中。</para>
+		<screen>
+[root@centos6 src]# /opt/nessus/bin/nessus-fetch --register 433E-3B47-94AF-5CF8-7E8E
+Your activation code has been registered properly - thank you.
+Now fetching the newest plugin set from plugins.nessus.org...
+Your Nessus installation is now up-to-date.
+If auto_update is set to 'yes' in nessusd.conf, Nessus will
+update the plugins by itself.
+		</screen>
+		<screen>
+[root@centos6 src]# /sbin/service nessusd start
+Starting Nessus services:
+[root@centos6 src]# Missing plugins. Attempting a plugin update...
+Your installation is missing plugins. Please register and try again.
+To register, please visit http://www.nessus.org/register/
+		</screen>
+		<para>https://localhost:8834</para>
+	</section>
+	<section id="openvas">
+		<title>OpenVAS</title>
+	</section>
+</chapter>
+<chapter id="injection">
+	<title>Injection &amp; Penetration</title>
+
+	<section id="backtrack">
+		<title>Backtrack Linux</title>
+		<para>http://www.backtrack-linux.org/</para>
+	</section>
+</chapter>

@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chapter id="networkstorage">
+	<title>Network Storage</title>
+<section id="openfiler">
+	<title>Network Storage - Openfiler</title>
+	<para>Openfiler is a powerful, intuitive browser-based network storage software distribution. Openfiler delivers file-based Network Attached Storage and block-based Storage Area Networking in a single framework.</para>
+	<para> </para>
+	<ulink url="http://www.openfiler.com/">openfiler 的官方网站</ulink>
+	<procedure>
+		<title>Openfiler Storage Control Center</title>
+		<step>
+			<para>登录管理界面</para>
+			<screen>
+			<![CDATA[
+https://<ip address>:446/
+			]]>
+			</screen>
+			<para>初始帐号和密码是: openfiler/password</para>
+		</step>
+		<step>
+			<para>首先要修改默认密码</para>
+			<para>Accounts->Admin Password</para>
+			<screen>
+<prompt>Current Password: </prompt> <userinput>password</userinput>
+<prompt>New Password: </prompt> <userinput>新密码</userinput>
+<prompt>Confirm New Password: </prompt> <userinput>确认密码</userinput>
+			</screen>
+			<para>Submit 提交</para>
+		</step>
+	</procedure>
+	<section id="openfiler.accounts">
+		<title>Accounts</title>
+		<procedure>
+		<step>
+			<para>用户认证</para>
+			<para>openfiler.ldif</para>
+			<screen>
+dn: ou=people,dc=bg7nyt,dc=cn
+ou: people
+objectClass: organizationalUnit
+
+dn: ou=Idmap,dc=bg7nyt,dc=cn
+ou: Idmap
+objectClass: organizationalUnit
+			</screen>
+			<para>添加people组织单元</para>
+			<screen>
+[chenjingfeng@backup ldap]$ ldapadd -x -D "cn=root,dc=bg7nyt,dc=cn" -W -f openfiler.ldif
+Enter LDAP Password:
+adding new entry "ou=people,dc=bg7nyt,dc=cn"
+
+adding new entry "ou=Idmap,dc=bg7nyt,dc=cn"
+			</screen>
+
+			<substeps>
+				<step>
+					<para>Accounts->Authentication</para>
+					<para>Use LDAP: 打勾</para>
+					<screen>
+<prompt>Server: </prompt> <userinput>ldap.bg7nyt.cn</userinput>
+<prompt>Base DN: </prompt> <userinput>dc=bg7nyt,dc=cn</userinput>
+<prompt>Root bind DN: </prompt> <userinput>cn=root,dc=bg7nyt,dc=cn</userinput>
+<prompt>Root bind Password: </prompt> <userinput>你的密码</userinput>
+					</screen>
+				</step>
+				<step>
+					<para>Services->LDAP Settings</para>
+					<screenshot>
+					<graphic fileref="/linux/images/openfiler/openfiler_services_ldap.png"/>
+					</screenshot>
+					<screen>
+<prompt>Base DN: </prompt> <userinput>dc=bg7nyt,dc=cn</userinput>
+<prompt>Root bind DN: </prompt> <userinput>cn=root,dc=bg7nyt,dc=cn</userinput>
+<prompt>Root Password: </prompt> <userinput>你的密码</userinput>
+					</screen>
+				</step>
+				<step>
+					<para>Services->Enable/Disable</para>
+					<screenshot>
+					<graphic fileref="/linux/images/openfiler/openfiler_services_en_dis.png"/>
+					</screenshot>
+				</step>
+				<step>
+					<para>Accounts->Account Administration</para>
+					<substeps>
+						<step>
+							<para>Group Administration</para>
+							<screen>
+<prompt>Group Name: </prompt><userinput>nfs</userinput>
+							</screen>
+						</step>
+						<step>
+							<para>User Administration</para>
+							<screen>
+<prompt>Username: </prompt><userinput>用户名</userinput>
+<prompt>Password: </prompt><userinput>密码</userinput>
+<prompt>Retype password: </prompt><userinput>确认密码</userinput>
+<prompt>Primary Group: </prompt><userinput>用户组</userinput>
+							</screen>
+							<para>查看组织单元：ou=people,dc=bg7nyt,dc=cn</para>
+							<screen>
+							<![CDATA[
+[chenjingfeng@backup ldap]$ ldapsearch -x -b 'ou=people,dc=bg7nyt,dc=cn'
+# extended LDIF
+#
+# LDAPv3
+# base <ou=people,dc=bg7nyt,dc=cn> with scope sub
+# filter: (objectclass=*)
+# requesting: ALL
+#
+
+# people, bg7nyt.cn
+dn: ou=people,dc=bg7nyt,dc=cn
+ou: people
+objectClass: organizationalUnit
+
+# neo, People, bg7nyt.cn
+dn: uid=neo,ou=People,dc=bg7nyt,dc=cn
+objectClass: inetOrgPerson
+objectClass: posixAccount
+homeDirectory: /dev/null
+loginShell: /bin/false
+cn: neo
+givenName: neo
+sn: neo
+uid: neo
+uidNumber: 500
+gidNumber: 500
+
+# search result
+search: 2
+result: 0 Success
+
+# numResponses: 3
+# numEntries: 2
+							]]>
+							</screen>
+						</step>
+					</substeps>
+				</step>
+			</substeps>
+		</step>
+		</procedure>
+	</section>
+
+	<section id="openfiler.volumes">
+		<title>Volumes</title>
+		<procedure>
+		<step>
+			<para>卷管理 [Volumes]</para>
+			<para>我这里是使用VMware做的试验,在VMware中增加一些硬盘即可.</para>
+			<substeps>
+				<step>
+					<para>Volumes -> Physical Storage Mgmt.</para>
+					<screenshot>
+					<graphic fileref="/linux/images/openfiler/openfiler_volumes_physical.png"/>
+					</screenshot>
+					<screen>
+Edit Disk Type Description Size Label type Partitions
+/dev/sda SCSI VMware, VMware Virtual S 8.00 GB msdos 3 (view)
+/dev/sdb SCSI VMware, VMware Virtual S 8.00 GB gpt 0 (view)
+/dev/sdc SCSI VMware, VMware Virtual S 8.00 GB gpt 0 (view)
+/dev/sdd SCSI VMware, VMware Virtual S 8.00 GB gpt 0 (view)
+...
+					</screen>
+					<para>openfiler安装在/dev/sda,/dev/sda硬盘空间不用太大,单独给openfiler使用.建议做RAID 1(硬件RAID卡或服务器主版提供的RAID)</para>
+					<para>其它硬盘是用于存储的硬盘,如果有条件这些硬盘组也最好做成硬RAID,没有条件我们可以在openfiler中做软件RAID.</para>
+					<para>点击"Edit Disk"列表内硬盘标签,之后可以看到"Create a partition in /dev/sdb"</para>
+					<screenshot>
+					<graphic fileref="/linux/images/openfiler/openfiler-volumes-1.png"/>
+					</screenshot>
+					<screen>
+<prompt>Mode: </prompt><userinput>Primary</userinput>
+<prompt>Partition Type: </prompt><userinput>[Physical volume]</userinput> / [RAID array member]
+<prompt>Starting cylinder: </prompt><userinput>1</userinput>
+<prompt>Ending cylinder Size: </prompt><userinput>1044</userinput>
+<prompt>Size: </prompt><userinput>自动产生</userinput>
+					</screen>
+					<para>单击"Create"创建分区</para>
+					<screenshot>
+					<graphic fileref="/linux/images/openfiler/openfiler-volumes-2.png"/>
+					</screenshot>
+					<para>Back to the list of physical storage devices</para>
+
+					<para>如果没有特别需求,不需要创建多个分区.</para>
+					<screen>
+Edit partitions in /dev/sdb (1044 cylinders with "gpt" label)
+
+Device Type Number Start cyl End cyl Blocks Size Type Delete
+/dev/sdb1 Linux Physical Volume (0x8e) 1 1 10 78831 76.98 MB Primary Delete
+/dev/sdb2 Linux Physical Volume (0x8e) 2 10 100 721920 705.00 MB Primary Delete
+/dev/sdb3 Linux Physical Volume (0x8e) 3 100 200 801792 783.00 MB Primary Delete
+/dev/sdb4 Linux Physical Volume (0x8e) 4 200 300 802816 784.00 MB Primary Delete
+/dev/sdb5 Linux Physical Volume (0x8e) 5 300 400 801792 783.00 MB Primary Delete
+					</screen>
+				</step>
+				<step>
+					<para>Volumes->Volume Group Mgmt.</para>
+					<para>Volume Group 可以实现动态扩展空间,注意如果在使用中有一个成员盘损坏,你将无法恢复数据.</para>
+					<para>应急使用可以,不建议长期使用.</para>
+					<screenshot>
+					<graphic fileref="/linux/images/openfiler/openfiler-vg-0.png"/>
+					</screenshot>
+					<screen>
+<prompt>Volume group name: </prompt><userinput>vg0</userinput>
+<prompt>Select physical volumes to add: </prompt><userinput>在列表前面打勾</userinput>
+/dev/sdb1 8.00 GB
+/dev/sdc1 8.00 GB
+					</screen>
+					<para>单击"Add volume group"创建vg0</para>
+					<screenshot>
+					<graphic fileref="/linux/images/openfiler/openfiler-vg-1.png"/>
+					</screenshot>
+					<table frame="topbot" align="left">
+					<title>Volume Group Management</title>
+						<tgroup cols="2">
+						<colspec colname="c1"/>
+						<colspec colname="c2"/>
+						<thead>
+							<row>
+							<entry>Volume Group Name</entry>
+							<entry>Size</entry>
+							<entry>Allocated</entry>
+							<entry>Free</entry>
+							<entry>Members</entry>
+							<entry>Add physical storage</entry>
+							<entry>Delete VG</entry>
+							</row>
+						</thead>
+						<tbody>
+							<row>
+							<entry>vg0</entry>
+							<entry><para>15.94 GB</para></entry>
+							<entry>0 bytes</entry>
+							<entry>15.94 GB</entry>
+							<entry>View member</entry>
+							<entry>PVs Add</entry>
+							<entry>PVs Delete</entry>
+							</row>
+						</tbody>
+						</tgroup>
+					</table>
+
+					<para>扩展Volume Group单击[PVs Add]按钮</para>
+					<screenshot>
+					<graphic fileref="/linux/images/openfiler/openfiler-vg-2.png"/>
+					</screenshot>
+					<para>分区列表前面打勾</para>
+					<para>[Submit]提交</para>
+
+				</step>
+				<step>
+					<para>Volumes -> Create New Volume</para>
+					<para>选择VG</para>
+					<screenshot>
+					<graphic fileref="/linux/images/openfiler/openfiler_cnv_svg.png"/>
+					</screenshot>
+					<para>创建卷</para>
+					<screenshot>
+					<graphic fileref="/linux/images/openfiler/openfiler_cnv_cv.png"/>
+					</screenshot>
+					<screen>
+<prompt>Volume Name: </prompt><userinput>卷名</userinput>
+<prompt>Volume Description: </prompt><userinput>描述</userinput>
+<prompt>Required Space (MB): </prompt><userinput>配额</userinput>
+<prompt>Filesystem type: </prompt><userinput>文件系统</userinput>
+					</screen>
+					<para>单击[Create]按钮</para>
+					<screenshot>
+					<graphic fileref="/linux/images/openfiler/openfiler_cnv_loev.png"/>
+					</screenshot>
+				</step>
+			</substeps>
+		</step>
+		</procedure>
+		<section>
+			<title>RAID</title>
+			<para>Openfiler提供软RAID.</para>
+			<procedure>
+				<step><para>Volumes -> Physical Storage Mgmt.</para>
+					<screenshot>
+						<graphic fileref="/linux/images/openfiler/openfiler_volumes_physical.png"/>
+					</screenshot>
+					<para>点击"Edit Disk"列表内硬盘标签,之后可以看到"Create a partition in /dev/sdb"</para>
+					<screenshot>
+						<graphic fileref="/linux/images/openfiler/openfiler_raid_array_member.png"/>
+					</screenshot>
+					<para>单击[Create]按钮创建RAID组成员</para>
+					<screenshot>
+						<graphic fileref="/linux/images/openfiler/openfiler_volumes_physical_edit_partition.png"/>
+					</screenshot>
+					<para>单击[Back to the list of physical storage devices]返回到 "Physical Storage Management"</para>
+				</step>
+				<step><para>Volumes -> Software RAID Mgmt.</para>
+					<screenshot>
+						<graphic fileref="/linux/images/openfiler/openfiler_volumes_raidmanage.png"/>
+					</screenshot>
+					<screen>
+<prompt>Select RAID array type: </prompt><userinput>RAID(0,1,5,6,10)</userinput>
+<prompt>Select chunk size: </prompt><userinput>这可以针对你的需求做优化</userinput>
+<prompt>Select RAID devices to add: </prompt><userinput>打勾选择</userinput>
+					</screen>
+					<para>单击[Add array]创建RAID</para>
+					<screenshot>
+						<graphic fileref="/linux/images/openfiler/openfiler_volumes_raidmanage1.png"/>
+					</screenshot>
+					<para>RAID创建完成后,就可以卷组和卷</para>
+					<para>Volumes -> Volume Group Mgmt. -> Create New Volume </para>
+					<para>RAID 6 采用双校验盘最少4块硬盘</para>
+				</step>
+			</procedure>
+		</section>
+		<section>
+			<title>iSCSI</title>
+			<para>Volumes -> Create New Volume</para>
+			<screenshot>
+				<graphic fileref="/linux/images/openfiler/openfiler_volumes_create_iscsi.png"/>
+			</screenshot>
+			<para>单击[Create]按钮</para>
+			<screenshot>
+				<graphic fileref="/linux/images/openfiler/openfiler_volumes_loev_iscsi.png"/>
+			</screenshot>
+			<para>单击[Update]按钮</para>
+			<para>Services -> Enable/Disable -> iSCSI target 确认已经 Enable</para>
+			<para>General -> Local Networks</para>
+			<screenshot>
+				<graphic fileref="/linux/images/openfiler/openfiler_general_local_networks.png"/>
+			</screenshot>
+			<para>单击[Update]按钮</para>
+			<para>Volumes -> List of Existing Volumes -> Select Volume Group</para>
+			<para>单击 iScsi 卷列表 Properties 下的 [Edit] 连接</para>
+			<screenshot>
+				<graphic fileref="/linux/images/openfiler/openfiler_volumes_iscsi_access.png"/>
+			</screenshot>
+			<para>默认是:Deny, 修为Allow</para>
+
+			<section>
+				<title>Microsoft iSCSI Software Initiator</title>
+				<para>开始菜单 找到 Microsoft iSCSI Initiator 并运行</para>
+				<para>单击 Discovery 选项卡</para>
+				<para>单击 [ Add ] 按钮</para>
+				<screenshot>
+					<graphic fileref="/linux/images/openfiler/ms_iscsi_add_target_portal.png"/>
+				</screenshot>
+				<para>单击 [ OK ] 按钮</para>
+				<screenshot>
+					<graphic fileref="/linux/images/openfiler/ms_iscsi_discovery.png"/>
+				</screenshot>
+				<para>单击 Targets 选项卡</para>
+				<screenshot>
+					<graphic fileref="/linux/images/openfiler/ms_iscsi_targets.png"/>
+				</screenshot>
+				<para>单击 [Refresh] 按钮 -> [Log On...]</para>
+				<screenshot>
+					<graphic fileref="/linux/images/openfiler/ms_iscsi_logon.png"/>
+				</screenshot>
+				<para>单击 [ OK ] 按钮</para>
+				<para>完成Initiator设置</para>
+				<para>我的电脑 -> 单击鼠标右键 -> 管理</para>
+				<screenshot>
+					<graphic fileref="/linux/images/openfiler/ms_iscsi_disk_manager.png"/>
+				</screenshot>
+				<para>初始化硬盘</para>
+				<screenshot>
+					<graphic fileref="/linux/images/openfiler/ms_iscsi_disk_initial.png"/>
+				</screenshot>
+				<para>选择硬盘</para>
+				<screenshot>
+					<graphic fileref="/linux/images/openfiler/ms_iscsi_disk_select.png"/>
+				</screenshot>
+				<para>初始化完成，红色图标消失后你就可以对磁盘分区，挂载卷，格式化。</para>
+				<para>使用 iSCSI 与使用本地磁盘完全一样。</para>
+
+				<para>Status -> iSCSI</para>
+				<screenshot>
+					<graphic fileref="openfiler_status_iscsi.png" />
+				</screenshot>
+
+			</section>
+
+		</section>
+	</section>
+	<section id="openfiler.quota">
+		<title>Quota</title>
+		<para></para>
+		<procedure>
+		<step>
+			<note>
+				<title>注意</title>
+				<para>有些文件系统不支持Quota</para>
+			</note>
+			<substeps>
+				<step>
+					<para>Quota -> Guest Quota</para>
+					<screenshot>
+					<graphic fileref="/linux/images/openfiler/openfiler_quota_sv.png" />
+					</screenshot>
+					<para>单击[Change]按钮</para>
+					<screenshot>
+					<graphic fileref="/linux/images/openfiler/openfiler_quota_guest.png" />
+					</screenshot>
+					<para>单击[Apply]按钮</para>
+				</step>
+			</substeps>
+		</step>
+		</procedure>
+	</section>
+	<section id="openfiler.shares">
+		<title>Shares</title>
+		<procedure>
+		<step>
+			<para>Shares</para>
+			<screenshot>
+					<graphic fileref="/linux/images/openfiler/openfiler_share.png" />
+			</screenshot>
+			<para>单击列表内的连接. </para>
+			<screenshot>
+					<graphic fileref="/linux/images/openfiler/openfiler_share_subfolder.png" />
+			</screenshot>
+			<screen>
+<prompt>Folder name: </prompt><userinput>输入文件夹名</userinput>
+			</screen>
+			<para>单击 [Create Sub-folder] 按钮 创建文件夹</para>
+			<screenshot>
+					<graphic fileref="/linux/images/openfiler/openfiler_share_make_share.png" />
+			</screenshot>
+			<screen>
+<prompt>Share name: </prompt><userinput>输入共享名</userinput>
+<prompt>Share description: </prompt><userinput>描述</userinput>
+<prompt>Override SMB share name: </prompt><userinput> </userinput>
+			</screen>
+			<screenshot>
+					<graphic fileref="/linux/images/openfiler/openfiler_share_edit.png" />
+			</screenshot>
+			<para>单击[Change]按钮 修改</para>
+			<para>组的权限制</para>
+			<screenshot>
+					<graphic fileref="/linux/images/openfiler/openfiler_share_group_access.png" />
+			</screenshot>
+			<para>单击[Update]按钮</para>
+
+			<para>主机访问权限配置</para>
+			<screenshot>
+					<graphic fileref="/linux/images/openfiler/openfiler_share_host.png" />
+			</screenshot>
+			<para>单击[Update]按钮</para>
+
+		</step>
+		</procedure>
+	</section>
+</section>
+<section id="freenas">
+	<title>FreeNAS</title>
+	<para>http://www.freenas.org/</para>
+</section>
+</chapter>

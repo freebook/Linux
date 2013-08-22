@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!ENTITY chapter.monitor.xml 			SYSTEM "chapter.monitor.xml">
+<!ENTITY chapter.monitor.sms.xml		SYSTEM "chapter.monitor.sms.xml">
+
+<!ENTITY chapter.system.xml		 		SYSTEM "chapter.system.xml">
+<!ENTITY chapter.system.utility.xml		SYSTEM "chapter.system.utility.xml">
+
+<!ENTITY chapter.network.xml 			SYSTEM "chapter.network.xml">
+<!ENTITY chapter.network.webmin.xml		SYSTEM "chapter.network.webmin.xml">
+<!ENTITY chapter.network.mrtg.xml		SYSTEM "chapter.network.mrtg.xml">
+<!ENTITY chapter.network.cacti.xml 		SYSTEM "chapter.network.cacti.xml">
+<!ENTITY chapter.network.nagios.xml 	SYSTEM "chapter.network.nagios.xml">
+<!ENTITY chapter.network.munin.xml 		SYSTEM "chapter.network.munin.xml">
+<!ENTITY chapter.network.zabbix.xml 	SYSTEM "chapter.network.zabbix.xml">
+<!ENTITY chapter.network.cluster.xml 	SYSTEM "chapter.network.cluster.xml">
+<!ENTITY chapter.network.lvs.xml 		SYSTEM "chapter.network.lvs.xml">
+<!ENTITY chapter.network.ntop.xml		SYSTEM "chapter.network.ntop.xml">
+<!ENTITY chapter.network.observium.xml	SYSTEM "chapter.network.observium.xml">
+<!ENTITY chapter.network.opentsdb.xml	SYSTEM "chapter.network.opentsdb.xml">
+<!ENTITY chapter.network.graphite.xml	SYSTEM "chapter.network.graphite.xml">
+
+<!ENTITY chapter.ipmi.xml			 	SYSTEM "chapter.ipmi.xml">
+<!ENTITY chapter.network.netflow.xml 	SYSTEM "chapter.network.netflow.xml">
+
+<!ENTITY chapter.log.xml		 		SYSTEM "chapter.log.xml">
+<!ENTITY chapter.log.web.xml			SYSTEM "chapter.log.web.xml">
+
+<!ENTITY chapter.jvm.xml		 		SYSTEM "chapter.jvm.xml">

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<!ENTITY part.cluster 				SYSTEM "part.cluster.xml">
+	<!ENTITY chapter.cluster.lvs	 	SYSTEM "chapter.cluster.lvs.xml">
+	<!ENTITY chapter.cluster.keepalived SYSTEM "chapter.cluster.keepalived.xml">
+	<!ENTITY chapter.cluster.heartbeat 	SYSTEM "chapter.cluster.heartbeat.xml">
+	<!ENTITY chapter.cluster.piranha.xml 	SYSTEM "../../CentOS/chapter.network.piranha.xml">
+	<!ENTITY chapter.cluster.haproxy 	SYSTEM "chapter.cluster.haproxy.xml">
+	<!ENTITY chapter.slb.perlbal.xml    SYSTEM "chapter.slb.perlbal.xml">
+	<!ENTITY chapter.example.xml	    SYSTEM "chapter.example.xml">

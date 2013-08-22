@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	<section>
+		<title>chroot</title>
+		<screen>
+neo@www:~$ sudo mkdir -p /app
+neo@www:~$ sudo mkdir -p /app/tmp
+neo@www:~$ sudo mkdir -p /app/var/log/lighttpd/
+neo@www:~$ sudo mkdir -p /app/www
+neo@www:~$ sudo chown www-data:www-data -R /app
+
+neo@www:~$ sudo mkdir -p /app/usr/bin/
+neo@www:~$ sudo cp /usr/bin/php* /app/usr/bin/
+		</screen>
+		<screen>
+neo@www:~$ sudo vim /etc/lighttpd/lighttpd.conf
+server.upload-dirs = ( "/cache/uploads" )
+server.errorlog            = "/log/error.log"
+accesslog.filename         = "/log/access.log"
+server.document-root       = "/www"
+server.pid-file            = "/run/lighttpd.pid"
+server.chroot            = "/app"
+compress.cache-dir          = "/cache/compress/"
+
+		</screen>
+		<screen>
+neo@www:~$ sudo /etc/init.d/lighttpd restart
+
+		</screen>
+	</section>
+http://www.cyberciti.biz/tips/howto-setup-lighttpd-php-mysql-chrooted-jail.html
+
+版权声明: 允许非商业性转载，但转载时必须标明原作者 fcicq、原始链接 http://www.fcicq.net/wp/?p=519 及本声明。
+
+下面把lighttpd送进笼子里.
+
+(准确说还是把php送进去)
+
+主要大难点: mysql, extension(如果有装的话)
+
+似曾相识:
+
+mkdir /webroot/{var/run/lighttpd,var/run/cache ,var/log/lighttpd ,var/www/localhost/htdocs} -p
+mkdir /webroot/{usr/lib64,bin,usr/bin,lib64,dev,etc,tmp} -p
+
+非64位的同学把lib64改成lib即可
+
+64bit only:
+cd /webroot
+ln -s lib64 lib
+cd usr
+ln -s lib64 lib
+cd /webroot
+
+设备文件,这次多了两个.
+mkdir dev/pts -p
+mknod -m 666 dev/null c 1 3
+mknod -m 666 dev/zero c 1 5
+mknod -m 666 dev/tty c 5 0
+mknod -m 666 dev/pts/0 c 136 0
+mknod -m 666 dev/pts/1 c 136 1
+mknod -m 644 dev/random c 1 8
+mknod -m 644 dev/urandom c 1 9
+
+用户大同小异
+egrep "(^root)|(lighttpd)" /etc/passwd > etc/passwd
+egrep "(^root)|(lighttpd)" /etc/group > etc/group
+
+不过注意一下,lighttpd这个用户还有组都是安装的时候生成的
+非gentoo用户要手动建立用户和组.
+
+万能,这就叫万能!
+APPS="/usr/bin/php-cgi /usr/sbin/lighttpd /usr/lib/libmysqlclient.so.15"
+APPS="$APPS `find /usr/lib/php* -name "*.so"`"
+find $APPS | xargs ldd | awk '{if ($3 ~ /^[^ (]/) print $3}' | sort | uniq | cpio -pdvuL /webroot
+find $APPS | cpio -pdvuL /webroot
+
+第一行对付php,lighttpd,还有该死的mysql client
+第二行对付extension.
+(lighttpd实际上不是必须的.不过为了兼容性起见还是留下吧)
+
+权限处理
+chown lighttpd:lighttpd /webroot/var/log/lighttpd
+chown lighttpd:lighttpd /webroot/var/run/lighttpd
+chown lighttpd:lighttpd /webroot/var/www -R
+chmod 1777 tmp
+chmod 755 usr -R
+最后一个usr这个,偶也不知道为什么,这样一弄就好了.
+或许是最开始没做umask 0022?
+
+配置文件,收尾工作
+cp /lib/ld-linux-* lib
+cp -L /etc/{localtime,services,nsswitch.conf,hosts,resolv.conf} etc
+cp -L /lib/{libnss_dns.so.*,libnss_files.so.*,libnss_compat.so.*} lib
+cp -a /etc/php etc
+
+最后最后最后最后:
+/etc/lighttpd.conf
+server.chroot= "/webroot"
+
+偶配置出来的环境21M大.
+
+ps:
+把lighttpd关进冰箱里需要几步?
+
+ps2:
+如果给你同样长的时间,
+apache,lighttpd “两头大象”你能全关进去不?
+
+方法大同小异.
+
+ps3:
+什么? suPHP? 没用过
+
+ps4:
+
+ldd /bin/su | awk '{ print $3; }' | sed 's/(/.*/(.*))/1 2/g' -
+| xargs -l1 --no-run-if-empty cp
+
+友情提示: 请注意文章的时效性与准确性, 作者不对文章的有效性负责.
+
+
+假如我们的chroot的根止境在/chroot, 那先创建目录/chroot
+安装lighttpd
+我们把lighttpd安装在/chroot/usr/local/lighttpd下, 正常安装, 编译时加–prefix=/chroot/usr/local/lighttpd(以及其它的参数, 如果需要)
+# cd lighttpd-1.4.19
+# ./configure –prefix=/chroot/usr/local/lighttpd
+安装php(及Zend优化器,如果需要)
+# cd php-5.2.5
+./configure –prefix=/chroot/usr/local/php  –enable-fastcgi  –enable-force-cgi-redirect –with-other-options
+创建chroot环境
+# cd /chroot
+# mkdir -p  usr/lib   lib  etc  tmp  var/tmp
+# chmod 1777  /tmp  /var/tmp
+# cd  /etc
+# cp  hosts  localtime  mime.types  nsswitch.conf  resolv.conf  services /chroot/etc
+复制相关的动态链接库
+我们的lighttpd和php使用了许多动态链接库, 当chroot环境下运行时, 他把/chroot目录做为他的根目录, 那时他看不到/chroot外面的目录, 就好比井底下的青蛙看不到外面的世界. 我们需要把他需要的东西扔到井里他才能生活.
+使用ldd可以查看到lighttpd和php需要哪些动态链接库, 然后复制到/chroot下相应的目录.(这儿有个工具可以做这些, 下载他, 加可执行权限, 并修改里面的你的chroot目录即可)
+设置lighttpd配置文件.
+在lighttpd的配置文件lighttpd.conf(如果你的是这个名字的话), 加一句配置:
+server.chroot = “/chroot”
+
+ -->

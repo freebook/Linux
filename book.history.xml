@@ -1,0 +1,234 @@
+﻿<appendix id="history">
+	<title>历史记录</title>
+<revhistory>
+	<revision>
+		<revnumber>1.0</revnumber>
+		<date>2007-1-12</date>
+		<revdescription>
+		<itemizedlist>
+			<listitem><para>开始</para></listitem>
+			<listitem><para>ubuntu linux</para></listitem>
+		</itemizedlist>
+		</revdescription>
+	</revision>
+	<revision>
+		<revnumber>1.1</revnumber>
+		<date>2007-5-10</date>
+		<revdescription>
+			<para>Application (Zope)</para>
+		</revdescription>
+	</revision>
+	<revision>
+		<revnumber>1.2</revnumber>
+		<date>2007-5-15</date>
+		<revdescription>
+			<para>Memcached</para>
+		</revdescription>
+	</revision>
+	<revision>
+		<revnumber>1.3</revnumber>
+		<date>2007-5-18</date>
+		<revdescription>
+			<para>Jboss</para>
+		</revdescription>
+	</revision>
+	<revision>
+		<revnumber>1.4</revnumber>
+		<date>2007-5-21</date>
+		<revdescription>
+			<para>php memcache,lighttpd script</para>
+		</revdescription>
+	</revision>
+	<revision>
+		<revnumber>1.5</revnumber>
+		<date>2007-5-22</date>
+		<revdescription>
+			<para>rsync</para>
+		</revdescription>
+	</revision>
+	<revision>
+		<revnumber>1.6</revnumber>
+		<date>2007-5-24</date>
+		<revdescription>
+			<para>openfiler</para>
+		</revdescription>
+	</revision>
+	<revision>
+		<revnumber>1.7</revnumber>
+		<date>2007-5-25</date>
+		<revdescription>
+			<para>openfiler, php sql server</para>
+		</revdescription>
+	</revision>
+	<revision>
+		<revnumber>1.8</revnumber>
+		<date>2007-5-28</date>
+		<revdescription>
+			<para>openfiler, zend optimizer</para>
+		</revdescription>
+	</revision>
+	<revision>
+		<revnumber>1.9</revnumber>
+		<date>2007-6-9</date>
+		<revdescription>
+			<para>ip tunnel, memcached script, lighttpd script</para>
+		</revdescription>
+	</revision>
+	<revision>
+		<revnumber>1.10</revnumber>
+		<date>2007-11-13</date>
+		<revdescription>
+			<para>栏目重新排版，增加很多新内容</para>
+		</revdescription>
+	</revision>
+	<revision>
+		<revnumber>1.11</revnumber>
+		<date>2008-1-17</date>
+		<revdescription>
+			<para>awstats, webalizer</para>
+		</revdescription>
+	</revision>
+	<revision>
+		<revnumber>1.12</revnumber>
+		<date>2008-1-22</date>
+		<revdescription>
+			<para>TUTOS, TRAC</para>
+		</revdescription>
+	</revision>
+	<revision>
+		<revnumber>1.2</revnumber>
+		<date>2008-3-21</date>
+		<revdescription>
+			<para>栏目重新排版，增加很多新内容</para>
+		</revdescription>
+	</revision>
+	<revision>
+		<revnumber>1.2.1</revnumber>
+		<date>2008-3-21</date>
+		<revdescription>
+			<para>Shorewall</para>
+		</revdescription>
+	</revision>
+	<revision>
+		<revnumber>1.2.2</revnumber>
+		<date>2008-6-20</date>
+		<revdescription>
+			<para>FreeRADIUS</para>
+		</revdescription>
+	</revision>
+	<revision>
+		<revnumber>1.2.3</revnumber>
+		<date>2008-10-7</date>
+		<revdescription>
+			<para>MySQL Replication</para>
+		</revdescription>
+	</revision>
+	<revision>
+		<revnumber>1.2.4</revnumber>
+		<date>2008-10-8</date>
+		<revdescription>
+			<para>MySQL Cluster</para>
+		</revdescription>
+	</revision>
+	<revision>
+		<revnumber>1.2.5</revnumber>
+		<date>2008-10-9</date>
+		<revdescription>
+			<para>modi: Openldap</para>
+		</revdescription>
+	</revision>	
+	<revision>
+		<revnumber>1.2.6</revnumber>
+		<date>2008-10-21</date>
+		<revdescription>
+			<para>ufw - program for managing a netfilter firewall</para>
+			<para>inotify-tools</para>
+			<para>DRBD (Distributed Replicated Block Device)</para>
+		</revdescription>
+	</revision>	
+	<revision>
+		<revnumber>1.2.7</revnumber>
+		<date>2008-10-31</date>
+		<revdescription>
+			<para>modify rsync chapter</para>
+			<para>add csync2</para>
+		</revdescription>
+	</revision>
+	<revision>
+		<revnumber>1.2.8</revnumber>
+		<date>2008-12-3</date>
+		<revdescription>
+			<para>modified system chapter</para>
+			<para>add nagios, and remove developer chapter</para>
+		</revdescription>
+	</revision>
+	<revision>
+		<revnumber>1.2.9</revnumber>
+		<date>2008-12-16</date>
+		<revdescription>
+			<para>the system chapter was modified</para>
+		</revdescription>
+	</revision>
+	<revision>
+		<revnumber>1.2.10</revnumber>
+		<date>2008-12-22</date>
+		<revdescription>
+			<para>added loop devices</para>
+			<para>added ACL - Access Control List under chapter security.</para>
+			<para>added ncftp, ncftpget, ncftpput</para>
+		</revdescription>
+	</revision>
+	<revision>
+		<revnumber>1.3.0</revnumber>
+		<date>2009-3-10</date>
+		<revdescription>
+			<para>bash</para>
+			<para>added if, for, while, until</para>
+			<para>and function</para>
+		</revdescription>
+	</revision>
+	<revision>
+		<revnumber>1.3.1</revnumber>
+		<date>2009-3-22</date>
+		<revdescription>
+			<para>vsftpd</para>
+		</revdescription>
+	</revision>
+	<revision>
+		<revnumber>1.3.2</revnumber>
+		<date>2009-4-5</date>
+		<revdescription>
+			<para>to move chapter database to new docbook.</para>
+		</revdescription>
+	</revision>
+	<revision>
+		<revnumber>1.3.2</revnumber>
+		<date>2009-4-15</date>
+		<revdescription>
+			<para>Stunnel.</para>
+		</revdescription>
+	</revision>
+	<revision>
+		<revnumber>1.3.3</revnumber>
+		<date>2009-5-7</date>
+		<revdescription>
+			<para>增加很多新内容,章节重新排版。</para>
+		</revdescription>
+	</revision>
+	<revision>
+		<revnumber>1.3.4</revnumber>
+		<date>2009-10-27</date>
+		<revdescription>
+			<para>PPTPD</para>
+		</revdescription>
+	</revision>
+	<revision>
+		<revnumber>1.3.4</revnumber>
+		<date>2012-01-01</date>
+		<revdescription>
+			<para>sv - control and manage services monitored by runsv</para>
+		</revdescription>
+	</revision>	
+</revhistory>
+
+</appendix>

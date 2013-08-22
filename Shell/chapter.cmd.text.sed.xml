@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.cmd.text.sed.xml 547 2013-03-28 04:47:40Z netkiller $ -->
+<section id="sed">
+	<title>sed</title>
+	<para>http://sed.sourceforge.net/</para>
+	<programlisting>
+sed -i -e 's/aaa/bbb/g' *
+perl -p -i -e 's/aaa/bbb/g' *
+	</programlisting>
+	<section>
+		<title>find and replace</title>
+		<programlisting>
+		<![CDATA[
+ls -1 *.html| awk '{printf "sed \047s/ADDRESS/address/g\047 %s >%s.sed;mv %s.sed %s\n", $1, $1, $1, $1;}'|bash
+
+for f in `ls -1 *.html`; do [ -f $f ] && sed 's/<\/BODY>/<script src="http:\/\/www.google-analytics.com\/urchin.js" type="text\/javascript"><\/script>\n<script type="text\/javascript">\n_uacct = "UA-2033740-1";\nurchinTracker();\n<\/script>\n<\/BODY>/g' $f >$f.sed;mv $f.sed $f ; done;
+		]]>
+		</programlisting>
+		<para></para>
+		<programlisting>
+		<![CDATA[
+my=/root/dir
+str="/root/dir/file1 /root/dir/file2 /root/dir/file3 /root/dir/file/file1"
+echo $str | sed "s:$my::g"
+		]]>
+		</programlisting>
+		<section>
+			<title>正则</title>
+			<programlisting>
+sed s/[[:space:]]//g  filename          删除空格
+			</programlisting>
+		</section>
+		<section>
+			<title>delete</title>
+			<para>删除空行</para>
+			<programlisting>
+sed /^$/d         filename
+sed '/./!d' filename
+			</programlisting>
+		</section>
+		<section>
+			<title>aaa="bbb" 提取bbb</title>
+			<screen>
+			<![CDATA[
+
+$ echo "aaa=\"bbb\"" | sed 's/.*=\"\(.*\)\"/\1/g'
+$ curl -s http://www.example.com | egrep -o '<a href="(.*)">.*</a>' | sed -e 's/.*href="\([^"]*\)".*/\1/'
+
+			]]>
+			</screen>
+			<para>Mac 地址转换</para>
+			<screen>
+echo 192.168.2.1-a1f4.40c1.5756 | sed -r 's|(.*-)(..)(..).(..)(..).(..)(..)|\1\2:\3:\4:\5:\6:\7|g'
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>编辑文件</title>
+		<screen>
+-i[SUFFIX], --in-place[=SUFFIX]
+                 edit files in place (makes backup if extension supplied)
+		</screen>
+		<para>下面例子是替换t.php中的java字符串为php</para>
+		<screen>
+		<![CDATA[
+$ cat t.php
+<?java
+
+$ sed -i 's/java/php/g' t.php
+
+$ cat t.php
+<?php
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+find -name "*.php" -exec sed -i '/<?.*eval(gzinflate(base64.*?>/ d' '{}' \; -print
+		]]>
+		</screen>
+	</section>
+</section>

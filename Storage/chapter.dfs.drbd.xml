@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<section id="drbd">
+		<title>DRBD (Distributed Replicated Block Device)</title>
+		<para>Homepage: http://www.drbd.org/</para>
+		<graphic fileref="images/storage/drbd.gif"/>
+		<graphic fileref="images/storage/drbd_ha.gif"/>
+		
+		<para>实验环境需要两台电脑，如果你没有，建议你使用VMware，并且为每一个虚拟机添加两块硬盘。</para>
+		<orderedlist>
+			<title>实验环境</title>
+			<listitem><para>master: 192.168.0.1 	DRBD:/dev/sdb </para></listitem>
+			<listitem><para>slave: 	192.168.0.2 	DRBD:/dev/sdb </para></listitem>
+		</orderedlist>
+		<section>
+			<title>disk and partition</title>
+			<para>Each of the following steps must be completed on both nodes</para>
+			<para>show all of disk and partition</para>
+			<screen>
+neo@master:~$ sudo sfdisk -s
+/dev/sda:   8388608
+/dev/sdb:   2097152
+total: 10485760 blocks
+			</screen>
+			<para>create a new partition on the disk /dev/sdb</para>
+			<screen>
+$ sudo cfdisk /dev/sdb			
+			</screen>
+			<para>you must have extended partition</para>
+			<para>check partition</para>
+			<screen>
+neo@master:~$ sudo fdisk -l
+
+Disk /dev/sda: 8589 MB, 8589934592 bytes
+255 heads, 63 sectors/track, 1044 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+Disk identifier: 0x000301bd
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1   *           1         993     7976241   83  Linux
+/dev/sda2             994        1044      409657+   5  Extended
+/dev/sda5             994        1044      409626   82  Linux swap / Solaris
+
+Disk /dev/sdb: 2147 MB, 2147483648 bytes
+255 heads, 63 sectors/track, 261 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+Disk identifier: 0x00000000
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdb1               1         261     2096451    5  Extended
+/dev/sdb5               1         261     2096419+  83  Linux
+
+			</screen>
+			<para>format /dev/sdb1</para>
+			<screen>
+neo@master:~$ sudo mkfs.ext3 /dev/sdb1
+			</screen>
+			<para>you also can using other file system</para>
+			<para>reiserfs</para>
+			<screen>
+neo@master:~$ sudo mkfs.reiserfs /dev/sdb1		
+			</screen>
+			<para>I suggest you using reiserfs.</para>
+		</section>
+
+		<section>
+			<title>Installation</title>
+			<para>Each of the following steps must be completed on both nodes</para>
+			<para>search drbd8-utils package</para>
+			<screen>
+neo@master:~$ apt-cache search drbd
+drbd8-utils - RAID 1 over tcp/ip for Linux utilities
+drbd0.7-module-source - RAID 1 over tcp/ip for Linux module source
+drbd0.7-utils - RAID 1 over tcp/ip for Linux utilities
+drbdlinks - Manages symlinks into a shared DRBD partition
+			</screen>
+			<para>installation</para>
+			<screen>
+neo@master:~$ sudo apt-get install drbd8-utils			
+			</screen>
+			<para>to add modules from the Linux Kernel</para>
+			<screen>
+neo@master:~$ sudo modprobe drbd
+neo@master:~$ lsmod |grep drbd
+drbd                  213000  0
+cn                      9632  1 drbd
+			
+			</screen>
+		</section>
+		<section>
+			<title>configure</title>
+			<para>Each of the following steps must be completed on both nodes</para>
+			<para>backup configure file</para>
+			<screen>
+			<![CDATA[
+neo@master:~$ sudo cp /etc/drbd.conf /etc/drbd.conf.old
+			]]>
+			</screen>
+			<para>edit /etc/drbd.conf</para>
+			<screen>
+global { 
+  usage-count yes; 
+}
+common {
+  protocol C;
+}
+resource r0 {
+  on master {
+    device    /dev/drbd0;
+    disk      /dev/sdb5;
+    address   192.168.0.1:7789;
+    meta-disk internal;
+  }
+  on slave {
+    device    /dev/drbd0;
+    disk      /dev/sdb5;
+    address   10.1.1.32:7789;
+    meta-disk internal;
+  }
+}
+			</screen>			
+		</section>
+		<section>
+			<title>Starting</title>
+			<para>Each of the following steps must be completed on both nodes.</para>
+			<screen>
+neo@master:~$ sudo drbdadm create-md r0	
+neo@master:~$ sudo drbdadm attach r0
+neo@master:~$ sudo drbdadm connect r0
+neo@master:~$ sudo drbdadm -- --overwrite-data-of-peer primary r0
+
+neo@slave:~$ sudo drbdadm create-md r0		
+neo@slave:~$ sudo drbdadm attach r0
+neo@slave:~$ sudo drbdadm connect r0
+
+			</screen>
+			
+			<para>master</para>
+			<screen>
+			<![CDATA[
+neo@master:~$ sudo drbdadm create-md r0
+v08 Magic number not found
+md_offset 2146725888
+al_offset 2146693120
+bm_offset 2146627584
+
+Found some data
+ ==> This might destroy existing data! <==
+
+Do you want to proceed?
+[need to type 'yes' to confirm] yes
+
+v07 Magic number not found
+v07 Magic number not found
+v08 Magic number not found
+Writing meta data...
+initialising activity log
+NOT initialized bitmap
+New drbd meta data block sucessfully created.
+success
+			]]>
+			</screen>
+			<para>slave</para>
+			<screen>
+			<![CDATA[
+neo@slave:~# sudo drbdadm create-md r0
+v08 Magic number not found
+md_offset 2146725888
+al_offset 2146693120
+bm_offset 2146627584
+
+Found some data
+ ==> This might destroy existing data! <==
+
+Do you want to proceed?
+[need to type 'yes' to confirm] yes
+
+v07 Magic number not found
+v07 Magic number not found
+v08 Magic number not found
+Writing meta data...
+initialising activity log
+NOT initialized bitmap
+New drbd meta data block sucessfully created.
+success
+			]]>
+			</screen>
+			<para>status</para>
+			<screen>
+neo@master:~$ cat /proc/drbd
+version: 8.0.11 (api:86/proto:86)
+GIT-hash: b3fe2bdfd3b9f7c2f923186883eb9e2a0d3a5b1b build by phil@mescal, 2008-02-12 11:56:43
+ 0: cs:StandAlone st:Primary/Unknown ds:UpToDate/DUnknown   r---
+    ns:0 nr:0 dw:0 dr:0 al:0 bm:0 lo:0 pe:0 ua:0 ap:0
+        resync: used:0/31 hits:0 misses:0 starving:0 dirty:0 changed:0
+        act_log: used:0/127 hits:0 misses:0 starving:0 dirty:0 changed:0
+ 1: cs:Connected st:Secondary/Secondary ds:Diskless/Inconsistent C r---
+    ns:0 nr:0 dw:0 dr:0 al:0 bm:0 lo:0 pe:0 ua:0 ap:0
+			
+			</screen>
+		</section>
+		<section>
+			<title>Using</title>
+			<para>master</para>
+			<screen>
+neo@master:~$ sudo drbdadm primary all		
+neo@master:~$ sudo mkfs.reiserfs /dev/drbd0
+neo@master:~$ sudo mkdir /mnt/drbd0
+neo@master:~$ sudo mount /dev/drbd0 /mnt/drbd0/
+neo@master:~$ sudo touch /mnt/drbd0/helloworld.tmp
+neo@master:~$ df -h
+Filesystem            Size  Used Avail Use% Mounted on
+/dev/sda1             7.6G  1.3G  6.0G  18% /
+varrun                125M  216K  125M   1% /var/run
+varlock               125M  8.0K  125M   1% /var/lock
+udev                  125M   60K  125M   1% /dev
+devshm                125M     0  125M   0% /dev/shm
+/dev/drbd0            2.0G   33M  2.0G   2% /mnt/drbd0
+neo@master:~$ sudo dd if=/dev/zero of=/mnt/drbd0/tempfile1.tmp bs=104857600 count=1
+1+0 records in
+1+0 records out
+104857600 bytes (105 MB) copied, 0.564911 s, 186 MB/s
+neo@master:~$ sudo umount /mnt/drbd0/
+neo@master:~$ sudo drbdadm secondary all
+			</screen>
+			<para>slave</para>
+			<screen>
+neo@slave:~$ sudo drbdadm primary all			
+neo@slave:~$ sudo mkdir /mnt/drbd0
+neo@slave:~$ sudo mount /dev/drbd0 /mnt/drbd0/
+neo@slave:~$ ls /mnt/drbd0/
+helloworld.tmp  tempfile1.tmp			
+			</screen>
+		</section>
+	</section>

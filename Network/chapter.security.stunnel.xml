@@ -1,0 +1,60 @@
+<chapter id="stunnel">
+	<title>Stunnel - universal SSL tunnel</title>
+	<para>Homepage: http://www.stunnel.org/</para>
+	<para>Stunnel is a program that allows you to encrypt arbitrary TCP connections inside SSL (Secure Sockets Layer) available on both Unix and Windows. Stunnel can allow you to secure non-SSL aware daemons and protocols (like POP, IMAP, LDAP, etc) by having Stunnel provide the encryption, requiring no changes to the daemon's code. </para>
+	<procedure>
+	    <step>
+	    	<para>install</para>
+	    	<screen>
+$ sudo apt-get install stunnel4
+			</screen>
+		</step>
+		<step>
+			<para>enable stunnel</para>
+			<screen>
+			<![CDATA[
+$ vim /etc/default/stunnel4
+# /etc/default/stunnel
+# Julien LEMOINE <speedblue@debian.org>
+# September 2003
+
+# Change to one to enable stunnel
+ENABLED=0
+FILES="/etc/stunnel/*.conf"
+OPTIONS=""
+
+# Change to one to enable ppp restart scripts
+PPP_RESTART=0
+			]]>
+			</screen>
+			<para>edit /etc/default/stunnel4 file and change ENABLED=0 to ENABLED=1 to enable Stunnel</para>
+		</step>
+		<step>
+			<para>config</para>
+			<screen>
+$ sudo vim /etc/stunnel/stunnel.conf
+[pop3s]
+accept  = 995
+connect = 110
+
+[imaps]
+accept  = 993
+connect = 143
+
+[ssmtp]
+accept  = 465
+connect = 25
+
+[https]
+accept  = 443
+connect = 80		
+			</screen>
+		</step>
+		<step>
+			<para>start</para>
+			<screen>
+$ sudo /etc/init.d/stunnel4 start			
+			</screen>
+		</step>
+	</procedure>
+</chapter>

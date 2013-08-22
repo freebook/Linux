@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="zabbix">
+	<title>Zabbix</title>
+	<section>
+		<title>Installing and Configuring Zabbix</title>
+		<screen>
+neo@monitor:~$ apt-cache search zabbix
+zabbix-agent - network monitoring solution - agent
+zabbix-frontend-php - network monitoring solution - PHP front-end
+zabbix-proxy-mysql - network monitoring solution - proxy (using MySQL)
+zabbix-proxy-pgsql - network monitoring solution - proxy (using PostgreSQL)
+zabbix-server-mysql - network monitoring solution - server (using MySQL)
+zabbix-server-pgsql - network monitoring solution - server (using PostgreSQL)
+		</screen>
+		<screen>
+GRANT ALL PRIVILEGES ON zabbix.* TO 'zabbix'@'localhost' IDENTIFIED BY 'chen' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+		</screen>
+		<screen>
+sudo apt-get install zabbix-server-mysql zabbix-frontend-php
+		</screen>
+		<para>如果上述过程中遇到一些问题，可以手工安装数据库</para>
+		<screen>
+		<![CDATA[
+$ sudo mysql -uroot -p -e"create database zabbix;"
+$ sudo mysql -uroot -p -e"grant all privileges on zabbix.* to zabbix@localhost identified by 'enter-password-here';"
+$ mysql -uzabbix -p zabbix < /usr/share/zabbix-server/mysql.sql
+$ mysql -uzabbix -p zabbix < /usr/share/zabbix-server/data.sql
+$ sudo dpkg-reconfigure zabbix-server-mysql
+		]]>
+		</screen>
+		
+		<screen>
+		<![CDATA[
+cat >> /etc/services <<EOF
+
+zabbix-agent    10050/tcp                       #Zabbix Agent  
+zabbix-agent    10050/udp                       #Zabbix Agent  
+zabbix-trapper  10051/tcp                       #Zabbix Trapper  
+zabbix-trapper  10051/udp                       #Zabbix Trapper  
+EOF		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>web ui</title>
+		<para>http://localhost/zabbix/</para>
+		<para>user: admin</para>
+		<para>passwd: zabbix</para>
+	</section>
+	<section>
+		<title>zabbix-agent</title>
+		<screen>
+# sudo apt-get install zabbix-agent
+
+		</screen>
+		<para>/etc/zabbix/zabbix_agent.conf</para>
+		<screen>
+#Server=localhost
+Server=your_server_ip_address
+		</screen>
+		<para></para>
+		<screen>
+# vim /etc/services
+
+zabbix-agent    10050/tcp                       #Zabbix Agent
+zabbix-agent    10050/udp                       #Zabbix Agent
+		</screen>
+		<para></para>
+		<screen>
+# sudo /etc/init.d/zabbix-agent restart
+		</screen>
+	</section>
+</section>

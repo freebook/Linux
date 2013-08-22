@@ -1,0 +1,51 @@
+neo@master:~$ sudo ifconfig eth0 172.16.0.2
+neo@master:~$ sudo route add default gw 172.16.0.254
+
+neo@master:~$ ping 220.201.35.11
+PING 220.201.35.11 (220.201.35.11) 56(84) bytes of data.
+64 bytes from 220.201.35.11: icmp_seq=1 ttl=128 time=84.2 ms
+64 bytes from 220.201.35.11: icmp_seq=2 ttl=128 time=83.7 ms
+
+--- 220.201.35.11 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1001ms
+rtt min/avg/max/mdev = 83.790/84.001/84.213/0.358 ms
+neo@master:~$
+
+
+
+
+Slave
+
+
+
+neo@master:~$ sudo lsof -i :80
+COMMAND  PID     USER   FD   TYPE DEVICE SIZE NODE NAME
+apache2 3606     root    3u  IPv6   7525       TCP *:www (LISTEN)
+apache2 3624 www-data    3u  IPv6   7525       TCP *:www (LISTEN)
+apache2 3625 www-data    3u  IPv6   7525       TCP *:www (LISTEN)
+apache2 3626 www-data    3u  IPv6   7525       TCP *:www (LISTEN)
+apache2 3627 www-data    3u  IPv6   7525       TCP *:www (LISTEN)
+apache2 3628 www-data    3u  IPv6   7525       TCP *:www (LISTEN)
+neo@master:~$
+
+
+
+neo@master:~$ sudo arping 172.16.0.254
+ARPING 172.16.0.254 from 172.16.0.2 eth0
+Unicast reply from 172.16.0.254 [00:50:56:EE:BF:B1]  0.909ms
+Unicast reply from 172.16.0.254 [00:50:56:EE:BF:B1]  0.669ms
+Unicast reply from 172.16.0.254 [00:50:56:EE:BF:B1]  0.674ms
+Sent 3 probes (1 broadcast(s))
+Received 3 response(s)
+neo@master:~$
+
+
+neo@master:~$ arp -a | awk '{print $4}'
+00:50:56:C0:00:08
+00:50:56:EE:BF:B1
+neo@master:~$ arp
+Address                  HWtype  HWaddress           Flags Mask            Iface
+172.16.0.1               ether   00:50:56:C0:00:08   C                     eth0
+172.16.0.254             ether   00:50:56:EE:BF:B1   C                     eth0
+
+

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<!ENTITY chapter.x.xml 					SYSTEM "chapter.x.xml">
+	<!ENTITY chapter.x.application.xml 		SYSTEM "chapter.x.application.xml">
+	<!ENTITY chapter.x.fluxbox.xml 			SYSTEM "chapter.x.fluxbox.xml">
+	<!ENTITY chapter.x.lxde.xml 			SYSTEM "chapter.x.lxde.xml">
+	<!ENTITY chapter.x.xfce.xml 			SYSTEM "chapter.x.xfce.xml">
+	<!ENTITY chapter.x.xming.xml			SYSTEM "chapter.x.xming.xml">
+	<!ENTITY chapter.office.xml				SYSTEM "chapter.office.xml">
+	<!ENTITY chapter.font.xml				SYSTEM "chapter.font.xml">
+	<!ENTITY chapter.x.unity.xml			SYSTEM "chapter.x.unity.xml">

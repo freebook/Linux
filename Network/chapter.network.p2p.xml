@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="p2p">
+	<title>Point to Point</title>
+	<section id="p2p.download">
+		<title>download</title>
+		<section>
+			<title>rtorrent - ncurses BitTorrent client based on LibTorrent</title>
+			<screen>
+			<![CDATA[
+$ apt-cache search rtorrent
+rtorrent - ncurses BitTorrent client based on LibTorrent
+rtpg-www - web based front end for rTorrent			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>mldonkey-server - Door to the 'donkey' network</title>
+			<screen>
+			<![CDATA[
+$ sudo apt-get install mldonkey-server
+
+$ sudo cat /etc/default/mldonkey-server
+# MLDonkey configuration file
+# This file is loaded by /etc/init.d/mldonkey-server.
+# This file is managed using ucf(1).
+
+MLDONKEY_DIR=/var/lib/mldonkey
+MLDONKEY_USER=mldonkey
+MLDONKEY_GROUP=mldonkey
+MLDONKEY_UMASK=0022
+LAUNCH_AT_STARTUP=false
+MLDONKEY_NICENESS=0			
+			]]>
+			</screen>
+			<para>Initial Setup</para>
+			<para>Once the daemon is running, connect to it as the admin user and change the password: </para>
+			<screen>
+			<![CDATA[
+$ telnet 127.0.0.1 4000
+Trying 127.0.0.1...
+Connected to 127.0.0.1.
+Escape character is '^]'.
+Welcome to MLDonkey 2.8.5
+Welcome on mldonkey command-line
+
+Use ? for help
+
+MLdonkey command-line:
+> auth admin ""
+Full access enabled
+
+MLdonkey command-line:
+> passwd newpasswd
+Password of user admin changed
+
+MLdonkey command-line:
+>
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>amule - client for the eD2k and Kad networks, like eMule</title>
+			<screen>
+			<![CDATA[
+$ apt-cache search amule
+amule - client for the eD2k and Kad networks, like eMule
+amule-adunanza - client for the eD2k and Kadu networks for for Fastweb clients
+amule-adunanza-daemon - non-graphic version of aMule-AdunanzA, a client for the eD2k and
+amule-adunanza-utils - utilities for aMule-AdunanzA (command-line version)
+amule-adunanza-utils-gui - graphic utilities for aMule-AdunanzA
+amule-common - common files for the rest of aMule packages
+amule-daemon - non-graphic version of aMule, a client for the eD2k and Kad networks
+amule-emc - list ed2k links inside emulecollection files
+amule-gnome-support - ed2k links handling support for GNOME web browsers
+amule-utils - utilities for aMule (command-line version)
+amule-utils-gui - graphic utilities for aMule
+			
+			]]>
+			</screen>
+		</section>
+	</section>
+</chapter>

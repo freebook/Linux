@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.cmd.text.grep.xml 533 2013-03-12 10:06:09Z netkiller $ -->
+<section id="grep">
+	<title>grep, egrep, fgrep, rgrep - print lines matching a pattern</title>
+	<section>
+		<title>删除空行</title>
+		<screen>
+$ cat file | grep '.'
+		</screen>
+	</section>
+	<section id="miscellaneous">
+		<title>-v, --invert-match</title>
+		<para>grep -v "grep"</para>
+		<screen>
+[root@development ~]# ps ax | grep httpd
+ 6284 ?        Ss     0:10 /usr/local/httpd-2.2.14/bin/httpd -k start
+ 8372 ?        S      0:00 perl ./wrapper.pl -chdir -name httpd -class com.caucho.server.resin.Resin restart
+19136 ?        S      0:00 /usr/local/httpd-2.2.14/bin/httpd -k start
+19749 pts/1    R+     0:00 grep httpd
+31530 ?        Sl     0:57 /usr/local/httpd-2.2.14/bin/httpd -k start
+31560 ?        Sl     1:12 /usr/local/httpd-2.2.14/bin/httpd -k start
+31623 ?        Sl     1:06 /usr/local/httpd-2.2.14/bin/httpd -k start
+[root@development ~]# ps ax | grep httpd | grep -v grep
+ 6284 ?        Ss     0:10 /usr/local/httpd-2.2.14/bin/httpd -k start
+ 8372 ?        S      0:00 perl ./wrapper.pl -chdir -name httpd -class com.caucho.server.resin.Resin restart
+19136 ?        S      0:00 /usr/local/httpd-2.2.14/bin/httpd -k start
+31530 ?        Sl     0:57 /usr/local/httpd-2.2.14/bin/httpd -k start
+31560 ?        Sl     1:12 /usr/local/httpd-2.2.14/bin/httpd -k start
+31623 ?        Sl     1:06 /usr/local/httpd-2.2.14/bin/httpd -k start
+		</screen>
+	</section>
+	<section id="grep.output">
+		<title>Output control</title>
+		<section>
+			<title>-o, --only-matching       show only the part of a line matching PATTERN</title>
+			<screen>
+			<![CDATA[
+$ curl -s http://www.example.com | egrep -o '<a href="(.*)">.*</a>' | sed -e 's/.*href="\([^"]*\)".*/\1/'
+			]]>
+			</screen>
+			<screen>
+$ mysqlshow | egrep -o "|\w(.*)\w|"
+Databases
+information_schema
+test
+			</screen>
+			<screen>
+			<![CDATA[
+$ cat file.html | grep -o \
+    -E '\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/)))'
+
+$ cat file.html | grep -o -E 'href="([^"#]+)"'
+
+$ cat sss.html | grep -o -E 'thunder://([^<]+)'
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>递归操作</title>
+			<para>递归查询</para>
+			<screen>
+$ sudo grep -r 'neo' /etc/*
+			</screen>
+			<para>递归替换</para>
+			<screen>
+			<![CDATA[
+for file in $( grep -rl '8800.org' *  | grep -v .svn ); do
+    echo item: $file
+	[ -f $file ] && sed -e 's/8800\.org/sf\.net/g' -e 's/netkiller/neo/g' $file >$file.bak; cp $file.bak $file;
+done
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>-c, --count               print only a count of matching lines per FILE</title>
+			<screen>
+$ cat /etc/resolv.conf
+nameserver localhost
+nameserver 208.67.222.222
+nameserver 208.67.220.220
+nameserver 202.96.128.166
+nameserver 202.96.134.133
+$ grep -c nameserver /etc/resolv.conf
+5
+			</screen>
+			<screen>
+# grep -c GET /www/logs/access.log
+188460
+
+# grep -c POST /www/logs/access.log
+421
+			</screen>
+		</section>
+	</section>
+	<section id="grep.context">
+		<title>Context control</title>
+		<section>
+			<title>-A, --after-context=NUM   print NUM lines of trailing context</title>
+			<para>返回匹配当前行至下面N行</para>
+			<screen>
+# grep -A1 game /etc/passwd
+games:x:12:100:games:/usr/games:/sbin/nologin
+gopher:x:13:30:gopher:/var/gopher:/sbin/nologin
+
+# grep -A2 game /etc/passwd
+games:x:12:100:games:/usr/games:/sbin/nologin
+gopher:x:13:30:gopher:/var/gopher:/sbin/nologin
+ftp:x:14:50:FTP User:/var/ftp:/sbin/nologin
+			</screen>
+		</section>
+		<section>
+			<title>-B, --before-context=NUM  print NUM lines of leading context</title>
+			<para>返回匹配当前行至上面N行</para>
+			<screen>
+# grep -B1 game /etc/passwd
+operator:x:11:0:operator:/root:/sbin/nologin
+games:x:12:100:games:/usr/games:/sbin/nologin
+
+# grep -B2 game /etc/passwd
+uucp:x:10:14:uucp:/var/spool/uucp:/sbin/nologin
+operator:x:11:0:operator:/root:/sbin/nologin
+games:x:12:100:games:/usr/games:/sbin/nologin
+
+			</screen>
+		</section>
+		<section>
+			<title>-C, --context=NUM         print NUM lines of output context</title>
+			<subtitle>-NUM                   same as --context=NUM</subtitle>
+			<screen>
+neo@neo-OptiPlex-380:~$ grep -C 1 new /etc/passwd
+mail:x:8:8:mail:/var/mail:/bin/sh
+news:x:9:9:news:/var/spool/news:/bin/sh
+uucp:x:10:10:uucp:/var/spool/uucp:/bin/sh
+
+neo@neo-OptiPlex-380:~$ grep -C 5 new /etc/passwd
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/bin/sh
+man:x:6:12:man:/var/cache/man:/bin/sh
+lp:x:7:7:lp:/var/spool/lpd:/bin/sh
+mail:x:8:8:mail:/var/mail:/bin/sh
+news:x:9:9:news:/var/spool/news:/bin/sh
+uucp:x:10:10:uucp:/var/spool/uucp:/bin/sh
+proxy:x:13:13:proxy:/bin:/bin/sh
+www-data:x:33:33:www-data:/var/www:/bin/sh
+backup:x:34:34:backup:/var/backups:/bin/sh
+list:x:38:38:Mailing List Manager:/var/list:/bin/sh
+
+# grep -3 game /etc/passwd
+mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
+uucp:x:10:14:uucp:/var/spool/uucp:/sbin/nologin
+operator:x:11:0:operator:/root:/sbin/nologin
+games:x:12:100:games:/usr/games:/sbin/nologin
+gopher:x:13:30:gopher:/var/gopher:/sbin/nologin
+ftp:x:14:50:FTP User:/var/ftp:/sbin/nologin
+nobody:x:99:99:Nobody:/:/sbin/nologin
+
+			</screen>
+		</section>
+		<section>
+			<title>--color</title>
+			<screen>
+# grep --color root  /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+operator:x:11:0:operator:/root:/sbin/nologin
+			</screen>
+			<para>可以通过alias别名启用--color选项</para>
+			<screen>
+alias egrep='egrep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias grep='grep --color=auto'
+			</screen>
+			<para>加入.bashrc中，每次用户登录将自动生效</para>
+			<screen>
+			<![CDATA[
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    #alias dir='dir --color=auto'
+    #alias vdir='vdir --color=auto'
+
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section id="regexp">
+		<title>Regexp selection and interpretation</title>
+		<para>n 开头</para>
+		<screen>
+$ grep '^n' /etc/passwd
+news:x:9:9:news:/var/spool/news:/bin/sh
+nobody:x:65534:65534:nobody:/nonexistent:/bin/sh
+neo:x:1000:1000:neo chan,,,:/home/neo:/bin/bash
+nagios:x:116:127::/var/run/nagios2:/bin/false
+		</screen>
+		<para>bash 结尾</para>
+		<screen>
+$ grep 'bash$' /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+neo:x:1000:1000:neo chan,,,:/home/neo:/bin/bash
+postgres:x:114:124:PostgreSQL administrator,,,:/var/lib/postgresql:/bin/bash
+cvsroot:x:1001:1001:cvsroot,,,,:/home/cvsroot:/bin/bash
+svnroot:x:1002:1002:subversion,,,,:/home/svnroot:/bin/bash
+		</screen>
+		<para>中间包含 root</para>
+		<screen>
+$ grep '.*root' /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+cvsroot:x:1001:1001:cvsroot,,,,:/home/cvsroot:/bin/bash
+svnroot:x:1002:1002:subversion,,,,:/home/svnroot:/bin/bash
+		</screen>
+		<section>
+			<title>.*</title>
+			<screen>
+			<![CDATA[
+$ curl -s http://www.example.com | egrep -o '<a href=(.*)>.*</a>'
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>2010:(13|14|15|16)</title>
+			<para>regular 匹配一组</para>
+			<screen>
+egrep "2010:(13|14|15|16)"  access.2010-11-18.log > apache.log
+			</screen>
+			<screen>
+ps ax |grep -E "mysqld|httpd|resin"
+			</screen>
+		</section>
+		<section>
+			<title>[]与{}</title>
+			<para>源文件</para>
+			<screen>
+# cat /etc/fstab
+
+#
+# /etc/fstab
+# Created by anaconda on Sat Sep 10 00:25:46 2011
+#
+# Accessible filesystems, by reference, are maintained under '/dev/disk'
+# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info
+#
+UUID=091f295e-ea6d-4f57-9314-e2333f7ebff7 /                       ext4    defaults        1 1
+UUID=b3661a0b-2c50-4e18-8030-be2d043cbfc4 /www                    ext4    defaults        1 2
+UUID=4d3468de-a2ac-451c-b693-3bdca8832096 swap                    swap    defaults        0 0
+tmpfs                   /dev/shm                tmpfs   defaults        0 0
+devpts                  /dev/pts                devpts  gid=5,mode=620  0 0
+sysfs                   /sys                    sysfs   defaults        0 0
+proc                    /proc                   proc    defaults        0 0
+
+			</screen>
+			<para>匹配每行包含4个连续字符的字符串的行。</para>
+			<screen>
+# grep '[A-Z]\{4\}' /etc/fstab
+UUID=091f295e-ea6d-4f57-9314-e2333f7ebff7 /                       ext4    defaults        1 1
+UUID=b3661a0b-2c50-4e18-8030-be2d043cbfc4 /www                    ext4    defaults        1 2
+UUID=4d3468de-a2ac-451c-b693-3bdca8832096 swap                    swap    defaults        0 0
+			</screen>
+
+		</section>
+	</section>
+	<section>
+		<title>^M</title>
+		<screen>
+fgrep -rl `echo -ne '\r'` .
+
+find . -type f -exec grep $'\r' {} +
+		</screen>
+	</section>
+	<section id="egrep">
+		<title>egrep</title>
+		<para>egrep = grep -E 在egrep中不许看使用转意字符，例如</para>
+			<screen>
+# grep '\(oo\).*\1' /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+
+# grep -E '(oo).*\1' /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+
+# egrep '(oo).*\1' /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+			</screen>
+
+		<screen>
+$ snmpwalk -v2c -c public 172.16.1.254 | egrep -i 'if(in|out)'
+
+for pid in $(ps -axf |grep 'php-cgi' | egrep egrep "0:00.(6|7|8|9)"'{print $1}'); do kill -9 $pid; done
+
+for pid in $(ps -axf |grep 'php-cgi' | egrep "0:(0|1|2|3|4|5)0.(6|7|8|9)" |awk '{print $1}'); do kill -9 $pid; done
+		</screen>
+	</section>
+</section>

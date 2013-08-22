@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.network.rinetd.xml 418 2012-05-25 14:17:16Z netkiller $ -->
+<chapter id="rinetd">
+	<title>rinetd — internet “redirection server”</title>
+	<section id="rinetd.install">
+		<title>rinetd install</title>
+		<section>
+			<title>ubuntu</title>
+			<screen>
+sudo aptitude install rinetd
+			</screen>
+		</section>
+		<section>
+			<title>centos</title>
+			<screen>
+rpm -Uvh http://www6.atomicorp.com/channels/atomic/centos/5/x86_64/RPMS/rinetd-0.62-6.el5.art.x86_64.rpm
+			</screen>
+			<para>配分配至文件</para>
+			<screen>
+cp /etc/rinetd.conf /etc/rinetd.conf
+
+
+# cat /etc/rinetd.conf.old
+# example configuration file for rinetd
+#
+#
+
+# to forward connections to port 80 on 10.10.10.2 to port 80 on 192.168.0.2
+#  10.10.10.2 80 192.168.0.2 80
+
+# to forward connections to port 80 on all addresses to port 80 on 192.168.0.2
+# 0.0.0.0 80 192.168.0.2 80
+
+# access controls can be set with allow and deny rules
+# allow and deny before the first forwarding rule are global
+# allow and deny after a specific rule apply to it only
+
+# this rule allows hosts from 172.16.32.0/24 netblock
+# allow 172.16.32.*
+
+# this rule denies the host 192.168.32.12
+# deny 192.168.32.12
+
+# rinetd supports logging - to enable, uncomment the following
+# logfile /var/log/rinetd.log
+
+# by default, logs are in a tab-delimited format. Web common-log format
+# is available by uncommenting the following
+# logcommon
+			</screen>
+			<para>启动rinetd</para>
+			<screen>
+chkconfig rinetd on
+service rinetd start
+			</screen>
+		</section>
+	</section>
+	<section id="rinetd.conf">
+		<title>rinetd.conf</title>
+		<screen>
+$ cat /etc/rinetd.conf
+#
+# this is the configuration file for rinetd, the internet redirection server
+#
+# you may specify global allow and deny rules here
+# only ip addresses are matched, hostnames cannot be specified here
+# the wildcards you may use are * and ?
+#
+# allow 192.168.2.*
+# deny 192.168.2.1?
+
+
+#
+# forwarding rules come here
+#
+# you may specify allow and deny rules after a specific forwarding rule
+# to apply to only that forwarding rule
+#
+# bindadress    bindport  connectaddress  connectportA
+
+
+# logging information
+logfile /var/log/rinetd.log
+
+# uncomment the following line if you want web-server style logfile format
+# logcommon
+		</screen>
+		<para>映射关系</para>
+		<screen>
+# bindadress    bindport  connectaddress  connectportA
+192.168.2.1 80 192.168.2.3 80
+192.168.2.1 443 192.168.2.3 443
+		</screen>
+	</section>
+	<section id="rinetd.iptables">
+		<title>防御脚本</title>
+		<screen>
+#!/bin/bash
+if [ ! -f /var/tmp/denyip ]; then
+    touch /var/tmp/denyip
+fi
+
+for deny in $(cat /var/log/rinetd.log | awk '{print $2}' | awk -F'.' '{print $1"."$2"."$3"."$4}' | sort | uniq -c | sort -r -n | head -n 200 | awk '{print $2}')
+do
+    grep -q $deny /var/tmp/denyip
+    if [ $? -eq 1 ] ; then
+        echo $deny >> /var/tmp/denyip
+        iptables -I INPUT -p tcp --dport 443 -s $deny -j DROP
+    fi
+done
+		</screen>
+		<para>第二版脚本</para>
+		<screen>
+#!/bin/bash
+
+DPORT=443
+TOP=30
+ACCCESS_LOG=/var/log/rinetd.log
+#TIMEPOINT='24/May/2012'
+TIMEPOINT=$(date '+%d/%b/%Y:%H')
+BLACKLIST=/var/tmp/black
+WHITELIST=/var/tmp/white
+
+if [ ! -f ${BLACKLIST} ]; then
+    touch ${BLACKLIST}
+fi
+
+if [ ! -f ${WHITELIST} ]; then
+    touch ${WHITELIST}
+fi
+
+for deny in $(grep ${TIMEPOINT} ${ACCCESS_LOG} | awk '{print $2}' | awk -F'.' '{print $1"."$2"."$3"."$4}' | sort | uniq -c | sort -r -n | head -n $TOP | awk '{print $2}')
+do
+
+    if [ $(grep -c $deny ${WHITELIST}) -ne 0 ]; then
+        echo 'Allow IP:' $deny
+		iptables -D INPUT -p tcp --dport $DPORT -s $deny -j DROP
+		continue
+    fi
+
+    if [ $(grep -c $deny ${BLACKLIST}) -eq 0 ] ; then
+		echo 'Deny IP:' $deny
+        echo $deny >> ${BLACKLIST}
+        iptables -I INPUT -p tcp --dport $DPORT -s $deny -j DROP
+    fi
+done
+		</screen>
+	</section>
+	<section id="rinetd.log">
+		<title>rinetd.log</title>
+		<para>查找指定包长度的连接</para>
+		<screen>
+# cat /var/log/rinetd.log | awk -F' ' '$7 ~ /11/ {print $2"\t"$7"\t"$8"\t"$9}'
+
+# cat /var/log/rinetd.log | awk -F' ' '$7 ~ /28/ {print $1"\t"$2"\t"$7"\t"$8"\t"$9}'
+		</screen>
+		<para>查找空连接</para>
+		<screen>
+# cat /var/log/rinetd.log | awk -F' ' '$7 ~ /0/ {print $1"\t"$2"\t"$7"\t"$8"\t"$9}' | awk '{print $2}' | awk -F'.' '{print $1"."$2"."$3"."$4}' | sort | uniq -c | sort -r -n | head -n 10
+# cat /var/log/rinetd.log | awk -F' ' '$7 == 0 {print $1"\t"$2"\t"$7"\t"$8"\t"$9}' | awk '{print $2}' | awk -F'.' '{print $1"."$2"."$3"."$4}' | sort | uniq -c | sort -r -n | head -n 100
+		</screen>
+		<para>查找多个数值</para>
+		<screen>
+# cat /var/log/rinetd.log | awk -F' ' '$7 ~ /(210|209|210)/ {print $1"\t"$2"\t"$7"\t"$8"\t"$9}'
+		</screen>
+	</section>
+</chapter>

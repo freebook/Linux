@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="synctool">
+	<title>synctool</title>
+	<para>
+synctool 是一个集群管理工具，用来在集群中的所有节点间进行保证配置文件的同步。节点可以是一个逻辑组和类的一部分，它们可能需要部分的配置文件。synctool 守护进程可以根据配置更改而对应用进行重启，还包括执行一些其他的管理任务。
+
+新版本增加了一个新的工具 synctool-scp ，你可以使用这个工具来将文件复制到集群中的所有节点。
+	</para>
+</section>

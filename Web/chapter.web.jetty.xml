@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="jetty">
+	<title>Jetty</title>
+</chapter>
+<chapter id="other.www">
+	<title>Other Web Server</title>
+	<section id="python.simplehttpserver">
+		<title>Python SimpleHTTPServer</title>
+			<screen>
+			<![CDATA[
+python -m SimpleHTTPServer &
+			]]>
+			</screen>
+			<screen>
+curl http://localhost:8000/
+			</screen>
+	</section>
+</chapter>
+
+<chapter id="http.rank">
+	<title>web 服务器排名</title>
+	<para>http://news.netcraft.com/</para>
+	<section id="http.status">
+		<title>HTTP状态码</title>
+		<ulink url="http://zh.wikipedia.org/wiki/HTTP%E7%8A%B6%E6%80%81%E7%A0%81" />
+	</section>
+</chapter>

@@ -1,0 +1,610 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.system.device.info.xml 428 2012-06-16 11:12:06Z netkiller $ -->
+<chapter id="device.info">
+	<title>Device information</title>
+	<section id="dmesg">
+		<title>dmesg - print or control the kernel ring buffer</title>
+		<command>dmesg</command>
+		<screen>
+neo@shenzhen:~/doc/Linux/xhtml$ dmesg
+		</screen>
+	</section>
+	<section id="smartctl">
+		<title>smartctl - Control and Monitor Utility for SMART Disks</title>
+		<screen>
+# smartctl -i /dev/sda
+smartctl version 5.38 [x86_64-redhat-linux-gnu] Copyright (C) 2002-8 Bruce Allen
+Home page is http://smartmontools.sourceforge.net/
+
+=== START OF INFORMATION SECTION ===
+Model Family:     Western Digital Caviar Second Generation Serial ATA family
+Device Model:     WDC WD1600AAJS-75M0A0
+Serial Number:    WD-WCAV35616755
+Firmware Version: 02.03E02
+User Capacity:    160,000,000,000 bytes
+Device is:        In smartctl database [for details use: -P show]
+ATA Version is:   8
+ATA Standard is:  Exact ATA specification draft version not indicated
+Local Time is:    Wed May  5 13:05:18 2010 CST
+SMART support is: Available - device has SMART capability.
+SMART support is: Enabled
+		</screen>
+		<para>如果 SMART support is: Disabled 使用下面命令启用</para>
+		<screen>
+# smartctl --smart=on --offlineauto=on --saveauto=on /dev/hdb
+		</screen>
+		<para>健康情况</para>
+		<screen>
+# smartctl -H /dev/sda
+smartctl version 5.38 [x86_64-redhat-linux-gnu] Copyright (C) 2002-8 Bruce Allen
+Home page is http://smartmontools.sourceforge.net/
+
+=== START OF READ SMART DATA SECTION ===
+SMART overall-health self-assessment test result: PASSED
+		</screen>
+		<para>PASSED，这表示硬盘健康状态良好,Failure 最好立刻给服务器更换硬盘</para>
+	</section>
+	<section id="lspci">
+		<title>lspci - list all PCI devices</title>
+		<screen>
+$ lspci
+00:00.0 Host bridge: Intel Corporation 82945G/GZ/P/PL Memory Controller Hub (rev 02)
+00:02.0 VGA compatible controller: Intel Corporation 82945G/GZ Integrated Graphics Controller (rev 02)
+00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High Definition Audio Controller (rev 01)
+00:1c.0 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI Express Port 1 (rev 01)
+00:1c.2 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI Express Port 3 (rev 01)
+00:1c.3 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI Express Port 4 (rev 01)
+00:1d.0 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI Controller #1 (rev 01)
+00:1d.1 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI Controller #2 (rev 01)
+00:1d.2 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI Controller #3 (rev 01)
+00:1d.3 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI Controller #4 (rev 01)
+00:1d.7 USB Controller: Intel Corporation 82801G (ICH7 Family) USB2 EHCI Controller (rev 01)
+00:1e.0 PCI bridge: Intel Corporation 82801 PCI Bridge (rev e1)
+00:1f.0 ISA bridge: Intel Corporation 82801GB/GR (ICH7 Family) LPC Interface Bridge (rev 01)
+00:1f.1 IDE interface: Intel Corporation 82801G (ICH7 Family) IDE Controller (rev 01)
+00:1f.2 IDE interface: Intel Corporation 82801GB/GR/GH (ICH7 Family) SATA IDE Controller (rev 01)
+00:1f.3 SMBus: Intel Corporation 82801G (ICH7 Family) SMBus Controller (rev 01)
+01:00.0 Ethernet controller: Realtek Semiconductor Co., Ltd. RTL8111/8168B PCI Express Gigabit Ethernet controller (rev 02)
+04:00.0 Ethernet controller: Realtek Semiconductor Co., Ltd. RTL-8139/8139C/8139C+ (rev 10)
+		</screen>
+		<screen>
+$ lspci -tv
+-[0000:00]-+-00.0  Intel Corporation 82945G/GZ/P/PL Memory Controller Hub
+           +-02.0  Intel Corporation 82945G/GZ Integrated Graphics Controller
+           +-1b.0  Intel Corporation N10/ICH 7 Family High Definition Audio Controller
+           +-1c.0-[0000:01]----00.0  Realtek Semiconductor Co., Ltd. RTL8111/8168B PCI Express Gigabit Ethernet controller
+           +-1c.2-[0000:02]--
+           +-1c.3-[0000:03]--
+           +-1d.0  Intel Corporation N10/ICH7 Family USB UHCI Controller #1
+           +-1d.1  Intel Corporation N10/ICH 7 Family USB UHCI Controller #2
+           +-1d.2  Intel Corporation N10/ICH 7 Family USB UHCI Controller #3
+           +-1d.3  Intel Corporation N10/ICH 7 Family USB UHCI Controller #4
+           +-1d.7  Intel Corporation N10/ICH 7 Family USB2 EHCI Controller
+           +-1e.0-[0000:04]----00.0  Realtek Semiconductor Co., Ltd. RTL-8139/8139C/8139C+
+           +-1f.0  Intel Corporation 82801GB/GR (ICH7 Family) LPC Interface Bridge
+           +-1f.1  Intel Corporation 82801G (ICH7 Family) IDE Controller
+           +-1f.2  Intel Corporation N10/ICH7 Family SATA IDE Controller
+           \-1f.3  Intel Corporation N10/ICH 7 Family SMBus Controller
+		</screen>
+	</section>
+	<section id="dmidecode">
+		<title>dmidecode - DMI table decoder</title>
+		<command>dmidecode</command>
+		<screen>
+# dmidecode |more
+
+# dmidecode 2.2
+SMBIOS 2.4 present.
+62 structures occupying 3161 bytes.
+Table at 0xCFFBC000.
+Handle 0xDA00
+        DMI type 218, 11 bytes.
+        OEM-specific Type
+                Header And Data:
+                        DA 0B 00 DA B2 00 17 00 0E 20 00
+Handle 0x0000
+        DMI type 0, 24 bytes.
+        BIOS Information
+                Vendor: Dell Inc.
+                Version: 1.2.0
+                Release Date: 10/18/2006
+                Address: 0xF0000
+                Runtime Size: 64 kB
+                ROM Size: 1024 kB
+                Characteristics:
+                        ISA is supported
+                        PCI is supported
+                        PNP is supported
+                        BIOS is upgradeable
+                        BIOS shadowing is allowed
+                        ESCD support is available
+                        Boot from CD is supported
+                        Selectable boot is supported
+                        EDD is supported
+                        Japanese floppy for Toshiba 1.2 MB is supported (int 13h)
+                        5.25"/360 KB floppy services are supported (int 13h)
+                        5.25"/1.2 MB floppy services are supported (int 13h)
+                        3.5"/720 KB floppy services are supported (int 13h)
+                        Print screen service is supported (int 5h)
+                        8042 keyboard services are supported (int 9h)
+                        Serial services are supported (int 14h)
+                        Printer services are supported (int 17h)
+                        CGA/mono video services are supported (int 10h)
+                        ACPI is supported
+                        USB legacy is supported
+                        BIOS boot specification is supported
+                        Function key-initiated network boot is supported
+
+		</screen>
+	</section>
+	<section id="ethtool">
+		<title>ethtool - Display or change ethernet card settings</title>
+		<screen>
+# ethtool eth0
+Settings for eth0:
+	Supported ports: [ TP ]
+	Supported link modes:   10baseT/Half 10baseT/Full
+	                        100baseT/Half 100baseT/Full
+	                        1000baseT/Full
+	Supports auto-negotiation: Yes
+	Advertised link modes:  10baseT/Half 10baseT/Full
+	                        100baseT/Half 100baseT/Full
+	                        1000baseT/Full
+	Advertised auto-negotiation: Yes
+	Speed: 1000Mb/s
+	Duplex: Full
+	Port: Twisted Pair
+	PHYAD: 2
+	Transceiver: internal
+	Auto-negotiation: on
+	Supports Wake-on: pumbg
+	Wake-on: g
+	Current message level: 0x00000001 (1)
+	Link detected: yes
+
+		</screen>
+		<para>鉴别eth(x)</para>
+		<screen>
+ 简单的方法：
+一个插网线，一个不插，运行 mii-tool 或 ethtool eth0，看状态是否连接
+
+另一种方法是：
+tail -f /var/log/messages，当你向其中一个网口做插拔网线的动作时，屏幕上会看到提示信息
+		</screen>
+		<para>最好的方法是将mac地址写在启动脚本内.</para>
+	</section>
+	<section id="lsusb">
+		<title>usb device</title>
+		<command>lsusb</command>
+		<screen>
+neo@netkiller:~$ lsusb
+Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+Bus 005 Device 002: ID 0dda:0301 Integrated Circuit Solution, Inc. MP3 Player
+Bus 005 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
+Bus 004 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
+Bus 003 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
+Bus 002 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
+
+		</screen>
+		<screen>
+$ lsusb -tv
+/:  Bus 05.Port 1: Dev 1, Class=root_hub, Driver=uhci_hcd/2p, 12M
+/:  Bus 04.Port 1: Dev 1, Class=root_hub, Driver=uhci_hcd/2p, 12M
+/:  Bus 03.Port 1: Dev 1, Class=root_hub, Driver=uhci_hcd/2p, 12M
+/:  Bus 02.Port 1: Dev 1, Class=root_hub, Driver=uhci_hcd/2p, 12M
+/:  Bus 01.Port 1: Dev 1, Class=root_hub, Driver=ehci_hcd/8p, 480M
+		</screen>
+		<screen>
+		<![CDATA[
+$ sudo lsusb -v
+
+Bus 005 Device 001: ID 0000:0000
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               2.00
+  bDeviceClass            9 Hub
+  bDeviceSubClass         0 Unused
+  bDeviceProtocol         1 Single TT
+  bMaxPacketSize0        64
+  idVendor           0x0000
+  idProduct          0x0000
+  bcdDevice            2.06
+  iManufacturer           3 Linux 2.6.24-22-generic ehci_hcd
+  iProduct                2 EHCI Host Controller
+  iSerial                 1 0000:00:1d.7
+  bNumConfigurations      1
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength           25
+    bNumInterfaces          1
+    bConfigurationValue     1
+    iConfiguration          0
+    bmAttributes         0xe0
+      Self Powered
+      Remote Wakeup
+    MaxPower                0mA
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           1
+      bInterfaceClass         9 Hub
+      bInterfaceSubClass      0 Unused
+      bInterfaceProtocol      0 Full speed (or root) hub
+      iInterface              0
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            3
+          Transfer Type            Interrupt
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0004  1x 4 bytes
+        bInterval              12
+Hub Descriptor:
+  bLength              11
+  bDescriptorType      41
+  nNbrPorts             8
+  wHubCharacteristic 0x000a
+    No power switching (usb 1.0)
+    Per-port overcurrent protection
+    TT think time 8 FS bits
+  bPwrOn2PwrGood       10 * 2 milli seconds
+  bHubContrCurrent      0 milli Ampere
+  DeviceRemovable    0x00 0x00
+  PortPwrCtrlMask    0xff 0xff
+ Hub Port Status:
+   Port 1: 0000.0100 power
+   Port 2: 0000.0100 power
+   Port 3: 0000.0100 power
+   Port 4: 0000.0100 power
+   Port 5: 0000.0100 power
+   Port 6: 0000.0100 power
+   Port 7: 0000.0100 power
+   Port 8: 0000.0100 power
+Device Status:     0x0003
+  Self Powered
+  Remote Wakeup Enabled
+
+Bus 004 Device 001: ID 0000:0000
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               1.10
+  bDeviceClass            9 Hub
+  bDeviceSubClass         0 Unused
+  bDeviceProtocol         0 Full speed (or root) hub
+  bMaxPacketSize0        64
+  idVendor           0x0000
+  idProduct          0x0000
+  bcdDevice            2.06
+  iManufacturer           3 Linux 2.6.24-22-generic uhci_hcd
+  iProduct                2 UHCI Host Controller
+  iSerial                 1 0000:00:1d.3
+  bNumConfigurations      1
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength           25
+    bNumInterfaces          1
+    bConfigurationValue     1
+    iConfiguration          0
+    bmAttributes         0xe0
+      Self Powered
+      Remote Wakeup
+    MaxPower                0mA
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           1
+      bInterfaceClass         9 Hub
+      bInterfaceSubClass      0 Unused
+      bInterfaceProtocol      0 Full speed (or root) hub
+      iInterface              0
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            3
+          Transfer Type            Interrupt
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0002  1x 2 bytes
+        bInterval             255
+Hub Descriptor:
+  bLength               9
+  bDescriptorType      41
+  nNbrPorts             2
+  wHubCharacteristic 0x000a
+    No power switching (usb 1.0)
+    Per-port overcurrent protection
+  bPwrOn2PwrGood        1 * 2 milli seconds
+  bHubContrCurrent      0 milli Ampere
+  DeviceRemovable    0x00
+  PortPwrCtrlMask    0xff
+ Hub Port Status:
+   Port 1: 0000.0100 power
+   Port 2: 0000.0100 power
+Device Status:     0x0003
+  Self Powered
+  Remote Wakeup Enabled
+
+Bus 003 Device 001: ID 0000:0000
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               1.10
+  bDeviceClass            9 Hub
+  bDeviceSubClass         0 Unused
+  bDeviceProtocol         0 Full speed (or root) hub
+  bMaxPacketSize0        64
+  idVendor           0x0000
+  idProduct          0x0000
+  bcdDevice            2.06
+  iManufacturer           3 Linux 2.6.24-22-generic uhci_hcd
+  iProduct                2 UHCI Host Controller
+  iSerial                 1 0000:00:1d.2
+  bNumConfigurations      1
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength           25
+    bNumInterfaces          1
+    bConfigurationValue     1
+    iConfiguration          0
+    bmAttributes         0xe0
+      Self Powered
+      Remote Wakeup
+    MaxPower                0mA
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           1
+      bInterfaceClass         9 Hub
+      bInterfaceSubClass      0 Unused
+      bInterfaceProtocol      0 Full speed (or root) hub
+      iInterface              0
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            3
+          Transfer Type            Interrupt
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0002  1x 2 bytes
+        bInterval             255
+Hub Descriptor:
+  bLength               9
+  bDescriptorType      41
+  nNbrPorts             2
+  wHubCharacteristic 0x000a
+    No power switching (usb 1.0)
+    Per-port overcurrent protection
+  bPwrOn2PwrGood        1 * 2 milli seconds
+  bHubContrCurrent      0 milli Ampere
+  DeviceRemovable    0x00
+  PortPwrCtrlMask    0xff
+ Hub Port Status:
+   Port 1: 0000.0100 power
+   Port 2: 0000.0100 power
+Device Status:     0x0003
+  Self Powered
+  Remote Wakeup Enabled
+
+Bus 002 Device 001: ID 0000:0000
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               1.10
+  bDeviceClass            9 Hub
+  bDeviceSubClass         0 Unused
+  bDeviceProtocol         0 Full speed (or root) hub
+  bMaxPacketSize0        64
+  idVendor           0x0000
+  idProduct          0x0000
+  bcdDevice            2.06
+  iManufacturer           3 Linux 2.6.24-22-generic uhci_hcd
+  iProduct                2 UHCI Host Controller
+  iSerial                 1 0000:00:1d.1
+  bNumConfigurations      1
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength           25
+    bNumInterfaces          1
+    bConfigurationValue     1
+    iConfiguration          0
+    bmAttributes         0xe0
+      Self Powered
+      Remote Wakeup
+    MaxPower                0mA
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           1
+      bInterfaceClass         9 Hub
+      bInterfaceSubClass      0 Unused
+      bInterfaceProtocol      0 Full speed (or root) hub
+      iInterface              0
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            3
+          Transfer Type            Interrupt
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0002  1x 2 bytes
+        bInterval             255
+Hub Descriptor:
+  bLength               9
+  bDescriptorType      41
+  nNbrPorts             2
+  wHubCharacteristic 0x000a
+    No power switching (usb 1.0)
+    Per-port overcurrent protection
+  bPwrOn2PwrGood        1 * 2 milli seconds
+  bHubContrCurrent      0 milli Ampere
+  DeviceRemovable    0x00
+  PortPwrCtrlMask    0xff
+ Hub Port Status:
+   Port 1: 0000.0100 power
+   Port 2: 0000.0100 power
+Device Status:     0x0003
+  Self Powered
+  Remote Wakeup Enabled
+
+Bus 001 Device 001: ID 0000:0000
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               1.10
+  bDeviceClass            9 Hub
+  bDeviceSubClass         0 Unused
+  bDeviceProtocol         0 Full speed (or root) hub
+  bMaxPacketSize0        64
+  idVendor           0x0000
+  idProduct          0x0000
+  bcdDevice            2.06
+  iManufacturer           3 Linux 2.6.24-22-generic uhci_hcd
+  iProduct                2 UHCI Host Controller
+  iSerial                 1 0000:00:1d.0
+  bNumConfigurations      1
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength           25
+    bNumInterfaces          1
+    bConfigurationValue     1
+    iConfiguration          0
+    bmAttributes         0xe0
+      Self Powered
+      Remote Wakeup
+    MaxPower                0mA
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           1
+      bInterfaceClass         9 Hub
+      bInterfaceSubClass      0 Unused
+      bInterfaceProtocol      0 Full speed (or root) hub
+      iInterface              0
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            3
+          Transfer Type            Interrupt
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0002  1x 2 bytes
+        bInterval             255
+Hub Descriptor:
+  bLength               9
+  bDescriptorType      41
+  nNbrPorts             2
+  wHubCharacteristic 0x000a
+    No power switching (usb 1.0)
+    Per-port overcurrent protection
+  bPwrOn2PwrGood        1 * 2 milli seconds
+  bHubContrCurrent      0 milli Ampere
+  DeviceRemovable    0x00
+  PortPwrCtrlMask    0xff
+ Hub Port Status:
+   Port 1: 0000.0100 power
+   Port 2: 0000.0100 power
+Device Status:     0x0003
+  Self Powered
+  Remote Wakeup Enabled
+
+		]]>
+		</screen>
+	</section>
+	<section id="device.scsi">
+		<title>SCSI</title>
+		<screen>
+# cat /proc/scsi/scsi
+Attached devices:
+Host: scsi0 Channel: 02 Id: 00 Lun: 00
+  Vendor: DELL     Model: PERC H700        Rev: 2.10
+  Type:   Direct-Access                    ANSI SCSI revision: 05
+Host: scsi0 Channel: 02 Id: 01 Lun: 00
+  Vendor: DELL     Model: PERC H700        Rev: 2.10
+  Type:   Direct-Access                    ANSI SCSI revision: 05
+		</screen>
+	</section>
+	<section id="device.hba">
+		<title>HBA</title>
+		<screen>
+# dmesg | grep QLogic
+QLogic Fibre Channel HBA Driver: 8.03.01.05.06.0-k8
+ QLogic Fibre Channel HBA Driver: 8.03.01.05.06.0-k8
+  QLogic QLE2562 - PCI-Express Dual Channel 8Gb Fibre Channel HBA
+ QLogic Fibre Channel HBA Driver: 8.03.01.05.06.0-k8
+  QLogic QLE2562 - PCI-Express Dual Channel 8Gb Fibre Channel HBA
+
+
+# dmesg | grep qla
+qla2xxx 0000:04:00.0: PCI INT A -> GSI 38 (level, low) -> IRQ 38
+qla2xxx 0000:04:00.0: Found an ISP2532, irq 38, iobase 0xffffc90016e76000
+qla2xxx 0000:04:00.0: irq 61 for MSI/MSI-X
+qla2xxx 0000:04:00.0: irq 62 for MSI/MSI-X
+qla2xxx 0000:04:00.0: Configuring PCI space...
+qla2xxx 0000:04:00.0: setting latency timer to 64
+qla2xxx 0000:04:00.0: Configure NVRAM parameters...
+qla2xxx 0000:04:00.0: Verifying loaded RISC code...
+qla2xxx 0000:04:00.0: firmware: requesting ql2500_fw.bin
+qla2xxx 0000:04:00.0: FW: Loading via request-firmware...
+qla2xxx 0000:04:00.0: Allocated (64 KB) for FCE...
+qla2xxx 0000:04:00.0: Allocated (64 KB) for EFT...
+qla2xxx 0000:04:00.0: Allocated (1350 KB) for firmware dump...
+qla2xxx 0000:04:00.0: Unable to read FCP priority data.
+scsi0 : qla2xxx
+qla2xxx 0000:04:00.0:
+qla2xxx 0000:04:00.1: PCI INT B -> GSI 45 (level, low) -> IRQ 45
+qla2xxx 0000:04:00.1: Found an ISP2532, irq 45, iobase 0xffffc90016e06000
+qla2xxx 0000:04:00.1: irq 63 for MSI/MSI-X
+qla2xxx 0000:04:00.1: irq 64 for MSI/MSI-X
+qla2xxx 0000:04:00.1: Configuring PCI space...
+qla2xxx 0000:04:00.1: setting latency timer to 64
+qla2xxx 0000:04:00.1: Configure NVRAM parameters...
+qla2xxx 0000:04:00.1: Verifying loaded RISC code...
+qla2xxx 0000:04:00.1: FW: Loading via request-firmware...
+qla2xxx 0000:04:00.1: Allocated (64 KB) for FCE...
+qla2xxx 0000:04:00.1: Allocated (64 KB) for EFT...
+qla2xxx 0000:04:00.1: Allocated (1350 KB) for firmware dump...
+qla2xxx 0000:04:00.1: Unable to read FCP priority data.
+scsi1 : qla2xxx
+qla2xxx 0000:04:00.1:
+qla2xxx 0000:04:00.0: LIP reset occurred (f700).
+qla2xxx 0000:04:00.1: LIP reset occurred (f700).
+qla2xxx 0000:04:00.0: LOOP UP detected (8 Gbps).
+qla2xxx 0000:04:00.1: LOOP UP detected (8 Gbps).
+		</screen>
+	</section>
+	<section id="kudzu">
+		<title>kudzu - detects and configures new and/or changed hardware on a system</title>
+		<screen>
+# kudzu -p | more
+		</screen>
+		<para>network</para>
+		<screen>
+# kudzu --class=network -p
+		</screen>
+	</section>
+</chapter>
+
+&chapter.udev.xml;

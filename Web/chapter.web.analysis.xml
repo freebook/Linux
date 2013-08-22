@@ -1,0 +1,50 @@
+<chapter>
+	<title>Web Analysis</title>
+	<section id="apache.ab">
+		<title>综合测试</title>
+		<para>httpd 进程</para>
+		<command>lsof -i tcp:80</command>
+		<command>lsof -i tcp:443</command>
+		<screen>
+[root@backup ~]# lsof -i tcp:80
+COMMAND   PID   USER   FD   TYPE   DEVICE SIZE NODE NAME
+httpd   14449   root    3u  IPv6 32995140       TCP *:http (LISTEN)
+httpd   17338 daemon    3u  IPv6 32995140       TCP *:http (LISTEN)
+httpd   23011 daemon    3u  IPv6 32995140       TCP *:http (LISTEN)
+httpd   24359 daemon    3u  IPv6 32995140       TCP *:http (LISTEN)
+httpd   25169 daemon    3u  IPv6 32995140       TCP *:http (LISTEN)
+httpd   25800 daemon    3u  IPv6 32995140       TCP *:http (LISTEN)
+		</screen>
+
+		<para>压力测试 apache</para>
+		<screen>
+ab -n 10000 -c 1000 http://127.0.0.1/
+		</screen>
+
+		<para>压力测试 tomcat</para>
+		<screen>
+ab -n 10000 -c 1000 http://127.0.0.1:8080/
+		</screen>
+
+		<para>压力测试 mod_proxy_ajp</para>
+		<screen>
+ab -n 10000 -c 1000 http://127.0.0.1/ajp/
+		</screen>
+
+		<para>压力测试 mod_jk</para>
+		<screen>
+ab -n 10000 -c 1000 http://127.0.0.1/jk/
+		</screen>
+	</section>
+	<section id="web.logs">
+		<title>Web Logs</title>
+		<section>
+			<title>awstats</title>
+			<para><link linkend="awstats">Awstats</link></para>
+		</section>
+		<section>
+			<title>webalizer</title>
+			<para><link linkend="webalizer">Webalizer</link></para>
+		</section>
+	</section>
+</chapter>

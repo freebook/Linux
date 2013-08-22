@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.introduction.xml 655 2013-07-31 09:16:47Z netkiller $ -->
+<chapter id="introduction">
+	<title>Introduction</title>
+	<section id="linux.distribution">
+		<title>Distribution Version</title>
+
+		<para>Debian/Ubuntu</para>
+		<para>http://www.ubuntu.com</para>
+
+		<para>Gentoo</para>
+		<para>http://www.gentoo.org/</para>
+
+		<para>Scientific Linux (SL)</para>
+		<para><ulink url="http://www.scientificlinux.org/">http://www.scientificlinux.org/</ulink></para>
+
+		<para>CentOS</para>
+		<para>http://www.centos.org/</para>
+
+		<para>Debian/Ubuntu适合做实验，快速安装定制，Gentoo适合DIY</para>
+		<para>如果是企业服务器还是建议使用CentOS，Scientific Linux</para>
+		<section>
+			<title>Linux 下载排名</title>
+			<para><ulink url="http://distrowatch.com/">http://distrowatch.com/</ulink></para>
+		</section>
+	</section>
+	<section id="lsb_release">
+		<title>Distribution information</title>
+		<para>To find your Ubuntu version: lsb_release -a</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# lsb_release -a
+LSB Version:    :core-3.1-ia32:core-3.1-noarch:graphics-3.1-ia32:graphics-3.1-noarch
+Distributor ID: CentOS
+Description:    CentOS release 5.2 (Final)
+Release:        5.2
+Codename:       Final
+
+
+neo@netkiller:~$ lsb_release -a
+
+No LSB modules are available.
+Distributor ID: Ubuntu
+Description:    Ubuntu 8.04.1
+Release:        8.04
+Codename:       hardy
+		]]>
+		</screen>
+		<screen>
+$ head -n1 /etc/issue
+Ubuntu 10.04 LTS \n \l
+		</screen>
+	</section>
+	&chapter.install;
+</chapter>

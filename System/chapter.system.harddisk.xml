@@ -1,0 +1,509 @@
+<chapter id="harddisk">
+	<title>Harddisk</title>
+	<para>主分区最多4个</para>
+	<para>逻辑分区:</para>
+	<itemizedlist>
+		<listitem><para></para></listitem>
+		<listitem><para>SCSI 最多 16 个</para></listitem>
+		<listitem><para>IDE 最多 63 个</para></listitem>
+	</itemizedlist>
+	<section id="hdd.uuid">
+		<title>查看分区分区 UUID</title>
+		<screen>
+$ blkid
+/dev/sda1: UUID="a457213b-e72d-4c9c-953d-b438ec554d3c" SEC_TYPE="ext2" TYPE="ext3"
+/dev/sda5: UUID="cc2c1be9-a6e0-4494-a5f0-76b39d3fc1f0" TYPE="swap"
+/dev/sda6: UUID="3c9a1484-1295-4fb9-9c94-f9c69ae7e770" TYPE="ext3"
+/dev/sda7: UUID="ade7b5e7-a311-45de-9b24-e16be73de715" TYPE="swap"
+
+$ ls -l /dev/disk/by-uuid
+total 0
+lrwxrwxrwx 1 root root 10 2009-07-11 00:52 3c9a1484-1295-4fb9-9c94-f9c69ae7e770 -> ../../sda6
+lrwxrwxrwx 1 root root 10 2009-07-11 00:52 a457213b-e72d-4c9c-953d-b438ec554d3c -> ../../sda1
+lrwxrwxrwx 1 root root 10 2009-07-11 00:52 ade7b5e7-a311-45de-9b24-e16be73de715 -> ../../sda7
+lrwxrwxrwx 1 root root 10 2009-07-11 00:52 cc2c1be9-a6e0-4494-a5f0-76b39d3fc1f0 -> ../../sda5
+		</screen>
+	</section>
+	<section id="hdd.label">
+		<title>Label</title>
+		<section>
+			<title>Ext2</title>
+
+			<para>e2label - Change the label on an ext2/ext3 filesystem</para>
+			<section>
+				<title>查看卷标</title>
+				<screen>
+# e2label /dev/sda1
+/boot
+				</screen>
+			</section>
+			<section>
+				<title>更改卷标</title>
+				<screen>
+# man e2label
+# e2label /dev/sda5 /www
+
+# e2label /dev/sda5
+/www
+				</screen>
+				<para>测试</para>
+				<screen>
+# mount /app
+				</screen>
+			</section>
+		</section>
+	</section>
+	<section id="swap">
+		<title>临时增加 swap 分区</title>
+		<screen>
+dd if=/dev/zero of=/root/swap0 bs=1M count=2048
+mkswap /root/swap0
+swapon /root/swap0
+		</screen>
+	</section>
+	<section id="hdd.partition">
+		<title>Show partition</title>
+		<para>show all of disk and partition</para>
+		<screen>
+neo@master:~$ sudo sfdisk -s
+/dev/sda:   8388608
+/dev/sdb:   2097152
+total: 10485760 blocks
+		</screen>
+		<para>or</para>
+		<screen>
+neo@master:~$ sudo fdisk -l
+
+Disk /dev/sda: 8589 MB, 8589934592 bytes
+255 heads, 63 sectors/track, 1044 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+Disk identifier: 0x000301bd
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1   *           1         993     7976241   83  Linux
+/dev/sda2             994        1044      409657+   5  Extended
+/dev/sda5             994        1044      409626   82  Linux swap / Solaris
+
+Disk /dev/sdb: 2147 MB, 2147483648 bytes
+255 heads, 63 sectors/track, 261 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+Disk identifier: 0x00000000
+
+Disk /dev/sdb doesn't contain a valid partition table
+neo@master:~$
+		</screen>
+		<para>show partition /dev/sda</para>
+		<screen>
+neo@master:~$ sudo fdisk -l /dev/sda
+
+Disk /dev/sda: 8589 MB, 8589934592 bytes
+255 heads, 63 sectors/track, 1044 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+Disk identifier: 0x000301bd
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1   *           1         993     7976241   83  Linux
+/dev/sda2             994        1044      409657+   5  Extended
+/dev/sda5             994        1044      409626   82  Linux swap / Solaris
+neo@master:~$
+		</screen>
+	</section>
+
+	<section id="cfdisk">
+		<title>Create partition</title>
+		<screen>
+$ sudo cfdisk /dev/sdb
+		</screen>
+		<para></para>
+		<screen>
+Command (m for help): p
+
+Disk /dev/sda: 146.1 GB, 146163105792 bytes
+255 heads, 63 sectors/track, 17769 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1   *           1          25      200781   83  Linux
+/dev/sda2              26        3849    30716280   83  Linux
+/dev/sda3            3850       17769   111812400   83  Linux
+
+Command (m for help): d
+Partition number (1-4): 3
+
+Command (m for help): n
+Command action
+   e   extended
+   p   primary partition (1-4)
+p
+Partition number (1-4): 3
+First cylinder (3850-17769, default 3850):
+Using default value 3850
+Last cylinder or +size or +sizeM or +sizeK (3850-17769, default 17769): +32000M
+
+Command (m for help): p
+
+Disk /dev/sda: 146.1 GB, 146163105792 bytes
+255 heads, 63 sectors/track, 17769 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1   *           1          25      200781   83  Linux
+/dev/sda2              26        3849    30716280   83  Linux
+/dev/sda3            3850        7740    31254457+  83  Linux
+		</screen>
+	</section>
+	<!-- $ dd bs=1 seek=2TB if=/dev/null of=test -->
+	<section id="dd.clone">
+		<title>Clone partition</title>
+		<para>/dev/sda 克隆到 /dev/sdb</para>
+		<screen>
+$ sudo dd if=/dev/sda of=/dev/sdb
+		</screen>
+		<para>备份 mbr 主引导记录</para>
+		<screen>
+$ dd if=/dev/sda of=/root/disk.mbr bs=512 count=1
+		</screen>
+		<para></para>
+		<screen>
+$ dd if=/root/disk.mbr of=/dev/sda bs=512 count=1
+		</screen>
+		<para>软盘镜像</para>
+		<screen>
+$ dd if=/dev/fd0 of=floppy.img bs=1440k
+		</screen>
+	</section>
+	<section id="hdd.format">
+		<title>Format partition</title>
+		<para>format /dev/sdb1</para>
+		<section>
+			<title>ext3</title>
+			<screen>
+neo@master:~$ sudo mkfs.ext3 /dev/sdb1
+			</screen>
+		</section>
+		<section>
+			<title>ReiserFS</title>
+			<para>you also can using other file system</para>
+			<para>reiserfs</para>
+			<screen>
+neo@master:~$ sudo mkfs.reiserfs /dev/sdb1
+			</screen>
+		</section>
+	</section>
+
+	<section id="du.max-depth">
+		<title>estimate disk / directory / file space usage</title>
+		<para>total for a directory</para>
+		<screen>
+du -h --max-depth=0
+		</screen>
+	</section>
+	<section id="tune2fs">
+		<title>Convert from ext3 to ext4 File system</title>
+		<para>step 1</para>
+		<screen>
+$ sudo tune2fs -O extents,uninit_bg,dir_index /dev/sda7
+tune2fs 1.41.4 (27-Jan-2009)
+
+Please run e2fsck on the filesystem.
+		</screen>
+		<para>step 2</para>
+		<screen>
+		<![CDATA[
+$ sudo e2fsck -fD /dev/sda7
+e2fsck 1.41.4 (27-Jan-2009)
+/dev/sda7 is mounted.
+
+WARNING!!!  Running e2fsck on a mounted filesystem may cause
+SEVERE filesystem damage.
+
+Do you really want to continue (y/n)? yes
+
+/dev/sda7: recovering journal
+Pass 1: Checking inodes, blocks, and sizes
+Pass 2: Checking directory structure
+Pass 3: Checking directory connectivity
+Pass 3A: Optimizing directories
+Pass 4: Checking reference counts
+Pass 5: Checking group summary information
+Block bitmap differences:  -3913734 +3925302
+Fix<y>? yes
+
+
+/dev/sda7: ***** FILE SYSTEM WAS MODIFIED *****
+/dev/sda7: 77282/2293760 files (15.7% non-contiguous), 4584313/9163066 blocks
+		]]>
+		</screen>
+		<para>step 3</para>
+		<screen>
+$ sudo cp /etc/fstab /etc/fstab.old
+$ sudo vim /etc/fstab
+
+# /dev/sda7
+UUID=16089544-6fbf-400e-a63a-fa6159e271e5 /home           ext4    relatime,errors=remount-ro 0 1
+		</screen>
+		<para>step 4</para>
+		<screen>
+$ sudo reboot
+		</screen>
+	</section>
+	<section id="gpt">
+		<title>GPT</title>
+		<screen>
+$ sudo parted /dev/sda
+GNU Parted 2.3
+Using /dev/sda
+Welcome to GNU Parted! Type 'help' to view a list of commands.
+(parted)
+		</screen>
+		<section id="parted.print">
+			<title>查看分区</title>
+			<screen>
+(parted) print
+Model: DELL PERC 6/i (scsi)
+Disk /dev/sda: 2498GB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+
+Number  Start   End     Size    File system     Name     Flags
+ 1      1049kB  50.0GB  50.0GB  ext4                     boot
+ 2      50.0GB  66.0GB  16.0GB  linux-swap(v1)
+ 3      66.0GB  2498GB  2432GB  ext4            /backup
+			</screen>
+			<para>空闲空间</para>
+			<screen>
+(parted) print free
+Model: DELL PERC 6/i (scsi)
+Disk /dev/sda: 2498GB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+
+Number  Start   End     Size    File system     Name     Flags
+        17.4kB  1049kB  1031kB  Free Space
+ 1      1049kB  50.0GB  50.0GB  ext4                     boot
+ 2      50.0GB  66.0GB  16.0GB  linux-swap(v1)
+ 3      66.0GB  2498GB  2432GB  ext4            /backup
+        2498GB  2498GB  1032kB  Free Space
+			</screen>
+		</section>
+		<section id="parted.mkpart">
+			<title>创建分区</title>
+			<screen>
+(parted) mkpart
+Partition name?  []? /www
+File system type?  [ext2]?
+Start? 10GB
+End? 50GB
+			</screen>
+			<example>
+				<title>GPT Example</title>
+				<screen>
+(parted) print devices
+/dev/sdb (9999GB)
+/dev/sda (2498GB)
+
+(parted) select /dev/sdb
+Using /dev/sdb
+
+(parted) mklabel gpt
+Warning: The existing disk label on /dev/sdb will be destroyed and all data on this disk will be
+lost. Do you want to continue?
+Yes/No? yes
+
+(parted) mkpart
+Partition name?  []? /md1200
+File system type?  [ext2]? ext4
+Start? 0GB
+End? 9999GB
+
+(parted) print list
+Model: DELL PERC H800 (scsi)
+Disk /dev/sdb: 9999GB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+
+Number  Start   End     Size    File system  Name     Flags
+ 1      1049kB  9999GB  9999GB               /md1200
+
+
+Model: DELL PERC 6/i (scsi)
+Disk /dev/sda: 2498GB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+
+Number  Start   End     Size    File system     Name     Flags
+ 1      1049kB  50.0GB  50.0GB  ext4                     boot
+ 2      50.0GB  66.0GB  16.0GB  linux-swap(v1)
+ 3      66.0GB  2498GB  2432GB  ext4            /backup
+
+
+(parted)
+				</screen>
+			</example>
+		</section>
+		<section id="parted.quit">
+			<title>退出</title>
+			<screen>
+(parted) quit
+			</screen>
+		</section>
+		<section id="parted.uuid">
+			<title>mount</title>
+			<screen>
+neo@backup:~$ sudo blkid
+[sudo] password for neo:
+/dev/sda1: UUID="2fc411ec-9f6e-4e04-9270-11d23a9b0668" TYPE="ext4"
+/dev/sda2: UUID="f5175b7a-4c87-471c-ab9f-9d601bc5e6e2" TYPE="swap"
+/dev/sda3: UUID="3217bdd9-1beb-494a-a428-8d1c09eaa1af" TYPE="ext4"
+
+neo@backup:~$ sudo vim /etc/fstab
+UUID=3217bdd9-1beb-494a-a428-8d1c09eaa1af /backup ext4 errors=remount-ro 0       1
+			</screen>
+		</section>
+	</section>
+
+<section id="loop">
+	<title>loop devices</title>
+	<para>If  you  are using the loadable module you must have the module loaded first with the command:</para>
+	<screen>
+$ sudo modprobe loop
+	</screen>
+	<para>The following commands can be used as an example of using the loop device.</para>
+	<screen>
+$ dd if=/dev/zero of=file bs=1k count=100
+100+0 records in
+100+0 records out
+102400 bytes (102 kB) copied, 0.00126554 s, 80.9 MB/s
+
+$ sudo losetup /dev/loop0 file
+
+$ sudo mkfs.ext3 /dev/loop0
+mke2fs 1.40.8 (13-Mar-2008)
+Filesystem label=
+OS type: Linux
+Block size=1024 (log=0)
+Fragment size=1024 (log=0)
+16 inodes, 100 blocks
+5 blocks (5.00%) reserved for the super user
+First data block=1
+1 block group
+8192 blocks per group, 8192 fragments per group
+16 inodes per group
+
+Writing inode tables: done
+
+Filesystem too small for a journal
+Writing superblocks and filesystem accounting information: done
+
+This filesystem will be automatically checked every 24 mounts or
+180 days, whichever comes first.  Use tune2fs -c or -i to override.
+	</screen>
+	<para>mount loop device</para>
+	<screen>
+$ sudo mkdir /mnt/loop
+$ sudo mount /dev/loop0 /mnt/loop
+	</screen>
+	<para>Now！ you can using it as harddisk.</para>
+	<para>umount loop device</para>
+	<screen>
+$ sudo umount /mnt/loop/
+$ sudo losetup -d /dev/loop0
+	</screen>
+	<para>Maybe also encryption modules are needed.</para>
+	<screen>
+$ sudo modprobe cryptoloop
+$ sudo modprobe des
+	</screen>
+
+	<para>enable data encryption</para>
+	<screen>
+$ dd if=/dev/zero of=encryption_file bs=1k count=100
+100+0 records in
+100+0 records out
+102400 bytes (102 kB) copied, 0.00130537 s, 78.4 MB/s
+
+$ sudo losetup -e des /dev/loop0 encryption_file
+	</screen>
+
+	<para>If you are using the loadable module you may remove the module with the command</para>
+	<screen>
+$ sudo rmmod loop des cryptoloop
+	</screen>
+	<section id="losetup">
+		<title>losetup - set up and control loop devices</title>
+		<para>EXAMPLE</para>
+		<screen>
+       If you are using the loadable module you must have the module loaded first with the command
+
+              # insmod loop.o
+
+       Maybe also encryption modules are needed.
+
+              # insmod des.o # insmod cryptoloop.o
+
+       The following commands can be used as an example of using the loop device.
+
+              # dd if=/dev/zero of=/file bs=1k count=100
+              # losetup -e des /dev/loop0 /file
+              Password:
+              Init (up to 16 hex digits):
+              # mkfs -t ext2 /dev/loop0 100
+              # mount -t ext2 /dev/loop0 /mnt
+               ...
+              # umount /dev/loop0
+              # losetup -d /dev/loop0
+
+       If you are using the loadable module you may remove the module with the command
+
+              # rmmod loop
+		</screen>
+	</section>
+</section>
+
+</chapter>
+
+<chapter id="removable.storage">
+	<title>Removable Storage</title>
+	<para>eject - eject removable media</para>
+	<screen>
+$ eject
+	</screen>
+	<section id="usb.flash">
+		<title>usb flash</title>
+		<para>mount NTFS filesystem</para>
+		<screen>
+sudo mount -t ntfs-3g /dev/sdb1 /mnt/usbflash/ -o force
+		</screen>
+	</section>
+<section id="disc">
+	<title>CD / DVD</title>
+	<para></para>
+	<section>
+		<title>Mount an ISO file</title>
+		<para>To mount the ISO image file.iso to the mount point /media/cdrom use this :</para>
+		<screen>
+$ mount -o loop -t iso9660 file.iso /media/cdrom
+		</screen>
+	</section>
+	<section>
+		<title>create iso file from CD</title>
+		<screen>
+$ dd if=/dev/cdrom of=isofile.iso
+		</screen>
+	</section>
+	<section>
+		<title>burner</title>
+	</section>
+
+	<section>
+		<title>ISO Mirror</title>
+		<screen>
+$ mkisofs -V LABEL -r /mnt/cdrom | gzip > cdrom.iso.gz
+		</screen>
+		<para>mount iso file</para>
+		<screen>
+$ mount -t iso9660 -o loop cdrom.iso /mnt/cdrom
+		</screen>
+	</section>
+</section>
+</chapter>

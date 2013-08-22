@@ -1,0 +1,139 @@
+<chapter id="jabber">
+	<title>jabber</title>
+	<para>
+		<ulink url="http://www.jabber.org/">jabber homepage</ulink>
+	</para>
+	<section id="ejabberd">
+		<title>ejabberd - Distributed, fault-tolerant Jabber/XMPP
+			server written in Erlang</title>
+		<para>http://www.ejabberd.im/</para>
+		<procedure>
+			<step>
+				<para>install</para>
+				<screen>
+				<![CDATA[
+$ sudo apt-get install ejabberd
+				]]>
+				</screen>
+			</step>
+
+			<step>
+				<para>configure.</para>
+				<screen>
+				<![CDATA[
+$ sudo cp /etc/ejabberd/ejabberd.cfg /etc/ejabberd/ejabberd.cfg.old
+$ sudo ls /etc/ejabberd/
+ejabberd.cfg  ejabberd.cfg.old  ejabberd.pem  inetrc
+				
+$ sudo vim /etc/ejabberd/ejabberd.cfg		
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Options which are set by Debconf and managed by ucf
+
+%% Admin user
+{acl, admin, {user, "neo", "netkiller.8800.org"}}.
+
+%% Hostname
+{hosts, ["netkiller.8800.org"]}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		
+				]]>
+				</screen>
+			</step>
+			<step>
+				<para>create a admin</para>
+				<command><![CDATA[# ejabberdctl register <username> <server> <password>]]></command>
+				<command><![CDATA[# ejabberdctl unregister <username> <server>]]></command>				
+				<screen>
+				<![CDATA[
+$ sudo ejabberdctl register neo netkiller.8800.org your_password		
+				]]>
+				</screen>
+				<para>admin page: http://localhost:5280/admin/</para>
+			</step>
+			<step>
+				<para>firewall</para>
+				<screen>
+				<![CDATA[
+$ sudo ufw allow xmpp-server
+Rule added
+
+$ sudo ufw allow xmpp-client
+Rule added
+				]]>
+				</screen>
+			</step>
+			<step>
+				<para>test</para>
+				<screen>
+				<![CDATA[
+$ sudo apt-get install sendxmpp
+				]]>
+				</screen>
+				<para>Create config file ~/.sendxmpprc</para>
+				<screen>
+				<![CDATA[
+$ vim ~/.sendxmpprc
+
+#account@host:port password
+neo@netkiller.8800.org chen
+
+$ sudo chmod 600 .sendxmpprc	
+				]]>
+				</screen>
+				<para>send messages</para>
+				<screen>
+				<![CDATA[
+$ echo -n hi | sendxmpp -r echocmd neo@netkiller.8800.org
+				]]>
+				</screen>					
+			</step>
+		</procedure>
+		<section>
+			<title>ejabberdctl</title>
+			<para>set-password</para>
+			<screen>
+			<![CDATA[
+$ sudo ejabberdctl set-password eva netkiller.8800.org eva			
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section id="djabberd">
+		<title>DJabberd</title>
+		<para>http://www.danga.com/djabberd/
+		</para>
+	</section>
+	<section id="freetalk">
+		<title>freetalk - A console based Jabber client</title>
+		<screen>
+$ sudo apt-get install freetalk
+
+$ freetalk		
+		</screen>
+	</section>
+	<section id="jabber.library">
+		<title>library</title>
+		<section>
+			<title>python-xmpp</title>
+			<screen>
+			<![CDATA[
+$ sudo apt-get install python-xmpp			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+$ cat jabber.py
+import xmpp
+jid=xmpp.protocol.JID('neo@netkiller.8800.org')
+cl=xmpp.Client(jid.getDomain(),debug=[])
+cl.connect()
+cl.auth(jid.getNode(),'chen')
+cl.send(xmpp.protocol.Message('neo@netkiller.8800.org','hi there'))
+cl.disconnect()		
+			]]>
+			</screen>
+		</section>
+	</section>
+</chapter>

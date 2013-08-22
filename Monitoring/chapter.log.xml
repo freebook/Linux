@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="log">
+	<title>Logs 分析</title>
+	<chapterinfo>
+		<keywordset>
+			<keyword>rinetd.log</keyword>
+			<keyword></keyword>
+			<keyword></keyword>
+			<keyword></keyword>
+		</keywordset>
+	</chapterinfo>
+	<para></para>
+
+	<section id="system.log">
+		<title>log</title>
+
+
+		<section id="logwatch">
+			<title>logwatch</title>
+			<subtitle>logwatch - log analyser with nice output written in Perl</subtitle>
+			<para><ulink url="http://www.logwatch.org/">http://www.logwatch.org/</ulink></para>
+
+			<procedure>
+				<title>logwatch 安装步骤:</title>
+				<step>
+					<para>Install</para>
+					<para>Ubuntu 7.10</para>
+					<screen>
+netkiller@shenzhen:/etc/webmin$ apt-cache search logwatch
+fwlogwatch - Firewall log analyzer
+logwatch - log analyser with nice output written in Perl
+					</screen>
+					<para>apt-get install</para>
+					<screen>
+# apt-get install logwatch
+					</screen>
+					<para>the logwatch has been installed, it should create a file in '/etc/cron.daily/00logwatch'.</para>
+				</step>
+				<step>
+					<para>config</para>
+					<screen>
+$ sudo cp /usr/share/logwatch/default.conf/logwatch.conf  /etc/logwatch/conf/logwatch.conf
+$ sudo mkdir /var/cache/logwatch
+$ sudo vim /etc/logwatch/conf/logwatch.conf
+					</screen>
+					<para>mail to</para>
+					<screen>
+# Default person to mail reports to.  Can be a local account or a
+# complete email address.
+MailTo = root, openunix@163.com, other@example.com
+					</screen>
+					<para>To change detail level for the report</para>
+					<screen>
+# The default detail level for the report.
+# This can either be Low, Med, High or a number.
+# Low = 0
+# Med = 5
+# High = 10
+Detail = High
+					</screen>
+					<para>Crontab</para>
+					<screen>
+netkiller@shenzhen:~$ cat /etc/cron.daily/00logwatch
+#!/bin/bash
+
+#Check if removed-but-not-purged
+test -x /usr/share/logwatch/scripts/logwatch.pl || exit 0
+
+#execute
+/usr/sbin/logwatch
+					</screen>
+				</step>
+				<step>
+					<para>The logwatch is command, you can run it.</para>
+					<literallayout>
+					<![CDATA[ logwatch --print ]]>
+					</literallayout>
+
+					<para>单独查看某个服务，比如 SSH 登录信息</para>
+					<para>logwatch --service sshd --print</para>
+				</step>
+			</procedure>
+		</section>
+		<section id="nulog">
+			<title>nulog</title>
+			<para></para>
+			<example>
+				<title>config.php</title>
+				<programlisting>
+				<![CDATA[
+
+				]]>
+				</programlisting>
+			</example>
+		</section>
+	</section>
+	&chapter.log.web.xml;
+	<section id="rinetd.log">
+		<title>rinetd.log</title>
+		<para>top 50 IP Address</para>
+		<screen>
+# cat /var/log/rinetd.log | awk '{print $2}' | awk -F'.' '{print $1"."$2"."$3"."$4}' | sort | uniq -c | sort -r -n | head -n 50
+		</screen>
+	</section>
+	<section id="php-syslog-ng">
+		<title>php-syslog-ng</title>
+		<para></para>
+	</section>
+	<section id="log.analyzer">
+		<title>Log Analyzer</title>
+		<para>http://loganalyzer.adiscon.com/</para>
+	</section>
+	<section id="splunk">
+		<title>Splunk</title>
+	</section>
+	<section id="logstash">
+		<title>logstash - open source log management</title>
+		<para><ulink url="http://logstash.net/" /></para>
+	</section>
+</chapter>

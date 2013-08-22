@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="lighttpd">
+	<title>Lighttpd</title>
+<section id="lighttpd.install">
+	<title>安装Lighttpd</title>
+	<section id="lighttpd.install.apt-get">
+		<title>quick install with aptitude</title>
+		<para>if you OS is Ubuntu/Debian </para>
+		<command>apt-get install lighttpd</command>
+		<screen>
+netkiller@shenzhen:~$ sudo apt-get install lighttpd
+		</screen>
+		<para>the config file in /etc/lighttpd</para>
+		<screen>
+netkiller@shenzhen:~/document/Docbook/Linux$ find /etc/lighttpd/
+/etc/lighttpd/
+/etc/lighttpd/lighttpd.conf
+/etc/lighttpd/conf-enabled
+/etc/lighttpd/conf-available
+/etc/lighttpd/conf-available/10-userdir.conf
+/etc/lighttpd/conf-available/10-fastcgi.conf
+/etc/lighttpd/conf-available/10-cgi.conf
+/etc/lighttpd/conf-available/README
+/etc/lighttpd/conf-available/10-ssl.conf
+/etc/lighttpd/conf-available/10-proxy.conf
+/etc/lighttpd/conf-available/10-auth.conf
+/etc/lighttpd/conf-available/10-simple-vhost.conf
+/etc/lighttpd/conf-available/10-ssi.conf
+		</screen>
+		<para>Enabling and disabling modules could be done by provided e.g.</para>
+		<screen>
+/usr/sbin/lighty-enable-mod fastcgi
+/usr/sbin/lighty-disable-mod fastcgi
+		</screen>
+		<para>when you enabled a mod please force-reload it</para>
+		<screen>
+netkiller@shenzhen:/etc/lighttpd$ sudo lighty-enable-mod fastcgi
+Available modules: auth cgi fastcgi proxy simple-vhost ssi ssl userdir
+Already enabled modules: userdir
+Enabling fastcgi: ok
+Run /etc/init.d/lighttpd force-reload to enable changes
+netkiller@shenzhen:/etc/lighttpd$ sudo /etc/init.d/lighttpd force-reload
+ * Stopping web server lighttpd                                                                                                                                                                                                                                                                                       [ OK ]
+ * Starting web server lighttpd
+		</screen>
+	</section>
+	<section id="lighttpd.install.yum">
+		<title>yum install</title>
+		<screen>
+# yum install lighttpd lighttpd-fastcgi -y
+# chkconfig lighttpd on
+		</screen>
+		<para>创建缓存目录</para>
+		<screen>
+# mkdir -p /var/cache/lighttpd/compress
+# chown lighttpd:lighttpd -R /var/cache/lighttpd
+		</screen>
+		<para>禁用ipv6</para>
+		<screen>
+# vim /etc/lighttpd/lighttpd.conf
+
+#server.use-ipv6 = "enable"
+		</screen>
+	</section>
+	<section id="lighttpd.compile">
+		<title>to compile and then install lighttpd</title>
+		<orderedlist numeration="arabic">
+			<listitem>
+				<para>下载相关软件</para>
+				<para><ulink url="http://www.lighttpd.net/download/lighttpd-1.4.15.tar.gz">立即下载</ulink></para>
+				<screen>
+$ sudo apt-get install libpcre3*
+
+cd /usr/local/src/
+wget http://www.lighttpd.net/download/lighttpd-1.4.15.tar.gz
+tar zxvf lighttpd-1.4.15.tar.gz
+cd lighttpd-1.4.15
+				</screen>
+			</listitem>
+			<listitem>
+				<para>编译安装</para>
+				<screen>
+./configure --prefix=/usr/local/lighttpd-1.4.15 \
+--with-bzip2 \
+--with-memcache
+make
+make install
+				</screen>
+			</listitem>
+			<listitem>
+				<para>创建目录与配置文件</para>
+				<screen>
+ln -s /usr/local/lighttpd-1.4.15/ /usr/local/lighttpd
+mkdir -p /www/pages
+mkdir /www/logs
+mkdir /usr/local/lighttpd/htdocs
+mkdir /usr/local/lighttpd/logs
+mkdir /usr/local/lighttpd/etc
+cp ./doc/lighttpd.conf /usr/local/lighttpd/etc/
+cd /usr/local/lighttpd/
+				</screen>
+			</listitem>
+			<listitem>
+				<para>配置lighttpd.conf</para>
+				<command>vi etc/lighttpd.conf</command>
+				<para>找到 server.modules</para>
+				<para>删除 mod_fastcgi 前的注释</para>
+				<para>跟据你的需求修改下面定义</para>
+				<para>server.document-root = "/usr/local/lighttpd/htdocs/"</para>
+				<para>server.errorlog  = "/usr/local/lighttpd/logs/lighttpd.error.log"</para>
+				<para>accesslog.filename = "/usr/local/lighttpd/logs/access.log"</para>
+				<para>注释 $HTTP["url"]</para>
+				<screen>
+#$HTTP["url"] =~ "\.pdf$" {
+#  server.range-requests = "disable"
+#}
+				</screen>
+			</listitem>
+			<listitem>
+				<para>运行lighttpd</para>
+				<screen>
+/usr/local/lighttpd/sbin/lighttpd -f /usr/local/lighttpd/etc/lighttpd.conf
+				</screen>
+				<para>测试</para>
+				<para>curl http://ip/ 因为/www/pages/下没有HTML页面所以返回:</para>
+				<para>404 - Not Found</para>
+			</listitem>
+		</orderedlist>
+		<section>
+			<title>shell script</title>
+				<para>lighttpd script</para>
+				<example>
+					<title>/etc/init.d/lighttpd</title>
+					<screen>
+					<![CDATA[
+#!/bin/bash
+# lighttpd init file for web server
+#
+# chkconfig: - 100 100
+# description: Security, speed, compliance, and flexibility--all of these describe LightTPD which is rapidly redefining efficiency of a webserver;
+#				as it is designed and optimized for high performance environments.
+# author: Neo Chen<openunix@163.com>
+#
+# processname: $PROG
+# config:
+# pidfile: /var/run/lighttpd
+
+# source function library
+. /etc/init.d/functions
+
+PREFIX=/usr/local/lighttpd
+PROG=$PREFIX/sbin/lighttpd
+OPTIONS="-f /usr/local/lighttpd/etc/lighttpd.conf"
+USER=daemon
+RETVAL=0
+prog="lighttpd"
+
+start() {
+        echo -n $"Starting $prog: "
+        if [ $UID -ne 0 ]; then
+                RETVAL=1
+                failure
+        else
+                daemon --user=$USER $PROG $OPTIONS
+                RETVAL=$?
+                [ $RETVAL -eq 0 ] && touch /var/lock/subsys/lighttpd
+        fi;
+        echo
+        return $RETVAL
+}
+
+stop() {
+        echo -n $"Stopping $prog: "
+        if [ $UID -ne 0 ]; then
+                RETVAL=1
+                failure
+        else
+                killproc $PROG
+                RETVAL=$?
+                [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/lighttpd
+        fi;
+        echo
+        return $RETVAL
+}
+
+reload(){
+        echo -n $"Reloading $prog: "
+        killproc $PROG -HUP
+        RETVAL=$?
+        echo
+        return $RETVAL
+}
+
+restart(){
+	stop
+	start
+}
+
+condrestart(){
+    [ -e /var/lock/subsys/lighttpd ] && restart
+    return 0
+}
+
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  restart)
+	restart
+        ;;
+  reload)
+	reload
+        ;;
+  condrestart)
+	condrestart
+	;;
+  status)
+        status lighttpd
+	RETVAL=$?
+        ;;
+  *)
+	echo $"Usage: $0 {start|stop|status|restart|condrestart|reload}"
+	RETVAL=1
+esac
+
+exit $RETVAL
+					]]>
+					</screen>
+				</example>
+		</section>
+	</section>
+</section>
+	<section id="lighttpd.config">
+		<title>/etc/lighttpd/lighttpd.conf</title>
+		<section id="lighttpd.server.max-fds">
+			<title>max-worker / max-fds</title>
+			<para>max-worker 	我一般设置为与处理器数目相同。</para>
+			<para>max-fds		最大连接数</para>
+			<screen>
+server.max-worker = 24
+server.max-fds = 4096
+			</screen>
+		</section>
+		<section id="lighttpd.accesslog.filename">
+			<title>accesslog.filename</title>
+			<para>通过cronolog切割日志</para>
+			<screen>
+#### accesslog module
+#accesslog.filename          = "/www/logs/lighttpd.access.log"
+accesslog.filename = "| /usr/local/sbin/cronolog /www/logs/%Y/%m/%d/access.log"
+			</screen>
+		</section>
+		<section id="lighttpd.etags">
+			<title>ETags</title>
+			<para>disable etags</para>
+			<screen>
+static-file.exclude-extensions = ( ".php", ".pl", ".fcgi" )
+static-file.etags = "disable"
+			</screen>
+		</section>
+		<section id="lighttpd.server.tag">
+			<title>server.tag</title>
+			<para>隐藏服务器信息</para>
+			<screen>
+server.tag = "Apache"
+			</screen>
+			<para>测试结果Server: Apache</para>
+			<screen>
+curl -I http://172.16.0.7/
+HTTP/1.1 200 OK
+Content-Type: text/html
+Content-Length: 4692
+Date: Fri, 04 Nov 2011 12:33:19 GMT
+Server: Apache
+			</screen>
+		</section>
+	</section>
+	&chapter.lighttpd.module.xml;
+<section id="lighttpd.example">
+	<title>Example</title>
+	<section>
+		<title>s-maxage</title>
+		<para>s-maxage 头作用于反向代理服务器</para>
+		<example>
+			<title>Cache</title>
+			<screen>
+$HTTP["url"] =~ "^/images/2010" {
+        expire.url = ( "" => "access 15 minutes" )
+}
+
+$HTTP["host"] =~ "(img1|img2|img3)\.example\.com" {
+    expire.url = ( "" => "access 15 minutes" )
+    setenv.add-response-header  = ("Cache-Control" =>"s-maxage=3600")
+}
+			</screen>
+		</example>
+	</section>
+</section>
+
+</chapter>

@@ -1,0 +1,92 @@
+<chapter id="proxy">
+	<title>Proxy Server</title>
+	<section id="proxy.apache">
+		<title>Apache Proxy</title>
+		<command></command>
+		<screen>
+netkiller@Linux-server:/etc/apache2$ sudo a2enmod proxy
+Module proxy installed; run /etc/init.d/apache2 force-reload to enable.
+netkiller@Linux-server:/etc/apache2$ sudo a2enmod proxy_connect
+Module proxy_connect installed; run /etc/init.d/apache2 force-reload to enable.
+netkiller@Linux-server:/etc/apache2$ sudo a2enmod proxy_http
+Module proxy_http installed; run /etc/init.d/apache2 force-reload to enable.
+netkiller@Linux-server:/etc/apache2$
+		</screen>
+		<para>proxy.conf</para>
+		<para>ProxyRequests On</para>
+		<para>ProxyPass   /mirror/1/ http://netkiller.hikz.com/</para>
+    	<para>ProxyPassReverse    /mirror/1/ http://netkiller.hikz.com/</para>
+
+		<screen>
+		<![CDATA[
+netkiller@Linux-server:/etc/apache2$ cat mods-available/proxy.conf
+<IfModule mod_proxy.c>
+
+        #turning ProxyRequests on and allowing proxying from all may allow
+        #spammers to use your proxy to send email.
+
+        #ProxyRequests Off
+        ProxyRequests On
+
+        <Proxy *>
+                Order deny,allow
+                Deny from all
+                #Allow from .your_domain.com
+                Allow from all
+        </Proxy>
+
+        # Enable/disable the handling of HTTP/1.1 "Via:" headers.
+        # ("Full" adds the server version; "Block" removes all outgoing Via: headers)
+        # Set to one of: Off | On | Full | Block
+
+        ProxyVia On
+
+        # To enable the cache as well, edit and uncomment the following lines:
+        # (no cacheing without CacheRoot)
+
+        CacheRoot "/var/cache/apache2/proxy"
+        CacheSize 5
+        CacheGcInterval 4
+        CacheMaxExpire 24
+        CacheLastModifiedFactor 0.1
+        CacheDefaultExpire 1
+        # Again, you probably should change this.
+        #NoCache a_domain.com another_domain.edu joes.garage_sale.com
+
+</IfModule>
+		]]>
+		</screen>
+		<para>VirtualHost</para>
+		<screen>
+		<![CDATA[
+<VirtualHost *>
+    ServerAdmin openunix@163.com
+    DocumentRoot /home/netkiller/public_html
+    ServerName netkiller.8800.org
+    ErrorLog /home/netkiller/log/netkiller.8800.org-error_log
+    CustomLog /home/netkiller/log/netkiller.8800.org-access_log common
+    ProxyPass   /mirror/1/ http://netkiller.hikz.com/
+    ProxyPassReverse    /mirror/1/ http://netkiller.hikz.com/
+
+    <Location /repos>
+      DAV svn
+      SVNPath /home/netkiller/repos
+
+    </Location>
+</VirtualHost>
+<VirtualHost *:*>
+    ServerAdmin openunix@163.com
+    ServerName mirror.netkiller.8800.org
+    ErrorLog /home/netkiller/log/netkiller.8800.org-error_log
+    CustomLog /home/netkiller/log/netkiller.8800.org-access_log common
+    ProxyPass   / http://netkiller.hikz.com/
+    ProxyPassReverse    / http://netkiller.hikz.com/
+</VirtualHost>
+		]]>
+		</screen>
+		<para>测试http://netkiller.8800.org/mirror/1/, mirror.netkiller.8800.org</para>
+	</section>
+	&chapter.network.proxy.squid;
+	&chapter.network.proxy.web;
+	&chapter.network.proxy.socks;
+</chapter>

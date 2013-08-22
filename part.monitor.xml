@@ -1,0 +1,4 @@
+<part id="index"><?dbhtml dir="monitor" ?>
+	<title>Monitoring</title>
+	&chapter.monitor.xml;
+</part>

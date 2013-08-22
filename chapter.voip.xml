@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.voip.xml 375 2012-03-21 03:00:42Z netkiller $ -->
+<chapter id="index"><?dbhtml dir="voip" ?>
+	<title>Voice over IP</title>
+	<para>安装环境 ubuntu 7.10</para>
+	<section id="gatekeeper">
+		<title>Gnu Gatekeeper</title>
+		<para>http://www.gnugk.org/</para>
+	<section>
+		<title>Gnu Gatekeeper Install</title>
+		<screen>
+sudo apt-get install gnugk
+sudo apt-get install ohphone
+		</screen>
+		<para>start|stop|restart|force-reload</para>
+		<screen>
+netkiller@shenzhen:~$ sudo /etc/init.d/gnugk
+Usage: /etc/init.d/gnugk {start|stop|restart|force-reload}
+		</screen>
+		<para>Start</para>
+		<screen>
+netkiller@shenzhen:~$ sudo /etc/init.d/gnugk start
+Starting H.323 gatekeeper: gnugk.
+netkiller@shenzhen:~$
+
+netkiller@shenzhen:~$ sudo /etc/init.d/gnugk stop
+Stopping H.323 gatekeeper: gnugk.
+netkiller@shenzhen:~$
+		</screen>
+	</section>
+	<section>
+		<title>Gnu Gatekeeper Configure</title>
+		<para>gatekeeper.ini</para>
+		<screen>
+[Gatekeeper::Main]
+Fourtytwo=42
+[GkStatus::Auth]
+rule=allow
+		</screen>
+	</section>
+	<section>
+		<title>Gnu Gatekeeper Test</title>
+		<para>How do I test Gatekeeper</para>
+		<para>first, telnet tools</para>
+		<screen>
+netkiller@shenzhen:~$ telnet 127.0.0.1 7000
+Trying 127.0.0.1...
+Connected to 127.0.0.1.
+Escape character is '^]'.
+Version:
+Gatekeeper(GNU) Version(2.2.5) Ext(pthreads=1,radius=1,mysql=1,pgsql=1,firebird=1,large_fdset=0,crypto/ssl=1) Build(Feb  2 2007, 21:39:07) Sys(Linux i686 2.6.20-15-server)
+GkStatus: Version(2.0) Ext()
+Toolkit: Version(1.0) Ext(basic)
+Startup: Fri, 09 Nov 2007 17:26:23 -0500   Running: 0 days 00:08:34
+;
+		</screen>
+
+		<section>
+			<title>Part I - Microsoft Windows NetMeeting</title>
+			<para>Windows XP</para>
+			<para>Start NetMeeting</para>
+			<para>Start->Run->conf</para>
+			<screenshot>
+				<graphic fileref="images/voip/step_1.png"/>
+				<graphic fileref="images/voip/step_2.png"/>
+				<graphic fileref="images/voip/step_3.png"/>
+				<graphic fileref="images/voip/step_4.png"/>
+				<graphic fileref="images/voip/step_5.png"/>
+				<graphic fileref="images/voip/step_6.png"/>
+				<graphic fileref="images/voip/step_7.png"/>
+				<graphic fileref="images/voip/step_8.png"/>
+				<graphic fileref="images/voip/step_9.png"/>
+				<graphic fileref="images/voip/step_10.png"/>
+				<graphic fileref="images/voip/firewall.png"/>
+			</screenshot>
+			<para>Tools -> Option -> Advence</para>
+			<screenshot>
+				<graphic fileref="images/voip/netmeeting-option.png"/>
+			</screenshot>
+			<para>网关守卫设置</para>
+			<screenshot>
+				<graphic fileref="images/voip/netmeeting_gateway.png"/>
+			</screenshot>
+		</section>
+		<section>
+			<title>Part II - ohphone</title>
+			<para>For example:</para>
+			<para>netkiller</para>
+			<screen>
+neo@machine1:~$ ohphone -l -a -u neo
+			</screen>
+			<para>neo</para>
+			<screen>
+netkiller@machine2:~$ ohphone -u netkiller neo
+			</screen>
+
+		</section>
+	</section>
+	</section>
+
+	<section id="asterisk">
+		<title>Asterisk (OpenSource Linux PBX that supports both SIP and H.323)</title>
+		<para>http://www.asteriskpbx.com/</para>
+		<screen>
+netkiller@shenzhen:~$ apt-cache search Asterisk
+asterisk-app-dtmftotext - Text entry application for Asterisk
+asterisk-app-fax - Softfax application for Asterisk
+asterisk-app-misdn-v110 - V.110 protocol handler for Asterisk
+asterisk-chan-capi - Common ISDN API 2.0 implementation for Asterisk
+asterisk-chan-misdn - mISDN support for Asterisk
+asterisk-oh323 - oh323 channel driver for Asterisk
+asterisk-prompt-de - German voice prompts for the Asterisk PBX
+asterisk-prompt-es-co - Colombian Spanish voice prompts for Asterisk
+asterisk-prompt-fr - French voice prompts for Asterisk
+asterisk-prompt-it - Italian voice prompts for the Asterisk PBX
+asterisk-prompt-se - Swedish voice prompts for Asterisk
+asterisk-rate-engine - Asterisk least cost routing module
+asterisk-sounds-extra - Additional sound files for the Asterisk PBX
+destar - management interface for the Asterisk PBX
+gastman - GUI tool for Asterisk administration and monitoring
+iaxmodem - software modem with IAX2 connectivity
+kiax - IAX VoIP softphone
+libiax-dev - implementation of the Inter-Asterisk eXchange protocol (devel)
+libiax0 - implementation of the Inter-Asterisk eXchange protocol
+op-panel - switchboard type application for the Asterisk PBX
+asterisk-prompt-es - Spanish prompts for the Asterisk PBX
+asterisk - Open Source Private Branch Exchange (PBX)
+asterisk-bristuff - Open Source Private Branch Exchange (PBX) - BRIstuff-enabled version
+asterisk-classic - Open Source Private Branch Exchange (PBX) - original Digium version
+asterisk-config - config files for asterisk
+asterisk-dev - development files for asterisk
+asterisk-doc - documentation for asterisk
+asterisk-h323 - asterisk H.323 VoIP channel
+asterisk-sounds-main - sound files for asterisk
+asterisk-web-vmail - Web-based (CGI) voice mail interface for Asterisk
+netkiller@shenzhen:~$
+		</screen>
+	</section>
+
+	<section id="OpenSER">
+		<title>OpenSER SIP Server</title>
+		<para>http://www.openser.org/</para>
+		<screen>
+netkiller@shenzhen:~$ apt-cache search openser
+openser - very fast and configurable SIP proxy
+openser-cpl-module - CPL module (CPL interpreter engine) for OpenSER
+openser-dbg - very fast and configurable SIP proxy [debug symbols]
+openser-jabber-module - Jabber module (SIP-Jabber message translation) for OpenSER
+openser-mysql-module - MySQL database connectivity module for OpenSER
+openser-postgres-module - PostgreSQL database connectivity module for OpenSER
+openser-radius-modules - radius modules for OpenSER
+openser-unixodbc-module - unixODBC database connectivity module for OpenSER
+		</screen>
+	</section>
+<!--
+	<section>
+		<title>Yate - Yet Another Telephony Engine (includes SIP to H.323 translation)</title>
+		<para>http://yate.null.ro/pmwiki/</para>
+	</section>
+	<section>
+		<title>VOCAL (includes a SIP to H.323 translator)</title>
+		<para>http://www.vovida.org/</para>
+	</section>
+ -->
+
+</chapter>

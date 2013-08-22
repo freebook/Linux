@@ -1,0 +1,35 @@
+<chapter id="distributed-filesystem">
+	<title>Distributed File Systems</title>
+	&chapter.dfs.drbd.xml;
+	&chapter.dfs.ndb.xml;
+	&chapter.dfs.gridfs.xml;
+    &chapter.dfs.moosefs.xml;
+    &chapter.dfs.hdfs.xml;
+    &chapter.dfs.ceph.xml;
+    &chapter.dfs.lustre.xml;
+	&chapter.dfs.mogilefs.xml;
+	&chapter.dfs.kfs.xml;
+
+<!--
+<section id="dfs.block">
+    <title>Block Device</title>
+</section>
+<section id="dfs.mapping">
+    <title>Mapping</title>
+</section>
+<section id="dfs.polymeric">
+    <title>Polymeric</title>
+</section>
+-->
+
+	<section id="coda">
+		<title>Coda</title>
+	</section>
+	<section id="openafs">
+		<title>OpenAFS</title>
+		<para>http://www.openafs.org/</para>
+	</section>
+
+	&chapter.dfs.share.xml;
+
+</chapter>

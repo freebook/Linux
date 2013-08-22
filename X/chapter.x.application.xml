@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.x.application.xml 554 2013-04-03 05:17:13Z netkiller $ -->
+<chapter id="x.app.software">
+	<title>X Application Software</title>
+	<section id="ubuntu-restricted-extras">
+		<title>ubuntu-restricted-extras</title>
+		<para>mp3,flash,等支持</para>
+		<screen>
+sudo apt-get install ubuntu-restricted-extras
+		</screen>
+	</section>
+	<section>
+		<title>Keyboard Input Methods(输入法)</title>
+		<screen>
+ibus-daemon -r -d -x
+		</screen>
+	</section>
+<section id="browser">
+	<title>浏览器 </title>
+	<subtitle>Browser</subtitle>
+	<section id="firefox">
+		<title>Firefox</title>
+		<para>配置firefox选项</para>
+		<para>在Firefox的地址栏中输入about:config</para>
+	</section>
+	<section id="chromium">
+		<title>Chromium Web Browser</title>
+		<para>内部参数调整</para>
+		<screen>
+chrome://net-internals/#spdy
+		</screen>
+	</section>
+</section>
+
+<section id="download">
+	<title>Download Software</title>
+	<screen>
+- Downloader for X
+- MultiGet
+	</screen>
+</section>
+<section id="x.pac">
+	<title>PAC Manager</title>
+	<para>https://sourceforge.net/projects/pacmanager/files/</para>
+</section>
+<section id="LibreOffice">
+	<title>LibreOffice</title>
+</section>
+<section id="vym">
+	<title>VYM (View Your Mind)</title>
+	<screen>
+yum install vym
+	</screen>
+</section>
+<section id="greenshot">
+	<title>greenshot</title>
+	<para>http://sourceforge.net/projects/greenshot/</para>
+	<screen>
+greenshot
+	</screen>
+</section>
+</chapter>
+

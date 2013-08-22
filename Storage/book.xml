@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: book.xml 559 2013-04-10 07:03:49Z netkiller $ -->
+<!DOCTYPE subject SYSTEM "/usr/share/xml/docbook/schema/dtd/5.0/docbook.dtd"
+	[
+	<!ENTITY homepage "http://netkiller.sf.net/">
+	<!ENTITY mirror "http://neo.zenw.org/">
+
+	<!ENTITY Neo "http://netkiller.sf.net/">
+	<!ENTITY BG7NYT "&Neo;">
+	<!ENTITY Netkiller "<emphasis><trademark>Netkiller</trademark></emphasis>">
+
+	<!ENTITY book.info.author.xml		SYSTEM "../../common/book.info.author.xml">
+	<!ENTITY book.info.legalnotice.xml 	SYSTEM "../../common/book.info.legalnotice.xml">
+	<!ENTITY book.info.abstract.xml 	SYSTEM "../../common/book.info.abstract.xml">
+    <!ENTITY book.preface.xml           SYSTEM "../../common/book.preface.xml">
+	<!ENTITY preface.about.me.xml       SYSTEM "../../common/about.me.xml">
+	<!ENTITY book.dedication.xml       	SYSTEM "../../common/book.dedication.xml">
+
+<!--
+	<!ENTITY book.preface 		SYSTEM "book.preface.xml">
+	<!ENTITY book.dedication 	SYSTEM "book.dedication.xml">
+	<!ENTITY book.appendix 		SYSTEM "book.appendix.xml">
+	<!ENTITY book.history 		SYSTEM "book.history.xml">
+-->
+	<!ENTITY % doctype.entity.xml 			SYSTEM "doctype.entity.xml">
+	%doctype.entity.xml;
+
+]>
+<book xml:base="http://netkiller.sf.com/book/linux/storage"
+	xmlns="http://docbook.org/ns/docbook" xml:lang="zh-cn">
+	<info>
+		<title>Netkiller Linux Storage 手札</title>
+		<subtitle>File System, Network File System, Distributed Filesystem... </subtitle>
+
+		&book.info.author.xml;
+
+		<copyright>
+			<year>2010</year>
+			<year>2011</year>
+			<year>2012</year>
+			<year>2013</year>
+			<holder>Netkiller(Neo Chan). All rights reserved.</holder>
+		</copyright>
+
+		<publisher>
+			<publishername>Neo</publishername>
+		</publisher>
+		<isbn>ISBN#</isbn>
+		<edition>User's Guide version 1.0 for Linux</edition>
+		<pubdate>$Date: 2013-04-10 15:03:49 +0800 (Wed, 10 Apr 2013) $</pubdate>
+		<releaseinfo>文档创建日期2010-11-18</releaseinfo>
+
+		&book.info.legalnotice.xml;
+		&book.info.abstract.xml;
+		<keywordset>
+			<keyword>openfiler, freenas</keyword>
+			<keyword>proftpd,pureftpd,vsftpd</keyword>
+			<keyword>rsync,wget,samba</keyword>
+		</keywordset>
+	</info>
+
+
+<!-- =========================================================================== -->
+	&book.dedication.xml;
+	&book.preface.xml;
+	&chapter.storage.xml;
+<!-- =========================================================================== -->
+
+<!--
+	&book.appendix;
+	&book.history;
+-->
+</book>

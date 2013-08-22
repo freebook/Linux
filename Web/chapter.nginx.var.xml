@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.nginx.var.xml 654 2013-07-30 07:30:20Z netkiller $ -->
+<section id="nginx.var">
+	<title>Nginx 变量</title>
+	<para>可用的全局变量</para>
+	<screen>
+$args
+$content_length
+$content_type
+$document_root
+$document_uri
+$host
+$http_user_agent
+$http_cookie
+$http_referer
+$limit_rate
+$request_body_file
+$request_method
+$remote_addr
+$remote_port
+$remote_user
+$request_filename
+$request_uri
+$query_string
+$scheme
+$server_protocol
+$server_addr
+$server_name
+$server_port
+$uri
+	</screen>
+	<section id="http_user_agent">
+		<title>http_user_agent</title>
+		<screen>
+## Block http user agent - wget ##
+if ($http_user_agent ~* (Wget|Curl) ) {
+   return 403;
+}
+
+## Block Software download user agents ##
+if ($http_user_agent ~* LWP::Simple|BBBike|wget) {
+       return 403;
+}
+
+if ($http_user_agent ~ (msnbot|scrapbot) ) {
+    return 403;
+}
+
+
+if ($http_user_agent ~ (Spider|Robot) ) {
+    return 403;
+}
+
+		</screen>
+		<section>
+			<title>禁止非浏览器访问</title>
+			<para>禁止非浏览器访问</para>
+			<screen>
+if ($http_user_agent ~ ^$) {
+	return 412;
+}
+			</screen>
+			<para>测试是否生效</para>
+			<screen>
+tail -f /var/log/nginx/www.mydomain.com.access.log
+			</screen>
+			<screen>
+telnet 192.168.2.10 80
+GET /index.html HTTP/1.0
+Host: www.mydomain.com
+			</screen>
+		</section>
+		<section>
+			<title>http_user_agent 没有设置不允许访问</title>
+			<screen>
+	if ($http_user_agent = "") { return 403; }
+			</screen>
+			<para>验证测试，首先使用curl -A 指定一个 空的User Agent，应该返回 403.</para>
+			<screen>
+			<![CDATA[
+curl -A ""  http://www.example.com/xml/data.json
+
+<html>
+<head><title>403 Forbidden</title></head>
+<body bgcolor="white">
+<center><h1>403 Forbidden</h1></center>
+<hr><center>nginx</center>
+</body>
+</html>
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section id="http_referer">
+		<title>http_referer</title>
+		<screen>
+if ($http_referer ~* "PHP/5.2.14"){return 403;}
+		</screen>
+		<section>
+			<title>valid_referers/invalid_referer</title>
+			<screen>
+valid_referers none blocked *.example.com example.com;
+if ($invalid_referer) {
+	#rewrite ^(.*)$  http://www.example.com/cn/$1;
+	return 403;
+}
+			</screen>
+		</section>
+	</section>
+	<section id="request_filename">
+		<title>request_filename</title>
+		<screen>
+    location / {
+        root   /www/mydomain.com/info.mydomain.com;
+        index  index.html;
+
+		rewrite ^/$  http://www.mydomain.com/;
+
+		valid_referers none blocked *.mydomain.com;
+		if ($invalid_referer) {
+			return 403;
+		}
+
+        proxy_intercept_errors  on;
+	    proxy_set_header  X-Real-IP  $remote_addr;
+        proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header  Host            $host;
+
+
+        if (!-f $request_filename) {
+          proxy_pass http://old.mydomain.com;
+          break;
+        }
+    }
+		</screen>
+	</section>
+	<section id="request_uri">
+		<title>request_uri</title>
+		<screen>
+server {
+    listen       80;
+    server_name  quote.mydomain.com;
+
+    charset utf-8;
+    access_log  /var/log/nginx/quote.mydomain.com.access.log  main;
+
+    location / {
+        root   /www/mydomain.com/info.mydomain.com;
+        index  index.html ;
+
+		rewrite ^/$  http://www.mydomain.com/;
+
+		valid_referers none blocked *.mydomain.com;
+		if ($invalid_referer) {
+			#rewrite ^(.*)$  http://www.mydomain.com/cn/$1;
+			return 403;
+		}
+
+        proxy_intercept_errors  on;
+	    proxy_set_header  X-Real-IP  $remote_addr;
+        proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header  Host            $host;
+
+		if ( $request_uri ~ "^/xml/(sge|cgse|futures|stock|bonds)\.xml$") {
+              proxy_pass http://21.16.22.12/$request_uri;
+		break;
+        }
+
+        if (!-f $request_filename) {
+	          proxy_pass http://cms.mydomain.com;
+	          break;
+        }
+
+    }
+
+    location ~ \.xml$ {
+        proxy_pass http://21.16.22.12/public/datas$request_uri;
+        break;
+    }
+
+    location ~* ^/public/datas/\w+\.xml$ {
+        proxy_pass http://21.16.22.12/$request_uri;
+        break;
+    }
+}
+		</screen>
+		<screen>
+#add for yiiframework
+        if (!-e $request_filename){
+                   rewrite (.*) /index.php break;
+        }
+
+        location ~ .*\.php?$
+        {
+                  #fastcgi_pass  unix:/tmp/php-cgi.sock;
+                  include fcgi.conf;
+                  fastcgi_pass  127.0.0.1:10080;
+                  fastcgi_index index.php;
+
+                  set $path_info $request_uri;
+
+                  if ($request_uri ~ "^(.*)(\?.*)$") {
+                        set $path_info $1;
+                  }
+                  fastcgi_param PATH_INFO $path_info;
+        }
+#end for yiiframework
+		</screen>
+	</section>
+	<section id="remote_addr">
+		<title>remote_addr</title>
+		<screen>
+location /name/(match) {
+    if ($remote_addr !~ ^10.10.20) {
+        limit_rate 10k;
+    }
+
+    proxy_buffering off;
+    proxy_pass http://10.10.20.1/${1}.html;
+}
+		</screen>
+		<screen>
+location ~ /(\d+) {
+    if ($remote_addr ~ (\d+)\.\d+\.) {
+
+    }
+
+    echo $1;
+}
+		</screen>
+		<screen>
+$ curl 127.0.0.1/134
+127
+
+$ curl 192.168.0.1/134
+192
+		</screen>
+	</section>
+	<section>
+		<title>自定义变量</title>
+		<screen>
+if ( $host ~* (.*)\.(.*)\.(.*)) {
+	set $subdomain $1;
+}
+location / {
+    root  html/$subdomain;
+    index index.html index.php;
+}
+		</screen>
+		<screen>
+if ( $host ~* (\b(?!www\b)\w+)\.\w+\.\w+ ) {
+    set $subdomain /$1;
+}
+
+location / {
+    root /www/public_html$subdomain;
+    index index.html index.php;
+}
+		</screen>
+	</section>
+</section>

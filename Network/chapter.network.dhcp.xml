@@ -1,0 +1,56 @@
+<chapter id="dhcp">
+	<title>DHCP</title>
+	<section id="dhcp.server">
+		<title>DHCP Server</title>
+		<para></para>
+		<para>eth0 公网ip</para>
+		<para>eth1 192.168.0.1 255.255.255.0</para>
+		<para>eth2 192.168.1.1 255.255.255.0</para>
+		<screen>
+		<![CDATA[
+dhcpd.conf配置内容如下：
+
+#Sample /etc/dhcpd.conf
+default-lease-time 1200;
+max-lease-time 19200;
+option domain-name-servers 202.102.192.68,202.102.199.68; 
+#option domain-name "test.test";
+ddns-update-style ad-hoc;
+
+subnet 192.168.0.0 netmask 255.255.255.0 {
+	range 192.168.0.20 192.168.0.200;
+	option subnet-mask 255.255.255.0;
+	option broadcast-address 192.168.0.255;
+	option routers 192.168.0.1;
+}
+subnet 192.168.1.0 netmask 255.255.255.0 {
+	range 192.168.1.20 192.168.1.200;
+	option subnet-mask 255.255.255.0;
+	option broadcast-address 192.168.1.255;
+	option routers 192.168.1.1;
+}		
+		]]>
+		</screen>
+	</section>
+	<section id="dhcp.client">
+		<title>dhclient</title>
+		<para>all interface</para>
+		<screen>
+$ sudo dhclient	
+		</screen>
+		<para>eth0</para>
+		<screen>
+$ sudo dhclient eth0	
+		</screen>
+	</section>
+	<section id="dhcp.windows">
+		<title>release matching connections</title>
+		<para>windows</para>
+		<screen>
+		<![CDATA[
+  > ipconfig /release
+  > ipconfig /renew
+  		]]>
+		</screen>
+	</section>
+</chapter>

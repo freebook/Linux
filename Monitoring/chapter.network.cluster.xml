@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="ganglia">
+	<title>Ganglia</title>
+	<para>Ganglia是一个集群监控软件</para>
+	<para>Ganglia 是一个开源项目，它为高性能计算系统（例如集群和网格）提供了一个免费的可扩展分布式监视系统。</para>
+
+	<section>
+		<title>Server</title>
+		<screen>
+sudo apt-get install ganglia-monitor ganglia-webfrontend
+
+Restart apache2? 选择 Yes
+
+sudo ln -s /usr/share/ganglia-webfrontend/ /var/www/ganglia
+		</screen>
+		<para>/etc/ganglia/gmond.conf</para>
+		<screen>
+name = "my servers"  （只改了这个地方，改成"my cluster”)
+		</screen>
+		<para>在浏览器输入”http://localhost/ganglia”就可以看到Web UI</para>
+	</section>
+	<section>
+		<title>Client</title>
+		<screen>
+# apt-get install ganglia-monitor
+$ sudo vim /etc/ganglia/gmond.conf
+sudo cp /etc/ganglia/gmond.conf  /etc/ganglia/gmond.conf.old
+
+sudo cp /etc/ganglia/gmetad.conf /etc/ganglia/gmetad.conf.old
+sudo vim /etc/ganglia/gmetad.conf
+
+$ sudo  /etc/init.d/gmetad restart
+
+$ sudo  /etc/init.d/ganglia-monitor restart
+		</screen>
+		<para>ip route add 239.2.11.71 dev eth1 </para>
+	</section>
+	<section>
+		<title>Plugin</title>
+	</section>
+	<section id="centos.ganglia">
+		<title>Installing Ganglia on Centos</title>
+		<para>http://www.jansipke.nl/installing-ganglia-on-centos</para>
+		<para>启动</para>
+		<screen>
+# service gmond start
+Starting GANGLIA gmond:                                    [  OK  ]
+# chkconfig --list gmond
+gmond           0:off   1:off   2:off   3:off   4:off   5:off   6:off
+# chkconfig gmond on
+# chkconfig --list gmond
+gmond           0:off   1:off   2:on    3:on    4:on    5:on    6:off
+		</screen>
+<!--
+vim /etc/gmond.conf
+
+:%s#239.2.11.71#172.16.1.2#g
+ -->
+	</section>
+</section>
+	&chapter.network.lvs.xml;

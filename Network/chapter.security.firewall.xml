@@ -1,0 +1,585 @@
+<chapter id="firewall">
+	<title>Firewall</title>
+	<chapterinfo>
+		<abstract>
+		  <para>Linux Firewall 安装与配置</para>
+		</abstract>
+		<keywordset>
+			<keyword>iptables</keyword>
+			<keyword>ufw</keyword>
+			<keyword>shorewall</keyword>
+		</keywordset>
+	</chapterinfo>
+	&chapter.security.firewall.iptables;
+	<section id="ufw">
+		<title>ufw - program for managing a netfilter firewall</title>
+		<procedure>
+	    	<step><para>Installation</para>
+				<para>sudo apt-get install ufw </para>
+	    	</step>
+	    	<step>
+				<para>Enable | Disable</para>
+				<para>sudo ufw enable | disable</para>
+				<screen>
+neo@master:~$ sudo ufw enable
+Firewall started and enabled on system startup
+				</screen>
+			</step>
+	  		<step>
+	  			<para>Default Rule</para>
+	  			<para>sudo ufw default deny </para>
+	  			<para>sudo ufw default allow</para>
+	  			<screen>
+neo@master:~$ sudo ufw default deny
+Default policy changed to 'deny'
+(be sure to update your rules accordingly)
+	  			</screen>
+	  		</step>
+			<step><para>Rule Allow|Deny</para>
+				<para>sudo ufw allow|deny [service] </para>
+				<para>打开或关闭某个端口，例如：</para>
+				<literallayout>
+sudo ufw allow smtp　				允许所有的外部IP访问本机的25/tcp (smtp)端口
+sudo ufw allow 22/tcp 				允许所有的外部IP访问本机的22/tcp (ssh)端口
+sudo ufw allow 53 					允许外部访问53端口(tcp/udp)
+sudo ufw allow from 172.16.1.100 	允许此IP访问所有的本机端口
+sudo ufw allow proto udp 192.168.0.1 port 53 to 192.168.0.2 port 53
+sudo ufw deny smtp 					禁止外部访问smtp服务
+sudo ufw delete allow smtp 			删除上面建立的某条规则
+				</literallayout>
+				<para>UFW 使用范例</para>
+				<literallayout>
+UFW 使用范例：
+
+允许 53 端口
+
+$ sudo ufw allow 53
+
+禁用 53 端口
+
+$ sudo ufw delete allow 53
+
+允许 80 端口
+
+$ sudo ufw allow 80/tcp
+
+禁用 80 端口
+
+$ sudo ufw delete allow 80/tcp
+
+允许 smtp 端口
+
+$ sudo ufw allow smtp
+
+删除 smtp 端口的许可
+
+$ sudo ufw delete allow smtp
+
+允许某特定 IP
+
+$ sudo ufw allow from 192.168.254.254
+
+删除上面的规则
+
+$ sudo ufw delete allow from 192.168.254.254
+
+$ sudo ufw allow ssh
+$ sudo ufw allow www
+$ sudo ufw allow smtp
+
+				</literallayout>
+				<screen>
+neo@master:~$ sudo ufw allow ssh
+Rule added
+				</screen>
+			</step>
+			<step><para>Status</para>
+				<para>sudo ufw status </para>
+				<screen>
+neo@master:~$ sudo ufw allow www
+Rule added
+neo@master:~$ sudo ufw status
+Firewall loaded
+
+To                         Action  From
+--                         ------  ----
+25:tcp                     ALLOW   Anywhere
+22:tcp                     ALLOW   Anywhere
+22:udp                     ALLOW   Anywhere
+80:tcp                     ALLOW   Anywhere
+80:udp                     ALLOW   Anywhere
+				</screen>
+			</step>
+			<step><para>Rule Delete</para>
+				<para>sudo ufw delete allow|deny RULE</para>
+				<screen>
+neo@master:~$ sudo ufw status
+Firewall loaded
+
+To                         Action  From
+--                         ------  ----
+25:tcp                     ALLOW   Anywhere
+22:tcp                     ALLOW   Anywhere
+22:udp                     ALLOW   Anywhere
+80:tcp                     ALLOW   Anywhere
+80:udp                     ALLOW   Anywhere
+
+neo@master:~$ sudo ufw delete allow smtp
+Rule deleted
+neo@master:~$ sudo ufw status
+Firewall loaded
+
+To                         Action  From
+--                         ------  ----
+22:tcp                     ALLOW   Anywhere
+22:udp                     ALLOW   Anywhere
+80:tcp                     ALLOW   Anywhere
+80:udp                     ALLOW   Anywhere
+
+				</screen>
+			</step>
+			<step><para>logging</para>
+				<para>sudo ufw logging on|off</para>
+				<screen>
+neo@master:~$ sudo ufw logging ON
+Logging enabled
+				</screen>
+			</step>
+			<step>
+				<para>iptales</para>
+				<screen>
+neo@master:~$ sudo iptables -L
+Chain INPUT (policy DROP)
+target     prot opt source               destination
+ufw-before-input  all  --  anywhere             anywhere
+ufw-after-input  all  --  anywhere             anywhere
+
+Chain FORWARD (policy DROP)
+target     prot opt source               destination
+ufw-before-forward  all  --  anywhere             anywhere
+ufw-after-forward  all  --  anywhere             anywhere
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+ufw-before-output  all  --  anywhere             anywhere
+ufw-after-output  all  --  anywhere             anywhere
+
+Chain ufw-after-forward (1 references)
+target     prot opt source               destination
+LOG        all  --  anywhere             anywhere            limit: avg 3/min burst 10 LOG level warning prefix `[UFW BLOCK FORWARD]: '
+RETURN     all  --  anywhere             anywhere
+
+Chain ufw-after-input (1 references)
+target     prot opt source               destination
+RETURN     udp  --  anywhere             anywhere            udp dpt:netbios-ns
+RETURN     udp  --  anywhere             anywhere            udp dpt:netbios-dgm
+RETURN     tcp  --  anywhere             anywhere            tcp dpt:netbios-ssn
+RETURN     tcp  --  anywhere             anywhere            tcp dpt:microsoft-ds
+RETURN     udp  --  anywhere             anywhere            udp dpt:bootps
+RETURN     udp  --  anywhere             anywhere            udp dpt:bootpc
+LOG        all  --  anywhere             anywhere            limit: avg 3/min burst 10 LOG level warning prefix `[UFW BLOCK INPUT]: '
+RETURN     all  --  anywhere             anywhere
+
+Chain ufw-after-output (1 references)
+target     prot opt source               destination
+RETURN     all  --  anywhere             anywhere
+
+Chain ufw-before-forward (1 references)
+target     prot opt source               destination
+ufw-user-forward  all  --  anywhere             anywhere
+RETURN     all  --  anywhere             anywhere
+
+Chain ufw-before-input (1 references)
+target     prot opt source               destination
+ACCEPT     all  --  anywhere             anywhere
+ACCEPT     all  --  anywhere             anywhere            ctstate RELATED,ESTABLISHED
+DROP       all  --  anywhere             anywhere            ctstate INVALID
+ACCEPT     icmp --  anywhere             anywhere            icmp destination-unreachable
+ACCEPT     icmp --  anywhere             anywhere            icmp source-quench
+ACCEPT     icmp --  anywhere             anywhere            icmp time-exceeded
+ACCEPT     icmp --  anywhere             anywhere            icmp parameter-problem
+ACCEPT     icmp --  anywhere             anywhere            icmp echo-request
+ACCEPT     udp  --  anywhere             anywhere            udp spt:bootps dpt:bootpc
+ufw-not-local  all  --  anywhere             anywhere
+ACCEPT     all  --  base-address.mcast.net/4  anywhere
+ACCEPT     all  --  anywhere             base-address.mcast.net/4
+ufw-user-input  all  --  anywhere             anywhere
+RETURN     all  --  anywhere             anywhere
+
+Chain ufw-before-output (1 references)
+target     prot opt source               destination
+ACCEPT     all  --  anywhere             anywhere
+ACCEPT     tcp  --  anywhere             anywhere            state NEW,RELATED,ESTABLISHED
+ACCEPT     udp  --  anywhere             anywhere            state NEW,RELATED,ESTABLISHED
+ufw-user-output  all  --  anywhere             anywhere
+RETURN     all  --  anywhere             anywhere
+
+Chain ufw-not-local (1 references)
+target     prot opt source               destination
+RETURN     all  --  anywhere             anywhere            ADDRTYPE match dst-type LOCAL
+RETURN     all  --  anywhere             anywhere            ADDRTYPE match dst-type MULTICAST
+RETURN     all  --  anywhere             anywhere            ADDRTYPE match dst-type BROADCAST
+LOG        all  --  anywhere             anywhere            limit: avg 3/min burst 10 LOG level warning prefix `[UFW BLOCK NOT-TO-ME]: '
+DROP       all  --  anywhere             anywhere
+
+Chain ufw-user-forward (1 references)
+target     prot opt source               destination
+RETURN     all  --  anywhere             anywhere
+
+Chain ufw-user-input (1 references)
+target     prot opt source               destination
+ACCEPT     tcp  --  anywhere             anywhere            tcp dpt:ssh
+ACCEPT     udp  --  anywhere             anywhere            udp dpt:ssh
+ACCEPT     tcp  --  anywhere             anywhere            tcp dpt:www
+ACCEPT     udp  --  anywhere             anywhere            udp dpt:www
+RETURN     all  --  anywhere             anywhere
+
+Chain ufw-user-output (1 references)
+target     prot opt source               destination
+RETURN     all  --  anywhere             anywhere
+
+				</screen>
+			</step>
+		</procedure>
+		<section>
+			<title>/etc/default/ufw</title>
+			<screen>
+$ sudo vim /etc/default/ufw
+# /etc/default/ufw
+#
+
+# set to yes to apply rules to support IPv6 (no means only IPv6 on loopback
+# accepted). You will need to 'disable' and then 'enable' the firewall for
+# the changes to take affect.
+IPV6=no
+
+# set the default input policy to ACCEPT, DROP or REJECT.  Please note that if
+# you change this you will most likely want to adjust your rules
+DEFAULT_INPUT_POLICY="DROP"
+
+# set the default output policy to ACCEPT, DROP, or REJECT.  Please note that
+# if you change this you will most likely want to adjust your rules
+DEFAULT_OUTPUT_POLICY="ACCEPT"
+
+# set the default forward policy to ACCEPT, DROP or REJECT.  Please note that
+# if you change this you will most likely want to adjust your rules
+#DEFAULT_FORWARD_POLICY="DROP"
+DEFAULT_FORWARD_POLICY="ACCEPT"
+
+# set the default application policy to ACCEPT, DROP, REJECT or SKIP. Please
+# note that setting this to ACCEPT may be a security risk. See 'man ufw' for
+# details
+DEFAULT_APPLICATION_POLICY="SKIP"
+
+# By default, ufw only touches its own chains. Set this to 'yes' to have ufw
+# manage the built-in chains too. Warning: setting this to 'yes' will break
+# non-ufw managed firewall rules
+MANAGE_BUILTINS=no
+
+#
+# IPT backend
+#
+# only enable if using iptables backend
+IPT_SYSCTL=/etc/ufw/sysctl.conf
+
+# extra connection tracking modules to load
+IPT_MODULES="nf_conntrack_ftp nf_nat_ftp nf_conntrack_irc nf_nat_irc"
+
+			</screen>
+		</section>
+		<section>
+			<title>ip_forward</title>
+			<screen>
+$ sudo vim /etc/ufw/sysctl.conf
+net/ipv4/ip_forward=1
+			</screen>
+		</section>
+		<section>
+			<title>DHCP</title>
+			<screen>
+neo@netkiller:~$ sudo ufw allow 67/udp
+Rules updated
+neo@netkiller:~$ sudo ufw allow 68/udp
+Rules updated
+			</screen>
+		</section>
+		<section>
+			<title>Samba</title>
+			<screen>
+neo@netkiller:~$ sudo ufw allow 137/tcp
+Rule added
+neo@netkiller:~$ sudo ufw allow 445/tcp
+Rule added
+neo@netkiller:~$ sudo ufw allow 138/udp
+Rule added
+neo@netkiller:~$ sudo ufw allow 139/udp
+Rule added
+			</screen>
+		</section>
+	</section>
+
+<section id="shorewall">
+	<title>Shorewall</title>
+	<!-- http://net.zdnet.com.cn/files/list-0-0-94191-1-1.htm -->
+	<!-- http://wiki.ubuntu.org.cn/ShoreWall%E5%AE%89%E8%A3%85%E8%AE%BE%E7%BD%AE -->
+	<para><ulink url="http://www.shorewall.net/">Shorewall</ulink></para>
+
+	<section id="shorewall.install">
+		<title>Installation Instructions</title>
+		<section id="shorewall.rpm">
+			<title>Install using RPM</title>
+			<screen>
+# rpm -ivh http://slovakia.shorewall.net/pub/shorewall/CURRENT_STABLE_VERSION_IS_4.4/shorewall-4.4.25/shorewall-4.4.25-3.noarch.rpm
+Retrieving http://slovakia.shorewall.net/pub/shorewall/CURRENT_STABLE_VERSION_IS_4.4/shorewall-4.4.25/shorewall-4.4.25-3.noarch.rpm
+warning: /var/tmp/rpm-tmp.qc6WVw: Header V4 DSA/SHA1 Signature, key ID 6c562ac4: NOKEY
+Preparing...                ########################################### [100%]
+   1:shorewall              ########################################### [100%]
+			</screen>
+		</section>
+		<section id="shorewall.apt">
+			<title>Install using apt-get</title>
+			<screen>
+netkiller@shenzhen:~$ apt-cache search shorewall
+shorewall - Shoreline Firewall (Shorewall), a high-level tool for configuring Netfilter
+shorewall-doc - documentation for Shorewall firewall
+shorewall-lite - Shorewall (lite version), a high-level tool for configuring Netfilter
+netkiller@shenzhen:~$
+			</screen>
+			<para>install</para>
+			<screen>
+sudo apt-get install shorewall
+			</screen>
+			<para>copy config file to /etc/shorewall/</para>
+			<screen>
+sudo cp /usr/share/doc/shorewall/default-config/modules /etc/shorewall/
+sudo cp /usr/share/doc/shorewall/default-config/policy /etc/shorewall/
+sudo cp /usr/share/doc/shorewall/default-config/nat /etc/shorewall/
+sudo cp /usr/share/doc/shorewall/default-config/zones /etc/shorewall/
+sudo cp /usr/share/doc/shorewall/default-config/maclist /etc/shorewall/
+sudo cp /usr/share/doc/shorewall/default-config/blacklist /etc/shorewall/
+
+sudo cp /usr/share/doc/shorewall/default-config/interfaces /etc/shorewall/
+sudo cp /usr/share/doc/shorewall/default-config/rules /etc/shorewall/
+sudo cp /usr/share/doc/shorewall/default-config/hosts /etc/shorewall/
+sudo cp /usr/share/doc/shorewall/default-config/masq /etc/shorewall/
+			</screen>
+		</section>
+	</section>
+	<section id="shorewall.configuring">
+		<title>Configuring Shorewall</title>
+		<para></para>
+
+		<procedure>
+			<title>shorewall.conf</title>
+			<step>
+				<para>STARTUP_ENABLED</para>
+				<para>STARTUP_ENABLED=No</para>
+				<para>改为</para>
+				<para>STARTUP_ENABLED=Yes</para>
+			</step>
+			<step>
+				<para>IP_FORWARDING</para>
+				<para>IP_FORWARDING关闭与开启</para>
+				<para>IP_FORWARDING=On</para>
+				<para>IP_FORWARDING=Off</para>
+				<screen>
+IP_FORWARDING=On
+				</screen>
+			</step>
+			<step><para></para>
+				<para></para>
+				<screen>
+
+				</screen>
+			</step>
+			<step><para></para>
+				<screen>
+
+				</screen>
+			</step>
+			<step><para></para>
+				<para></para>
+				<para></para>
+				<screen>
+				</screen>
+			</step>
+
+			<step><para></para>
+				<para></para>
+				<para></para>
+				<para></para>
+				<screen>
+				</screen>
+	    	</step>
+	    	<step><para>启动防火墙</para>
+	    		<para>sudo shorewall start</para>
+	    	</step>
+		</procedure>
+
+		<section>
+			<title>zones</title>
+			<screen>
+# cat /etc/shorewall/zones
+#
+# Shorewall version 4 - Zones File
+#
+# For information about this file, type "man shorewall-zones"
+#
+# The manpage is also online at
+# http://www.shorewall.net/manpages/shorewall-zones.html
+#
+###############################################################################
+#ZONE   TYPE            OPTIONS         IN                      OUT
+#                                       OPTIONS                 OPTIONS
+#fw     firewall
+ouside  wan
+inside  lan
+dmz     dmz
+			</screen>
+		</section>
+		<section>
+			<title>policy</title>
+			<screen>
+# cat /etc/shorewall/policy
+#
+# Shorewall version 4 - Policy File
+#
+# For information about entries in this file, type "man shorewall-policy"
+#
+# The manpage is also online at
+# http://www.shorewall.net/manpages/shorewall-policy.html
+#
+###############################################################################
+#SOURCE DEST    POLICY          LOG     LIMIT:          CONNLIMIT:
+#                               LEVEL   BURST           MASK
+inside  outside ACCEPT
+dmz     outside ACCEPT
+inside  dmz     ACCEPT
+
+outside all     DROP
+all     all     REJECT
+
+			</screen>
+		</section>
+		<section>
+			<title>interfaces</title>
+			<screen>
+# cat /etc/shorewall/interfaces
+#
+# Shorewall version 4 - Interfaces File
+#
+# For information about entries in this file, type "man shorewall-interfaces"
+#
+# The manpage is also online at
+# http://www.shorewall.net/manpages/shorewall-interfaces.html
+#
+###############################################################################
+#ZONE   INTERFACE       BROADCAST       OPTIONS
+outside eth0    detect
+inside  eth1    detect
+dmz     eth2    detect
+			</screen>
+		</section>
+		<section>
+			<title>masq</title>
+			<screen>
+# cat /etc/shorewall/masq
+#
+# Shorewall version 4 - Masq file
+#
+# For information about entries in this file, type "man shorewall-masq"
+#
+# The manpage is also online at
+# http://www.shorewall.net/manpages/shorewall-masq.html
+#
+#############################################################################################
+#INTERFACE:DEST         SOURCE          ADDRESS         PROTO   PORT(S) IPSEC   MARK    USER/
+#                                                                                       GROUP
+eth0    192.168.0.0/24
+			</screen>
+		</section>
+		<section>
+			<title>rules</title>
+			<screen>
+# cat /etc/shorewall/rules
+#
+# Shorewall version 4 - Rules File
+#
+# For information on the settings in this file, type "man shorewall-rules"
+#
+# The manpage is also online at
+# http://www.shorewall.net/manpages/shorewall-rules.html
+#
+######################################################################################################################################################################################
+#ACTION         SOURCE          DEST            PROTO   DEST    SOURCE          ORIGINAL        RATE            USER/   MARK    CONNLIMIT       TIME         HEADERS         SWITCH
+#                                                       PORT    PORT(S)         DEST            LIMIT           GROUP
+#SECTION BLACKLIST
+#SECTION ALL
+#SECTION ESTABLISHED
+#SECTION RELATED
+SECTION NEW
+ACCEPT  any     outside tcp     http
+ACCEPT  any     inside  tcp     http
+ACCEPT  dmz     inside  tcp     smtp
+ACCEPT 	any 	inside	tcp 	ssh
+ACCEPT 	any 	dmz		tcp 	ssh
+ACCEPT 	dmz 	any		tcp 	ssh
+SSH(ACCEPT) net all        -           -            -         -                s:1/min:3
+			</screen>
+		</section>
+		<section>
+			<title>params</title>
+			<screen>
+# cat /etc/shorewall/params
+#
+# Shorewall version 4 - Params File
+#
+# /etc/shorewall/params
+#
+#       Assign any variables that you need here.
+#
+#       It is suggested that variable names begin with an upper case letter
+#       to distinguish them from variables used internally within the
+#       Shorewall programs
+#
+#       Example:
+#
+#               NET_IF=eth0
+#               NET_BCAST=130.252.100.255
+#               NET_OPTIONS=routefilter,norfc1918
+#
+#       Example (/etc/shorewall/interfaces record):
+#
+#               net     $NET_IF         $NET_BCAST      $NET_OPTIONS
+#
+#       The result will be the same as if the record had been written
+#
+#               net     eth0            130.252.100.255 routefilter,norfc1918
+#
+###############################################################################
+
+#LAST LINE -- DO NOT REMOVE
+			</screen>
+		</section>
+	</section>
+</section>
+
+	<section id="iptables.gui">
+		<title>Firewall GUI Tools</title>
+		<para>KMyFirewall</para>
+		<para>Firestarter</para>
+		<para><ulink url="http://www.kmyfirewall.org/">Firewall Builder</ulink></para>
+	</section>
+	<section id="endian">
+		<title>Endian Firewall</title>
+		<para><ulink url="http://www.endian.com/">http://www.endian.com/</ulink></para>
+	</section>
+	<section id="smooth">
+		<title>Smooth Firewall</title>
+		<para></para>
+	</section>
+	<section>
+		<title>Sphirewall</title>
+		<para>http://sphirewall.net/</para>
+	</section>
+</chapter>

@@ -1,0 +1,279 @@
+<chapter id="shell.tui">
+	<title>Shell TUI</title>
+	<para>dialog, whiptail, gdialog, kdialog and nautilus</para>
+	<section id="resize">
+		<title>terminal</title>
+		<section id="resize">
+			<title>resize - set TERMCAP and terminal settings to current xterm window size</title>
+			<para>显示终端屏幕的尺寸</para>
+			<screen>
+$ resize
+COLUMNS=151;
+LINES=46;
+export COLUMNS LINES;		
+			</screen>
+			<para>设置终端屏幕的尺寸</para>
+			<screen>
+eval `resize`
+			</screen>
+		</section>			
+		<section>
+			<title>tset, reset - terminal initialization</title>
+			<screen>
+tset -e ^? 设置Backspace删除前面一个字符
+tset -k ^C 设置删除一行
+			</screen>
+			<para>建议使用stty替代tset</para>
+		</section>
+		<section>
+			<title>stty - change and print terminal line settings</title>
+			<screen>
+$ stty
+speed 38400 baud; line = 0;
+eol = M-^?; eol2 = M-^?; swtch = M-^?;
+ixany iutf8
+
+$ stty -a
+speed 115200 baud; rows 46; columns 151; line = 0;
+intr = ^C; quit = ^\; erase = ^?; kill = ^U; eof = ^D; eol = M-^?; eol2 = M-^?; swtch = M-^?; start = ^Q; stop = ^S; susp = ^Z; rprnt = ^R; werase = ^W;
+lnext = ^V; flush = ^O; min = 1; time = 0;
+-parenb -parodd cs8 hupcl -cstopb cread -clocal -crtscts
+-ignbrk brkint -ignpar -parmrk -inpck -istrip -inlcr -igncr icrnl ixon -ixoff -iuclc ixany imaxbel iutf8
+opost -olcuc -ocrnl onlcr -onocr -onlret -ofill -ofdel nl0 cr0 tab0 bs0 vt0 ff0
+isig icanon iexten echo echoe echok -echonl -noflsh -xcase -tostop -echoprt echoctl echoke
+
+			</screen>
+			<screen>
+OLDCONFIG=`stty -g`      # save configuration
+stty -echo               # do not display password
+echo "Enter password: \c"
+read PASSWD              # get the password
+stty $OLDCONFIG          # restore configuration			
+			</screen>
+		</section>				
+	</section>
+	<section id="tput">
+		<title>tput</title>
+	</section>
+	<section id="dialog">
+		<title>dialog</title>
+		<screen>
+neo@netkiller:~$ sudo apt-get install dialog		
+		</screen>
+		<section>
+			<title>--inputbox</title>
+			<screen>
+result=$(dialog --output-fd 1 --inputbox "Enter some text" 10 30)
+echo Result=$result		
+			</screen>
+		</section>
+	</section>
+	<section id="whiptail">
+		<title>whiptail - display dialog boxes from shell scripts</title>
+		<para></para>
+		<section>
+			<title>--msgbox</title>
+			<screen>
+whiptail --title "Example Dialog" --msgbox "This is an example of a message box. You must hit OK to continue." 8 78
+			</screen>
+			<screen>
+            <![CDATA[                                                   
+ ┌─────────────────────────────┤ Example Dialog ├─────────────────────────────┐ 
+ │                                                                            │ 
+ │ This is an example of a message box. You must hit OK to continue.          │ 
+ │                                                                            │ 
+ │                                                                            │ 
+ │                                   <Ok>                                     │ 
+ │                                                                            │ 
+ └────────────────────────────────────────────────────────────────────────────┘ 
+            ]]>                                                                    
+			</screen>
+		</section>
+		<section>
+			<title>--infobox</title>
+			<screen>
+whiptail --title "Example Dialog" --infobox "This is an example of a message box. You must hit OK to continue." 8 78
+			</screen>
+		</section>
+		<section>
+			<title>--yesno</title>
+			<example>
+				<title>whiptail - yesno</title>
+				<screen>
+#! /bin/bash
+# http://archives.seul.org/seul/project/Feb-1998/msg00069.html
+if (whiptail --title "PPP Configuration" --backtitle "Welcome to SEUL" --yesno "
+Do you want to configure your PPP connection?"  10 40 )
+then 
+        echo -e "\nWell, you better get busy!\n"
+elif    (whiptail --title "PPP Configuration" --backtitle "Welcome to
+SEUL" --yesno "           Are you sure?" 7 40)
+        then
+                echo -e "\nGood, because I can't do that yet!\n"
+        else
+                echo -e "\nToo bad, I can't do that yet\n"
+fi
+				</screen>
+				<screen>
+whiptail --title "Example Dialog" --yesno "This is an example of a yes/no box." 8 78
+ 
+exitstatus=$?
+if [ $exitstatus = 0 ]; then
+    echo "User selected Yes."
+else
+    echo "User selected No."
+fi
+ 
+echo "(Exit status was $exitstatus)"
+				</screen>
+			</example>
+			<para>设置--yes-button，--no-button，--ok-button 按钮的文本</para>
+			<screen>
+whiptail --title "Example Dialog" --yesno "This is an example of a message box. You must hit OK to continue." 8 78 --no-button 取消 --yes-button 确认
+			</screen>			
+		</section>	
+		<section>
+			<title>--inputbox</title>
+			<example>
+				<title>whiptail - inputbox</title>
+				<screen>
+result=$(tempfile) ; chmod go-rw $result
+whiptail --inputbox "Enter some text" 10 30 2>$result
+echo Result=$(cat $result)
+rm $result
+				</screen>
+				<screen>
+				<![CDATA[
+                         ┌────────────────────────────┐                         
+                         │ Enter some text            │                         
+                         │                            │                         
+                         │ __________________________ │                         
+                         │                            │                         
+                         │                            │                         
+                         │                            │                         
+                         │    <Ok>        <Cancel>    │                         
+                         │                            │                         
+                         └────────────────────────────┘                         
+				]]>
+				</screen>
+				<screen>
+				<![CDATA[
+COLOR=$(whiptail --inputbox "What is your favorite Color?" 8 78 --title "Example Dialog" 3>&1 1>&2 2>&3)
+ 
+exitstatus=$?
+if [ $exitstatus = 0 ]; then
+    echo "User selected Ok and entered " $COLOR
+else
+    echo "User selected Cancel."
+fi
+ 
+echo "(Exit status was $exitstatus)"				
+				]]>
+				</screen>
+			</example>
+		</section>
+		<section>
+			<title>--passwordbox</title>
+			<example>
+				<title>whiptail - passwordbox</title>
+				<screen>
+				<![CDATA[
+whiptail --title "Example Dialog" --passwordbox "This is an example of a password box. You must hit OK to continue." 8 78			
+				]]>
+				</screen>
+			</example>
+		</section>
+
+		<section>
+			<title>--textbox</title>
+			<example>
+				<title>whiptail - passwordbox</title>			
+				<screen>
+				<![CDATA[
+whiptail --title "Example Dialog" --textbox /etc/passwd 20 60
+				]]>
+				</screen>
+				<para>为文本取添加滚动条功能</para>
+				<screen>
+whiptail --title "Example Dialog" --textbox /etc/passwd 20 60 --scrolltext
+				</screen>				
+			</example>
+		</section>
+		
+		<section>
+			<title>--checklist</title>
+			<example>
+				<title>whiptail - example 1</title>
+				<screen>
+whiptail --title "Check list example" --checklist \
+"Choose user's permissions" 20 78 16 \
+"NET_OUTBOUND" "Allow connections to other hosts" ON \
+"NET_INBOUND" "Allow connections from other hosts" OFF \
+"LOCAL_MOUNT" "Allow mounting of local devices" OFF \
+"REMOTE_MOUNT" "Allow mounting of remote devices" OFF
+				</screen>
+			</example>
+		</section>	
+		<section>
+			<title>--radiolist</title>
+			<example>
+				<title>whiptail - radiolist</title>
+				<screen>
+whiptail --title "Check list example" --radiolist \
+"Choose user's permissions" 20 78 16 \
+"NET_OUTBOUND" "Allow connections to other hosts" ON \
+"NET_INBOUND" "Allow connections from other hosts" OFF \
+"LOCAL_MOUNT" "Allow mounting of local devices" OFF \
+"REMOTE_MOUNT" "Allow mounting of remote devices" OFF
+				</screen>
+			</example>
+		</section>			
+		<section>
+			<title>--menu</title>
+			<screen>
+			<![CDATA[
+whiptail --title "Menu example" --menu "Choose an option" 22 78 16 \
+"<-- Back" "Return to the main menu." \
+"Add User" "Add a user to the system." \
+"Modify User" "Modify an existing user." \
+"List Users" "List all users on the system." \
+"Add Group" "Add a user group to the system." \
+"Modify Group" "Modify a group and its list of members." \
+"List Groups" "List all groups on the system."			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+ ┌──────────────────────────────┤ Menu example ├──────────────────────────────┐ 
+ │            <-- Back     Return to the main menu.                           │ 
+ │            Add User     Add a user to the system.                          │ 
+ │            Modify User  Modify an existing user.                           │ 
+ │            List Users   List all users on the system.                      │ 
+ │            Add Group    Add a user group to the system.                    │ 
+ │            Modify Group Modify a group and its list of members.            │ 
+ │            List Groups  List all groups on the system.                     │ 
+ │                                                                            │ 
+ │                                                                            │ 
+ │                    <Ok>                        <Cancel>                    │ 
+ │                                                                            │ 
+ └────────────────────────────────────────────────────────────────────────────┘ 			
+			]]>
+			</screen>
+		</section>	
+		<section>
+			<title>--gauge</title>
+			<screen>
+			<![CDATA[
+#!/bin/bash
+{
+    for ((i = 0 ; i <= 100 ; i+=30)); do
+        sleep 1
+        echo $i
+    done
+} | whiptail --gauge "Please wait" 5 50 0	
+			]]>
+			</screen>
+		</section>	
+		
+	</section>
+</chapter>

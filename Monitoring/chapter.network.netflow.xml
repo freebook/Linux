@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="netflow">
+	<title>NetFlow</title>
+	<para>查看设备是否发送Netflow包</para>
+	<screen>
+$ sudo tcpdump -n udp port 2055
+	</screen>
+	<section id="flow-tools">
+		<title>flow-tools - collects and processes NetFlow data</title>
+		<screen>
+$ sudo apt-get install flow-tools
+		</screen>
+		<section id="flow-capture">
+			<title>flow-capture</title>
+			<screen>
+mkdir /opt/netflow
+flow-capture -z 6 -n 143 -e 8928 -V 5 -w /opt/netflow 0/0/2055
+			</screen>
+		</section>
+		<section>
+			<title></title>
+			<subtitle>NetFlow into MySQL with flow-tools</subtitle>
+			<para>创建netflow数据库，创建flows表</para>
+			<screen>
+CREATE TABLE `flows` (
+  `FLOW_ID` int(32) NOT NULL AUTO_INCREMENT,
+  `UNIX_SECS` int(32) unsigned NOT NULL default '0',
+  `UNIX_NSECS` int(32) unsigned NOT NULL default '0',
+  `SYSUPTIME` int(20) NOT NULL,
+  `EXADDR` varchar(16) NOT NULL,
+  `DPKTS` int(32) unsigned NOT NULL default '0',
+  `DOCTETS` int(32) unsigned NOT NULL default '0',
+  `FIRST` int(32) unsigned NOT NULL default '0',
+  `LAST` int(32) unsigned NOT NULL default '0',
+  `ENGINE_TYPE` int(10) NOT NULL,
+  `ENGINE_ID` int(15) NOT NULL,
+  `SRCADDR` varchar(16) NOT NULL default '0',
+  `DSTADDR` varchar(16) NOT NULL default '0',
+  `NEXTHOP` varchar(16) NOT NULL default '0',
+  `INPUT` int(16) unsigned NOT NULL default '0',
+  `OUTPUT` int(16) unsigned NOT NULL default '0',
+  `SRCPORT` int(16) unsigned NOT NULL default '0',
+  `DSTPORT` int(16) unsigned NOT NULL default '0',
+  `PROT` int(8) unsigned NOT NULL default '0',
+  `TOS` int(2) NOT NULL,
+  `TCP_FLAGS` int(8) unsigned NOT NULL default '0',
+  `SRC_MASK` int(8) unsigned NOT NULL default '0',
+  `DST_MASK` int(8) unsigned NOT NULL default '0',
+  `SRC_AS` int(16) unsigned NOT NULL default '0',
+  `DST_AS` int(16) unsigned NOT NULL default '0',
+  PRIMARY KEY (FLOW_ID)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+			</screen>
+			<para>创建数据库插入脚本</para>
+			<screen>
+			<![CDATA[
+$ cat flow-mysql-export
+#!/bin/bash
+ 
+flow-export -f3 -u "username:password:localhost:3306:netflow:flows" < /flows/router/$1
+			]]>
+			</screen>
+			<para>获取Netflow信息，执行插入任务</para>
+			<screen>
+mkdir -p /srv/flows/router
+flow-capture -w /srv/flows/router -E5G 0/0/2055 -R /srv/bin/flow-mysql-export
+			</screen>
+
+		</section>
+	</section>
+	<section id="netams">
+		<title>netams - Network Traffic Accounting and Monitoring Software</title>
+		<procedure>
+			<title>安装步骤</title>
+			<step>
+				<para>netams netams-web</para>
+				<screen>
+$ sudo apt-get install netams netams-web
+				</screen>
+				<screen>
+$ dpkg -s netams netams-web
+				</screen>
+			</step>
+			<step>
+				<para>NeTAMS administrator password</para>
+				<screen>
+				<![CDATA[
+┌───────────────────┤ Configuring netams ├────────────────────┐
+│ Please enter password for "admin" user in NeTAMS database.  │
+│                                                             │
+│ NeTAMS administrator password:                              │
+│                                                             │
+│ *******____________________________________________________ │
+│                                                             │
+│                           <Ok>                              │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+
+┌──────────┤ Configuring netams ├───────────┐
+│                                           │
+│                                           │
+│ Repeat password for NeTAMS user "admin":  │
+│                                           │
+│ *******__________________________________ │
+│                                           │
+│                  <Ok>                     │
+│                                           │
+└───────────────────────────────────────────┘
+
+                ]]>
+				</screen>
+				<para>如果你想重新配置安装过程可以运行下面命令</para>
+				<screen>
+$ sudo dpkg-reconfigure netams netams-web
+				</screen>
+			</step>
+			<step>
+				<para>基本配置</para>
+				<screen>
+$ sudo vim /etc/default/netams
+RUN="yes"
+				</screen>
+				<screen>
+$ sudo cp /etc/netams/netams.conf /etc/netams/netams.conf.old
+$ sudo vim /etc/netams/netams.conf
+
+$ sudo /etc/init.d/netams restart
+				</screen>
+				<screen>
+				<![CDATA[
+$ cat /etc/apache2/conf.d/netams.conf
+Alias /netams/images /usr/share/netams
+Alias /netams/stat /var/lib/netams/stat
+
+<Directory /var/lib/netams/stat/>
+        Options -Indexes -FollowSymlinks
+
+        DirectoryIndex index.html
+
+        AllowOverride All
+</Directory>
+
+<Directory /usr/share/netams/>
+        Options -Indexes -FollowSymlinks
+        AllowOverride None
+</Directory>
+				]]>
+				</screen>
+				<screen>
+				<![CDATA[
+$ cat /etc/apache2/conf.d/netams-web.conf
+ScriptAlias /netams/cgi-bin /usr/share/netams-web
+
+# Uncomment the following if you have no netams package installed
+#Alias /netams/images /usr/share/netams-web/images
+
+<Directory /usr/share/netams-web>
+
+        Options -Indexes +FollowSymlinks
+
+        AddHandler cgi-script .cgi
+
+        AllowOverride None
+
+# By default we deny access from other hosts. May be you will need to configure
+# mod_auth_basic or mod_auth_mysql.
+        Order deny,allow
+        Deny from All
+        Allow from 127.0.0.1
+
+</Directory>
+				]]>
+				</screen>
+			</step>
+			<step>
+				<para>.netamsctl.rc</para>
+				<screen>
+$ vim ~/.netamsctl.rc
+login=admin
+password=123456
+host=localhost
+
+
+$ netamsctl "show version"
+NeTAMS 3.4.3 (3475.1) buildd@yellow / Tue 06 Apr 2010 03:40:49 +0000
+Run time  22 mins 6.5699 secs
+System time:  22 mins 1.2800 secs
+Average CPU/system load: 0.10%
+Process ID: 23647 RES: 9212K
+Memory allocated: 3640404 (23161), freed (31) (0 NULL) [23130 used]
+Total objects:
+   Oids used: 9
+   NetUnits: 4
+   Policies: 3
+   Services: 10
+   Users: 1
+   Connections: 1 active, 8 total
+
+Services info:
+ Storage ID=1 type mysql wr_q 0/0 rd_q 0/0
+ Data-source ID=1 type LIBPCAP source eth0:0 loop 316382 average 4182 mcsec
+    Perf: average skew delay 21580 mcsec, PPS: 77, BPS: 16788
+Alerter 0 queue max: 255, current: 0
+ Scheduled tasks: 1
+
+				</screen>
+			</step>
+		</procedure>
+		<section id="netams-web">
+			<title>netams-web</title>
+			<para>http://localhost/netams/stat/</para>
+			<para>http://localhost/netams/cgi-bin/login.cgi</para>
+		</section>
+	</section>
+</chapter>

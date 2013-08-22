@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="webproxy">
+	<title>Web page proxy</title>
+	<section>
+		<title>Surrogafier</title>
+		<para>homepage: http://bcable.net/project.php?surrogafier</para>
+		<para>Surrogafier，安装最简便。只需要下载一个PHP文件，上传到网站的某个目录，然后从浏览器里访问这个PHP脚本，就有了代理页面。</para>
+		<para>基本配置</para>
+		<screen>
+		<![CDATA[
+# Default to simple mode when the page is loaded. [false]
+define('DEFAULT_SIMPLE',true);
+# Force the page to always be in simple mode (no advanced mode option). [false]
+define('FORCE_SIMPLE',false);
+# Width for the URL box when in simple mode (CSS "width" attribute). [300px]
+define('SIMPLE_MODE_URLWIDTH','300px');
+
+# Default value for tunnel server. []
+define('DEFAULT_TUNNEL_PIP','');
+# Default value for tunnel port. []
+define('DEFAULT_TUNNEL_PPORT','');
+# Should the tunnel fields be displayed? "false" value here will force the defaults above [true]
+define('FORCE_DEFAULT_TUNNEL',true);
+
+# Default value for "Persistent URL" checkbox [true]
+define('DEFAULT_URL_FORM',true);
+# Default value for "Remove Cookies" checkbox [false]
+define('DEFAULT_REMOVE_COOKIES',false);
+# Default value for "Remove Referer Field" checkbox [false]
+define('DEFAULT_REMOVE_REFERER',false);
+# Default value for "Remove Scripts" checkbox [false]
+define('DEFAULT_REMOVE_SCRIPTS',false);
+# Default value for "Remove Objects" checkbox [false]
+define('DEFAULT_REMOVE_OBJECTS',false);
+# Default value for "Encrypt URLs" checkbox [false]
+define('DEFAULT_ENCRYPT_URLS',true);
+# Default value for "Encrypt Cookies" checkbox [false]
+define('DEFAULT_ENCRYPT_COOKS',true);
+
+		]]>
+		</screen>
+		<para>高级选项</para>
+		<screen>
+#从代理服务器到用户的传输用gzip压缩
+define('GZIP_PROXY_USER',true);
+# 如果可能，在代理获取的内容也用gzip压缩
+define('GZIP_PROXY_SERVER',true);
+
+#每次访问的超时计数，由10秒增加到20秒
+define('TIME_LIMIT',20);
+#域名解析缓存的时间，由原来的10分钟，改为90分钟
+define('DNS_CACHE_EXPIRE',90);
+		</screen>
+	</section>
+	<section>
+		<title>CGIproxy</title>
+		<para>http://www.jmarshall.com/tools/cgiproxy/</para>
+	</section>
+	<section>
+		<title>PHPProxy</title>
+		<para>http://sourceforge.net/projects/poxy/</para>
+		<screen>
+		<![CDATA[
+$ wget http://nchc.dl.sourceforge.net/sourceforge/poxy/poxy-0.5b2.zip
+$ unzip poxy-0.5b2.zip
+		]]>
+		</screen>
+		<para></para>
+		<para>http://freshmeat.net/projects/phpproxy/</para>
+	</section>
+	<section>
+		<title>BBlocked</title>
+		<para>http://www.bblocked.org/</para>
+	</section>
+	<section>
+		<title>Glype</title>
+		<para>http://www.glype.com/</para>
+	</section>
+	<section>
+		<title>Zelune</title>
+	</section>
+
+</section>

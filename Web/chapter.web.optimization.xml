@@ -1,0 +1,604 @@
+<chapter id="optimization">
+	<title>Web Server Optimization</title>
+	<orderedlist numeration="arabic">
+		<title>系统配置</title>
+		<listitem>Intel(R) Xeon(TM) CPU 3.00GHz</listitem>
+		<listitem>Memory 4G</listitem>
+		<listitem>Ethernet adapter 1000M</listitem>
+	</orderedlist>
+	<section id="ulimit">
+		<title>ulimit</title>
+		<para>查看 ulimit</para>
+		<screen>
+ulimit -a
+core file size          (blocks, -c) 0
+data seg size           (kbytes, -d) unlimited
+file size               (blocks, -f) unlimited
+pending signals                 (-i) 1024
+max locked memory       (kbytes, -l) 32
+max memory size         (kbytes, -m) unlimited
+open files                      (-n) 1024
+pipe size            (512 bytes, -p) 8
+POSIX message queues     (bytes, -q) 819200
+stack size              (kbytes, -s) 2048
+cpu time               (seconds, -t) unlimited
+max user processes              (-u) 77824
+virtual memory          (kbytes, -v) unlimited
+file locks                      (-x) unlimited
+		</screen>
+		<section>
+			<title>open files</title>
+			<para>对于linux系统，所有设备都以映射为设备文件的方式存在，包括硬件（键盘，鼠标，打印机，显示器，串口，并口，USB，硬盘，内存，网卡，声卡，显卡，等等....），还有软件(管道，socket)，访问这些资源，就相当与打开一个文件，</para>
+			<para>所以"open files"文件数限制很重要，默认值根本不能满足我们。</para>
+			<para>查看文件打开数</para>
+			<screen>
+$ cat /proc/sys/fs/file-nr
+
+3200    0       197957
+已分配文件句柄的数目     已使用文件句柄的数目     文件句柄的最大数目
+
+查看所有进程的文件打开数
+    lsof |wc -l
+查看某个进程打开的文件数
+	lsof -p pid |wc -l
+			</screen>
+
+			<para>临时更改</para>
+			<screen>
+# ulimit -n 65536
+or
+# ulimit -SHn 65536
+or
+# echo "65535" > /proc/sys/fs/file-max
+			</screen>
+			<para>永久更改</para>
+			<para>/etc/security/limits.conf</para>
+			<screen>
+nobody          soft    nofile          40960
+root            soft    nofile          40960
+nobody          hard    nofile          40960
+root            hard    nofile          40960
+daemon          soft    nofile          40960
+daemon          hard    nofile          40960
+			</screen>
+			<para>更省事的方法</para>
+			<screen>
+*          soft    nofile          40960
+*          hard    nofile          40960
+			</screen>
+		</section>
+
+		<para>最大线程数限制 threads-max</para>
+		<para>查看当前值</para>
+		<screen>
+# cat /proc/sys/kernel/threads-max
+32624
+		</screen>
+		<para>设置</para>
+		<para>有多种方法加大Linux的threads数，下买是临时更改</para>
+		<screen>
+１、sysctl -w kernel.threads-max=65536
+２、echo 65536 > /proc/sys/kernel/threads-max
+		</screen>
+		<para>永久修改</para>
+		<screen>
+编辑/etc/sysctl.conf
+增加
+kernel.threads-max = 65536
+#sysctl -p 马上生效
+		</screen>
+
+		<para>以上数值仅供参考，随着计算机发展，上面的值已经不太适合，当前流行的服务器。</para>
+	</section>
+
+
+	<section id="memcache">
+		<title>Memcached</title>
+		<section>
+			<title>编译安装</title>
+	<para>http://www.monkey.org/~provos/libevent/</para>
+	<screen>
+cd /usr/local/src/
+wget http://www.monkey.org/~provos/libevent-1.4.13-stable.tar.gz
+tar zxf libevent-1.4.13-stable.tar.gz
+cd libevent-1.4.13-stable
+./configure --prefix=/usr/local/libevent-1.4.13-stable
+make
+make install
+make verify
+
+ln -s /usr/local/libevent-1.4.13-stable /usr/local/libevent
+ln -s /usr/local/libevent/lib/* /usr/lib/
+ln -s /usr/local/libevent/include/* /usr/include/
+ln -s /usr/local/libevent/lib/* /usr/local/lib/
+ln -s /usr/local/libevent/include/* /usr/local/include/
+
+	</screen>
+
+	<para>http://www.danga.com/memcached/</para>
+	<screen>
+cd /usr/local/src/
+wget http://memcached.googlecode.com/files/memcached-1.4.5.tar.gz
+tar zxf memcached-1.4.5.tar.gz
+cd memcached-1.4.5
+./configure --prefix=/usr/local/memcached-1.4.5 --with-libevent=/usr/local/libevent
+make
+make install
+
+ln -s /usr/local/memcached-1.4.5/ /usr/local/memcached
+ln -s /usr/local/memcached/bin/memcached /usr/sbin/memcached
+	</screen>
+	<command>/usr/local/memcached/bin/memcached -d -m 2048 -l 127.0.0.1 -p 11211 -u root -c 15000 -P /tmp/memcached.pid</command>
+
+	<example>
+		<title>/etc/init.d/memcached</title>
+		<screen>
+		<![CDATA[
+#!/bin/bash
+# memcached init file for memcached
+#
+# chkconfig: - 100 100
+# description: a distributed memory object caching system
+# author: Neo Chen<openunix@163.com>
+#
+# processname: /usr/sbin/memcached
+# config:
+# pidfile: /var/run/memcached
+
+# source function library
+. /etc/init.d/functions
+
+OPTIONS="-d -m 2048 -l 127.0.0.1 -p 11211 -u root -c 4096 -P /var/run/memcached"
+USER=daemon
+RETVAL=0
+prog="memcached"
+
+start() {
+        echo -n $"Starting $prog: "
+        if [ $UID -ne 0 ]; then
+                RETVAL=1
+                failure
+        else
+                daemon --user=$USER /usr/sbin/memcached $OPTIONS
+                RETVAL=$?
+                [ $RETVAL -eq 0 ] && touch /var/lock/subsys/memcached
+        fi;
+        echo
+        return $RETVAL
+}
+
+stop() {
+        echo -n $"Stopping $prog: "
+        if [ $UID -ne 0 ]; then
+                RETVAL=1
+                failure
+        else
+                killproc /usr/sbin/memcached
+                RETVAL=$?
+                [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/memcached
+        fi;
+        echo
+        return $RETVAL
+}
+
+reload(){
+        echo -n $"Reloading $prog: "
+        killproc /usr/sbin/memcached -HUP
+        RETVAL=$?
+        echo
+        return $RETVAL
+}
+
+restart(){
+        stop
+        start
+}
+
+condrestart(){
+    [ -e /var/lock/subsys/memcached ] && restart
+    return 0
+}
+
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  restart)
+        restart
+        ;;
+#  reload)
+#       reload
+#        ;;
+  condrestart)
+        condrestart
+        ;;
+  status)
+        status memcached
+        RETVAL=$?
+        ;;
+  *)
+        echo $"Usage: $0 {start|stop|status|restart|condrestart}"
+        RETVAL=1
+esac
+
+exit $RETVAL
+		]]>
+		</screen>
+
+		<para>/etc/init.d/memcached</para>
+		<screen>
+chmod +x /etc/init.d/memcached
+		</screen>
+		<para>flush_all指令清空memcache中的数据</para>
+		<screen>
+$ telnet 172.16.3.51 11511
+Trying 172.16.3.51...
+Connected to 172.16.3.51.
+Escape character is '^]'.
+flush_all
+OK
+quit
+Connection closed by foreign host.
+		</screen>
+	</example>
+		</section>
+		<section>
+			<title>debian/ubuntu</title>
+			<screen>
+$ sudo apt-get install memcache
+			</screen>
+			<para>/etc/memcached.conf</para>
+			<screen>
+			<![CDATA[
+$ cat /etc/memcached.conf
+# memcached default config file
+# 2003 - Jay Bonci <jaybonci@debian.org>
+# This configuration file is read by the start-memcached script provided as
+# part of the Debian GNU/Linux distribution.
+
+# Run memcached as a daemon. This command is implied, and is not needed for the
+# daemon to run. See the README.Debian that comes with this package for more
+# information.
+-d
+
+# Log memcached's output to /var/log/memcached
+logfile /var/log/memcached.log
+
+# Be verbose
+# -v
+
+# Be even more verbose (print client commands as well)
+# -vv
+
+# Start with a cap of 64 megs of memory. It's reasonable, and the daemon default
+# Note that the daemon will grow to this size, but does not start out holding this much
+# memory
+-m 64
+
+# Default connection port is 11211
+-p 11211
+
+# Run the daemon as root. The start-memcached will default to running as root if no
+# -u command is present in this config file
+-u nobody
+
+# Specify which IP address to listen on. The default is to listen on all IP addresses
+# This parameter is one of the only security measures that memcached has, so make sure
+# it's listening on a firewalled interface.
+-l 127.0.0.1
+
+# Limit the number of simultaneous incoming connections. The daemon default is 1024
+# -c 1024
+
+# Lock down all paged memory. Consult with the README and homepage before you do this
+# -k
+
+# Return error when memory is exhausted (rather than removing items)
+# -M
+
+# Maximize core file limit
+# -r
+			]]>
+			</screen>
+			<para>restart</para>
+			<screen>
+$ sudo /etc/init.d/memcached restart
+			</screen>
+		</section>
+	</section>
+	<section id="khttpd">
+		<title>khttpd</title>
+		<!-- http://www.3800hk.com/Article/os/Linux/jjfalu/2005-08-06/Article_37618.html -->
+		<para>homepage: http://www.fenrus.demon.nl</para>
+	</section>
+
+	<section id="php.ini">
+		<title>php.ini</title>
+		<section>
+			<title>Resource Limits</title>
+			<para>Resource Limits</para>
+			<screen>
+;;;;;;;;;;;;;;;;;;;
+; Resource Limits ;
+;;;;;;;;;;;;;;;;;;;
+
+max_execution_time = 30     ; Maximum execution time of each script, in seconds
+max_input_time = 60 ; Maximum amount of time each script may spend parsing request data
+;max_input_nesting_level = 64 ; Maximum input variable nesting level
+memory_limit = 512M      ; Maximum amount of memory a script may consume (16MB)
+			</screen>
+		</section>
+		<section>
+			<title>File Uploads </title>
+			<screen>
+;;;;;;;;;;;;;;;;
+; File Uploads ;
+;;;;;;;;;;;;;;;;
+
+; Whether to allow HTTP file uploads.
+file_uploads = On
+
+; Temporary directory for HTTP uploaded files (will use system default if not
+; specified).
+;upload_tmp_dir =
+
+; Maximum allowed size for uploaded files.
+upload_max_filesize = 5M
+
+			</screen>
+		</section>
+		<section>
+			<title>Session Shared</title>
+			<para>编辑 php.ini 在 [Session]位置添加。</para>
+			<screen>
+extension=memcache.so
+memcache.allow_failover = 1
+memcache.max_failover_attempts = 20
+memcache.chunk_size = 8192
+memcache.default_port = 11211
+
+session.save_handler = memcache
+session.save_path = "udp://172.16.0.10:11211,tcp://172.16.0.11:11211"
+			</screen>
+		</section>
+		<section>
+			<title>PATHINFO</title>
+			<screen>
+cgi.fix_pathinfo=1
+			</screen>
+		</section>
+	</section>
+	<section id="php.apc">
+		<title>APC Cache (php-apc - APC (Alternative PHP Cache) module for PHP 5)</title>
+
+		<screen>
+$ apt-cache search php-apc
+php-apc - APC (Alternative PHP Cache) module for PHP 5
+
+$ sudo apt-get install php-apc
+		</screen>
+		<para>apc cache 状态监控</para>
+		<para>http://pecl.php.net/package/APC</para>
+		<para>下载解包找到apc.php,放到web服务器上</para>
+	</section>
+	<section id="php.zend">
+		<title>Zend Optimizer</title>
+		<para><ulink url="http://www.zend.com/">http://www.zend.com/</ulink></para>
+		<screen>
+tar zxvf ZendOptimizer-3.2.8-linux-glibc21-i386.tar.gz
+cd ZendOptimizer-3.2.8-linux-glibc21-i386
+./install
+		</screen>
+		<procedure>
+			<title>安装 Zend Optimizer</title>
+			<step>
+				<para>欢迎界面</para>
+				<screen>
+				<![CDATA[
+┌──────────────────── Zend Optimizer 3.2.8 ─────────────────────┐
+│                                                               │
+│ Welcome to the Zend Optimizer 3.2.8 Installation!             │
+│                                                               │
+│ For more information regarding this procedure, please see the │
+│ Zend Optimizer Installation Guide.                            │
+│                                                               │
+│                                                               │
+├───────────────────────────────────────────────────────────────┤
+│                           <  OK  >                            │
+└───────────────────────────────────────────────────────────────┘
+				]]>
+				</screen>
+				<para>单击 &lt; OK &gt; 按钮</para>
+			</step>
+			<step>
+				<para>LICENSE</para>
+				<para>Page Down / Page Up 阅读</para>
+				<screen>
+				<![CDATA[
+┌─────────────────────────── Zend Optimizer 3.2.8 ────────────────────────────┐
+│ ZEND LICENSE AGREEMENT                                                      │
+│ Zend Optimizer                                                              │
+│                                                                             │
+│ ZEND TECHNOLOGIES LTD. ("ZEND") SOFTWARE LICENSE AGREEMENT ("AGREEMENT")    │
+│                                                                             │
+│ IMPORTANT: READ THESE TERMS CAREFULLY BEFORE INSTALLING THE SOFTWARE KNOWN  │
+│ AS THE "ZEND OPTIMIZER," AS INSTALLED BY THIS INSTALLATION PROCESS, IN      │
+│ MACHINE-EXECUTABLE FORM ONLY, AND ANY RELATED DOCUMENTATION (COLLECTIVELY,  │
+│ THE "SOFTWARE") BY INSTALLING, OR OTHERWISE USING THIS SOFTWARE, YOU (THE   │
+│ "LICENSEE") ACKNOWLEDGE THAT YOU HAVE READ THIS AGREEMENT, AND THAT YOU     │
+│ AGREE TO BE BOUND BY ITS TERMS AND CONDITIONS. IF YOU DO NOT AGREE TO ALL   │
+│ OF THE TERMS AND CONDITIONS OF THIS AGREEMENT, YOU ARE NOT AN AUTHORIZED    │
+│ USER OF THE SOFTWARE AND IT IS YOUR RESPONSIBILITY TO EXIT THIS             │
+│ INSTALLATION PROGRAM WITHOUT INSTALLING THE SOFTWARE, OR TO DELETE THE      │
+│ SOFTWARE FROM YOUR COMPUTER.                                                │
+│                                                                             │
+│ 1. License. Subject to the terms and conditions of this Agreement,          │
+│ including, without limitation, Section 2 hereof, Zend hereby grants to      │
+│ Licensee, during the Term (as defined below), a limited, a non-exclusive    │
+│ license (the "License") to: (i) install and operate the Software on a       │
+│ computer or a computer network owned or operated by Licensee; (ii) make     │
+│ copies of the Software; and (iii) sublicense and distribute a limited,      │
+│ non-exclusive sublicense to install, use and sublicense such copies of the  │
+│ Software, provided that any sub-license granted hereunder shall be subject  │
+│ to the limitations and restrictions set forth in this Agreement.            │
+│                                                                             │
+│ 2. Restrictions. Except as otherwise expressly set forth herein, Licensee   │
+│ or any of its sub-licensees shall not: (a) translate or decompile, or       │
+│ create or attempt to create, by reverse engineering or otherwise, the       │
+│ source code form from the object code supplied hereunder; (b) modify,       │
+│ adapt, translate or create a derivative work from the Software; (c) remove  │
+│ any proprietary notices, labels, or marks on the Software.                  │
+│                                                                             │
+│ 3. Termination. This Agreement and the License hereunder shall be in        │
+│ effect from and after the date Licensee installs the Software on a          │
+│ computer in accordance with the terms and conditions hereof and shall       │
+│ continue perpetually unless terminated in accordance with this Section 3.   │
+│ This Agreement shall be automatically terminated upon any breach by         │
+│ Licensee of any term or condition of this Agreement. Such period shall be   │
+├─────────────────────────────────────────────────────────────────────( 21%)──┤
+│                                   < EXIT >                                  │
+└─────────────────────────────────────────────────────────────────────────────┘
+				]]>
+				</screen>
+				<para>单击 &lt; EXIT &gt; 按钮</para>
+			</step>
+			<step>
+				<para>是否接受LICENSE?</para>
+				<screen>
+				<![CDATA[
+┌─────────────────────────── Zend Optimizer 3.2.8 ───────────────────────────┐
+│                                                                            │
+│ IMPORTANT:                                                                 │
+│ BY SELECTING THE 'YES' OPTION BELOW, DOWNLOADING, INSTALLING, OR           │
+│ OTHERWISE USING THIS SOFTWARE, YOU ACKNOWLEDGE THAT YOU HAVE READ THE      │
+│ LICENSE AGREEMENT, AND THAT YOU AGREE TO BE BOUND BY ITS TERMS AND         │
+│ CONDITIONS.                                                                │
+│ IF YOU DO NOT AGREE TO ALL OF THE TERMS AND CONDITIONS OF SUCH AGREEMENT,  │
+│ YOU ARE NOT AN AUTHORIZED USER OF THE SOFTWARE AND IT IS YOUR              │
+│ RESPONSIBILITY TO EXIT THIS DOWNLOADING/INSTALLATION PROCESS WITHOUT       │
+│ DOWNLOADING OR INSTALLING THE SOFTWARE BY SELECTING THE 'NO' OPTION BELOW, │
+│ AND TO DELETE THE SOFTWARE FROM YOUR COMPUTER.                             │
+│                                                                            │
+│                                                                            │
+│ Do you accept the terms of this license?                                   │
+│                                                                            │
+├────────────────────────────────────────────────────────────────────────────┤
+│                         < Yes >           < No  >                          │
+└────────────────────────────────────────────────────────────────────────────┘
+				]]>
+				</screen>
+				<para>单击 &lt; Yes &gt; 按钮</para>
+			</step>
+			<step>
+				<para>Zend Optimizer 安装路径</para>
+				<screen>
+				<![CDATA[
+┌─────────────────── Zend Optimizer 3.2.8 ───────────────────┐
+│                                                            │
+│ Please specify the location for installing Zend Optimizer: │
+│                                                            │
+│                                                            │
+│ ┌────────────────────────────────────────────────────────┐ │
+│ │/usr/local/Zend                                         │ │
+│ └────────────────────────────────────────────────────────┘ │
+├────────────────────────────────────────────────────────────┤
+│                   <  OK  >        <Cancel>                 │
+└────────────────────────────────────────────────────────────┘
+				]]>
+				</screen>
+				<para>单击 &lt; OK &gt; 按钮</para>
+				<para>建议安装在/usr/local/Zend_3.2.8</para>
+			</step>
+			<step>
+				<para>php.ini 安装路径</para>
+				<screen>
+				<![CDATA[
+┌───────── Zend Optimizer 3.2.8 ──────────┐
+│                                         │
+│ Enter the location of your php.ini file │
+│                                         │
+│ ┌─────────────────────────────────────┐ │
+│ │/usr/local/php/etc                   │ │
+│ └─────────────────────────────────────┘ │
+├─────────────────────────────────────────┤
+│           <  OK  >    <Cancel>          │
+└─────────────────────────────────────────┘
+				]]>
+				</screen>
+				<para>输入php.ini安装路径</para>
+				<para>单击 &lt; OK &gt; 按钮</para>
+			</step>
+			<step>
+				<para>是否使用了Apache？</para>
+				<screen>
+				<![CDATA[
+┌────── Zend Optimizer 3.2.8 ──────┐
+│                                  │
+│ Are you using Apache Web server? │
+│                                  │
+├──────────────────────────────────┤
+│         < Yes >   < No  >        │
+└──────────────────────────────────┘
+				]]>
+				</screen>
+				<para>我的环境是 lighttpd 所以选择 No</para>
+				<para>单击 &lt; Yes &gt; 按钮</para>
+			</step>
+			<step>
+				<para>提示信息</para>
+				<screen>
+				<![CDATA[
+┌─────────────────────────────────── Zend Optimizer 3.2.8 ───────────────────────────────────┐
+│                                                                                            │
+│ The following configuration changes have been made:                                        │
+│                                                                                            │
+│ - The php.ini file has been relocated from /usr/local/php/etc to /usr/local/Zend_3.2.8/etc │
+│                                                                                            │
+│ - A symbolic link for the php.ini file has been created in /usr/local/php/etc.             │
+│                                                                                            │
+│ - The original php.ini was backed up to                                                    │
+│  /usr/local/php/etc/php.ini-zend_optimizer.bak                                             │
+│                                                                                            │
+│                                                                                            │
+├────────────────────────────────────────────────────────────────────────────────────────────┤
+│                                           <  OK  >                                         │
+└────────────────────────────────────────────────────────────────────────────────────────────┘
+				]]>
+				</screen>
+				<para>单击 &lt; OK &gt; 按钮</para>
+			</step>
+			<step>
+				<para>安装完成</para>
+				<screen>
+				<![CDATA[
+┌───────────────────────── Zend Optimizer 3.2.8 ─────────────────────────┐
+│                                                                        │
+│ The installation has completed successfully.                           │
+│ Zend Optimizer is now ready for use.                                   │
+│ You must restart your Web server for the modifications to take effect. │
+│                                                                        │
+├────────────────────────────────────────────────────────────────────────┤
+│                                 <  OK  >                               │
+└────────────────────────────────────────────────────────────────────────┘
+				]]>
+				</screen>
+				<para>单击 &lt; OK &gt; 按钮</para>
+			</step>
+		</procedure>
+	</section>
+
+	<section id="php.eaccelerator">
+		<title>eaccelerator</title>
+		<screen>
+tar jxvf eaccelerator-0.9.5.3.tar.bz2
+cd eaccelerator-0.9.5.3/
+/opt/php/bin/phpize
+./configure  --enable-eaccelerator=shared --with-php-config=/opt/php/bin/php-config
+make
+make install
+		</screen>
+	</section>
+</chapter>

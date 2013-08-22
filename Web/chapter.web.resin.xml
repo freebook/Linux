@@ -1,0 +1,396 @@
+<chapter id="resin">
+	<title>Resin</title>
+	<para><ulink url="http://www.caucho.com">http://www.caucho.com</ulink></para>
+	<section id="resin.install">
+		<title>安装Resin</title>
+		<para>JRE</para>
+		<screen>
+$ sudo apt-get install sun-java6-jre
+		</screen>
+		<para>下载Resin</para>
+		<para>注意: Resin Pro 与 Resin 前者要Licence</para>
+		<section>
+			<title>直接使用</title>
+			<para>简易安装，直接解压缩后即可使用</para>
+			<screen>
+$ wget http://www.caucho.com/download/resin-4.0.1.tar.gz
+$ tar zxvf resin-4.0.1.tar.gz
+$ sudo mv resin-4.0.1 ..
+$ cd ..
+$ sudo ln -s resin-4.0.1 resin
+			</screen>
+			<screen>
+			</screen>
+		</section>
+		<section>
+			<title>Debian/Ubuntu</title>
+			<screen>
+$ wget http://www.caucho.com/download/resin_4.0.1-i386.deb
+			</screen>
+			<para>安装 Resin</para>
+			<screen>
+$ sudo dpkg -i resin_4.0.1-i386.deb
+			</screen>
+		</section>
+		<section>
+			<title>源码安装Resin</title>
+			<para>源码安装</para>
+			<screen>
+			<![CDATA[
+$ cd /usr/local/src/
+$ wget http://www.caucho.com/download/resin-4.0.1.tar.gz
+$ tar zxvf resin-4.0.1.tar.gz
+$ ./configure --prefix=/usr/local/resin-4.0.1 \
+--with-apxs=/usr/local/httpd/bin/apxs \
+--with-java-home=/usr/local/java \
+--enable-64bit \
+--enable-lfs \
+--enable-ssl \
+--enable-debug
+$ make && make install
+$ cd ..
+$ sudo ln -s resin-4.0.1 resin
+			]]>
+			</screen>
+			<para>设置 resin 以服务的形式开机自启动</para>
+			<screen>
+$ sudo cp /usr/local/resin/contrib/init.resin /etc/init.d/resin
+$ sudo chmod 755 /etc/init.d/resin
+$ sudo update-rc.d resin defaults 99
+			</screen>
+		</section>
+	</section>
+
+	<section id="resin.caucho">
+		<title>Compiling mod_caucho.so</title>
+		<screen>
+		<![CDATA[
+unix> ./configure --with-apxs=/usr/local/apache/bin/apxs
+unix> make && make install
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+#
+# mod_caucho Resin Configuration
+#
+LoadModule caucho_module /usr/local/apache/modules/mod_caucho.so
+ResinConfigServer localhost 6802
+CauchoConfigCacheDirectory /tmp
+CauchoStatus yes
+<Location /caucho-status>
+  SetHandler caucho-status
+</Location>
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+<IfModule mod_caucho.c>
+ResinConfigServer localhost 6802
+<Location /caucho-status>
+SetHandler caucho-status
+</Location>
+</IfModule>
+
+AddHandler caucho-request jsp
+<Location /servlet/*>
+SetHandler caucho-request
+</Location>
+
+
+<IfModule mod_caucho.c>
+	<LocationMatch (.*?)\.action>
+		SetHandler caucho-request
+	</LocationMatch>
+	<LocationMatch (.*?)\.jsp>
+		SetHandler caucho-request
+	</LocationMatch>
+	<LocationMatch (.*?)\.do>
+		SetHandler caucho-request
+	</LocationMatch>
+</IfModule>
+		]]>
+		</screen>
+	</section>
+	<section id="resin.conf">
+		<title>resin.conf</title>
+		<section>
+			<title>Maximum number of threads</title>
+			<para>Maximum number of threads.</para>
+			<screen>
+			<![CDATA[
+<thread-max>4096</thread-max>
+			]]>
+			</screen>
+			<para>thread-max数值需要使用ab命令做压力测试，逐步调整。</para>
+		</section>
+		<section>
+			<title>Configures the keepalive</title>
+			<screen>
+			<![CDATA[
+      <!-- Configures the keepalive -->
+      <keepalive-max>128</keepalive-max>
+      <keepalive-timeout>15s</keepalive-timeout>
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>ssl</title>
+			<screen>
+			<![CDATA[
+<http address="*" port="443">
+  <openssl>
+  <certificate-file>/srv/keys/example.com/star.example.com.crt</certificate-file>
+  <certificate-key-file>/srv/keys/example.com/star.example.com.key</certificate-key-file>
+  <password>4fff74da-aea4-a9fc-4b5f-e6d497588726</password>
+  </openssl>
+</http>
+			]]>
+			</screen>
+			<para>自颁发证书，首先是使用keytool工具安装证书 </para>
+			<screen>
+			<![CDATA[
+生成证书：
+keytool –genkeypair –keyalg RSA –keysize 2048 SHA1withRSA –validity 3650  -alias neo –keystore server.keystore –storepass password –dname "CN=www.example.com, OU=test, O=example.com, L=SZ, ST=GD, C=CN"
+
+导出证书
+-keytool –exportcert –alias neo –keystore server.keystore –storepass password  –file server.cer –rfc
+
+打印证书
+Keytool -printcert –file server.cer
+
+导出证书签发申请
+Keytool –certreg –aias neo –keystore server.keystore –storepass password –file ins.csr –v
+
+导入证书
+Keytool –importcert –trustcacerts –alias neo –file server.cer –keystore server.keystore –storepass password
+
+查看数字证书
+Keytool -list
+
+当成功的导入了证书以后就要容器中进行配置才可以使用
+首先是要把证书中的那个 server.keystore 和 server.cer这两个文件放入到Resin服务器的keys这个文件夹中 如果没有的话 就手动的建立这个文件夹
+然后去 config 文件夹下配置你的配置文件
+我在resin 这个容器中的配置如下
+
+<http address="*" port="443">
+    <jsse-ssl>
+       <key-store-file>keys/server.keystore</key-store-file>
+       <password>password</password>
+    </jsse-ssl>
+</http>
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section id="resin.vhost">
+		<title>virtual hosts</title>
+		<section>
+			<title>explicit host</title>
+			<example>
+				<title>explicit host in resin.conf</title>
+				<screen>
+				<![CDATA[
+<resin xmlns="http://caucho.com/ns/resin">
+<cluster id="">
+
+<host host-name="www.foo.com">
+  <host-alias>foo.com</host-alias>
+  <host-alias>web.foo.com</host-alias>
+
+  <root-directory>/opt/www/www.foo.com</root-directory>
+
+  <web-app id="/" document-directory="webapps/ROOT">
+
+  </web-app>
+  ...
+</host>
+
+</cluster>
+</resin>
+				]]>
+				</screen>
+			</example>
+		</section>
+		<section>
+			<title>regexp host</title>
+			<example>
+				<title>regexp host in resin.conf</title>
+				<screen>
+				<![CDATA[
+<resin xmlns="http://caucho.com/ns/resin">
+<cluster id="">
+
+<host regexp="([^.]+)\.foo\.com">
+  <host-name>${host.regexp[1]}.foo.com</host-name>
+
+  <root-directory>/var/www/hosts/www.${host.regexp[1]}.com</root-directory>
+
+  ...
+</host>
+
+</cluster>
+</resin>
+				]]>
+				</screen>
+			</example>
+		</section>
+		<section>
+			<title>host-alias</title>
+			<example>
+				<title>host-alias in the resin.conf</title>
+				<screen>
+				<![CDATA[
+<resin xmlns="http://caucho.com">
+<cluster id="">
+
+  <host id="www.foo.com" root-directory="/var/www/foo.com">
+    <host-alias>foo.com</host-alias>
+
+    <web-app id=""/>
+  </host>
+
+</cluster>
+</resin>
+				]]>
+				</screen>
+			</example>
+
+			<example>
+				<title>host-alias in a /var/www/hosts/foo/host.xml</title>
+				<screen>
+				<![CDATA[
+<host xmlns="http://caucho.com">
+
+  <host-name>www.foo.com</host-name>
+  <host-alias>foo.com</host-alias>
+
+  <web-app id="" root-directory="htdocs"/>
+
+</host>
+				]]>
+				</screen>
+			</example>
+
+			<example>
+				<title>host-alias-regexp in the resin.conf</title>
+				<screen>
+				<![CDATA[
+<resin xmlns="http://caucho.com">
+<cluster id="">
+
+  <host id="www.foo.com" root-directory="/var/www/foo.com">
+    <host-alias-regexp>.*foo.com</host-alias-regexp>
+
+    <web-app id=""/>
+  </host>
+
+</cluster>
+</resin>
+				]]>
+				</screen>
+			</example>
+		</section>
+		<section>
+			<title>configures a deployment directory for virtual hosts</title>
+			<screen>
+			<![CDATA[
+<resin xmlns="http://caucho.com/ns/resin">
+  <cluster id="app-tier">
+    <root-directory>/var/www</root-directory>
+
+    <host-deploy path="hosts">
+      <host-default>
+        <resin:import path="host.xml" optional="true"/>
+
+        <web-app-deploy path="webapps"/>
+      </host-default>
+    </host-deploy>
+  </cluster>
+</resin>
+			]]>
+			</screen>
+			<para>$RESIN_HOME/hosts其下的任何目录将对应一个虚拟主机。在$RESIN_HOME/hosts下也可以放置jar文件，其会被展开变成一个虚拟主机。</para>
+			<screen>
+$RESIN_HOME/hosts/www.example.com
+$RESIN_HOME/hosts/www.example.net
+$RESIN_HOME/hosts/www.example.org
+			</screen>
+		</section>
+		<section>
+			<title>Resources</title>
+			<example>
+				<title>shared database in host</title>
+				<screen>
+				<![CDATA[
+<resin xmlns="http://caucho.com/ns/resin">
+  <cluster id="app-tier">
+     <server id="a" .../>
+
+     <host id="www.foo.com">
+        <database jndi-name="jdbc/test">
+            <driver type="org.postgresql.Driver">
+                <url>jdbc:postgresql://localhost/test</url>
+                <user>caucho</user>
+            </driver>
+        </database>
+
+        <web-app-default path="webapps"/>
+    </host>
+  </cluster>
+</resin>
+				]]>
+				</screen>
+				<para>Oracle JDBC</para>
+				<screen>
+				<![CDATA[
+<database>
+	<jndi-name>jdbc/test</jndi-name>
+	<driver type="oracle.jdbc.pool.OracleConnectionPoolDataSource">
+	<url>jdbc:oracle:thin:@172.16.0.1:1521:database</url>
+	<user>user</user>
+	<password>password</password>
+	</driver>
+	<prepared-statement-cache-size>8</prepared-statement-cache-size>
+	<max-connections>1024</max-connections>
+	<max-idle-time>20s</max-idle-time>
+</database>
+				]]>
+				</screen>
+			</example>
+			<example>
+				<title>rewrite-dispatch</title>
+				<screen>
+				<![CDATA[
+<resin xmlns="http://caucho.com/ns/resin">
+  <cluster id="app-tier">
+
+    <host host-name="www.foo.com">
+      <rewrite-dispatch>
+        <redirect regexp="^/foo" target="/index.php?foo="/>
+      </rewrite-dispatch>
+    </host>
+
+  </cluster>
+</resin>
+				]]>
+				</screen>
+			</example>
+		</section>
+	</section>
+	<section id="resin.fqa">
+		<title>FAQ</title>
+		<section>
+			<title>java.lang.OutOfMemoryError: PermGen space</title>
+			<screen>
+			<![CDATA[
+vim /usr/local/resin/conf/resin.conf
+
+<jvm-arg>-XX:PermSize=128M</jvm-arg>
+<jvm-arg>-XX:MaxPermSize=512m</jvm-arg>
+			]]>
+			</screen>
+		</section>
+	</section>
+</chapter>

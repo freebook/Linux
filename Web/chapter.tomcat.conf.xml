@@ -1,0 +1,710 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="tomcat.server">
+	<title>配置 Tomcat 服务器</title>
+	<section>
+		<title>server.xml</title>
+
+		<section id="tomcat.connector">
+			<title>Connector</title>
+			<para>tomcat 端口默认为8080, 可以通过修改下面port项改为80端口，但不建议你这样使用80端口,tomcat 会继承root权限，这是非常危险的做法。</para>
+			<screen>
+			<![CDATA[
+    <Connector port="80" protocol="HTTP/1.1"
+               connectionTimeout="20000"
+               redirectPort="8443" />
+			]]>
+			</screen>
+			<para>性能调整</para>
+			<screen>
+			<![CDATA[
+    <Connector port="8080" protocol="HTTP/1.1"
+               connectionTimeout="20000"
+               redirectPort="8443"
+               maxThreads="2048" />
+
+	<Connector port="8080" protocol="HTTP/1.1"
+				maxThreads="2048"
+				minSpareThreads="64"
+				maxSpareThreads="256"
+				acceptCount="128"
+				enableLookups="false"
+				redirectPort="8443"
+				debug="0"
+				connectionTimeout="20000"
+				disableUploadTimeout="true"
+				URIEncoding="UTF-8" />
+			]]>
+			</screen>
+
+			<screen>
+			<![CDATA[
+maxThreads="4096"		最大连接数
+minSpareThreads="50"	最小空闲线程
+maxSpareThreads="100"	最大空闲线程
+enableLookups="false"	禁止域名解析
+acceptCount="15000"
+connectionTimeout="30000"	超时时间
+redirectPort="8443"
+disableUploadTimeout="true"
+URIEncoding="UTF-8"		UTF-8编码
+protocol="AJP/1.3"		AJP协议版本
+			]]>
+			</screen>
+
+		</section>
+
+		<section id="compression">
+			<title>compression</title>
+			<para>压缩传送数据</para>
+			<screen>
+			<![CDATA[
+compression="on"
+compressionMinSize="2048"
+noCompressionUserAgents="gozilla, traviata"
+compressableMimeType="text/html,text/xml,text/plain,text/javascript,text/css"
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>useBodyEncodingForURI</title>
+			<para>如果你的站点编码非UTF-8,去掉URIEncoding="UTF-8"使用下面选项.</para>
+			<para>useBodyEncodingForURI="true"</para>
+		</section>
+		<section>
+			<title>HTTPS</title>
+			<screen>
+			<![CDATA[
+   <Connector port="443" maxHttpHeaderSize="8192"
+               maxThreads="150" minSpareThreads="25" maxSpareThreads="75"
+               enableLookups="false" disableUploadTimeout="true"
+               acceptCount="100" scheme="https" secure="true"
+               SSLEngine="on"
+               SSLCertificateFile="${catalina.base}/conf/localhost.crt"
+               SSLCertificateKeyFile="${catalina.base}/conf/localhost.key" />
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>隐藏Tomcat版本信息</title>
+			<para>在Connector中加入server="Neo App Srv 1.0"</para>
+			<screen>
+			<![CDATA[
+vim $CATALINA_HOME/conf/server.xml
+
+    <Connector port="80" protocol="HTTP/1.1"
+               connectionTimeout="20000"
+               redirectPort="8443"
+				maxThreads="8192"
+				minSpareThreads="64"
+				maxSpareThreads="128"
+				acceptCount="128"
+				enableLookups="false"
+                server="Neo App Srv 1.0"/>
+
+			]]>
+			</screen>
+			<screen>
+# curl -I http://localhost:8080/
+HTTP/1.1 400 Bad Request
+Transfer-Encoding: chunked
+Date: Thu, 20 Oct 2011 09:51:55 GMT
+Connection: close
+Server: Neo App Srv 1.0
+			</screen>
+		</section>
+		<section>
+			<title>vhost</title>
+			<para>传统配置方式</para>
+			<screen>
+			<![CDATA[
+      <Host name="www.example.com"  appBase="webapps"
+            unpackWARs="true" autoDeploy="true"
+            xmlValidation="false" xmlNamespaceAware="false">
+                        <Context path="" docBase="/www/example/www" debug="0" reloadable="false"/>
+      </Host>
+      <Host name="news.example.com"  appBase="webapps"
+            unpackWARs="true" autoDeploy="true"
+            xmlValidation="false" xmlNamespaceAware="false">
+                        <Context path="" docBase="/www/example/news" debug="0" reloadable="false"/>
+      </Host>
+			]]>
+			</screen>
+			<para>建议配置方式</para>
+			<screen>
+			<![CDATA[
+vim server.xml
+
+<Engine name="Catalina" defaultHost="neo">
+    <Host name="neo"    appBase="neoapps"/>
+    <Host name="other" appBase="otherapps"/>
+</Engine>
+			]]>
+			</screen>
+			<para>Configuring Your Contexts</para>
+			<screen>
+			<![CDATA[
+mkdir $CATALINA_HOME/conf/Catalina/neo
+
+cp $CATALINA_HOME/conf/Catalina/localhost/manager.xml $CATALINA_HOME/conf/Catalina/neo/ROOT.xml
+
+or
+
+cp $CATALINA_HOME/conf/Catalina/localhost/manager.xml $CATALINA_HOME/conf/Catalina/neo
+			]]>
+			</screen>
+			<para>Webapps Directory</para>
+			<screen>
+			<![CDATA[
+mkdir $CATALINA_HOME/neo
+			]]>
+			</screen>
+		</section>
+		<section id="tomcat.access_log">
+			<title>access_log</title>
+			<screen>
+			<![CDATA[
+<Host name="localhost" ...>
+  ...
+  <Valve className="org.apache.catalina.valves.AccessLogValve"
+         prefix="localhost_access_log." suffix=".txt"
+         pattern="common"/>
+  ...
+</Host>
+			]]>
+			</screen>
+		</section>
+	</section>
+
+	<section>
+		<title>tomcat-users.xml</title>
+		<screen>
+		<![CDATA[
+<?xml version='1.0' encoding='utf-8'?>
+<tomcat-users>
+
+<role rolename="manager"/>
+<user username="tomcat" password="QI0Ajp7" roles="manager"/>
+
+</tomcat-users>
+
+		]]>
+		</screen>
+		<para>状态监控 http://localhost/manager/status</para>
+		<para>服务管理 http://localhost/manager/html/list</para>
+		<screen>
+		<![CDATA[
+<tomcat-users>
+<!--
+  NOTE:  By default, no user is included in the "manager-gui" role required
+  to operate the "/manager/html" web application.  If you wish to use this app,
+  you must define such a user - the username and password are arbitrary.
+-->
+<!--
+  NOTE:  The sample user and role entries below are wrapped in a comment
+  and thus are ignored when reading this file. Do not forget to remove
+  <!.. ..> that surrounds them.
+-->
+<!--
+  <role rolename="tomcat"/>
+  <role rolename="role1"/>
+  <user username="tomcat" password="tomcat" roles="tomcat"/>
+  <user username="both" password="tomcat" roles="tomcat,role1"/>
+  <user username="role1" password="tomcat" roles="role1"/>
+-->
+  <role rolename="manager-gui"/>
+  <role rolename="manager-script"/>
+  <role rolename="manager-jmx"/>
+  <role rolename="manager-status"/>
+
+  <user username="tomcat" password="tomcat" roles="manager-gui,manager-script,manager-jmx,manager-status"/>
+  <role rolename="admin-gui"/>
+  <role rolename="admin-script"/>
+  <user username="admin" password="admin" roles="admin-gui,admin-script"/>
+
+</tomcat-users>
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>context.xml</title>
+		<para>context.xml 主要用于配置 数据库连接池</para>
+		<para>开启热部署，生产环境不建议使用</para>
+		<screen>
+		<![CDATA[
+<Context reloadable="true">
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>logging.properties</title>
+		<para>修改日志目录</para>
+		<screen>
+1catalina.org.apache.juli.FileHandler.level = FINE
+#1catalina.org.apache.juli.FileHandler.directory = ${catalina.base}/logs
+1catalina.org.apache.juli.FileHandler.directory = /www/logs/tomcat
+1catalina.org.apache.juli.FileHandler.prefix = catalina.
+		</screen>
+	</section>
+</section>
+
+<section id="tomcat.script">
+	<title>Init.d Script</title>
+	<section>
+		<title>Script 1</title>
+		<screen>
+		<![CDATA[
+#!/bin/bash
+##############################################################
+# Script for Apache and Tomcat
+# File:/etc/rc.d/init.d/www
+##############################################################
+# Setup environment for script execution
+#
+
+# chkconfig: - 91 35
+# description: Starts and stops the apache and tomcat daemons \
+#              used to provide Neo Chen
+#
+# pidfile: /var/run/www/apache.pid
+# pidfile: /var/run/www/tomcat.pid
+# config:  /etc/apache2/apache2.conf
+
+
+#APACHE_HOME=/usr/local/apache
+#TOMCAT_HOME=/usr/local/tomcat
+#APACHE_USER=apache
+#TOMCAT_USER=tomcat
+
+APACHE_HOME=/usr/local/apache-evaluation
+TOMCAT_HOME=/usr/local/apache-tomcat-evaluation
+APACHE_USER=root
+TOMCAT_USER=root
+
+OPEN_FILES=20480
+
+# Source function library.
+if [ -f /etc/init.d/functions ] ; then
+  . /etc/init.d/functions
+elif [ -f /etc/rc.d/init.d/functions ] ; then
+  . /etc/rc.d/init.d/functions
+else
+  exit 0
+fi
+
+if [ ! -d /var/run/www ] ; then
+  mkdir /var/run/www
+fi
+
+if [ -f /var/lock/subsys/tomcat ] ; then
+	echo " "
+fi
+
+start() {
+	if [ `ulimit -n` != ${OPEN_FILES} ]; then
+		ulimit -n ${OPEN_FILES}
+	fi
+	echo -en "\\033[1;32;1m"
+	echo "Starting Tomcat $TOMCAT_HOME ..."
+	echo -en "\\033[0;39;1m"
+	if [ -s /var/run/www/tomcat.pid ]; then
+		echo "tomcat (pid `cat /var/run/www/tomcat.pid`) already running"
+	else
+		su - ${TOMCAT_USER} -c "$TOMCAT_HOME/bin/catalina.sh start > /dev/null"
+		echo `pgrep java` > /var/run/www/tomcat.pid
+		touch /var/lock/subsys/tomcat
+	fi
+	sleep 2
+	echo -en "\\033[1;32;1m"
+	echo "Starting Apache $APACHE_HOME ..."
+	echo -en "\\033[0;39;1m"
+	su - ${APACHE_USER} -c "$APACHE_HOME/bin/apachectl start"
+	touch /var/lock/subsys/apache
+}
+
+stop() {
+	echo -en "\\033[1;32;1m"
+	echo "Shutting down Apache $APACHE_HOME ..."
+	echo -en "\\033[0;39;1m"
+	su - ${APACHE_USER} -c "$APACHE_HOME/bin/apachectl stop"
+	sleep 2
+	echo -en "\\033[1;32;1m"
+	echo "Shutting down Tomcat $TOMCAT_HOME ..."
+	echo -en "\\033[0;39;1m"
+	su - ${TOMCAT_USER} -c "$TOMCAT_HOME/bin/catalina.sh stop > /dev/null"
+	rm -rf /var/run/www/tomcat.pid
+	rm -f /var/lock/subsys/tomcat
+	rm -f /var/lock/subsys/apache
+}
+
+restart() {
+    stop
+	if [ "`pgrep java`" = "" ]&& [ "`pgrep httpd`" = "" ]; then
+		start
+		exit 0
+    else
+		echo "Usage: $0 killall (^C)"
+		echo -n "Waiting: "
+    fi
+    while true;
+	do
+		sleep 1
+		if [ "`pgrep java`" = "" ] && [ "`pgrep httpd`" = "" ]; then
+			break
+		else
+			echo -n "."
+			#echo -n "Enter your [y/n]: "; read ISKILL;
+		fi
+	done
+	echo
+    start
+}
+
+status() {
+		ps -aux | grep -e tomcat -e apache
+
+		echo -en "\\033[1;32;1m"
+		echo ulimit open files: `ulimit -n`
+		echo -en "\\033[0;39;1m"
+
+		echo -en "\\033[1;32;1m"
+		echo -en "httpd count:"
+		ps axf|grep httpd|wc -l
+		echo -en "\\033[0;39;1m"
+}
+
+killall() {
+	if [ "`pgrep httpd`" != "" ]; then
+		echo -en "\\033[1;32;1m"
+		echo "kill Apache pid(`pgrep httpd`) ..."
+		kill -9 `pgrep httpd`
+		echo -en "\\033[0;39;1m"
+	fi
+	if [ "`pgrep java`" != "" ]; then
+		echo -en "\\033[1;32;1m"
+		echo "kill Tomcat pid(`pgrep java`) ..."
+		kill -9 `pgrep java`
+		echo -en "\\033[0;39;1m"
+	fi
+	rm -rf /var/run/www/tomcat.pid
+	rm -f /var/lock/subsys/tomcat
+	rm -f /var/lock/subsys/apache
+}
+
+# Determine and execute action based on command line parameter
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		restart
+		;;
+	status)
+		status
+		;;
+	killall)
+		killall
+		;;
+	*)
+		echo -en "\\033[1;32;1m"
+		echo "Usage: $1 {start|stop|restart|status|killall}"
+		echo -en "\\033[0;39;1m"
+		;;
+esac
+echo -en "\\033[0;39;m"
+exit 0
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>Shell Script 2</title>
+		<para>Apache,Tomcat 运行脚本</para>
+		<example>
+			<title>/etc/rc.d/init.d/www</title>
+			<screen>
+			<![CDATA[
+#!/bin/bash
+##############################################################
+# Script for Apache and Tomcat
+# File:/etc/rc.d/init.d/www
+##############################################################
+# Setup environment for script execution
+#
+
+# chkconfig: - 91 35
+# description: Starts and stops the apache and tomcat daemons \
+#              used to provide Neo Chen<openunix@163.com>
+#
+# pidfile: /var/run/www/apache.pid
+# pidfile: /var/run/www/tomcat.pid
+# config:  /etc/apache2/apache2.conf
+
+
+#APACHE_HOME=/usr/local/apache
+#TOMCAT_HOME=/usr/local/tomcat
+#APACHE_USER=apache
+#TOMCAT_USER=tomcat
+
+APACHE_HOME=/usr/local/apache
+TOMCAT_HOME=/usr/local/tomcat
+APACHE_USER=root
+TOMCAT_USER=root
+WAIT_TIME=10
+get_apache_pid(){
+    APACHE_PID=`pgrep -o httpd`
+    echo $APACHE_PID
+}
+get_tomcat_pid(){
+    TOMCAT_PID=`ps axww | grep catalina.home | grep -v 'grep' | sed q | awk '{print $1}'`
+    echo $TOMCAT_PID
+}
+
+#OPEN_FILS=40960
+
+# Source function library.
+#if [ -f /etc/init.d/functions ] ; then
+#  . /etc/init.d/functions
+#elif [ -f /etc/rc.d/init.d/functions ] ; then
+#  . /etc/rc.d/init.d/functions
+#else
+#  exit 0
+#fi
+
+if [ ! -d /var/run/www ] ; then
+  mkdir /var/run/www
+fi
+
+#if [ -f /var/lock/subsys/tomcat ] ; then
+#fi
+
+start() {
+	#if [ `ulimit -n` -le  ${OPEN_FILES} ]; then
+	#	ulimit -n ${OPEN_FILES}
+	#fi
+	echo -en "\\033[1;32;1m"
+	echo "Starting Tomcat $TOMCAT_HOME ..."
+	echo -en "\\033[0;39;1m"
+	if [ -s /var/run/www/tomcat.pid ]; then
+		echo "tomcat (pid `cat /var/run/www/tomcat.pid`) already running"
+	else
+		su - ${TOMCAT_USER} -c "$TOMCAT_HOME/bin/catalina.sh start > /dev/null"
+		echo `get_tomcat_pid` > /var/run/www/tomcat.pid
+		touch /var/lock/subsys/tomcat
+	fi
+	sleep 2
+	echo -en "\\033[1;32;1m"
+	echo "Starting Apache $APACHE_HOME ..."
+	echo -en "\\033[0;39;1m"
+	su - ${APACHE_USER} -c "$APACHE_HOME/bin/apachectl start"
+	touch /var/lock/subsys/apache
+}
+
+stop() {
+	echo -en "\\033[1;32;1m"
+	echo "Shutting down Apache $APACHE_HOME ..."
+	echo -en "\\033[0;39;1m"
+	su - ${APACHE_USER} -c "$APACHE_HOME/bin/apachectl stop"
+	sleep 2
+	echo -en "\\033[1;32;1m"
+	echo "Shutting down Tomcat $TOMCAT_HOME ..."
+	echo -en "\\033[0;39;1m"
+	su - ${TOMCAT_USER} -c "$TOMCAT_HOME/bin/catalina.sh stop > /dev/null"
+	rm -rf /var/run/www/tomcat.pid
+	rm -f /var/lock/subsys/tomcat
+	rm -f /var/lock/subsys/apache
+}
+
+restart() {
+    stop
+    sleep 2
+    if [ -z `get_tomcat_pid` ]&& [ -z `get_apache_pid` ]; then
+		start
+		exit 0
+    else
+		echo "Usage: $0 killall (^C)"
+		echo -n "Waiting: "
+    fi
+    while true;
+	do
+		sleep 1
+		if [ -z `get_tomcat_pid` ] && [ -z `get_apache_pid` ]; then
+			break
+		else
+			echo -n "."
+		fi
+	done
+	echo
+    start
+}
+
+k9restart() {
+    ISEXIT='false'
+    stop
+    for i in `seq 1 ${WAIT_TIME}`;
+    do
+		if [ -z `get_tomcat_pid` ] && [ -z `get_apache_pid` ]; then
+	        ISEXIT='true'
+	        break
+		else
+			sleep 1
+		fi
+	done
+
+	if [ $ISEXIT == 'false' ]; then
+	    while true;
+		do
+			if [ -z `get_tomcat_pid` ] && [ -z `get_apache_pid` ]; then
+				ISEXIT='true'
+	        	break
+			fi
+
+			if [ -n `get_apache_pid` ]; then
+				kill -9 `pgrep httpd`
+			fi
+			if [ -n `get_tomcat_pid` ]; then
+				kill -9 `get_tomcat_pid`
+			fi
+		done
+		rm -rf /var/run/www/tomcat.pid
+		rm -f /var/lock/subsys/tomcat
+		rm -f /var/lock/subsys/apache
+	fi
+
+	echo
+
+	if [ $ISEXIT == 'true' ]; then
+		start
+	fi
+}
+
+status() {
+		#ps -aux | grep -e tomcat -e apache
+
+		echo -en "\\033[1;32;1m"
+		echo ulimit open files: `ulimit -n`
+		echo -en "\\033[0;39;1m"
+
+		echo -en "\\033[1;32;1m"
+		echo -en "httpd count:"
+		let hc=`ps axf|grep httpd|wc -l`-1
+		echo $hc
+		echo -en "apache count:"
+		netstat -alp | grep '*:http' | wc -l
+		echo -en "tomcat count:"
+		netstat -alp | grep '*:webcache' | wc -l
+		echo -en "dbconn count:"
+		netstat -a | grep ':3433' | wc -l
+		echo -en "\\033[0;39;1m"
+}
+
+kall() {
+	if [ `get_apache_pid` ]; then
+		echo -en "\\033[1;32;1m"
+		echo "kill Apache pid(`pgrep httpd`) ..."
+		kill `pgrep httpd`
+		echo -en "\\033[0;39;1m"
+	fi
+	if [ `get_tomcat_pid` ]; then
+		echo -en "\\033[1;32;1m"
+		echo "kill Tomcat pid(`pgrep java`) ..."
+		kill `pgrep java`
+		echo -en "\\033[0;39;1m"
+	fi
+	rm -rf /var/run/www/tomcat.pid
+	rm -f /var/lock/subsys/tomcat
+	rm -f /var/lock/subsys/apache
+}
+
+reload() {
+	killall -HUP httpd
+}
+
+tomcat_restart() {
+    su - ${TOMCAT_USER} -c "$TOMCAT_HOME/bin/catalina.sh stop > /dev/null"
+    rm -rf /var/run/www/tomcat.pid
+    rm -f /var/lock/subsys/tomcat
+    sleep 2
+    if [ -z `get_tomcat_pid` ]; then
+        su - ${TOMCAT_USER} -c "$TOMCAT_HOME/bin/catalina.sh start > /dev/null"
+        exit 0
+    else
+        echo "Usage: $0 killall (^C)"
+        echo -n "Waiting: "
+    fi
+    while true;
+    do
+                sleep 1
+                if [ -z `get_tomcat_pid` ]; then
+			echo
+                        break
+                else
+                        echo -n "."
+                        #echo -n "Enter your [y/n]: "; read ISKILL;
+                fi
+    done
+    su - ${TOMCAT_USER} -c "$TOMCAT_HOME/bin/catalina.sh start > /dev/null"
+    echo `get_tomcat_pid` > /var/run/www/tomcat.pid
+    touch /var/lock/subsys/tomcat
+}
+
+
+# Determine and execute action based on command line parameter
+case $1 in
+    apache)
+	case "$2" in
+	    reload)
+		reload
+		;;
+	    *)
+		su - ${APACHE_USER} -c "${APACHE_HOME}/bin/apachectl $2"
+		;;
+	esac
+	;;
+    tomcat)
+	case "$2" in
+            restart)
+                tomcat_restart
+                ;;
+	    *)
+		su - ${TOMCAT_USER} -c "${TOMCAT_HOME}/bin/catalina.sh $2"
+		;;
+	esac
+	;;
+    start)
+	start
+	;;
+    stop)
+	stop
+	;;
+    restart)
+	restart
+	;;
+    status)
+	status
+	;;
+    killall)
+	kall
+	;;
+    k9restart)
+	k9restart >/dev/null
+	;;
+    *)
+	echo -en "\\033[1;32;1m"
+	echo "Usage: $0 {start|stop|restart|status|killall|k9restart}"
+	echo "Usage: $0 apache {start|restart|graceful|graceful-stop|stop|reload}"
+	echo "Usage: $0 tomcat {debug|run|start|restart|stop|version}"
+	echo -en "\\033[0;39;1m"
+	;;
+esac
+echo -en "\\033[0;39;m"
+exit 0
+			]]>
+			</screen>
+		</example>
+		<screen>
+chmod 700 /etc/init.d/www
+		</screen>
+	</section>
+</section>

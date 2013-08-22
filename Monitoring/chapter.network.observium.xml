@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="observium">
+	<title>Observium</title>
+	<para>http://www.observium.org</para>
+	<section id="observium.installation">
+		<title>Installation</title>
+		<screen>
+aptitude install libapache2-mod-php5 php5-cli php5-mysql php5-gd php5-snmp \
+php-pear snmp graphviz subversion mysql-server mysql-client rrdtool \
+fping imagemagick whois mtr-tiny nmap ipmitool
+		</screen>
+		<para>安装 Net_IPv6</para>
+		<screen>
+Install the IPv4 and IPv6 pear libraries:
+$ sudo pear install Net_IPv6
+$ sudo pear install Net_IPv4
+		</screen>
+		<para>安装observium软件</para>
+		<para>http://www.observium.org/observium-latest.tar.gz</para>
+		<screen>
+$ wget http://www.observium.org/observium-latest.tar.gz
+$ tar zxvf observium-latest.tar.gz
+$ sudo mv observium /opt
+$ cd /opt/observium/
+$ cp config.php.default config.php
+$ sudo mkdir graphs rrd
+$ chown www-data.www-data graphs rrd
+$ mkdir /opt/observium/logs
+		</screen>
+		<para>创建数据库SQL脚本</para>
+		<screen>
+		<![CDATA[
+CREATE DATABASE observium;
+GRANT ALL PRIVILEGES ON observium.* TO 'observium'@'localhost'
+IDENTIFIED BY '<observium db password>';
+		]]>
+		</screen>
+		<para>创建数据库</para>
+		<screen>
+		<![CDATA[
+$ mysql -uroot -p
+Enter password: <mysql root password>
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 238145
+Server version: 5.1.41-3ubuntu12.10 (Ubuntu)
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> CREATE DATABASE observium;
+Query OK, 1 row affected (0.10 sec)
+
+mysql> GRANT ALL PRIVILEGES ON observium.* TO 'observium'@'localhost' IDENTIFIED BY 'observium';
+Query OK, 0 rows affected (0.06 sec)
+		]]>
+		</screen>
+		<para>修改配置文件</para>
+		<screen>
+$ vim config.php
+
+### Database config
+$config['db_host'] = "localhost";
+$config['db_user'] = "observium";
+$config['db_pass'] = "observium";
+$config['db_name'] = "observium";
+
+### List of networks to allow scanning-based discovery
+$config['nets'][] = "172.16.1.0/24";
+$config['nets'][] = "172.16.3.0/24";
+
+or
+$config['nets'][] = "172.16.0.0/16";
+		</screen>
+		<para>创建数据库表</para>
+		<screen>
+		<![CDATA[
+$ mysql -uobservium -pobservium observium < database-schema.sql
+		]]>
+		</screen>
+		<para>配置WEB服务器</para>
+		<screen>
+		<![CDATA[
+$ sudo vim /etc/apache2/sites-available/observium
+
+<VirtualHost *:80>
+       ServerAdmin webmaster@localhost
+       ServerName  observium.domain.com
+       DocumentRoot /opt/observium/html
+       <Directory />
+               Options FollowSymLinks
+               AllowOverride None
+       </Directory>
+       <Directory /opt/observium/html/>
+               Options Indexes FollowSymLinks MultiViews
+               AllowOverride All
+               Order allow,deny
+               allow from all
+       </Directory>
+       ErrorLog /var/log/apache2/error.log
+       LogLevel warn
+       CustomLog /var/log/apache2/access.log combined
+       ServerSignature On
+</VirtualHost>
+		]]>
+		</screen>
+		<para>启用Rewrite</para>
+		<screen>
+$ sudo a2enmod rewrite
+Enabling module rewrite.
+Run '/etc/init.d/apache2 restart' to activate new configuration!
+
+$ sudo a2ensite observium
+Enabling site observium.
+Run '/etc/init.d/apache2 reload' to activate new configuration!
+
+$ sudo apache2ctl restart
+		</screen>
+		<para>添加用户</para>
+		<screen>
+		<![CDATA[
+$ ./adduser.php
+Add User Tool
+Usage: ./adduser.php <username> <password> <level 1-10> [email]
+
+$ ./adduser.php neo chen 1 neo.chen@example.com
+
+$ ./adduser.php netkiller 3655927 10 neo.chen@example.com
+User netkiller added successfully
+
+
+
+
+$ ./addhost.php
+
+Observium v0.11.9.2439 Add Host Tool
+
+Usage: ./addhost.php <hostname> [community] [v1|v2c] [port] [udp|udp6|tcp|tcp6]
+
+$ ./addhost.php localhost public v2c
+Trying community public
+Added device localhost (1)
+		]]>
+		</screen>
+		<screen>
+./discovery.php -h all
+./poller.php -h all
+		</screen>
+		<para>设置定时任务</para>
+		<screen>
+		<![CDATA[
+$ crontab -e
+
+33 */6  * * *  cd /opt/observium/ && ./discovery.php -h all >> /dev/null 2>&1
+*/5 *   * * *  cd /opt/observium/ && ./discovery.php -h new >> /dev/null 2>&1
+*/5 *   * * *  cd /opt/observium/ && ./poller.php -h all >> /dev/null 2>&1
+
+$ sudo /etc/init.d/cron reload
+		]]>
+		</screen>
+	</section>
+</section>

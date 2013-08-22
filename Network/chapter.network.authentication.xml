@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="network.authentication">
+	<title>Authentication</title>
+	<section id="login.defs">
+		<title>/etc/login.defs</title>
+		<para>登陆参数设定配置文件</para>
+		<screen>
+# cat /etc/login.defs
+#
+# Please note that the parameters in this configuration file control the
+# behavior of the tools from the shadow-utils component. None of these
+# tools uses the PAM mechanism, and the utilities that use PAM (such as the
+# passwd command) should therefore be configured elsewhere. Refer to
+# /etc/pam.d/system-auth for more information.
+#
+
+# *REQUIRED*
+#   Directory where mailboxes reside, _or_ name of file, relative to the
+#   home directory.  If you _do_ define both, MAIL_DIR takes precedence.
+#   QMAIL_DIR is for Qmail
+#
+#QMAIL_DIR	Maildir
+MAIL_DIR	/var/spool/mail
+#MAIL_FILE	.mail
+
+# Password aging controls:
+#
+#	PASS_MAX_DAYS	Maximum number of days a password may be used.
+#	PASS_MIN_DAYS	Minimum number of days allowed between password changes.
+#	PASS_MIN_LEN	Minimum acceptable password length.
+#	PASS_WARN_AGE	Number of days warning given before a password expires.
+#
+PASS_MAX_DAYS	99999
+PASS_MIN_DAYS	0
+PASS_MIN_LEN	5
+PASS_WARN_AGE	7
+
+#
+# Min/max values for automatic uid selection in useradd
+#
+UID_MIN			  500
+UID_MAX			60000
+
+#
+# Min/max values for automatic gid selection in groupadd
+#
+GID_MIN			  500
+GID_MAX			60000
+
+#
+# If defined, this command is run when removing a user.
+# It should remove any at/cron/print jobs etc. owned by
+# the user to be removed (passed as the first argument).
+#
+#USERDEL_CMD	/usr/sbin/userdel_local
+
+#
+# If useradd should create home directories for users by default
+# On RH systems, we do. This option is overridden with the -m flag on
+# useradd command line.
+#
+CREATE_HOME	yes
+
+# The permission mask is initialized to this value. If not specified,
+# the permission mask will be initialized to 022.
+UMASK           077
+
+# This enables userdel to remove user groups if no members exist.
+#
+USERGROUPS_ENAB yes
+
+# Use SHA512 to encrypt password.
+ENCRYPT_METHOD SHA512
+		</screen>
+	</section>
+	<section id="pam">
+		<title>PAM 插件认证</title>
+		<para>配置文件</para>
+		<screen>
+ls  /etc/pam.d/
+chfn         crond                login    passwd            remote    runuser-l          smtp          ssh-keycat  sudo-i       system-auth-ac
+chsh         fingerprint-auth     newrole  password-auth     run_init  smartcard-auth     smtp.postfix  su          su-l
+config-util  fingerprint-auth-ac  other    password-auth-ac  runuser   smartcard-auth-ac  sshd          sudo        system-auth
+		</screen>
+		<para>认证插件</para>
+		<screen>
+ls /lib64/security/
+		</screen>
+		<section id="pam_tally2.so">
+			<title>pam_tally2.so</title>
+			<para>此模块的功能是，登陆错误输入密码3次，5分钟后自动解禁，在未解禁期间输入正确密码也无法登陆。</para>
+			<para>在配置文件 /etc/pam.d/sshd 顶端加入</para>
+			<screen>
+auth required pam_tally2.so deny=3 onerr=fail unlock_time=300
+			</screen>
+			<para>查看失败次数</para>
+			<screen>
+# pam_tally2
+Login           Failures Latest failure     From
+root               14    07/12/13 15:44:37  192.168.6.2
+neo                 8    07/12/13 15:45:36  192.168.6.2
+			</screen>
+			<para>重置计数器</para>
+			<screen>
+# pam_tally2 -r -u root
+Login           Failures Latest failure     From
+root               14    07/12/13 15:44:37  192.168.6.2
+
+# pam_tally2 -r -u neo
+Login           Failures Latest failure     From
+neo                 8    07/12/13 15:45:36  192.168.6.2
+			</screen>
+			<para>pam_tally2 计数器日志保存在 /var/log/tallylog 注意，这是二进制格式的文件</para>
+			<example>
+				<title>/etc/pam.d/sshd - pam_tally2.so</title>
+				<screen>
+# cat  /etc/pam.d/sshd
+#%PAM-1.0
+auth required pam_tally2.so deny=3 onerr=fail unlock_time=300
+
+auth	   required	pam_sepermit.so
+auth       include      password-auth
+account    required     pam_nologin.so
+account    include      password-auth
+password   include      password-auth
+# pam_selinux.so close should be the first session rule
+session    required     pam_selinux.so close
+session    required     pam_loginuid.so
+# pam_selinux.so open should only be followed by sessions to be executed in the user context
+session    required     pam_selinux.so open env_params
+session    optional     pam_keyinit.so force revoke
+session    include      password-auth
+				</screen>
+			</example>
+			<para>以上配置root用户不受限制, 如果需要限制root用户，参考下面</para>
+			<screen>
+auth required pam_tally2.so deny=3 unlock_time=5 even_deny_root root_unlock_time=1800
+			</screen>
+		</section>
+		<section id="pam_listfile.so">
+			<title>pam_listfile.so</title>
+			<subtitle>用户登陆限制</subtitle>
+			<para>将下面一行添加到 /etc/pam.d/sshd 中，这里采用白名单方式，你也可以采用黑名单方式</para>
+			<screen>
+auth       required     pam_listfile.so item=user sense=allow file=/etc/ssh/whitelist onerr=fail
+			</screen>
+			<para>将允许登陆的用户添加到 /etc/ssh/whitelist，除此之外的用户将不能通过ssh登陆到你的系统</para>
+			<screen>
+# cat /etc/ssh/whitelist
+neo
+www
+			</screen>
+			<example>
+				<title>/etc/pam.d/sshd - pam_listfile.so</title>
+				<screen>
+# cat /etc/pam.d/sshd
+#%PAM-1.0
+auth       required     pam_listfile.so item=user sense=allow file=/etc/ssh/whitelist onerr=fail
+auth       required     pam_tally2.so deny=3 onerr=fail unlock_time=300
+
+auth	   required	pam_sepermit.so
+auth       include      password-auth
+account    required     pam_nologin.so
+account    include      password-auth
+password   include      password-auth
+# pam_selinux.so close should be the first session rule
+session    required     pam_selinux.so close
+session    required     pam_loginuid.so
+# pam_selinux.so open should only be followed by sessions to be executed in the user context
+session    required     pam_selinux.so open env_params
+session    optional     pam_keyinit.so force revoke
+session    include      password-auth
+				</screen>
+			</example>
+			<para>sense=allow	白名单方式, sense=deny	黑名单方式</para>
+			<screen>
+auth       required     pam_listfile.so item=user sense=deny file=/etc/ssh/blacklist onerr=fail
+			</screen>
+			<para>更多细节请查看手册 $ man pam_listfile</para>
+		</section>
+
+		<section id="pam_access.so">
+			<title>pam_access.so</title>
+			<para>编辑 /etc/pam.d/sshd 文件，加入下面一行</para>
+			<screen>
+account required pam_access.so
+			</screen>
+			<para>保存后重启sshd进程</para>
+			<para>编辑 /etc/security/access.conf 文件</para>
+			<screen>
+			<![CDATA[
+cat >>  /etc/security/access.conf << EOF
+
+- : root : ALL EXCEPT 192.168.6.1
+EOF
+			]]>
+			</screen>
+			<para>只能通过 192.168.6.1 登陆, 添加多个IP地址</para>
+			<screen>
+- : root : ALL EXCEPT 192.168.6.1 192.168.6.2
+			</screen>
+			<para>测试是否生效</para>
+		</section>
+		<section id="pam_wheel.so">
+			<title>pam_wheel.so</title>
+			<para>限制普通用户通过su命令提升权限至root. 只有属于wheel组的用户允许通过su切换到root用户</para>
+			<para>编辑 /etc/pam.d/su 文件，去掉下面的注释</para>
+			<screen>
+auth		required	pam_wheel.so use_uid
+			</screen>
+			<para>修改用户组别，添加到wheel组</para>
+			<screen>
+# usermod -G wheel www
+
+# id www
+uid=501(www) gid=501(www) groups=501(www),10(wheel)
+			</screen>
+			<para>没有加入到wheel组的用户使用su时会提示密码不正确。</para>
+			<screen>
+$ su - root
+Password:
+su: incorrect password
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>Network Authentication</title>
+
+		&chapter.network.authentication.nis.xml;
+		&chapter.network.authentication.ldap.xml;
+		&chapter.network.authentication.kerberos.xml;
+		&chapter.network.authentication.freeradius.xml;
+		<section id="sasl">
+			<title>SASL (Simple Authentication and Security Layer)</title>
+		</section>
+		<section id="gssapi">
+			<title>GSSAPI (Generic Security Services Application Program Interface)</title>
+
+		</section>
+	</section>
+</chapter>

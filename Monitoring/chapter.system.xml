@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="sys.proc">
+	<title>sys &amp; proc</title>
+	<chapterinfo>
+		<abstract>
+		  <para></para>
+		</abstract>
+		<keywordset>
+			<keyword>sys</keyword>
+			<keyword>proc</keyword>
+			<keyword>sysctl</keyword>
+		</keywordset>
+	</chapterinfo>
+	<section id="sys">
+		<title>/sys</title>
+		<section>
+			<title>/sys/class/net/</title>
+			<screen>
+$ cat /sys/class/net/eth0/statistics/rx_bytes
+$ cat /sys/class/net/eth0/statistics/tx_bytes
+			</screen>
+		</section>
+	</section>
+	<section id="proc">
+		<title>/proc</title>
+
+	</section>
+</chapter>
+
+	&chapter.system.utility.xml;

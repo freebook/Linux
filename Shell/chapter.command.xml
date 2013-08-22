@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.command.xml 548 2013-03-28 07:57:46Z netkiller $ -->
+
+	&chapter.cmd.man.xml;
+	&chapter.cmd.sys.xml;
+	&chapter.cmd.directory.xml;
+	&chapter.cmd.compress.xml;
+	&chapter.cmd.datetime.xml;
+	&chapter.cmd.numeric.xml;
+	&chapter.cmd.text.xml;
+
+<chapter id="log">
+	<title>Logging</title>
+	<section id="logger">
+		<title>logger - a shell command interface to the syslog(3) system log module</title>
+		<screen>
+		<![CDATA[
+# logger -p local0.notice -t HOSTIDM -f /dev/idmc
+# tail /var/log/messages
+
+# logger -p local0.notice -t passwd -f /etc/passwd
+# tail /var/log/syslog
+
+# logger -p user.notice -t neo -f /etc/passwd
+# tail /var/log/syslog
+# tail /var/log/messages
+
+# logger -i -s -p local3.info -t passwd -f /etc/passwd
+# tail /var/log/messages
+		]]>
+		</screen>
+	</section>
+</chapter>
+
+<chapter id="password">
+	<title>Password</title>
+	<section>
+		<title>Shadow password suite configuration.</title>
+		<screen>
+# cat /etc/login.defs
+# *REQUIRED*
+#   Directory where mailboxes reside, _or_ name of file, relative to the
+#   home directory.  If you _do_ define both, MAIL_DIR takes precedence.
+#   QMAIL_DIR is for Qmail
+#
+#QMAIL_DIR      Maildir
+MAIL_DIR        /var/spool/mail
+#MAIL_FILE      .mail
+
+# Password aging controls:
+#
+#       PASS_MAX_DAYS   Maximum number of days a password may be used.
+#       PASS_MIN_DAYS   Minimum number of days allowed between password changes.
+#       PASS_MIN_LEN    Minimum acceptable password length.
+#       PASS_WARN_AGE   Number of days warning given before a password expires.
+#
+PASS_MAX_DAYS   99999
+PASS_MIN_DAYS   0
+PASS_MIN_LEN    5
+PASS_WARN_AGE   7
+
+#
+# Min/max values for automatic uid selection in useradd
+#
+UID_MIN                   500
+UID_MAX                 60000
+
+#
+# Min/max values for automatic gid selection in groupadd
+#
+GID_MIN                   500
+GID_MAX                 60000
+
+#
+# If defined, this command is run when removing a user.
+# It should remove any at/cron/print jobs etc. owned by
+# the user to be removed (passed as the first argument).
+#
+#USERDEL_CMD    /usr/sbin/userdel_local
+
+#
+# If useradd should create home directories for users by default
+# On RH systems, we do. This option is overridden with the -m flag on
+# useradd command line.
+#
+CREATE_HOME     yes
+
+# The permission mask is initialized to this value. If not specified,
+# the permission mask will be initialized to 022.
+UMASK           077
+
+# This enables userdel to remove user groups if no members exist.
+#
+USERGROUPS_ENAB yes
+
+# Use MD5 or DES to encrypt password? Red Hat use MD5 by default.
+MD5_CRYPT_ENAB yes
+
+ENCRYPT_METHOD MD5
+
+		</screen>
+	</section>
+	<section id="newusers">
+		<title>newusers - update and create new users in batch</title>
+		<para></para>
+		<screen>
+# cat userfile.txt
+www00:x:520:520::/home/www00:/sbin/nologin
+www01:x:521:521::/home/www01:/sbin/nologin
+www02:x:522:522::/home/www02:/sbin/nologin
+www03:x:523:523::/home/www03:/sbin/nologin
+www04:x:524:524::/home/www04:/sbin/nologin
+www05:x:525:525::/home/www05:/sbin/nologin
+www06:x:526:526::/home/www06:/sbin/nologin
+www07:x:527:527::/home/www07:/sbin/nologin
+www08:x:528:528::/home/www08:/sbin/nologin
+www09:x:529:529::/home/www09:/sbin/nologin
+
+# newusers userfile.txt
+		</screen>
+	</section>
+	<section id="chpasswd">
+		<title>chpasswd - update passwords in batch mode</title>
+		<para><command>echo "user:password" | chpasswd</command></para>
+		<screen>
+[root@dev1 ~]# adduser test
+[root@dev1 ~]# echo "test:123456" | chpasswd
+		</screen>
+		<para></para>
+		<screen>
+# cat passwd.txt
+neo:neopass　
+jam:jampass
+
+# cat passwd.txt | chpasswd　
+		</screen>
+		<screen>
+		<![CDATA[
+#　chpasswd　-c　<　passwd.txt
+		]]>　
+		</screen>
+		<para>passwd 命令实现相同功能</para>
+		<screen>
+echo "mypasword" | passwd –stdin neo
+		</screen>
+	</section>
+</chapter>
+
+<chapter id="binutils">
+	<title>binutils</title>
+	<screen>
+$ sudo apt-get install binutils
+	</screen>
+	<section id="strings">
+		<title>strings - print the strings of printable characters in files.</title>
+		<screen>
+tcpdump -i eth0 -s 0 -l -w - dst port 80 | strings
+		</screen>
+	</section>
+</chapter>
+
+	&chapter.miscellaneous.xml;

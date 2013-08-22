@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="sms">
+	<title>SMS</title>
+	<section id="gnokii">
+		<title>gnokii</title>
+		<para>http://www.gnokii.org</para>
+		<screen>
+neo@monitor:~$ apt-cache search gnokii
+opensync-plugin-gnokii - Opensync gnokii plugin
+gnokii - Datasuite for mobile phone management
+gnokii-cli - Datasuite for mobile phone management (console interface)
+gnokii-common - Datasuite for mobile phone management (base files)
+gnokii-smsd - SMS Daemon for mobile phones
+gnokii-smsd-mysql - SMSD plugin for MySQL storage backend
+gnokii-smsd-pgsql - SMSD plugin for PostgreSQL storage backend
+libgnokii-dev - Gnokii mobile phone interface library (development files)
+libgnokii5 - Gnokii mobile phone interface library
+xgnokii - Datasuite for mobile phone management (X interface)
+
+
+neo@monitor:~$ sudo apt-get install gnokii-cli
+		</screen>
+		<screen>
+		<![CDATA[
+vim /etc/gnokiirc
+or 
+vim ~/.gnokiirc
+
+[global]
+port = /dev/ttyS0
+model = AT
+initlength = default
+connection = serial
+serial_baudrate = 19200
+smsc_timeout = 10
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+$ echo "This is a test message" | gnokii --sendsms +13113668890
+
+$ gnokii --sendsms number <<EOF
+hi neo,
+This is a test message
+EOF
+
+$ gnokii --dialvoice number
+		]]>
+		</screen>
+	</section>
+	<section id="sms.at">
+		<title>AT Commands</title>
+		<screen>
+AT
+AT+CSCA=+86
+AT+CMGF=1
+AT+CMGS="13122993040"
+Hello,This is the test of GSM module! Ctrl+z		
+		</screen>
+	</section>
+</chapter>

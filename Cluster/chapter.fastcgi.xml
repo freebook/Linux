@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.fastcgi.xml 374 2012-03-20 09:43:09Z netkiller $ -->
+<chapter id="fastcgi">
+	<title>FastCGI</title>
+	<ulink url=""></ulink>
+</chapter>

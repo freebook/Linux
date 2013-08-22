@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- http://www.ibm.com/developerworks/cn/linux/l-ubuntu-inotify/ -->
+<chapter id="inotify">
+	<title>inotify</title>
+	<command>$ ls -ld /proc/sys/fs/inotify/*</command>
+	<section id="inotify-tools">
+		<title>inotify-tools</title>
+		<para>Installation</para>
+		<para>ubuntu</para>
+		<screen>
+sudo apt-get install inotify-tools
+		</screen>
+		<para>centos</para>
+		<screen>
+yum install inotify-tools
+		</screen>
+		<para>inotifywait -r  -m $HOME</para>
+		<para>监控登录过程</para>
+		<screen>
+neo@master:~$ inotifywait -r  -m $HOME
+Setting up watches.  Beware: since -r was given, this may take a while!
+Watches established.
+/home/neo/ OPEN .profile
+/home/neo/ ACCESS .profile
+/home/neo/ CLOSE_NOWRITE,CLOSE .profile
+/home/neo/ OPEN .bashrc
+/home/neo/ ACCESS .bashrc
+/home/neo/ CLOSE_NOWRITE,CLOSE .bashrc
+/home/neo/ OPEN .bash_history
+/home/neo/ ACCESS .bash_history
+/home/neo/ CLOSE_NOWRITE,CLOSE .bash_history
+/home/neo/ OPEN .bash_history
+/home/neo/ ACCESS .bash_history
+/home/neo/ CLOSE_NOWRITE,CLOSE .bash_history
+		</screen>
+		<para>create a new file helloworld.txt</para>
+		<screen>
+/home/neo/ CREATE helloworld.txt
+/home/neo/ OPEN helloworld.txt
+/home/neo/ MODIFY helloworld.txt
+/home/neo/ CLOSE_WRITE,CLOSE helloworld.txt
+		</screen>
+		<para>cat a file using cat helloworld.txt</para>
+		<screen>
+/home/neo/ OPEN,ISDIR
+/home/neo/ CLOSE_NOWRITE,CLOSE,ISDIR
+/home/neo/ OPEN,ISDIR
+/home/neo/ CLOSE_NOWRITE,CLOSE,ISDIR
+/home/neo/ OPEN helloworld.txt
+/home/neo/ ACCESS helloworld.txt
+/home/neo/ CLOSE_NOWRITE,CLOSE helloworld.txt
+		</screen>
+		<para>delete a file helloworld.txt</para>
+		<screen>
+/home/neo/ OPEN,ISDIR
+/home/neo/ CLOSE_NOWRITE,CLOSE,ISDIR
+/home/neo/ OPEN,ISDIR
+/home/neo/ CLOSE_NOWRITE,CLOSE,ISDIR
+/home/neo/ DELETE helloworld.txt
+		</screen>
+
+	</section>
+	<section id="incron">
+		<title>Incron - cron-like daemon which handles filesystem events</title>
+	</section>
+	<section id="inotify-tools">
+		<title>inotify-tools + rsync</title>
+		<orderedlist>
+			<listitem><para>-m 是保持一直监听</para></listitem>
+			<listitem><para>-r 是递归查看目录</para></listitem>
+			<listitem><para>-q 是打印出事件～</para></listitem>
+			<listitem><para>-e create,move,delete,modify 监听 创建 移动 删除 写入 事件</para></listitem>
+		</orderedlist>
+		<screen>
+		<![CDATA[
+inotifywait -mrq --event create,delete,modify,move --format '%w %e' /your_path | while read w e; do
+    if [ "$e" = "IGNORED" ]; then
+        continue
+    fi
+    rsync -az --delete $w username@your_ip:$w
+done
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+#!/bin/sh
+# A slightly complex but actually useful example
+inotifywait -mrq --timefmt '%d/%m/%y %H:%M' --format '%T %f' \
+-e close_write /home/billy | while read date time file; do
+    rsync /home/billy/${file} rsync://billy@example.com/backup/${file} && \
+    echo "At ${time} on ${date}, file ${file} was backed up via rsync"
+done
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+[root@development ~]# cat inotify-rsync
+#!/bin/bash
+# $Id: chapter.storage.inotify.xml 334 2012-02-01 05:59:34Z netkiller $ #
+# Author neo<openunix@163.com> #
+
+# monitor path
+monitor_path=cms
+#inotifywait path
+INOTIFYWAIT=inotifywait
+
+# rsync image file
+function images {
+        local file=$1
+        rsync -az --delete $file /tmp/images/$file
+#       rsync ${file} ${rsync_url}/${file}
+}
+
+# rsync html file
+function html {
+        local file=$1
+        rsync -az --delete $file /tmp/$file
+}
+
+
+$INOTIFYWAIT -mrq --event close_write --format '%w%f %e' $monitor_path | while read file event; do
+    if [ "$event" = "CLOSE_WRITE,CLOSE" ]; then
+        ext=$(echo $file | awk -F'.' '{print $2}')
+        if [ $ext = 'jpg' ]; then
+                images $file
+        fi
+        if [ $ext = 'html' ]; then
+                html $file
+        fi
+    fi
+done &
+		]]>
+		</screen>
+		<screen>
+		</screen>
+<!--
+		<screen>
+		<![CDATA[
+#
+basedir=/home/jason/Rsync
+destNum=`grep -c '^dest' ${basedir}/rsync.conf`
+src=`grep 'local directory=' ${basedir}/rsync.conf|cut -d '=' -f 2`
+des=`grep '^dest' ${basedir}/rsync.conf| cut -d '=' -f 2 `
+		]]>
+		</screen>
+-->
+	</section>
+
+
+	<section id="pyinotify">
+		<title>pyinotify</title>
+		<screen>
+[root@development ~]# easy_install pyinotify
+[root@development ~]# yum install gcc
+[root@development ctypes-1.0.2]# python setup.py install
+		</screen>
+	</section>
+</chapter>

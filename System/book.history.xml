@@ -1,0 +1,17 @@
+﻿<appendix id="history">
+	<title>历史记录</title>
+<revhistory>
+	<revision>
+		<revnumber>1.0</revnumber>
+		<date>2009-11-01</date>
+		<revdescription>
+		<itemizedlist>
+			<listitem><para>这篇文档出自《Netkiller Linux 手札》的系统配置篇</para></listitem>
+			<listitem><para>考虑到《Netkiller Linux 手札》过于臃肿，故将ubuntu linux系统配置部分分离出来作为系统篇。而《Netkiller Linux 手札》专注于各种服务器的配置。</para></listitem>
+		</itemizedlist>
+		</revdescription>
+	</revision>
+
+</revhistory>
+
+</appendix>

@@ -1,0 +1,566 @@
+<chapter id="authentication">
+	<title>Authentication</title>
+	<section id="adduser">
+		<title>User</title>
+		<section>
+			<title>Add a new user</title>
+			<screen>
+$ adduser neo			
+			</screen>
+		</section>
+		<section id="userdel">
+			<title>remove an existed user</title>
+			<para>remove an existed user, but keeping directory /home/neo</para>
+			<screen>
+$ userdel neo			
+			</screen>
+			<para>delete user's directory under /home when removing an existed user</para>
+			<screen>
+$ userdel -r neo
+			</screen>
+		</section>
+		<section id="usermod">
+			<title>usermod - modify a user account</title>
+			<screen>
+usermod -G group -a user
+
+[root@scientific ~]# groupadd vm
+[root@scientific ~]# adduser xen
+[root@scientific ~]# usermod -G vm -a xen
+[root@scientific ~]# usermod -G vm -a kvm
+[root@scientific ~]# id xen
+uid=501(xen) gid=502(xen) groups=502(xen),501(vm)
+			</screen>
+		</section>
+		<section id="passwd">
+			<title>lock / unlock</title>
+			<screen>
+passwd -l neo
+			</screen>
+			<screen>
+passwd -u neo
+			</screen>
+			<section>
+				<title>/etc/passwd</title>
+				<screen>
+[root@test ~]# cat /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+sync:x:5:0:sync:/sbin:/bin/sync
+shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+halt:x:7:0:halt:/sbin:/sbin/halt
+mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
+news:x:9:13:news:/etc/news:
+uucp:x:10:14:uucp:/var/spool/uucp:/sbin/nologin
+operator:x:11:0:operator:/root:/sbin/nologin
+games:x:12:100:games:/usr/games:/sbin/nologin
+gopher:x:13:30:gopher:/var/gopher:/sbin/nologin
+ftp:x:14:50:FTP User:/var/ftp:/sbin/nologin
+nobody:x:99:99:Nobody:/:/sbin/nologin
+nscd:x:28:28:NSCD Daemon:/:/sbin/nologin
+vcsa:x:69:69:virtual console memory owner:/dev:/sbin/nologin
+pcap:x:77:77::/var/arpwatch:/sbin/nologin
+rpc:x:32:32:Portmapper RPC user:/:/sbin/nologin
+mailnull:x:47:47::/var/spool/mqueue:/sbin/nologin
+smmsp:x:51:51::/var/spool/mqueue:/sbin/nologin
+sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin
+rpcuser:x:29:29:RPC Service User:/var/lib/nfs:/sbin/nologin
+nfsnobody:x:4294967294:4294967294:Anonymous NFS User:/var/lib/nfs:/sbin/nologin
+dbus:x:81:81:System message bus:/:/sbin/nologin
+avahi:x:70:70:Avahi daemon:/:/sbin/nologin
+haldaemon:x:68:68:HAL daemon:/:/sbin/nologin
+avahi-autoipd:x:100:102:avahi-autoipd:/var/lib/avahi-autoipd:/sbin/nologin
+neo:x:500:500::/home/neo:/bin/bash
+mysql:x:501:501::/home/mysql:/bin/bash
+				</screen>
+			</section>
+		</section>
+	</section>
+	<section id="group">
+		<title>Group</title>
+		<section>
+			<title>Add a new group</title>
+			<screen>
+$ groupadd newgroup
+			</screen>
+		</section>
+		<section>
+			<title>Add a user to the group</title>
+			<screen>
+$ groupadd mygroup
+$ sudo usermod -a -G mygroup user		
+			</screen>
+		</section>
+		<section>
+			<title>/etc/group</title>
+			<screen>
+[root@test ~]# cat /etc/group
+root:x:0:root
+bin:x:1:root,bin,daemon
+daemon:x:2:root,bin,daemon
+sys:x:3:root,bin,adm
+adm:x:4:root,adm,daemon
+tty:x:5:
+disk:x:6:root
+lp:x:7:daemon,lp
+mem:x:8:
+kmem:x:9:
+wheel:x:10:root
+mail:x:12:mail
+news:x:13:news
+uucp:x:14:uucp
+man:x:15:
+games:x:20:
+gopher:x:30:
+dip:x:40:
+ftp:x:50:
+lock:x:54:
+nobody:x:99:
+users:x:100:
+nscd:x:28:
+floppy:x:19:
+vcsa:x:69:
+pcap:x:77:
+utmp:x:22:
+utempter:x:35:
+slocate:x:21:
+audio:x:63:
+rpc:x:32:
+mailnull:x:47:
+smmsp:x:51:
+ecryptfs:x:101:
+sshd:x:74:
+rpcuser:x:29:
+nfsnobody:x:4294967294:
+dbus:x:81:
+avahi:x:70:
+haldaemon:x:68:
+avahi-autoipd:x:102:
+neo:x:500:
+mysql:x:501:
+			</screen>
+		</section>
+	</section>	
+</chapter>
+<chapter id="permission">
+	<title>Permission</title>
+	<section id="umask">
+		<title>umask</title>
+		<screen>
+[root@development ~]# umask
+0022
+[root@development ~]# umask -S
+u=rwx,g=rx,o=rx		
+		</screen>
+		<para>设置</para>
+		<screen>
+umask 002		
+		</screen>
+	</section>
+	<section id="permissions">
+		<title>Access Permissions</title>
+		<section id="chown">
+			<title>chown - change file owner and group</title>
+			<para>chown - change file owner and group</para>
+			<screen>
+[root@test ~]# touch test
+[root@test ~]# adduser neo
+[root@test ~]# chown neo test
+[root@test ~]# ll test
+-rw-r--r-- 1 neo root 0 Apr 19 18:15 test
+			</screen>
+		</section>
+		<section id="chgrp">
+			<title>chgrp - change group ownership</title>
+			<para>chgrp - change group ownership</para>
+			<screen>
+# chgrp daemon -R *
+
+# ll
+drwxrwxr-x  3 neo  daemon      4096 Apr 16 18:23 user 		
+			</screen>
+		</section>
+		<section id="chmod">
+			<title>chmod - change file access permissions</title>
+			<para>option</para>
+			<screen>
+u = user
+g = group
+o = other
+a = all
+
+r = 4
+w = 2	
+x = 1
+			</screen>
+			<screen>
+[root@test ~]# ll test
+-rwxr--r-- 1 neo root 0 Apr 19 18:15 test
+[root@test ~]# chmod g=x test
+[root@test ~]# ll test
+-rwx--xr-- 1 neo root 0 Apr 19 18:15 test
+[root@test ~]# chmod go+w test
+[root@test ~]# ll test
+-rwx-wxrw- 1 neo root 0 Apr 19 18:15 test
+[root@test ~]# chmod u-wx test
+[root@test ~]# ll test
+-r---wxrw- 1 neo root 0 Apr 19 18:15 test
+[root@test ~]# chmod u=rwx test
+[root@test ~]# ll test
+-rwx-wxrw- 1 neo root 0 Apr 19 18:15 test
+[root@test ~]# chmod a=rwx test
+[root@test ~]# ll test
+-rwxrwxrwx 1 neo root 0 Apr 19 18:15 test
+			</screen>
+		</section>
+	</section>
+	<section id="chattr">
+		<title>chattr - change file attributes on a Linux second extended file system</title>
+		<screen>
+[root@development ~]# chattr +i /etc/passwd
+[root@development ~]# lsattr /etc/passwd
+----i-------- /etc/passwd		
+		</screen>
+		<para></para>
+		<screen>
+[root@development ~]# chattr -i /etc/passwd
+[root@development ~]# lsattr /etc/passwd
+------------- /etc/passwd
+		</screen>
+	</section>
+<section id="su">
+	<title>su - run a shell with substitute user and group IDs</title>
+	<para>Change the effective user id and group id to that of USER.</para>
+	<screen>
+[neo@development ~]$ su - root
+	</screen>
+	<screen>
+[neo@development ~]$ su root -c "rm -rf linux/"	
+	</screen>
+</section>
+<section id="sudo">
+	<title>sudo, sudoedit - execute a command as another user</title>
+	<screen>
+debian:~# apt-get install sudo		
+	</screen>
+	<para>/etc/sudoers</para>
+	<screen>
+# /etc/sudoers
+#
+# This file MUST be edited with the 'visudo' command as root.
+#
+# See the man page for details on how to write a sudoers file.
+#
+
+Defaults        env_reset
+
+# Host alias specification
+
+# User alias specification
+
+# Cmnd alias specification
+
+# User privilege specification
+root    ALL=(ALL) ALL
+
+# Uncomment to allow members of group sudo to not need a password
+# (Note that later entries override this, so you might need to move
+# it further down)
+%sudo ALL=NOPASSWD: ALL
+		
+	</screen>
+	<para>sudo group</para>
+	<screen>
+neo@debian:/etc/mysql$ cat /etc/group | grep 'sudo'
+sudo:x:27:neo		
+	</screen>
+	<section>
+		<title>NOPASSWD</title>
+		<para>ubuntu NOPASSWD sudo的时候不需要输入密码</para>
+		<para>组</para>
+		<screen>
+%admin ALL=(ALL)ALL
+改为
+%admin ALL=(ALL) NOPASSWD: NOPASSWD: ALL	
+		</screen>			
+		<para>用户</para>
+		<screen>
+www localhost=NOPASSWD: /bin/cat, /bin/ls			
+		</screen>
+	</section>
+	<section>
+		<title>允许或禁止命令</title>
+		<para>命令前面加‘!’可以禁止用户运行该命令</para>
+		<screen>
+neo ALL = （root） /bin/mount, /bin/umount, !/bin/mount /data0
+dba ALL = /bin/mount /u0[1-5], /bin/umount /u0[1-5]
+		</screen>		
+	</section>
+	<section>
+		<title>Cmnd_Alias 用法</title>
+		<para>Cmnd_Alias 定义命令别名</para>
+		<screen>
+Cmnd_Alias WEBMASTER = /srv/nginx/sbin/nginx, /srv/php/sbin/php-fpm, !/srv/mysql/bin/mysql
+www localhost = NETWORKING, SERVICES, DELEGATING, PROCESSES, WEBMASTER
+		</screen>		
+	</section>	
+</section>
+<section id="system.permission.acl">
+	<title>ACL - Access Control List</title>
+	<screen>
+$ sudo modprobe loop
+$ dd if=/dev/zero of=file bs=1k count=100
+$ sudo losetup /dev/loop0 file
+$ sudo mkfs.ext3 /dev/loop0
+$ sudo mkdir /mnt/loop	
+$ sudo mount -o rw,acl /dev/loop0 /mnt/loop/
+$ sudo chown neo.neo -R /mnt/loop
+$ cd /mnt/loop/	
+	</screen>
+	<section id="getfacl">
+		<title>getfacl - get file access control lists</title>
+		<para>UGO</para>
+		<screen>
+$ touch file
+$ ls -l file
+-rw-r--r-- 1 neo neo 0 2008-12-22 15:28 file
+		</screen>
+		<para>ACL</para>
+		<screen>
+$ getfacl file
+# file: file
+# owner: neo
+# group: neo
+user::rw-
+group::r--
+other::r--		
+		</screen>
+		<para>display the default access control list only</para>
+		<screen>
+neo@netkiller:/mnt/loop$ getfacl  dir
+# file: dir
+# owner: neo
+# group: neo
+user::rwx
+group::r-x
+other::r-x
+default:user::rwx
+default:user:svnroot:rw-
+default:group::r-x
+default:group:nagios:rw-
+default:mask::rwx
+default:other::r-x
+
+neo@netkiller:/mnt/loop$ getfacl -d dir
+# file: dir
+# owner: neo
+# group: neo
+user::rwx
+user:svnroot:rw-
+group::r-x
+group:nagios:rw-
+mask::rwx
+other::r-x
+		</screen>
+		<para>recurse into subdirectories</para>
+		<screen>
+$ getfacl -R dir
+# file: dir
+# owner: neo
+# group: neo
+user::rwx
+group::r-x
+other::r-x
+default:user::rwx
+default:user:svnroot:rw-
+default:group::r-x
+default:group:nagios:rw-
+default:mask::rwx
+default:other::r-x
+
+# file: dir/file1
+# owner: neo
+# group: neo
+user::rw-
+user:svnroot:rw-
+group::r-x                      #effective:r--
+group:nagios:rw-
+mask::rw-
+other::r--		
+		</screen>
+	</section>
+	<section id="setfacl">
+		<title>setfacl - set file access control lists</title>
+		<section>
+			<title>set</title>
+			<para>add a user svnroot to file</para>
+			<screen>
+neo@netkiller:/mnt/loop$ setfacl -m u:svnroot:rw file
+			</screen>
+			<para>if you can see a '+' at last, it's successed</para>
+			<screen>
+$ ls -l file
+-rw-rw-r--+ 1 neo neo 0 2008-12-22 15:44 file		
+			</screen>
+			<para>let me see acl.</para>
+			<screen>
+neo@netkiller:/mnt/loop$ getfacl file
+# file: file
+# owner: neo
+# group: neo
+user::rw-
+user:svnroot:rw-
+group::r--
+mask::rw-
+other::r--
+			</screen>
+			<para>add a user cvsroot to file again</para>
+			<screen>
+neo@netkiller:/mnt/loop$ setfacl -m u:cvsroot:rw file
+neo@netkiller:/mnt/loop$ getfacl file
+# file: file
+# owner: neo
+# group: neo
+user::rw-
+user:cvsroot:rw-
+user:svnroot:rw-
+group::r--
+mask::rw-
+other::r--		
+			</screen>
+			<para>add a user and group for that</para>
+			<screen>
+neo@netkiller:/mnt/loop$ setfacl -m u:gnump3d:rwx,g:nagios:r file
+neo@netkiller:/mnt/loop$ getfacl file
+# file: file
+# owner: neo
+# group: neo
+user::rw-
+user:gnump3d:rwx
+user:cvsroot:rw-
+user:svnroot:rw-
+group::r--
+group:nagios:r--
+mask::rwx
+other::r--		
+			</screen>
+			
+			<para>modify the current ACL(s) of file(s)</para>
+			<screen>
+neo@netkiller:/mnt/loop$ getfacl file
+# file: file
+# owner: neo
+# group: neo
+user::rw-
+user:svnroot:rw-
+group::r--
+mask::rw-
+other::r--
+
+neo@netkiller:/mnt/loop$ setfacl -m u:svnroot:r-x file
+neo@netkiller:/mnt/loop$ getfacl file
+# file: file
+# owner: neo
+# group: neo
+user::rw-
+user:svnroot:r-x
+group::r--
+mask::r-x
+other::r--			
+			</screen>	
+		</section>
+		<section>
+			<title>default</title>
+			<screen>
+neo@netkiller:/mnt/loop$ setfacl -d -m u:svnroot:rw dir/
+neo@netkiller:/mnt/loop$ getfacl dir/
+# file: dir
+# owner: neo
+# group: neo
+user::rwx
+group::r-x
+other::r-x
+default:user::rwx
+default:user:svnroot:rw-
+default:group::r-x
+default:mask::rwx
+default:other::r-x
+
+neo@netkiller:/mnt/loop$ setfacl -d -m g:nagios:rw dir/
+neo@netkiller:/mnt/loop$ getfacl dir/
+# file: dir
+# owner: neo
+# group: neo
+user::rwx
+group::r-x
+other::r-x
+default:user::rwx
+default:user:svnroot:rw-
+default:group::r-x
+default:group:nagios:rw-
+default:mask::rwx
+default:other::r-x			
+			</screen>
+			<para>the file1 will inherit acl by default.</para>
+			<screen>
+neo@netkiller:/mnt/loop$ touch dir/file1
+neo@netkiller:/mnt/loop$ getfacl dir/file1
+# file: dir/file1
+# owner: neo
+# group: neo
+user::rw-
+user:svnroot:rw-
+group::r-x                      #effective:r--
+group:nagios:rw-
+mask::rw-
+other::r--
+			
+			</screen>
+		</section>
+		<section>
+			<title>remove</title>
+			<para>remove entries from the ACL(s) of file(s)</para>
+			<screen>
+neo@netkiller:/mnt/loop$ setfacl -x u:cvsroot file
+neo@netkiller:/mnt/loop$ setfacl -x g:nagios file
+neo@netkiller:/mnt/loop$ getfacl file
+# file: file
+# owner: neo
+# group: neo
+user::rw-
+user:gnump3d:rwx
+user:svnroot:rw-
+group::r--
+mask::rwx
+other::r--
+			</screen>
+		
+			<para>remove all extended ACL entries</para>
+			<screen>
+neo@netkiller:/mnt/loop$ setfacl -b file
+neo@netkiller:/mnt/loop$ getfacl file
+# file: file
+# owner: neo
+# group: neo
+user::rw-
+group::r--
+other::r--		
+			</screen>			
+		</section>
+	</section>
+	<section>
+		<title>backup and restore</title>
+		<para>backup</para>
+		<screen>
+$ getfacl -R dir > dir.acl		
+		</screen>
+		<para>restore</para>
+		<screen>
+$ setfacl --restore dir.acl		
+		</screen>
+	</section>
+</section>
+</chapter>

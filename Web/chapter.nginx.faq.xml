@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.nginx.faq.xml 654 2013-07-30 07:30:20Z netkiller $ -->
+<section id="nginx.faq">
+	<title>FAQ</title>
+	<qandaset>
+		<qandaentry>
+			<question>
+				<para>405 Not Allowed?</para>
+			</question>
+			<answer>
+				<para>静态页面POST会提示405 Not Allowed错误.</para>
+				<screen>
+				<![CDATA[
+# curl -d name=neo http://www.mydoamin.com/index.html
+<html>
+<head><title>405 Not Allowed</title></head>
+<body bgcolor="white">
+<center><h1>405 Not Allowed</h1></center>
+<hr><center>nginx</center>
+</body>
+</html>
+				]]>
+				</screen>
+				<screen>
+server {
+    listen       80 default;
+    server_name  myid.mydomain.com;
+
+    charset utf-8;
+    access_log  /var/log/nginx/myid.mydomain.com.access.log  main;
+
+    if ($http_user_agent ~* ^$){
+      return 412;
+    }
+    ###########################
+
+    location / {
+        root   /www/mydomain.com/myid.mydomain.com;
+        index  index.html index.php;
+        #error_page 405 =200 $request_filename;
+    }
+
+    #error_page  404              /404.html;
+    #
+    error_page 405 =200 @405;
+    location @405 {
+        #proxy_set_header  Host            $host;
+        proxy_method GET;
+        proxy_pass http://myid.mydomain.com;
+
+    }
+
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+}
+				</screen>
+			</answer>
+		</qandaentry>
+		<qandaentry>
+			<question>
+				<para>nginx: [emerg] "proxy_pass" cannot have URI part in location given by regular expression, or inside named location, or inside "if" statement, or inside "limit_except" block in /etc/nginx/conf.d/info.mydomain.com.conf:112?</para>
+				<para>nginx: configuration file /etc/nginx/nginx.conf test failed</para>
+			</question>
+			<answer>
+				<para>使用$request_uri变量可以解决上述问题.</para>
+				<screen>
+       if ( $request_uri ~ "^/\w+\.xml$") {
+            proxy_pass http://www.mydomain.com/xml$request_uri;
+			break;
+       }
+
+       if ( $request_uri ~ "^/public/datas/\w+\.xml$") {
+            proxy_pass http://www.mydomain.com/$request_uri;
+			break;
+       }
+
+				</screen>
+			</answer>
+		</qandaentry>
+
+		<qandaentry>
+			<question>
+				<para>502 Bad Gateway</para>
+				<para>error.log 提示：</para>
+				<para>upstream sent too big header while reading response header from upstream?</para>
+			</question>
+			<answer>
+				<para>修改fastcgi配置</para>
+				<screen>
+location ~ \.php$ {
+
+	fastcgi_buffers 8 16k;
+	fastcgi_buffer_size 32k;
+	。。。
+	。。。
+}
+				</screen>
+			</answer>
+		</qandaentry>
+
+	</qandaset>
+
+	<section id="nginx.faq.proxy_pass">
+		<title>proxy_pass</title>
+		<screen>
+nginx: [emerg] "proxy_pass" cannot have URI part in location given by regular expression, or inside named location, or inside "if" statement, or inside "limit_except" block in /etc/nginx/conf.d/www.mydomain.com.conf:25
+nginx: configuration file /etc/nginx/nginx.conf test failed
+		</screen>
+		<para>在location,if中使用证则匹配proxy_pass末尾不能写/</para>
+		<screen>
+	if ($request_uri ~* "^/info/{cn|tw}/{news|info}/\d\.html") {
+		proxy_pass http://info.example.com/;
+		break;
+	}
+
+    location ~ ^/info/ {
+                proxy_pass http://info.example.com/;
+                break;
+    }
+		</screen>
+		<para>proxy_pass http://info.example.com/; 改为  proxy_pass http://info.example.com; 可以解决</para>
+	</section>
+
+</section>

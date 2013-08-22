@@ -1,0 +1,52 @@
+<chapter><title>自製目錄索引表示法</title>
+  <index><title>圖表目錄</title>
+    <indexdiv><title>一索引一標籤</title>
+      <indexentry>
+        <primaryie><xref linkend="t1" endterm="t1.title"></primaryie>
+      </indexentry>
+      <indexentry>
+        <primaryie><link linkend="g1">Linux Logo</link></primaryie>
+      </indexentry>
+    </indexdiv>
+    <indexdiv><title>一索引兩標籤</title>
+      <indexentry>
+        <primaryie>表格 1</primaryie>
+        <secondaryie><xref linkend="t1" endterm="t1.title"></secondaryie>
+      </indexentry>
+      <indexentry>
+        <primaryie>圖片 1</primaryie>
+        <secondaryie><link linkend="g1">Linux Logo</link></secondaryie>
+      </indexentry>
+    </indexdiv>
+  </index>
+  <sect1><title>第一節</title>
+    <para>第一節內容敘述......</para>
+    <table id="t1"><title id="t1.title">縱橫相等表</title>
+      <tgroup cols="3">
+        <tbody>
+          <row>
+            <entry>1</entry>
+            <entry>2</entry>
+            <entry>3</entry>
+          </row>
+          <row>
+            <entry>2</entry>
+            <entry>3</entry>
+            <entry>5</entry>
+          </row>
+          <row>
+            <entry>3</entry>
+            <entry>5</entry>
+            <entry>8</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+  </sect1>
+  <sect1><title>第二節</title>
+    <para>第二節內容敘述......</para>
+    <figure id="g1"><title>Linux Logo</title>
+      <graphic fileref="penguin.gif">
+    </figure>
+  </sect1>
+</chapter>

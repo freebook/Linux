@@ -1,0 +1,57 @@
+<preface id="preface">
+	<title>自述</title>
+	<section>
+		<title>本文目的</title>
+		<para>为什么写这篇文章</para>
+		<para>有很多想法,不能实现.工作中也用不到,所以想写出来,和大家分享.有一点写一点,写得也不好,就当学习笔记了.</para>
+		<para>这篇文档是作者8年来对工作的总结,是作者一点一滴的积累起来的，有些笔记已经丢失，所以并不完整。</para>
+		<para>因为工作太忙整理比较缓慢。</para>
+		<para>目前的工作涉及面比较窄所以新文档比较少。</para>
+		<para>我现在花在技术上的时间越来越少，兴趣转向摄影。也想写写摄影方面的心得体会。</para>
+		<para>
+		<simplelist>
+			<member>我想到哪写到哪,你会发现文章没一个中心,今天这里写点,明天跳过本章写其它的.</member>
+			<member>文中例子绝对多,对喜欢复制然后粘贴朋友很有用,不用动手写,也省时间.</member>
+			<member>理论的东西,网上大把,我这里就不写了,需要可以去网上查.</member>
+			<member>我爱写错别字,还有一些是打错的,如果发现请指正.</member>
+			<member>文中大部分试验是在Debian/Ubuntu/Redhat AS上完成.</member>
+		</simplelist>
+		</para>
+	</section>
+	<section>
+		<title>内容简介</title>
+		<para>当前文档档容比较杂，涉及内容广泛。</para>
+		<para>慢慢我会将其中章节拆成新文档.</para>
+		<orderedlist><title>文档内容简介:</title>
+			<listitem><para>Network</para></listitem>
+			<listitem><para>Security</para></listitem>
+			<listitem><para>Web Application</para></listitem>
+			<listitem><para>Database</para></listitem>
+			<listitem><para>Storage And Backup/Restore</para></listitem>
+			<listitem><para>Cluster</para></listitem>
+			<listitem><para>Developer</para></listitem>
+		</orderedlist>
+	</section>
+
+	<section>
+		<title>读者对象</title>
+		<para>本文档的读者对象:</para>
+		<para>文档面向有所有读者。您可以选读您所需要的章节,无需全篇阅读,因为有些章节不一定对你有用,用得着就翻来看看,暂时用不到的可以不看.</para>
+		<orderedlist><title>大体分来读者可以分为几类:</title>
+			<listitem><para>架构工程师</para></listitem>
+			<listitem><para>系统管理员 </para></listitem>
+			<listitem><para>系统支持,部署工程师</para></listitem>
+		</orderedlist>
+		<para>不管是谁,做什么的,我希望通过阅读这篇文档都能对你有所帮助。</para>
+<!-- 
+		<orderedlist><title>我的目的:</title>
+			<listitem><para>通过阅读本文,你可以学会使用md5,sha,base64...技术</para></listitem>
+			<listitem><para>懂得使用OpenSSL,OpenSSH,OpenPGP/GnuPG...</para></listitem>
+			<listitem><para>使用Java.security.*来创建,修改删除,删除各种证书如:SMIME邮件签名与加密,Web服务器信认证书,SSL Socket开发...</para></listitem>
+			<listitem><para>建立一个基本的PKI系统</para></listitem>
+		</orderedlist>
+ -->
+	</section>
+	&about.me.xml;
+
+</preface>

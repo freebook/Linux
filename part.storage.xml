@@ -1,0 +1,5 @@
+<part id="index"><?dbhtml dir="storage" ?>
+	<title>Backup, Recovery, and Archiving Solutions</title>
+	<subtitle>File Transfer, Synchronize, Storage</subtitle>
+	&chapter.storage.xml;
+</part>

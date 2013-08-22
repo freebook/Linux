@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<!ENTITY chapter.kernel.xml				SYSTEM "chapter.kernel.xml">
+	<!ENTITY chapter.system.xml	 			SYSTEM "chapter.system.xml">
+	<!ENTITY chapter.system.locale 			SYSTEM "chapter.system.locale.xml">
+	<!ENTITY chapter.system.package 		SYSTEM "chapter.system.package.xml">
+	<!ENTITY chapter.system.device.info.xml SYSTEM "chapter.system.device.info.xml">
+	<!ENTITY chapter.system.console 		SYSTEM "chapter.system.console.xml">
+	<!ENTITY chapter.system.harddisk 		SYSTEM "chapter.system.harddisk.xml">
+	<!ENTITY chapter.system.filesystem.xml	SYSTEM "chapter.system.filesystem.xml">
+	<!ENTITY chapter.system.network.xml 	SYSTEM "chapter.system.network.xml">
+	<!ENTITY chapter.system.service 		SYSTEM "chapter.system.service.xml">
+	<!ENTITY chapter.system.process 		SYSTEM "chapter.system.process.xml">
+	<!ENTITY chapter.system.permission		SYSTEM "chapter.system.permission.xml">
+	<!ENTITY chapter.system.logging.xml 	SYSTEM "chapter.system.logging.xml">
+	<!ENTITY chapter.system.sys.xml			SYSTEM "chapter.system.sys.xml">
+	<!ENTITY chapter.udev.xml				SYSTEM "chapter.udev.xml">
+
+	<!ENTITY chapter.boinc 					SYSTEM "chapter.boinc.xml">

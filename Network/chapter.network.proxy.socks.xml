@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.network.proxy.socks.xml 347 2012-02-08 06:58:49Z netkiller $ -->
+<section id="socks">
+	<title>SOCKS</title>
+	<section>
+		<title>Socks5</title>
+		<para>软件包socks5-v1.0r11他的主站已经无法访问,你可以搜一下.
+		</para>
+		<para>安装</para>
+		<screen>
+./configure --with-threads
+make
+make install
+		</screen>
+	</section>
+	<section id="dante-server">
+		<title>dante-server - SOCKS (v4 and v5) proxy
+			daemon(danted)</title>
+		<procedure>
+			<step>
+				<para>install.</para>
+				<screen>
+				<![CDATA[
+$ sudo apt-get install dante-server
+				]]>
+				</screen>
+			</step>
+			<step>
+				<para>configure.</para>
+				<screen>
+				<![CDATA[
+$ sudo vim /etc/danted.conf
+
+
+$ cat /etc/danted.conf | sed s/^#.*//g | sed -r /^$/d
+logoutput: /tmp/socks.log
+internal: eth0 port = 1080
+external: 172.16.0.1
+method: username none #rfc931
+clientmethod: none
+user.privileged: proxy
+user.notprivileged: nobody
+user.libwrap: nobody
+client pass {
+        from: 0.0.0.0/0 port 1-65535 to: 0.0.0.0/0
+        log: connect disconnect error
+}
+pass {
+        from: 0.0.0.0/0 to: 0.0.0.0/0
+        protocol: tcp udp
+}
+				]]>
+				</screen>
+			</step>
+			<step>
+				<para>Once the config is complete. Start/Restart dante socks server:</para>
+				<screen>
+				<![CDATA[
+$ sudo /etc/init.d/danted start
+				]]>
+				</screen>
+				<para>check to see if server is listening on 1080</para>
+				<screen>
+				<![CDATA[
+$ netstat -n -a |grep 1080
+tcp        0      0 172.16.0.1:1080         0.0.0.0:*               LISTEN
+tcp        0      0 172.16.0.1:1080         10.8.0.6:1485           TIME_WAIT
+				]]>
+				</screen>
+			</step>
+			<step>
+				<para>Make sure the firewall is open.</para>
+				<screen>
+				<![CDATA[
+$ grep socks /etc/services
+socks           1080/tcp                        # socks proxy server
+socks           1080/udp
+
+$ sudo ufw allow socks
+Rule added
+				]]>
+				</screen>
+			</step>
+		</procedure>
+
+	</section>
+	<section>
+		<title>SSH Socks5 Tunnel</title>
+		<para>SSH Tunnel</para>
+		<screen>
+		<![CDATA[
+internal: 127.0.0.1 port = 1080
+
+ssh -L 1080:localhost:1080 username@yourserver
+
+or
+
+ssh user@server.com -D 1080
+# -D is for Dynamic Port Forwarding.
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>hpsockd - HP SOCKS server</title>
+		<para>注意：hpsockd 不支持 socks5</para>
+		<screen>
+		<![CDATA[
+$ sudo apt-get install hpsockd
+$ sudo cp /usr/share/doc/hpsockd/examples/hpsockd.conf /etc/hpsockd.conf
+$ sudo vim /etc/hpsockd.conf
+		]]>
+		</screen>
+		<para> @@MYNET@@/@@NETSIZE@@ 替换为 网络与子网掩码 如：172.16.0.0/24</para>
+		<screen>
+		<![CDATA[
+$ cat /etc/hpsockd.conf
+daemon {
+        name            "sockd";
+        listen-address  { 0.0.0.0; };
+        directory       "/var/cache/hpsockd";
+        negotiate-file  "negot_file";           # must be specified
+#       inetdsec-file   "/var/adm/inetd.sec";   # default is no inetd.sec
+#       listen          {1,252};
+#       client          {1,200};
+#       pre-fork        1;
+#       service         "socks";
+        port            1080;
+#       poll            1m;
+#       user            -2;
+        user            "nobody";
+#       dns-helper      1;
+#       flags           { };
+};
+
+logging {
+#       facility        "daemon";
+#       level           2;
+        dump-prefix     "sockd.dump";           # if not specified, you get no dumps
+        usage-log       "usage.log";            # if not specified, you get no logging
+};
+
+env {
+        PING="/bin/ping %z";
+        TRACEROUTE="/usr/sbin/traceroute %z";
+};
+
+default {
+#       timeout         2h;
+#       setup-timeout   15m;
+#       bufsize         32768;
+};
+
+route {
+        { default       host };                 # must have at least one route
+};
+
+method-list {
+        { number   0; name "noAuth"; internal; flags 0; };
+        { number   2; name "userPass"; internal; flags 0; };
+        { number 254; name "v4"; internal; flags 0; };
+};
+
+client-method {
+        { src { 10.10.0.0/24; }; method { "userPass"; "v4"; "noAuth"; }; };
+};
+
+client {
+        permit traceroute {             # Let net 10.10.0.0 traceroute even net 10.10.0.0.
+                src { 10.10.0.0/24; };
+        };
+
+        deny {                          # block X traffic
+                port { 6000-6099; };
+        };
+        deny {                          # Nothing bound for net 10.10.0.0, or private
+                dest {  10.10.0.0/24; 127/8; 10/8; 172.16/12; 192.168/16; };
+        };
+
+        permit {                        # give ftp control sessions longer
+                src { 10.10.0.0/24; };
+                port { "ftp"; };
+                timeout 1d;
+        };
+
+        permit {                        # Let net 10.10.0.0 out
+                src { 10.10.0.0/24; };
+                timeout 1h;
+        };
+        deny { };                       # nuke everyone else (default action)
+};
+
+		]]>
+		</screen>
+	</section>
+</section>

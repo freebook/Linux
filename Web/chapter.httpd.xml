@@ -1,0 +1,50 @@
+<chapter id="lamp">
+	<title>Apache httpd</title>
+	<subtitle>LAMP</subtitle>
+	&chapter.httpd.install.xml;
+	&chapter.httpd.module.xml;
+	<section id="lamp.referal">
+		<title>设置Apache实现防盗连</title>
+		<screen>
+SetEnvIf Referer "http://news.netkiller.com/" local_referal
+SetEnvIf Referer "$" local_referral
+
+Order Deny,Allow
+Deny from all
+Allow from env=local_referal
+		</screen>
+		<para>配置httpd.conf文件</para>
+		<para>#LoadModule rewrite_module modules/mod_rewrite.so</para>
+		<para>去掉前面的"#"注释</para>
+		<para>AllowOverride None</para>
+		<para>改为</para>
+		<para>AllowOverride All</para>
+		<para>配置.htaccess文件</para>
+		<screen>
+RewriteEngine on
+RewriteCond % !^http://xxx.cn/.*$    	[NC]
+RewriteCond % !^http://xxx.cn$     		[NC]
+RewriteCond % !^http://www.xxx.cn/.*$	[NC]
+RewriteCond % !^http://www.xxx.cn$      [NC]
+RewriteRule .*\.(jpg|jpeg|gif|png|bmp|rar|zip|exe)$ http://download.example.com/err.html [R,NC]
+		</screen>
+	</section>
+	<section id="lamp.error">
+		<title>Error Prompt</title>
+		<section>
+			<title>Invalid command 'Order', perhaps misspelled or defined by a module not included in the server configuration</title>
+			<para>没有加载 mod_authz_host 模块</para>
+			<screen>
+LoadModule authz_host_module modules/mod_authz_host.so
+			</screen>
+		</section>
+		<section>
+			<title>Invalid command 'AuthUserFile', perhaps misspelled or defined by a module not included in the server configuration</title>
+			<screen>
+LoadModule auth_basic_module /usr/lib/apache2/modules/mod_auth_basic.so
+LoadModule authz_owner_module /usr/lib/apache2/modules/mod_authz_owner.so
+LoadModule authn_file_module  /usr/lib/apache2/modules/mod_authn_file.so
+			</screen>
+		</section>
+	</section>
+</chapter>

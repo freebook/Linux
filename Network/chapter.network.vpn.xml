@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.network.vpn.xml 652 2013-07-26 10:06:01Z netkiller $ -->
+<chapter id="vpn">
+	<title>VPN (Virtual Private Network)</title>
+	&chapter.network.vpn.openvpn;
+	&chapter.network.vpn.pptpd;
+	&chapter.network.vpn.l2tp;
+	&chapter.network.vpn.ipsec-tools;
+	<section>
+		<title>N2N VPN</title>
+		<ulink url="http://www.ntop.org/products/n2n/" />
+		<screen>
+$ apt-cache search n2n
+n2n - Peer-to-Peer VPN network daemon
+		</screen>
+	</section>
+	<section id="hypersocket">
+		<title>Hypersocket VPN</title>
+		<para>http://sourceforge.net/p/hypersocket-vpn/wiki/CentOS/</para>
+	</section>
+</chapter>

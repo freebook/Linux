@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="sharedisk">
+	<title>Shared disk cluster file system</title>
+	<section id="gfs2">
+		<title>GFS2</title>
+	</section>
+	<section id="ocfs2">
+		<title>OCFS2</title>
+	</section>
+	<section id="fam-imon">
+		<title>fam &amp; imon</title>
+	</section>
+</section>

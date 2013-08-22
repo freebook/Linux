@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<part id="index"><?dbhtml dir="management" ?>
+	<title>Configuration Management(配置管理)</title>
+	<subtitle>运维自动化</subtitle>
+	<table>
+	   <title>表格标题</title>
+	   <tgroup cols="2">
+	     <thead>
+	       <row>
+	          <entry>名称</entry>
+	          <entry>流行度</entry>
+	          <entry>开发语言</entry>
+	          <entry>工作模式</entry>
+	          <entry>其他</entry>
+	       </row>
+	     </thead>
+	    <tbody>
+	       <row>
+	          <entry>Puppet</entry>
+	          <entry>主流</entry>
+	          <entry>Ruby</entry>
+	          <entry>C/S</entry>
+	          <entry></entry>
+	       </row>
+	       <row>
+	          <entry>Chef</entry>
+	          <entry>主流</entry>
+	          <entry>Ruby</entry>
+	          <entry>C/S</entry>
+	          <entry></entry>
+	       </row>
+	       <row>
+	          <entry>SaltStack</entry>
+	          <entry>主流(新星)</entry>
+	          <entry>Python</entry>
+	          <entry>C/S</entry>
+	          <entry></entry>
+	       </row>
+	       <row>
+	          <entry>ansible</entry>
+	          <entry>一般</entry>
+	          <entry>Python</entry>
+	          <entry>Server 结构无需 client</entry>
+	          <entry>Redhat 开发</entry>
+	       </row>
+	    </tbody>
+	   </tgroup>
+	</table>
+
+	&chapter.ansible.xml;
+	&chapter.puppet.xml;
+	&chapter.saltstack.xml;
+	&chapter.chef.xml;
+
+	<chapter id="cobbler">
+		<title>Cobbler</title>
+		<para>http://cobbler.github.com/</para>
+	</chapter>
+	<chapter id="cfengine">
+		<title>Cfengine</title>
+		<para>http://www.cfengine.org/</para>
+	</chapter>
+	<chapter id="func">
+		<title>func</title>
+		<para>https://fedorahosted.org/func/</para>
+	</chapter>
+
+	&chapter.rexify.xml;
+
+</part>

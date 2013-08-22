@@ -1,0 +1,11 @@
+<chapter id="unity">
+	<title>Unity</title>
+	<section id="unity.taskbar">
+		<title>Enable/Disable Auto Hide For Unity 2-D Launcher In Ubuntu 11.10 </title>
+		<screen>
+sudo apt-get install dconf-tools
+dconf list /com/canonical/unity-2d/launcher/
+dconf write /com/canonical/unity-2d/launcher/use-strut true
+		</screen>
+	</section>
+</chapter>

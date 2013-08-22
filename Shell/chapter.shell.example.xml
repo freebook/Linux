@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.shell.example.xml 376 2012-03-21 03:35:46Z netkiller $ -->
+<chapter id="example">
+	<title>Example</title>
+	<section>
+		<title>有趣的Shell</title>
+		<para>运行后会不停的fork新的进程，直到你的资源消耗尽。</para>
+		<screen>
+		<![CDATA[
+:() { :|:& }; :
+
+.() { .|.& }; .
+		]]>
+		</screen>
+	</section>
+	<section id="example.backup">
+		<title>backup</title>
+		<screen>
+#!/bin/sh
+umount /mnt/backup
+mount /dev/sdb1 /mnt/backup
+
+if [ `date +%d` = '01' ] #每月1号进行完全备份
+then
+	bakdir="/mnt/bak/daybak/month/"`date +%m%d`
+	zl="" #进行完全备份
+else
+	backup_dir="/mnt/backup/"`date +%d`
+	zl="-N "`date +'%Y-%m-01 00:00:01'`; #差异备份
+	#zl="-N "`date -d '-1 day' +'%Y-%m-%d 00:00:01'` #日增量备份
+fi
+
+tar "${zl}" -czf ${backup_dir}/www.tgz /var/www
+umount /mnt/backup
+
+		</screen>
+	</section>
+	<section id="example.cpuinfo">
+		<title>CPU 核心数</title>
+		<screen>
+cat /proc/cpuinfo | grep processor | wc -l
+		</screen>
+	</section>
+	<section id="example.password">
+		<title>Password</title>
+		<example>
+			<title>random password</title>
+			<screen>
+cat /dev/urandom | head -1 | md5sum | head -c 8
+
+od -N 4 -t x4 /dev/random | head -1 | awk '{print $2}'
+			</screen>
+		</example>
+	</section>
+
+<section id="processes">
+	<title>processes</title>
+	<section>
+		<title>pid</title>
+		<screen>
+neo@debian:~/html/temp$ pidof lighttpd
+2775
+
+neo@debian:~/html/temp$ pgrep lighttpd
+2775
+
+neo@debian:~/html/temp$ pid=`pidof lighttpd`
+neo@debian:~/html/temp$ echo $pid
+2775
+		</screen>
+		<screen>
+# user=`whoami`
+# pgrep -u $user -f cassandra | xargs kill -9
+		</screen>
+	</section>
+
+	<section>
+		<title>kill</title>
+		<para>kill 占用7800端口的进程</para>
+		<screen>
+kill -9 `netstat -nlp | grep '192.168.0.5:7800' | awk -F ' ' '{print $7}' | awk -F '/' '{print $1}'`
+		</screen>
+	</section>
+	<section>
+		<title>pgrep</title>
+		<screen>
+#!/bin/bash
+ntpdate 172.16.10.10
+
+pid=$(pgrep rsync)
+
+if [ -z "$pid" ]; then
+
+rsync -auzP --delete -e ssh  --exclude=example/images --exclude=project/product --exclude=project/templates/caches  root@172.16.10.10:/www/project /www
+
+fi
+		</screen>
+	</section>
+</section>
+    <section id="example1">
+        <title>Shell 技巧</title>
+        <section>
+            <title>行转列，再批评</title>
+            <screen>
+echo "abc def gfh ijk"| sed "s:\ :\n:g" |grep -w gfh
+            </screen>
+        </section>
+        <section>
+            <title>for vs while</title>
+            <screen>
+echo "aaa bbb ccc" > test.txt
+echo "ddd eee fff" >> test.txt
+            </screen>
+			<screen>
+for line in $(cat test.txt)
+do
+	echo $line
+done
+			</screen>
+			<screen>
+cat test.txt| while read line
+do
+	echo $line
+done
+			</screen>
+        </section>
+        <section>
+        	<title>遍历字符串</title>
+        	<screen>
+# find . -name "*.html" -o -name "*.php" -o -name '*.dwt' -printf "[%p] " -exec grep -c 'head' {} \; | grep -v "0$" |more
+        	</screen>
+        </section>
+    </section>
+</chapter>

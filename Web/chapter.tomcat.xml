@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.tomcat.xml 645 2013-07-23 03:48:13Z netkiller $ -->
+<chapter id="tomcat">
+	<title>Apache Tomcat</title>
+
+	&chapter.tomcat.install.xml;
+	&chapter.tomcat.conf.xml;
+
+</chapter>

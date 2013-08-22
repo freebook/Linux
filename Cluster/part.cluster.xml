@@ -1,0 +1,19 @@
+﻿<part id="index">
+	<title>Server Load Balancing</title>
+	<subtitle>Load Balancing / HA</subtitle>
+	<info>
+		<keywordset>
+			<keyword>cluster</keyword>
+			<keyword>ipvsadm, keepalived, heartbeat, ldirectord</keyword>
+			<keyword>haproxy, perlbal</keyword>
+		</keywordset>
+	</info>
+	&chapter.cluster.lvs;
+	&chapter.cluster.keepalived;
+	&chapter.cluster.heartbeat;
+ 	&chapter.cluster.piranha.xml;
+<!--	&chapter.cluster.nginx;-->
+	&chapter.cluster.haproxy;
+	&chapter.slb.perlbal.xml;
+	&chapter.example.xml;
+</part>

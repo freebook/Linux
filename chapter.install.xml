@@ -1,0 +1,36 @@
+<section id="linux.install">
+	<title>Linux Installation</title>
+		<section>
+			<title>HDD Partition</title>
+			<para>partition</para>
+			<table>
+			   <title>Linux partition</title>
+			   <tgroup cols="2">
+				 <thead>
+				   <row>
+					  <entry>volume</entry>
+					  <entry>size</entry>
+				   </row>
+				 </thead>
+				<tbody>
+				   <row>
+					  <entry>/boot</entry>
+					  <entry>500M</entry>
+				   </row>
+					<row>
+					  <entry>/</entry>
+					  <entry>50G</entry>
+				   </row>
+				   <row>
+					  <entry>/opt</entry>
+					  <entry>remainder</entry>
+				   </row>
+				   <row>
+					  <entry>swap</entry>
+					  <entry>memory * 2</entry>
+				   </row>
+				</tbody>
+			   </tgroup>
+			</table>
+		</section>
+</section>

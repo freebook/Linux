@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.nginx.xml 592 2013-05-21 05:23:04Z netkiller $ -->
+<chapter id="nginx">
+	<title>Nginx</title>
+	<section id="nginx.install">
+		<title>Installing</title>
+		<section>
+			<title>Installing by apt-get under the debain/ubuntu</title>
+			<screen>
+			<![CDATA[
+$ sudo apt-get install nginx
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+sudo /etc/init.d/nginx start
+			]]>
+			</screen>
+		</section>
+		<section id="nginx.centos">
+			<title>CentOS</title>
+			<para>http://nginx.org/packages/centos/$releasever/$basearch/</para>
+			<para>$releasever 是版本号</para>
+			<para>$basearch 处理器架构</para>
+			<para>http://nginx.org/packages/centos/6/x86_64/</para>
+			<screen>
+			<![CDATA[
+cat > /etc/yum.repos.d/nginx.repo <<EOF
+[nginx]
+name=nginx repo
+baseurl=http://nginx.org/packages/centos/6/x86_64/
+gpgcheck=0
+enabled=1
+EOF
+			]]>
+			</screen>
+			<para>i386</para>
+			<screen>
+			<![CDATA[
+cat > /etc/yum.repos.d/nginx.repo <<EOF
+[nginx]
+name=nginx repo
+baseurl=http://nginx.org/packages/centos/5/i386/
+gpgcheck=0
+enabled=1
+EOF
+			]]>
+			</screen>
+			<screen>
+yum search nginx
+============================================= Matched: nginx =============================================
+nginx.x86_64 : high performance web server
+
+yum install -y nginx
+chkconfig nginx on
+service nginx start
+			</screen>
+		</section>
+		<section id="nginx.source">
+			<title>installing by source</title>
+			<!-- http://blog.s135.com/nginx_php_v6/ -->
+			<screen>
+			<![CDATA[
+cd /usr/local/src/
+wget http://www.nginx.org/download/nginx-1.0.6.tar.gz
+
+./configure --prefix=/usr/local/server/nginx \
+--with-openssl=/usr/include \
+--with-pcre=/usr/include/pcre/ \
+--with-http_stub_status_module \
+--without-http_memcached_module \
+--without-http_fastcgi_module \
+--without-http_rewrite_module \
+--without-http_map_module \
+--without-http_geo_module \
+--without-http_autoindex_module
+			]]>
+			</screen>
+			<para>rpm 所使用的编译参数</para>
+			<screen>
+nginx -V
+nginx: nginx version: nginx/1.0.6
+nginx: built by gcc 4.4.4 20100726 (Red Hat 4.4.4-13) (GCC)
+nginx: TLS SNI support enabled
+nginx: configure arguments: --prefix=/etc/nginx/ --sbin-path=/usr/sbin/nginx --conf-path=/etc/nginx/nginx.conf --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --pid-path=/var/run/nginx.pid --lock-path=/var/run/nginx.lock --http-client-body-temp-path=/var/cache/nginx/client_temp --http-proxy-temp-path=/var/cache/nginx/proxy_temp --http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp --http-uwsgi-temp-path=/var/cache/nginx/uwcgi_temp --http-scgi-temp-path=/var/cache/nginx/scgi_temp --user=nginx --group=nginx --with-http_ssl_module --with-http_realip_module --with-http_addition_module --with-http_sub_module --with-http_dav_module --with-http_flv_module --with-http_gzip_static_module --with-http_random_index_module --with-http_secure_link_module --with-http_stub_status_module --with-mail --with-mail_ssl_module --with-file-aio --with-ipv6
+			</screen>
+			<screen>
+# nginx -V
+nginx version: nginx/1.2.3
+built by gcc 4.4.4 20100726 (Red Hat 4.4.4-13) (GCC)
+TLS SNI support enabled
+configure arguments: --prefix=/etc/nginx/ --sbin-path=/usr/sbin/nginx --conf-path=/etc/nginx/nginx.conf --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --pid-path=/var/run/nginx.pid --lock-path=/var/run/nginx.lock --http-client-body-temp-path=/var/cache/nginx/client_temp --http-proxy-temp-path=/var/cache/nginx/proxy_temp --http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp --http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp --http-scgi-temp-path=/var/cache/nginx/scgi_temp --user=nginx --group=nginx --with-http_ssl_module --with-http_realip_module --with-http_addition_module --with-http_sub_module --with-http_dav_module --with-http_flv_module --with-http_mp4_module --with-http_gzip_static_module --with-http_random_index_module --with-http_secure_link_module --with-http_stub_status_module --with-mail --with-mail_ssl_module --with-file-aio --with-ipv6 --with-cc-opt='-O2 -g'
+			</screen>
+		</section>
+
+		<section>
+			<title>config test</title>
+			<screen>
+$ sudo service nginx configtest
+Testing nginx configuration: nginx.
+			</screen>
+		</section>
+
+		<section>
+			<title>rotate log</title>
+			<section>
+				<title>log shell</title>
+				<screen>
+				<![CDATA[
+# cat /srv/bin/rotatelog.sh
+
+#!/bin/bash
+# run this script at 0:00
+
+#Nginx Log Path
+log_dir="/var/log/nginx"
+date_dir=`date +%Y/%m/%d/%H`
+
+mkdir -p ${log_dir}/${date_dir} > /dev/null 2>&1
+mv ${log_dir}/access.log ${log_dir}/${date_dir}/access.log
+mv ${log_dir}/error.log ${log_dir}/${date_dir}/error.log
+
+kill -USR1 `cat /var/run/nginx.pid`
+
+gzip ${log_dir}/${date_dir}/access.log &
+gzip ${log_dir}/${date_dir}/error.log &
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>/etc/logrotate.d/nginx</title>
+				<screen>
+				<![CDATA[
+# cat /etc/logrotate.d/nginx
+/var/log/nginx/*.log {
+        daily
+        missingok
+        rotate 52
+        compress
+        delaycompress
+        notifempty
+        create 640 root adm
+        sharedscripts
+        postrotate
+                [ -f /var/run/nginx.pid ] && kill -USR1 `cat /var/run/nginx.pid`
+        endscript
+}
+				]]>
+				</screen>
+			</section>
+		</section>
+	</section>
+
+	&chapter.nginx.fastcgi.xml;
+	&chapter.nginx.conf.xml;
+	&chapter.nginx.faq.xml;
+
+</chapter>

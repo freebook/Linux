@@ -1,0 +1,1055 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.security.firewall.iptables.xml 583 2013-05-14 10:04:59Z netkiller $ -->
+<section id="sysctl">
+	<title>sysctl - configure kernel parameters at runtime</title>
+	<para></para>
+	<bridgehead renderas="sect3">checking status</bridgehead>
+	<screen>
+$ sysctl net.ipv4.ip_forward
+net.ipv4.ip_forward = 0
+	</screen>
+	<para>or just checking out the value in the /proc system</para>
+	<screen>
+$ cat /proc/sys/net/ipv4/ip_forward
+0
+	</screen>
+
+	<bridgehead renderas="sect3">enable</bridgehead>
+	<screen>
+sysctl -w net.ipv4.ip_forward=1
+	</screen>
+	<para>or</para>
+	<screen>
+	<![CDATA[
+#redhat
+echo 1 > /proc/sys/net/ipv4/ip_forward
+#debian/ubuntu
+echo 1 | sudo tee /proc/sys/net/ipv4/ip_forward;
+	]]>
+	</screen>
+	<bridgehead renderas="sect3">disable</bridgehead>
+	<screen>
+sysctl -w net.ipv4.ip_forward=0
+	</screen>
+	<para>or</para>
+	<screen>
+	<![CDATA[
+echo 0 > /proc/sys/net/ipv4/ip_forward
+	]]>
+	</screen>
+	<para>without rebooting the system</para>
+	<section>
+		<title>net.ipv4.ip_forward</title>
+		<table>
+			<title>net.ipv4.ip_forward</title>
+			<tgroup cols="3">
+			<thead>
+				<row>
+					<entry>user</entry>
+					<entry>route</entry>
+					<entry>wan</entry>
+				</row>
+			</thead>
+			<tbody>
+				<row>
+					<entry>192.168.0.2</entry>
+					<entry>eth0:192.168.0.1 eth1:172.16.0.1</entry>
+					<entry>172.16.0.254</entry>
+				</row>
+			</tbody>
+			</tgroup>
+		</table>
+		<screen>
+		<![CDATA[
+$ sysctl net.ipv4.ip_forward
+net.ipv4.ip_forward = 0
+		]]>
+		</screen>
+		<para>try out ping host from 192.168.0.2 to 192.168.0.1 , 172.16.0.1 and 172.16.0.254</para>
+		<para>you can access 192.168.0.1 , 172.16.0.1, but 172.16.0.254 time out</para>
+		<para>sysctl -w net.ipv4.ip_forward=1</para>
+		<para>try again ping 172.16.0.254</para>
+	</section>
+	<section>
+		<title>net.ipv4.icmp_echo_ignore_all</title>
+		<para>如果希望屏蔽别人 ping 你的主机，则加入以下代码：</para>
+		<screen>
+# Disable ping requests
+net.ipv4.icmp_echo_ignore_all = 1
+		</screen>
+	</section>
+</section>
+
+<!-- http://www.centos.org/docs/5/html/Deployment_Guide-en-US/ch-iptables.html -->
+
+<section id="iptables">
+	<title>iptables - administration tools for packet filtering and NAT</title>
+	<para><ulink url="http://netkiller.8800.org/book/iptables/">Linux Iptables Manual</ulink></para>
+	<screen>
+	<![CDATA[
+      Incoming
+       Traffic
+          |
+          |
+          V
+     +----------+
+     |PREROUTING|
+     +----------+
+     |   raw    |  <--------------+
+     |  mangle  |                 |
+     |   nat    |                 |
+     +----------+                 |
+          |                       |
+          |                       |
+       Routing                    |
+    +- Decision -+                |
+    |            |                |
+    |            |                |
+    V            V                |
+  Local        Remote             |
+Destination   Destination         |
+    |            |                |
+    |            |                |
+    V            V                |
++--------+  +---------+           |
+| INPUT  |  | FORWARD |           |
++--------+  +---------+           |
+| mangle |  | mangle  |           |
+| filter |  | filter  |           |
++--------+  +---------+           |
+    |            |                |
+    |            |                |
+    V            |                |
+  Local          |                |
+ Machine         |                |
+    |            |                |
+    |            |                |
+    V            |                |
+ Routing         |                |
+ Decision        |                |
+    |            |                |
+    |            |                |
+    V            |                |
++--------+       |                |
+| OUTPUT |       |                |
++--------+       |                |
+|  raw   |       |                |
+| mangle |       |                |
+|  nat   |       |                |
+| filter |       |                |
++--------+       |                |
+    |            |                |
+    |      +-------------+        |
+    |      | POSTROUTING |      Local
+    +----> +-------------+ --> Traffic
+           |   mangle    |
+           |     nat     |
+           +-------------+
+                 |
+                 |
+                 V
+              Outgoing
+              Traffic
+	]]>
+	</screen>
+	<section>
+		<title>Getting Started</title>
+		<para>Redhat / CentOS</para>
+		<para>You can check to see if iptables is installed on your system by:</para>
+		<screen>
+[root@database ~]# rpm -q iptables
+iptables-1.3.5-5.3.el5_4.1
+		</screen>
+		<para>And to see if iptables is actually running, we can check that the iptables modules are loaded and use the -L switch to inspect the currently loaded rules:</para>
+		<screen>
+[root@database ~]# lsmod | grep ip_tables
+ip_tables              55201  2 iptable_nat,iptable_filter
+x_tables               50505  6 ipt_MASQUERADE,iptable_nat,xt_state,ipt_REJECT,xt_tcpudp,ip_tables
+
+		</screen>
+
+		<screen>
+[root@database ~]# iptables -L
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination
+ACCEPT     udp  --  anywhere             anywhere            udp dpt:domain
+ACCEPT     tcp  --  anywhere             anywhere            tcp dpt:domain
+ACCEPT     udp  --  anywhere             anywhere            udp dpt:bootps
+ACCEPT     tcp  --  anywhere             anywhere            tcp dpt:bootps
+
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination
+ACCEPT     all  --  anywhere             192.168.122.0/24    state RELATED,ESTABLISHED
+ACCEPT     all  --  192.168.122.0/24     anywhere
+ACCEPT     all  --  anywhere             anywhere
+REJECT     all  --  anywhere             anywhere            reject-with icmp-port-unreachable
+REJECT     all  --  anywhere             anywhere            reject-with icmp-port-unreachable
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+
+		</screen>
+		<section>
+			<title>CentOS/Redhat TUI 工具</title>
+			<para>If iptables is not running, you can enable it by running:</para>
+			<screen>
+# lokkit --enabled --selinux=disabled
+# lokkit --disabled --selinux=disabled
+			</screen>
+
+			<screen>
+# lokkit --enabled
+
+# ls /etc/sysconfig/iptables*
+iptables         iptables-config  iptables.old
+
+# cat /etc/sysconfig/iptables
+# Firewall configuration written by system-config-firewall
+# Manual customization of this file is not recommended.
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+-A INPUT -p icmp -j ACCEPT
+-A INPUT -i lo -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT
+-A INPUT -j REJECT --reject-with icmp-host-prohibited
+-A FORWARD -j REJECT --reject-with icmp-host-prohibited
+COMMIT
+
+# lokkit --disabled
+# ls /etc/sysconfig/iptables*
+iptables-config  iptables.old
+			</screen>
+			<para>lokkit --enabled作用就是产生/etc/sysconfig/iptables文件。--disabled的作用是将更名为iptables.old</para>
+			<screen>
+# system-config-securitylevel
+			</screen>
+		</section>
+		<section>
+			<title>Protocols</title>
+			<screen>
+-p tcp
+-p udp
+			</screen>
+		</section>
+		<section>
+			<title>Interfaces</title>
+			<screen>
+iptables -A INPUT -i lo -j ACCEPT
+iptables -A INPUT -i eth0 -j ACCEPT
+iptables -A INPUT -i ppp0 -j ACCEPT
+			</screen>
+		</section>
+		<section>
+			<title>IP Addresses</title>
+			<screen>
+# Accept packets from trusted IP addresses
+ iptables -A INPUT -s 192.168.0.4 -j ACCEPT # change the IP address as appropriate
+
+# Accept packets from trusted IP addresses
+ iptables -A INPUT -s 192.168.0.0/24 -j ACCEPT  # using standard slash notation
+ iptables -A INPUT -s 192.168.0.0/255.255.255.0 -j ACCEPT # using a subnet mask
+
+
+# Accept packets from trusted IP addresses
+ iptables -A INPUT -s 192.168.0.4 -m mac --mac-source 00:50:8D:FD:E6:32 -j ACCEPT
+			</screen>
+		</section>
+		<section>
+			<title>Ports</title>
+			<screen>
+# Accept tcp packets on destination port 6881 (bittorrent)
+ iptables -A INPUT -p tcp --dport 6881 -j ACCEPT
+
+# Accept tcp packets on destination ports 6881-6890
+ iptables -A INPUT -p tcp --dport 6881:6890 -j ACCEPT
+			</screen>
+		</section>
+		<section>
+			<title>IPTables and Connection Tracking</title>
+			<literallayout>
+NEW — A packet requesting a new connection, such as an HTTP request.
+
+ESTABLISHED — A packet that is part of an existing connection.
+
+RELATED — A packet that is requesting a new connection but is part of an existing connection. For example, FTP uses port 21 to establish a connection, but data is transferred on a different port (typically port 20).
+
+INVALID — A packet that is not part of any connections in the connection tracking table.
+			</literallayout>
+			<screen>
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>User-defined Chain</title>
+		<section>
+			<title>Chains List</title>
+			<para>列出规则链</para>
+			<screen>
+ 列出INPUT,OUTPUT,FORWARD规则
+iptables -L
+
+列出NAT规则
+iptables -t nat -L
+
+列出过滤规则
+iptables -t filter -L
+			</screen>
+			<para>显示行号</para>
+			<screen>
+# iptables -L --line-numbers
+Chain INPUT (policy ACCEPT)
+num  target     prot opt source               destination
+1    ACCEPT     all  --  anywhere             192.168.2.10
+2    ACCEPT     all  --  anywhere             192.168.2.11
+3    ACCEPT     all  --  anywhere             192.168.2.12
+4    ACCEPT     all  --  anywhere             192.168.2.13
+5    ACCEPT     all  --  anywhere             192.168.2.14
+6    DROP       all  --  anywhere             anywhere
+
+Chain FORWARD (policy ACCEPT)
+num  target     prot opt source               destination
+
+Chain OUTPUT (policy ACCEPT)
+num  target     prot opt source               destination
+			</screen>
+			<para>显示包转发</para>
+			<screen>
+# iptables -L -v
+Chain INPUT (policy ACCEPT 881 packets, 146K bytes)
+ pkts bytes target     prot opt in     out     source               destination
+    0     0 ACCEPT     all  --  tun0   any     anywhere             192.168.2.10
+    0     0 ACCEPT     all  --  tun0   any     anywhere             192.168.2.11
+    0     0 ACCEPT     all  --  tun0   any     anywhere             192.168.2.12
+    0     0 ACCEPT     all  --  tun0   any     anywhere             192.168.2.13
+    0     0 ACCEPT     all  --  tun0   any     anywhere             192.168.2.14
+    0     0 DROP       all  --  tun0   any     anywhere             anywhere
+
+Chain FORWARD (policy ACCEPT 1190 packets, 440K bytes)
+ pkts bytes target     prot opt in     out     source               destination
+
+Chain OUTPUT (policy ACCEPT 888 packets, 437K bytes)
+ pkts bytes target     prot opt in     out     source               destination
+			</screen>
+			<screen>
+# iptables -L -t nat -v
+Chain PREROUTING (policy ACCEPT 509 packets, 43877 bytes)
+ pkts bytes target     prot opt in     out     source               destination
+
+Chain POSTROUTING (policy ACCEPT 94 packets, 6038 bytes)
+ pkts bytes target     prot opt in     out     source               destination
+  163 13140 MASQUERADE  all  --  any    br0     10.8.0.0/24          anywhere
+
+Chain OUTPUT (policy ACCEPT 94 packets, 6038 bytes)
+ pkts bytes target     prot opt in     out     source               destination
+			</screen>
+		</section>
+		<section>
+			<title>Chains Refresh</title>
+			<para>刷新规则</para>
+			<screen>
+/sbin/iptables -F
+/sbin/iptables -F -t filter
+/sbin/iptables -F -t nat
+/sbin/iptables -t nat -P PREROUTING ACCEPT
+/sbin/iptables -t nat -P POSTROUTING ACCEPT
+/sbin/iptables -P INPUT ACCEPT
+/sbin/iptables -P OUTPUT ACCEPT
+/sbin/iptables -P FORWARD ACCEPT
+			</screen>
+		</section>
+		<section>
+			<title>Chains Admin</title>
+
+			<para>创建新链</para>
+			<screen>
+				iptables -N netkiller
+			</screen>
+			<para>删除新链</para>
+			<screen>
+				# iptables -X netkiller
+			</screen>
+		</section>
+	</section>
+<section>
+	<title>Common Chains Filtering</title>
+	<section>
+		<title>INPUT Rule Chains</title>
+		<section>
+			<title>OpenSSH</title>
+			<screen>
+# Accept tcp packets on destination port 22 (SSH)
+ iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+
+# Accept tcp packets on destination port 22 (SSH) from private LAN
+ iptables -A INPUT -p tcp -s 192.168.0.0/24 --dport 22 -j ACCEPT
+			</screen>
+		</section>
+		<section>
+			<title>FTP</title>
+			<screen>
+/sbin/iptables -A INPUT -p tcp --dport 21 -j ACCEPT
+/sbin/iptables -A INPUT -p tcp --dport 20 -j ACCEPT
+			</screen>
+		</section>
+		<section>
+			<title>DNS</title>
+			<screen>
+iptables -A INPUT -i eth0 -p tcp --dport 53   -j ACCEPT
+iptables -A INPUT -i eth0 -p udp --dport 53   -j ACCEPT
+			</screen>
+		</section>
+		<section>
+			<title>WWW</title>
+			<screen>
+# WWW
+/sbin/iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+# HTTPS
+/sbin/iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+# Tomcat
+/sbin/iptables -A INPUT -p tcp --dport 8080 -j ACCEPT
+			</screen>
+		</section>
+		<section>
+			<title>SOCKS5</title>
+			<screen>
+/sbin/iptables -A INPUT -p tcp --dport 1080 -j ACCEPT
+			</screen>
+		</section>
+		<section>
+			<title>Mail Server</title>
+			<screen>
+# SMTP
+/sbin/iptables -A INPUT -p tcp --dport 25 -j ACCEPT
+# SMTPS
+/sbin/iptables -A INPUT -p tcp --dport 465 -j ACCEPT
+# POP3
+/sbin/iptables -A INPUT -p tcp --dport 110 -j ACCEPT
+# POP3S
+/sbin/iptables -A INPUT -p tcp --dport 995 -j ACCEPT
+# IMAP
+/sbin/iptables -A INPUT -p tcp --dport 143 -j ACCEPT
+# IMAPS
+/sbin/iptables -A INPUT -p tcp --dport 993 -j ACCEPT
+			</screen>
+		</section>
+		<section>
+			<title>MySQL</title>
+			<screen>
+/sbin/iptables -A INPUT -p tcp --dport 3306 -j ACCEPT
+			</screen>
+		</section>
+		<section>
+			<title>PostgreSQL</title>
+			<screen>
+/sbin/iptables -A INPUT -p tcp --dport 5432 -j ACCEPT
+			</screen>
+		</section>
+		<section>
+			<title>DHCP</title>
+			<screen>
+iptables -A INPUT -p UDP -i eth0 --dport 67 -j ACCEPT
+iptables -A INPUT -p UDP -i eth0 --dport 68 -j ACCEPT
+			</screen>
+		</section>
+		<section>
+			<title>Samba</title>
+			<screen>
+/sbin/iptables -A INPUT -p tcp -s 192.168.0.0/24 --dport 137 -j ACCEPT
+iptables -A INPUT -p tcp -s 192.168.0.0/24 --dport 145 -j ACCEPT
+iptables -A INPUT -p udp -s 192.168.0.0/24 --dport 138 -j ACCEPT
+iptables -A INPUT -p udp -s 192.168.0.0/24 --dport 139 -j ACCEPT
+			</screen>
+		</section>
+		<section>
+			<title>ICMP</title>
+			<literallayout>
+accept_redirects
+# echo "0" > /proc/sys/net/ipv4/conf/all/accept_redirects
+or
+# sysctl net.ipv4.conf.all.accept_redirects="0"
+
+			</literallayout>
+			<screen>
+使自己不能ping 通 127.0.0.1
+iptables -A INPUT -s 127.0.0.1 -p icmp -j DROP
+
+192.168.0.0/24 网段无法ping能本机
+iptables -A INPUT -s 192.168.0.0/24 -p icmp -j DROP
+
+禁所有机器
+# iptables -A INPUT -s 0/0 -p icmp -j DROP
+
+# ICMP(PING) 接受 ! echo-request
+iptables -A INPUT -p icmp --icmp-type ! echo-request -j ACCEPT
+			</screen>
+		</section>
+		<section>
+			<title>禁止IP访问自己</title>
+			<screen>
+$sudo iptables -A INPUT -s 192.168.0.253 -j DROP
+			</screen>
+		</section>
+		<section>
+			<title>DENY</title>
+			<screen>
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A INPUT -j DROP
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>OUTPUT Rule Chains</title>
+		<section>
+			<title>outbound</title>
+			<screen>
+# Open ports for outbound established connections
+$IPT -A OUTPUT -p tcp -s $NET -d 0/0 --destination-port 1:65535 -j ACCEPT
+$IPT -A OUTPUT -p udp -s $NET -d 0/0 --destination-port 1:65535 -j ACCEPT
+			</screen>
+		</section>
+		<section>
+			<title>ICMP</title>
+			<literallayout>
+本地不允许ping 192.168.0.0/24
+iptables -A OUTPUT -s 192.168.0.0/24 -p icmp -j DROP
+
+禁所本地ping任何机器
+# iptables -A OUTPUT -s 0/0 -p icmp -j DROP
+
+# ICMP(PING) 接受 ! echo-request
+iptables -A OUTPUT -p icmp --icmp-type ! echo-request -j ACCEPT
+			</literallayout>
+		</section>
+		<section>
+			<title>NFS</title>
+			<screen>
+iptables -A OUTPUT -p tcp --dport 2049 -j REJECT
+			</screen>
+		</section>
+		<section>
+			<title>SSH</title>
+			<screen>
+iptables -A OUTPUT -p tcp -m multiport --dports 22 -j REJECT
+			</screen>
+		</section>
+		<section>
+			<title>禁止自己访问某个IP</title>
+			<screen>
+# iptables -A OUTPUT -d 192.168.0.253 -j DROP
+iptables -A OUTPUT -p udp -j DROP
+iptables -A OUTPUT -d 125.211.210.46 -j DROP
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>Forward</title>
+		<screen>
+iptables -A FORWARD -i eth1 -j ACCEPT
+		</screen>
+		<screen>
+# Network 1 forwarded outgoing client request to network 2
+iptables -A FORWARD -i eth1 -p tcp -s 192.168.1.0/24 -d 192.168.2.0/24 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -o eth1 -p tcp -s 192.168.2.0/24 -d 192.168.1.0/24 -m state --state ESTABLISHED,RELATED -j ACCEPT
+		</screen>
+		<section>
+			<title>TCPMSS</title>
+			<screen>
+iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>Malicious Software and Spoofed IP Addresses</title>
+		<screen>
+# The following rules drop all TCP traffic that attempts to use port 31337:
+iptables -A OUTPUT -o eth0 -p tcp --dport 31337 --sport 31337 -j DROP
+iptables -A FORWARD -o eth0 -p tcp --dport 31337 --sport 31337 -j DROP
+		</screen>
+	</section>
+</section>
+
+	<section>
+		<title>NAT</title>
+		<section>
+			<title>Redirect</title>
+			<para>重定向规则</para>
+			<screen>
+端口重定向
+# iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 21 -j REDIRECT --to-port 2401
+
+将80端口重定向到8080
+# iptables -t nat -A PREROUTING -j REDIRECT -p tcp --destination-port 80 --to-ports 8080
+			</screen>
+			<para>端口转发</para>
+			<screen>
+echo 1 > /proc/sys/net/ipv4/ip_forward
+iptables -t nat -A PREROUTING -d 192.168.3.9 -p tcp -m tcp --dport 1000 -j DNAT --to-destination 192.168.3.137:8080
+iptables -t nat -A POSTROUTING -s 192.168.3.0/255.255.255.0 -d 192.168.3.137 -p tcp -m tcp --dport 8080 -j SNAT --to-source 192.168.3.9
+			</screen>
+		</section>
+		<section>
+			<title>Postrouting and IP Masquerading</title>
+			<screen>
+			<![CDATA[
+iptables -P FORWARD ACCEPT
+iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+
+iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -j MASQUERADE
+iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -o eth0 -j MASQUERADE
+
+sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+sudo iptables -t nat -I POSTROUTING -j MASQUERADE
+sudo iptables -t nat -A POSTROUTING -j MASQUERADE -s 172.16.0.0/24 -d 0.0.0.0/0
+sudo iptables -t nat -A POSTROUTING -j MASQUERADE -o eth1 -s 172.16.1.0/24 -d 0.0.0.0/0
+sudo iptables -t nat -A POSTROUTING -j MASQUERADE -p tcp -o eth1 -s 172.16.1.0/24 -d 0.0.0.0/0
+			]]>
+			</screen>
+		</section>
+	<section>
+		<title>Prerouting</title>
+		<screen>
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j DNAT --to 172.31.0.23:80
+		</screen>
+		<para>If you have a default policy of DROP in your FORWARD chain, you must append a rule to forward all incoming HTTP requests so that destination NAT routing is possible. To do this, use the following command:</para>
+		<screen>
+iptables -A FORWARD -i eth0 -p tcp --dport 80 -d 172.31.0.23 -j ACCEPT
+		</screen>
+		<para>This rule forwards all incoming HTTP requests from the firewall to the intended destination; the Apache HTTP Server behind the firewall.</para>
+	</section>
+	<section>
+		<title>DNAT and SNAT</title>
+		<screen>
+echo 1 > /proc/sys/net/ipv4/ip_forward
+iptables -t nat -A PREROUTING -d 202.103.96.10 -j DNAT --to-destination 192.168.0.10
+iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -j SNAT --to-source 202.96.244.56
+		</screen>
+	</section>
+		<section>
+			<title>DMZ zone</title>
+			<screen>
+#
+# DMZ zone
+#
+$iptables -t nat -A PREROUTING -p TCP -m multiport -i eth0 --dport 22,25,113,80,8080 -j DNAT --to 10.0.0.10
+$iptables -t nat -A PREROUTING -p UDP -i eth0 --dport 25 -j DNAT --to-destination 10.0.0.10
+			</screen>
+			<para>DNAT ppp0/eth0</para>
+			<screen>
+			<![CDATA[
+iptables -t nat -A PREROUTING -p tcp -i ppp0 --dport 80 -j DNAT --to-destination <web server ip>
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j DNAT --to-destination 10.0.4.2:80
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>Module(模块)</title>
+		<section>
+			<title>string</title>
+			<screen>
+iptables -m string -h
+			</screen>
+			<screen>
+# iptables -A INPUT -p tcp --dport 80 -m string --algo bm --string "XXDD0S" -j DROP
+			</screen>
+		</section>
+		<section>
+			<title>connlimit</title>
+			<para>限制多少IP链接你的服务器</para>
+			<screen>
+# allow 2 telnet connections per client host
+iptables -p tcp --syn --dport 23 -m connlimit --connlimit-above 2 -j REJECT
+
+# you can also match the other way around:
+iptables -p tcp --syn --dport 23 -m connlimit ! --connlimit-above 2 -j ACCEPT
+
+# limit the nr of parallel http requests to 16 per class C sized
+# network (24 bit netmask)
+iptables -p tcp --syn --dport 80 -m connlimit --connlimit-above 16 \
+        --connlimit-mask 24 -j REJECT
+
+# Skip proxy server IP 1.2.3.4 from this kind of limitations:
+iptables -A INPUT -p tcp --syn --dport 80 -d ! 1.2.3.4 -m connlimit --connlimit-above 20 -j REJECT --reject-with tcp-reset
+
+iptables -A INPUT -i ppp0 -p tcp --syn -m connlimit --connlimit-above 15 -j DROP
+iptables -A INPUT -s 192.186.0.0/24 -p tcp --syn -m connlimit --connlimit-above 15 -j DROP
+iptables -I INPUT -p tcp --dport 80 -m connlimit --connlimit-above 50 -j REJECT
+			</screen>
+			<screen>
+iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport 443 --syn -m connlimit --connlimit-above 50 -j REJECT
+			</screen>
+			<example>
+				<title>connlimit 实例</title>
+				<para>OS: CentOS</para>
+				<screen>
+# Generated by iptables-save v1.3.5 on Thu Mar  1 19:01:23 2012
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [548:1014604]
+:RH-Firewall-1-INPUT - [0:0]
+-A INPUT -j RH-Firewall-1-INPUT
+-A FORWARD -j RH-Firewall-1-INPUT
+-A OUTPUT -p udp -m udp --dport 53 -j ACCEPT
+-A OUTPUT -p udp -m udp --dport 161 -j ACCEPT
+-A OUTPUT -p udp -j DROP
+-A RH-Firewall-1-INPUT -i lo -j ACCEPT
+-A RH-Firewall-1-INPUT -p icmp -m icmp --icmp-type any -j ACCEPT
+-A RH-Firewall-1-INPUT -p esp -j ACCEPT
+-A RH-Firewall-1-INPUT -p ah -j ACCEPT
+-A RH-Firewall-1-INPUT -d 224.0.0.251 -p udp -m udp --dport 5353 -j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m tcp --dport 3306 -j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 80 --tcp-flags FIN,SYN,RST,ACK SYN -m connlimit --connlimit-above 50 --connlimit-mask 32 -j REJECT --reject-with icmp-port-unreachable
+-A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 443 --tcp-flags FIN,SYN,RST,ACK SYN -m connlimit --connlimit-above 50 --connlimit-mask 32 -j REJECT --reject-with icmp-port-unreachable
+-A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 443 -j ACCEPT
+-A RH-Firewall-1-INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A RH-Firewall-1-INPUT -j REJECT --reject-with icmp-host-prohibited
+COMMIT
+# Completed on Thu Mar  1 19:01:23 2012
+				</screen>
+				<para>CentOS</para>
+				<screen>
+# Firewall configuration written by system-config-firewall
+# Manual customization of this file is not recommended.
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+-A INPUT -p icmp -j ACCEPT
+-A INPUT -i lo -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT
+-A INPUT -p tcp -m state --state NEW -m tcp --dport 443 --tcp-flags FIN,SYN,RST,ACK SYN -m connlimit --connlimit-above 50 --connlimit-mask 32 -j REJECT --reject-with icmp-port-unreachable
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 443 -j ACCEPT
+-A INPUT -j REJECT --reject-with icmp-host-prohibited
+-A FORWARD -j REJECT --reject-with icmp-host-prohibited
+COMMIT
+				</screen>
+			</example>
+		</section>
+		<section>
+			<title>limit</title>
+			<screen>
+iptables -A INPUT -p icmp -m limit --limit 3/s -j LOG --log-level INFO --log-prefix "ICMP packet IN: "
+			</screen>
+			<screen>
+iptables -N syn-flood
+iptables -A INPUT -p tcp --syn -j syn-flood
+iptables -I syn-flood -p tcp -m limit --limit 3/s --limit-burst 6 -j RETURN
+iptables -A syn-flood -j REJECT
+			</screen>
+		</section>
+
+	</section>
+	<section>
+		<title>IPV6</title>
+		<screen>
+		<![CDATA[
+[root@linux iptables]# modprobe ipv6
+[root@linux iptables]# modprobe ip6_tables
+[root@linux iptables]# [ ! -f /proc/net/ip6_tables_names ] && echo "Current kernel doesn't support? 'ip6tables' firewalling (IPv6)!"
+[root@linux iptables]# ip6tables -A INPUT -i eth0 -p tcp -s 3ffe:ffff:100::1/128 --dport 22 -j ACCEPT
+		]]>
+		</screen>
+	</section>
+	<section id="iptables-xml">
+		<title>iptables-xml - Convert iptables-save format to XML</title>
+	</section>
+	<section>
+		<title>Example</title>
+		<example>
+			<title></title>
+			<screen>
+/sbin/iptables -F
+/sbin/iptables -F -t filter
+/sbin/iptables -F -t nat
+/sbin/iptables -t nat -P PREROUTING ACCEPT
+/sbin/iptables -t nat -P POSTROUTING ACCEPT
+/sbin/iptables -t nat -P OUTPUT ACCEPT
+/sbin/iptables -P INPUT ACCEPT
+/sbin/iptables -P OUTPUT ACCEPT
+/sbin/iptables -P FORWARD ACCEPT
+
+-P INPUT ACCEPT
+-P FORWARD ACCEPT
+-P OUTPUT ACCEPT
+-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A INPUT -p icmp -j ACCEPT
+-A INPUT -i lo -j ACCEPT
+-A INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
+-A INPUT -j REJECT --reject-with icmp-host-prohibited
+-A FORWARD -j REJECT --reject-with icmp-host-prohibited
+
+sysctl net.ipv4.ip_forward=1
+			</screen>
+		</example>
+		<example>
+			<title>CentOS 5.6</title>
+			<screen>
+# iptables-save
+# Generated by iptables-save v1.3.5 on Sat Dec 31 18:29:51 2011
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [1516:131654]
+:RH-Firewall-1-INPUT - [0:0]
+-A INPUT -j RH-Firewall-1-INPUT
+-A FORWARD -j RH-Firewall-1-INPUT
+-A RH-Firewall-1-INPUT -i lo -j ACCEPT
+-A RH-Firewall-1-INPUT -i eth0 -j ACCEPT
+-A RH-Firewall-1-INPUT -p icmp -m icmp --icmp-type any -j ACCEPT
+-A RH-Firewall-1-INPUT -p esp -j ACCEPT
+-A RH-Firewall-1-INPUT -p ah -j ACCEPT
+-A RH-Firewall-1-INPUT -d 224.0.0.251 -p udp -m udp --dport 5353 -j ACCEPT
+-A RH-Firewall-1-INPUT -p udp -m udp --dport 631 -j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m tcp --dport 631 -j ACCEPT
+-A RH-Firewall-1-INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 1521 -j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 3306 -j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 23 -j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 25 -j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 21 -j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 443 -j ACCEPT
+-A RH-Firewall-1-INPUT -p udp -m state --state NEW -m udp --dport 137 -j ACCEPT
+-A RH-Firewall-1-INPUT -p udp -m state --state NEW -m udp --dport 138 -j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 139 -j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 445 -j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 2049 -j ACCEPT
+-A RH-Firewall-1-INPUT -j REJECT --reject-with icmp-host-prohibited
+COMMIT
+# Completed on Sat Dec 31 18:29:51 2011
+			</screen>
+			<screen>
+# Firewall configuration written by system-config-securitylevel
+# Manual customization of this file is not recommended.
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:RH-Firewall-1-INPUT - [0:0]
+-A INPUT -j RH-Firewall-1-INPUT
+-A FORWARD -j RH-Firewall-1-INPUT
+-A RH-Firewall-1-INPUT -i lo -j ACCEPT
+-A RH-Firewall-1-INPUT -i eth3 -j ACCEPT
+-A RH-Firewall-1-INPUT -i eth2 -j ACCEPT
+-A RH-Firewall-1-INPUT -i eth0 -j ACCEPT
+-A RH-Firewall-1-INPUT -i eth1 -j ACCEPT
+-A RH-Firewall-1-INPUT -p icmp --icmp-type any -j ACCEPT
+-A RH-Firewall-1-INPUT -p 50 -j ACCEPT
+-A RH-Firewall-1-INPUT -p 51 -j ACCEPT
+-A RH-Firewall-1-INPUT -p udp --dport 5353 -d 224.0.0.251 -j ACCEPT
+-A RH-Firewall-1-INPUT -p udp -m udp --dport 631 -j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m tcp --dport 631 -j ACCEPT
+-A RH-Firewall-1-INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+-A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT
+-A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 80 -j ACCEPT
+-A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 443 -j ACCEPT
+-A RH-Firewall-1-INPUT -j REJECT --reject-with icmp-host-prohibited
+COMMIT
+
+
+# Generated by iptables-save v1.3.5 on Wed May 23 10:58:21 2012
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [43:8584]
+:RH-Firewall-1-INPUT - [0:0]
+-A INPUT -j RH-Firewall-1-INPUT
+-A FORWARD -j RH-Firewall-1-INPUT
+-A RH-Firewall-1-INPUT -i lo -j ACCEPT
+-A RH-Firewall-1-INPUT -i eth3 -j ACCEPT
+-A RH-Firewall-1-INPUT -i eth2 -j ACCEPT
+-A RH-Firewall-1-INPUT -i eth0 -j ACCEPT
+-A RH-Firewall-1-INPUT -i eth1 -j ACCEPT
+-A RH-Firewall-1-INPUT -p icmp -m icmp --icmp-type any -j ACCEPT
+-A RH-Firewall-1-INPUT -p esp -j ACCEPT
+-A RH-Firewall-1-INPUT -p ah -j ACCEPT
+-A RH-Firewall-1-INPUT -d 224.0.0.251 -p udp -m udp --dport 5353 -j ACCEPT
+-A RH-Firewall-1-INPUT -p udp -m udp --dport 631 -j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m tcp --dport 631 -j ACCEPT
+-A RH-Firewall-1-INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 443 --tcp-flags FIN,SYN,RST,ACK SYN -m connlimit --connlimit-above 50 --connlimit-mask 32 -j REJECT --reject-with icmp-port-unreachable
+-A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 443 -j ACCEPT
+-A RH-Firewall-1-INPUT -j REJECT --reject-with icmp-host-prohibited
+COMMIT
+# Completed on Wed May 23 10:58:21 2012
+			</screen>
+		</example>
+	</section>
+	<section>
+		<title>access.log IP封锁脚本</title>
+		<screen>
+#!/bin/bash
+
+ACCCESS_LOG=/tmp/myid.access.log
+TIMEPOINT='23/May/2012'
+BLACKLIST=/var/tmp/black
+WHITELIST=/var/tmp/white
+if [ ! -f ${BLACKLIST} ]; then
+    touch ${BLACKLIST}
+fi
+
+if [ ! -f ${WHITELIST} ]; then
+    touch ${WHITELIST}
+fi
+
+for deny in $(grep ${TIMEPOINT} ${ACCCESS_LOG} | awk '{print $1}' | awk -F'.' '{print $1"."$2"."$3"."$4}' | sort | uniq -c | sort -r -n | head -n 30| awk '{print $2}')
+do
+
+    if [ $(grep -c $deny ${WHITELIST}) -ne 0 ]; then
+        echo 'Allow IP:' $deny
+	continue
+    fi
+
+    if [ $(grep -c $deny ${BLACKLIST}) -eq 0 ] ; then
+
+	echo 'Deny IP:' $deny
+        echo $deny >> ${BLACKLIST}
+        iptables -I INPUT -p tcp --dport 443 -s $deny -j DROP
+        iptables -I INPUT -p tcp --dport 80 -s $deny -j DROP
+    fi
+done
+		</screen>
+	</section>
+</section>
+
+<section id="ulogd">
+	<title>ulogd - The Netfilter Userspace Logging Daemon</title>
+	<para>ulogd homepage: http://www.gnumonks.org/projects/</para>
+	<procedure>
+		<step>
+			<para>Installation</para>
+			<para>$ sudo apt-get install ulogd</para>
+			<para>$ sudo apt-get install ulogd-mysql</para>
+		</step>
+		<step>
+			<para>Configure LOGEMU</para>
+			<screen>
+plugin="/usr/lib/ulogd/ulogd_LOGEMU.so"
+			</screen>
+		</step>
+		<step>
+			<para>Configure MYSQL</para>
+			<para>$ sudo vim /etc/ulogd.conf</para>
+			<screen>
+plugin="/usr/lib/ulogd/ulogd_MYSQL.so"
+[MYSQL]
+table="ulog"
+pass="ulog"
+user="ulog"
+db="ulogd"
+host="localhost"
+			</screen>
+			<para>create database</para>
+			<screen>
+			<![CDATA[
+neo@master:~$ mysql -u root -p -A mysql
+Enter password:
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 9
+Server version: 5.0.51a-3ubuntu5.1-log (Ubuntu)
+
+Type 'help;' or '\h' for help. Type '\c' to clear the buffer.
+
+mysql> create database ulogd;
+Query OK, 1 row affected (0.07 sec)
+
+mysql> grant all privileges on ulogd.* to ulog@localhost identified by 'ulog';
+Query OK, 0 rows affected (0.09 sec)
+
+mysql> flush privileges;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> source /usr/share/doc/ulogd-mysql/mysql.table
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> exit;
+Bye
+neo@master:~$
+			]]>
+			</screen>
+		</step>
+		<step>
+			<para>Iptables</para>
+			<para></para>
+			<screen>
+iptables -A INPUT -p tcp --dport 80 -j ULOG
+iptables -A FORWARD -j ULOG
+			</screen>
+		</step>
+		<step>
+			<para>Starting</para>
+			<para>$ sudo /etc/init.d/ulogd start</para>
+		</step>
+		<step>
+			<para>testing</para>
+			<para>logemu</para>
+			<screen>
+neo@master:~$ tail -f /var/log/ulog/syslogemu.log
+Oct 20 12:54:07 master IN=eth0 OUT= MAC=00:0c:29:b0:6b:d0:00:50:56:c0:00:08:08:00  SRC=192.168.245.1 DST=192.168.245.129 LEN=40 TOS=00 PREC=0x00 TTL=128 ID=30048 DF PROTO=TCP SPT=2080 DPT=80 SEQ=1732529774 ACK=1543952440 WINDOW=64608 ACK URGP=0
+Oct 20 12:54:22 master IN=eth0 OUT= MAC=00:0c:29:b0:6b:d0:00:50:56:c0:00:08:08:00  SRC=192.168.245.1 DST=192.168.245.129 LEN=40 TOS=00 PREC=0x00 TTL=128 ID=30294 DF PROTO=TCP SPT=2080 DPT=80 SEQ=1732529774 ACK=1543952441 WINDOW=64608 ACK URGP=0
+Oct 20 12:54:32 master IN=eth0 OUT= MAC=00:0c:29:b0:6b:d0:00:50:56:c0:00:08:08:00  SRC=192.168.245.1 DST=192.168.245.129 LEN=40 TOS=00 PREC=0x00 TTL=128 ID=30481 DF PROTO=TCP SPT=2080 DPT=80 SEQ=1732529774 ACK=1543952441 WINDOW=64608 ACK FIN URGP=0
+Oct 20 12:55:27 master IN=eth0 OUT= MAC=00:0c:29:b0:6b:d0:00:50:56:c0:00:08:08:00  SRC=192.168.245.1 DST=192.168.245.129 LEN=48 TOS=00 PREC=0x00 TTL=128 ID=31444 DF PROTO=TCP SPT=2087 DPT=80 SEQ=866215326 ACK=0 WINDOW=65535 SYN URGP=0
+			</screen>
+			<para>mysql</para>
+			<screen>
+			<![CDATA[
+mysql> select count(*) from ulog;
++----------+
+| count(*) |
++----------+
+|        8 |
++----------+
+1 row in set (0.03 sec)
+
+mysql> select id, raw_mac from ulog;
++----+--------------------------------------------+
+| id | raw_mac                                    |
++----+--------------------------------------------+
+|  1 | 00:0c:29:b0:6b:d0:00:50:56:c0:00:08:08:00  |
+|  2 | 00:0c:29:b0:6b:d0:00:50:56:c0:00:08:08:00  |
+|  3 | 00:0c:29:b0:6b:d0:00:50:56:c0:00:08:08:00  |
+|  4 | 00:0c:29:b0:6b:d0:00:50:56:c0:00:08:08:00  |
+|  5 | 00:0c:29:b0:6b:d0:00:50:56:c0:00:08:08:00  |
+|  6 | 00:0c:29:b0:6b:d0:00:50:56:c0:00:08:08:00  |
+|  7 | 00:0c:29:b0:6b:d0:00:50:56:c0:00:08:08:00  |
+|  8 | 00:0c:29:b0:6b:d0:00:50:56:c0:00:08:08:00  |
+|  9 | 00:0c:29:b0:6b:d0:00:50:56:c0:00:08:08:00  |
++----+--------------------------------------------+
+9 rows in set (0.00 sec)
+			]]>
+			</screen>
+		</step>
+	</procedure>
+	<literallayout>
+共有四个参数可供使用：
+1.--ulog-nlgroup
+iptables -A INPUT -p TCP --dport 22 -j ULOG --ulog-nlgroup 2
+指定向哪个netlink组发送包，比如-- ulog-nlgroup 2。一共有32个netlink组，它们被简单地编号位1-32。默认值是1。
+
+2.--ulog-prefix
+iptables -A INPUT -p TCP --dport 22 -j ULOG --ulog-prefix "SSH connection attempt: "
+指定记录信息的前缀，以便于区分不同的信息。使用方法和 LOG的prefix一样，只是长度可以达到32个字符。
+
+3.--ulog-cprange
+iptables -A INPUT -p TCP --dport 22 -j ULOG --ulog-cprange 100
+指定每个包要向“ULOG在用户空间的代理”发送的字节数，如--ulog-cprange 100，
+表示把整个包的前100个字节拷贝到用户空间记录下来，其中包含了这个包头，还有一些包的引导数据。默认值是0，表示拷贝整个包，不管它有多大。
+
+4.--ulog-qthreshold
+iptables -A INPUT -p TCP --dport 22 -j ULOG --ulog-qthreshold 10
+告诉ULOG在向用户空间发送数据以供记录之前，要在内核里收集的包的数量，如--ulog-qthreshold 10。
+这表示先在内核里积聚10个包，再把它们发送到用户空间里，它们会被看作同一个netlink的信息，只是由好几部分组成罢了。
+默认值是1，这是为了向后兼容，因为以前的版本不能处理分段的信息
+	</literallayout>
+</section>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.cmd.man.xml 375 2012-03-21 03:00:42Z netkiller $ -->
+<chapter id="help">
+	<title>Help Commands</title>
+	<section id="help.man">
+		<title>man - an interface to the on-line reference manuals</title>
+		<section>
+			<title>manpath.config</title>
+			<screen>
+cat /etc/manpath.config
+			</screen>			
+		</section>
+		<section>
+			<title>查看man手册位置</title>
+			<screen>
+$ man -aw ls
+/usr/share/man/man1/ls.1.gz
+			</screen>
+		</section>
+		<section>
+			<title>指定手册位置</title>
+			<screen>
+man -M /home/mysql/man mysql		
+			</screen>
+		</section>		
+	</section>
+</chapter>

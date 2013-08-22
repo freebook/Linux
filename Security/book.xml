@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE subject SYSTEM "/usr/share/xml/docbook/schema/dtd/5.0/docbook.dtd"
+	[
+	<!ENTITY Neo "http://netkiller.sf.net/">
+	<!ENTITY BG7NYT "&Neo;">
+	<!ENTITY Netkiller "<emphasis><trademark>Netkiller</trademark></emphasis>">
+
+	<!ENTITY book.info.author.xml		SYSTEM "../../common/book.info.author.xml">
+	<!ENTITY book.info.legalnotice.xml 	SYSTEM "../../common/book.info.legalnotice.xml">
+	<!ENTITY book.info.abstract.xml 	SYSTEM "../../common/book.info.abstract.xml">
+    <!ENTITY book.preface.xml           SYSTEM "../../common/book.preface.xml">
+	<!ENTITY preface.about.me.xml       SYSTEM "../../common/about.me.xml">
+	<!ENTITY book.dedication.xml       	SYSTEM "../../common/book.dedication.xml">
+
+<!--
+	<!ENTITY book.preface 		SYSTEM "book.preface.xml">
+	<!ENTITY book.dedication 	SYSTEM "book.dedication.xml">
+	<!ENTITY book.appendix 		SYSTEM "book.appendix.xml">
+	<!ENTITY book.history 		SYSTEM "book.history.xml">
+-->
+	<!ENTITY % doctype.entity.xml 			SYSTEM "doctype.entity.xml">
+	%doctype.entity.xml;
+
+]>
+<book xml:base="http://netkiller.sf.com/book/linux/www"
+	xmlns="http://docbook.org/ns/docbook" xml:lang="zh-cn">
+	<info>
+		<title>Netkiller Security 手札</title>
+		<subtitle>Sniffer, Scanner, Vulnerability, Penetration</subtitle>
+
+		&book.info.author.xml;
+
+		<copyright>
+			<year>2011</year>
+			<year>2012</year>
+			<year>2013</year>
+			<holder>Netkiller(Neo Chan). All rights reserved.</holder>
+		</copyright>
+
+		<publisher>
+			<publishername>Neo</publishername>
+		</publisher>
+		<isbn>ISBN#</isbn>
+		<edition>User's Guide version 1.0 for Linux</edition>
+		<pubdate>2011-12-9</pubdate>
+		<releaseinfo></releaseinfo>
+
+		&book.info.legalnotice.xml;
+		&book.info.abstract.xml;
+
+		<keywordset>
+			<keyword>Sniffer, Scanner, Vulnerability, Penetration</keyword>
+			<keyword>nmap, tcpdump</keyword>
+			<keyword>sqlmap</keyword>
+			<keyword>Nessus, Backtrack</keyword>
+		</keywordset>
+	</info>
+
+<!-- =========================================================================== -->
+	&book.dedication.xml;
+	&book.preface.xml;
+	&chapter.security.xml;
+<!-- =========================================================================== -->
+
+<!--
+	&book.appendix;
+	&book.history;
+-->
+</book>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="ipsec">
+	<title>Ipsec VPN</title>
+	
+	<section id="ipsec-tools">
+		<title>ipsec-tools - IPsec tools for Linux</title>
+		<para>https://trac.ipsec-tools.net/</para>
+	</section>
+	&chapter.network.vpn.openswan;
+</chapter>
+	

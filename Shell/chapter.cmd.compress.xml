@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.cmd.compress.xml 663 2013-08-15 09:45:39Z netkiller $ -->
+<chapter id="package">
+	<title>package / compress and decompress</title>
+	<section id="tar">
+		<title>tar — The GNU version of the tar archiving utility</title>
+		<section>
+			<title>tar examples</title>
+			<para>tar</para>
+			<screen>
+tar -cvf foo.tar foo/
+       tar contents of folder foo in foo.tar
+
+tar -xvf foo.tar
+       extract foo.tar
+			</screen>
+		</section>
+		<section>
+			<title>gunzip</title>
+			<screen>
+tar -zcvf foo.tar foo/
+       tar contents of folder foo in foo.tar.gz
+			</screen>
+			<screen>
+tar -xvzf foo.tar.gz
+       extract gzipped foo.tar.gz
+			</screen>
+		</section>
+		<section>
+			<title>b2zip</title>
+			<command>b2zip</command>
+			<screen>
+tar -jcvf foo.tar.bz2 foo/
+       tar contents of folder foo in foo.tar.bz2
+
+tar -jxvf foo.tar.bz2
+       extract b2zip foo.tar.bz2
+			</screen>
+		</section>
+		<section>
+			<title>compress</title>
+			<command>compress/uncompress</command>
+			<screen>
+tar -Zcvf foo.tar.Z foo/
+       tar contents of folder foo in foo.tar.Z
+
+tar -Zxvf foo.tar.Z
+       extract compress foo.tar.Z
+      		</screen>
+		</section>
+
+		<section>
+			<title>-t, --list</title>
+			<para>-t, --list	list the contents of an archive</para>
+			<para>列出tar包中的文件</para>
+			<screen>
+tar tvf neo.tar.gz
+			</screen>
+			<screen>
+# mkdir -p /www/test.com/www.test.com/
+# echo helloworld > /www/test.com/www.test.com/test.txt
+# tar zcvf www.test.com.tar.gz /www/test.com/www.test.com/
+
+# tar ztvf www.test.com.tar.gz
+drwxr-xr-x root/root         0 2013-08-08 15:24 www/test.com/www.test.com/
+-rw-r--r-- root/root        11 2013-08-08 15:24 www/test.com/www.test.com/test.txt
+
+# tar zxvf www.test.com.tar.gz
+www/test.com/www.test.com/
+www/test.com/www.test.com/test.txt
+
+# find www
+www
+www/test.com
+www/test.com/www.test.com
+www/test.com/www.test.com/test.txt
+			</screen>
+		</section>
+
+		<section>
+			<title>tar: Removing leading `/’ from member names</title>
+			<para>-P, --absolute-names       don't strip leading `/'s from file names</para>
+			<screen>
+$ tar -czvPf neo.tar.gz /home/neo/
+
+$ tar -xzvPf neo.tar.gz
+			</screen>
+		</section>
+		<section>
+			<title>-C, --directory=DIR</title>
+			<para>-C, --directory=DIR        change to directory DIR</para>
+			<para>解压到目标目录</para>
+			<screen>
+tar -xzvf neo.tar.gz -C /tmp
+			</screen>
+			<screen>
+# tar zxvf www.test.com.tar.gz -C /tmp
+www/test.com/www.test.com/
+www/test.com/www.test.com/test.txt
+
+# find /tmp/www/
+/tmp/www/
+/tmp/www/test.com
+/tmp/www/test.com/www.test.com
+/tmp/www/test.com/www.test.com/test.txt
+
+
+
+# rm -rf /www/test.com/*
+
+# tar zxvf www.test.com.tar.gz -C /
+www/test.com/www.test.com/
+www/test.com/www.test.com/test.txt
+
+# find /www/test.com/
+/www/test.com/
+/www/test.com/www.test.com
+/www/test.com/www.test.com/test.txt
+			</screen>
+		</section>
+		<section>
+			<title>-P, --absolute-names       don't strip leading `/'s from file names</title>
+			<screen>
+tar zcvfP www.test.com.tar.gz /www/test.com/www.test.com/
+tar zxvfP www.test.com.tar.gz
+			</screen>
+		</section>
+		<section>
+			<title>--exclude</title>
+			<para>排除neo目录</para>
+			<screen>
+tar --exclude /home/neo -zcvf myfile.tar.gz /home/* /etc
+
+tar zcvf rpmbuild/SOURCES/netkiller-1.0.tar.gz ~/workspace/public_html/* --exclude .git --exclude .svn
+			</screen>
+		</section>
+		<section>
+			<title>-T </title>
+			<screen>
+find . -name "*.jpg" -print >list
+tar -T list -czvf picture.tar.gz
+
+find /etc/ | tar czvf xxx1.tar.gz -T -
+			</screen>
+		</section>
+		<section>
+			<title>日期过滤</title>
+			<para>打包 2010/08/01 之后的文件和目录</para>
+			<screen>
+tar -N '2010/08/01' -zcvf home.tar.gz /home
+			</screen>
+		</section>
+		<section>
+			<title>保留权限</title>
+			<screen>
+tar -zxvpf /tmp/etc.tar.gz /etc
+			</screen>
+		</section>
+		<section>
+			<title>-r, --append</title>
+			<para>追加最近7天更改过的文件</para>
+			<screen>
+find / -type f -mtime -7 | xargs tar -rf weekly_incremental.tar
+			</screen>
+		</section>
+		<section>
+			<title>远程传输</title>
+			<command>tar -jcpvf - file | ssh remote "tar -jxpvf -"</command>
+			<screen>
+tar -jcpvf - file.php | ssh root@172.16.3.1 "tar -jxpvf -"
+			</screen>
+		</section>
+		<section>
+			<title>分卷压缩</title>
+			<screen>
+分卷压缩一个目录：如doc
+
+在doc目录的上次目录
+
+#tar cvf doc | split -b 2m (已2M大小分卷压缩)
+#cat x* > doc.tar (合成分卷压缩包)
+			</screen>
+			<para>或者</para>
+			<screen>
+#tar czvf doc.tar.gz doc/
+#tar czvfp - doc.tar.gz | split -b 5m
+#cat x* > doc.tar.gz
+
+查看压缩包里面的内容:
+
+#tar -tf doc.tar
+#tar -tzvf doc.tar.gz
+			</screen>
+		</section>
+	</section>
+	<section id="cpio">
+		<title>cpio - copy files to and from archives</title>
+		<para></para>
+		<command></command>
+		<screen>
+		<![CDATA[
+find /opt -print | cpio -o > opt.cpio
+
+find . -type f -name '*.sh' -print | cpio -o | gzip >sh.cpio.gz
+
+cpio –i < opt.cpio
+		]]>
+		</screen>
+	</section>
+	<section id="gzip">
+		<title>gzip</title>
+		<command>gzip/gunzip</command>
+		<screen>
+# ls access.2010-{10,11}-??.log
+access.2010-10-01.log  access.2010-10-17.log  access.2010-11-02.log  access.2010-11-18.log
+access.2010-10-02.log  access.2010-10-18.log  access.2010-11-03.log  access.2010-11-19.log
+access.2010-10-03.log  access.2010-10-19.log  access.2010-11-04.log  access.2010-11-20.log
+access.2010-10-04.log  access.2010-10-20.log  access.2010-11-05.log  access.2010-11-21.log
+access.2010-10-05.log  access.2010-10-21.log  access.2010-11-06.log  access.2010-11-22.log
+access.2010-10-06.log  access.2010-10-22.log  access.2010-11-07.log  access.2010-11-23.log
+access.2010-10-07.log  access.2010-10-23.log  access.2010-11-08.log  access.2010-11-24.log
+access.2010-10-08.log  access.2010-10-24.log  access.2010-11-09.log  access.2010-11-25.log
+access.2010-10-09.log  access.2010-10-25.log  access.2010-11-10.log  access.2010-11-26.log
+access.2010-10-10.log  access.2010-10-26.log  access.2010-11-11.log  access.2010-11-27.log
+access.2010-10-11.log  access.2010-10-27.log  access.2010-11-12.log  access.2010-11-28.log
+access.2010-10-12.log  access.2010-10-28.log  access.2010-11-13.log  access.2010-11-29.log
+access.2010-10-13.log  access.2010-10-29.log  access.2010-11-14.log  access.2010-11-30.log
+access.2010-10-14.log  access.2010-10-30.log  access.2010-11-15.log
+access.2010-10-15.log  access.2010-10-31.log  access.2010-11-16.log
+access.2010-10-16.log  access.2010-11-01.log  access.2010-11-17.log
+# gzip access.2010-{10,11}-??.log
+		</screen>
+		<screen>
+		<![CDATA[
+# ls access.2010-{0?,10,11}-??.log
+access.2010-08-28.log  access.2010-10-02.log  access.2010-10-13.log  access.2010-10-27.log  access.2010-11-06.log  access.2010-11-17.log  access.2010-11-26.log
+access.2010-08-31.log  access.2010-10-03.log  access.2010-10-14.log  access.2010-10-28.log  access.2010-11-08.log  access.2010-11-18.log  access.2010-11-27.log
+access.2010-09-24.log  access.2010-10-04.log  access.2010-10-15.log  access.2010-10-29.log  access.2010-11-09.log  access.2010-11-19.log  access.2010-11-28.log
+access.2010-09-25.log  access.2010-10-06.log  access.2010-10-17.log  access.2010-10-30.log  access.2010-11-10.log  access.2010-11-20.log  access.2010-11-29.log
+access.2010-09-26.log  access.2010-10-07.log  access.2010-10-19.log  access.2010-10-31.log  access.2010-11-11.log  access.2010-11-21.log  access.2010-11-30.log
+access.2010-09-27.log  access.2010-10-08.log  access.2010-10-20.log  access.2010-11-02.log  access.2010-11-12.log  access.2010-11-22.log
+access.2010-09-29.log  access.2010-10-09.log  access.2010-10-22.log  access.2010-11-03.log  access.2010-11-14.log  access.2010-11-23.log
+access.2010-09-30.log  access.2010-10-10.log  access.2010-10-23.log  access.2010-11-04.log  access.2010-11-15.log  access.2010-11-24.log
+access.2010-10-01.log  access.2010-10-12.log  access.2010-10-25.log  access.2010-11-05.log  access.2010-11-16.log  access.2010-11-25.log
+# gzip access.2010-{0?,10,11}-??.log &
+		]]>
+		</screen>
+	</section>
+	<section id="zip">
+		<title>zip, zipcloak, zipnote, zipsplit - package and compress (archive) files</title>
+		<para>*.zip</para>
+		<command>zip/unzip file[.zip]</command>
+	</section>
+	<section id="rar">
+		<title>RAR</title>
+		<screen>
+sudo apt-get install rar unrar
+		</screen>
+	</section>
+	<section id="7zip">
+		<title>7-Zip</title>
+		<para>http://www.7-zip.org/</para>
+		<screen>
+$ sudo apt-get install p7zip
+		</screen>
+	</section>
+</chapter>

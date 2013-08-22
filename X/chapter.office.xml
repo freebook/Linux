@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="office">
+	<title>Office</title>
+	<section id="office.calc">
+		<title>Calc</title>
+		<section>
+			<title>函数</title>
+			<para>字符串拼接</para>
+			<screen>
+=CONCATENATE("text1";A1;"text2";D2)
+			</screen>
+			<screen>
+			<![CDATA[
+="text1"&A1
+			]]>
+			</screen>
+		</section>
+	</section>
+</chapter>

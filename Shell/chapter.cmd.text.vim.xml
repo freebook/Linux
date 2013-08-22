@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.cmd.text.vim.xml 375 2012-03-21 03:00:42Z netkiller $ -->
+	<section id="ed">
+		<title>ed, red - text editor</title>
+		<para>行寻址</para>
+		<screen>
+.	此选项对当前行寻址（缺省地址）。
+number	此选项对第 number 行寻址。可以按逗号分隔的范围 (first,last) 对行寻址。0 代表缓冲区的开头（第一行之前）。
+-number	此选项对当前行之前的第 number 行寻址。如果没有 number，则减号对紧跟在当前行之前的行寻址。
++number	此选项对当前行之后的第 number 行寻址。如果没有 number，则加号对紧跟在当前行之后的行寻址。
+$	此选项对最后一行寻址。
+,	此选项对第一至最后一行寻址，包括第一行和最后一行（与 1,$ 相同）。
+;	此选项对当前行至最后一行寻址。
+/pattern/	此选项对下一个包含与 pattern 匹配的文本的行寻址。
+?pattern?	此选项对上一个包含与 pattern 匹配的文本的行寻址。	
+		</screen>
+		<para>命令描述</para>
+		<screen>
+a	此命令在指定的地址之后追加文本。
+c	此命令将指定的地址更改为给定的文本。
+d	此命令删除指定地址处的行。
+i	此命令在指定的地址之前插入文本。
+q	此命令在将缓冲区保存到磁盘后终止程序并退出。
+r file	此命令读取 filespec 的内容并将其插入指定的地址之后。
+s/pattern/replacement/	此命令将匹配 pattern 的文本替换为指定地址中的 replacement 文本。
+w file	此命令将指定的地址写到 file。如果没有 address，则此命令缺省使用整个缓冲区。
+		</screen>
+		<para>实例，删除passwd中的neo用户</para>
+		<screen>
+		<![CDATA[
+ed -s passwd <<EOF
+/neo/
+d
+wq
+EOF
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+ed -s mfsmetalogger.cfg <<EOF
+,s/^# //
+wq
+EOF		
+		]]>
+		</screen>
+		<para>删除尾随空格</para>
+		<screen>
+		<![CDATA[
+$ cat -vet input.txt
+
+This line has trailing blanks.    $
+This line does not.$
+
+$ (echo ',s/ *$//'; echo 'wq') | ed -s input.txt
+
+$ cat -vet input.txt
+
+This line has trailing blanks.$
+This line does not.$
+		]]>		
+		</screen>
+	</section>
+
+	<section id="vim">
+		<title>vim</title>
+		<section>
+			<title>查找与替换</title>
+			<command>s%/aaa/bbb/g</command>
+			<screen>
+Starting Nmap 5.21 ( http://nmap.org ) at 2012-02-02 17:03 CST
+NSE: Script Scanning completed.
+Nmap scan report for 10.10.1.1
+Host is up (0.0072s latency).
+The 1 scanned port on 10.10.1.1 is filtered
+
+Nmap scan report for 10.10.1.2
+Host is up (0.0064s latency).
+The 1 scanned port on 10.10.1.2 is closed
+
+Nmap scan report for 10.10.1.3
+Host is up (0.0071s latency).
+The 1 scanned port on 10.10.1.3 is closed
+
+Nmap scan report for 10.10.1.4
+Host is up (0.0072s latency).
+PORT     STATE SERVICE
+3306/tcp open  mysql
+| mysql-info: Protocol: 10
+| Version: 5.1.54-log
+| Thread ID: 37337702
+| Some Capabilities: Long Passwords, Connect with DB, Compress, ODBC, Transactions, Secure Connection
+| Status: Autocommit
+|_Salt: y0!QV;ekiN)"kx;\=Y+g
+
+Nmap scan report for 10.10.1.5
+Host is up (0.0081s latency).
+PORT     STATE SERVICE
+3306/tcp open  mysql
+| mysql-info: Protocol: 10
+| Version: 5.1.48-community-log
+| Thread ID: 6655211
+| Some Capabilities: Long Passwords, Connect with DB, Compress, ODBC, Transactions, Secure Connection
+| Status: Autocommit
+|_Salt: i3ap1?+UL^q>$5~=UqYJ
+
+Nmap scan report for 10.10.1.6
+Host is up (0.0073s latency).
+The 1 scanned port on 10.10.1.6 is closed
+
+Nmap scan report for www.example.com (10.10.1.7)
+Host is up (0.0074s latency).
+The 1 scanned port on www.example.com (10.10.1.7) is closed
+			</screen>
+			<para>删除closed上面2行</para>
+			<screen>
+:%s:.*\n.*\n.*closed$::g
+:%s/\n\n\n//g			
+			</screen>
+		</section>
+		<section>
+			<title>批处理</title>
+			<para>test script</para>
+			<screen>
+			<![CDATA[
+vim test.txt <<end > /dev/null 2>&1
+:%s/neo/neo chen/g
+:%s/hello/hello world/g
+:wq
+end
+			]]>
+			</screen>
+			<para>test.txt</para>
+			<screen>
+begin
+neo
+test
+hello
+world
+end
+			</screen>
+			<para>test result</para>
+			<screen>
+$ ./test
+$ cat test.txt
+begin
+neo chen
+test
+hello world
+world
+end
+neo@netkiller:/tmp$
+			</screen>
+			<section>
+				<title>vi 批处理</title>
+				<screen>
+				<![CDATA[
+for i in file_list 
+do 
+vi $i <<-! 
+:g/xxxx/s//XXXX/g 
+:wq 
+! 
+done
+				]]>
+				</screen>
+			</section>
+		</section>
+		<section>
+			<title>line()</title>
+			<para>加入行号</para>
+			<screen>
+:g/^/ s//\=line('.').' '/			
+			</screen>
+		</section>		
+	</section>

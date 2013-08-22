@@ -1,0 +1,14 @@
+<abstract>
+	<title>内容摘要</title>
+	<para>本文档讲述Linux系统涵盖了系统管理与配置包括：</para>
+	<para>
+		<note>
+			<title>对初学Linux的爱好者忠告</title>
+			<para>玩Linux最忌reboot（重新启动）这是windows玩家坏习惯</para>
+			<para>Linux只要接上电源你就不要再想用reboot,shutdown,halt,poweroff命令,Linux系统和应用软件一般备有reload,reconfigure,restart/start/stop...不需要安装软件或配置服务器后使用reboot重新引导计算机
+			</para>
+			<para>在Linux系统里SIGHUP信号被定义为刷新配置文件,有些程序没有提供reload参数,你可以给进程发送HUP信号,让它刷新配置文件,而不用restart.通过pkill,killall,kill
+				都可以发送HUP信号例如: pkill -HUP httpd</para>
+		</note>
+	</para>
+</abstract>

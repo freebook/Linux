@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.utility.expect.xml 650 2013-07-24 10:04:58Z netkiller $ -->
+<section id="expect">
+	<title>expect</title>
+	<screen>
+$ sudo apt-get install expect
+	</screen>
+	<para>命令含义</para>
+	<screen>
+#!/usr/bin/expect
+set timeout 30
+spawn ssh root@192.168.1.1
+expect "password:"
+send "mypassword\r"
+interact
+	</screen>
+	<para>set 设置变量</para>
+	<para>spawn 执行命令</para>
+	<para>expect 检测点</para>
+	<para>send 发送指令</para>
+	<section id="expect.telnet">
+		<title>模拟登录 telnet 获取Cisco配置</title>
+		<example>
+			<title>example for expect</title>
+			<screen>
+cat tech-support.exp
+#!/usr/bin/expect
+set timeout 30
+spawn telnet 172.16.1.24
+expect "Password: "
+send "chen\r"
+expect "*>"
+send "enable\r"
+expect "Password: "
+send "chen\r"
+expect "*#"
+send "sh tech-support\r"
+send "!\r"
+expect "*-Switch#"
+send "exit\r"
+expect eof
+exit
+			</screen>
+			<para>3层设备</para>
+			<screen>
+cisco.exp
+#!/usr/bin/expect
+set ip [lindex $argv 0]
+set username [lindex $argv 1]
+set password [lindex $argv 2]
+log_file $ip.log
+spawn telnet $ip
+expect "Username:"
+send "$username\r"
+expect "Password:"
+send "$password\r"
+expect "#"
+send "show running-config\r"
+send "exit\r"
+expect eof
+			</screen>
+			<para>2层设备</para>
+			<screen>
+			<![CDATA[
+$ cat config.exp
+#!/usr/bin/expect
+set timeout 30
+set host [lindex $argv 0]
+set password [lindex $argv 1]
+set done 0
+
+log_file $host.log
+spawn telnet $host
+expect "Password:"
+send "$password\r"
+expect "*>"
+send "enable\r"
+expect "Password: "
+send "$password\r"
+expect "*#"
+send "show running-config\r"
+
+while {$done == 0} {
+expect {
+" --More--" { send -- " " }
+"*#" { set done 1 }
+eof { set done 1 }
+}
+}
+
+send "\r"
+expect "*#"
+send "exit\r"
+expect eof
+exit
+
+
+$ cat loop.sh
+#! /bin/sh
+while read sw
+do
+	./config.exp $sw
+done <<EOF
+172.16.0.240 chen
+172.16.0.241 chen
+172.16.0.242 chen
+172.16.0.243 chen
+172.16.0.245 chen
+172.16.0.246 chen
+EOF
+
+$ chmod +x config.exp loop.sh
+$ ./loop.sh
+			]]>
+			</screen>
+		</example>
+	</section>
+	<section id="expect.ssh">
+		<title>模拟登录 ssh</title>
+		<example>
+			<title>example for expect</title>
+			<screen>
+#!/usr/bin/expect
+set timeout 30
+spawn ssh root@192.168.1.1
+expect "password:"
+send "mypassword\r"
+interact
+			</screen>
+		</example>
+		<example>
+			<title>example 1</title>
+			<screen>
+#!/usr/bin/expect
+　　set password 1234  #密码
+　　#download
+　　spawn scp /www/* root@172.16.1.2:/www/
+　　set timeout 300
+　　expect "172.16.1.2's password:"
+　　set timeout 3000
+　　#exec sleep 1
+　　send "$password\r"
+　　set timeout 300
+　　send "exit\r"
+　　#expect eof
+　　interact
+　　spawn scp /www/* root@172.16.1.3:/www/
+　　set timeout 300
+　　expect "root@172.16.1.3's password:"
+　　set timeout 3000
+　　#exec sleep 1
+　　send "$password\r"
+　　set timeout 300
+　　send "exit\r"
+　　interact
+			</screen>
+		</example>
+		<example>
+			<title>*.exp</title>
+			<screen>
+$ expect autossh.exp neo@192.168.3.10 chen "ls /"
+			</screen>
+			<para>autossh.exp</para>
+			<screen>
+#!/usr/bin/expect -fset ipaddress [lindex $argv 0]
+set ipaddress [lindex $argv 0]
+set passwd [lindex $argv 1]
+set command [lindex $argv 2]
+set timeout 30
+spawn ssh $ipaddress
+expect {
+    "yes/no" { send "yes\r";exp_continue }
+    "password:" { send "$passwd\r" }
+}
+expect ""
+
+send "$command \r"
+
+send "exit\r"
+
+expect eof
+exit
+			</screen>
+			<para>批量执行</para>
+			<para></para>
+			<screen>
+password.lst
+192.168.0.1 passwd
+192.168.0.2 passwd
+192.168.0.3 passwd
+			</screen>
+			<screen>
+#!/bin/bash
+
+cat password.lst | while read line
+do
+	host=$(echo $line|awk '{print $1}')
+	passwd=$(echo $line|awk '{print $2}')
+	expect autossh.exp $host $passwd
+	sleep 2
+done
+			</screen>
+		</example>
+	</section>
+	<section id="expect.scp">
+		<title>SCP</title>
+		<screen>
+#! /usr/bin/expect -f
+spawn scp 1 neo@192.168.0.1:
+expect "*password:"
+send "your password\r"
+
+expect eof
+		</screen>
+		<screen>
+		<![CDATA[
+#!/bin/expect
+
+spawn scp x.x.x.x
+
+for {} {1} {} {
+	expect {
+		"password:" {
+	        send "YourPassWord"
+	    }
+	}
+}
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+spawn scp 1 neo@172.16.0.1:
+for { set i 1 } {$i<5} {incr i} {
+	expect {
+		"*password:" {send "koven\r"}
+		"*(yes/no)*" {send "yes\r"}
+	}
+}
+		]]>
+		</screen>
+	</section>
+</section>
+<section id="expect-lite">
+	<title>expect-lite - quick and easy command line automation tool</title>
+	<screen>
+
+	</screen>
+</section>

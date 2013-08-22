@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="gridfs">
+	<title>GridFS</title>
+	<para>http://www.mongodb.org/display/DOCS/GridFS</para>
+	<para>GridFS 类似 MogileFS</para>
+	<section id="nginx-gridfs">
+		<title>nginx-gridfs</title>
+		<para>http://github.com/mdirolf/nginx-gridfs</para>
+		<screen>
+		<![CDATA[
+yum -y install pcre-devel
+
+wget http://nginx.org/download/nginx-1.2.3.tar.gz
+tar zxvf nginx-1.2.3.tar.gz
+
+./configure --prefix=/srv/nginx-1.2.3 \
+--sbin-path=/srv/nginx-1.2.3/sbin/nginx \
+--conf-path=/srv/nginx-1.2.3/conf/nginx.conf \
+--user=www --group=www \
+--error-log-path=/var/log/nginx/error.log \
+--http-log-path=/var/log/nginx/access.log \
+--pid-path=/var/run/nginx.pid \
+--lock-path=/var/run/nginx.lock \
+--http-client-body-temp-path=/var/cache/nginx/client_temp \
+--http-proxy-temp-path=/var/cache/nginx/proxy_temp \
+--http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp \
+--http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp \
+--http-scgi-temp-path=/var/cache/nginx/scgi_temp \
+--with-http_ssl_module \
+--with-http_realip_module \
+--with-http_addition_module \
+--with-http_sub_module \
+--with-http_dav_module \
+--with-http_flv_module \
+--with-http_mp4_module \
+--with-http_gzip_static_module \
+--with-http_random_index_module \
+--with-http_secure_link_module \
+--with-http_stub_status_module \
+--with-mail --with-mail_ssl_module \
+--with-file-aio \
+--with-cc-opt='-O2 -g' \
+--add-module=/usr/local/src/nginx-gridfs
+
+make && make install
+		]]>
+		</screen>
+		<para>配置语法说明：</para>
+		<screen>
+gridfs DB_NAME [root_collection=ROOT] [field=QUERY_FIELD] [type=QUERY_TYPE] [user=USERNAME] [pass=PASSWORD]
+
+gridfs 表示告诉nginx服务器要调用gridfs模块
+root_collection= 指定Gridfs collection的前缀. 默认: fs
+field= 指定用于查询的字段 可以是 _id 和 filename. 默认: _id
+type= 指定查询的类型，这里支持 objectid, string 和int. 默认: objectid
+user= 指定数据库的用户名. 默认: NULL, 可省略
+pass= 指定数据库的密码. 默认: NULL, 可省略
+		</screen>
+		<para>Nginx配置文件中的具体写法：</para>
+		<screen>
+location /images/ {
+     gridfs images
+     field=_id
+     type=objectid;
+     mongo 127.0.0.1:27017;
+}
+		</screen>
+		<para>上传图片</para>
+		<screen>
+sudo /srv/mongodb/bin/mongofiles put --host localhost --port 27017 --db images --local ~/photo.jpg --type jpg
+		</screen>
+		<para>在浏览器里输入http://localhost/images/photo.jpg 能显示图片就说明成功了</para>
+
+		<example>
+			<title>nginx-gridfs</title>
+			<screen>
+#指定db为static，其它均为默认，默认服务器为本地
+location /static/ {
+
+	gridfs static;
+
+}
+
+location /static/ {
+
+        gridfs static
+        field=filename
+        type=string;
+        mongo 127.0.0.1:27017;
+
+}
+
+location /static/ {
+	gridfs static;
+	    field=filename
+	    type=string;
+	mongo "foo"
+	    172.16.1.1:27017
+	    172.16.1.2:27017;
+
+}
+
+location /static/ {
+
+    gridfs static
+    root_collection=images
+    field=_id
+    type=int
+    user=admin
+    pass=pass;
+    mongo 127.0.0.1:27017;
+
+}
+			</screen>
+		</example>
+	</section>
+	<section id="lighttpd-gridfs">
+		<title>lighttpd-gridfs</title>
+		<para><ulink url="https://bitbucket.org/bwmcadams/lighttpd-gridfs/src/">https://bitbucket.org/bwmcadams/lighttpd-gridfs/src/</ulink></para>
+	</section>
+</section>

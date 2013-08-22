@@ -1,0 +1,624 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.puppet.xml 477 2012-11-01 09:14:23Z netkiller $ -->
+<chapter id="puppet"><?dbhtml dir="puppet" ?>
+	<title>Puppet</title>
+	<para>http://www.puppetlabs.com</para>
+	<para>Puppet is the leading open source platform for IT systems management</para>
+	<section id="install">
+		<title>Installing Puppet CentOS 6.3</title>
+		<para>Choose a Package Source <ulink url="http://yum.puppetlabs.com/" /></para>
+		<screen>
+# rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-7.noarch.rpm
+# lokkit --disabled --selinux=disabled
+		</screen>
+		<para>Install the Puppet Master</para>
+		<screen>
+yum install puppet-server -y
+service puppetmaster start
+
+chkconfig puppetmaster on
+		</screen>
+		<para> Install Puppet on Agent Nodes</para>
+		<screen>
+yum install puppet -y
+service puppet start
+
+chkconfig puppet on
+		</screen>
+	</section>
+	<section id="sign">
+		<title>Puppet 签名</title>
+		<screen>
+		<![CDATA[
+cat >> /etc/hosts <<EOD
+172.16.0.1   	puppet.mydomain.com puppet
+172.16.0.20   	www.mydomain.com www
+172.16.0.21   	images.mydomain.com images
+EOD
+		]]>
+		</screen>
+		<section>
+			<title>Agent 节点</title>
+			<para>Node: 服务端进行认证</para>
+			<screen>
+puppetd --test --server puppet
+			</screen>
+			<example>
+				<title>puppetd</title>
+				<screen>
+# puppetd --test --server puppet
+info: Creating a new SSL key for haproxy
+warning: peer certificate won't be verified in this SSL session
+info: Caching certificate for ca
+warning: peer certificate won't be verified in this SSL session
+warning: peer certificate won't be verified in this SSL session
+info: Creating a new SSL certificate request for haproxy
+info: Certificate Request fingerprint (md5): 91:ED:04:2B:13:8C:61:8F:ED:8E:10:31:CA:8E:5C:06
+warning: peer certificate won't be verified in this SSL session
+warning: peer certificate won't be verified in this SSL session
+warning: peer certificate won't be verified in this SSL session
+Exiting; no certificate found and waitforcert is disabled
+				</screen>
+			</example>
+		</section>
+		<section>
+			<title>Master 服务器</title>
+			<para>认证所有的客户端</para>
+			<screen>
+puppetca -s -a
+			</screen>
+			<para>或者认证某一台客户端</para>
+			<screen>
+puppetca -l
+puppetca -sign www.mydomain.com
+			</screen>
+			<example>
+				<title>puppetca</title>
+				<screen>
+# puppetca --list
+  "haproxy" (91:ED:04:2B:13:8C:61:8F:ED:8E:10:31:CA:8E:5C:06)
+
+# puppetca --sign haproxy
+notice: Signed certificate request for haproxy
+notice: Removing file Puppet::SSL::CertificateRequest haproxy at '/var/lib/puppet/ssl/ca/requests/haproxy.pem'
+				</screen>
+			</example>
+		</section>
+	</section>
+	<section id="test">
+		<title>test</title>
+		<section>
+			<title>Master</title>
+			<screen>
+vim /etc/puppet/manifests/site.pp
+
+node default { file { "/tmp/puppettest1.txt": content => "hello,first puppet manifest"; } }
+			</screen>
+		</section>
+		<section>
+			<title>Agent</title>
+			<screen>
+# puppetd --test --server puppet
+info: Caching catalog for www.mydomain.com
+info: Applying configuration version '1351280410'
+notice: /Stage[main]//Node[default]/File[/tmp/puppettest1.txt]/ensure: defined content as '{md5}886609dedc5c8a0c58f3aa8d566175cc'
+info: Creating state file /var/lib/puppet/state/state.yaml
+notice: Finished catalog run in 0.06 seconds
+			</screen>
+			<screen>
+# cat /tmp/puppettest1.txt
+hello,first puppet manifest
+			</screen>
+		</section>
+	</section>
+	<section id="config">
+		<title>配置文件</title>
+		<section>
+			<title>/etc/sysconfig/puppet</title>
+			<screen>
+# The puppetmaster server
+#PUPPET_SERVER=puppet
+
+# If you wish to specify the port to connect to do so here
+#PUPPET_PORT=8140
+
+# Where to log to. Specify syslog to send log messages to the system log.
+#PUPPET_LOG=/var/log/puppet/puppet.log
+
+# You may specify other parameters to the puppet client here
+#PUPPET_EXTRA_OPTS=--waitforcert=500
+			</screen>
+		</section>
+		<section>
+			<title>/etc/puppet/fileserver.conf</title>
+			<screen>
+# cat /etc/puppet/fileserver.conf
+
+# This file consists of arbitrarily named sections/modules
+# defining where files are served from and to whom
+
+# Define a section 'files'
+# Adapt the allow/deny settings to your needs. Order
+# for allow/deny does not matter, allow always takes precedence
+# over deny
+# [files]
+#  path /var/lib/puppet/files
+#  allow *.example.com
+#  deny *.evil.example.com
+#  allow 192.168.0.0/24
+#
+[files]
+path /var/lib/puppet/files
+allow *
+			</screen>
+		</section>
+	</section>
+	<section id="manifests">
+		<title>manifests</title>
+		<para>http://docs.puppetlabs.com/learning/</para>
+		<section>
+			<title>node</title>
+			<para>default 针对所有节点</para>
+			<screen>
+node default {
+	file {
+    	"/tmp/helloworld.txt": content => "hello, world";
+	}
+}
+			</screen>
+			<screen>
+# cat /etc/puppet/manifests/site.pp
+node default {
+	file {
+		"/tmp/puppettest1.txt":
+			content => "hello,first puppet manifest";
+	}
+}
+			</screen>
+			<para>指定节点</para>
+			<screen>
+# cat /etc/puppet/manifests/test.pp
+node www {
+    file { "/var/www/index.html":
+        source => "/tmp/something",
+        mode   => 666;
+    }
+}
+			</screen>
+			<para>多个节点</para>
+			<screen>
+node 'www','images' {
+	...
+	...
+}
+			</screen>
+		</section>
+		<section>
+			<title>group, user 用户组管理</title>
+			<para><ulink url="http://docs.puppetlabs.com/references/latest/type.html#user" /></para>
+			<para><ulink url="http://docs.puppetlabs.com/references/latest/type.html#group" /></para>
+			<para>如果没有指定name的话就会建立和资源名一样的用户名/组名，如果指定了name就以name指定的用户名/组名为主</para>
+			<section>
+				<title>group</title>
+				<para>用户组的添加</para>
+				<screen>
+node 'node1.example.com' {
+#为该节点添加一个名字为test的组，并设置组ID为1000，如果不指定name的值，所创建的用户就为web。
+	group { "web":
+        ensure => "present",
+        gid => 1000,
+        name => "test";
+        }
+#为该节点添加一个httpd的组，并且设置ID和web一样
+	group { "httpd":
+        ensure => "present",
+        gid => 1000,
+        allowdupe => true;
+        }
+#为该节点删除一个apache的组。
+	group { "apache":
+        ensure => "absent",
+        }
+}
+				</screen>
+				<para>用户组的删除</para>
+				<screen>
+node 'node1.example.com' {
+#为该节点删除一个web的组。
+	group { "web":
+        ensure => "absent",
+        }
+}
+				</screen>
+			</section>
+			<section>
+				<title>user</title>
+				<para>用户的添加</para>
+				<screen>
+#创建一个用户并且密码为空
+user {"svn":
+        ensure => "present",
+        shell => "/sbin/nologin";
+}
+
+#创建一个www用户，设置用户描述为webmaster,shell为bash，
+user {"www":
+        ensure => "present",
+        comment => "webmaster user",
+        name => "www",
+        shell => "/sbin/bash";
+}
+
+#创建一个gid为80的用户组：
+group { "www":
+        ensure => "present",
+        gid => 80,
+        }
+				</screen>
+				<para>用户的删除</para>
+				<screen>
+user { "neo":
+    ensure => "absent",
+}
+				</screen>
+				<para>创建用户并指定密码</para>
+				<para>生成密码</para>
+				<screen>
+# grub-md5-crypt
+Password:
+Retype password:
+$1$ZlJ1u0$tdv/dr8pYuHh.eT47F6b70
+				</screen>
+				<screen>
+user { "www":
+    ensure => "present",
+    uid => 80,
+    gid => 80,
+    home => "/var/www",
+    shell => "/bin/bash",
+    managehome => true,
+ 	password => '$1$ZlJ1u0$tdv/dr8pYuHh.eT47F6b70';
+}
+
+file {"/var/www":
+        group => 80,
+        owner => 80,
+        mode => 700,
+        ensure => directory;
+}
+				</screen>
+			</section>
+		</section>
+		<section>
+			<title>file</title>
+			<screen>
+file { "/var/www/my/file":
+    source => "/path/in/nfs/or/something",
+    mode   => 666;
+}
+			</screen>
+
+ 			<section>
+ 				<title>ensure</title>
+				<screen>
+ensure => absent; 	#absent是检测文件是否存在，如果存在则删除
+ensure => present; 	#present正好相反，如果不存在则创建
+ensure => directory; #创建一个目录的方法
+force = > true; 	#删除一个目录必须加上这个参数
+source => "PATH"; 	#指定数据来源
+backup => ".backup_$uptime_seconds"; 覆盖前备份文件
+				</screen>
+  				<para>创建目录实例</para>
+ 				<screen>
+file { "/tmp/cache":
+  owner => "www",
+  group => "www",
+  mode => 700,
+  ensure => directory;
+}
+ 				</screen>
+ 			</section>
+			<section>
+				<title>source</title>
+				<para>source 表示 agent节点上的目录</para>
+				<screen>
+node www {
+    file { "/var/www":
+        owner => "nginx",
+        group => "nginx",
+        mode => 700,
+        ensure => directory;
+    }
+
+    file { "/var/www/index.html":
+        source => "/tmp/something",
+        mode   => 666;
+    }
+}
+				</screen>
+				<para>从master上获取文件</para>
+				<para>fileserver.conf 配置如下</para>
+				<screen>
+[files]
+path /var/lib/puppet/files
+allow *
+				</screen>
+				<para>site.pp配置如下</para>
+				<screen>
+file { "/tmp/test.txt":
+        source  => "puppet://puppet.example.com/files/test.txt",
+    }
+				</screen>
+				<para>此处的files为fileserver.conf中定义模块</para>
+			</section>
+			<section>
+				<title>owner, group, mode</title>
+				<screen>
+file
+{ "/opt/testfile":
+	owner => "puppet",
+	group => "puppet",
+	mode => 777;
+}
+				</screen>
+			</section>
+		</section>
+		<section>
+			<title>package</title>
+			<screen>
+present, installed	安装包
+absent，pureged		卸载包
+			</screen>
+			<screen>
+# start
+package {
+       "dnsmasq":
+               ensure => installed;
+       }
+
+file {
+       "/etc/resolv.conf":
+               require => Service["dnsmasq"],
+               content => "nameserver 127.0.0.1\n";
+       }
+service {
+       "dnsmasq":
+               ensure => running,
+               pattern => "dnsmasq" ,
+               require => Package["dnsmasq"];
+       }
+# end
+			</screen>
+			<screen>
+package {
+	"httpd":
+		ensure    => installed;    	安装httpd，或用present也表示安装
+	["vim","vsftpd"]:
+		ensure=>absent;  			删除vim 和vsftpd软件，使用pureged表示彻底删除软件
+}
+			</screen>
+
+			<screen>
+$package_list = [ "screen", "strace", "sudo" ]
+package { $package_list: ensure => "installed" }
+			</screen>
+			<screen>
+package { "lamp":
+	ensure => present,
+	provider => rpm,
+	source => "http://192.168.0.1/lamp.rpm";
+}
+			</screen>
+		</section>
+
+		<section>
+			<title>service</title>
+			<screen>
+service { 'sshd':
+      ensure     => running,
+      enable     => true,
+      hasrestart => true,
+      hasstatus  => true,
+      subscribe  => File['/etc/ssh/sshd_config'],
+}
+			</screen>
+		</section>
+		<section>
+			<title>exec</title>
+			<screen>
+exec { "creates file":
+	cwd => "/tmp",  														#指定命令执行的目录。如果目录不存在，则命令执行失败。
+	command => "/bin/echo helloworld > /tmp/hello.txt",
+	user => "root",
+	path => "/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin";	#命令执行的搜索路径。如果path没有被定义，命令需要使用绝对路径。
+}
+			</screen>
+			<screen>
+exec { “/srv/puppet/shell/test.sh”:
+    cwd => “/srv/puppet”,
+    timeout => 7200,
+    logoutput => on_failure,
+    user => root,
+    path => ["/sbin", "/usr/sbin", "/usr/local/sbin", "/usr/local/bin", "/usr/bin", "/bin", "/usr/local/java/jre/bin"],
+    require => File["/srv/puppet/shell/test.sh"]
+}
+			</screen>
+		</section>
+		<section>
+			<title>cron</title>
+			<screen>
+cron{ ntpdate:
+      command => "/usr/sbin/ntpdate 172.16.0.1",
+      user => root,
+      minute =>'*/5',
+      require => Package["crontabs"];
+}
+			</screen>
+			<screen>
+file { "/etc/cron.hourly/backup":
+	mode => 755,
+	owner => root,
+	group => root,
+	require => Package[mysql],
+	content => template("db/backup.erb");
+}
+			</screen>
+		</section>
+	</section>
+	<section id="modules">
+		<title>modules</title>
+		<screen>
+$ git clone http://github.com/example42/puppet-modules.git
+
+mv puppet-modules /etc/puppet/modules
+
+# vi /etc/puppet/puppet.conf
+...
+[master]
+    modulepath = /etc/puppet/modules
+
+# /etc/init.d/puppetmaster restart
+		</screen>
+		<screen>
+vi /etc/puppet/manifests/node.pp
+
+node 'web.example.com' {
+    include apache
+
+    include php
+    include php::pear
+    include php::apc
+    php::module { mysql: }
+    php::module { curl: }
+    php::module { gd: }
+    php::module { idn: }
+    php::module { imagick: }
+    php::module { imap: }
+    php::module { mcrypt: }
+    php::module { ming: }
+    php::module { ps: }
+    php::module { pspell: }
+    php::module { recode: }
+    php::module { snmp: }
+    php::module { tidy: }
+    php::module { xmlrpc: }
+    php::module { xsl: }
+    php::module { ldap: }
+
+    include mysql
+}
+		</screen>
+		<screen>
+puppet agent --test --server=puppet.example.com
+		</screen>
+	</section>
+	<section id="firewall">
+		<title>firewall 配置</title>
+		<screen>
+-A INPUT -p tcp -m state --state NEW --dport 8140 -j ACCEPT
+		</screen>
+	</section>
+	<section id="debug">
+		<title>debug</title>
+		<section>
+			<title>master</title>
+			<screen>
+puppetmasterd --debug --daemonize --verbose
+			</screen>
+		</section>
+		<section>
+			<title>node</title>
+			<screen>
+puppetd --test --trace --debug
+			</screen>
+			<screen>
+# puppetd --test --trace --debug
+debug: Puppet::Type::User::ProviderDirectoryservice: file /usr/bin/dscl does not exist
+debug: Puppet::Type::User::ProviderUser_role_add: file roledel does not exist
+debug: Puppet::Type::User::ProviderPw: file pw does not exist
+debug: Puppet::Type::User::ProviderLdap: true value when expecting false
+debug: Failed to load library 'rubygems' for feature 'rubygems'
+debug: Puppet::Type::File::ProviderMicrosoft_windows: feature microsoft_windows is missing
+debug: Failed to load library 'ldap' for feature 'ldap'
+debug: /File[/var/lib/puppet/state/state.yaml]: Autorequiring File[/var/lib/puppet/state]
+debug: /File[/var/lib/puppet/state]: Autorequiring File[/var/lib/puppet]
+debug: /File[/var/lib/puppet/ssl/public_keys/info.com.pem]: Autorequiring File[/var/lib/puppet/ssl/public_keys]
+debug: /File[/var/lib/puppet/ssl]: Autorequiring File[/var/lib/puppet]
+debug: /File[/var/lib/puppet/ssl/certificate_requests]: Autorequiring File[/var/lib/puppet/ssl]
+debug: /File[/etc/puppet/puppet.conf]: Autorequiring File[/etc/puppet]
+debug: /File[/var/lib/puppet/ssl/certs]: Autorequiring File[/var/lib/puppet/ssl]
+debug: /File[/var/lib/puppet/clientbucket]: Autorequiring File[/var/lib/puppet]
+debug: /File[/var/lib/puppet/ssl/certs/ca.pem]: Autorequiring File[/var/lib/puppet/ssl/certs]
+debug: /File[/var/lib/puppet/ssl/private]: Autorequiring File[/var/lib/puppet/ssl]
+debug: /File[/var/lib/puppet/facts]: Autorequiring File[/var/lib/puppet]
+debug: /File[/var/lib/puppet/ssl/private_keys/info.com.pem]: Autorequiring File[/var/lib/puppet/ssl/private_keys]
+debug: /File[/var/lib/puppet/ssl/crl.pem]: Autorequiring File[/var/lib/puppet/ssl]
+debug: /File[/var/lib/puppet/lib]: Autorequiring File[/var/lib/puppet]
+debug: /File[/var/lib/puppet/client_yaml]: Autorequiring File[/var/lib/puppet]
+debug: /File[/var/lib/puppet/state/last_run_summary.yaml]: Autorequiring File[/var/lib/puppet/state]
+debug: /File[/var/lib/puppet/ssl/certs/info.com.pem]: Autorequiring File[/var/lib/puppet/ssl/certs]
+debug: /File[/var/lib/puppet/client_data]: Autorequiring File[/var/lib/puppet]
+debug: /File[/var/lib/puppet/ssl/public_keys]: Autorequiring File[/var/lib/puppet/ssl]
+debug: /File[/var/lib/puppet/ssl/private_keys]: Autorequiring File[/var/lib/puppet/ssl]
+debug: /File[/var/lib/puppet/state/graphs]: Autorequiring File[/var/lib/puppet/state]
+debug: /File[/var/run/puppet/agent.pid]: Autorequiring File[/var/run/puppet]
+debug: /File[/var/lib/puppet/classes.txt]: Autorequiring File[/var/lib/puppet]
+debug: /File[/var/lib/puppet/state/state.yaml]/mode: mode changed '640' to '660'
+debug: Finishing transaction 70258153162980
+debug: /File[/var/lib/puppet/ssl/certs]: Autorequiring File[/var/lib/puppet/ssl]
+debug: /File[/var/lib/puppet/ssl/private_keys]: Autorequiring File[/var/lib/puppet/ssl]
+debug: /File[/var/lib/puppet/ssl/private]: Autorequiring File[/var/lib/puppet/ssl]
+debug: /File[/var/lib/puppet/ssl/crl.pem]: Autorequiring File[/var/lib/puppet/ssl]
+debug: /File[/var/lib/puppet/ssl/certs/info.com.pem]: Autorequiring File[/var/lib/puppet/ssl/certs]
+debug: /File[/var/lib/puppet/lib]: Autorequiring File[/var/lib/puppet]
+debug: /File[/var/lib/puppet/ssl/certificate_requests]: Autorequiring File[/var/lib/puppet/ssl]
+debug: /File[/var/lib/puppet/ssl/public_keys]: Autorequiring File[/var/lib/puppet/ssl]
+debug: /File[/var/lib/puppet/state]: Autorequiring File[/var/lib/puppet]
+debug: /File[/var/lib/puppet/ssl/private_keys/info.com.pem]: Autorequiring File[/var/lib/puppet/ssl/private_keys]
+debug: /File[/var/lib/puppet/ssl/certs/ca.pem]: Autorequiring File[/var/lib/puppet/ssl/certs]
+debug: /File[/var/lib/puppet/ssl]: Autorequiring File[/var/lib/puppet]
+debug: /File[/var/lib/puppet/facts]: Autorequiring File[/var/lib/puppet]
+debug: /File[/var/lib/puppet/ssl/public_keys/info.com.pem]: Autorequiring File[/var/lib/puppet/ssl/public_keys]
+debug: Finishing transaction 70258153219940
+debug: Using cached certificate for ca
+debug: Using cached certificate for info.com
+debug: Finishing transaction 70258152746740
+debug: Loaded state in 0.00 seconds
+debug: Using cached certificate for ca
+debug: Using cached certificate for info.com
+debug: Using cached certificate_revocation_list for ca
+debug: catalog supports formats: b64_zlib_yaml dot pson raw yaml; using pson
+info: Caching catalog for info.com
+debug: Creating default schedules
+debug: Loaded state in 0.00 seconds
+info: Applying configuration version '1351280410'
+debug: Finishing transaction 70258154614200
+debug: Storing state
+debug: Stored state in 0.00 seconds
+notice: Finished catalog run in 0.02 seconds
+			</screen>
+		</section>
+
+	</section>
+	<section id="faq">
+		<title>FAQ</title>
+		<section>
+			<title>err: Could not request certificate: No route to host - connect(2)</title>
+			<screen>
+err: Could not request certificate: Connection refused - connect(2)
+Exiting; failed to retrieve certificate and waitforcert is disabled
+			</screen>
+			<para>关闭防火墙可以解决</para>
+		</section>
+		<section>
+			<title>No help available unless you have RDoc::usage installed</title>
+			<screen>
+#  puppetmasterd --help
+No help available unless you have RDoc::usage installed
+			</screen>
+			<screen>
+# yum install ruby-rdoc
+			</screen>
+		</section>
+	</section>
+</chapter>

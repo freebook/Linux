@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+<?altova_sps http://www.altova.com/sps/template/publishing/DocBook.sps?>
+<?xml-stylesheet type="text/xsl" href="http://www.altova.com/stylesheets/docbook/xhtml/docbook.xsl"?>
+
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V5.0//EN"
+	"http://www.oasis-open.org/docbook/xml/5.0b5/dtd/docbook.dtd" [
+-->
+<!DOCTYPE subject SYSTEM "/usr/share/xml/docbook/schema/dtd/5.0/docbook.dtd"
+	[
+	<!ENTITY homepage "http://netkiller.sf.net/">
+	<!ENTITY mirror "http://neo.zenw.org/">
+
+	<!ENTITY Neo "http://netkiller.8800.org/">
+	<!ENTITY BG7NYT "&Neo;">
+	<!ENTITY Netkiller "<emphasis><trademark>Netkiller</trademark></emphasis>">
+
+	<!ENTITY book.info.author.xml		SYSTEM "../../common/book.info.author.xml">
+	<!ENTITY book.info.legalnotice.xml 	SYSTEM "../../common/book.info.legalnotice.xml">
+	<!ENTITY book.info.abstract.xml 	SYSTEM "../../common/book.info.abstract.xml">
+	<!ENTITY book.preface.xml           SYSTEM "../../common/book.preface.xml">
+	<!ENTITY preface.about.me.xml       SYSTEM "../../common/about.me.xml">
+	<!ENTITY book.dedication.xml       	SYSTEM "../../common/book.dedication.xml">
+
+	<!ENTITY book.preface 		SYSTEM "book.preface.xml">
+	<!ENTITY book.dedication 	SYSTEM "book.dedication.xml">
+	<!ENTITY book.appendix 		SYSTEM "book.appendix.xml">
+	<!ENTITY book.history 		SYSTEM "book.history.xml">
+
+	<!ENTITY chapter.introduction 	SYSTEM "../chapter.introduction.xml">
+	<!ENTITY chapter.install 	SYSTEM "../chapter.install.xml">
+
+	<!ENTITY % doctype.entity.xml SYSTEM "doctype.entity.xml">
+	%doctype.entity.xml;
+
+	<!ENTITY % shell.doctype.entity.xml SYSTEM "../Shell/doctype.entity.xml">
+	%shell.doctype.entity.xml;
+
+	<!ENTITY % x.doctype.entity.xml SYSTEM "../X/doctype.entity.xml">
+	%x.doctype.entity.xml;
+
+	<!ENTITY openssl "<![CDATA[<link linkend='openssl'>OpenSSL</link>]]>">
+	<!ENTITY OpenSSL "&openssl;">
+	<!ENTITY md5sum "<![CDATA[ <link linkend='md5sum'>md5sum</link> ]]>">
+	<!ENTITY uuid "<![CDATA[ <link linkend='uuid'>UUID</link> ]]>">
+	<!ENTITY home "<![CDATA[ <ulink url='&homepage;'>&homepage;</ulink> ]]>">
+
+]>
+<book xml:base="http://netkiller.sf.com/book/linux/"
+	xmlns="http://docbook.org/ns/docbook" xml:lang="zh-cn">
+	<info>
+		<title>Netkiller Linux Basics 手札</title>
+		<subtitle>Debian Family(Ubuntu) Handbook</subtitle>
+
+		&book.info.author.xml;
+
+		<copyright>
+			<year>2009</year>
+			<year>2010</year>
+			<year>2011</year>
+			<year>2012</year>
+			<year>2013</year>
+			<holder>Netkiller(Neo Chan). All rights reserved.</holder>
+		</copyright>
+
+		<publisher>
+			<publishername>Neo</publishername>
+		</publisher>
+		<isbn>ISBN#</isbn>
+		<edition>User's Guide version 1.0 for Linux</edition>
+		<pubdate></pubdate>
+		<releaseinfo></releaseinfo>
+
+		&book.info.legalnotice.xml;
+		<abstract>
+			<title>内容摘要</title>
+			<para>
+				<note>
+					<title>对初学Linux的爱好者忠告</title>
+				<para>玩Linux最忌reboot（重新启动）这是windows玩家坏习惯</para>
+				<para>Linux只要接上电源你就不要再想用reboot,shutdown,halt,poweroff命令,Linux系统和应用软件一般备有reload,reconfigure,restart/start/stop...不需要安装软件或配置服务器后使用reboot重新引导计算机</para>
+				<para>在Linux系统里SIGHUP信号被定义为刷新配置文件,有些程序没有提供reload参数,你可以给进程发送HUP信号,让它刷新配置文件,而不用restart.通过pkill,killall,kill 都可以发送HUP信号例如: pkill -HUP httpd</para>
+				</note>
+			</para>
+		</abstract>
+		&book.info.abstract.xml;
+
+	</info>
+<!-- =========================================================================== -->
+	&book.dedication.xml;
+	&book.preface.xml;
+<!-- =========================================================================== -->
+	&chapter.system.xml;
+<!-- =========================================================================== -->
+	&part.command.xml;
+	&part.shell.xml;
+<!-- =========================================================================== -->
+	&chapter.boinc;
+	&chapter.x.xml;
+<!-- =========================================================================== -->
+	&book.appendix;
+	&book.history;
+<!-- =========================================================================== -->
+</book>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.cluster.heartbeat.xml 374 2012-03-20 09:43:09Z netkiller $ -->
+<chapter id="heartbeat">
+	<title>heartbeat+ldirectord</title>
+	<section id="heartbeat.install">
+		<title>heartbeat</title>
+		<para></para>
+		<screen>
+neo@ubuntu:~$ apt-cache search  heartbeat
+heartbeat - Subsystem for High-Availability Linux
+heartbeat-dev - Subsystem for High-Availability Linux - development files
+ipvsadm - Linux Virtual Server support programs
+
+neo@ubuntu:~$ sudo apt-get install heartbeat
+		</screen>
+	</section>
+	<section id="ldirectord">
+		<title>ldirectord</title>
+
+		<para>当前环境</para>
+		<screen>
+[root@backup ~]# cd /etc/ha.d/
+[root@backup ha.d]# ls
+authkeys       harc           ldirectord.cf  README.config  shellfuncs
+ha.cf          haresources    rc.d/          resource.d/
+		</screen>
+
+		<orderedlist>
+			<title>heartbeat主要有三个配置文件:</title>
+			<listitem><para>/etc/ha.d/authkeys</para></listitem>
+			<listitem><para>/etc/ha.d/ha.cf</para></listitem>
+			<listitem><para>/etc/ha.d/haresources</para></listitem>
+		</orderedlist>
+
+		<procedure><title>配置步骤:</title>
+			<step>
+				<para>/etc/ha.d/authkeys</para>
+				<literallayout>
+				<para>auth 3</para>
+				<para>3 md5 hello</para>
+				</literallayout>
+				<screen>
+[root@backup ha.d]# vi authkeys
+auth 3
+#1 crc
+#2 sha1 HI!
+3 md5 hello
+				</screen>
+			</step>
+			<step>
+				<para>/etc/ha.d/ha.cf</para>
+				<para>master</para>
+				<para>logfile /var/log/ha-log</para>
+				<para>logfacility     local0</para>
+				<para>keepalive 2</para>
+				<para>deadtime 30</para>
+				<para>warntime 10</para>
+				<para>initdead 120</para>
+				<para>udpport 694</para>
+				<para>ucast eth1 10.10.10.161</para>
+				<para>ucast eth1 &lt;backup node ip&gt;</para>
+				<para>auto_failback on</para>
+				<literallayout>
+					<![CDATA[
+node    master.example.org
+node    backup.example.org
+					]]>
+				</literallayout>
+				<para>ping_group group1 10.10.10.160 10.10.10.161</para>
+				<para>respawn hacluster /usr/lib/heartbeat/ipfail</para>
+				<para>apiauth ipfail gid=haclient uid=hacluster</para>
+
+				<screen>
+[root@backup ha.d]# vi ha.cf
+logfile /var/log/ha-log
+				</screen>
+				<para>backup</para>
+				<para>ucast eth1 master node ip</para>
+			</step>
+			<step>
+				<para>/etc/ha.d/haresources</para>
+				<para><![CDATA[ <node> <vip>/<netmask>/<interface>/<vip> ldirectord ]]></para>
+				<para>master.example.org 211.100.37.164/32/eth0:0/211.100.37.164 ldirectord</para>
+				<screen>
+[root@master ha.d]# cat haresources
+master.example.org 211.100.37.164/32/eth0:0/211.100.37.164 ldirectord
+				</screen>
+				<para>backup.example.org 211.100.37.164/32/eth0:0/211.100.37.164 ldirectord</para>
+				<screen>
+[root@backup ha.d]# cat haresources
+backup.example.org 211.100.37.164/32/eth0:0/211.100.37.164 ldirectord
+				</screen>
+			</step>
+			<step>
+				<para>/etc/ha.d/ldirectord.cf</para>
+				<screen>
+checktimeout=3
+checkinterval=1
+autoreload=yes
+logfile="/var/log/ldirectord.log"
+quiescent=yes
+virtual=211.100.37.164:80
+        real=10.10.0.7:80 gate
+        real=10.10.0.8:80 gate
+        real=10.10.0.9:80 gate
+        service=http
+        virtualhost=netkiller.8800.org
+        scheduler=wrr
+        protocol=tcp
+        checkport=80
+...
+				</screen>
+			</step>
+		</procedure>
+	</section>
+	<section id="ldirectord.test">
+		<title>test</title>
+		<para>debug</para>
+		<screen>
+tail -f /var/log/ha-log
+		</screen>
+		<para>察看心跳监听是否工作：</para>
+		<screen>
+[root@master ha.d]# tcpdump -i eth1 icmp
+[root@backup ha.d]# tcpdump -i eth1 icmp
+		</screen>
+		<para>IPaddr2 Script</para>
+		<para>IPAddr2::10.10.0.1/32/0:0/10.10.0.1</para>
+		<screen>
+resource.d/IPaddr2 10.10.0.1/32/0:0/10.10.0.1 start
+		</screen>
+	</section>
+</chapter>

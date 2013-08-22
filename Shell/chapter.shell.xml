@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.shell.xml 591 2013-05-20 10:15:16Z netkiller $ -->
+<chapter id="introduction">
+	<title>Introduction</title>
+	<section id="commands.chsh">
+		<title>chsh - change login shell</title>
+		<screen>
+# chsh --list
+/bin/sh
+/bin/bash
+/sbin/nologin
+/bin/tcsh
+/bin/csh
+/bin/ksh
+		</screen>
+		<screen>
+neo@netkiller:~$ chsh -s /bin/zsh
+or
+$ usermod -s /bin/zsh
+		</screen>
+		<para>show me current shell</para>
+		<screen>
+neo@netkiller:~$ echo $SHELL
+/bin/zsh
+
+neo@netkiller:~$ cat /etc/passwd|grep neo
+neo:x:1000:1000:Neo Chen,,,:/home/neo:/bin/zsh
+		</screen>
+	</section>
+	<section id="test">
+		<title>test 命令</title>
+		<screen>
+test -x $HAPROXY || exit 0
+test -f "$CONFIG" || exit 0
+		</screen>
+	</section>
+	<section id="stdin-stdout-stderr">
+		<title>I/O 重定向</title>
+		<screen>
+		<![CDATA[
+cat <<End-of-message
+   8 -------------------------------------
+   9 This is line 1 of the message.
+  10 This is line 2 of the message.
+  11 This is line 3 of the message.
+  12 This is line 4 of the message.
+  13 This is the last line of the message.
+  14 -------------------------------------
+End-of-message
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+MYSQL=mysql
+MYSQLOPTS="-h $zs_host -u $zs_user -p$zs_pass $zs_db"
+
+$MYSQL $MYSQLOPTS <<SQL
+SELECT
+        category.cat_id AS  cat_id ,
+        category.cat_name AS  cat_name ,
+        category.cat_desc AS  cat_desc ,
+        category.parent_id AS  parent_id ,
+        category.sort_order AS  sort_order ,
+        category.measure_unit AS  measure_unit ,
+        category.style AS  style ,
+        category.is_show AS is_show ,
+        category.grade AS  grade
+FROM  category
+SQL
+		]]>
+		</screen>
+		<para><![CDATA[<<-LimitString]]>可以抑制输出时前边的tab(不是空格). 这可以增加一个脚本的可读性.</para>
+		<screen>
+		<![CDATA[
+cat <<-ENDOFMESSAGE
+	This is line 1 of the message.
+	This is line 2 of the message.
+	This is line 3 of the message.
+	This is line 4 of the message.
+	This is the last line of the message.
+ENDOFMESSAGE
+
+		]]>
+		</screen>
+		<para>关闭参数替换</para>
+		<screen>
+		<![CDATA[
+NAME="John Doe"
+RESPONDENT="the author of this fine script"
+
+cat <<'Endofmessage'
+
+Hello, there, $NAME.
+Greetings to you, $NAME, from $RESPONDENT.
+
+Endofmessage
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+NAME="John Doe"
+RESPONDENT="the author of this fine script"
+
+cat <<\Endofmessage
+
+Hello, there, $NAME.
+Greetings to you, $NAME, from $RESPONDENT.
+
+Endofmessage
+		]]>
+		</screen>
+		<section>
+			<title>error 重定向</title>
+			<screen>
+			<![CDATA[
+your_shell 2>&1
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>使用块记录日志</title>
+			<screen>
+			<![CDATA[
+{
+	...
+	...
+} > $LOGFILE 2>&1
+			]]>
+			</screen>
+		</section>
+		<section id="tee">
+			<title>tee - read from standard input and write to standard output and files</title>
+			<screen>
+echo 1 > /proc/sys/net/ipv4/ip_forward
+echo 1 | sudo tee /proc/sys/net/ipv4/ip_forward;
+			</screen>
+			<section id="nettee">
+				<title>nettee - a network "tee" program</title>
+				<screen>
+
+				</screen>
+			</section>
+		</section>
+		<section>
+			<title>快速清空一个文件的内容</title>
+			<screen>
+$ > /www/access.log
+			</screen>
+		</section>
+	</section>
+	<section id="pipes">
+		<title>pipes (FIFOs)</title>
+		<para>create a pipes</para>
+		<screen>
+$ mkfifo /tmp/pipe
+$ mkfifo -m 0644 /tmp/pipe
+
+$ mknod /tmp/pipe p
+		</screen>
+		<para>let's see it</para>
+		<screen>
+$ ls -l /tmp/piple
+prw-r--r-- 1 neo neo 0 2009-03-13 14:40 /tmp/piple
+		</screen>
+		<para>remove a pipes</para>
+		<screen>
+rm /tmp/pipe
+		</screen>
+		<para>using it</para>
+		<para>standing by pipe</para>
+		<screen>
+$ cat /tmp/pipe
+		</screen>
+		<para>push string to pipe</para>
+		<screen>
+$ echo hello world > /tmp/pipe
+		</screen>
+		<para>fetch string from /tmp/pipe</para>
+		<screen>
+$ cat /tmp/piple
+hello world
+		</screen>
+	</section>
+	<section id="mktemp">
+		<title>mktemp - create a temporary file or directory 临时目录与文件</title>
+		<screen>
+# mktemp
+/tmp/tmp.p8p0v5YzPf
+
+# mktemp /tmp/test.XXX
+/tmp/test.d8J
+
+# mktemp /tmp/test.XXXXXX
+/tmp/test.cFebDX
+
+# mktemp /tmp/test.XXXXXXX
+/tmp/test.CnyLr7C
+		</screen>
+		<para>创建临时目录</para>
+		<screen>
+# mktemp -d
+/tmp/tmp.xg5gFj0w8D
+
+# mktemp -d --suffix=.tmp /tmp/test.XXXXX
+/tmp/test.TDpz8.tmp
+
+$ mktemp -d --suffix=.tmp -p /tmp deploy.XXXXXX
+/tmp/deploy.FwebCc.tmp
+		</screen>
+	</section>
+	<section id="history">
+		<title>History 命令历史记录</title>
+		<section>
+			<title>.bash_history</title>
+			<screen>
+ln -s /dev/null .bash_history
+			</screen>
+			<para>定制.bash_history格式</para>
+			<screen>
+export HISTSIZE=1000
+export HISTFILESIZE=2000
+export HISTTIMEFORMAT="%Y-%m-%d-%H:%M:%S "
+export HISTFILE="~/.bash_history"
+
+			</screen>
+
+			<para>看看实际效果</para>
+			<screen>
+$ history | head
+    1  2012-02-27-09:10:45 do-release-upgrade
+    2  2012-02-27-09:10:45 vim /etc/network/interfaces
+    3  2012-02-27-09:10:45 vi /etc/network/interfaces
+    4  2012-02-27-09:10:45 ping www.163.com
+			</screen>
+			<tip>
+				<para>CentOS 可以添加到 /etc/bashrc 这样可以对所有用户起作用</para>
+				<screen>
+echo 'export HISTTIMEFORMAT="%Y-%m-%d-%H:%M:%S "' >> /etc/bashrc
+				</screen>
+			</tip>
+		</section>
+		<section>
+			<title>.mysql_history</title>
+			<screen>
+ln -s /dev/null .mysql_history
+			</screen>
+			<para>插入时间点，在~/.bashrc中加入下面命令</para>
+			<screen>
+$ tail ~/.bashrc
+echo `date` >> ~/.mysql_history
+			</screen>
+			<screen>
+$ tail ~/.mysql_history
+EXPLAIN SELECT * FROM stuff where id=3 \G
+EXPLAIN SELECT * FROM stuff where id='3' \G
+EXPLAIN SELECT * FROM stuff where id='2' \G
+Mon Feb 27 09:15:18 CST 2012
+EXPLAIN SELECT * FROM stuff where id='2' and created = '2012-02-01' \G
+EXPLAIN SELECT * FROM stuff where id='1' and created = '2012-02-01' \G
+EXPLAIN SELECT * FROM stuff where id='3' and created = '2012-02-01' \G
+EXPLAIN SELECT * FROM stuff where id='2' and created = '2012-02-01' \G
+EXPLAIN SELECT * FROM stuff where id='2' or created = '2012-02-01' \G
+EXPLAIN SELECT * FROM stuff where id='2' and created = '2012-02-01' \G
+Mon Feb 27 11:48:37 CST 2012
+			</screen>
+		</section>
+	</section>
+</chapter>
+
+	&chapter.bash.xml;
+	&chapter.zsh.xml;
+	&chapter.shell.tui.xml;
+	&chapter.shell.example.xml;

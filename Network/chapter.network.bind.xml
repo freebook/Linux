@@ -1,0 +1,659 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.network.bind.xml 653 2013-07-29 10:12:42Z netkiller $ -->
+<chapter id="bind">
+	<title>DNS/Bind</title>
+	<section id="bind.install">
+		<title>安装 bind9 </title>
+		<para>neo@master:~$ # apt-get install bind9 </para>
+		<para>named.conf.local.neo.org</para>
+		<screen>
+neo@master:~$ cat /etc/bind/named.conf.local.neo.org
+
+zone "neo.org" in {
+     type master;
+     file "db.neo.org";
+};
+
+zone "0.16.172.in-addr.arpa" in {
+    type master;
+    file "db.172.16.0";
+};
+		</screen>
+		<para>/var/cache/bind/db.neo.org</para>
+		<screen>
+neo@master:~$ cat /var/cache/bind/db.neo.org
+@ IN SOA        neo.org. root.neo.org. (
+                          200211131 ; serial, todays date + todays serial #
+                          28800 ; refresh, seconds
+                          7200 ; retry, seconds
+                          3600000 ; expire, seconds
+                          86400 ) ; minimum, seconds
+        NS ns.neo.org.
+@       IN A         172.16.0.1
+www     IN A         172.16.0.1
+mail    IN A         172.16.0.1
+@       MX 10 mail.neo.org.
+		</screen>
+		<para>/var/cache/bind/db.172.16.0</para>
+		<screen>
+neo@master:~$ cat /var/cache/bind/db.172.16.0
+@ IN SOA neo.org root.neo.org. (
+                               2002111300 ; Serial
+                               28800 ; Refresh
+                               14400 ; Retry
+                               3600000 ; Expire
+                               86400 ) ; Minimum
+                               IN NS ns.neo.org.
+
+1 PTR www1.neo.org.
+2 PTR www2.neo.org.
+3 PTR www3.neo.org.
+neo@master:~$
+
+		</screen>
+		<para>/etc/resolv.conf</para>
+		<screen>
+neo@master:~$ cat /etc/resolv.conf
+search neo.org
+nameserver 172.16.0.2
+neo@master:~$
+		</screen>
+	</section>
+	<section id="bind.forwarders">
+		<title>forwarders</title>
+		<screen>
+options {
+    directory "/var/named";
+    forwarders { 192.168.24.35; 192.168.24.36; };
+};
+		</screen>
+	</section>
+	<section id="bind.dlb">
+		<title>Load Balancing</title>
+		<para>Load Balancing (DNS 轮循负载均衡)</para>
+		<para>Bind 8</para>
+		<screen>
+neo@master:~$ cat /var/cache/bind/db.neo.org
+@ IN SOA        neo.org. root.neo.org. (
+                          200211131 ; serial, todays date + todays serial #
+                          28800 ; refresh, seconds
+                          7200 ; retry, seconds
+                          3600000 ; expire, seconds
+                          86400 ) ; minimum, seconds
+        NS ns.neo.org.
+@       IN A         192.168.0.1
+web     IN A         192.168.0.1
+mail    IN A         192.168.0.1
+@       MX 10 mail.neo.org.
+
+www1 IN A         172.16.0.1
+www2 IN A         172.16.0.2
+www3 IN A         172.16.0.3
+www4 IN A         172.16.0.4
+
+www    IN CNAME        www1.neo.org.
+www    IN CNAME        www2.neo.org.
+www    IN CNAME        www3.neo.org.
+www    IN CNAME        www4.neo.org.
+neo@master:~$
+		</screen>
+		<para>Bind 9</para>
+		<screen>
+neo@master:~$ cat /var/cache/bind/db.neo.org
+@ IN SOA        neo.org. root.neo.org. (
+                          200211131 ; serial, todays date + todays serial #
+                          28800 ; refresh, seconds
+                          7200 ; retry, seconds
+                          3600000 ; expire, seconds
+                          86400 ) ; minimum, seconds
+        NS ns.neo.org.
+@       IN A         192.168.0.1
+web     IN A         192.168.0.1
+mail    IN A         192.168.0.1
+@       MX 10 mail.neo.org.
+
+www IN A         172.16.0.1
+www IN A         172.16.0.2
+www IN A         172.16.0.3
+www IN A         172.16.0.4
+www IN A         10.50.1.110
+www IN A         10.50.1.131
+www IN A         10.50.1.122
+neo@master:~$
+		</screen>
+	</section>
+	<section id="bind.view">
+		<title>view</title>
+		<screen>
+acl "cnc_view" {
+          220.250.21.86;
+          216.93.170.17;
+          216.93.160.16;
+          210.53.31.2;
+          218.104.224.106;
+          218.66.59.233;
+          218.66.102.93;
+          202.101.98.55;
+          };
+
+view "cnc" {
+match-clients { "cnc_view"; };
+recursion yes;
+zone "." { type hint; file "named.root"; };
+zone "netkiller.org.cn" { type master; file "cnc/netkiller.org.cn" ; };
+};
+
+view "no_cnc" {
+match-clients { any; };
+recursion yes;
+zone "netkiller.org.cn" { type master; file "telecom/netkiller.org.cn"; };
+zone "." { type hint; file "named.root"; };
+};
+
+		</screen>
+	</section>
+	<section id="bind.slave">
+		<title>Master / Slave</title>
+		<section>
+			<title>master /etc/named.conf</title>
+			<screen>
+# cat /etc/named.conf
+
+        zone "example.com" {
+                type master;
+                file "/var/named/example.com.zone";
+                allow-transfer { 172.16.1.23; 120.100.100.23; };
+        };
+			</screen>
+			<para>notify 指令会自动通知所有这个域的所有在ns记录上的机器，also-notify指令可以用来通知所有不在ns记录上的dns服务器</para>
+			<screen>
+        zone "example.com" {
+                type master;
+                file "example.com.zone";
+                allow-transfer { 172.16.1.23; };
+                notify yes;
+                also-notify { 172.16.1.23; };
+        };
+
+		zone "1.16.172.in-addr.arpa" IN {
+			type master;
+			file "1.16.172";
+			allow-transfer { 172.16.1.23 ; };
+			notify yes;
+			also-notify { 172.16.1.23 ; };
+		};
+        zone "144.132.102.in-addr.arpa" IN {
+			type master;
+			file "144.132.102.in-addr.arpa.zone";
+			allow-transfer { 172.16.1.23 ; };
+			notify yes;
+			also-notify { 172.16.1.23 ; };
+         };
+
+			</screen>
+
+
+			<section>
+				<title>/var/named/example.com.zone</title>
+				<screen>
+# cat 144.132.102.in-addr.arpa.zone
+$TTL    86400
+@       IN      SOA     localhost. root.localhost.  (
+                                      2010010100 ; Serial
+                                      28800      ; Refresh
+                                      14400      ; Retry
+                                      3600000    ; Expire
+                                      86400 )    ; Minimum
+        IN      NS      ns1.example.com.
+
+6       IN      PTR     www.example.com.
+15      IN      PTR     bbs.example.com.
+19      IN      PTR     images.example.com.
+				</screen>
+			</section>
+
+			<section>
+				<title>/var/named/example.com.zone</title>
+				<screen>
+$TTL    86400
+@               IN SOA  example.com. root.example.com. (
+                                        42              ; serial (d. adams)
+                                        3H              ; refresh
+                                        15M             ; retry
+                                        1W              ; expiry
+                                        1D )            ; minimum
+                IN NS           ns1.example.com.
+                IN NS           ns2.example.com.
+@               IN A 120.100.100.6
+@               IN MX 10 mx.corpease.net.
+
+ns1             IN A 120.100.100.20
+ns2             IN A 120.100.100.23
+www            IN A 120.100.100.6
+images         IN A 120.100.100.6
+				</screen>
+			</section>
+		</section>
+		<section>
+			<title>slave /etc/named.conf</title>
+			<screen>
+        zone "example.com" {
+                type slave;
+                file "/var/named/slaves/example.com.zone";
+                masters { 172.16.1.20; 120.100.100.20; };
+        };
+			</screen>
+			<screen>
+        zone "144.132.120.in-addr.arpa" IN {
+                type slave;
+                file "slaves/144.132.120.in-addr.arpa.zone";
+                masters { 172.16.1.20; };
+        };
+			</screen>
+		</section>
+		<section>
+			<title>FAQ</title>
+			<section>
+				<title>Master 更改后 Slave 不同步</title>
+				<para>采用 master / slave 结构的DNS服务器，一般情况下只需要维护master上的记录即可</para>
+				<para>很多人会遇到，档你在master 增加一个记录后 slave 没有更新，删除slave 上的zone 文件 restart 才能更新。</para>
+				<para>这是因为你没有更改 2010010100 ; Serial 这项。凡是对zone文件操作后必须更改Serial建议使用日期与时间作为该值。</para>
+				<para>另外Serial 的新数值必须大于就数值才能更新</para>
+			</section>
+			<section>
+				<title>Master 与 Slave 的 Test</title>
+				<para>启动主DNS服务器然后测试解析与反向解析，然后启动备份DNS，观察复制情况，再测试正向与反向解析。</para>
+				<screen>
+dig @120.100.100.20 www.example.com
+				</screen>
+				<screen>
+				<![CDATA[
+$ dig @120.100.100.20 -x 120.100.100.6
+
+; <<>> DiG 9.7.3 <<>> @120.100.100.20 -x 120.100.100.6
+; (1 server found)
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 41279
+;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 1, ADDITIONAL: 1
+
+;; QUESTION SECTION:
+;6.144.132.120.in-addr.arpa.    IN      PTR
+
+;; ANSWER SECTION:
+6.144.132.120.in-addr.arpa. 86400 IN    PTR     www.example.com.
+
+;; AUTHORITY SECTION:
+144.132.120.in-addr.arpa. 86400 IN      NS      ns1.example.com.
+
+;; ADDITIONAL SECTION:
+ns1.example.com.            1800    IN      A       120.100.100.20
+
+;; Query time: 6 msec
+;; SERVER: 120.100.100.20#53(120.100.100.20)
+;; WHEN: Wed Feb  8 10:37:28 2012
+;; MSG SIZE  rcvd: 103
+
+neo@neo-OptiPlex-380:~$ dig @120.100.100.20 -x 120.100.100.19
+
+; <<>> DiG 9.7.3 <<>> @120.100.100.20 -x 120.100.100.19
+; (1 server found)
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 17336
+;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 1, ADDITIONAL: 1
+
+;; QUESTION SECTION:
+;19.144.132.120.in-addr.arpa.   IN      PTR
+
+;; ANSWER SECTION:
+19.144.132.120.in-addr.arpa. 86400 IN   PTR     images.example.com.
+
+;; AUTHORITY SECTION:
+144.132.120.in-addr.arpa. 86400 IN      NS      ns1.example.com.
+
+;; ADDITIONAL SECTION:
+ns1.example.com.            1800    IN      A       120.100.100.20
+
+;; Query time: 6 msec
+;; SERVER: 120.100.100.20#53(120.100.100.20)
+;; WHEN: Wed Feb  8 10:37:39 2012
+;; MSG SIZE  rcvd: 107
+				]]>
+				</screen>
+			</section>
+		</section>
+	</section>
+<section id="bind.tools">
+		<title>DNS tools</title>
+	<section id="bind.dig">
+		<title>dig - DNS lookup utility</title>
+		<para>dig</para>
+		<para><![CDATA[ dig @<name server> <domain name> ]]></para>
+		<screen>
+		<![CDATA[
+[root@testing neo]# dig @202.96.134.133 netkiller.8800.org
+
+; <<>> DiG 9.2.4 <<>> @202.96.134.133 netkiller.8800.org
+;; global options:  printcmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 47971
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 2, ADDITIONAL: 2
+
+;; QUESTION SECTION:
+;netkiller.8800.org.            IN      A
+
+;; ANSWER SECTION:
+netkiller.8800.org.     14353   IN      A       220.201.35.11
+
+;; AUTHORITY SECTION:
+8800.org.               86398   IN      NS      ns1.3322.net.
+8800.org.               86398   IN      NS      ns2.3322.net.
+
+;; ADDITIONAL SECTION:
+ns1.3322.net.           166302  IN      A       61.177.95.125
+ns2.3322.net.           166298  IN      A       222.185.245.254
+
+;; Query time: 4 msec
+;; SERVER: 202.96.134.133#53(202.96.134.133)
+;; WHEN: Fri May 11 22:25:54 2007
+;; MSG SIZE  rcvd: 128
+
+[root@testing neo]#
+		]]>
+		</screen>
+		<section>
+			<title>any</title>
+			<screen>
+			<![CDATA[
+$ dig any google.com
+
+; <<>> DiG 9.7.0-P1 <<>> any google.com
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 3225
+;; flags: qr rd ra; QUERY: 1, ANSWER: 21, AUTHORITY: 0, ADDITIONAL: 0
+
+;; QUESTION SECTION:
+;google.com.                    IN      ANY
+
+;; ANSWER SECTION:
+google.com.             300     IN      A       74.125.71.104
+google.com.             300     IN      A       74.125.71.99
+google.com.             300     IN      A       74.125.71.106
+google.com.             300     IN      A       74.125.71.105
+google.com.             300     IN      A       74.125.71.103
+google.com.             300     IN      A       74.125.71.147
+google.com.             86400   IN      SOA     ns1.google.com. dns-admin.google.com. 2011128000 7200 1800 1209600 300
+google.com.             3600    IN      TXT     "v=spf1 include:_netblocks.google.com ip4:216.73.93.70/31 ip4:216.73.93.72/31 ~all"
+google.com.             345600  IN      NS      ns2.google.com.
+google.com.             600     IN      MX      20 alt1.aspmx.l.google.com.
+google.com.             345600  IN      NS      ns1.google.com.
+google.com.             345600  IN      NS      ns4.google.com.
+google.com.             345600  IN      NS      ns3.google.com.
+google.com.             600     IN      MX      10 aspmx.l.google.com.
+google.com.             600     IN      MX      40 alt3.aspmx.l.google.com.
+google.com.             600     IN      MX      30 alt2.aspmx.l.google.com.
+google.com.             600     IN      MX      50 alt4.aspmx.l.google.com.
+google.com.             300     IN      A       74.125.71.104
+google.com.             300     IN      A       74.125.71.99
+google.com.             300     IN      A       74.125.71.106
+google.com.             300     IN      A       74.125.71.105
+
+;; Query time: 432 msec
+;; SERVER: 208.67.222.222#53(208.67.222.222)
+;; WHEN: Tue Nov 29 18:06:43 2011
+;; MSG SIZE  rcvd: 508
+
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>ns</title>
+			<screen>
+			<![CDATA[
+$ dig ns google.com
+
+; <<>> DiG 9.7.0-P1 <<>> ns google.com
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 57275
+;; flags: qr rd ra; QUERY: 1, ANSWER: 4, AUTHORITY: 0, ADDITIONAL: 0
+
+;; QUESTION SECTION:
+;google.com.                    IN      NS
+
+;; ANSWER SECTION:
+google.com.             171085  IN      NS      ns2.google.com.
+google.com.             171085  IN      NS      ns1.google.com.
+google.com.             171085  IN      NS      ns3.google.com.
+google.com.             171085  IN      NS      ns4.google.com.
+
+;; Query time: 402 msec
+;; SERVER: 208.67.222.222#53(208.67.222.222)
+;; WHEN: Tue Nov 29 18:06:07 2011
+;; MSG SIZE  rcvd: 100
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>A</title>
+			<screen>
+			<![CDATA[
+$ dig google.com A
+
+; <<>> DiG 9.7.0-P1 <<>> google.com A
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 35608
+;; flags: qr rd ra; QUERY: 1, ANSWER: 6, AUTHORITY: 0, ADDITIONAL: 0
+
+;; QUESTION SECTION:
+;google.com.                    IN      A
+
+;; ANSWER SECTION:
+google.com.             254     IN      A       74.125.71.106
+google.com.             254     IN      A       74.125.71.104
+google.com.             254     IN      A       74.125.71.99
+google.com.             254     IN      A       74.125.71.105
+google.com.             254     IN      A       74.125.71.147
+google.com.             254     IN      A       74.125.71.103
+
+;; Query time: 0 msec
+;; SERVER: 172.16.3.52#53(172.16.3.52)
+;; WHEN: Wed Feb  8 09:47:36 2012
+;; MSG SIZE  rcvd: 124
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>mx</title>
+			<screen>
+			<![CDATA[
+$ dig mx google.com
+
+; <<>> DiG 9.7.0-P1 <<>> mx google.com
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 27428
+;; flags: qr rd ra; QUERY: 1, ANSWER: 5, AUTHORITY: 0, ADDITIONAL: 0
+
+;; QUESTION SECTION:
+;google.com.                    IN      MX
+
+;; ANSWER SECTION:
+google.com.             525     IN      MX      10 aspmx.l.google.com.
+google.com.             525     IN      MX      20 alt1.aspmx.l.google.com.
+google.com.             525     IN      MX      40 alt3.aspmx.l.google.com.
+google.com.             525     IN      MX      30 alt2.aspmx.l.google.com.
+google.com.             525     IN      MX      50 alt4.aspmx.l.google.com.
+
+;; Query time: 359 msec
+;; SERVER: 208.67.222.222#53(208.67.222.222)
+;; WHEN: Tue Nov 29 18:05:54 2011
+;; MSG SIZE  rcvd: 136
+
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>cname</title>
+			<screen>
+			<![CDATA[
+$ dig www.google.com cname
+
+; <<>> DiG 9.7.0-P1 <<>> www.google.com cname
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 29361
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 0
+
+;; QUESTION SECTION:
+;www.google.com.                        IN      CNAME
+
+;; ANSWER SECTION:
+www.google.com.         600516  IN      CNAME   www.l.google.com.
+
+;; Query time: 186 msec
+;; SERVER: 172.16.3.52#53(172.16.3.52)
+;; WHEN: Wed Feb  8 09:49:00 2012
+;; MSG SIZE  rcvd: 52
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>-x addr 反向解析</title>
+			<screen>
+			<![CDATA[
+$ dig -x 8.8.8.8
+
+; <<>> DiG 9.7.0-P1 <<>> -x 8.8.8.8
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 5101
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 0
+
+;; QUESTION SECTION:
+;8.8.8.8.in-addr.arpa.          IN      PTR
+
+;; ANSWER SECTION:
+8.8.8.8.in-addr.arpa.   61329   IN      PTR     google-public-dns-a.google.com.
+
+;; Query time: 186 msec
+;; SERVER: 172.16.3.52#53(172.16.3.52)
+;; WHEN: Wed Feb  8 09:53:47 2012
+;; MSG SIZE  rcvd: 82
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section id="nslookup">
+		<title>nslookup - query Internet name servers interactively</title>
+		<section>
+			<title>刷新 DNS 解析缓存</title>
+			<para>Windows DNS 刷新</para>
+			<screen>
+C:\Users\neo>ipconfig /flushdns
+
+Windows IP 配置
+
+已成功刷新 DNS 解析缓存。
+			</screen>
+		</section>
+		<section>
+			<title>查看NS记录</title>
+			<para>-qt=ns 查看NS记录</para>
+			<screen>
+			<![CDATA[
+C:\Users\neo>nslookup -qt=ns 163.com
+服务器:  resolver1.opendns.com
+Address:  208.67.222.222
+
+非权威应答:
+163.com nameserver = ns3.nease.net
+163.com nameserver = ns2.nease.net
+163.com nameserver = ns4.nease.net
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+C:\Users\neo>nslookup -qt=ns 163.com
+服务器:  ns.szptt.net.cn
+Address:  202.96.134.133
+
+非权威应答:
+163.com nameserver = ns3.nease.net
+163.com nameserver = ns4.nease.net
+163.com nameserver = ns2.nease.net
+
+ns4.nease.net   internet address = 61.135.255.140
+ns2.nease.net   internet address = 114.113.197.12
+ns3.nease.net   internet address = 220.181.28.4
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Mx 记录</title>
+			<screen>
+			<![CDATA[
+C:\Users\neo>nslookup -qt=mx 163.com
+服务器:  ns.szptt.net.cn
+Address:  202.96.134.133
+
+非权威应答:
+163.com MX preference = 10, mail exchanger = 163mx03.mxmail.netease.com
+163.com MX preference = 10, mail exchanger = 163mx04.mxmail.netease.com
+163.com MX preference = 50, mail exchanger = 163mx00.mxmail.netease.com
+163.com MX preference = 10, mail exchanger = 163mx01.mxmail.netease.com
+163.com MX preference = 10, mail exchanger = 163mx02.mxmail.netease.com
+
+163mx04.mxmail.netease.com      internet address = 220.181.12.78
+163mx04.mxmail.netease.com      internet address = 220.181.12.79
+163mx04.mxmail.netease.com      internet address = 220.181.12.80
+163mx04.mxmail.netease.com      internet address = 220.181.12.81
+163mx04.mxmail.netease.com      internet address = 220.181.12.83
+163mx04.mxmail.netease.com      internet address = 220.181.12.84
+163mx04.mxmail.netease.com      internet address = 220.181.12.85
+163mx04.mxmail.netease.com      internet address = 220.181.12.70
+163mx04.mxmail.netease.com      internet address = 220.181.12.71
+163mx04.mxmail.netease.com      internet address = 220.181.12.72
+163mx04.mxmail.netease.com      internet address = 220.181.12.76
+163mx04.mxmail.netease.com      internet address = 220.181.12.77
+163mx00.mxmail.netease.com      internet address = 220.181.12.87
+163mx00.mxmail.netease.com      internet address = 220.181.12.88
+163mx00.mxmail.netease.com      internet address = 220.181.12.89
+163mx00.mxmail.netease.com      internet address = 220.181.12.90
+163mx00.mxmail.netease.com      internet address = 220.181.12.91
+163mx00.mxmail.netease.com      internet address = 220.181.12.52
+163mx00.mxmail.netease.com      internet address = 220.181.12.53
+163mx00.mxmail.netease.com      internet address = 220.181.12.55
+163mx00.mxmail.netease.com      internet address = 220.181.12.56
+163mx00.mxmail.netease.com      internet address = 220.181.12.57
+			]]>
+			</screen>
+		</section>
+	</section>
+</section>
+	<section id="nameserver">
+		<title>DNS</title>
+		<section>
+			<title>OpenDNS</title>
+			<screen>
+208.67.222.222
+208.67.220.220
+			</screen>
+		</section>
+		<section>
+			<title>Google DNS</title>
+			<screen>
+8.8.8.8
+8.8.4.4
+			</screen>
+		</section>
+	</section>
+	<section id="NamedManager">
+		<title>NamedManager</title>
+		<para>https://projects.jethrocarr.com/p/oss-namedmanager/</para>
+		<para>NamedManager 你可以理解为 Bind 的Web UI，类似域名服务商的Web管理界面m。</para>
+	</section>
+</chapter>

@@ -1,0 +1,174 @@
+<chapter id="system.service">
+	<title>Service</title>
+	<section id="update-rc.d">
+		<title>update-rc.d - install and remove System-V style init script links</title>
+		<para>for example:</para>
+		<screen>
+Insert links using the defaults:
+   update-rc.d foobar defaults
+Equivalent command using explicit argument sets:
+   update-rc.d foobar start 20 2 3 4 5 . stop 20 0 1 6 .
+More typical command using explicit argument sets:
+   update-rc.d foobar start 30 2 3 4 5 . stop 70 0 1 6 .
+Insert links at default runlevels when B requires A
+   update-rc.d script_for_A defaults 80 20
+   update-rc.d script_for_B defaults 90 10
+Insert a link to a service that (presumably) will not be needed by any other daemon
+   update-rc.d top_level_app defaults 98 02
+Insert links for a script that requires services that start/stop at sequence number 20
+   update-rc.d script_depends_on_svc20 defaults 21 19
+Remove all links for a script (assuming foobar has been deleted already):
+   update-rc.d foobar remove
+Example of disabling a service:
+   update-rc.d -f foobar remove
+   update-rc.d foobar stop 20 2 3 4 5 .
+Example of a command for installing a system initialization-and-shutdown script:
+   update-rc.d foobar start 45 S . stop 31 0 6 .
+Example of a command for disabling a system initialization-and-shutdown script:
+   update-rc.d -f foobar remove
+   update-rc.d foobar stop 45 S .
+		</screen>
+		<para>set default</para>
+		<screen>
+update-rc.d nginx defaults
+		</screen>
+		<para>remove</para>
+		<screen>
+update-rc.d -f lighttpd remove
+$ sudo update-rc.d -f avahi-daemon remove
+		</screen>
+	</section>
+	<section id="invoke-rc.d">
+		<title>invoke-rc.d - executes System-V style init script actions</title>
+		<screen>
+$ sudo invoke-rc.d mysql restart
+		</screen>
+	</section>
+	<section id="runlevel">
+		<title>runlevel</title>
+		<screen>
+$ runlevel
+N 2
+
+# runlevel
+N 3
+		</screen>
+		<screen>
+$ sudo vim /etc/init.d/rcS
+#! /bin/sh
+#
+# rcS
+#
+# Call all S??* scripts in /etc/rcS.d/ in numerical/alphabetical order
+#
+
+exec /etc/init.d/rc S
+		</screen>
+		<para>the default is S (/etc/rcS.d/)</para>
+		<para>the redhat linux in the /etc/inittab</para>
+		<para>switch runlevel</para>
+		<screen>
+/etc/init.d/rc 3
+		</screen>
+	</section>
+	<section id="sysv-rc-conf">
+		<title>sysv-rc-conf</title>
+		<para>(ubuntu下sysv-rc-conf命令等同redhat下chkconfig命令)</para>
+		<screen>
+sysv-rc-conf gmond on
+sysv-rc-conf --list gmond
+		</screen>
+	</section>
+	<section id="xinetd">
+		<title>xinetd - replacement for inetd with many enhancements</title>
+		<screen>
+$ sudo apt-get install xinetd
+		</screen>
+		<section>
+			<title>tftpd</title>
+			<screen>
+apt-get install xinetd
+apt-get install tftpd tftp
+			</screen>
+			<para>/etc/xinetd.d/tftp</para>
+			<screen>
+service tftp
+{
+	disable=no
+	socket_type=dgram
+	protocol =udp
+	wait=yes
+	user=root
+	server=/usr/sbin/in.tftpd
+	server_args =-s /home/neo/tftpboot -c
+	per_source=11
+	cps=100 2
+	flags=IPv4
+}
+			</screen>
+		</section>
+	</section>
+	<section id="tasks">
+		<title>Scheduled Tasks</title>
+		<section id="crontab">
+			<title>crontab - maintain crontab files for individual users</title>
+			<para>To see what crontabs are currently running on your system, you can open a terminal and run:</para>
+			<screen>
+$  crontab -l
+# m h  dom mon dow   command
+#* */30 * * * /home/neo/dyndns
+			</screen>
+			<para>if you want to see root user, please add 'sudo' in the prefix.</para>
+			<para>To edit the list of cron jobs you can run:</para>
+			<screen>
+$ crontab -e
+			</screen>
+			<para>As you can see there are 5 stars. The stars represent different date parts in the following order:</para>
+			<orderedlist>
+				<listitem><para>minute (from 0 to 59)</para></listitem>
+				<listitem><para>hour (from 0 to 23)</para></listitem>
+				<listitem><para>day of month (from 1 to 31)</para></listitem>
+				<listitem><para>month (from 1 to 12)</para></listitem>
+				<listitem><para>day of week (from 0 to 6) (0=Sunday)</para></listitem>
+			</orderedlist>
+			<para>By default cron jobs sends a email to the user account executing the cronjob. If this is not needed put the following command At the end of the cron job line .</para>
+			<screen>
+			<![CDATA[
+>/dev/null 2>&1
+			]]>
+			</screen>
+		</section>
+		<section id="at">
+			<title>at, batch, atq, atrm - queue, examine or delete jobs for later execution</title>
+		</section>
+	</section>
+	<section id="sv">
+		<title>sv - control and manage services monitored by runsv</title>
+		<para>services  directory  /etc/service/</para>
+		<screen>
+$ sudo sv start git-daemon
+ok: run: git-daemon: (pid 10323) 1s
+
+$ sudo sv restart git-daemon
+ok: run: git-daemon: (pid 10327) 1s
+		
+$ sudo sv stop git-daemon
+ok: down: git-daemon: 1s, normally up
+		</screen>
+		<section id="runsv">
+			<title>runsv</title>
+			<screen>
+$ sudo runsv git-daemon
+			</screen>
+		</section>		
+		<section id="runsvdir">
+			<title>runsvdir</title>
+			<para>运行/etc/service目录下的所有服务</para>
+			<screen>
+			<![CDATA[
+$sudo runsvdir /etc/service &
+			]]>
+			</screen>
+		</section>
+	</section>
+</chapter>

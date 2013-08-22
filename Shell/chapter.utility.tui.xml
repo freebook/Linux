@@ -1,0 +1,77 @@
+<section id="utility.terminal">
+	<title>TUI</title>
+
+	<section id="terminal.screen">
+		<title>screen - screen manager with VT100/ANSI terminal emulation</title>
+		<para>screen 类似 jobs, 前者是对terminal, 后者针对进程。你可以随时再次链接screen会话，而不用担心中途因网络不稳定造成的中断。</para>
+		<screen>
+sudo apt-get install screen
+		</screen>
+		<para>进入</para>
+		<screen>
+screen
+		</screen>
+		<para>查看任务</para>
+		<screen>
+screen -ls
+		</screen>
+		<para>重新连接会话</para>
+		<screen>
+screen -r 16582
+		</screen>
+		<para>退出screen 使用组合键  C-a K 或者</para>
+		<screen>
+screen -wipe
+		</screen>
+	</section>
+
+	<section id="terminal.tmux">
+		<title>tmux — terminal multiplexer</title>
+		<para>http://tmux.sourceforge.net/</para>
+		<para>查看当前session <command>$tmux ls</command></para>
+		<screen>
+$ tmux ls
+0: 1 windows (created Mon Aug 19 10:12:15 2013) [270x56] (attached)
+
+$ tmux list-sessions
+0: 1 windows (created Mon Aug 19 10:12:15 2013) [270x56] (attached)
+		</screen>
+		<para>创建session</para>
+		<screen>
+tmux new -s session-name
+		</screen>
+		<para>结束session</para>
+		<screen>
+$tmux kill-session -t 0
+
+#结束所有session
+$tmux kill-server
+		</screen>
+		<para>使当前会话进入后台</para>
+		<screen>
+tmux detach
+		</screen>
+		<para>恢复session, detach的反向操作</para>
+		<screen>
+tmux attach -t session-id
+		</screen>
+	</section>
+	<section id="byobu">
+		<title>byobu - wrapper script for seeding a user's byobu configuration and launching a text based window manager (either screen or tmux)</title>
+		<screen>
+
+		</screen>
+	</section>
+	<section id="htop">
+		<title>htop - interactive process viewer</title>
+		<screen>
+		</screen>
+	</section>
+	<section id="elinks">
+		<title>elinks</title>
+	</section>
+	<section id="chat">
+		<title>chat</title>
+		<para>finch,irssi</para>
+	</section>
+</section>

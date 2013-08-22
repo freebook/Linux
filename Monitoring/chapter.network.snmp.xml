@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter>
+	<title>SNMP</title>
+	<section>
+		<title>Cisco ASA 5550</title>
+		<screen>
+snmpget -v2c -c public 172.16.1.254 IF-MIB::ifInOctets.3 IF-MIB::ifInOctets.9 IF-MIB::ifOutOctets.3 IF-MIB::ifOutOctets.9
+snmpget -v2c -c public 172.16.1.254 IF-MIB::ifOperStatus.3 IF-MIB::ifOperStatus.9
+		</screen>
+		<screen>
+#!/bin/bash
+echo -n `date +%H:%M:%S` " "
+snmpget -v2c -c public 172.16.1.254 IF-MIB::ifInOctets.3 IF-MIB::ifInOctets.9 IF-MIB::ifOutOctets.3 IF-MIB::ifOutOctets.9 | awk -F ': ' '{print $2}' | tr "\n" " "
+echo
+		</screen>
+		<screen>
+$ crontab -l
+# m h  dom mon dow   command
+*/5 * * * * /home/mgmt/test/test.sh >> /home/mgmt/test/test.log
+		</screen>
+		<screen>
+
+		</screen>
+	</section>
+</chapter>

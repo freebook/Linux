@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="app">
+	<title>Application Server</title>
+	<section id="zope">
+		<title>Zope</title>
+		<para><link linkend="python">参考Python安装</link></para>
+
+		<orderedlist numeration="arabic">
+			<listitem><para>下载 Zope-3</para>
+				<screen>
+wget http://www.zope.org/Products/Zope3/3.3.1/Zope-3.3.1.tgz
+tar zxvf Zope-3.3.1.tgz
+cd cd Zope-3.3.1
+				</screen>
+			</listitem>
+			<listitem><para>configure</para>
+				<screen>
+./configure --prefix=/usr/local/Zope --with-python=/usr/local/python2.4/bin/python
+
+make
+make check
+make install
+				</screen>
+			</listitem>
+			<listitem>
+				<para>创建一个Zope实例</para>
+				<screen>
+cd /usr/local/Zope
+./bin/mkzopeinstance -u neo:chen -d /usr/local/Zope/webapps
+cd webapps
+./bin/runzope
+				</screen>
+			</listitem>
+			<listitem><para>测试</para>
+				<screen>
+http://netkiller.8800.org:8080/
+				</screen>
+			</listitem>
+<!-- 
+			<listitem><para>env</para>
+				<screen>
+
+				</screen>	
+			</listitem>
+			<listitem><para>使用 php -v FastCGI 安装情况</para>
+				<para>php -v</para>
+				
+				<para>显示(cgi-fcgi)表示正确</para>
+				<screen>
+
+				</screen>
+				<para>(cgi-fcgi)不能正常工作</para>
+				<screen>
+
+				</screen>			
+			</listitem>
+			<listitem><para>PHP FastCGI环境测试</para>
+				<para>/usr/local/lighttpd/htdocs/index.php</para>
+				<example>
+					<title>index.php</title>
+					<programlisting>
+					<![CDATA[
+
+					]]>
+					</programlisting>
+				</example>
+			</listitem>
+ -->						
+		</orderedlist>
+		
+	</section>
+	<section id="jboss">
+		<title>JBoss - JBoss Enterprise Middleware</title>
+		<para><link linkend="java">参考Java安装</link></para>
+		
+		<orderedlist numeration="arabic">
+			<listitem><para>下载安装 JBoss</para>
+				<screen>
+cd /usr/local/src/				
+wget http://nchc.dl.sourceforge.net/sourceforge/jboss/jboss-5.0.0.Beta2.zip
+unzip jboss-5.0.0.Beta2.zip
+mv jboss-5.0.0.Beta2 ..
+cd ..
+ln -s jboss-5.0.0.Beta2 jboss
+				</screen>
+			</listitem>
+			<listitem><para>运行 Jboss</para>
+				<screen>
+cd jboss/bin
+chmod +x *.sh
+./run.sh
+				</screen>
+			</listitem>
+<!-- 			
+			<listitem>
+				<para>创建一个Zope实例</para>
+				<screen>
+
+				</screen>
+			</listitem>
+			<listitem><para>测试</para>
+				<screen>
+
+				</screen>
+			</listitem>
+
+			<listitem><para>env</para>
+				<screen>
+
+				</screen>	
+			</listitem>
+			<listitem><para>使用 php -v FastCGI 安装情况</para>
+				<para>php -v</para>
+				
+				<para>显示(cgi-fcgi)表示正确</para>
+				<screen>
+
+				</screen>
+				<para>(cgi-fcgi)不能正常工作</para>
+				<screen>
+
+				</screen>			
+			</listitem>
+			<listitem><para>PHP FastCGI环境测试</para>
+				<para>/usr/local/lighttpd/htdocs/index.php</para>
+				<example>
+					<title>index.php</title>
+					<programlisting>
+					<![CDATA[
+
+					]]>
+					</programlisting>
+				</example>
+			</listitem>
+ -->						
+		</orderedlist>
+	</section>
+</chapter>

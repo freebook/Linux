@@ -1,0 +1,15 @@
+<chapter>
+	<title>Kernel</title>
+	<screen>
+wget -q -c http://www.kernel.org/pub/linux/kernel/v3.0/linux-3.0.1.tar.bz2
+tar jxvf linux-3.0.1.tar.bz2
+
+cd linux-3.0.1
+make clean
+make mrproper
+make menuconfig
+make
+make modules_install
+make install
+	</screen>
+</chapter>

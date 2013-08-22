@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.network.xml 388 2012-04-11 10:01:38Z netkiller $ -->
+<chapter id="network">
+	<title>network tools</title>
+	<info>
+		<keywordset>
+			<keyword>network</keyword>
+			<keyword>squid, proxy, bind, firewall, vpn, ip tunnel, news</keyword>
+			<keyword>curl, w3m, lynx</keyword>
+			<keyword>ipv4, ipv6</keyword>
+		</keywordset>
+	</info>
+	<section>
+		<title>curl / w3m / lynx</title>
+		<command>curl</command>
+		<screen>
+			curl http://netkiller.guthub.com
+		</screen>
+
+		<command>w3m</command>
+		<screen>
+			w3m http://netkiller.guthub.com
+		</screen>
+
+		<command>lynx</command>
+		<screen>
+			lynx http://netkiller.guthub.com
+		</screen>
+	</section>
+</chapter>
+

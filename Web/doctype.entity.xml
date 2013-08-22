@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!ENTITY chapter.web.xml 			SYSTEM "chapter.web.xml">
+
+<!ENTITY chapter.httpd.xml			SYSTEM "chapter.httpd.xml">
+<!ENTITY chapter.httpd.install.xml 	SYSTEM "chapter.httpd.install.xml">
+<!ENTITY chapter.httpd.module.xml 	SYSTEM "chapter.httpd.module.xml">
+
+<!ENTITY chapter.web.src 			SYSTEM "chapter.web.src.xml">
+<!ENTITY chapter.tomcat.xml			SYSTEM "chapter.tomcat.xml">
+<!ENTITY chapter.tomcat.install.xml	SYSTEM "chapter.tomcat.install.xml">
+<!ENTITY chapter.tomcat.conf.xml	SYSTEM "chapter.tomcat.conf.xml">
+<!ENTITY chapter.web.resin	 		SYSTEM "chapter.web.resin.xml">
+<!ENTITY chapter.lighttpd.xml				SYSTEM "chapter.lighttpd.xml">
+<!ENTITY chapter.lighttpd.module.xml 		SYSTEM "chapter.lighttpd.module.xml">
+<!ENTITY chapter.lighttpd.fastcgi.xml 		SYSTEM "chapter.lighttpd.fastcgi.xml">
+<!ENTITY chapter.web.app 			SYSTEM "chapter.web.app.xml">
+<!ENTITY chapter.web.optimization 	SYSTEM "chapter.web.optimization.xml">
+
+<!ENTITY chapter.nginx.xml			SYSTEM "chapter.nginx.xml">
+<!ENTITY chapter.nginx.fastcgi.xml	SYSTEM "chapter.nginx.fastcgi.xml">
+<!ENTITY chapter.nginx.conf.xml		SYSTEM "chapter.nginx.conf.xml">
+<!ENTITY chapter.nginx.var.xml 		SYSTEM "chapter.nginx.var.xml">
+<!ENTITY chapter.nginx.faq.xml		SYSTEM "chapter.nginx.faq.xml">
+
+<!ENTITY chapter.web.cherokee.xml	SYSTEM "chapter.web.cherokee.xml">
+<!ENTITY chapter.web.varnish 		SYSTEM "chapter.web.varnish.xml">
+<!ENTITY chapter.web.jetty.xml 		SYSTEM "chapter.web.jetty.xml">
+<!ENTITY chapter.web.analysis 		SYSTEM "chapter.web.analysis.xml">

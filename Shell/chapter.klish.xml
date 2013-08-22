@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="klish">
+	<title>Klish - Kommand Line Interface Shell (the fork of clish project)</title>
+	<para>http://code.google.com/p/klish/</para>
+	<para>Klish是一个命令行补全工具，可以实现类似于CISCO路由器的命令行帮助界面。它是Clish的后续版本，Klish有一个特殊的功能，可以让用户仅使用指定目录中的命令。</para>
+	<section>
+		<title>安装Klish</title>
+		<screen>
+# cd /usr/local/src/
+# wget http://klish.googlecode.com/files/klish-1.6.4.tar.bz2
+# tar jxvf klish-1.6.4.tar.bz2
+# cd klish-1.6.4/
+# ./configure --prefix=/srv/klish-1.6.4
+# make
+# make install
+
+# cp -r xml-examples /srv/klish-1.6.4/
+# export CLISH_PATH=/srv/klish-1.6.4/xml-examples/clish
+		</screen>
+		<para>启动clish</para>
+		<screen>
+		<![CDATA[
+# /srv/klish-1.6.4/bin/clish
+
+********************************************
+*         CLISH (see-lish)                 *
+*                                          *
+*      WARNING: Authorised Access Only     *
+********************************************
+
+Welcome root it is Mon Feb 18 09:59:06 CST 2013
+>
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>为用户指定clish作为默认Shell</title>
+		<screen>
+# vim /etc/passwd
+neo:x:1000:1000:neo,,,:/home/neo:/bin/bash
+		</screen>
+		<para>改为</para>
+		<screen>
+neo:x:1000:1000:neo,,,:/home/neo:/srv/klish-1.6.4/bin/clish
+		</screen>
+	</section>
+	<section>
+		<title>FAQ</title>
+		<section>
+			<title>clish/shell/shell_expat.c:36:19: fatal error: expat.h: No such file or directory</title>
+			<screen>
+clish/shell/shell_expat.c:36:19: fatal error: expat.h: No such file or directory
+compilation terminated.
+make[1]: *** [clish/shell/libclish_la-shell_expat.lo] Error 1
+make[1]: Leaving directory `/usr/local/src/klish-1.6.4'
+make: *** [all] Error 2
+			</screen>
+			<para>解决方案，安装expat开发包</para>
+			<screen>
+# apt-get install libexpat1-dev
+			</screen>
+		</section>
+	</section>
+</section>

@@ -1,0 +1,125 @@
+<chapter id="locale">
+	<title>Locale</title>
+	<section id="system.clock">
+		<title>time zone</title>
+		<para>选择用户时区</para>
+		<screen>
+$ tzselect
+Please identify a location so that time zone rules can be set correctly.
+Please select a continent or ocean.
+ 1) Africa
+ 2) Americas
+ 3) Antarctica
+ 4) Arctic Ocean
+ 5) Asia
+ 6) Atlantic Ocean
+ 7) Australia
+ 8) Europe
+ 9) Indian Ocean
+10) Pacific Ocean
+11) none - I want to specify the time zone using the Posix TZ format.
+#?
+		</screen>
+		<command>tzconfig</command>
+		<screen>
+netkiller@shenzhen:~$ tzconfig
+Your current time zone is set to US/Eastern
+Do you want to change that? [n]: y
+
+Please enter the number of the geographic area in which you live:
+
+
+        1) Africa                       7) Australia
+
+        2) America                      8) Europe
+
+        3) US time zones                9) Indian Ocean
+
+        4) Canada time zones            10) Pacific Ocean
+
+        5) Asia                         11) Use System V style time zones
+
+        6) Atlantic Ocean               12) None of the above
+
+
+Then you will be shown a list of cities which represent the time zone
+in which they are located. You should choose a city in your time zone.
+
+Number: 5
+
+Aden Almaty Amman Anadyr Aqtau Aqtobe Ashgabat Ashkhabad Baghdad Bahrain
+Baku Bangkok Beirut Bishkek Brunei Calcutta Choibalsan Chongqing Chungking
+Colombo Dacca Damascus Dhaka Dili Dubai Dushanbe Gaza Harbin Hong_Kong
+Hovd Irkutsk Istanbul Jakarta Jayapura Jerusalem Kabul Kamchatka Karachi
+Kashgar Katmandu Krasnoyarsk Kuala_Lumpur Kuching Kuwait Macao Macau
+Magadan Makassar Manila Muscat Nicosia Novosibirsk Omsk Oral Phnom_Penh
+Pontianak Pyongyang Qatar Qyzylorda Rangoon Riyadh Riyadh87 Riyadh88
+Riyadh89 Saigon Sakhalin Samarkand Seoul Shanghai Singapore Taipei
+Tashkent Tbilisi Tehran Tel_Aviv Thimbu Thimphu Tokyo Ujung_Pandang
+Ulaanbaatar Ulan_Bator Urumqi Vientiane Vladivostok Yakutsk Yekaterinburg
+Yerevan
+
+Please enter the name of one of these cities or zones
+You just need to type enough letters to resolve ambiguities
+Press Enter to view all of them again
+Name: [] Harbin
+Your default time zone is set to 'Asia/Harbin'.
+Local time is now:      Tue Mar 11 10:46:46 CST 2008.
+Universal Time is now:  Tue Mar 11 02:46:46 UTC 2008.
+
+		</screen>
+		<para>tzdata</para>
+		<command>dpkg-reconfigure tzdata</command>
+		<screen>
+$ sudo dpkg-reconfigure tzdata
+		</screen>
+	</section>
+	<section id="system.date">
+		<title>to change system date/time</title>
+		<para>date</para>
+		<para>e.g. date -s month/day/year</para>
+		<screen>
+# date -s 1/18/2008
+		</screen>
+		<para>time</para>
+		<para>e.g. date -s hour:minute:second</para>
+		<screen>
+# date -s 11:12:00
+		</screen>
+		<para>writing CMOS</para>
+		<screen>
+# clock -w
+		</screen>
+		<section>
+			<title>NTP Server</title>
+			<para>更新网络时间</para>
+			<para>ntpdate - client for setting system time from NTP servers</para>
+			<screen>
+$ sudo ntpdate asia.pool.ntp.org
+21 May 10:34:18 ntpdate[6687]: adjust time server 203.185.69.60 offset 0.031079 sec		
+$ sudo hwclock -w
+			</screen>
+		</section>
+	</section>
+	<section id="language">
+		<title>Language</title>
+		<para>默认语言</para>
+		<screen>
+export LANG=en_US
+export LC_ALL=en_US		
+		</screen>
+		<para>永久更改</para>
+		<screen>
+sudo vi /etc/default/locale
+
+LANG="en_US.UTF-8"
+LANGUAGE="en_US:en"
+		</screen>
+		<para>改为中文环境</para>
+		<screen>
+sudo apt-get install language-support-zh
+LANG="zh_CN.UTF-8"
+LANGUAGE="zh_CN:zh"
+		</screen>		
+	</section>
+</chapter>	

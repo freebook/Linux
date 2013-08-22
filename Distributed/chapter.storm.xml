@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="storm" ?>
+	<title>Twitter Storm</title>
+	<section id="storm.single">
+		<title>单机版</title>
+		<para>操作系统环境：Ubuntu 13.04 KVM虚拟机</para>
+		<para>安装 storm 涉及到安装以下包：python、zookeeper、zeromq、jzmq、storm</para>
+		<procedure>
+			<title>Ubuntu + Storm 单机环境安装</title>
+			<step>
+				<para>安装 zookeeper</para>
+				<screen>
+$ sudo apt-get install zookeeper zookeeper-bin zookeeperd
+				</screen>
+			</step>
+			<step>
+				<para>安装 zeromq 与 jzmq</para>
+				<screen>
+$ sudo apt-get install openjdk-7-jdk
+$ sudo apt-get install libzmq-dev
+				</screen>
+				<para>设置 JAVA_HOME 环境变量</para>
+				<screen>
+$ export JAVA_HOME="/usr/lib/jvm/java-7-openjdk-amd64"
+				</screen>
+				<para>编译安装 jzmq</para>
+				<screen>
+				<![CDATA[
+$ cd /usr/local/src/
+$ git clone git://github.com/nathanmarz/jzmq.git
+$ cd jzmq
+$ ./autogen.sh
+$ ./configure --prefix=/srv/jzmq-2.1.0
+$ javac src/org/zeromq/*.java
+$ touch src/classdist_noinst.stamp
+$ make && make install
+
+$ ls /srv/jzmq-2.1.0/
+lib  share
+				]]>
+				</screen>
+			</step>
+			<step>
+				<para>安装 Storm</para>
+				<para>下载地址：https://github.com/nathanmarz/storm/downloads</para>
+				<screen>
+$ sudo apt-get install unzip
+
+$ cd /usr/local/src/
+$ $ wget https://github.com/downloads/nathanmarz/storm/storm-0.8.1.zip
+$ unzip storm-0.8.1.zip
+$ $ sudo mv storm-0.8.1 /srv/
+$ sudo ln -s /srv/storm-0.8.1 /srv/storm
+				</screen>
+				<para></para>
+				<screen>
+				<![CDATA[
+cat >> ~/.bashrc <<'EOF'
+
+export JAVA_HOME="/usr/lib/jvm/java-7-openjdk-amd64"
+export ZOOKEEPER_HOME="/usr/lib/zookeeper"
+export STORM_HOME=/srv/storm
+export PATH=$PATH:$PATH:$ZOOKEEPER_HOME/bin:$STORM_HOME/bin
+EOF
+				]]>
+				</screen>
+				<para>修改 Storm CONF_DIR 目录位置</para>
+				<screen>
+$ sed -i 's:CONF_DIR = os.path.expanduser("~/.storm"):CONF_DIR = "/srv/storm-0.8.1/conf":' /srv/storm/bin/storm
+				</screen>
+			</step>
+			<step>
+				<para>启动服务</para>
+				<para>启动 zookeeper 服务</para>
+				<screen>
+$ sudo service zookeeper start
+				</screen>
+				<para>启动 storm 服务</para>
+				<screen>
+				<![CDATA[
+/srv/storm/bin/storm nimbus &
+/srv/storm/bin/storm supervisor &
+/srv/storm/bin/storm ui &
+				]]>
+				</screen>
+				<para>Storm UI</para>
+				<para>http://192.168.6.2:8080/</para>
+				<para>查看 Java 进程</para>
+				<screen>
+$ jps
+10382 Jps
+10228 supervisor
+10294 core
+10173 nimbus
+				</screen>
+			</step>
+			<step>
+				<para>测试 Storm</para>
+				<screen>
+$ sudo apt-get install maven2
+
+$ git clone git://github.com/nathanmarz/storm-starter
+$ cd storm-starter
+$ mvn -f m2-pom.xml package
+				</screen>
+				<para>先进入Storm UI http://192.168.6.2:8080/, 然后运行下面与命令</para>
+				<screen>
+$ storm jar target/storm-starter-0.0.1-SNAPSHOT-jar-with-dependencies.jar storm.starter.WordCountTopology wordcountTop
+				</screen>
+				<para>在次进入 Storm UI 你会看到 wordcountTop</para>
+			</step>
+		</procedure>
+	</section>
+	<section>
+		<title>lein 安装</title>
+		<para>从 github 安装</para>
+		<screen>
+$ mkdir ~/bin
+$ cd ~/bin
+$ wget https://raw.github.com/technomancy/leiningen/stable/bin/lein
+$ chmod 755 ~/bin/lein
+$ ./lein self-install
+		</screen>
+		<para>建议使用 Ubuntu apt-get 命令安装</para>
+		<screen>
+sudo apt-get install leiningen
+		</screen>
+		<screen>
+
+		</screen>
+	</section>
+</chapter>

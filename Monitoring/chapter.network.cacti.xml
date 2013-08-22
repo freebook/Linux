@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="cacti">
+	<title>Cacti</title>
+	<para>Cacti is a complete network graphing solution designed to harness the power of RRDTool's data storage and graphing functionality. Cacti provides a fast poller, advanced graph templating, multiple data acquisition methods, and user management features out of the box. All of this is wrapped in an intuitive, easy to use interface that makes sense for LAN-sized installations up to complex networks with hundreds of devices.</para>
+	<para>homepage: http://www.cacti.net/</para>
+	<section id="cacti.apt">
+		<title>Install Cacti for Ubuntu</title>
+		<procedure>
+			<title>Step by step Install Cacti</title>
+			<step>
+				<para>Install Cacti for </para><para>Ubuntu </para>
+				<screen>
+netkiller@shenzhen:~$ sudo apt-get install cacti
+				</screen>
+				<screen>
+				<![CDATA[
+   ┌────────────────┤ Configuring libphp-adodb ├────────────────────┐
+   │                                                                                            │
+   │ WARNING: include path for php has changed!                                                 │
+   │                                                                                            │
+   │ libphp-adodb is no longer installed in /usr/share/adodb. New installation path is now      │
+   │ /usr/share/php/adodb.                                                                      │
+   │                                                                                            │
+   │ Please update your php.ini file. Maybe you must also change your web-server configuraton.  │
+   │                                                                                            │
+   │                                           <Ok>                                             │
+   │                                                                                            │
+   └─────────────────────────────────────────────────────┘
+				]]>
+				</screen>
+				<screen>
+				<![CDATA[
+ ┌─────────────────────┤ Configuring cacti ├─────────────────────┐
+ │                                                                                               │
+ │ cacti must have a database installed and configured before it can be used.  If you like,      │
+ │ this can be handled with dbconfig-common.                                                     │
+ │                                                                                               │
+ │ If you are an advanced database administrator and know that you want to perform this          │
+ │ configuration manually, or if your database has already been installed and configured, you    │
+ │ should refuse this option.  Details on what needs to be done should most likely be provided   │
+ │ in /usr/share/doc/cacti.                                                                      │
+ │                                                                                               │
+ │ Otherwise, you should probably choose this option.                                            │
+ │                                                                                               │
+ │ Configure database for cacti with dbconfig-common?                                            │
+ │                                                                                               │
+ │                           <Yes>                              <No>                             │
+ │                                                                                               │
+ └───────────────────────────────────────────────────────┘
+				]]>
+				</screen>
+
+				<screen>
+				<![CDATA[
+  ┌───────────────────┤ Configuring cacti ├──────────────────────┐
+  │ What is the password for the administrative account with which this package should create   │
+  │ its MySQL database and user?                                                                │
+  │                                                                                             │
+  │ Password of your database's administrative user:                                            │
+  │                                                                                             │
+  │ ___________________________________________________________________________________________ │
+  │                                                                                             │
+  │                          <Ok>                              <Cancel>                         │
+  │                                                                                             │
+  └──────────────────────────────────────────────────────┘
+				]]>
+				</screen>
+			</step>
+		</procedure>
+		<para>reset password of admin </para>
+		<screen>
+		<![CDATA[
+mysql> use cacti;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+
+mysql> select * from user_auth;
++----+----------+----------------------------------+-------+---------------+----------------------+-----------+-----------+--------------+----------------+------------+---------------+--------------+--------------+------------------------+---------+
+| id | username | password                         | realm | full_name     | must_change_password | show_tree | show_list | show_preview | graph_settings | login_opts | policy_graphs | policy_trees | policy_hosts | policy_graph_templates | enabled |
++----+----------+----------------------------------+-------+---------------+----------------------+-----------+-----------+--------------+----------------+------------+---------------+--------------+--------------+------------------------+---------+
+|  1 | admin    | 21232f297a57a5a743894a0e4a801fc3 |     0 | Administrator | on                   | on        | on        | on           | on             |          1 |             1 |            1 |            1 |                      1 | on      |
+|  3 | guest    | 43e9a4ab75570f5b                 |     0 | Guest Account | on                   | on        | on        | on           | on             |          3 |             1 |            1 |            1 |                      1 |         |
++----+----------+----------------------------------+-------+---------------+----------------------+-----------+-----------+--------------+----------------+------------+---------------+--------------+--------------+------------------------+---------+
+2 rows in set (0.00 sec)
+
+
+mysql> update user_auth set password=md5("chen") where id='1' and username='admin';
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+		
+		]]>
+		</screen>
+	</section>
+	
+	<section id="cacti.source">
+		<title>Source Install</title>
+		<para>Cacti requires MySQL, PHP, RRDTool, net-snmp, and a webserver that supports PHP such as Apache. </para>
+		<screen>
+sudo apt-get install rrdtool
+sudo apt-get install snmp snmpd
+sudo apt-get install php5-snmp
+		</screen>
+		<para><link linkend="snmp">At first, install snmp for linux</link></para>
+		<orderedlist numeration="arabic">
+			<listitem><para>wget http://www.cacti.net/downloads/cacti-0.8.7b.tar.gz</para></listitem>
+			<listitem><para>tar zxvf cacti-0.8.7b.tar.gz</para></listitem>
+			<listitem><para>mv cacti-0.8.7b /home/netkiller/public_html/cacti</para></listitem>
+			<listitem><para><![CDATA[ mysqladmin --user=root create cacti ]]></para></listitem>
+			<listitem><para><![CDATA[ mysql -uroot -p cacti < cacti.sql ]]></para></listitem>
+			<listitem><para>echo "GRANT ALL ON cacti.* TO cactiuser@localhost IDENTIFIED BY 'somepassword';" | mysql -uroot -p</para></listitem>
+			<listitem><para>echo "flush privileges;" | mysql -uroot -p</para></listitem>
+			<listitem><para>vi include/config.php</para>
+				<example>
+					<title>cacti config.php</title>
+					<programlisting>
+					<![CDATA[
+$database_type = "mysql";
+$database_default = "cacti";
+$database_hostname = "localhost";
+$database_username = "cactiuser";
+$database_password = "somepassword";
+$database_port = "3306";
+					]]>
+					</programlisting>
+				</example>
+			</listitem>
+			<listitem>
+				<para>crontab -e</para>
+				<para><![CDATA[ */5 * * * * php /var/www/neo.6600.org/html/cacti/poller.php > /dev/null 2>&1 ]]></para>
+				<para>or</para>
+				<para>/etc/crontab</para>
+				<para><![CDATA[ */5 * * * * nobody php /home/netkiller/public_html/cacti/poller.php > /dev/null 2>&1 ]]></para>
+			</listitem>
+			<listitem><para>mkdir -p  /var/log/cacti/</para></listitem>
+		</orderedlist>
+		<para>configure cacti</para>
+		<para><ulink url="http://your-server/cacti/">http://your-server/cacti/</ulink></para>
+	</section>
+	<section>
+		<title>Template</title>
+		<para>MySQL Template: <ulink url="http://code.google.com/p/mysql-cacti-templates/">http://code.google.com/p/mysql-cacti-templates/</ulink></para>
+		<screen>
+$ cd /usr/local/src/
+$ wget http://mysql-cacti-templates.googlecode.com/files/better-cacti-templates-1.1.7.tar.gz
+$ tar zxvf better-cacti-templates-1.1.7.tar.gz
+$ cd better-cacti-templates-1.1.7/
+$ cp scripts/ss_get_mysql_stats.php /usr/share/cacti/site/scripts
+		</screen>
+		<para>default password</para>
+		<screen>
+		<![CDATA[
+vim /usr/share/cacti/site/scripts/ss_get_mysql_stats.php.cnf
+<?php
+$mysql_user = "root";
+$mysql_pass = "s3cret";
+?>		
+		]]>
+		</screen>
+		<para>Import Templates</para>
+		<screen>
+		<![CDATA[
+Import/Export -> Import Templates -> Import Template from Local File -> Save
+		]]>
+		</screen>
+		<para>设置模版</para>
+		<screen>
+Templates -> 
+
+X MyISAM Indexes DT
+X MyISAM Key Cache DT
+X MySQL Binary/Relay Logs DT
+X MySQL Command Counters DT
+X MySQL Connections DT
+X MySQL Files and Tables DT
+X MySQL Handlers DT
+X MySQL Network Traffic DT
+X MySQL Processlist DT
+X MySQL Query Cache DT
+X MySQL Query Cache Memory DT
+X MySQL Replication DT
+X MySQL Select Types DT
+X MySQL Sorts DT
+X MySQL Table Locks DT
+X MySQL Temporary Objects DT
+X MySQL Threads DT
+X MySQL Transaction Handler DT
+
+->
+
+Custom Data
+Hostname
+Username	#单击复选框，并输入默认用户名
+Password	#单击复选框，并输入默认密码
+Port
+
+-> Save
+		
+		</screen>
+	</section>
+</section>

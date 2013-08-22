@@ -1,0 +1,1 @@
+xcopy images xhtml\images

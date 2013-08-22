@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<!ENTITY part.shell.xml						SYSTEM "part.shell.xml">
+
+	<!ENTITY chapter.shell.xml					SYSTEM "chapter.shell.xml">
+	<!ENTITY chapter.bash.xml					SYSTEM "chapter.bash.xml">
+	<!ENTITY chapter.bash.prompt.xml			SYSTEM "chapter.bash.prompt.xml">
+	<!ENTITY chapter.zsh.xml	 				SYSTEM "chapter.zsh.xml">
+	<!ENTITY chapter.shell.tui.xml 				SYSTEM "chapter.shell.tui.xml">
+	<!ENTITY chapter.shell.example.xml	 		SYSTEM "chapter.shell.example.xml">
+
+	<!ENTITY part.command.xml					SYSTEM "part.command.xml">
+	<!ENTITY chapter.command.xml				SYSTEM "chapter.command.xml">
+	<!ENTITY chapter.cmd.sys.xml				SYSTEM "chapter.cmd.sys.xml">
+	<!ENTITY chapter.cmd.man.xml				SYSTEM "chapter.cmd.man.xml">
+	<!ENTITY chapter.cmd.directory.xml			SYSTEM "chapter.cmd.directory.xml">
+	<!ENTITY chapter.cmd.directory.find.xml		SYSTEM "chapter.cmd.directory.find.xml">
+	<!ENTITY chapter.cmd.compress.xml			SYSTEM "chapter.cmd.compress.xml">
+	<!ENTITY chapter.cmd.numeric.xml			SYSTEM "chapter.cmd.numeric.xml">
+	<!ENTITY chapter.cmd.datetime.xml			SYSTEM "chapter.cmd.datetime.xml">
+	<!ENTITY chapter.cmd.text.xml		 		SYSTEM "chapter.cmd.text.xml">
+	<!ENTITY chapter.cmd.text.vim.xml	 		SYSTEM "chapter.cmd.text.vim.xml">
+	<!ENTITY chapter.cmd.text.grep.xml	 		SYSTEM "chapter.cmd.text.grep.xml">
+	<!ENTITY chapter.cmd.text.sort.xml			SYSTEM "chapter.cmd.text.sort.xml">
+	<!ENTITY chapter.cmd.text.awk.xml			SYSTEM "chapter.cmd.text.awk.xml">
+	<!ENTITY chapter.cmd.text.sed.xml			SYSTEM "chapter.cmd.text.sed.xml">
+	<!ENTITY chapter.cmd.curl.xml		 		SYSTEM "chapter.cmd.curl.xml">
+
+	<!ENTITY chapter.utility.xml		 		SYSTEM "chapter.utility.xml">
+	<!ENTITY chapter.utility.wget.xml	 		SYSTEM "chapter.utility.wget.xml">
+	<!ENTITY chapter.utility.tui.xml	 		SYSTEM "chapter.utility.tui.xml">
+	<!ENTITY chapter.klish.xml			 		SYSTEM "chapter.klish.xml">
+	<!ENTITY chapter.utility.expect.xml		 	SYSTEM "chapter.utility.expect.xml">
+
+	<!ENTITY chapter.miscellaneous.xml	 		SYSTEM "chapter.miscellaneous.xml">
+

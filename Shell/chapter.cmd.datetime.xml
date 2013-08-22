@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.cmd.datetime.xml 381 2012-04-03 09:49:08Z netkiller $ -->
+<chapter id="datatime">
+	<title>date and time</title>
+	<section id="data.format">
+		<title>日期格式</title>
+		<para>2010/06/18 17:57:38</para>
+		<screen>
+$ date '+%Y/%m/%d %H:%M:%S'
+		</screen>
+	
+		<para>2010-06-18 17:57:58</para>
+		<screen>
+$ date '+%Y-%m-%d %H:%M:%S'	
+		</screen>
+		<screen>
+$ date +'%Y-%m-01 00:00:01'
+2010-10-01 00:00:01	
+		</screen>
+	</section>
+	<section id="data.d">
+		<title>-d --date=</title>
+		<screen>
+# date -d next-day +%Y%m%d
+20060328
+# date -d last-day +%Y%m%d
+20060326
+# date -d yesterday +%Y%m%d
+20060326
+# date -d tomorrow +%Y%m%d
+20060328
+# date -d last-month +%Y%m
+200602
+# date -d next-month +%Y%m
+200604
+# date -d next-year +%Y
+2007		
+		</screen>
+		
+		<section >
+			<title>日期偏移量</title>
+			<screen>
+昨天 (前一天)
+date --date='1 days ago' "+%Y-%m-%d"
+date -d '1 days ago' "+%Y-%m-%d"
+date -d yesterday "+%Y-%m-%d"
+
+明天 (後一天)
+date --date='1 days' "+%Y-%m-%d"
+date -d '1 days' "+%Y-%m-%d"
+date -d tomorrow "+%Y-%m-%d"		
+			</screen>
+			<section>
+				<title>day</title>
+				<screen>
+$ date -d '-1 day' +'%Y-%m-%d 00:00:01'
+2010-10-14 00:00:01
+
+$ date -d '+5 day' +'%Y-%m-%d 00:00:01'
+2010-10-20 00:00:01
+				</screen>
+			</section>
+			<section>
+				<title>month</title>
+				<screen>
+$ date -d '+2 month' +'%Y-%m-%d 00:00:01'
+2010-12-15 00:00:01
+
+$ date -d '-1 month' +'%Y-%m-%d 00:00:01'
+2010-09-15 00:00:01
+				</screen>
+			</section>
+			<section>
+				<title>year</title>
+				<screen>
+$ date -d '-5 year' +'%Y-%m-%d'
+2005-10-15
+$ date -d '+1 year' +'%Y-%m-%d'
+2011-10-15
+				</screen>
+			</section>
+	
+		</section>
+		<section>
+			<title>时间偏移</title>
+			<screen>
+1小時前
+date --date='1 hours ago' "+%Y-%m-%d %H:%M:%S"
+1小時後
+date --date='1 hours' "+%Y-%m-%d %H:%M:%S"
+1分鐘前
+date --date='1 minutes ago' "+%Y-%m-%d %H:%M:%S"
+1分鐘後
+date --date='1 minutes' "+%Y-%m-%d %H:%M:%S"
+1秒前
+date --date='1 seconds ago' "+%Y-%m-%d %H:%M:%S"
+1秒後
+date --date='1 seconds' "+%Y-%m-%d %H:%M:%S"
+			</screen>
+		</section>		
+	</section>
+	<section id="weekday">
+		<title>weekday name</title>
+		<screen>
+$ date +%a
+Fri
+
+$ date +%A
+Friday
+		</screen>
+	</section>
+	<section id="datatime.utc">
+		<title>UTC</title>
+		<para>UTC time</para>
+		<screen>
+$ datetime=$(date -u '+%Y%m%d %H:%M:%S')
+$ echo $datetime
+20091203 06:22:03
+		</screen>
+	</section>
+	
+</chapter>

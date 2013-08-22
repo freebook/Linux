@@ -1,0 +1,714 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="lvs">
+	<title>Linux Virtual Server</title>
+	<para>Session</para>
+	<para>
+当选用持久服务（-p选项）支持HTTP session时，来自同一IP地址的请求将被送到同一台服务器。所以在这种状况下，一个ab生成的请求都会被调度到一台服务器，达不到性能测试的目的。在真实系统使用中，持久服务时间一般设置好几个小时。
+
+当ldirectord监测到并且在列表中删除一台应用服务器时，之前有建立连接的,继续转发到这台机上，确实是这样。因为IPVS并不立即淘汰刚删除的服务器，考虑到服务器太忙被删除，可能很快会被加回来。如果你需要马上淘汰已删除服务器的连接，可以用
+
+echo 1 > /proc/sys/net/ipv4/vs/expire_nodest_conn
+
+不用担心记录连接所消耗的内存，因为一个连接只占用128个字节，所以512M可用内存可以支持四百万条连接数。
+
+可以考虑用分布式的测试工具，或者多台机器一起跑ab。
+
+	</para>
+	<section id="lvs.ipvsadm">
+		<title>环境配置</title>
+		<para>ssh</para>
+		<screen>
+neo@ubuntu:~$ sudo apt-get install ssh
+		</screen>
+		<para>network</para>
+		<screen>
+neo@ubuntu:~$ sudo ifconfig eth0 172.16.0.250
+neo@ubuntu:~$ sudo route add default gw 172.16.0.254
+		</screen>
+		<para>install ipvsadm</para>
+		<screen>
+neo@ubuntu:~$ apt-cache search ipvsadm
+ipvsadm - Linux Virtual Server support programs
+neo@ubuntu:~$ sudo apt-get install ipvsadm
+Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+Suggested packages:
+  heartbeat keepalived ldirectord
+The following NEW packages will be installed:
+  ipvsadm
+0 upgraded, 1 newly installed, 0 to remove and 30 not upgraded.
+Need to get 0B/43.9kB of archives.
+After unpacking 238kB of additional disk space will be used.
+Preconfiguring packages ...
+Selecting previously deselected package ipvsadm.
+(Reading database ... 16572 files and directories currently installed.)
+Unpacking ipvsadm (from .../ipvsadm_1.24+1.21-1.1ubuntu3_i386.deb) ...
+Setting up ipvsadm (1.24+1.21-1.1ubuntu3) ...
+
+neo@ubuntu:~$
+		</screen>
+		<para>test</para>
+		<screen>
+neo@ubuntu:~$ sudo ipvsadm
+IP Virtual Server version 1.2.1 (size=4096)
+Prot LocalAddress:Port Scheduler Flags
+  -> RemoteAddress:Port           Forward Weight ActiveConn InActConn
+neo@ubuntu:~$
+		</screen>
+	</section>
+
+	<section id="lvs.nat">
+		<title>VS/NAT</title>
+		<para><graphic fileref="images/VS-NAT.gif" /></para>
+		<para><graphic fileref="images/RunningExample.gif" /></para>
+		<para>ip_forward</para>
+		<screen>
+sysctl -w net.ipv4.ip_forward=1
+or
+echo 1 > /proc/sys/net/ipv4/ip_forward
+or
+/etc/sysctl.conf 文件，保证其中有如下一行:
+net.ipv4.ip_forward = 1
+
+执行:
+sysctl -p
+		</screen>
+		<para>iptables</para>
+		<screen>
+sudo iptables -t nat -A POSTROUTING -j MASQUERADE -p tcp -o eth0 -s 172.16.0.0/16 -d 0.0.0.0/0
+sudo iptables -t nat -A POSTROUTING -j MASQUERADE -p tcp -o eth1 -s 192.168.1.0/24 -d 0.0.0.0/0
+		</screen>
+		<para>ipvsadm</para>
+		<screen>
+sudo ipvsadm -A -t 172.16.0.1:80 -s wlc
+sudo ipvsadm -a -t 172.16.0.1:80 -r 192.168.0.4:80 -m
+sudo ipvsadm -a -t 172.16.0.1:80 -r 192.168.0.5:80 -m -w 2
+		</screen>
+	</section>
+	<section id="lvs.tun">
+		<title>VS/TUN</title>
+		<para><graphic fileref="images/VS-IPTunneling.gif" /></para>
+		<para><graphic fileref="images/VS-TUN-flow.jpg" /></para>
+		<para>Director</para>
+		<screen>
+ifconfig eth0:0 172.16.0.1 netmask 255.255.255.255 broadcast 172.16.0.1 up
+		</screen>
+		<para><![CDATA[ ifconfig eth0:0 <VIP> netmask 255.255.255.255 broadcast <VIP> up ]]></para>
+		<screen>
+ipvsadm -A -t 172.16.0.1:80 -s wlc
+ipvsadm -a -t 172.16.0.1:80 -r 172.16.0.10 -i
+ipvsadm -a -t 172.16.0.1:80 -r 172.16.0.20 -i
+ipvsadm -a -t 172.16.0.1:80 -r 172.16.0.30 -i
+		</screen>
+		<para>ifconfig</para>
+		<screen>
+[root@centos etc]# ifconfig
+eth0      Link encap:Ethernet  HWaddr 00:0C:29:15:2B:CF
+          inet addr:172.16.0.40  Bcast:172.16.255.255  Mask:255.255.0.0
+          inet6 addr: fe80::20c:29ff:fe15:2bcf/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:2340 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:2524 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:995068 (971.7 KiB)  TX bytes:327201 (319.5 KiB)
+          Interrupt:177 Base address:0x1400
+
+eth0:0    Link encap:Ethernet  HWaddr 00:0C:29:15:2B:CF
+          inet addr:172.16.0.1  Bcast:172.16.0.1  Mask:255.255.255.255
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          Interrupt:177 Base address:0x1400
+
+lo        Link encap:Local Loopback
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          inet6 addr: ::1/128 Scope:Host
+          UP LOOPBACK RUNNING  MTU:16436  Metric:1
+          RX packets:27 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:27 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:2460 (2.4 KiB)  TX bytes:2460 (2.4 KiB)
+
+[root@centos etc]#
+
+		</screen>
+		<para>route</para>
+		<screen>
+[root@centos etc]# route
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+169.254.0.0     *               255.255.0.0     U     0      0        0 eth0
+172.16.0.0      *               255.255.0.0     U     0      0        0 eth0
+default         172.16.0.254    0.0.0.0         UG    0      0        0 eth0
+[root@centos etc]#
+
+		</screen>
+		<para>ipvsadm</para>
+		<screen>
+[root@centos etc]# ipvsadm
+IP Virtual Server version 1.2.1 (size=4096)
+Prot LocalAddress:Port Scheduler Flags
+  -> RemoteAddress:Port           Forward Weight ActiveConn InActConn
+TCP  172.16.0.1:http wlc
+  -> 172.16.0.30:http             Tunnel  1      0          0
+  -> 172.16.0.20:http             Tunnel  1      0          0
+  -> 172.16.0.10:http             Tunnel  1      0          0
+[root@centos etc]#
+
+		</screen>
+		<para>realserver</para>
+		<screen>
+echo 1 > /proc/sys/net/ipv4/ip_forward
+modprobe ipip
+ifconfig tunl0 0.0.0.0 up
+echo 1 > /proc/sys/net/ipv4/conf/all/hidden
+echo 1 > /proc/sys/net/ipv4/conf/tunl0/hidden
+ifconfig tunl0 172.16.0.1 netmask 255.255.255.255 broadcast 172.16.0.1 up
+route add -host 172.16.0.1 dev tunl0
+		</screen>
+
+		<para>ubuntu real server</para>
+		<screen>
+neo@backup:~$ sudo sysctl -w net.ipv4.ip_forward=1
+net.ipv4.ip_forward = 1
+neo@backup:~$ sudo modprobe ipip
+neo@backup:~$ sudo ifconfig tunl0 0.0.0.0 up
+
+neo@backup:~$ sudo ifconfig tunl0 172.16.0.1 netmask 255.255.255.255 broadcast 172.16.0.1 up
+neo@backup:~$ sudo route add -host 172.16.0.1 dev tunl0
+neo@backup:~$ route
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+172.16.0.1      *               255.255.255.255 UH    0      0        0 tunl0
+localnet        *               255.255.0.0     U     0      0        0 eth0
+default         172.16.0.254    0.0.0.0         UG    0      0        0 eth0
+neo@backup:~$
+
+		</screen>
+		<para>script</para>
+		<screen>
+sudo sysctl -w net.ipv4.ip_forward=1
+sudo modprobe ipip
+sudo ifconfig tunl0 0.0.0.0 up
+sudo ifconfig tunl0 172.16.0.1 netmask 255.255.255.255 broadcast 172.16.0.1 up
+		</screen>
+		<para>ifconfig</para>
+		<screen>
+neo@master:~$ ifconfig
+eth0      Link encap:Ethernet  HWaddr 00:0C:29:CC:CF:A2
+          inet addr:172.16.0.10  Bcast:172.16.255.255  Mask:255.255.0.0
+          inet6 addr: fe80::20c:29ff:fecc:cfa2/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:5006 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:4692 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:2866792 (2.7 MiB)  TX bytes:639042 (624.0 KiB)
+          Interrupt:177 Base address:0x1400
+
+lo        Link encap:Local Loopback
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          inet6 addr: ::1/128 Scope:Host
+          UP LOOPBACK RUNNING  MTU:16436  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:0 (0.0 b)  TX bytes:0 (0.0 b)
+
+tunl0     Link encap:IPIP Tunnel  HWaddr
+          inet addr:172.16.0.1  Mask:255.255.255.255
+          UP RUNNING NOARP  MTU:1480  Metric:1
+          RX packets:98 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:19511 (19.0 KiB)  TX bytes:0 (0.0 b)
+
+neo@master:~$ route
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+172.16.0.0      *               255.255.0.0     U     0      0        0 eth0
+default         172.16.0.254    0.0.0.0         UG    0      0        0 eth0
+neo@master:~$
+
+		</screen>
+
+	</section>
+	<section id="lvs.dr">
+		<title>VS/DR</title>
+		<para><graphic fileref="images/VS-DRouting.gif" /></para>
+		<para><graphic fileref="images/VS-DR-flow.jpg" /></para>
+		<para>VS/DR方式是通过改写请求报文中的MAC地址部分来实现的。</para>
+		<para>Director和RealServer必需在物理上有一个网卡通过不间断的局域网相连。</para>
+
+		<para>Director</para>
+		<para>VIP:172.16.0.1</para>
+		<screen>
+neo@ubuntu:~$ sudo ifconfig eth0 172.16.0.1/16
+or
+ifconfig eth0 172.16.0.x netmask 255.255.0.0 broadcast 172.16.0.255 up
+ifconfig eth0:0 172.16.0.1 netmask 255.255.255.255 broadcast 172.16.0.1 up
+
+sudo sysctl -w net.ipv4.ip_forward=1
+		</screen>
+		<para>ipvsadm</para>
+		<screen>
+#!/bin/bash
+ipvsadm -C
+ipvsadm -A -t 172.16.0.1:80 -s wlc
+ipvsadm -a -t 172.16.0.1:80 -r 172.16.0.10 -g
+ipvsadm -a -t 172.16.0.1:80 -r 172.16.0.20 -g
+ipvsadm -a -t 172.16.0.1:80 -r 172.16.0.30 -g
+		</screen>
+		<para>script</para>
+		<screen>
+ifconfig eth0 172.16.0.x netmask 255.255.0.0 broadcast 172.16.0.255 up
+ifconfig eth0:0 172.16.0.1 netmask 255.255.255.255 broadcast 172.16.0.1 up
+echo 1 > /proc/sys/net/ipv4/ip_forward
+		</screen>
+
+
+		<para>RealServer</para>
+		<para>Ubuntn</para>
+		<screen>
+neo@master:~$ sudo sysctl -w net.ipv4.ip_forward=1
+net.ipv4.ip_forward = 1
+neo@master:~$ sudo sysctl -w net.ipv4.conf.lo.arp_ignore=1
+net.ipv4.conf.lo.arp_ignore = 1
+neo@master:~$ sudo sysctl -w net.ipv4.conf.lo.arp_announce=2
+net.ipv4.conf.lo.arp_announce = 2
+neo@master:~$ sudo sysctl -w net.ipv4.conf.all.arp_ignore=1
+net.ipv4.conf.all.arp_ignore = 1
+neo@master:~$ sudo sysctl -w net.ipv4.conf.all.arp_announce=2
+net.ipv4.conf.all.arp_announce = 2
+neo@master:~$
+neo@master:~$ sudo ifconfig lo:0 172.16.0.1 netmask 255.255.255.255 broadcast 172.16.0.1 up
+neo@master:~$ sudo route add -host 172.16.0.1 dev lo:0
+		</screen>
+		<para>script</para>
+		<screen>
+sudo sysctl -w net.ipv4.ip_forward=1
+sudo sysctl -w net.ipv4.conf.lo.arp_ignore=1
+sudo sysctl -w net.ipv4.conf.lo.arp_announce=2
+sudo sysctl -w net.ipv4.conf.all.arp_ignore=1
+sudo sysctl -w net.ipv4.conf.all.arp_announce=2
+sudo ifconfig lo:0 172.16.0.1 netmask 255.255.255.255 broadcast 172.16.0.1 up
+sudo route add -host 172.16.0.1 dev lo:0
+		</screen>
+		<para>redhat</para>
+		<screen>
+echo 1 > /proc/sys/net/ipv4/ip_forward
+echo 1 > /proc/sys/net/ipv4/conf/all/hidden
+echo 1 > /proc/sys/net/ipv4/conf/lo/hidden
+ifconfig lo:0 172.16.0.1 netmask 255.255.255.255 broadcast 172.16.0.1 up
+		</screen>
+		<para>test</para>
+		<screen>
+neo@ubuntu:~$ sudo tcpdump -i eth0|grep "172.16.0.1"
+		</screen>
+		<section>
+			<title>配置文件</title>
+			<section>
+				<title>Director</title>
+				<para>ifconfig</para>
+				<screen>
+neo@ubuntu:~$ ifconfig
+eth0      Link encap:Ethernet  HWaddr 00:0C:29:C2:FC:D7
+          inet addr:172.16.0.250  Bcast:172.16.255.255  Mask:255.255.0.0
+          inet6 addr: fe80::20c:29ff:fec2:fcd7/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:8566 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:11544 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:726365 (709.3 KiB)  TX bytes:2638735 (2.5 MiB)
+          Interrupt:177 Base address:0x1400
+
+eth0:0    Link encap:Ethernet  HWaddr 00:0C:29:C2:FC:D7
+          inet addr:172.16.0.1  Bcast:255.255.255.255  Mask:0.0.0.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          Interrupt:177 Base address:0x1400
+
+lo        Link encap:Local Loopback
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          inet6 addr: ::1/128 Scope:Host
+          UP LOOPBACK RUNNING  MTU:16436  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:0 (0.0 b)  TX bytes:0 (0.0 b)
+
+neo@ubuntu:~$
+
+				</screen>
+				<para>ipvsadm</para>
+				<screen>
+neo@ubuntu:~$ sudo ipvsadm
+IP Virtual Server version 1.2.1 (size=4096)
+Prot LocalAddress:Port Scheduler Flags
+  -> RemoteAddress:Port           Forward Weight ActiveConn InActConn
+TCP  172.16.0.1:www wlc
+  -> 172.16.0.20:www              Route   1      0          0
+  -> 172.16.0.10:www              Route   1      0          0
+neo@ubuntu:~$
+
+				</screen>
+			</section>
+			<section>
+				<title>RealServer</title>
+				<para>ifconfig</para>
+				<screen>
+neo@ubuntu:~$ ifconfig
+eth0      Link encap:Ethernet  HWaddr 00:0C:29:CC:CF:A2
+          inet addr:172.16.0.20  Bcast:172.16.255.255  Mask:255.255.0.0
+          inet6 addr: fe80::20c:29ff:fecc:cfa2/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:1897 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:1511 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:229334 (223.9 KiB)  TX bytes:205973 (201.1 KiB)
+          Interrupt:177 Base address:0x1400
+
+lo        Link encap:Local Loopback
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          inet6 addr: ::1/128 Scope:Host
+          UP LOOPBACK RUNNING  MTU:16436  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:0 (0.0 b)  TX bytes:0 (0.0 b)
+
+lo:0      Link encap:Local Loopback
+          inet addr:172.16.0.1  Mask:255.255.255.255
+          UP LOOPBACK RUNNING  MTU:16436  Metric:1
+
+neo@ubuntu:~$
+
+				</screen>
+			</section>
+<!--
+			<para>/etc/sysconfig/network</para>
+			<screen>
+NETWORKING=yes
+HOSTNAME=localhost.localdomain
+GATEWAY=192.168.0.251
+			</screen>
+			<para>/etc/sysconfig/network-scripts/ifcfg-eth0</para>
+			<screen>
+DEVICE=eth0
+ONBOOT=yes
+BOOTPROTO=static
+IPADDR=192.168.0.254
+NETMASK=255.255.255.0
+			</screen>
+			<para>/etc/sysconfig/network-scripts/ifcfg-eth0:0</para>
+			<screen>
+DEVICE=eth0:0
+ONBOOT=yes
+BOOTPROTO=static
+IPADDR=192.168.0.200
+NETMASK=255.255.255.255
+			</screen>
+-->
+		</section>
+	</section>
+
+	<section id="lvs.script">
+		<title>ipvsadm script</title>
+		<para>save/restore</para>
+		<screen>
+$ ipvsadm-sav &gt; ipvsadm.sav
+$ ipvsadm-restore &lt; ipvsadm.sav
+		</screen>
+		<para>同步</para>
+		<screen>
+#sync daemon.
+ipvsadm --start-daemon=master --mcast-interface=eth1
+ipvsadm --start-daemon=backup --mcast-interface=eth1
+		</screen>
+		<para>cancel</para>
+		<screen>
+[root@centos etc]# ipvsadm -C
+[root@centos etc]# ifconfig eth0:0 down
+and
+[root@centos etc]# ifconfig lo:0 down
+		</screen>
+	</section>
+	<section id="ipvsadm.timeout">
+		<title>Timeout</title>
+		<screen>
+# ipvsadm -L --timeout
+Timeout (tcp tcpfin udp): 900 120 300
+		</screen>
+	</section>
+	<section id="lvs.debug">
+		<title>debug</title>
+		<screen>
+tcpdump -n -i eth0 port 80 or icmp or arp
+		</screen>
+		<para>正确的IP包</para>
+		<screen>
+<![CDATA[
+20:39:01.222810 IP 172.16.0.253.4086 > 172.16.0.1.www: S 4092656017:4092656017(0) win 65535 <mss 1460,nop,wscale 2,nop,nop,sackOK>
+20:39:01.225684 IP 172.16.0.253.4086 > 172.16.0.1.www: . ack 3272377939 win 64240
+20:39:01.225697 IP 172.16.0.1.www > 172.16.0.253.4086: S 3272377938:3272377938(0) ack 4092656018 win 5840 <mss 1460,nop,nop,sackOK,nop,wscale 1>
+20:39:01.225726 IP 172.16.0.253.4086 > 172.16.0.1.www: P 1:186(185) ack 1 win 64240
+20:39:01.246167 IP 172.16.0.1.www > 172.16.0.253.4086: . ack 186 win 3456
+20:39:01.284672 IP 172.16.0.1.www > 172.16.0.253.4086: P 1:524(523) ack 186 win 3456
+20:39:01.386049 IP 172.16.0.253.4086 > 172.16.0.1.www: . ack 524 win 64109
+]]>
+		</screen>
+	</section>
+	<section id="lvs.monitor">
+		<title>ipvsadm monitor</title>
+		<para>monitor.py</para>
+		<screen>
+		<![CDATA[
+#!/usr/bin/env python
+
+class Ipvs:
+    types = ''
+    vip = '0.0.0.0'
+    vport = '0'
+    scheduler = ''
+    nodes = []
+    """
+    def __init__(self, vs):
+        self.types = vs[0]
+        self.vip = vs[1]
+        self.vport = vs[2]
+        self.scheduler = vs[3]
+        self.nodes = vs[4]
+    """
+class Node:
+    nip     = '0.0.0.0'
+    nport   = ''
+    forward = ''
+    weight = 0
+    active = 0
+    inact  = 0
+    def __init__(self, node):
+        nip = node[0]
+        nport = node[1]
+        forward = node[2]
+        weight = node[3]
+        active = node[4]
+        incat = node[5]
+        self.nip     = nip
+        self.nport   = nport
+        self.forward = forward
+        self.weight = weight
+        self.active = active
+        self.inact  = incat
+
+class Monitor:
+    buffer = []
+    ipvsdict = {}
+    def __init__(self):
+        self.buffer.append('<?xml version="1.0"?>')
+        self.buffer.append('<?xml-stylesheet type="text/xsl" href="vs.xsl"?>')
+        #self.make()
+	pass
+    def clear(self):
+        self.buffer = []
+        self.ipvss = []
+    def make(self):
+        self.buffer.append('<ipvs>')
+        for key in self.ipvsdict:
+            ipvs = self.ipvsdict[key]
+            self.node(ipvs.nodes,ipvs.vip+':'+ipvs.vport+' '+ipvs.scheduler)
+        self.buffer.append('</ipvs>')
+    def header(self,vs):
+        self.buffer.append('<!-- --------------------------------------- -->')
+    def node(self, nodes, caption):
+        self.buffer.append('<table>')
+        self.buffer.append('<caption>'+caption+'</caption>')
+	for node in nodes:
+            self.buffer.append('<node>')
+            self.buffer.append('<nip>'+node.nip+'</nip>')
+            self.buffer.append('<nport>'+node.nport+'</nport>')
+            self.buffer.append('<forward>'+node.forward+'</forward>')
+            self.buffer.append('<weight>'+node.weight+'</weight>')
+            self.buffer.append('<active>'+node.active+'</active>')
+            self.buffer.append('<inact>'+node.inact+'</inact>')
+            self.buffer.append('</node>')
+        self.buffer.append('</table>')
+    def display(self):
+        for buf in self.buffer:
+            print buf
+    def saveAs(self,filename):
+#       if filename:
+        f = open(filename,'w')
+        for buf in self.buffer:
+            f.write(buf)
+        f.close()
+    def save(self):
+        self.saveAs('vs.xml')
+
+    def ipvslist(self):
+        w,r = os.popen2(IPVSADM)
+        w.close()
+        version = r.readline()
+        vsfield = r.readline()
+        nodefield = r.readline()
+
+        pattern_vs = r'(\w+)\s+([0-9.]+):(\w+)\s+(\w+)'
+        pattern_node = r'\s->\s([0-9.]+):(\w+)\s+(\w+)\s+(\d+)\s+(\d+)\s+(\d+)'
+        cp_vs = re.compile(pattern_vs)
+        cp_node = re.compile(pattern_node)
+
+        current_vs = ''
+        for line in r.readlines():
+            if line[:3] == 'TCP' or line[:3] == 'UDP':
+                current_vs = line
+
+                result = cp_vs.search(line).groups()
+                ipvs = Ipvs()
+                ipvs.types = result[0]
+                ipvs.vip = result[1]
+                ipvs.vport = result[2]
+                ipvs.scheduler = result[3]
+                ipvs.nodes = []
+                self.ipvsdict[current_vs] = ipvs
+            elif line[2:4]== '->':
+                result = cp_node.search(line).groups()
+                oneNode = Node(result)
+                #nodes.append(oneNode)
+                self.ipvsdict[current_vs].nodes.append(oneNode)
+
+class Network:
+    interface = []
+    def __init__(self):
+        pass
+    def hostname:
+        pass
+
+class Ipvsadmin:
+    cmdline = ''
+    vscache = []
+    forward = {'nat':'','route':'','tunel':''}
+
+    def load(self, config):
+        pass
+    def vip(self, vip, vport, scheduler):
+        pass
+    def rip(self, vip,rip,rport,forward,weight):
+        pass
+    def list(self):
+        pass
+    def saveAs(self):
+        pass
+    def restore(self):
+        pass
+
+class Deploy:
+    src = ['vs.xml','vs.xsl']
+    dst = ''
+    def __init__(self):
+        pass
+    def target(self, dst):
+        self.dst = dst
+    def start(self):
+        try:
+            for srcfile in self.src:
+                shutil.copy(srcfile,self.dst)
+        except (IOError, os.error), why:
+            print "Can't copy %s to %s: %s" % (`self.src`, `self.dst`, str(why))
+
+
+
+import os,re
+import shutil
+IPVSADM='/sbin/ipvsadm'
+
+def main():
+    xml = Monitor()
+    xml.ipvslist()
+    xml.make()
+    #xml.display()
+    xml.save()
+    #xml.saveAs('/var/www/vs.xml')
+    deploy = Deploy()
+    deploy.target('/var/www')
+    deploy.start()
+
+if __name__ == "__main__":
+    main()
+
+		]]>
+		</screen>
+		<para>ipvs.xsl</para>
+		<screen>
+		<![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<!-- stylesheet by netkiller -->
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+
+<xsl:output method="html"/>
+
+<xsl:template match="/">
+<html>
+<head>
+<title><xsl:value-of select="table/caption"/></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta content="陈景峰,网路杀手,网络杀手,bg7nyt,ham,火腿" name="keywords" />
+<meta content="陈景峰" name="description" />
+<!--
+<link rel="shortcut icon" href="favicon.ico" />
+<link rel="Bookmark" href="favicon.ico" />
+-->
+<link rel="stylesheet" type="text/css" href="style.css" />
+
+</head>
+
+<body bgcolor="DFEFFF" text="#000000">
+<a name="top" />
+
+
+
+<xsl:apply-templates/>
+
+</body>
+</html>
+</xsl:template>
+
+<xsl:template match="/ipvs">
+<xsl:for-each select="table">
+<table width="90%" border="1" cellspacing="0" cellpadding="5" bgcolor="E0F0FF" align="center" bordercolor="4FA7FF">
+<caption><xsl:value-of select="caption"/></caption>
+<xsl:for-each select="node">
+<tr>
+<td><xsl:value-of select="nip"/></td>
+<td><xsl:value-of select="nport"/></td>
+<td><xsl:value-of select="forward"/></td>
+<td><xsl:value-of select="weight"/></td>
+<td><xsl:value-of select="active"/></td>
+<td><xsl:value-of select="inact"/></td>
+</tr>
+</xsl:for-each>
+</table>
+<br />
+</xsl:for-each>
+</xsl:template>
+
+<xsl:template match="chapter/title">
+<center><h1>
+<xsl:apply-templates/>
+</h1>
+</center>
+<hr />
+
+</xsl:template>
+
+<xsl:template match="ulink">
+<a href="{@url}" border="0" >
+<xsl:apply-templates/> </a> <br />
+</xsl:template>
+
+
+<!--
+<xsl:apply-templates select="title"/><br />
+<xsl:for-each select="setp">
+</xsl:for-each>
+-->
+</xsl:stylesheet>
+		]]>
+		</screen>
+	</section>
+</chapter>

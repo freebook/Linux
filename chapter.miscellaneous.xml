@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.miscellaneous.xml 427 2012-06-13 14:03:48Z netkiller $ -->
+<chapter id="miscellaneous">
+	<title>Miscellaneous</title>
+	<section id="jhelioviewer">
+		<title>JHelioviewer</title>
+		<para>http://jhelioviewer.org/</para>
+	</section>
+	<section id="xshell">
+		<title>X Shell</title>
+		<para>用与在超级终端中连接到linux时使用</para>
+		<para>rz 常用于从windows下载文件</para>
+		<para>sz 常用于从windows上载文件</para>
+	</section>
+</chapter>

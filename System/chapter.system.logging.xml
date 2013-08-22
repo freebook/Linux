@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="log">
+	<title>Logging</title>
+	<section id="syslog">
+		<title>syslog, klogctl - read and/or clear kernel message ring buffer; set console_loglevel</title>
+		<section id="etc.sysconfig.syslog">
+			<title>/etc/sysconfig/syslog</title>
+			<para>enables logging from remote machines</para>
+			<screen>
+# vim /etc/sysconfig/syslog
+
+#SYSLOGD_OPTIONS="-m 0"
+SYSLOGD_OPTIONS="-r -m 0"
+			</screen>
+			<screen>
+# /etc/init.d/syslog restart
+Shutting down kernel logger:                               [  OK  ]
+Shutting down system logger:                               [  OK  ]
+Starting system logger:                                    [  OK  ]
+Starting kernel logger:                                    [  OK  ]
+			</screen>
+		</section>
+		<section id="syslog.conf">
+			<title>/etc/syslog.conf</title>
+			<screen>
+*.*			@172.16.0.9
+			</screen>
+			<para>所有日志将被重定向到172.16.0.9</para>
+			<screen>
+[root@dev1 test]# service syslog restart
+Shutting down kernel logger:                               [  OK  ]
+Shutting down system logger:                               [  OK  ]
+Starting system logger:                                    [  OK  ]
+Starting kernel logger:                                    [  OK  ]
+[root@dev1 test]#
+			</screen>
+		</section>
+		<section id="logger">
+			<title>logger</title>
+			<para>日志的级别</para>
+			<screen>
+emerg 系统已经不可用，级别为紧急
+alert 警报，需要立即处理和解决
+crit 既将发生，得需要预防。事件就要发生
+warnig 警告
+err 错误信息，普通的错误信息
+notice 提醒信息，很重要的信息
+info 通知信息，属于一般信息
+debug 这是调试类信息
+			</screen>
+			<para></para>
+			<screen>
+#vi /etc/syslog.conf
+
+# Log anything (except mail) of level info or higher.
+# Don't log private authentication messages!
+*.info;mail.none;authpriv.none;cron.none;local1.none;local3.none /var/log/messages
+
+#my log
+local3.* /var/log/my.log
+			</screen>
+			<para></para>
+			<screen>
+# service syslog restart
+Shutting down kernel logger:                               [  OK  ]
+Shutting down system logger:                               [  OK  ]
+Starting system logger:                                    [  OK  ]
+Starting kernel logger:                                    [  OK  ]
+			</screen>
+			<para></para>
+			<screen>
+ping 192.168.0.1 | logger -it logger_test -p local3.notice
+			</screen>
+			<para></para>
+			<screen>
+# cat /var/log/my.log
+Jan 12 18:06:03 dev1 logger_test[10991]: PING 192.168.0.1 (192.168.0.1) 56(84) bytes of data.
+Jan 12 18:06:03 dev1 logger_test[10991]: 64 bytes from 192.168.0.1: icmp_seq=1 ttl=64 time=0.746 ms
+Jan 12 18:06:04 dev1 logger_test[10991]: 64 bytes from 192.168.0.1: icmp_seq=2 ttl=64 time=0.713 ms
+Jan 12 18:06:05 dev1 logger_test[10991]: 64 bytes from 192.168.0.1: icmp_seq=3 ttl=64 time=0.924 ms
+Jan 12 18:06:06 dev1 logger_test[10991]: 64 bytes from 192.168.0.1: icmp_seq=4 ttl=64 time=0.819 ms
+Jan 12 18:06:08 dev1 logger_test[10991]: 64 bytes from 192.168.0.1: icmp_seq=5 ttl=64 time=0.667 ms
+Jan 12 18:06:09 dev1 logger_test[10991]: 64 bytes from 192.168.0.1: icmp_seq=6 ttl=64 time=0.626 ms
+Jan 12 18:06:10 dev1 logger_test[10991]: 64 bytes from 192.168.0.1: icmp_seq=7 ttl=64 time=0.665 ms
+			</screen>
+		</section>
+		<section id="logger.udp">
+			<title>To Log Messages Over UDP Network</title>
+			<!-- http://www.cyberciti.biz/tips/linux-netconsole-log-management-tutorial.html -->
+		</section>
+	</section>
+	<section id="logrotate">
+		<title>logrotate - rotates, compresses, and mails system logs</title>
+		<para>logrotate 是linux系统自带的日志分割与压缩程序，通过crontab每日运行一次。</para>
+		<screen>
+$ cat /etc/cron.daily/logrotate
+#!/bin/sh
+
+test -x /usr/sbin/logrotate || exit 0
+/usr/sbin/logrotate /etc/logrotate.conf
+		</screen>
+		<section id="logrotate.conf">
+			<title>/etc/logrotate.conf</title>
+			<screen>
+$ cat /etc/logrotate.conf
+# see "man logrotate" for details
+# rotate log files weekly
+weekly
+
+# keep 4 weeks worth of backlogs
+rotate 4
+
+# create new (empty) log files after rotating old ones
+create
+
+# uncomment this if you want your log files compressed
+#compress
+
+# packages drop log rotation information into this directory
+include /etc/logrotate.d
+
+# no packages own wtmp, or btmp -- we'll rotate them here
+/var/log/wtmp {
+    missingok
+    monthly
+    create 0664 root utmp
+    rotate 1
+}
+
+/var/log/btmp {
+    missingok
+    monthly
+    create 0660 root utmp
+    rotate 1
+}
+
+# system-specific logs may be configured here
+			</screen>
+		</section>
+		<section id="logrotate.d">
+			<title>/etc/logrotate.d/</title>
+			<section>
+				<title>apache2</title>
+				<screen>
+				<![CDATA[
+$ cat /etc/logrotate.d/apache2
+/var/log/apache2/*.log {
+        weekly
+        missingok
+        rotate 52
+        compress
+        delaycompress
+        notifempty
+        create 640 root adm
+        sharedscripts
+        postrotate
+                if [ -f "`. /etc/apache2/envvars ; echo ${APACHE_PID_FILE:-/var/run/apache2.pid}`" ]; then
+                        /etc/init.d/apache2 reload > /dev/null
+                fi
+        endscript
+}
+				]]>
+				</screen>
+				<screen>
+				<![CDATA[
+/var/log/httpd/*log {
+    missingok
+    notifempty
+    sharedscripts
+    postrotate
+        /sbin/service httpd reload > /dev/null 2>/dev/null || true
+    endscript
+}
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>mysql</title>
+				<screen>
+				<![CDATA[
+$ cat /etc/logrotate.d/mysql-server
+# - I put everything in one block and added sharedscripts, so that mysql gets
+#   flush-logs'd only once.
+#   Else the binary logs would automatically increase by n times every day.
+# - The error log is obsolete, messages go to syslog now.
+/var/log/mysql.log /var/log/mysql/mysql.log /var/log/mysql/mysql-slow.log {
+        daily
+        rotate 7
+        missingok
+        create 640 mysql adm
+        compress
+        sharedscripts
+        postrotate
+                test -x /usr/bin/mysqladmin || exit 0
+                # If this fails, check debian.conf!
+                MYADMIN="/usr/bin/mysqladmin --defaults-file=/etc/mysql/debian.cnf"
+                if [ -z "`$MYADMIN ping 2>/dev/null`" ]; then
+                  # Really no mysqld or rather a missing debian-sys-maint user?
+                  # If this occurs and is not a error please report a bug.
+                  #if ps cax | grep -q mysqld; then
+                  if killall -q -s0 -umysql mysqld; then
+                    exit 1
+                  fi
+                else
+                  $MYADMIN flush-logs
+                fi
+        endscript
+}
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>cacti</title>
+				<screen>
+/var/log/cacti/*.log {
+        weekly
+        missingok
+        rotate 52
+        compress
+        notifempty
+        create 640 www-data www-data
+        sharedscripts
+}
+				</screen>
+			</section>
+		</section>
+	</section>
+	<section id="remote.log">
+		<title>remote syslog</title>
+		<section id="syslog-ng">
+		    <title>syslog-ng</title>
+		</section>
+		<section id="rsyslog">
+		    <title>rsyslog</title>
+		    <para>www.rsyslog.com</para>
+		    <screen>
+yum install rsyslog
+		    </screen>
+		</section>
+	</section>
+</chapter>

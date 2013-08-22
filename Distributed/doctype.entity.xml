@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!ENTITY part.distributed.xml		SYSTEM "part.distributed.xml">
+<!ENTITY chapter.storm.xml		    SYSTEM "chapter.storm.xml">
+<!ENTITY chapter.hpc.xml		    SYSTEM "chapter.hpc.xml">

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!ENTITY chapter.management.xml				SYSTEM "chapter.management.xml">
+<!ENTITY chapter.ansible.xml				SYSTEM "chapter.ansible.xml">
+<!ENTITY chapter.puppet.xml					SYSTEM "chapter.puppet.xml">
+<!ENTITY chapter.rexify.xml					SYSTEM "chapter.rexify.xml">
+<!ENTITY chapter.saltstack.xml				SYSTEM "chapter.saltstack.xml">
+<!ENTITY chapter.chef.xml					SYSTEM "chapter.chef.xml">

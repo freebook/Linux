@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="nginx.fastcgi">
+	<title>fastcgi</title>
+	<section id="nginx.fastcgi.spawn-fcgi">
+		<title>spawn-fcgi</title>
+		<para>config php fastcgi</para>
+		<screen>
+		<![CDATA[
+sudo vim /etc/nginx/sites-available/default
+
+        location ~ \.php$ {
+                fastcgi_pass   127.0.0.1:9000;
+                fastcgi_index  index.php;
+                fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
+                include fastcgi_params;
+        }
+		]]>
+		</screen>
+		<para>Spawn-fcgi</para>
+		<para>We still need a script to start our fast cgi processes. We will extract one from Lighttpd. and then disable start script of lighttpd</para>
+		<screen>
+$ sudo apt-get install lighttpd
+$ sudo chmod -x /etc/init.d/lighttpd
+		</screen>
+
+		<screen>
+$ sudo touch /usr/bin/php-fastcgi
+$ sudo vim /usr/bin/php-fastcgi
+
+#!/bin/sh
+/usr/bin/spawn-fcgi -a 127.0.0.1 -p 9000 -u www-data -f /usr/bin/php5-cgi
+		</screen>
+		<para>fastcgi daemon</para>
+		<screen>
+		<![CDATA[
+$ sudo touch /etc/init.d/nginx-fastcgi
+$ sudo chmod +x /usr/bin/php-fastcgi
+$ sudo vim /etc/init.d/nginx-fastcgi
+
+This is also a new empty file, add the following and save:
+
+#!/bin/bash
+PHP_SCRIPT=/usr/bin/php-fastcgi
+RETVAL=0
+case "$1" in
+start)
+$PHP_SCRIPT
+RETVAL=$?
+;;
+stop)
+killall -9 php
+RETVAL=$?
+;;
+restart)
+killall -9 php
+$PHP_SCRIPT
+RETVAL=$?
+;;
+*)
+echo "Usage: nginx-fastcgi {start|stop|restart}"
+exit 1
+;;
+esac
+exit $RETVAL
+
+We need to change some permissions to make this all work.
+$ sudo chmod +x /etc/init.d/nginx-fastcgi
+		]]>
+		</screen>
+		<para>create a test file</para>
+		<screen>
+		<![CDATA[
+sudo vim /var/www/nginx-default/index.php
+<?php echo phpinfo(); ?>
+		]]>
+		</screen>
+	</section>
+	<section id="nginx.fastcgi.php-fpm">
+		<title>php-fpm</title>
+		<section>
+			<title>php5-fpm</title>
+			<screen>
+sudo apt-get install php5-cli php5-cgi php5-fpm
+			</screen>
+			<screen>
+/etc/init.d/php5-fpm start
+			</screen>
+		</section>
+		<section id="nginx.php-fpm">
+			<title>编译 php-fpm</title>
+			<screen>
+			<![CDATA[
+./configure --prefix=/srv/php-5.3.8 \
+--with-config-file-path=/srv/php-5.3.8/etc \
+--with-config-file-scan-dir=/srv/php-5.3.8/etc/conf.d \
+--enable-fpm \
+--with-fpm-user=www \
+--with-fpm-group=www \
+--with-pear \
+--with-curl \
+--with-gd \
+--with-jpeg-dir \
+--with-png-dir \
+--with-freetype-dir \
+--with-xpm-dir \
+--with-iconv \
+--with-mcrypt \
+--with-mhash \
+--with-zlib \
+--with-xmlrpc \
+--with-xsl \
+--with-openssl \
+--with-mysql=/srv/mysql-5.5.16-linux2.6-i686 \
+--with-mysqli=/srv/mysql-5.5.16-linux2.6-i686/bin/mysql_config \
+--with-pdo-mysql=/srv/mysql-5.5.16-linux2.6-i686 \
+--with-sqlite=shared \
+--with-pdo-sqlite=shared \
+--disable-debug \
+--enable-zip \
+--enable-sockets \
+--enable-soap \
+--enable-mbstring \
+--enable-magic-quotes \
+--enable-inline-optimization \
+--enable-gd-native-ttf \
+--enable-xml \
+--enable-ftp \
+--enable-exif \
+--enable-wddx \
+--enable-bcmath \
+--enable-calendar \
+--enable-sqlite-utf8 \
+--enable-shmop \
+--enable-dba \
+--enable-sysvsem \
+--enable-sysvshm \
+--enable-sysvmsg
+
+make && make install
+			]]>
+			</screen>
+			<para>如果出现 fpm 编译错误，取消--with-mcrypt 可以编译成功。</para>
+			<screen>
+# cp sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm
+# chmod 755 /etc/init.d/php-fpm
+# ln -s /srv/php-5.3.5 /srv/php
+# cp /srv/php/etc/php-fpm.conf.default /srv/php/etc/php-fpm.conf
+# cp php.ini-production /srv/php/etc/php.ini
+			</screen>
+			<screen>
+groupadd -g 80 www
+adduser -o --home /www --uid 80 --gid 80 -c "Web User" www
+			</screen>
+			<para>php-fpm.conf</para>
+			<screen>
+# grep -v ';' /srv/php-5.3.5/etc/php-fpm.conf | grep -v "^$"
+[global]
+pid = run/php-fpm.pid
+error_log = log/php-fpm.log
+[www]
+listen = 127.0.0.1:9000
+
+user = www
+group = www
+pm = dynamic
+pm.max_children = 2048
+pm.start_servers = 20
+pm.min_spare_servers = 5
+pm.max_spare_servers = 35
+
+pm.max_requests = 500
+			</screen>
+			<screen>
+chkconfig --add php-fpm
+			</screen>
+		</section>
+	</section>
+</section>

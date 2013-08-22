@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.network.router.xml 388 2012-04-11 10:01:38Z netkiller $ -->
+<chapter id="router">
+	<title>Linux IP And Router</title>
+	<!-- http://www.sme-solution.com/integration/route/01/index.html -->
+	<!-- http://www.cyberciti.biz/tips/howto-configure-linux-virtual-local-area-network-vlan.html -->
+	<!-- http://linux-ip.net/ -->
+	<section id="netmask">
+		<title>netmask</title>
+		<!-- 
+		
+子网掩码快速算法
+大家都应该知道2的x次方值吧？下面是2的0次到10次方的计算值分别是：
+1 2 4 8 16 32 64 128 256 512 1024。
+实例
+如果你希望每个子网中只有5个ip地址可以给机器用，那么你就最少需要准备给每个子网7个ip位址，因为需要加上两头的不可用的网络和广播ip，所以你需要选比7多的最近的那位，也就是8，就是说选每个子网8个ip。到这一步，你就可以算屏蔽了。
+
+这个方法就是：最后一位屏蔽就是256减去你每个子网所需要的ip位元址的数量，那么这个例子就是256-8=248，那么算出这个，你就可以知道那些ip是不能用的了，
+依此类推：0-7,8-15,16-23,24-31，……，写在上面的0、7、8、15、16、23、24、31……都是不能用的，你应该用某两个数字之间的IP，那个就是一个子网可用的IP。
+
+再试验一下，就拿200台机器分成4个子网来做例子吧。
+200台机器，4个子网，那么就是每个子网50台机器，设定为192.168.10.0，C类的IP，大子网掩码应为255.255.255.0，对吧，但是我们要分子网，所以按照上面的，我们用32个IP一个子网内不够，应该每个子网用64个IP（其中62位可用，足够了吧），然后用我的办法：子网掩码应该是256-64=192，那么总的子网掩码应该为：255.255.255.192。不相信？算算：0-63，64-127，128-191，192-255，这样你就可以把四个区域分别设定到四个子网的机器上了。
+		 -->
+		
+		<section>
+			<title>iptab</title>
+			<screen>
+# iptab
++----------------------------------------------+
+| addrs   bits   pref   class  mask            |
++----------------------------------------------+
+|     1      0    /32          255.255.255.255 |
+|     2      1    /31          255.255.255.254 |
+|     4      2    /30          255.255.255.252 |
+|     8      3    /29          255.255.255.248 |
+|    16      4    /28          255.255.255.240 |
+|    32      5    /27          255.255.255.224 |
+|    64      6    /26          255.255.255.192 |
+|   128      7    /25          255.255.255.128 |
+|   256      8    /24      1C  255.255.255.0   |
+|   512      9    /23      2C  255.255.254.0   |
+|    1K     10    /22      4C  255.255.252.0   |
+|    2K     11    /21      8C  255.255.248.0   |
+|    4K     12    /20     16C  255.255.240.0   |
+|    8K     13    /19     32C  255.255.224.0   |
+|   16K     14    /18     64C  255.255.192.0   |
+|   32K     15    /17    128C  255.255.128.0   |
+|   64K     16    /16      1B  255.255.0.0     |
+|  128K     17    /15      2B  255.254.0.0     |
+|  256K     18    /14      4B  255.252.0.0     |
+|  512K     19    /13      8B  255.248.0.0     |
+|    1M     20    /12     16B  255.240.0.0     |
+|    2M     21    /11     32B  255.224.0.0     |
+|    4M     22    /10     64B  255.192.0.0     |
+|    8M     23     /9    128B  255.128.0.0     |
+|   16M     24     /8      1A  255.0.0.0       |
+|   32M     25     /7      2A  254.0.0.0       |
+|   64M     26     /6      4A  252.0.0.0       |
+|  128M     27     /5      8A  248.0.0.0       |
+|  256M     28     /4     16A  240.0.0.0       |
+|  512M     29     /3     32A  224.0.0.0       |
+| 1024M     30     /2     64A  192.0.0.0       |
+| 2048M     31     /1    128A  128.0.0.0       |
+| 4096M     32     /0    256A  0.0.0.0         |
++----------------------------------------------+
+			</screen>
+		</section>
+		<section>
+			<title>netmask - a netmask generation and conversion program</title>
+			<screen>
+$ sudo apt-get install netmask
+			</screen>
+			<para>-s, --standard		Output address/netmask pairs</para>
+			<screen>
+$ netmask -s 192.168.1.0/28
+    192.168.1.0/255.255.255.240
+
+$ netmask -s 192.168.1.0/24
+    192.168.1.0/255.255.255.0  
+
+$ netmask -s 192.168.1.0/24
+    192.168.1.0/255.255.255.0  
+
+$ netmask -s 192.168.1.0/26
+    192.168.1.0/255.255.255.192
+			</screen>
+			<para>-c, --cidr			Output CIDR format address lists</para>
+			<screen>
+$ netmask -c 192.168.1.0/255.255.255.252
+    192.168.1.0/30
+
+$ netmask -c 192.168.1.0/255.255.255.192
+    192.168.1.0/26
+
+$ netmask -c 192.168.1.0/255.255.255.240
+    192.168.1.0/28
+			</screen>
+			<para>-i, --cisco			Output Cisco style address lists 思科风格的反子网掩码计算</para>
+			<screen>
+$ netmask  -i 192.168.1.0/255.255.255.0
+    192.168.1.0 0.0.0.255      
+
+$ netmask  -i 192.168.1.0/255.255.255.252
+    192.168.1.0 0.0.0.3        
+
+$ netmask  -i 192.168.1.0/24
+    192.168.1.0 0.0.0.255      
+
+$ netmask  -i 192.168.1.0/28
+    192.168.1.0 0.0.0.15  
+			</screen>
+			<para>-r, --range			Output ip address ranges 输出地址范围</para>
+			<screen>
+$ netmask  -r 192.168.1.0/255.255.255.0
+    192.168.1.0-192.168.1.255   (256)
+
+$ netmask  -r 192.168.1.0/255.255.255.192
+    192.168.1.0-192.168.1.63    (64)
+    
+$ netmask  -r 192.168.1.0/255.255.255.252
+    192.168.1.0-192.168.1.3     (4)
+    
+$ netmask  -r 192.168.1.0/28
+    192.168.1.0-192.168.1.15    (16)
+    
+$ netmask  -r 192.168.1.0/24
+    192.168.1.0-192.168.1.255   (256)
+			</screen>
+			<para></para>
+			<screen>
+$ netmask -r 192.168.1.0/255.255.255.252
+    192.168.1.0-192.168.1.3     (4)
+
+$ netmask -r 192.168.1.2/255.255.255.252
+    192.168.1.0-192.168.1.3     (4)
+
+$ netmask -r 192.168.1.6/255.255.255.252
+    192.168.1.4-192.168.1.7     (4)
+
+$ netmask -r 192.168.1.12/255.255.255.252
+   192.168.1.12-192.168.1.15    (4)
+
+$ netmask -r 192.168.1.13/255.255.255.252
+   192.168.1.12-192.168.1.15    (4)
+
+$ netmask -r 192.168.1.100/255.255.255.252
+  192.168.1.100-192.168.1.103   (4)
+
+$ netmask -r 192.168.1.100/255.255.255.240
+   192.168.1.96-192.168.1.111   (16)
+
+$ netmask -r 192.168.1.50/255.255.255.240
+   192.168.1.48-192.168.1.63    (16)			
+			</screen>
+			<para>-b, --binary			Output address/netmask pairs in binary 二进制</para>
+			<screen>
+$ netmask -b 192.168.1.0/255.255.255.240
+11000000 10101000 00000001 00000000 / 11111111 11111111 11111111 11110000
+
+$ netmask -b 172.16.0.0/255.255.252.0
+10101100 00010000 00000000 00000000 / 11111111 11111111 11111100 00000000
+			
+			</screen>
+		</section>		 
+	</section>
+	<section id="arp">
+		<title>arp - manipulate the system ARP cache</title>
+		<section>
+			<title>display hosts</title>
+			<para>display (all) hosts in alternative (BSD) style</para>
+			<screen>
+[root@dev2 ~]# arp -a
+? (192.168.3.253) at 00:1D:0F:82:05:DC [ether] on eth0
+? (192.168.3.48) at 00:25:64:9A:D7:CC [ether] on eth0
+? (192.168.3.101) at 00:25:64:A3:65:93 [ether] on eth0
+nis.example.com (192.168.3.5) at 00:25:64:9A:D7:E0 [ether] on eth0
+? (192.168.3.1) at 00:0F:E2:71:8E:FB [ether] on eth0
+? (192.168.3.153) at B8:AC:6F:25:D2:2E [ether] on eth0			
+			</screen>
+			<para>display (all) hosts in default (Linux) style</para>
+			<screen>
+[root@dev2 ~]# arp -e
+Address                  HWtype  HWaddress           Flags Mask            Iface
+192.168.3.48             ether   00:25:64:9A:D7:CC   C                     eth0
+192.168.3.101            ether   00:25:64:A3:65:93   C                     eth0
+nis.example.com          ether   00:25:64:9A:D7:E0   C                     eth0
+192.168.3.1              ether   00:0F:E2:71:8E:FB   C                     eth0
+10.0.0.1                 ether   00:1F:12:55:A9:02   C                     eth0
+192.168.3.153            ether   B8:AC:6F:25:D2:2E   C                     eth0
+			</screen>
+			<para>don't resolve names</para>
+			<screen>
+[root@dev2 ~]# arp -a -n
+? (192.168.3.253) at 00:1D:0F:82:05:DC [ether] on eth0
+? (192.168.3.48) at 00:25:64:9A:D7:CC [ether] on eth0
+? (192.168.3.101) at 00:25:64:A3:65:93 [ether] on eth0
+? (192.168.3.5) at 00:25:64:9A:D7:E0 [ether] on eth0
+? (192.168.3.1) at 00:0F:E2:71:8E:FB [ether] on eth0
+? (192.168.3.153) at B8:AC:6F:25:D2:2E [ether] on eth0
+			</screen>
+		</section>
+		<section>
+			<title>delete a specified entry</title>
+			<screen>
+[root@dev2 ~]# arp -d 192.168.3.101
+[root@dev2 ~]# arp -i eth1 -d 10.0.0.1
+			</screen>
+		</section>
+		<section>
+			<title>/proc/net/arp</title>
+			<screen>
+[root@dev2 ~]# cat /proc/net/arp
+IP address       HW type     Flags       HW address            Mask     Device
+192.168.3.48     0x1         0x2         00:25:64:9A:D7:CC     *        eth0
+192.168.3.101    0x1         0x2         00:1E:7A:E0:47:40     *        eth0
+192.168.3.5      0x1         0x2         00:25:64:9A:D7:E0     *        eth0
+192.168.3.1      0x1         0x2         00:0F:E2:71:8E:FB     *        eth0
+192.168.3.153    0x1         0x2         B8:AC:6F:25:D2:2E     *        eth0
+			</screen>
+		</section>
+		<section>
+			<title>/etc/ethers</title>
+			<screen>
+# Ethernet-address  IP-number
+00:25:64:9A:D7:CC	192.168.3.48
+			</screen>
+			<para>read new entries from file or from /etc/ethers</para>
+			<screen>
+# arp -f
+			</screen>
+		</section>
+	</section>
+	<section id="iproute2">
+		<title>iproute2</title>
+		<screen>
+add 增加路由
+del 删除路由
+via 网关出口 IP地址
+dev 网关出口 物理设备名
+		</screen>		
+		<section>
+			<title>添加路由</title>
+			<screen>
+ip route add 192.168.0.0/24 via 192.168.0.1
+ip route add 192.168.1.1 dev 192.168.0.1			
+			</screen>
+		</section>
+		<section>
+			<title>删除路由</title>
+			<screen>
+ip route del 192.168.0.0/24 via 192.168.0.1			
+			</screen>
+		</section>
+		<section>
+			<title>变更路由</title>
+			<screen>
+[root@router ~]# ip route
+192.168.5.0/24 dev eth0  proto kernel  scope link  src 192.168.5.47
+192.168.3.0/24 dev eth0  proto kernel  scope link  src 192.168.3.47
+default via 192.168.3.1 dev eth0
+
+[root@router ~]# ip route change default via 192.168.5.1 dev eth0
+
+[root@router ~]# ip route list
+192.168.5.0/24 dev eth0  proto kernel  scope link  src 192.168.5.47
+192.168.3.0/24 dev eth0  proto kernel  scope link  src 192.168.3.47
+default via 192.168.5.1 dev eth0
+			</screen>
+		</section>
+		<section>
+			<title>替换已有的路由</title>
+			<screen>
+ ip route replace
+			</screen>
+		</section>
+		<section>
+			<title>增加默认路由</title>
+			<para>192.168.0.1 是我的默认路由器</para>
+			<screen>
+ip route add default via 192.168.0.1 dev eth0
+			</screen>
+		</section>
+		<section>
+			<title>cache</title>
+			<screen>
+ip route flush cache			
+			</screen>
+		</section>
+	</section>
+	<section id="table">
+		<title>策略路由</title>
+		<screen>
+		<![CDATA[
+比如我们的LINUX有3个网卡
+eth0: 192.168.1.1　　　（局域网）
+eth1: 172.17.1.2　　　 （default gw=172.17.1.1，可以上INTERNET）
+eth2: 192.168.10.2　　 （连接第二路由192.168.10.1，也可以上INTERNET）
+
+实现两个目的
+1、让192.168.1.66从第二路由上网，其他人走默认路由
+2、让所有人访问192.168.1.1的FTP时，转到192.168.10.96上
+
+配置方法：
+vi /etc/iproute2/rt_tables
+
+#
+# reserved values
+#
+255     local
+254     main
+253     default
+100     ROUTE2
+
+# ip route default via 172.17.1.1 dev eth1
+# ip route default via 192.168.10.1 dev eth2 table ROUTE2
+# ip rule add from 192.168.1.66 pref 1001 table ROUTE2
+# ip rule add to 192.168.10.96 pref 1002 table ROUTE2
+# echo 1 >; /proc/sys/net/ipv4/ip_forward
+# iptables -t nat -A POSTROUTING -j MASQUERADE
+# iptables -t nat -A PREROUTING -d 192.168.1.1 -p tcp --dport 21 -j DNAT --to 192.168.10.96
+# ip route flush cache	
+		]]>	
+		</screen>
+		<screen>
+		<![CDATA[
+http://phorum.study-area.org/viewtopic.php?t=10085
+引用：# 對外網卡 
+EXT_IF="eth0" 
+      
+# HiNet IP 
+EXT_IP1="111.111.111.111" 
+EXT_MASK1="24" 
+GW1="111.111.111.1" 
+
+# SeedNet IP 
+EXT_IP2="222.222.222.222" 
+EXT_MASK2="24" 
+GW2="222.222.222.1" 
+
+# ?#93;定 ip 
+ip addr add $EXT_IP1/$EXT_MASK1 dev $EXT_IF 
+ip addr add $EXT_IP2/$EXT_MASK2 dev $EXT_IF 
+
+# ?#93;定 HiNet routing 
+ip rule add to $EXT_IP1/$EXT_MASK1 lookup 201 
+ip route add default via $GW1 dev $EXT_IF table 201 
+
+# ?#93;定 SeedNet routing 
+ip rule add to $EXT_IP2/$EXT_MASK2 lookup 202 
+ip route add default via $GW2 dev $EXT_IF table 202 
+
+# ?#93;定 Default route 
+ip route replace default equalize \ 
+   nexthop via $GW1 dev $EXT_IF \ 
+   nexthop via $GW2 dev $EXT_IF 
+    
+# 清除 route cache 
+ip route flush cache    
+
+
+它这里的ip rule也是这么使用的		
+		]]>
+		</screen>
+	</section>
+	<section id="nexthop">
+		<title>负载均衡</title>
+		<screen>
+ip route add default scope global nexthop dev ppp0 nexthop dev ppp1		
+		</screen>
+		<screen>
+neo@debian:~$ sudo ip route add default scope global nexthop via 192.168.3.1 dev eth0 weight 1 \
+nexthop via 192.168.5.1 dev eth2 weight 1
+	
+neo@debian:~$ sudo ip route
+192.168.5.0/24 dev eth1  proto kernel  scope link  src 192.168.5.9
+192.168.4.0/24 dev eth0  proto kernel  scope link  src 192.168.4.9
+192.168.3.0/24 dev eth0  proto kernel  scope link  src 192.168.3.9
+172.16.0.0/24 dev eth2  proto kernel  scope link  src 172.16.0.254
+default
+        nexthop via 192.168.3.1  dev eth0 weight 1
+        nexthop via 192.168.5.1  dev eth1 weight 1
+
+		</screen>
+		<screen>
+ip route add default scope global nexthop via $P1 dev $IF1 weight 1 \
+nexthop via $P2 dev $IF2 weight 1			
+		</screen>
+	</section>
+	<section id="ppp.masq">
+		<title>MASQUERADE</title>
+		<screen>
+iptables–tnat–APOSTROUTING–d192.168.1.0/24–s0/0–oppp0–jMASQUERD
+iptables–tnat–APOSTROUTING–s192.168.1.0/24-jSNAT–to202.103.224.58	
+iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -j MASQUERADE 	
+		</screen>
+		<para></para>
+		<screen>
+#ip route add via ppp0 dev eth0
+#ip route add via 202.103.224.58 dev eth0		
+		</screen>
+	</section>
+<section id="iptunnel">
+	<title>ip tunnel</title>
+		<para>ipip 是IP隧道模块</para>
+		<procedure><title>ip tunnel IP隧道配置步骤</title>
+			<step>
+				<para>server 1</para>
+				<screen>
+modprobe ipip
+ip tunnel add mytun mode ipip remote 220.201.35.11 local 211.100.37.167 ttl 255
+ifconfig mytun 10.42.1.1
+route add -net 10.42.1.0/24 dev mytun
+				</screen>
+			</step>
+			<step>
+				<para>server 2</para>
+				<screen>
+modprobe ipip
+ip tunnel add mytun mode ipip remote 211.100.37.167 local 220.201.35.11 ttl 255
+ifconfig mytun 10.42.1.2
+route add -net 10.42.1.0/24 dev mytun
+				</screen>
+			</step>
+			<step>
+				<para>nat</para>
+				<screen>
+/sbin/iptables -t nat -A POSTROUTING -s 10.42.1.0/24 -j MASQUERADE
+/sbin/iptables -t nat -A POSTROUTING -s 211.100.37.0/24 -j MASQUERADE
+				</screen>
+			</step>
+		</procedure>
+		<para>删除路由表</para>
+		<screen>
+route del -net 10.42.1.0/24 dev mytun
+		</screen>
+		<para>修改IP隧道的IP</para>
+		<screen>
+ifconfig mytun 10.10.10.220
+route add -net 10.10.10.0/24 dev mytun
+		</screen>
+		<para>ip 伪装</para>
+		<screen>
+/sbin/iptables -t nat -A POSTROUTING -s 10.10.10.0/24 -j MASQUERADE
+		</screen>
+</section>	
+	<section id="vlan">
+		<title>VLAN</title>
+		<para>首先需确保加载了内核模块 802.1q</para>
+		<screen>
+[root@development ~]# lsmod | grep 8021q
+[root@development ~]# modprobe 8021q		
+		</screen>
+		<para>加载后会生成目录/proc/net/vlan </para>
+		<screen>
+[root@development ~]# cat /proc/net/vlan/config
+VLAN Dev name    | VLAN ID
+Name-Type: VLAN_NAME_TYPE_RAW_PLUS_VID_NO_PAD
+
+		</screen>
+	</section>
+	<section id="zebra">
+		<title>Zebra</title>
+		<para>http://www.zebra.org/</para>
+	</section>
+</chapter>

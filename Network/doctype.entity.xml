@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<!ENTITY chapter.network				SYSTEM "chapter.network.xml">
+	<!ENTITY chapter.network.ntpd.xml		SYSTEM "chapter.network.ntpd.xml">
+	<!ENTITY chapter.network.dhcp			SYSTEM "chapter.network.dhcp.xml">
+	<!ENTITY chapter.network.bind 			SYSTEM "chapter.network.bind.xml">
+	<!ENTITY chapter.network.dnsmasq.xml	SYSTEM "chapter.network.dnsmasq.xml">
+	<!ENTITY chapter.network.router 		SYSTEM "chapter.network.router.xml">
+	<!ENTITY chapter.network.vpn 			SYSTEM "chapter.network.vpn.xml">
+	<!ENTITY chapter.network.vpn.openvpn	SYSTEM "chapter.network.vpn.openvpn.xml">
+	<!ENTITY chapter.network.vpn.pptpd 		SYSTEM "chapter.network.vpn.pptpd.xml">
+	<!ENTITY chapter.network.vpn.l2tp 		SYSTEM "chapter.network.vpn.l2tp.xml">
+	<!ENTITY chapter.network.vpn.ipsec-tools SYSTEM "chapter.network.vpn.ipsec-tools.xml">
+	<!ENTITY chapter.network.vpn.openswan 	SYSTEM "chapter.network.vpn.openswan.xml">
+	<!ENTITY chapter.network.proxy 			SYSTEM "chapter.network.proxy.xml">
+	<!ENTITY chapter.network.proxy.squid 	SYSTEM "chapter.network.proxy.squid.xml">
+	<!ENTITY chapter.network.proxy.web 		SYSTEM "chapter.network.proxy.web.xml">
+	<!ENTITY chapter.network.proxy.socks 	SYSTEM "chapter.network.proxy.socks.xml">
+	<!ENTITY chapter.network.p2p	 		SYSTEM "chapter.network.p2p.xml">
+	<!ENTITY chapter.network.innd 			SYSTEM "chapter.network.innd.xml">
+	<!ENTITY chapter.network.irc 			SYSTEM "chapter.network.irc.xml">
+	<!ENTITY chapter.network.jabber 		SYSTEM "chapter.network.jabber.xml">
+	<!ENTITY chapter.network.snmp 			SYSTEM "chapter.network.snmp.xml">
+	<!ENTITY chapter.network.rinetd.xml		SYSTEM "chapter.network.rinetd.xml">
+
+	<!ENTITY chapter.security.firewall 	SYSTEM "chapter.security.firewall.xml">
+	<!ENTITY chapter.security.firewall.iptables SYSTEM "chapter.security.firewall.iptables.xml">
+	<!ENTITY chapter.security.stunnel 		SYSTEM "chapter.security.stunnel.xml">
+	<!ENTITY chapter.security.openssh 		SYSTEM "chapter.security.openssh.xml">	
+	
+	<!ENTITY chapter.network.authentication.xml 			SYSTEM "chapter.network.authentication.xml">
+	<!ENTITY chapter.network.authentication.nis.xml 		SYSTEM "chapter.network.authentication.nis.xml">
+	<!ENTITY chapter.network.authentication.ldap.xml 		SYSTEM "chapter.network.authentication.ldap.xml">
+	<!ENTITY chapter.network.authentication.kerberos.xml 	SYSTEM "chapter.network.authentication.kerberos.xml">
+	<!ENTITY chapter.network.authentication.freeradius.xml 	SYSTEM "chapter.network.authentication.freeradius.xml">

@@ -1,0 +1,221 @@
+<chapter id="snmp">
+	<title>NET SNMP (Simple Network Management Protocol)</title>
+	<section id="snmp.install">
+		<title>安装SNMP</title>
+		<para>search package</para>
+		<screen>
+netkiller@neo:~$ apt-cache search snmp
+libsnmp-base - NET SNMP (Simple Network Management Protocol) MIBs and Docs
+libsnmp-perl - NET SNMP (Simple Network Management Protocol) Perl5 Support
+libsnmp-session-perl - Perl support for accessing SNMP-aware devices
+libsnmp9 - NET SNMP (Simple Network Management Protocol) Library
+libsnmp9-dev - NET SNMP (Simple Network Management Protocol) Development Files
+snmp - NET SNMP (Simple Network Management Protocol) Apps
+snmpd - NET SNMP (Simple Network Management Protocol) Agents
+php5-snmp - SNMP module for php5
+tcpdump - A powerful tool for network monitoring and data acquisition
+		</screen>
+		<para>安装</para>
+		<screen>
+netkiller@neo:~$ sudo apt-get install snmp snmpd
+		</screen>
+	</section>
+	<section id="snmpd.conf">
+		<title>snmpd.conf</title>
+		<para>配置 /etc/snmp/snmpd.conf</para>
+		<para>配置agentAddress</para>
+		<screen>
+agentAddress  udp:172.16.1.3:161
+		</screen>
+
+		<screen>
+#       sec.name  source          community
+com2sec paranoid  default          chen
+
+#           incl/excl subtree                          mask
+view all    included  .1                               80
+view system included  .iso.org.dod.internet.mgmt.mib-2.system
+view system included  .iso.org.dod.internet.mgmt.mib-2.host
+view system included  .iso.org.dod.internet.mgmt.mib-2.interfaces
+
+		</screen>
+		<para>.iso.org.dod.internet.mgmt.mib-2.host 可以使用命令 snmptranslate -Onf -IR hrStorageDescr得到</para>
+		<para>参考:http://www.mkssoftware.com/docs/man1/snmptranslate.1.asp</para>
+	</section>
+	<section id="snmp.mbi">
+		<title>列出MBI</title>
+
+		<para>$ snmpwalk -c public -v 1 127.0.0.1 1.3.6.1.2.1.1</para>
+		<screen>
+		<![CDATA[
+netkiller@neo:/etc/snmp$ snmpwalk -c public -v 1 127.0.0.1 1.3.6.1.2.1.1
+SNMPv2-MIB::sysDescr.0 = STRING: Linux neo.example.org 2.6.17-10-server #2 SMP Tue Dec 5 22:29:32 UTC 2006 i686
+SNMPv2-MIB::sysObjectID.0 = OID: NET-SNMP-MIB::netSnmpAgentOIDs.10
+DISMAN-EVENT-MIB::sysUpTimeInstance = Timeticks: (120146) 0:20:01.46
+SNMPv2-MIB::sysContact.0 = STRING: Root <root@localhost> (configure /etc/snmp/snmpd.local.conf)
+SNMPv2-MIB::sysName.0 = STRING: neo.example.org
+SNMPv2-MIB::sysLocation.0 = STRING: Unknown (configure /etc/snmp/snmpd.local.conf)
+SNMPv2-MIB::sysORLastChange.0 = Timeticks: (18) 0:00:00.18
+SNMPv2-MIB::sysORID.1 = OID: IF-MIB::ifMIB
+SNMPv2-MIB::sysORID.2 = OID: SNMPv2-MIB::snmpMIB
+SNMPv2-MIB::sysORID.3 = OID: TCP-MIB::tcpMIB
+SNMPv2-MIB::sysORID.4 = OID: IP-MIB::ip
+SNMPv2-MIB::sysORID.5 = OID: UDP-MIB::udpMIB
+SNMPv2-MIB::sysORID.6 = OID: SNMP-VIEW-BASED-ACM-MIB::vacmBasicGroup
+SNMPv2-MIB::sysORID.7 = OID: SNMP-FRAMEWORK-MIB::snmpFrameworkMIBCompliance
+SNMPv2-MIB::sysORID.8 = OID: SNMP-MPD-MIB::snmpMPDCompliance
+SNMPv2-MIB::sysORID.9 = OID: SNMP-USER-BASED-SM-MIB::usmMIBCompliance
+SNMPv2-MIB::sysORDescr.1 = STRING: The MIB module to describe generic objects for network interface sub-layers
+SNMPv2-MIB::sysORDescr.2 = STRING: The MIB module for SNMPv2 entities
+SNMPv2-MIB::sysORDescr.3 = STRING: The MIB module for managing TCP implementations
+SNMPv2-MIB::sysORDescr.4 = STRING: The MIB module for managing IP and ICMP implementations
+SNMPv2-MIB::sysORDescr.5 = STRING: The MIB module for managing UDP implementations
+SNMPv2-MIB::sysORDescr.6 = STRING: View-based Access Control Model for SNMP.
+SNMPv2-MIB::sysORDescr.7 = STRING: The SNMP Management Architecture MIB.
+SNMPv2-MIB::sysORDescr.8 = STRING: The MIB for Message Processing and Dispatching.
+SNMPv2-MIB::sysORDescr.9 = STRING: The management information definitions for the SNMP User-based Security Model.
+SNMPv2-MIB::sysORUpTime.1 = Timeticks: (12) 0:00:00.12
+SNMPv2-MIB::sysORUpTime.2 = Timeticks: (12) 0:00:00.12
+SNMPv2-MIB::sysORUpTime.3 = Timeticks: (12) 0:00:00.12
+SNMPv2-MIB::sysORUpTime.4 = Timeticks: (12) 0:00:00.12
+SNMPv2-MIB::sysORUpTime.5 = Timeticks: (12) 0:00:00.12
+SNMPv2-MIB::sysORUpTime.6 = Timeticks: (12) 0:00:00.12
+SNMPv2-MIB::sysORUpTime.7 = Timeticks: (18) 0:00:00.18
+SNMPv2-MIB::sysORUpTime.8 = Timeticks: (18) 0:00:00.18
+SNMPv2-MIB::sysORUpTime.9 = Timeticks: (18) 0:00:00.18
+End of MIB
+netkiller@neo:/etc/snmp$ snmpget -v 1 -c public localhost sysDescr.0
+SNMPv2-MIB::sysDescr.0 = STRING: Linux neo.example.org 2.6.17-10-server #2 SMP Tue Dec 5 22:29:32 UTC 2006 i686
+netkiller@neo:/etc/snmp$
+
+		]]>
+		</screen>
+		<para>snmpget -v 1 -c public localhost sysDescr.0</para>
+		<screen>
+snmpwalk -v 1 -c OFcx6CvN 127.0.0.1 extEntry
+		</screen>
+	</section>
+	<section id="snmp.v3">
+		<title>SNMP v3</title>
+		<screen>
+neo@debian:~$ sudo /etc/init.d/snmpd stop
+Stopping network management services: snmpd snmptrapd.
+
+neo@debian:~$ sudo net-snmp-config --create-snmpv3-user -ro -a "netadminpassword" netadmin
+adding the following line to /var/lib/snmp/snmpd.conf:
+   createUser netadmin MD5 "netadminpassword" DES
+adding the following line to /usr/share/snmp/snmpd.conf:
+   rouser netadmin
+
+neo@debian:~$ sudo /etc/init.d/snmpd start
+Starting network management services: snmpd.
+		</screen>
+		<para>test</para>
+		<screen>
+		<![CDATA[
+neo@debian:~$ snmpget -v 3 -u netadmin -l authNoPriv -a MD5 -A <passwd> 127.0.0.1 sysUpTime.0
+DISMAN-EVENT-MIB::sysUpTimeInstance = Timeticks: (6342) 0:01:03.42
+		]]>
+		</screen>
+		<para>With a different password this fails: </para>
+		<screen>
+neo@debian:~$ snmpget -v 3 -u netadmin -l authNoPriv -a MD5 -A nopasswd 127.0.0.1 sysUpTime.0
+snmpget: Authentication failure (incorrect password, community or key) (Sub-id not found: (top) -> sysUpTime)
+		</screen>
+		<para>Note that this can be stuck in a snmp.conf file in ~/.snmp: </para>
+		<screen>
+		<![CDATA[
+neo@debian:~$ mkdir ~/.snmp
+neo@debian:~$ vim ~/.snmp/snmp.conf
+defSecurityName netadmin
+defContext ""
+defAuthType MD5
+defSecurityLevel authNoPriv
+defAuthPassphrase <netadminpassword>
+defVersion 3
+		]]>
+		</screen>
+		<para>test</para>
+		<screen>
+neo@debian:~$ snmpget 127.0.0.1 sysUpTime.0
+DISMAN-EVENT-MIB::sysUpTimeInstance = Timeticks: (39471) 0:06:34.71
+		</screen>
+	</section>
+	<section id="snmp.cacti">
+		<title>Cacti</title>
+		<para><link linkend="cacti">Cacti</link></para>
+		<screen>
+#access  notConfigGroup ""      any       noauth    exact  systemview none none
+access  notConfigGroup ""      any       noauth    exact  all none none
+view all    included  .1                               80
+		</screen>
+	</section>
+	<section id="snmp.cisco">
+		<title>Cisco</title>
+		<screen>
+snmpwalk -c public -v2c 172.16.1.1
+		</screen>
+		<para>system.sysDescr</para>
+		<screen>
+$ snmpget -v2c -c public 172.16.1.1 system.sysDescr.0
+SNMPv2-MIB::sysDescr.0 = STRING: Cisco IOS Software, C3750 Software (C3750-IPBASE-M), Version 12.2(35)SE5, RELEASE SOFTWARE (fc1)
+Copyright (c) 1986-2007 by Cisco Systems, Inc.
+Compiled Thu 19-Jul-07 19:15 by nachen
+
+$ snmpget -v2c -c public 172.16.1.1 sysName.0
+SNMPv2-MIB::sysName.0 = STRING: Switch-3750-LAN
+
+$ snmpwalk -v2c -c public 172.16.1.1 interfaces.ifTable.ifEntry.ifDescr
+IF-MIB::ifDescr.1 = STRING: Vlan1
+IF-MIB::ifDescr.2 = STRING: Vlan2
+IF-MIB::ifDescr.3 = STRING: Vlan3
+IF-MIB::ifDescr.4 = STRING: Vlan4
+IF-MIB::ifDescr.5 = STRING: Vlan5
+IF-MIB::ifDescr.5179 = STRING: StackPort1
+IF-MIB::ifDescr.5180 = STRING: StackSub-St1-1
+IF-MIB::ifDescr.5181 = STRING: StackSub-St1-2
+IF-MIB::ifDescr.10101 = STRING: GigabitEthernet1/0/1
+IF-MIB::ifDescr.10102 = STRING: GigabitEthernet1/0/2
+IF-MIB::ifDescr.10103 = STRING: GigabitEthernet1/0/3
+IF-MIB::ifDescr.10104 = STRING: GigabitEthernet1/0/4
+IF-MIB::ifDescr.10105 = STRING: GigabitEthernet1/0/5
+IF-MIB::ifDescr.10106 = STRING: GigabitEthernet1/0/6
+IF-MIB::ifDescr.10107 = STRING: GigabitEthernet1/0/7
+IF-MIB::ifDescr.10108 = STRING: GigabitEthernet1/0/8
+IF-MIB::ifDescr.10109 = STRING: GigabitEthernet1/0/9
+IF-MIB::ifDescr.10110 = STRING: GigabitEthernet1/0/10
+IF-MIB::ifDescr.10111 = STRING: GigabitEthernet1/0/11
+IF-MIB::ifDescr.10112 = STRING: GigabitEthernet1/0/12
+IF-MIB::ifDescr.10113 = STRING: GigabitEthernet1/0/13
+IF-MIB::ifDescr.10114 = STRING: GigabitEthernet1/0/14
+IF-MIB::ifDescr.10115 = STRING: GigabitEthernet1/0/15
+IF-MIB::ifDescr.10116 = STRING: GigabitEthernet1/0/16
+IF-MIB::ifDescr.10117 = STRING: GigabitEthernet1/0/17
+IF-MIB::ifDescr.10118 = STRING: GigabitEthernet1/0/18
+IF-MIB::ifDescr.10119 = STRING: GigabitEthernet1/0/19
+IF-MIB::ifDescr.10120 = STRING: GigabitEthernet1/0/20
+IF-MIB::ifDescr.10121 = STRING: GigabitEthernet1/0/21
+IF-MIB::ifDescr.10122 = STRING: GigabitEthernet1/0/22
+IF-MIB::ifDescr.10123 = STRING: GigabitEthernet1/0/23
+IF-MIB::ifDescr.10124 = STRING: GigabitEthernet1/0/24
+IF-MIB::ifDescr.10125 = STRING: GigabitEthernet1/0/25
+IF-MIB::ifDescr.10126 = STRING: GigabitEthernet1/0/26
+IF-MIB::ifDescr.10127 = STRING: GigabitEthernet1/0/27
+IF-MIB::ifDescr.10128 = STRING: GigabitEthernet1/0/28
+IF-MIB::ifDescr.14501 = STRING: Null0
+
+
+$ snmpget -v2c -c public 172.16.1.1 interfaces.ifNumber.0
+IF-MIB::ifNumber.0 = INTEGER: 37
+
+
+		</screen>
+	</section>
+	<section>
+		<title>Linux</title>
+		<screen>
+$ snmpwalk -c public -v2c 172.16.1.10 hrSWRunPerfMem | awk 'BEGIN {total_mem=0} { if ($NF == "KBytes") {total_mem=total_mem+$(NF-1)}}  END {print total_mem}'
+655784
+		</screen>
+	</section>
+</chapter>

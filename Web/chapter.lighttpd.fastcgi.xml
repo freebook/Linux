@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="lighttpd.fastcgi">
+	<title>fastcgi</title>
+	<section>
+		<title>enable fastcgi</title>
+		<para>enable fastcgi</para>
+		<screen>
+$ sudo lighty-enable-mod fastcgi
+		</screen>
+		<section id="lighttpd.fastcgi.spawn-fcgi">
+			<title>spawn-fcgi</title>
+			<screen>
+			<![CDATA[
+#### fastcgi module
+## read fastcgi.txt for more info
+## for PHP don't forget to set cgi.fix_pathinfo = 1 in the php.ini
+fastcgi.server             = ( ".php" =>
+                               ( "localhost" =>
+                                 (
+                                   "socket" => "/tmp/php-fastcgi.socket",
+                                   "bin-path" => "/usr/local/bin/php-cgi",
+                                   "max-procs" => 16,
+                                   "bin-environment" => (
+                                      "PHP_FCGI_CHILDREN" => "128",
+                                      "PHP_FCGI_MAX_REQUESTS" => "1000"
+                                   ),
+                                   "broken-scriptfilename" => "enable"
+                                 )
+                               )
+                            )
+
+fastcgi.server    = ( ".php" =>
+        ((
+                "bin-path" => "/usr/bin/php-cgi",
+                "socket" => "/tmp/php.socket",
+                "max-procs" => 2,
+                "idle-timeout" => 200,
+                "bin-environment" => (
+                        "PHP_FCGI_CHILDREN" => "10",
+                        "PHP_FCGI_MAX_REQUESTS" => "10000"
+                ),
+                "bin-copy-environment" => (
+                        "PATH", "SHELL", "USER"
+                ),
+                "broken-scriptfilename" => "enable"
+        ))
+)
+
+
+			]]>
+			</screen>
+		</section>
+		<section  id="lighttpd.fastcgi.php-fpm">
+			<title>php-fpm</title>
+			<para></para>
+			<screen>
+			<![CDATA[
+fastcgi.server = ( ".php" =>
+  ( "localhost" =>
+    (
+      "host" => "127.0.0.1",
+      "port" => "9000"
+    )
+  )
+)
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section id="fastcgi.php">
+		<title>PHP</title>
+		<section>
+			<title>编译安装PHP</title>
+			<para>
+		<orderedlist numeration="arabic">
+			<listitem><para>下载PHP</para>
+				<screen>
+cd /usr/local/src/
+wget http://cn2.php.net/get/php-5.2.3.tar.bz2/from/cn.php.net/mirror
+tar jxvf php-5.2.3.tar.bz2
+cd php-5.2.3
+				</screen>
+			</listitem>
+			<listitem><para>configure</para>
+				<screen>
+./configure --prefix=/usr/local/php-5.2.3 \
+--with-config-file-path=/usr/local/php-5.2.3/etc \
+--enable-fastcgi \
+--enable-force-cgi-redirect \
+--with-curl \
+--with-gd \
+--with-ldap \
+--with-snmp \
+--enable-zip \
+--enable-exif \
+--with-pdo-mysql \
+--with-pdo-pgsql \
+
+make
+make test
+make install
+				</screen>
+				<para>其它有用的模块</para>
+				<screen>
+--enable-pcntl
+				</screen>
+			</listitem>
+			<listitem>
+				<para>符号连接</para>
+				<screen>
+ln -s /usr/local/php-5.2.3 /usr/local/php
+ln -s /usr/local/php/bin/php /usr/local/bin/php
+				</screen>
+			</listitem>
+			<listitem><para>php.ini</para>
+				<screen>
+cp php.ini-dist /usr/local/php/etc/php.ini
+				</screen>
+			</listitem>
+			<listitem><para>env</para>
+				<screen>
+PHP_FCGI_CHILDREN=384
+				</screen>
+			</listitem>
+			<listitem><para>使用 php -v FastCGI 安装情况</para>
+				<para>php -v</para>
+
+				<para>显示(cgi-fcgi)表示正确</para>
+				<screen>
+# cd /usr/local/php/
+# bin/php -v
+PHP 5.2.2 (cgi-fcgi) (built: May 25 2007 15:50:28)
+Copyright (c) 1997-2007 The PHP Group
+Zend Engine v2.2.0, Copyright (c) 1998-2007 Zend Technologies
+				</screen>
+				<para>(cgi-fcgi)不能正常工作</para>
+				<screen>
+PHP 5.2.2 (cli) (built: May 25 2007 15:50:28)
+Copyright (c) 1997-2007 The PHP Group
+Zend Engine v2.2.0, Copyright (c) 1998-2007 Zend Technologies
+				</screen>
+				<para>使用 php -m 查看PHP Modules</para>
+				<screen>
+# bin/php -m
+[PHP Modules]
+cgi-fcgi
+ctype
+date
+dom
+filter
+gd
+hash
+iconv
+json
+ldap
+libxml
+mssql
+pcre
+PDO
+pdo_mysql
+pdo_sqlite
+posix
+Reflection
+session
+SimpleXML
+snmp
+SPL
+SQLite
+standard
+tokenizer
+xml
+xmlreader
+xmlwriter
+zip
+
+[Zend Modules]
+				</screen>
+			</listitem>
+		</orderedlist>
+		</para>
+		</section>
+		<section>
+			<title>apt-get install</title>
+
+			<screen>
+$ sudo apt-get install php5 php5-cli php5-cgi
+			</screen>
+			<para><link linkend="php">参考php安装</link></para>
+			<para>找到 fastcgi.server 去掉注释</para>
+			<para>bin-path 改为PHP程序安装目录</para>
+			<screen>
+fastcgi.server             = ( ".php" =>
+                               ( "localhost" =>
+                                 (
+                                  "socket" => "/tmp/php-fastcgi.socket",
+                                   "bin-path" => "/usr/local/php/bin/php"
+                                 )
+                               )
+                            )
+
+			</screen>
+
+			<para>下面例子更复杂一些</para>
+			<orderedlist numeration="arabic">
+			<listitem>
+				<para>/usr/local/lighttpd/etc/lighttpd.conf</para>
+				<screen>
+include /usr/local/lighttpd/etc/php-fastcgi.conf
+				</screen>
+			</listitem>
+			<listitem><para>/usr/local/lighttpd/etc/php-fastcgi.conf</para>
+				<screen>
+fastcgi.server = ( ".php" =>
+	( "localhost" =>
+        ( "socket" => "/tmp/php-fastcgi.socket",
+           "bin-path" => "/usr/local/php/bin/php",
+           "min-procs" => 1,
+           "max-procs" => 5,
+           "max-load-per-proc" => 4,
+           "idle-timeout" => 20
+        )
+	)
+)
+				</screen>
+			</listitem>
+			<listitem><para>PHP FastCGI环境测试</para>
+				<command><![CDATA[ echo "<?php phpinfo(); ?>" > /www/pages/index.php ]]></command>
+				<para>curl http://127.0.0.1/index.php</para>
+			</listitem>
+
+		</orderedlist>
+		</section>
+	</section>
+	<section id="fastcgi.python">
+		<title>Python</title>
+		<screen>
+sudo apt-get install python
+sudo apt-get install python-setuptools
+		</screen>
+		<section id="django">
+			<title>Django</title>
+			<screen>
+wget http://www.djangoproject.com/download/0.96/tarball/
+tar zxvf Django-0.96.tar.gz
+cd Django-0.96
+python setup.py install
+			</screen>
+			<para>生成项目</para>
+			<screen>
+django-admin.py startproject newtest
+			</screen>
+			<para>web server</para>
+			<screen>
+cd newtest/
+./manage.py runserver
+			</screen>
+			<para>helloworld.py</para>
+			<screen>
+from django.http import HttpResponse
+
+def index(request):
+    return HttpResponse("Hello, Django.")
+			</screen>
+			<para>urls.py</para>
+			<screen>
+from django.conf.urls.defaults import *
+
+urlpatterns = patterns('',
+    # Example:
+    # (r'^newtest/', include('newtest.foo.urls')),
+    (r'^$', 'newtest.helloworld.index'),
+
+    # Uncomment this for admin:
+#     (r'^admin/', include('django.contrib.admin.urls')),
+)
+			</screen>
+			<para>启动Web Server</para>
+			<screen>
+# ./manage.py runserver
+Validating models...
+0 errors found.
+
+Django version 0.96, using settings 'newtest.settings'
+Development server is running at http://127.0.0.1:8000/
+Quit the server with CTRL-BREAK.
+			</screen>
+			<para>curl http://127.0.0.1:8000/</para>
+		</section>
+		<section>
+			<title>Python Imaging Library</title>
+			<para>Debian/Ubuntu</para>
+			<screen>
+sudo apt-get install libjpeg62-dev
+sudo apt-get install python-imaging
+			</screen>
+			<para>采用源码安装</para>
+			<screen>
+tar zxvf Imaging-1.1.6.tar.gz
+cd Imaging-1.1.6/
+			</screen>
+			<command>sudo python setup.py install</command>
+			<note>
+				<title>decoder jpeg not available</title>
+				<para>首先确认jpeg库是否安装</para>
+				<para>find / -name jpeglib.h</para>
+				<para>然后修改头文件</para>
+				<para>Imaging-1.1.6/libImaging</para>
+				<para>修改Jpeg.h, #include "jpeglib.h" 改为</para>
+				<para>#include "/usr/include/jpeglib.h"</para>
+			</note>
+		</section>
+	</section>
+	<section id="fastcgi.perl">
+		<title>Perl</title>
+		<para>install fastcgi module</para>
+		<screen>
+$ sudo apt-get install libfcgi-perl	libfcgi-procmanager-perl
+		</screen>
+		<section>
+			<title>Installing lighttpd and FastCGI for Catalyst</title>
+			<para>The examples also use a virtual host regexp that matches either www.myapp.com or myapp.com</para>
+			<screen>
+$HTTP["host"] =~ "^(www.)?mysite.com"
+			</screen>
+
+			<para>Starting the FastCGI server</para>
+			<screen>
+MyApp/script/myapp_fastcgi.pl -l /tmp/myapp.socket -n 5 -d
+			</screen>
+			<para>lighttpd.conf</para>
+			<screen>
+server.document-root = "/var/www/MyApp/root"
+			</screen>
+			<para>$ sudo vim /etc/lighttpd/conf-available/10-fastcgi.conf</para>
+			<screen>
+fastcgi.server = (
+    "" => (
+        "MyApp" => (
+            "socket" => "/tmp/myapp.socket",
+            "check-local" => "disable"
+        )
+    )
+)
+			</screen>
+			<para>restart lighttpd</para>
+			<screen>
+neo@master:~$ sudo /etc/init.d/lighttpd restart
+ * Stopping web server lighttpd                   [ OK ]
+ * Starting web server lighttpd                   [ OK ]
+			</screen>
+			<para>Testing</para>
+			<para>http://127.0.0.1/</para>
+			<para>More advanced configuration</para>
+			<example>
+				<title>fastcgi.conf</title>
+				<screen>
+fastcgi.server = (
+    "" => (
+        "MyApp" => (
+            "socket"       => "/tmp/myapp.socket",
+            "check-local"  => "disable",
+            "bin-path"     => "/var/www/MyApp/script/myapp_fastcgi.pl",
+            "min-procs"    => 2,
+            "max-procs"    => 5,
+            "idle-timeout" => 20
+        )
+    )
+)
+				</screen>
+			</example>
+			<!-- http://www.dev411.com/wiki/Installing_lighttpd_and_FastCGI_for_Catalyst -->
+		</section>
+	</section>
+	<section id="fastcgi.ruby">
+		<title>Ruby</title>
+	</section>
+</section>

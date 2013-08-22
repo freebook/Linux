@@ -1,0 +1,18 @@
+<appendix>
+	<title>附录</title>
+	<section>
+		<title>参考文档</title>
+		<para>http://www.faqs.org/docs/Linux-HOWTO/Bash-Prog-Intro-HOWTO.html</para>
+		<para>http://xiaowang.net/bgb-cn/index.html</para>
+	</section>
+	<section>
+		<title>Ubuntu Server Edition</title>
+		<para><ulink url="http://www.ubuntu.com/">http://www.ubuntu.com/</ulink></para>
+		<para><ulink url="/en-us/technology/ubuntu.html">Netkiller Ubuntu Linux 手札</ulink></para>
+	</section>
+	<section>
+		<title>CentOS - The Community ENTerprise Operating System</title>
+		<para><ulink url="http://www.centos.org/">http://www.centos.org/</ulink></para>
+		<para><ulink url="/en-us/technology/centos.html">Netkiller CentOS Linux 手札</ulink></para>
+	</section>
+</appendix>

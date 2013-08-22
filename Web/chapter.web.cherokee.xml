@@ -1,0 +1,27 @@
+<chapter id="cherokee">
+	<title>Cherokee</title>
+	<section id="cherokee.install">
+		<title>Installing Cherokee</title>
+	    <screen>
+	    <![CDATA[
+apt-get install cherokee
+	    ]]>
+	    </screen>
+        <para>Cherokee can be configured through a web-based control panel which we can start as follows:</para>
+	    <screen>
+	    <![CDATA[
+cherokee-admin -b
+	    ]]>
+	    </screen>
+	    <para>cherokee script</para>
+	    <screen>
+	    <![CDATA[
+/etc/init.d/cherokee restart
+	    ]]>
+	    </screen>
+	</section>
+<!--
+	<para></para>
+	<para></para>
+-->
+</chapter>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<part id="index"><?dbhtml dir="computing" ?>
+	<title>Distributed Computing</title>
+	&chapter.storm.xml;
+	&chapter.hpc.xml;
+</part>

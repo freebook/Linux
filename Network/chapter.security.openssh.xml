@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.security.openssh.xml 651 2013-07-25 09:39:11Z netkiller $ -->
+<chapter id="openssh">
+	<title>OpenSSH</title>
+	<section id="openssh.faq">
+		<title>安装 OpenSSH</title>
+		<para>使用下面命令安装OpenSSH</para>
+		<para>sudo apt-get install ssh</para>
+	</section>
+	<section id="openssh.config">
+		<title>/etc/ssh/</title>
+		<section id="openssh.sshd_config">
+			<title>sshd_config</title>
+			<screen>
+# vi /etc/ssh/sshd_config
+			</screen>
+			<section id="openssh.maxauthtries">
+				<title>Authentication 配置</title>
+				<para>连接后2m没有任何键盘输入以及屏幕输出，将自动切换SSH连接。</para>
+				<screen>
+LoginGraceTime 2m
+				</screen>
+				<para>禁止root用户登录(disable root SSH login)</para>
+				<screen>
+PermitRootLogin no
+				</screen>
+				<para>限制SSH验证重试次数(maximum number of authentication)：</para>
+				<screen>
+MaxAuthTries 6
+				</screen>
+			</section>
+
+			<section id="openssh.authorizedkeysfile">
+				<title>Automatic SSH / SSH without password</title>
+				<para>config /etc/ssh/sshd_config</para>
+				<screen>
+$ sudo vim /etc/ssh/sshd_config
+
+AuthorizedKeysFile  %h/.ssh/authorized_keys
+
+$ sudo /etc/init.d/ssh reload
+				</screen>
+				<para>ssh-keygen</para>
+				<command>ssh-keygen -d </command>
+				<para>master server</para>
+				<screen>
+[netkiller@master ~]$ ssh-keygen -d
+Generating public/private dsa key pair.
+Enter file in which to save the key (/home/netkiller/.ssh/id_dsa):
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /home/netkiller/.ssh/id_dsa.
+Your public key has been saved in /home/netkiller/.ssh/id_dsa.pub.
+The key fingerprint is:
+bf:a9:21:2c:82:77:2d:71:33:12:20:10:93:5f:cb:74 netkiller@master
+[netkiller@master ~]$
+[netkiller@master ~]$ cp .ssh/id_dsa.pub .ssh/authorized_keys
+[netkiller@master ~]$ chmod 600 .ssh/authorized_keys
+[netkiller@master ~]$ ls -l .ssh/
+total 12
+-rw-------  1 netkiller netkiller 612 Mar 27 15:31 authorized_keys
+-rw-------  1 netkiller netkiller 736 Mar 27 15:24 id_dsa
+-rw-r--r--  1 netkiller netkiller 612 Mar 27 15:24 id_dsa.pub
+[netkiller@master ~]$
+				</screen>
+
+				<para>backup server</para>
+				<screen>
+[netkiller@backup ~]$ ssh-keygen -d
+Generating public/private dsa key pair.
+Enter file in which to save the key (/home/netkiller/.ssh/id_dsa):
+Created directory '/home/netkiller/.ssh'.
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /home/netkiller/.ssh/id_dsa.
+Your public key has been saved in /home/netkiller/.ssh/id_dsa.pub.
+The key fingerprint is:
+c5:2f:0e:4e:b0:46:47:ec:19:30:be:9c:20:ad:9c:51 netkiller@backup
+[netkiller@backup ~]$ cp .ssh/id_dsa.pub .ssh/authorized_keys
+[netkiller@backup ~]$ chmod 600 .ssh/authorized_keys
+[netkiller@backup ~]$ ls -l .ssh/
+total 16
+-rw-------  1 netkiller netkiller 609 Mar 27 15:31 authorized_keys
+-rw-------  1 netkiller netkiller 736 Mar 27 15:27 id_dsa
+-rw-r--r--  1 netkiller netkiller 609 Mar 27 15:27 id_dsa.pub
+				</screen>
+				<para>交换公钥证书</para>
+				<para>master =&gt; backup</para>
+				<screen>
+				<![CDATA[
+[netkiller@master ~]$ scp .ssh/id_dsa.pub netkiller@backup.example.org:.ssh/master.pub
+netkiller@backup.example.org's password:
+id_dsa.p                                                     100%  612     0.6KB/s   00:00
+[netkiller@master ~]$
+
+[netkiller@backup ~]$ cat .ssh/master.pub >> .ssh/authorized_keys
+				]]>
+				</screen>
+				<para>test</para>
+				<screen>
+[netkiller@master ~]$ ssh backup.example.org
+Enter passphrase for key '/home/netkiller/.ssh/id_dsa':
+Last login: Tue Mar 27 15:26:35 2007 from master.example.org
+[netkiller@backup ~]$
+
+				</screen>
+				<para>master &lt;= backup</para>
+				<screen>
+				<![CDATA[
+[netkiller@backup ~]$ scp .ssh/id_dsa.pub netkiller@master.example.org:.ssh/backup.pub
+netkiller@master.example.org's password:
+id_dsa.pub                                                   100%  609     0.6KB/s   00:00
+[netkiller@backup ~]$
+
+[netkiller@master ~]$ cat .ssh/backup.pub >> .ssh/authorized_keys
+				]]>
+				</screen>
+				<para>test</para>
+				<screen>
+[netkiller@backup ~]$ ssh master.example.org
+Enter passphrase for key '/home/netkiller/.ssh/id_dsa':
+Last login: Tue Mar 27 15:44:37 2007 from backup.example.org
+[netkiller@master ~]$
+
+				</screen>
+				<para>
+注意：authorized_keys权限必须为600，否则可能登陆的时候还会让你输入密码，但是一旦改成600以后并且成功登陆，此问题不再出现。
+				</para>
+
+				<para>script</para>
+				<screen>
+ssh-keygen -d
+cp .ssh/id_dsa.pub .ssh/authorized_keys
+chmod 600 .ssh/authorized_keys
+ls -l .ssh/
+				</screen>
+				<tip>
+					<para>禁止证书登陆 PubkeyAuthentication no; 或者 AuthorizedKeysFile      /dev/null</para>
+				</tip>
+			</section>
+			<section id="openssh.passwordauthentication">
+				<title>disable password authentication</title>
+				<para>建议你使用证书登录，并禁用密码认证 PasswordAuthentication yes，这样更安全，且不会骇客穷举你的口令。</para>
+				<screen>
+PasswordAuthentication no
+				</screen>
+			</section>
+			<section id="openssh.gssapi">
+				<title>GSSAPI options</title>
+				<para>GSSAPI 基本用不到建议关闭</para>
+				<screen>
+#GSSAPIAuthentication no
+GSSAPIAuthentication yes
+#GSSAPICleanupCredentials yes
+GSSAPICleanupCredentials yes
+#GSSAPIStrictAcceptorCheck yes
+#GSSAPIKeyExchange no
+				</screen>
+			</section>
+			<section id="openssh.ignoreuserknownhosts">
+				<title>忽略known_hosts文件</title>
+				<para>/etc/ssh/sshd_config</para>
+				<screen>
+IgnoreUserKnownHosts yes
+				</screen>
+			</section>
+		</section>
+		<section id="openssh.ssh_config">
+			<title>ssh_config</title>
+			<section>
+				<title>ForwardAgent</title>
+				<para>转发Agent开启, 当你ssh root@remote 后，再从remote登录另一台服务器的时候就不许要再次输入密码</para>
+				<screen>
+ForwardAgent yes
+				</screen>
+			</section>
+		</section>
+	</section>
+
+	<section id="openssh.tunnel">
+		<title>OpenSSH Tunnel</title>
+		<para>mysql tunnel</para>
+		<screen>
+$ ssh -L 3306:127.0.0.1:3306 user@example.org
+		</screen>
+		<para>testing</para>
+		<screen>
+$ mysql -h 127.0.0.1 -uroot -p test
+		</screen>
+		<section>
+			<title>SOCKS v5 Tunnel</title>
+			<screen>
+			<![CDATA[
+ssh -D 1080 <远程主机地址>
+or
+ssh -D 7070 <远程主机地址>
+			]]>
+			</screen>
+			<para>I prefer 1080 to 7070. the reason is 1080 default for SOCKS port.</para>
+			<screen>
+ssh neo@www.example.com -D 1080
+			</screen>
+		</section>
+	</section>
+
+	<section id="openssh.ssh-keygen">
+		<title>ssh-keygen — authentication key generation, management and conversion</title>
+		<section>
+			<title>.ssh/known_hosts</title>
+			<para>当你的重装服务器，或者更换IP地址会提示.ssh/known_hosts中的Key不匹配，例如下面的提示</para>
+			<screen>
+$ ssh logs@120.132.144.48
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+It is also possible that a host key has just been changed.
+The fingerprint for the RSA key sent by the remote host is
+99:9b:da:86:dd:8d:ae:46:66:00:e0:09:fb:c5:56:3d.
+Please contact your system administrator.
+Add correct host key in /home/neo/.ssh/known_hosts to get rid of this message.
+Offending RSA key in /home/neo/.ssh/known_hosts:43
+  remove with: ssh-keygen -f "/home/neo/.ssh/known_hosts" -R 172.12.14.48
+RSA host key for 172.12.14.48 has changed and you have requested strict checking.
+Host key verification failed.
+			</screen>
+			<para>打开/home/neo/.ssh/known_hosts文件删除43行即可，也同样可以使用下面命令删除</para>
+			<screen>
+ssh-keygen -f "/home/neo/.ssh/known_hosts" -R 172.12.14.48
+			</screen>
+			<tip><para>CentOS不会提示你remove with: ssh-keygen -f "/home/neo/.ssh/known_hosts" -R 172.12.14.48</para></tip>
+			<screen>
+$ ssh-keygen -f "/home/neo/.ssh/known_hosts" -R 172.12.14.48
+/home/neo/.ssh/known_hosts updated.
+Original contents retained as /home/neo/.ssh/known_hosts.old
+
+			</screen>
+		</section>
+
+	</section>
+
+	<section id="openssh.ssh-copy-id">
+		<title>ssh-copy-id - install your public key in a remote machine's authorized_keys</title>
+		<screen>
+ssh-copy-id [-i [identity_file]] [user@]machine
+		</screen>
+	</section>
+	<section id="openssh.ssh-agent">
+		<title>ssh-agent</title>
+		<screen>
+$ ssh-agent
+SSH_AUTH_SOCK=/tmp/ssh-JvfzN17863/agent.17863; export SSH_AUTH_SOCK;
+SSH_AGENT_PID=17864; export SSH_AGENT_PID;
+echo Agent pid 17864;
+		</screen>
+		<para>使ssh-agent生效</para>
+		<screen>
+eval `ssh-agent`
+		</screen>
+		<section>
+			<title>ssh-add</title>
+			<para>私钥管理</para>
+			<screen>
+neo@netkiller:~$ ssh-add
+Identity added: /home/neo/.ssh/id_dsa (/home/neo/.ssh/id_dsa)
+
+neo@netkiller:~$ ssh-add -l
+1024 e5:16:5a:ca:5c:ca:a6:66:89:2d:bf:f2:22:94:3c:d6 /home/neo/.ssh/id_dsa (DSA)
+			</screen>
+			<para>let's add a few one-off keys</para>
+			<screen>
+$ ssh-add ssh-keys/id*
+			</screen>
+			<para>Delete all keys from the agent</para>
+			<screen>
+neo@netkiller:~$ ssh-add -D
+All identities removed.
+			</screen>
+		</section>
+		<section>
+			<title>Lock / Unlock agent</title>
+			<screen>
+neo@netkiller:~$ ssh-add -x
+Enter lock password:
+Again:
+Agent locked.
+neo@netkiller:~$ ssh-add -X
+Enter lock password:
+Agent unlocked.
+			</screen>
+		</section>
+		<section>
+			<title>Set lifetime (in seconds) when adding identities.</title>
+			<screen>
+neo@netkiller:~$ ssh-add -t 10
+Identity added: /home/neo/.ssh/id_dsa (/home/neo/.ssh/id_dsa)
+Lifetime set to 10 seconds
+
+neo@netkiller:~$ ssh-add -l
+1024 e5:16:5a:ca:5c:ca:a6:66:89:2d:bf:f2:22:94:3c:d6 /home/neo/.ssh/id_dsa (DSA)
+
+neo@netkiller:~$ ssh-add -l
+The agent has no identities.
+			</screen>
+		</section>
+	</section>
+
+	<section id="openssh.windows">
+		<title>OpenSSH for Windows</title>
+		<para>homepage: http://sshwindows.sourceforge.net/</para>
+		<section id="openssh.client.putty">
+			<title>Putty Client</title>
+			<procedure>
+				<step>
+					<para>config /etc/ssh/sshd_config</para>
+					<screen>
+$ sudo vim /etc/ssh/sshd_config
+
+AuthorizedKeysFile  %h/.ssh/authorized_keys
+
+$ sudo /etc/init.d/ssh reload
+					</screen>
+				</step>
+				<step>
+					<para>ssh-keygen</para>
+					<screen>
+neo@master:~$ ssh-keygen
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/neo/.ssh/id_rsa):
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /home/neo/.ssh/id_rsa.
+Your public key has been saved in /home/neo/.ssh/id_rsa.pub.
+The key fingerprint is:
+98:35:81:56:fd:b5:87:e4:94:e4:54:b8:b9:0a:4e:80 neo@master
+					</screen>
+				</step>
+				<step>
+					<para>authorized_keys</para>
+					<screen>
+$ mv .ssh/id_rsa.pub .ssh/authorized_keys
+					</screen>
+					<para>or</para>
+					<screen>
+$ cat .ssh/id_rsa.pub > .ssh/authorized_keys
+					</screen>
+				</step>
+				<step>
+					<para>PuTTYgen</para>
+					<para>Load an existing private key file</para>
+					<para>to click 'Load' button and then open 'id_rsa'</para>
+					<para>'Save public key' and 'Save private key'</para>
+					<para>closing PuTTYgen</para>
+				</step>
+				<step>
+					<para>Pageant</para>
+					<para>opening Pageant</para>
+					<para>to click mouse right key and then select 'Add Key', opening above private key.</para>
+				</step>
+				<step>
+					<para>Putty</para>
+					<para>Host Name: your ip address</para>
+					<para>Connection -> Data -> Auto-login username: your username</para>
+					<para>Connection -> SSH -> Auth -> Allow agent forwarding, you must checked it</para>
+					<para>Now, You may click 'Open' to login linux system</para>
+				</step>
+			</procedure>
+		</section>
+	</section>
+
+</chapter>

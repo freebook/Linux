@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="chef">
+	<title>Chef</title>
+	<para>http://www.opscode.com/chef/</para>
+	<section>
+		<title>安装 Chef</title>
+		<section>
+			<title></title>
+			<screen></screen>
+		</section>
+	</section>
+</chapter>

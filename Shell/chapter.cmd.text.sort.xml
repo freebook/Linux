@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.cmd.text.sort.xml 418 2012-05-25 14:17:16Z netkiller $ -->
+<section id="sort">
+	<title>sort - sort lines of text files</title>
+	<screen>
+$ du -s * | sort -k1,1rn
+	</screen>
+	<screen>
+$ rpm -q -a --qf '%10{SIZE}\t%{NAME}\n' | sort -k1,1n
+$ dpkg-query -W -f='${Installed-Size;10}\t${Package}\n' | sort -k1,1n
+	</screen>
+	<section>
+		<title>对列排序</title>
+		<screen>
+# sort -t ':' -k 1 /etc/passwd
+		</screen>
+		<screen>
+ort -n -t ‘ ‘ -k 2 file.txt
+		</screen>
+		<para>多列排序</para>
+		<screen>
+$ sort -n -t ‘ ‘ -k 2 -k 3 file.txt
+		</screen>
+	</section>
+</section>
+<!--
+
+5 我想让facebook.txt按照员工工资降序排序，如果员工人数相同的，则按照公司人数升序排序：（这个有点难度喽）
+
+$ sort -n -t ‘ ‘ -k 3r -k 2 facebook.txt
+baidu 100 5000
+google 110 5000
+sohu 100 4500
+guge 50 3000
+
+此处有使用了一些小技巧，你仔细看看，在-k 3后面偷偷加上了一个小写字母r。你想想，再结合我们上一篇文章，能得到答案么？揭晓：r和-r选项的作用是一样的，就是表示逆序。因为sort默认是按照升序排序的，所以此处需要加上r表示第三个域（员工平均工资）是按照降序排序。此处你还可以加上n，就表示对这个域进行排序时，要按照数值大小进行排序，举个例子吧：
+
+$ sort -t ‘ ‘ -k 3nr -k 2n facebook.txt
+baidu 100 5000
+google 110 5000
+sohu 100 4500
+guge 50 3000
+
+看，我们去掉了最前面的-n选项，而是将它加入到了每一个-k选项中了。
+
+7 突发奇想，从公司英文名称的第二个字母开始进行排序：
+
+$ sort -t ‘ ‘ -k 1.2 facebook.txt
+baidu 100 5000
+sohu 100 4500
+google 110 5000
+guge 50 3000
+
+看，我们使用了-k 1.2，这就表示对第一个域的第二个字符开始到本域的最后一个字符为止的字符串进行排序。你会发现baidu因为第二个字母是a而名列榜首。sohu和google第二个字符都是o，但sohu的h在google的o前面，所以两者分别排在第二和第三。guge只能屈居第四了。
+
+8 又突发奇想，，只针对公司英文名称的第二个字母进行排序，如果相同的按照员工工资进行降序排序：
+
+$ sort -t ‘ ‘ -k 1.2,1.2 -k 3,3nr facebook.txt
+baidu 100 5000
+google 110 5000
+sohu 100 4500
+guge 50 3000
+
+由于只对第二个字母进行排序，所以我们使用了-k 1.2,1.2的表示方式，表示我们“只”对第二个字母进行排序。（如果你问“我使用-k 1.2怎么不行？”，当然不行，因为你省略了End部分，这就意味着你将对从第二个字母起到本域最后一个字符为止的字符串进行排序）。对于员工工资进行排序，我们也使用了-k 3,3，这是最准确的表述，表示我们“只”对本域进行排序，因为如果你省略了后面的3，就变成了我们“对第3个域开始到最后一个域位置的内容进行排序”了。
+
+9 在modifier部分还可以用到哪些选项？
+
+可以用到b、d、f、i、n 或 r。
+
+其中n和r你肯定已经很熟悉了。
+
+b表示忽略本域的签到空白符号。
+
+d表示对本域按照字典顺序排序（即，只考虑空白和字母）。
+
+f表示对本域忽略大小写进行排序。
+
+i表示忽略“不可打印字符”，只针对可打印字符进行排序。（有些ASCII就是不可打印字符，比如\a是报警，\b是退格，\n是换行，\r是回车等等）
+
+10 思考思考关于-k和-u联合使用的例子：
+
+$ cat facebook.txt
+google 110 5000
+baidu 100 5000
+guge 50 3000
+sohu 100 4500
+
+这是最原始的facebook.txt文件。
+
+$ sort -n -k 2 facebook.txt
+guge 50 3000
+baidu 100 5000
+sohu 100 4500
+google 110 5000
+
+$ sort -n -k 2 -u facebook.txt
+guge 50 3000
+baidu 100 5000
+google 110 5000
+
+当设定以公司员工域进行数值排序，然后加-u后，sohu一行就被删除了！原来-u只识别用-k设定的域，发现相同，就将后续相同的行都删除。
+
+$ sort  -k 1 -u facebook.txt
+baidu 100 5000
+google 110 5000
+guge 50 3000
+sohu 100 4500
+
+$ sort  -k 1.1,1.1 -u facebook.txt
+baidu 100 5000
+google 110 5000
+sohu 100 4500
+
+这个例子也同理，开头字符是g的guge就没有幸免于难。
+
+$ sort -n -k 2 -k 3 -u facebook.txt
+guge 50 3000
+sohu 100 4500
+baidu 100 5000
+google 110 5000
+
+咦！这里设置了两层排序优先级的情况下，使用-u就没有删除任何行。原来-u是会权衡所有-k选项，将都相同的才会删除，只要其中有一级不同都不会轻易删除的:)（不信，你可以自己加一行sina 100 4500试试看）
+
+11 最诡异的排序：
+
+$ sort -n -k 2.2,3.1 facebook.txt
+guge 50 3000
+baidu 100 5000
+sohu 100 4500
+google 110 5000
+
+以第二个域的第二个字符开始到第三个域的第一个字符结束的部分进行排序。
+
+第一行，会提取0 3，第二行提取00 5，第三行提取00 4，第四行提取10 5。
+
+又因为sort认为0小于00小于000小于0000….
+
+因此0 3肯定是在第一个。10 5肯定是在最后一个。但为什么00 5却在00 4前面呢？（你可以自己做实验思考一下。）
+
+答案揭晓：原来“跨域的设定是个假象”，sort只会比较第二个域的第二个字符到第二个域的最后一个字符的部分，而不会把第三个域的开头字符纳入比较范围。当发现00和00相同时，sort就会自动比较第一个域去了。当然baidu在sohu前面了。用一个范例即可证实：
+
+$ sort -n -k 2.2,3.1 -k 1,1r facebook.txt
+guge 50 3000
+sohu 100 4500
+baidu 100 5000
+google 110 5000
+
+12 有时候在sort命令后会看到+1 -2这些符号，这是什么东东？
+
+关于这种语法，最新的sort是这么进行解释的：
+
+On older systems, `sort’ supports an obsolete origin-zero syntax `+POS1 [-POS2]‘ for specifying sort keys.  POSIX 1003.1-2001 (*note Standards conformance::) does not allow this; use `-k’ instead.
+
+原来，这种古老的表示方式已经被淘汰了，以后可以理直气壮的鄙视使用这种表示方法的脚本喽！
+
+（为了防止古老脚本的存在，在这再说一下这种表示方法，加号表示Start部分，减号表示End部分。最最重要的一点是，这种方式方法是从0开始计数的，以前所说的第一个域，在此被表示为第0个域。以前的第2个字符，在此表示为第1个字符。明白？）
+ -->
+
+ <section id="uniq">
+ 	<title>uniq</title>
+ 	<screen>
+history | cut -c 8- |sort -r | uniq -u
+ 	</screen>
+ 	<screen>
+# netstat -ant|fgrep ":"|cut -b 77-90|sort |uniq -c
+      1 CLOSE_WAIT
+      1 CLOSING
+     88 ESTABLISHED
+      7 FIN_WAIT1
+      7 FIN_WAIT2
+      3 LAST_ACK
+      4 LISTEN
+      1 SYN_RECV
+      1 SYN_SENT
+    177 TIME_WAIT
+ 	</screen>
+ </section>

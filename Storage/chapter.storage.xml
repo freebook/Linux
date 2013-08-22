@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	&chapter.lvm.xml;
+	&chapter.transfer.ftp;
+	&chapter.storage.synchronize;
+	&chapter.storage.share.xml;
+	&chapter.storage.dfs.xml;
+	&chapter.storage.inotify;
+	&chapter.storage.openfiler;
+	&chapter.storage.backup;

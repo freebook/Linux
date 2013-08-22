@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="mrtg">
+	<title>Mrtg</title>
+	<screen>
+$ sudo apt-get install mrtg
+$ sudo mkdir /etc/mrtg/
+$ sudo sh -c 'cfgmaker --global "HtmlDir: /var/www/mrtg" \
+--global "ImageDir: /var/www/mrtg" \
+--global "LogDir: /var/lib/mrtg" \
+--global "ThreshDir: /var/lib/mrtg" \
+--global "Options[_]: growright,bits"  \
+--ifref=name --ifdesc=descr --show-op-down \
+public@172.16.0.254 > /etc/mrtg/firewall.cfg'
+
+$ sudo mkdir -p /var/www/mrtg
+$ sudo indexmaker --output=/var/www/mrtg/firewall.html /etc/mrtg/firewall.cfg
+	</screen>
+	<example>
+		<title>mrtg</title>
+		<programlisting>
+		<![CDATA[
+
+		]]>
+		</programlisting>
+	</example>
+</section>

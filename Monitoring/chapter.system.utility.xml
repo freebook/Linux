@@ -1,0 +1,788 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.system.utility.xml 666 2013-08-21 10:06:25Z netkiller $ -->
+<chapter id="system.utility">
+	<title>System Utility</title>
+	<chapterinfo>
+		<keywordset>
+			<keyword>logwatch</keyword>
+			<keyword>nfswatch</keyword>
+			<keyword>watchdog</keyword>
+			<keyword>nmon</keyword>
+			<keyword>nulog</keyword>
+			<keyword>nload</keyword>
+		</keywordset>
+	</chapterinfo>
+
+<section id="system.user">
+    <title>User</title>
+	<section id="sys.last">
+		<title>last, lastb - show listing of last logged in users</title>
+		<screen>
+[neo@linux ~]$ last reboot
+reboot   system boot  2.6.18-164.15.1. Wed Apr 28 23:43         (6+21:31)
+reboot   system boot  2.6.18-164.15.1. Fri Apr 16 04:07         (12+19:23)
+reboot   system boot  2.6.18-164.15.1. Fri Apr 16 02:19          (01:46)
+reboot   system boot  2.6.18-164.el5   Thu Apr 15 18:52          (07:25)
+
+wtmp begins Thu Apr 15 18:52:15 2010
+		</screen>
+	</section>
+</section>
+
+<section id="system.mem">
+    <title>Memory</title>
+	<section id="system.memory">
+		<title>Memory</title>
+		<para>free - Display amount of free and used memory in the system</para>
+		<screen>
+$ free
+             total       used       free     shared    buffers     cached
+Mem:       2053440     522028    1531412          0      87076     265952
+-/+ buffers/cache:     169000    1884440
+Swap:      2441840          0    2441840
+		</screen>
+		<para>5秒监控一次</para>
+		<screen>
+neo@neo-OptiPlex-780:~/workspace/Document$ free -s 5
+             total       used       free     shared    buffers     cached
+Mem:       2054224    1708876     345348          0      58908     696404
+-/+ buffers/cache:     953564    1100660
+Swap:      2077692      81948    1995744
+
+             total       used       free     shared    buffers     cached
+Mem:       2054224    1708876     345348          0      58908     696404
+-/+ buffers/cache:     953564    1100660
+Swap:      2077692      81948    1995744
+
+             total       used       free     shared    buffers     cached
+Mem:       2054224    1709000     345224          0      58908     696404
+-/+ buffers/cache:     953688    1100536
+Swap:      2077692      81948    1995744
+
+		</screen>
+	</section>
+	<section id="sys.vmstat">
+		<title>vmstat - Report virtual memory statistics</title>
+		<para>vmstat</para>
+		<screen>
+# vmstat
+procs -----------memory---------- ---swap-- -----io---- --system-- ----cpu----
+ r  b   swpd   free   buff  cache   si   so    bi    bo   in    cs us sy id wa
+ 0  0      0 203668  53352 2878928    0    0     0     2    4     6  0  0 100  0
+		</screen>
+		<screen>
+procs:
+r		;在运行队列中等待的进程数
+b		;在等待io的进程数
+w		;可以进入运行队列但被替换的进程
+
+memoy
+swap	;现时可用的交换内存（k表示）
+free	;空闲的内存（k表示）
+
+pages
+re        回收的页面
+mf        非严重错误的页面
+pi        进入页面数（k表示）
+po        出页面数（k表示）
+fr        空余的页面数（k表示）
+de        提前读入的页面中的未命中数
+sr        通过时钟算法扫描的页面
+
+disk 显示每秒的磁盘操作。 s表示scsi盘，0表示盘号
+
+fault 显示每秒的中断数
+in        设备中断
+sy        系统中断
+cy        cpu交换
+
+cpu 表示cpu的使用状态
+cs        用户进程使用的时间
+sy        系统进程使用的时间
+id        cpu空闲的时间
+		</screen>
+		<screen>
+$ vmstat 1
+procs -----------memory---------- ---swap-- -----io---- -system-- ----cpu----
+ r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa
+ 2  0      0 2692472 347884 442576    0    0     0    54   11    7 99  1  0  0
+ 2  0      0 2692420 347884 442600    0    0     0     0    6   87 100  0  0  0
+ 2  1      0 2692320 347884 442600    0    0     0  2568   26  121 100  0  0  0
+ 2  0      0 2687872 347884 442600    0    0     0    72   28  129 100  1  0  0
+ 2  0      0 2684716 347884 442600    0    0     0     0   16   91 100  0  0  0
+ 2  0      0 2680528 347884 442600    0    0     0     0   12   88 100  1  0  0
+
+vmstat 参数详解
+
+procs:
+r-->在运行队列中等待的进程数
+b-->在等待io的进程数
+w-->可以进入运行队列但被替换的进程
+
+memoy
+swap-->现时可用的交换内存（k表示）
+free-->空闲的内存（k表示）
+
+pages
+re－－》回收的页面
+mf－－》非严重错误的页面
+pi－－》进入页面数（k表示）
+po－－》出页面数（k表示）
+fr－－》空余的页面数（k表示）
+de－－》提前读入的页面中的未命中数
+sr－－》通过时钟算法扫描的页面
+
+disk 显示每秒的磁盘操作。 s表示scsi盘，0表示盘号
+
+fault 显示每秒的中断数
+in－－》设备中断
+sy－－》系统中断
+cy－－》cpu交换
+
+cpu 表示cpu的使用状态
+cs－－》用户进程使用的时间
+sy－－》系统进程使用的时间
+id－－》cpu空闲的时间
+		</screen>
+	</section>
+	<section id="mpstat">
+		<title>mpstat</title>
+		<screen>
+# mpstat -P ALL
+Linux 2.6.18-194.el5 (cms)      08/30/2010
+
+07:30:56 PM  CPU   %user   %nice    %sys %iowait    %irq   %soft  %steal   %idle    intr/s
+07:30:56 PM  all    0.73    0.00    3.91    0.61    0.02    0.11    0.00   94.62   1380.14
+07:30:56 PM    0    1.62    0.00    5.40    1.82    0.08    0.42    0.00   90.65   1375.30
+07:30:56 PM    1    0.35    0.00    3.78    0.21    0.00    0.00    0.00   95.66      0.00
+07:30:56 PM    2    0.44    0.00    2.74    0.22    0.00    0.00    0.00   96.59      0.00
+07:30:56 PM    3    0.50    0.00    3.72    0.20    0.00    0.00    0.00   95.59      0.00
+		</screen>
+	</section>
+	<section id="sys.pmap">
+		<title>pmap - report memory map of a process</title>
+		<screen>
+# pmap -d PID
+		</screen>
+		<screen>
+[root@development ~]# pmap -d 3817
+3817:   /sbin/mingetty tty3
+Address           Kbytes Mode  Offset           Device    Mapping
+0000000000400000      12 r-x-- 0000000000000000 008:00002 mingetty
+0000000000602000       8 rw--- 0000000000002000 008:00002 mingetty
+000000001b9f8000     132 rw--- 000000001b9f8000 000:00000   [ anon ]
+0000003fd8200000     112 r-x-- 0000000000000000 008:00002 ld-2.5.so
+0000003fd841b000       4 r---- 000000000001b000 008:00002 ld-2.5.so
+0000003fd841c000       4 rw--- 000000000001c000 008:00002 ld-2.5.so
+0000003fd9200000    1332 r-x-- 0000000000000000 008:00002 libc-2.5.so
+0000003fd934d000    2048 ----- 000000000014d000 008:00002 libc-2.5.so
+0000003fd954d000      16 r---- 000000000014d000 008:00002 libc-2.5.so
+0000003fd9551000       4 rw--- 0000000000151000 008:00002 libc-2.5.so
+0000003fd9552000      20 rw--- 0000003fd9552000 000:00000   [ anon ]
+00002ba6fbb68000       8 rw--- 00002ba6fbb68000 000:00000   [ anon ]
+00002ba6fbb7d000       8 rw--- 00002ba6fbb7d000 000:00000   [ anon ]
+00007fff2ba17000      84 rw--- 00007ffffffea000 000:00000   [ stack ]
+ffffffffff600000    8192 ----- 0000000000000000 000:00000   [ anon ]
+mapped: 11984K    writeable/private: 268K    shared: 0K
+		</screen>
+	</section>
+</section>
+
+<section id="system.cpu">
+    <title>CPU</title>
+	<section id="sys.uptime">
+		<title>uptime - Tell how long the system has been running.</title>
+		<para>uptime</para>
+		<screen>
+# uptime
+ 21:26:06 up 15 days, 58 min,  1 user,  load average: 0.85, 1.16, 2.21
+		</screen>
+	</section>
+	<section id="system.top">
+		<title>top - display Linux tasks</title>
+		<para>5 秒监控一次</para>
+		<screen>
+top -d 5
+		</screen>
+	</section>
+	<section id="system.atop">
+		<title>atop - AT Computing's System &amp; Process Monitor</title>
+		<para></para>
+		<screen>
+		<![CDATA[
+ATOP - ubuntu                        2013/03/12  16:09:34                        ------                        10s elapsed
+PRC |  sys    0.03s  |  user   0.01s |  #proc    104  |  #tslpi   184  |  #tslpu     0  | #zombie    0  |  #exit      0  |
+CPU |  sys       0%  |  user      0% |  irq       0%  |  idle    399%  |  wait      1%  | curf 2.13GHz  |  curscal   ?%  |
+cpu |  sys       0%  |  user      0% |  irq       0%  |  idle    100%  |  cpu000 w  0%  | curf 2.13GHz  |  curscal   ?%  |
+cpu |  sys       0%  |  user      0% |  irq       0%  |  idle    100%  |  cpu002 w  0%  | curf 2.13GHz  |  curscal   ?%  |
+CPL |  avg1    0.00  |  avg5    0.01 |  avg15   0.05  |  csw      694  |  intr     351  |               |  numcpu     4  |
+MEM |  tot     1.9G  |  free    1.4G |  cache 219.7M  |  dirty   0.0M  |  buff   93.5M  | slab   39.3M  |                |
+SWP |  tot     2.0G  |  free    2.0G |                |                |                | vmcom 338.8M  |  vmlim   2.9G  |
+LVM |   ubuntu-root  |  busy      1% |  read       0  |  write      9  |  MBr/s   0.00  | MBw/s   0.00  |  avio 8.44 ms  |
+NET |  transport     |  tcpi      11 |  tcpo       9  |  udpi       2  |  udpo       2  | tcpao      0  |  tcppo      0  |
+NET |  network       |  ipi       16 |  ipo       12  |  ipfrw      0  |  deliv     15  | icmpi      0  |  icmpo      0  |
+NET |  eth0    ----  |  pcki      23 |  pcko      14  |  si    2 Kbps  |  so    2 Kbps  | erri       0  |  erro       0  |
+
+  PID  RUID      EUID       THR   SYSCPU   USRCPU   VGROW   RGROW   RDDSK   WRDSK  ST  EXC  S  CPUNR   CPU  CMD        1/1
+ 5571  root      root         1    0.01s    0.00s      0K      0K      0K      0K  --    -  R      0    0%  atop
+ 1188  postgres  postgres     1    0.01s    0.00s      0K      0K      0K      0K  --    -  S      1    0%  postgres
+ 1256  redis     redis        3    0.00s    0.01s      0K      0K      0K      0K  --    -  S      2    0%  redis-server
+  247  root      root         1    0.01s    0.00s      0K      0K      0K      0K  --    -  S      0    0%  kworker/0:1
+ 1229  ntop      ntop        11    0.00s    0.00s      0K      0K      0K      0K  --    -  S      3    0%  ntop
+  920  whoopsie  whoopsie     2    0.00s    0.00s      0K      0K      0K      0K  --    -  S      3    0%  whoopsie
+  914  root      root         1    0.00s    0.00s      0K      0K      0K      0K  --    -  S      1    0%  irqbalance
+  265  root      root         1    0.00s    0.00s      0K      0K      0K     16K  --    -  S      1    0%  jbd2/dm-0-8
+		]]>
+		</screen>
+	</section>
+	<section id="system.htop">
+		<title>htop - interactive process viewer</title>
+		<para></para>
+		<screen>
+
+		</screen>
+	</section>
+</section>
+
+<section id="system.processes">
+    <title>Processes</title>
+	<section>
+		<title>strace - trace system calls and signals</title>
+		<screen>
+$ strace -f -F lighttpd
+		</screen>
+	</section>
+	<section id="sys.lsof">
+		<title>lsof - list open files</title>
+		<screen>
+$ sudo lsof -c lighttpd
+		</screen>
+		<section>
+			<title>监控文件系统</title>
+			<para>谁打开了该文件? 显示打开文件filename的进程</para>
+			<screen>
+lsof filename
+			</screen>
+			<para>列出某个目录下被打开的文件</para>
+			<screen>
+# lsof /tmp/
+COMMAND    PID USER   FD   TYPE DEVICE SIZE/OFF    NODE NAME
+seahorse- 4158  neo  cwd    DIR    8,2    53248 1310721 /tmp
+			</screen>
+			<screen>
+$ sudo lsof +D /srv/
+COMMAND  PID USER  FD   TYPE DEVICE SIZE/OFF    NODE NAME
+match   5227 root txt    REG  252,0  1351616 1966083 /srv/match
+			</screen>
+		</section>
+		<section>
+			<title></title>
+			<screen>
+$ lsof /dev/tty1
+COMMAND   PID USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+bash    17187  neo    0u   CHR    4,1      0t0 1057 /dev/tty1
+bash    17187  neo    1u   CHR    4,1      0t0 1057 /dev/tty1
+bash    17187  neo    2u   CHR    4,1      0t0 1057 /dev/tty1
+bash    17187  neo  255u   CHR    4,1      0t0 1057 /dev/tty1
+
+
+			</screen>
+		</section>
+		<section>
+			<title>用户监控</title>
+			<para>用户显示打开的文件</para>
+			<screen>
+# lsof -u apache |more
+COMMAND  PID   USER   FD   TYPE DEVICE SIZE/OFF   NODE NAME
+httpd   4374 apache  cwd    DIR  252,1     4096      2 /
+httpd   4374 apache  rtd    DIR  252,1     4096      2 /
+httpd   4374 apache  txt    REG  252,1   354816 408099 /usr/sbin/httpd
+httpd   4374 apache  mem    REG  252,1     9488 408013 /usr/lib64/apr-util-1/apr_ldap-1.so
+httpd   4374 apache  mem    REG  252,1    27424    907 /lib64/libnss_dns-2.12.so
+httpd   4374 apache  mem    REG  252,1    65928    909 /lib64/libnss_files-2.12.so
+httpd   4374 apache  mem    REG  252,1    10416 408095 /usr/lib64/httpd/modules/mod_version.so
+httpd   4374 apache  mem    REG  252,1    27312 408054 /usr/lib64/httpd/modules/mod_cgi.so
+httpd   4374 apache  mem    REG  252,1    22992 408061 /usr/lib64/httpd/modules/mod_disk_cache.so
+			</screen>
+		</section>
+		<section>
+			<title>监控网络</title>
+			<para>什么程序运行在22端口上</para>
+			<screen>
+lsof -i :22
+			</screen>
+			<para>谁在联系端口</para>
+			<screen>
+# lsof -i -a -c ssh
+COMMAND  PID USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+sshd    2843 root    3r  IPv4  27960      0t0  TCP 192.168.6.9:ssh->192.168.6.30:55363 (ESTABLISHED)
+sshd    3003 root    3u  IPv4  28864      0t0  TCP *:ssh (LISTEN)
+sshd    3003 root    4u  IPv6  28866      0t0  TCP *:ssh (LISTEN)
+			</screen>
+			<para></para>
+			<screen>
+$ lsof -i -a -c nginx
+COMMAND   PID USER   FD   TYPE    DEVICE SIZE/OFF NODE NAME
+nginx   26222  www    8w  IPv4 557827648      0t0  TCP 42.121.14.230:http->110.240.206.67:63482 (ESTABLISHED)
+nginx   26222  www    9u  IPv4 557817283      0t0  TCP 42.121.14.230:http->27.106.154.202:18972 (ESTABLISHED)
+nginx   26222  www   10u  IPv4 496452301      0t0  TCP *:http (LISTEN)
+nginx   26222  www   17u  IPv4 557826020      0t0  TCP 42.121.14.230:http->210.177.78.33:62297 (ESTABLISHED)
+nginx   26222  www   18u  IPv4 557827745      0t0  TCP 42.121.14.230:http->115.214.39.230:50628 (ESTABLISHED)
+nginx   26222  www   19u  IPv4 557826475      0t0  TCP 42.121.14.230:http->183.160.124.225:57143 (ESTABLISHED)
+nginx   26222  www   20u  IPv4 557827670      0t0  TCP 42.121.14.230:http->125.88.77.30:8956 (ESTABLISHED)
+nginx   26222  www   21u  IPv4 557826122      0t0  TCP 42.121.14.230:http->116.24.229.173:rfid-rp1 (ESTABLISHED)
+nginx   26222  www   22u  IPv4 557826127      0t0  TCP 42.121.14.230:http->119.137.141.76:21508 (ESTABLISHED)
+nginx   26222  www   23u  IPv4 557826476      0t0  TCP 42.121.14.230:http->183.160.124.225:57144 (ESTABLISHED)
+nginx   26222  www   24u  IPv4 557821930      0t0  TCP 42.121.14.230:http->210.21.127.136:52309 (ESTABLISHED)
+nginx   26222  www   25u  IPv4 557826477      0t0  TCP 42.121.14.230:http->183.160.124.225:57145 (ESTABLISHED)
+nginx   26222  www   26u  IPv4 557827693      0t0  TCP 42.121.14.230:http->111.227.215.135:18628 (ESTABLISHED)
+			</screen>
+			<para>通过进程ID监控网络连接</para>
+			<screen>
+$ lsof -i -a -p 26222
+COMMAND   PID USER   FD   TYPE    DEVICE SIZE/OFF NODE NAME
+nginx   26222  www    8w  IPv4 557827648      0t0  TCP 42.121.14.230:http->110.240.206.67:63482 (ESTABLISHED)
+nginx   26222  www    9u  IPv4 557817283      0t0  TCP 42.121.14.230:http->27.106.154.202:18972 (ESTABLISHED)
+nginx   26222  www   10u  IPv4 496452301      0t0  TCP *:http (LISTEN)
+nginx   26222  www   21u  IPv4 557826122      0t0  TCP 42.121.14.230:http->116.24.229.173:rfid-rp1 (ESTABLISHED)
+nginx   26222  www   26u  IPv4 557827693      0t0  TCP 42.121.14.230:http->111.227.215.135:18628 (ESTABLISHED)
+nginx   26222  www   31u  IPv4 557798349      0t0  TCP 42.121.14.230:http->213.92.156.27.broad.fz.fj.dynamic.163data.com.cn:novation (ESTABLISHED)
+nginx   26222  www   33u  IPv4 557807306      0t0  TCP 42.121.14.230:http->182.139.49.102:news (ESTABLISHED)
+nginx   26222  www   38u  IPv4 557825270      0t0  TCP 42.121.14.230:http->122.71.50.188:43694 (ESTABLISHED)
+nginx   26222  www   40u  IPv4 557817907      0t0  TCP 42.121.14.230:http->120.28.127.54:62009 (ESTABLISHED)
+nginx   26222  www   41u  IPv4 557800691      0t0  TCP 42.121.14.230:http->27.190.185.75:60475 (ESTABLISHED)
+			</screen>
+			<para>UDP 监控</para>
+			<screen>
+# lsof -i udp;
+COMMAND    PID     USER   FD   TYPE   DEVICE SIZE/OFF NODE NAME
+rpcbind   2431      rpc    6u  IPv4    12483      0t0  UDP *:sunrpc
+rpcbind   2431      rpc    7u  IPv4    12487      0t0  UDP *:kink
+rpcbind   2431      rpc    9u  IPv6    12490      0t0  UDP *:sunrpc
+rpcbind   2431      rpc   10u  IPv6    12492      0t0  UDP *:kink
+avahi-dae 2549    avahi   13u  IPv4    12781      0t0  UDP *:mdns
+avahi-dae 2549    avahi   14u  IPv4    12782      0t0  UDP *:45747
+rpc.statd 2570  rpcuser    5u  IPv4    13011      0t0  UDP *:asia
+rpc.statd 2570  rpcuser    8u  IPv4    13015      0t0  UDP *:55218
+rpc.statd 2570  rpcuser   10u  IPv6    13023      0t0  UDP *:51236
+openvpn   2594   nobody    5u  IPv4    13060      0t0  UDP *:openvpn
+cupsd     2661     root    9u  IPv4    13379      0t0  UDP *:ipp
+ntpd      2832      ntp   16u  IPv4    14050      0t0  UDP *:ntp
+ntpd      2832      ntp   17u  IPv6    14051      0t0  UDP *:ntp
+ntpd      2832      ntp   18u  IPv6    14055      0t0  UDP localhost:ntp
+ntpd      2832      ntp   19u  IPv6    14056      0t0  UDP [fe80::225:90ff:fe35:906c]:ntp
+ntpd      2832      ntp   20u  IPv4    14057      0t0  UDP localhost:ntp
+ntpd      2832      ntp   21u  IPv4    14058      0t0  UDP manager.repo:ntp
+ntpd      2832      ntp   22u  IPv4    14059      0t0  UDP 10.8.0.1:ntp
+ntpd      2832      ntp   24u  IPv4    15922      0t0  UDP 192.168.122.1:ntp
+ntpd      2832      ntp   25u  IPv6    27224      0t0  UDP [fe80::fc54:ff:fe94:b3c2]:ntp
+ntpd      2832      ntp   26u  IPv6    27225      0t0  UDP [fe80::fc54:ff:fe54:c9d2]:ntp
+ntpd      2832      ntp   27u  IPv6    27948      0t0  UDP [fe80::fc54:ff:fe4e:a846]:ntp
+ntpd      2832      ntp   28u  IPv6    28197      0t0  UDP [fe80::fc54:ff:fe19:c00e]:ntp
+ntpd      2832      ntp   29u  IPv6 99178415      0t0  UDP [fe80::fc54:ff:fe5a:ace]:ntp
+ntpd      2832      ntp   30u  IPv6 99179648      0t0  UDP [fe80::fc54:ff:fe68:54a0]:ntp
+ntpd      2832      ntp   31u  IPv6 99180801      0t0  UDP [fe80::fc54:ff:fed6:3593]:ntp
+postmaste 3391 postgres    9u  IPv6    15004      0t0  UDP localhost:56631->localhost:56631
+postmaste 3395 postgres    9u  IPv6    15004      0t0  UDP localhost:56631->localhost:56631
+postmaste 3396 postgres    9u  IPv6    15004      0t0  UDP localhost:56631->localhost:56631
+postmaste 3397 postgres    9u  IPv6    15004      0t0  UDP localhost:56631->localhost:56631
+postmaste 3398 postgres    9u  IPv6    15004      0t0  UDP localhost:56631->localhost:56631
+postmaste 3399 postgres    9u  IPv6    15004      0t0  UDP localhost:56631->localhost:56631
+dnsmasq   3647   nobody    5u  IPv4    15671      0t0  UDP *:bootps
+dnsmasq   3647   nobody    7u  IPv4    15680      0t0  UDP 192.168.122.1:domain
+			</screen>
+			<para>TCP 监控</para>
+			<screen>
+lsof -i tcp;
+			</screen>
+		</section>
+		<section>
+			<title>监控进程</title>
+			<para>显示httpd进程现在打开的文件</para>
+			<screen>
+lsof -c httpd
+			</screen>
+			<para>-p 进程ID, 显示该进程打开了那些文件</para>
+			<screen>
+pgrep httpd
+lsof -p 1782
+			</screen>
+			<para>显示进程ID</para>
+			<screen>
+# lsof -t -u apache
+4374
+4375
+4376
+4377
+4378
+4379
+4380
+			</screen>
+		</section>
+		<section>
+			<title>lsof 高级用法</title>
+			<para>组合参数</para>
+			<screen>
+# lsof -a -c bash -u root
+COMMAND  PID USER   FD   TYPE DEVICE SIZE/OFF    NODE NAME
+bash    1394 root  cwd    DIR    8,2     4096 4849665 /root
+bash    1394 root  rtd    DIR    8,2     4096       2 /
+bash    1394 root  txt    REG    8,2   938768 3671557 /bin/bash
+bash    1394 root  mem    REG    8,2   156872 3014902 /lib64/ld-2.12.so
+bash    1394 root  mem    REG    8,2  1922152 3014903 /lib64/libc-2.12.so
+bash    1394 root  mem    REG    8,2    22536 3014911 /lib64/libdl-2.12.so
+bash    1394 root  mem    REG    8,2   138280 3018719 /lib64/libtinfo.so.5.7
+bash    1394 root  mem    REG    8,2    65928 3017998 /lib64/libnss_files-2.12.so
+bash    1394 root  mem    REG    8,2    26060 2632051 /usr/lib64/gconv/gconv-modules.cache
+bash    1394 root  mem    REG    8,2 99158576 2648204 /usr/lib/locale/locale-archive
+bash    1394 root    0u   CHR  136,7      0t0      10 /dev/pts/7
+bash    1394 root    1u   CHR  136,7      0t0      10 /dev/pts/7
+bash    1394 root    2u   CHR  136,7      0t0      10 /dev/pts/7
+bash    1394 root  255u   CHR  136,7      0t0      10 /dev/pts/7
+			</screen>
+			<para>每个5秒刷新一次</para>
+			<screen>
+# lsof -c init -a -r5
+			</screen>
+		</section>
+	</section>
+</section>
+<section id="system.io">
+    <title>Harddisk IO</title>
+	<section>
+		<title>input/output statistics</title>
+		<para></para>
+		<screen>
+$ sudo apt-get install sysstat
+		</screen>
+		<para>iostat</para>
+		<screen>
+$ iostat
+Linux 2.6.24-21-generic (netkiller)     Thursday, December 04, 2008
+
+avg-cpu:  %user   %nice %system %iowait  %steal   %idle
+           0.57    0.03    0.14    0.41    0.00   98.85
+
+Device:            tps   Blk_read/s   Blk_wrtn/s   Blk_read   Blk_wrtn
+sda               6.45       132.69        68.33     595116     306456
+sda1              0.00         0.00         0.00       1606         58
+sda2              0.00         0.00         0.00        820          0
+sda3              2.20         1.16        17.27    1502618   22448752
+		</screen>
+		<para>sudo iostat -x 2</para>
+		<screen>
+# iostat -x 1
+avg-cpu: %user %nice %sys %idle
+2.04 0.00 97.96 0.00
+Device: rrqm/s wrqm/s r/s w/s rsec/s wsec/s rkB/s wkB/s avgrq-sz avgqu-sz await svctm %util
+/dev/sda 0.00 633.67 3.06 102.31 24.49 5281.63 12.24 2640.82 288.89 73.67 113.89 27.22 50.00
+
+从输出我们看到w/s=102,wKB/s=2640.所以2640/102=23KB per I/O.
+
+因此对于连续I/O系统来说我们要关注系统读取大量数据的能力即KB per request.对于随机I/O系统我们注重IOPS值.
+		</screen>
+		<section>
+			<title>5 秒监控一次</title>
+			<screen>
+iostat -d 5
+			</screen>
+		</section>
+	</section>
+	<section id="iotop">
+	    <title>iotop - simple top-like I/O monitor</title>
+	    <screen>
+# yum install iotop
+	    </screen>
+	    <screen>
+$ sudo apt-get install iotop
+	    </screen>
+	</section>
+	<section id="ionice">
+		<title>ionice - set or get process I/O scheduling class and priority</title>
+	</section>
+</section>
+
+<section id="system.network">
+	<title>Network</title>
+	<section id="netstat">
+		<title>netstat</title>
+		<para>netstat 监控TCP状态</para>
+		<screen>
+#netstat -n | awk ‘/^tcp/ {++S[$NF]} END {for(a in S) print a, S[a]}’
+		</screen>
+		<screen>
+状态：		描述
+CLOSED：		无连接是活动的或正在进行
+LISTEN：		服务器在等待进入呼叫
+SYN_RECV：	一个连接请求已经到达，等待确认
+SYN_SENT：	应用已经开始，打开一个连接
+ESTABLISHED：正常数据传输状态
+FIN_WAIT1：	应用说它已经完成
+FIN_WAIT2：	另一边已同意释放
+ITMED_WAIT：等待所有分组死掉
+CLOSING：	两边同时尝试关闭
+TIME_WAIT：	另一边已初始化一个释放
+LAST_ACK：	等待所有分组死掉
+		</screen>
+	</section>
+	<section id="ss">
+		<title>ss</title>
+		<screen>
+# ss
+State      Recv-Q Send-Q      Local Address:Port          Peer Address:Port
+CLOSE-WAIT 1      0           192.168.3.124:19644       130.75.116.209:http
+CLOSE-WAIT 1      0           192.168.3.124:31289       170.224.194.69:https
+CLOSE-WAIT 1      0           192.168.3.124:64903         198.20.8.241:https
+CLOSE-WAIT 1      0           192.168.3.124:64902         198.20.8.241:https
+CLOSE-WAIT 1      0           192.168.3.124:27528      170.224.160.205:https
+CLOSE-WAIT 1      0           192.168.3.124:10152         198.20.8.241:https
+CLOSE-WAIT 1      0           192.168.3.124:18263       170.224.194.69:http
+CLOSE-WAIT 1      0           192.168.3.124:18262       170.224.194.69:http
+CLOSE-WAIT 1      0           192.168.3.124:27792         129.89.61.70:http
+CLOSE-WAIT 1      0           192.168.3.124:27595         129.89.61.70:http
+CLOSE-WAIT 1      0           192.168.3.124:28970         129.89.61.70:http
+CLOSE-WAIT 1      0           192.168.3.124:28158       130.75.116.210:http
+CLOSE-WAIT 1      0           192.168.3.124:26186       130.75.116.210:http
+CLOSE-WAIT 1      0           192.168.3.124:26185       130.75.116.210:http
+CLOSE-WAIT 1      0           192.168.3.124:42563         74.125.71.99:http
+CLOSE-WAIT 1      0           192.168.3.124:42564         74.125.71.99:http
+CLOSE-WAIT 1      0           192.168.3.124:63459       130.75.116.202:http
+CLOSE-WAIT 1      0           192.168.3.124:63458       130.75.116.202:http
+ESTAB      0      0           192.168.3.124:30829         192.168.3.17:3260
+ESTAB      0      0           192.168.3.124:13234         192.168.3.15:3260
+ESTAB      0      0        ::ffff:192.168.3.124:ssh        ::ffff:192.168.80.5:5                                                                                        2682
+ESTAB      0      1960     ::ffff:192.168.3.124:ssh        ::ffff:192.168.80.5:5                                                                                        2957
+
+
+$ ss
+State      Recv-Q Send-Q                Local Address:Port                    Peer Address:Port
+ESTAB      0      0                      192.168.80.1:38281                     64.4.61.72:1863
+ESTAB      0      0                      192.168.80.1:54504                  112.95.240.77:8000
+ESTAB      0      0                      192.168.80.1:14698                  74.125.71.125:5222
+ESTAB      0      0                      192.168.80.1:14697                  74.125.71.125:5222
+ESTAB      0      0                      192.168.80.1:54123                   64.12.28.171:https
+ESTAB      0      0                      192.168.80.1:4225                     64.4.61.171:1863
+ESTAB      0      0                      192.168.80.1:ssh                     192.168.80.5:51291
+ESTAB      0      0               ::ffff:192.168.80.1:microsoft-ds          ::ffff:192.168.80.5:51094
+ESTAB      0      0                      192.168.80.1:22074                  205.188.1.241:https
+ESTAB      0      0                      192.168.80.1:59340                    64.4.34.213:1863
+ESTAB      0      0                      192.168.80.1:9766                   91.189.89.114:https
+ESTAB      0      0                      192.168.80.1:3300                      64.4.44.78:1863
+
+		</screen>
+		<screen>
+
+		</screen>
+	</section>
+	<section id="iftop">
+	    <title>iftop - display bandwidth usage on an interface by host</title>
+    	<screen>
+# yum install -y iftop
+	    </screen>
+	</section>
+    <section id="iptraf">
+		<title>iptraf - Interactive Colorful IP LAN Monitor</title>
+		<screen>
+[root@development ~]# yum -y install iptraf
+		</screen>
+	</section>
+	<section id="nload">
+		<title>nload: Console application which monitors network traffic and bandwidth</title>
+		<para>CentOS</para>
+		<screen>
+# yum install nload -y
+		</screen>
+		<para>Ubuntu</para>
+		<screen>
+# sudo apt-get install nload
+		</screen>
+		<para>运行监控命令</para>
+
+		<screen>
+# nload
+		</screen>
+		<screen>
+Device eth0 [172.16.3.90] (1/5):
+=============================================================================
+Incoming:
+
+                                                     Curr: 10.00 kBit/s
+                                                     Avg: 103.95 kBit/s
+                                                     Min: 0.00 Bit/s
+             ||                                      Max: 3.23 MBit/s
+             ##                                      Ttl: 1090.93 GByte
+Outgoing:
+
+                                                     Curr: 12.84 kBit/s
+                                                     Avg: 15.29 kBit/s
+                                                     Min: 0.00 Bit/s
+                                                     Max: 206.63 kBit/s
+                                                     Ttl: 48.57 GByte
+		</screen>
+	</section>
+    <section id="bwm">
+		<title>bwm - Bandwidth Monitor</title>
+		<screen>
+Bandwidth Monitor 1.1.0
+
+       Iface        RX(KB/sec)   TX(KB/sec)   Total(KB/sec)
+
+          lo            8.366        8.366          16.732
+        eth0           24.120      100.005         124.125
+        eth1            0.000        0.000           0.000
+
+       Total           32.486      108.371         140.857
+
+Hit CTRL-C to end this madness.
+		</screen>
+	</section>
+</section>
+
+<section id="service">
+	<title>Service</title>
+	<section id="os.nfs">
+		<title>NFS</title>
+		<section id="nfsstat">
+			<title>nfsstat</title>
+			<screen>
+neo@monitor:~$ nfsstat
+Client rpc stats:
+calls      retrans    authrefrsh
+1453045225   19702      744
+
+Client nfs v3:
+null         getattr      setattr      lookup       access       readlink
+0         0% 114943957  8% 348670069 25% 289174215 20% 133022875  9% 40252     0%
+read         write        create       mkdir        symlink      mknod
+81907703  5% 99851126  7% 81782798  5% 5528575   0% 3450      0% 427       0%
+remove       rmdir        rename       link         readdir      readdirplus
+5178074   0% 1021367   0% 79872796  5% 0         0% 7300163   0% 21591431  1%
+fsstat       fsinfo       pathconf     commit
+30857752  2% 10        0% 5         0% 83581680  6%
+
+Client nfs v4:
+null         read         write        commit       open         open_conf
+0         0% 3449823   5% 299       0% 248       0% 3494      0% 3066      0%
+open_noat    open_dgrd    close        setattr      fsinfo       renew
+0         0% 0         0% 3182      0% 1279      0% 385       0% 69        0%
+setclntid    confirm      lock         lockt        locku        access
+997       0% 997       0% 0         0% 0         0% 0         0% 760098    1%
+getattr      lookup       lookup_root  remove       rename       link
+1638029   2% 54272     0% 224       0% 4         0% 251       0% 0         0%
+symlink      create       pathconf     statfs       readlink     readdir
+6         0% 214       0% 193       0% 62872466 91% 391       0% 3601      0%
+server_caps  delegreturn  getacl       setacl       fs_locations
+578       0% 35        0% 0         0% 0         0% 0         0%
+
+			</screen>
+		</section>
+		<section id="nfswatch">
+			<title>nfswatch</title>
+			<screen>
+yum install -y nfswatch
+			</screen>
+			<screen>
+J13-85-www                  Mon Sep 19 18:33:54 2011   Elapsed time:   00:00:30
+Interval packets:    125711 (network)      61695 (to host)          0 (dropped)
+Total packets:       140549 (network)      68996 (to host)          0 (dropped)
+                     Monitoring packets from interface eth0
+                     int   pct    total                      int   pct    total
+NFS3 Read              0    0%        0 TCP Packets        61688  100%    68973
+NFS3 Write             0    0%        0 UDP Packets            0    0%        1
+NFS Read               0    0%        0 ICMP Packets           0    0%        0
+NFS Write              0    0%        0 Routing Control        0    0%        0
+NFS Mount              0    0%        0 Addr Resolution        0    0%        3
+Port Mapper            0    0%        0 Rev Addr Resol         0    0%        0
+RPC Authorization  59257   96%    66197 Ether/FDDI Bdcst       0    0%        3
+Other RPC Packets      1    0%        5 Other Packets          7    0%       19
+                                 0 file systems
+     File Sys        int   pct    total      File Sys        int   pct    total
+			</screen>
+		</section>
+	</section>
+	<section id="httpd.top">
+		<title>apachetop</title>
+		<screen>
+# yum install apachetop -y
+		</screen>
+		<screen>
+# apachetop
+last hit: 00:00:00         atop runtime:  0 days, 00:00:00             09:42:54
+All:            0 reqs (   0.0/sec)          0.0B (    0.0B/sec)       0.0B/req
+2xx:       0 ( 0.0%) 3xx:       0 ( 0.0%) 4xx:     0 ( 0.0%) 5xx:     0 ( 0.0%)
+R (  1s):       0 reqs (   0.0/sec)          0.0B (    0.0B/sec)       0.0B/req
+2xx:       0 ( 0.0%) 3xx:       0 ( 0.0%) 4xx:     0 ( 0.0%) 5xx:     0 ( 0.0%)
+		</screen>
+	</section>
+
+</section>
+	<section>
+		<title>iptstate - A top-like display of IP Tables state table entries</title>
+		<screen>
+# yum install iptstate -y
+		</screen>
+		<screen>
+                           IPTState - IPTables State Top
+Version: 2.2.2        Sort: SrcIP           b: change sorting   h: help
+Source                        Destination                  Prt  State       TTL
+0.0.0.0                       224.0.0.1                    igmp               0:09:49
+192.168.2.1:45981             192.168.2.1:22               tcp  TIME_WAIT     0:01:33
+192.168.2.1:46009             192.168.2.1:22               tcp  TIME_WAIT     0:01:57
+192.168.2.1:45915             192.168.2.1:22               tcp  TIME_WAIT     0:00:58
+192.168.2.1:45975             192.168.2.1:22               tcp  TIME_WAIT     0:01:31
+192.168.2.1:54922             202.141.160.110:80           tcp  TIME_WAIT     0:00:57
+192.168.2.1:46000             192.168.2.1:22               tcp  TIME_WAIT     0:01:54
+192.168.2.1:45973             192.168.2.1:22               tcp  TIME_WAIT     0:01:31
+192.168.2.1:45855             192.168.2.1:22               tcp  TIME_WAIT     0:00:26
+192.168.2.1:45990             192.168.2.1:22               tcp  TIME_WAIT     0:01:36
+192.168.2.1:45822             192.168.2.1:22               tcp  TIME_WAIT     0:00:01
+192.168.2.1:45926             192.168.2.1:22               tcp  TIME_WAIT     0:01:01
+		</screen>
+	</section>
+	<section id="watchman">
+		<title>文件监控</title>
+		<para>https://github.com/facebook/watchman</para>
+	</section>
+	<section id="watchdog">
+		<title>watchdog</title>
+	</section>
+	<section id="nmon">
+		<title>nmon</title>
+		<para>http://nmon.sourceforge.net/</para>
+		<example>
+			<title>nmon</title>
+			<programlisting>
+			<![CDATA[
+
+			]]>
+			</programlisting>
+		</example>
+		<screen>
+$ apt-cache search nmon
+libtime-modules-perl - Various Perl modules for time/date manipulation
+nmon - performance monitoring tool for Linux
+xfce4-genmon-plugin - Generic Monitor for the Xfce4 panel
+xfce4-goodies - enhancements for the Xfce4 Desktop Environment
+
+neo@monitor:~$ sudo apt-get install nmon
+
+neo@monitor:~$ nmon
+		</screen>
+		<para>
+nmon -f -s 360 -c 86400 -m /home/user/nmon
+		</para>
+	</section>
+	<section id="hardware">
+		<title>Hardware</title>
+
+		<section id="system.sensors">
+			<title>temperature/voltage/fan</title>
+			<para>lm-sensors - utilities to read temperature/voltage/fan sensors</para>
+			<screen>
+$ sudo apt-get install lm-sensors
+$ sudo sensors-detect
+$ sensors
+			</screen>
+		</section>
+	</section>
+</chapter>

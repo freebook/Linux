@@ -1,0 +1,617 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.network.proxy.squid.xml 357 2012-02-29 08:20:15Z netkiller $ -->
+<section id="squid">
+	<title>Squid - Internet Object Cache (WWW proxy cache)</title>
+	<para>如果apache 安装了gzip,deflate需要开启cache_vary</para>
+	<para>cache_vary on</para>
+	<section id="squid.source">
+		<title>源码安装</title>
+		<screen>
+wget http://www.squid-cache.org/Versions/v2/2.6/squid-2.6.STABLE13.tar.gz
+./configure --prefix=/usr/local/squid-2.6
+make all
+make install
+
+mkdir -p /usr/local/squid-2.6/var/cache
+chown nobody.nobody -R /usr/local/squid-2.6/var/
+ln -s /usr/local/squid-2.6 /usr/local/squid
+cd /usr/local/squid
+
+./squid -NCd1
+		</screen>
+	</section>	
+	<section id="squid.debian">
+		<title>debian/ubuntu 安装</title>
+			<command>$ sudo apt-get install squid</command>
+			<screen>
+$ sudo apt-get install squid3
+$ sudo apt-get install squidclient
+			</screen>
+	</section>
+	<section id="squid.config">
+		<title>配置</title>
+		<para>查看当前配置参数</para>
+		<para>当你打开squid.conf文件时，你会头大，因为文件太长了，并且已经启用了部分参数。你可以使用下面命令查看那些参数被开启。</para>
+		<screen>
+$ grep '^[a-z]' squid.conf		
+		</screen>
+		<para>下面是安装squid3后的默认开启选项</para>
+		<screen>
+$ grep '^[a-z]' squid.conf
+acl manager proto cache_object
+acl localhost src 127.0.0.1/32
+acl to_localhost dst 127.0.0.0/8
+acl SSL_ports port 443
+acl Safe_ports port 80          # http
+acl Safe_ports port 21          # ftp
+acl Safe_ports port 443         # https
+acl Safe_ports port 70          # gopher
+acl Safe_ports port 210         # wais
+acl Safe_ports port 1025-65535  # unregistered ports
+acl Safe_ports port 280         # http-mgmt
+acl Safe_ports port 488         # gss-http
+acl Safe_ports port 591         # filemaker
+acl Safe_ports port 777         # multiling http
+acl CONNECT method CONNECT
+http_access allow manager localhost
+http_access deny manager
+http_access deny !Safe_ports
+http_access deny CONNECT !SSL_ports
+http_access allow localhost
+http_access deny all
+icp_access deny all
+htcp_access deny all
+http_port 3128
+hierarchy_stoplist cgi-bin ?
+access_log /var/log/squid3/access.log squid
+refresh_pattern ^ftp:           1440    20%     10080
+refresh_pattern ^gopher:        1440    0%      1440
+refresh_pattern (cgi-bin|\?)    0       0%      0
+refresh_pattern .               0       20%     4320
+icp_port 3130
+coredump_dir /var/spool/squid3		
+		</screen>
+		<para>修改squid.conf之前请做好备份。</para>
+		<screen>
+netkiller@Linux-server:/etc/squid$ sudo cp squid.conf squid.conf.old
+netkiller@Linux-server:/etc/squid$ sudo vi squid.conf
+		</screen>
+		<para>生成自己的squid.conf文件,这样比较清晰</para>
+		<screen>
+$ grep '^[a-z]' squid.conf.old > squid.conf		
+		</screen>
+		<section>
+			<title>正向代理</title>
+			<screen>
+# cat squid.conf
+acl manager proto cache_object
+acl localhost src 127.0.0.1/32 ::1
+acl to_localhost dst 127.0.0.0/8 0.0.0.0/32 ::1
+acl SSL_ports port 443
+acl Safe_ports port 80          # http
+acl Safe_ports port 21          # ftp
+acl Safe_ports port 443         # https
+acl Safe_ports port 70          # gopher
+acl Safe_ports port 210         # wais
+acl Safe_ports port 1025-65535  # unregistered ports
+acl Safe_ports port 280         # http-mgmt
+acl Safe_ports port 488         # gss-http
+acl Safe_ports port 591         # filemaker
+acl Safe_ports port 777         # multiling http
+acl CONNECT method CONNECT
+http_access allow manager localhost
+http_access deny manager
+http_access deny !Safe_ports
+http_access deny CONNECT !SSL_ports
+http_access allow localhost
+http_access allow all
+#http_access deny all
+http_port 3128
+hierarchy_stoplist cgi-bin ?
+coredump_dir /var/spool/squid3
+refresh_pattern ^ftp:           1440    20%     10080
+refresh_pattern ^gopher:        1440    0%      1440
+refresh_pattern -i (/cgi-bin/|\?) 0     0%      0
+
+refresh_pattern -i \.css$ 	1440 50% 129600 reload-into-ims
+refresh_pattern -i \.js$ 	1440 90% 129600 reload-into-ims
+refresh_pattern -i \.hml$ 	1440 90% 129600 reload-into-ims
+refresh_pattern -i \.html$ 	1440 90% 129600 reload-into-ims
+refresh_pattern -i \.shtml$ 1440 90% 129600 reload-into-ims
+refresh_pattern -i \.xml$ 	1440 50% 129600 reload-into-ims
+refresh_pattern -i \.jpg$ 	1440 90% 129600 reload-into-ims
+refresh_pattern -i \.png$ 	1440 90% 129600 ignore-reload
+refresh_pattern -i \.gif$ 	1440 90% 129600 ignore-reload
+refresh_pattern -i \.bmp$ 	1440 90% 129600 ignore-reload
+
+refresh_pattern -i \.mp3$ 	1440 50% 2880 ignore-reload
+refresh_pattern -i \.wmv$ 	1440 50% 2880 ignore-reload
+refresh_pattern -i \.rm$ 	1440 50% 2880 ignore-reload
+refresh_pattern -i \.swf$ 	1440 50% 2880 ignore-reload
+refresh_pattern -i \.mpeg$ 	1440 50% 2880 ignore-reload
+
+refresh_pattern -i \.doc$ 		1440    50%     2880      ignore-reload
+refresh_pattern -i \.ppt$ 		1440    50%     2880      ignore-reload
+refresh_pattern -i \.xls$ 		1440    50%     2880      ignore-reload
+refresh_pattern -i \.pdf$ 		1440    50%     2880      ignore-reload
+refresh_pattern -i \.rar$       1440    50%     2880      ignore-reload
+refresh_pattern -i \.zip$ 		1440    50%     2880      ignore-reload
+refresh_pattern -i \.txt$ 		1440    50%     2880      ignore-reload
+
+refresh_pattern .               0       20%     4320
+			</screen>
+			<para>设置代理服务器</para>
+			<screen>
+declare -x ftp_proxy="192.168.0.1:3128"
+declare -x ftps_proxy="192.168.0.1:3128"
+declare -x http_proxy="192.168.0.1:3128"
+declare -x https_proxy="192.168.0.1:3128"
+			</screen>
+			<para>检查Cache工作情况</para>
+			<screen>
+# declare -x http_proxy="172.16.0.5:3128"
+
+# curl -I http://www.qq.com
+HTTP/1.0 200 OK
+Server: squid/3.0
+Date: Wed, 15 Jun 2011 07:54:36 GMT
+Content-Type: text/html; charset=GB2312
+Vary: Accept-Encoding
+Expires: Wed, 15 Jun 2011 08:09:36 GMT
+Cache-Control: max-age=900
+Vary: Accept-Encoding
+X-Cache: HIT from rainny.qq.com
+X-Cache: MISS from localhost
+X-Cache-Lookup: MISS from localhost:3128
+Via: 1.0 localhost (squid/3.1.6)
+Proxy-Connection: keep-alive
+
+# curl -I http://www.qq.com
+HTTP/1.0 200 OK
+Server: squid/3.0
+Date: Wed, 15 Jun 2011 07:54:36 GMT
+Content-Type: text/html; charset=GB2312
+Vary: Accept-Encoding
+Expires: Wed, 15 Jun 2011 08:09:36 GMT
+Cache-Control: max-age=900
+Vary: Accept-Encoding
+X-Cache: HIT from rainny.qq.com
+Age: 2
+X-Cache: HIT from localhost
+X-Cache-Lookup: HIT from localhost:3128
+Via: 1.0 localhost (squid/3.1.6)
+Proxy-Connection: keep-alive
+			</screen>
+			<para>当第二次请求同一个URL的时候X-Cache: 由MISS变为HIT，表示已经被缓存</para>
+		</section>
+		<section>
+			<title>代理服务器</title>
+			<para>加入权限认证</para>
+			<screen>
+netkiller@Linux-server:/etc/squid$ sudo htpasswd -c /etc/squid/squid_passwd neo
+New password:
+Re-type new password:
+Adding password for user neo
+netkiller@Linux-server:/etc/squid$
+
+
+netkiller@Linux-server:/etc/squid$ sudo find / -name ncsa_auth
+/usr/lib/squid/ncsa_auth
+
+#
+# Add this to the auth_param section of squid.conf
+#
+auth_param basic program /usr/lib/squid/ncsa_auth /etc/squid/squid_passwd
+
+#
+# Add this to the bottom of the ACL section of squid.conf
+#
+acl ncsa_users proxy_auth REQUIRED
+acl business_hours time M T W H F 9:00-17:00
+
+#
+# Add this at the top of the http_access section of squid.conf
+#
+http_access allow ncsa_users business_hours
+
+			</screen>
+			<para>extension_methods REPORT MERGE MKACTIVITY CHECKOUT # subversion</para>
+			<screen>
+extension_methods REPORT MERGE MKACTIVITY CHECKOUT			
+			</screen>
+			<para>默认端口 3128 如果你不想改squid.conf,可以使用iptables映射</para>
+			<command>iptables -t nat -A PREROUTING -i eth0 -p tcp -s 0.0.0.0/0.0.0.0 --dport 80 -j REDIRECT --to-ports 3128 </command>
+			
+			<para>设置你的浏览器，并测试</para>
+		</section>		
+		
+		<section>
+			<title>Squid作为反向代理Cache服务器(Reverse Proxy)</title>
+			<para>这里我们将apache和squid安装在一台服务器上</para>
+			<procedure><title>配置步骤</title>
+				<step>
+					<para>配置Apache监听端口</para>
+					<screen>
+netkiller@Linux-server:~$ cd /etc/apache2/
+netkiller@Linux-server:/etc/apache2$ sudo cp ports.conf ports.conf.old
+netkiller@Linux-server:/etc/apache2$ sudo vi ports.conf
+Listen 8080
+Listen 443
+netkiller@Linux-server:/etc/apache2$ sudo /etc/init.d/apache2 restart
+ * Forcing reload of apache 2.0 web server...                                                                                          [ ok ]
+netkiller@Linux-server:/etc/apache2$
+					</screen>
+					<para>restart/reload后测试一下</para>
+					<para>http://localhost:8080/</para>
+				</step>
+				<step>
+					<para>squid 2.5 之前的版本</para>
+					<screen>
+netkiller@Linux-server:/etc/apache2$ cd ../squid/
+netkiller@Linux-server:/etc/squid$ sudo vi squid.conf
+http_port 80
+httpd_accel_host localhost
+httpd_accel_port 8080
+httpd_accel_single_host on
+httpd_accel_with_proxy on
+httpd_accel_uses_host_header off
+netkiller@Linux-server:/etc/squid$ sudo /etc/init.d/squid reload
+ * Reloading Squid configuration files
+   ...done.
+netkiller@Linux-server:/etc/squid$
+					</screen>
+					<para>squid 2.5 之前的版本</para>
+					<para>对公网主机220.201.35.11:80做Cache</para>
+					<screen>
+netkiller@Linux-server:/etc/apache2$ cd ../squid/
+netkiller@Linux-server:/etc/squid$ sudo vi squid.conf
+http_port 80
+httpd_accel_host 220.201.35.11
+httpd_accel_port 80
+httpd_accel_single_host on
+httpd_accel_with_proxy on
+httpd_accel_uses_host_header off
+netkiller@Linux-server:/etc/squid$ sudo /etc/init.d/squid reload
+ * Reloading Squid configuration files
+   ...done.
+netkiller@Linux-server:/etc/squid$
+					</screen>
+					<para>多台主机做Cache</para>
+	
+					<screen>
+netkiller@Linux-server:/etc/apache2$ cd ../squid/
+netkiller@Linux-server:/etc/squid$ sudo vi squid.conf
+http_port 80
+httpd_accel_host virtual
+httpd_accel_port 8080
+httpd_accel_single_host on
+httpd_accel_with_proxy on
+httpd_accel_uses_host_header off
+netkiller@Linux-server:/etc/squid$ sudo /etc/init.d/squid reload
+ * Reloading Squid configuration files
+   ...done.
+netkiller@Linux-server:/etc/squid$
+					</screen>
+				</step>
+				<step>
+					<para>squid 2.6之后版本的配置</para>
+					<para>localhost</para>
+					<screen>
+http_port 80 defaultsite=localhost vhost transparent
+cache_peer localhost parent 8080 0 no-query originserver
+					</screen>
+					<para>其它主机</para>
+					<screen>
+http_port 80 defaultsite=192.168.1.2 vhost transparent
+cache_peer 192.168.1.2 parent 80 0 no-query originserver
+					</screen>
+				</step>
+				<step>
+					<para>2.7/3.0 版本</para>
+					<screen>
+visible_hostname netkiller.8800.org
+
+http_port 80 accel vhost vport
+
+cache_peer 127.0.0.1 parent 8080 0 no-query originserver name=mainsite
+cache_peer 127.0.0.1 parent 8080 0 no-query originserver name=site1
+cache_peer_domain mainsite netkiller.8800.org
+cache_peer_domain site1 neo.ohyeap.com
+http_access allow all
+				
+					</screen>
+				</step>
+				<step>
+					<para>注意事项</para>
+					<para>ERROR</para>
+					<para>The requested URL could not be retrieved</para>
+					<para>* Access Denied</para>
+					<para>出现上面错说，关闭http_access deny all</para>
+					<para># And finally deny all other access to this proxy</para>
+					<para>#http_access deny all</para>
+				</step>
+			</procedure>
+			<screen>
+#squid.conf
+#服务器IP 192.168.1.1
+#监听服务器的80端口，透明代理，支持域名和IP的虚拟主机
+http_port 192.168.1.1:80 transparent vhost vport
+
+#限制同一IP客户端的最大连接数
+acl OverConnLimit maxconn 16
+http_access deny OverConnLimit
+
+#防止天涯盗链，转嫁给百度
+acl tianya referer_regex -i tianya
+http_access deny tianya
+deny_info http://www.baidu.com/logs.gif tianya
+
+#防止被人利用为HTTP代理，设置允许访问的IP地址
+acl myip dst 192.168.1.1
+http_access deny !myip
+
+#防止百度机器人爬死服务器
+acl AntiBaidu req_header User-Agent Baiduspider
+http_access deny AntiBaidu
+
+#允许本地管理
+acl Manager proto cache_object
+acl Localhost src 127.0.0.1 192.168.1.1
+http_access allow Manager Localhost
+http_access deny Manager
+
+#仅仅允许80端口的代理
+acl Safe_ports port 80 # http
+http_access deny !Safe_ports
+http_access allow all
+
+#Squid信息设置
+visible_hostname netkiller.8800.org
+cache_mgr openunix@163.com
+
+#基本设置
+cache_effective_user squid
+cache_effective_group squid
+tcp_recv_bufsize 65535 bytes
+
+#2.5的反向代理加速配置
+#httpd_accel_host 127.0.0.1
+#httpd_accel_port 80
+#httpd_accel_single_host on
+#httpd_accel_uses_host_header on
+#httpd_accel_with_proxy on
+#2.6的反向代理加速配置
+#代理到本机的80端口的服务，仅仅做为原始内容服务器
+cache_peer 127.0.0.1 parent 80 0 no-query originserver
+
+#错误文档
+error_directory /usr/local/squid/share/errors/Simplify_Chinese
+
+#单台使用，不使用该功能
+icp_port 0
+			</screen>
+		</section>
+	
+		<section>
+			<title>代理+反向代理</title>
+			<screen>
+http_port 80 vhost vport defaultsite=220.201.35.11
+http_port 88
+......
+......
+acl Manager proto cache_object
+acl Localhost src 127.0.0.1/32
+acl Safe_ports port 80
+acl all src 0.0.0.0/0.0.0.0
+acl ACCEL_DST dst 127.0.0.1/32 220.201.35.11/32
+
+acl ACCEL_MODE  myport 80
+acl PROXY_MODE  myport 88
+# Authentation
+auth_param basic realm Please Login
+auth_param basic program /usr/local/squid/libexec/ncsa_auth /usr/local/squid/etc/passwd
+acl VALIDUSER proxy_auth plan9
+
+# ACCEL MODE
+# -----------------------------------------------------------------------------
+cache_peer 10.34.2.93 parent 80 0 no-query originserver
+cache_peer_access 220.201.35.11 allow ACCEL_MODE
+cache_peer_access 220.201.35.11 deny all
+
+http_access allow ACCEL_DST Safe_ports
+http_access allow PROXY_MODE VALIDUSER
+http_access deny !Safe_ports
+http_access allow ACCEL_MODE
+http_access allow Manager Localhost
+http_access deny all
+icp_access deny all
+			</screen>
+		</section>
+		
+	</section>
+	
+	<section id="squid.manager">
+		<title>Squid 管理</title>
+		<section>
+			<title>squidclient</title>
+			<para>squidclient -- client interface to the squid cache</para>
+			<orderedlist>
+				<title>squidclient 使用方法</title>
+				<listitem>运行状态信息： squidclient -p 80 mgr:info</listitem>
+				<listitem>内存使用情况： squidclient -p 80 mgr:mem</listitem>
+				<listitem>磁盘使用情况： squidclient -p 80 mgr:diskd</listitem>
+				<listitem>已经缓存的列表： squidclient -p 80 mgr:objects. use it carefully,it may crash</listitem>
+				<listitem>强制更新url：squidclient -p 80 -m PURGE http://netkiller.8800.org/index.html</listitem>
+				<listitem>查看更多信息：squidclient -h 或者 squidclient -p 80 mgr:</listitem>
+			</orderedlist>
+			<screen>
+debian:~# squidclient -p 80 mgr:squidaio_counts
+HTTP/1.0 200 OK
+Server: squid/2.6.STABLE5
+Date: Sun, 29 Apr 2007 13:27:09 GMT
+Content-Type: text/plain
+Expires: Sun, 29 Apr 2007 13:27:09 GMT
+Last-Modified: Sun, 29 Apr 2007 13:27:09 GMT
+X-Cache: MISS from debian.example.org.example.org
+X-Cache-Lookup: MISS from debian.example.org.example.org:80
+Via: 1.0 debian.example.org.example.org:80 (squid/2.6.STABLE5)
+Connection: close
+
+ASYNC IO Counters:
+Operation       # Requests
+open    0
+close   0
+cancel  0
+write   0
+read    0
+stat    0
+unlink  0
+check_callback  0
+queue   0
+debian:~#
+
+			</screen>
+			<para>squidclient -p 80 mgr:5min</para>
+		</section>
+		<section>
+			<title>reset cache</title>
+		
+			<para>重做 cache</para>
+			<screen>
+mkdir /var/spool/squid		
+chown proxy.proxy -R /var/spool/squid		
+netkiller@Linux-server:~$ sudo squid -z
+netkiller@Linux-server:~$ sudo squid -k reconfigure
+			</screen>
+		</section>		
+	</section>
+	
+	<section>
+		<title>禁止页面被Cache</title>
+		<para>加到head中</para>
+		<screen>
+		<![CDATA[
+  HTML
+          <META   HTTP-EQUIV="pragma" CONTENT="no-cache">
+          <META   HTTP-EQUIV="Cache-Control" CONTENT="no-cache, must-revalidate">
+          <META   HTTP-EQUIV="expires" CONTENT="Wed, 26 Feb 1978 08:21:57 GMT">
+  ASP
+  <%
+          Response.Expires = -1
+          Response.ExpiresAbsolute = Now() - 1
+          Response.cachecontrol = "no-cache"
+  %>
+  PHP
+          header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+          header("Cache-Control: no-cache, must-revalidate");
+          header("Pragma: no-cache");
+  JSP
+          response.setHeader("Pragma","No-Cache");
+          response.setHeader("Cache-Control","No-Cache");
+          response.setDateHeader("Expires",   0);
+  C#中禁止cache的方法！
+          Response.Buffer=true;
+          Response.ExpiresAbsolute=System.DateTime.Now.AddSeconds(-1);
+          Response.Expires=0;
+          Response.CacheControl="no-cache";
+		]]>
+		</screen>
+		<para>让浏览器发送no-cache头,只需Ctrl+f5刷新</para>
+	</section>
+	<section>
+		<title>Squid 实用案例</title>
+		<section>
+			<title>Squid Apache/Lighttpd 在同一台服务器上</title>
+			<para>squid 与 web server 在同一台服务器上,一般情况是squid 监听80端口, web server 监听其它端口(一般是8080)</para>
+			<para>用户访问时通过80端口访问服务器.不想让用户访问8080.</para>
+			<orderedlist numeration="arabic">
+				<listitem>
+					<para>web server</para>
+					<para>Apache httpd.conf文件Listen 8080 改成IP:Port,这样8080端口只允许本地访问</para>
+					<screen>
+Listen 127.0.0.1:8080
+					</screen>
+
+					<para>lighttpd</para>
+					<screen>
+vi /etc/lighttpd/lighttpd.conf
+server.port               = 8080
+server.bind               = "localhost"
+
+/etc/init.d/lighttpd reload
+					</screen>
+
+					<para>本地测试</para>
+					<screen>
+curl http://127.0.0.1:8080/
+					</screen>
+				</listitem>
+				<listitem>
+					<para>Squid</para>
+					<screen>
+http_port 80 defaultsite=localhost vhost
+cache_peer localhost parent 8080 0 no-query originserver
+
+acl our_networks src 172.16.0.0/16
+http_access allow our_networks
+http_access allow all
+					</screen>
+
+					<para>测试</para>
+					<screen>
+curl http://127.0.0.1/
+					</screen>
+					<para>在其它电脑上用IE访问http://your_ip/ 可以看到你的主页</para>
+					<para>在其它电脑上用IE访问 http://ip:8080/ 应该是无法访问</para>
+				</listitem>
+				<listitem>
+					<para>另一种方法是使用 iptables 实现</para>
+					<screen>
+/sbin/iptables -A INPUT -i eth0 -p tcp --dport 8080 -j DROP
+/sbin/iptables -A INPUT -i lo -p tcp --dport 8080 -j ACCEPT
+					</screen>
+				</listitem>
+			</orderedlist>
+			<para>使用 nmap 工具还是可以看到8080存在的.</para>
+			<command># nmap localhost</command>
+			<screen>
+debian:~# nmap localhost
+
+Starting Nmap 4.11 ( http://www.insecure.org/nmap/ ) at 2007-04-29 08:28 EDT
+Interesting ports on localhost (127.0.0.1):
+Not shown: 1670 closed ports
+PORT     STATE SERVICE
+22/tcp   open  ssh
+25/tcp   open  smtp
+53/tcp   open  domain
+80/tcp   open  http
+111/tcp  open  rpcbind
+113/tcp  open  auth
+548/tcp  open  afpovertcp
+901/tcp  open  samba-swat
+953/tcp  open  rndc
+8080/tcp open  http-proxy
+
+Nmap finished: 1 IP address (1 host up) scanned in 0.268 seconds
+			</screen>
+
+		</section>
+		<section>
+			<title>用非 root 用户守护 Squid</title>
+			<para>squid.conf</para>
+			<screen>
+http_port 3128 transparent vhost vport
+			</screen>
+			<para>iptables 做端口重定向</para>
+			<screen>
+iptables -t nat -A PREROUTING -j REDIRECT -p tcp --destination-port 80 --to-ports 3128
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>squid+icap+clamav</title>
+		<para>squid+icap+clamav</para>
+		<ulink url="http://icap-server.sourceforge.net/squid.html" />
+		<ulink url="http://wiki.squid-cache.org/Features/ICAP" />
+	</section>
+</section>

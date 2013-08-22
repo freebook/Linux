@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.cmd.text.xml 591 2013-05-20 10:15:16Z netkiller $ -->
+<chapter id="text">
+	<title>Text Processing</title>
+	<section id="iconv">
+		<title>iconv - Convert encoding of given files from one encoding to another</title>
+		<section>
+			<title>cconv - A iconv based simplified-traditional chinese conversion tool</title>
+			<para>cconv是建立在iconv之上，可以UTF8编码直接转换，并增加了词转换。</para>
+			<screen>
+sudo apt-get install cconv
+			</screen>
+			<para>使用cconv进行简繁转换的方法为：</para>
+			<screen>
+cconv -f UTF8-CN -t UTF8-HK zh-cn.txt -o zh-hk.txt
+			</screen>
+		</section>
+	</section>
+
+	<section id="expr">
+		<title>字符串处理命令expr</title>
+		<screen>
+		<![CDATA[
+字符串处理命令expr用法简介:
+名称：expr
+用途:求表达式变量的值。
+语法: expr Expression
+实例如下:
+例子1:字串长度
+shell>> expr length "this is a test content";
+22
+例子2:求余数
+shell>> expr 20 % 9
+2
+例子3:从指定位置处截取字符串
+shell>> expr substr "this is a test content" 3 5
+is is
+例子4:指定字符串第一次出现的位置
+shell>> expr index "testforthegame" s
+3
+例子5:字符串真实重现
+shell>> expr quote thisisatestformela
+thisisatestformela
+		]]>
+		</screen>
+	</section>
+
+	<section id="cat">
+		<title>cat - concatenate files and print on the standard output</title>
+		<screen>
+-b	不对空白行编号。
+-e	使用 $ 字符显示行尾。
+-n	从 1 开始对所有输出行编号。
+-q	使用静默操作（禁止错误消息）。
+-r	将所有多个空行替换为单行（“压缩”空白）。
+-t	将制表符显示为 ^I。
+-u	不对输出进行缓冲。
+-v	可视地显示非打印控制字符。
+		</screen>
+		<section>
+			<title>-s, --squeeze-blank suppress repeated empty output lines</title>
+			<para>-S	将多个空白行压缩到单行中（与 -r 相同）</para>
+			<screen>
+			<![CDATA[
+$ cat >> /tmp/test <<EOF
+Line1
+
+Line2
+
+
+Line3
+
+
+
+
+Line4
+
+
+Line5
+
+EOF
+
+$ cat -s /tmp/test
+Line1
+
+Line2
+
+Line3
+
+Line4
+
+Line5
+
+			]]>
+			</screen>
+		</section>
+	</section>
+
+	<section id="nl">
+		<title>nl - number lines of files</title>
+		<screen>
+$ nl /etc/issue
+     1  CentOS release 5.4 (Final)
+     2  Kernel \r on an \m
+		</screen>
+	</section>
+
+	<section id="od">
+		<title>od - dump files in octal and other formats</title>
+		<section>
+			<title>16进制</title>
+			<screen>
+$ echo "helloworld" | od -x
+			</screen>
+		</section>
+	</section>
+	<section id="tr">
+		<title>tr - translate or delete characters</title>
+		<para>":"替换为"\n"</para>
+		<screen>
+$ cat /etc/passwd |tr ":" "\n"
+		</screen>
+	</section>
+    <section id="cut">
+        <title>cut - remove sections from each line of files</title>
+        <para>列操作</para>
+        <screen>
+$ last | grep  'neo' | cut -d ' ' -f1
+        </screen>
+        <screen>
+$ cat /etc/passwd | cut -d ':' -f1
+root
+daemon
+bin
+sys
+sync
+games
+man
+lp
+mail
+news
+uucp
+proxy
+
+$ cat /etc/passwd | cut -d ':' -f1,3,4
+
+# cat /etc/passwd | cut -d ':' -f1,6
+root:/root
+bin:/bin
+daemon:/sbin
+adm:/var/adm
+lp:/var/spool/lpd
+sync:/sbin
+shutdown:/sbin
+halt:/sbin
+mail:/var/spool/mail
+uucp:/var/spool/uucp
+operator:/root
+games:/usr/games
+gopher:/var/gopher
+ftp:/var/ftp
+nobody:/
+vcsa:/dev
+saslauth:/var/empty/saslauth
+postfix:/var/spool/postfix
+sshd:/var/empty/sshd
+rpc:/var/cache/rpcbind
+rpcuser:/var/lib/nfs
+nfsnobody:/var/lib/nfs
+ntp:/etc/ntp
+nagios:/var/log/nagios
+
+        </screen>
+        <para>行操作</para>
+        <screen>
+$ cat /etc/passwd | cut -c 1-4
+root
+daem
+bin:
+sys:
+sync
+game
+man:
+
+$ echo "No such file or directory"| cut -c4-7
+such
+
+$ echo "No such file or directory"| cut -c -8
+No such
+
+$ echo "No such file or directory"| cut -c-8
+No such
+
+        </screen>
+    </section>
+	<section id="printf">
+		<title>printf - format and print data</title>
+		<screen>
+printf "%d\n" 1234
+		</screen>
+		<screen>
+$ printf "\033[1;33m TEST COLOR \n\033[m"
+		</screen>
+	</section>
+	<section id="recode">
+		<title>Free `recode' converts files between various character sets and surfaces.</title>
+		<para>Following will convert text files between DOS, Mac, and Unix line ending styles:</para>
+		<screen>
+		<![CDATA[
+$ recode /cl../cr <dos.txt >mac.txt
+$ recode /cr.. <mac.txt >unix.txt
+$ recode ../cl <unix.txt >dos.txt
+		]]>
+		</screen>
+	</section>
+	<section id="urandom">
+		<title>/dev/urandom 随机字符串</title>
+		<screen>
+		<![CDATA[
+[neo@test .deploy]$ echo `< /dev/urandom tr -dc A-Z-a-z-0-9 | head -c 8`
+GidAuuNN
+[neo@test .deploy]$ echo `< /dev/urandom tr -dc A-Z-a-z-0-9 | head -c 8`
+UyGaWSKr
+		]]>
+		</screen>
+		<para>我常常使用这样的随机字符初始化密码</para>
+		<screen>
+		<![CDATA[
+[neo@test .deploy]$ echo `< /dev/urandom tr -dc [:alnum:] | head -c 8`
+xig8Meym
+[neo@test .deploy]$ echo `< /dev/urandom tr -dc [:alnum:] | head -c 8`
+23Ac1vZg
+[neo@test .deploy]$ echo `< /dev/urandom tr -dc [:digit:] | head -c 8`
+73652314
+[neo@test .deploy]$ echo `< /dev/urandom tr -dc [:graph:] | head -c 8`
+GO_o>OnJ
+[neo@test .deploy]$ echo `< /dev/urandom tr -dc [:graph:] | head -c 10`
+iGy0FS/aO5
+[neo@test .deploy]$ echo `< /dev/urandom tr -dc [:graph:] | head -c 50`
+;`E^{5(T4v~5$YovW.?%_?9la<`+qPcRh@7mD\!Whx;MJZVQ\K
+[neo@test .deploy]$ echo `< /dev/urandom tr -dc [:print:] | head -c 50`
+fy$[#:'(')jt'gp1/g-)d~p]8 :r9i;MO2d!8M<?Qs3t:QgK$O
+[neo@test .deploy]$ echo `< /dev/urandom tr -dc [:graph:] | head -c 50`
+6SivJ5y$/FTi8mf}rrqE&s0"WkA}r;uK-=MT!Wp0UlL_lF0|bL
+		]]>
+		</screen>
+		<para>批量生成</para>
+		<screen>
+		<![CDATA[
+for i in {1..10}
+do
+echo `< /dev/urandom tr -dc A-Z-a-z-0-9 | head -c 8`
+done
+		]]>
+		</screen>
+	</section>
+	<section id="col">
+		<title>col - filter reverse line feeds from input</title>
+		<para>清除 ^M 字符</para>
+		<screen>
+$ cat oldfile | col -b > newfile
+		</screen>
+	</section>
+
+	<section id="apg">
+		<title>apg - generates several random passwords</title>
+		<screen>
+sudo apt-get install apg
+
+$ apg
+
+Please enter some random data (only first 16 are significant)
+(eg. your old password):>
+imlogNukcel5 (im-log-Nuk-cel-FIVE)
+Drocdaf1 (Droc-daf-ONE)
+fagJook0 (fag-Jook-ZERO)
+heabugJer4 (heab-ug-Jer-FOUR)
+5OsEsudy (FIVE-Os-Es-ud-y)
+IrjOgneagOc9 (Irj-Og-neag-Oc-NINE)
+
+
+$ apg -M SNCL -m 16
+WoidWemFut6dryn,
+byRowpEus-Flutt0
+|QuogCagFaycsic0
+ojHoadCyct4Freg_
+Vir9blir`orhohoo
+bapOip?Ibreawov2
+		</screen>
+	</section>
+	<section id="head">
+		<title>head/tail</title>
+		<screen>
+head -c 17 | tail -c 1
+		</screen>
+	</section>
+	&chapter.cmd.text.grep.xml;
+	&chapter.cmd.text.sort.xml;
+	<section id="table">
+		<title>行列转换,表格操作</title>
+		<section>
+			<title>column - columnate lists</title>
+			<screen>
+$ (printf "PERM LINKS OWNER GROUP SIZE MONTH DAY HH:MM/YEAR NAME\n" ; ls -l | sed 1d) | column -t
+
+$ cat /etc/passwd |tr ':' ' ' | column -t
+
+$ cat /etc/passwd |tr ':' ' ' | column -t | colrm  20 20
+			</screen>
+		</section>
+		<section>
+			<title>paste - merge lines of files</title>
+			<screen>
+# vim test
+aaaaa   bbbbb   ccccc   ddddd
+1111    2222    3333    444
+
+# paste -s test
+aaaaa   bbbbb   ccccc   ddddd   1111    2222    3333    444
+			</screen>
+		</section>
+	</section>
+	<section id="rev">
+		<title>反转字符串或文件内容</title>
+		<subtitle>rev - reverse lines of a file or files</subtitle>
+		<para>反转字符串 </para>
+		<screen>
+# echo hello | rev
+olleh
+
+# echo "hello world" | rev
+dlrow olleh
+		</screen>
+		<para>反转文件内容 </para>
+		<screen>
+# rev /etc/passwd
+hsab/nib/:toor/:toor:0:0:x:toor
+nigolon/nibs/:nib/:nib:1:1:x:nib
+nigolon/nibs/:nibs/:nomead:2:2:x:nomead
+nigolon/nibs/:mda/rav/:mda:4:3:x:mda
+nigolon/nibs/:dpl/loops/rav/:pl:7:4:x:pl
+cnys/nib/:nibs/:cnys:0:5:x:cnys
+nwodtuhs/nibs/:nibs/:nwodtuhs:0:6:x:nwodtuhs
+tlah/nibs/:nibs/:tlah:0:7:x:tlah
+nigolon/nibs/:liam/loops/rav/:liam:21:8:x:liam
+nigolon/nibs/:pcuu/loops/rav/:pcuu:41:01:x:pcuu
+nigolon/nibs/:toor/:rotarepo:0:11:x:rotarepo
+nigolon/nibs/:semag/rsu/:semag:001:21:x:semag
+nigolon/nibs/:rehpog/rav/:rehpog:03:31:x:rehpog
+nigolon/nibs/:ptf/rav/:resU PTF:05:41:x:ptf
+nigolon/nibs/:/:ydoboN:99:99:x:ydobon
+nigolon/nibs/:ved/:renwo yromem elosnoc lautriv:96:96:x:ascv
+nigolon/nibs/:ptn/cte/::83:83:x:ptn
+nigolon/nibs/:htualsas/ytpme/rav/:"resu dhtualsaS":67:994:x:htualsas
+nigolon/nibs/:xiftsop/loops/rav/::98:98:x:xiftsop
+nigolon/nibs/:dhss/ytpme/rav/:HSS detarapes-egelivirP:47:47:x:dhss
+hsab/nib/:lqsym/bil/rav/:revres LQSyM:994:894:x:lqsym
+hsab/nib/:www/:noitacilppA beW:08:08:x:www
+nigolon/nibs/:xnign/ehcac/rav/:resu xnign:894:794:x:xnign
+		</screen>
+	</section>
+</chapter>

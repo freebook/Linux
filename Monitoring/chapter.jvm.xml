@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="jvm">
+	<title>JVM</title>
+	<screen>
+jps:		http://java.sun.com/j2se/1.5.0/docs/tooldocs/share/jps.html
+jstat:		http://java.sun.com/j2se/1.5.0/docs/tooldocs/share/jstat.html
+jmap:		http://java.sun.com/j2se/1.5.0/docs/tooldocs/share/jmap.html
+	</screen>
+	<section id="jvm.jconsole">
+		<title>jconsole</title>
+		<para>jconsole:	http://java.sun.com/j2se/1.5.0/docs/guide/management/jconsole.html</para>
+	</section>
+	<section id="jvm.jhiccup">
+		<title>jHiccup</title>
+	</section>	
+</chapter>

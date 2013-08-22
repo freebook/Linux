@@ -1,0 +1,252 @@
+<chapter id="backup">
+	<title>Backup / Restore</title>
+<section>
+	<title>备份策略</title>
+	<section>
+		<title>Incremental backup</title>
+	</section>
+	<section>
+		<title>Differential backup</title>
+	</section>
+</section>
+
+<section id="dump.restore">
+	<title>dump / restore</title>
+		<procedure>
+			<title>dump 步骤</title>
+			<step>
+				<para>确认设备</para>
+				<para>准备用dump备份/boot目录下的文件. 使用df /boot查看/boot所在的设备(以下假设为/dev/hda1)</para>
+				<screen>
+neo@netkiller:~$ df
+Filesystem           1K-blocks      Used Available Use% Mounted on
+/dev/sda1             19710288   3054956  15654084  17% /
+none                   1016608       208   1016400   1% /dev
+none                   1023328         0   1023328   0% /dev/shm
+none                   1023328       736   1022592   1% /var/run
+none                   1023328         0   1023328   0% /var/lock
+/dev/sda6             19228276  16456940   1794588  91% /home
+/dev/sda10              569204    171728    368564  32% /boot
+/dev/sda7             48062440   3170748  42450216   7% /var
+/dev/sda8            384497840  64897804 300068616  18% /opt
+/dev/sda9              6728280    146336   6240164   3% /tmp
+				</screen>
+			</step>
+			<step>
+				<para>首先确认备份需要的空间. 查看一个0级备份需要的字节数,使用 -S</para>
+				<screen>
+# dump -oS /dev/hda1
+				</screen>
+			</step>
+			<step>
+				<para>备份到文件而非磁带. 确认在/var/tmp目录是否有足够的空间,执行.</para>
+				<screen>
+# dump -0u –f /var/tmp/dumpfile /dev/hda1
+				</screen>
+				<para>检查/etc/dumpdates,查看完全备份的时间戳.</para>
+			</step>
+		</procedure>
+		<procedure>
+			<title>restore 步骤</title>
+			<step>
+				<para>使用restore检查备份文件的内容</para>
+				<screen>
+# restore –tf /var/tmp/dumpfile
+				</screen>
+			</step>
+			<step>
+				<para>我们可以使用restore的互动模式恢复特定文件到一个临时目录.</para>
+				<screen>
+# mkdir /tmp/restored; cd /tmp/restored
+# restore –if /var/tmp/dumpfile
+				</screen>
+				<para>这时会看到一个restore > 提示符. 键入help查看可用命令的列表. 使用ls和cd命令查看备份文件的列表.</para>
+				<para>使用add,选中/grub.menu.1st和/grub/grub.conf文件.列出所在目录,恢复的文件应该带有星号.</para>
+			</step>
+			<step>
+				<para>展开备份文件</para>
+				<para> 键入extract命令恢复选中的文件.设置下个卷名为1, 不为解压目录设置所有者模式. quit退出restore模式.</para>
+				<para>在restore运行的目录中应该有一个grub目录,包含恢复的grub.conf和menu.1st文件.</para>
+				<screen>
+				</screen>
+			</step>
+		</procedure>
+</section>
+
+<section id="bacula">
+	<title>Bacula, the Open Source, Enterprise ready, Network Backup Tool for Linux, Unix, Mac and Windows. </title>
+	<para>http://www.bacula.org/</para>
+	<para>ubuntu 10.10</para>
+	<screen>
+neo@backup:~$ apt-cache search bacula
+bacula - network backup, recovery and verification - meta-package
+bacula-client - network backup, recovery and verification - client meta-package
+bacula-common - network backup, recovery and verification - common support files
+bacula-common-mysql - network backup, recovery and verification - MySQL common files
+bacula-common-pgsql - network backup, recovery and verification - PostgreSQL common files
+bacula-common-sqlite3 - network backup, recovery and verification - SQLite v3 common files
+bacula-console - network backup, recovery and verification - text console
+bacula-director-common - network backup, recovery and verification - Director common files
+bacula-director-mysql - network backup, recovery and verification - MySQL storage for Director
+bacula-director-pgsql - network backup, recovery and verification - PostgreSQL storage for Director
+bacula-director-sqlite3 - network backup, recovery and verification - SQLite 3 storage for Director
+bacula-fd - network backup, recovery and verification - file daemon
+bacula-sd - network backup, recovery and verification - storage daemon
+bacula-sd-mysql - network backup, recovery and verification - MySQL SD tools
+bacula-sd-pgsql - network backup, recovery and verification - PostgreSQL SD tools
+bacula-sd-sqlite3 - network backup, recovery and verification - SQLite 3 SD tools
+bacula-server - network backup, recovery and verification - server meta-package
+bacula-console-qt - Bacula Administration Tool Console
+bacula-director-sqlite - network backup, recovery and verification - SQLite 2 director transition
+bacula-doc - Documentation for Bacula
+bacula-sd-sqlite - network backup, recovery and verification - SQLite SD tools
+bacula-traymonitor - network backup, recovery and verification - tray monitor
+	</screen>
+	<section>
+		<title>Install Backup Server</title>
+		<procedure>
+			<title></title>
+			<step>
+				<para>安装bacula服务器</para>
+				<screen>
+$ sudo apt-get install bacula
+				</screen>
+				<para>启动脚本.</para>
+				<screen>
+neo@backup:/etc/bacula$ ls -1 /etc/init.d/bacula-*
+/etc/init.d/bacula-director
+/etc/init.d/bacula-fd
+/etc/init.d/bacula-sd
+				</screen>
+				<para>Bacula Config files</para>
+				<screen>
+neo@backup:~$ ls -1 /etc/bacula/
+bacula-dir.conf
+bacula-fd.conf
+bacula-sd.conf
+bconsole.conf
+common_default_passwords
+scripts
+				</screen>
+				<para>Checking Bacula Daemons Status</para>
+				<screen>
+neo@backup:~$ ps auwx | grep bacula
+bacula   25044  0.0  0.1  72624  2092 ?        Ssl  14:55   0:00 /usr/sbin/bacula-sd -c /etc/bacula/bacula-sd.conf -u bacula -g tape
+root     25659  0.0  0.0  60068  1376 ?        Ssl  14:56   0:00 /usr/sbin/bacula-fd -c /etc/bacula/bacula-fd.conf
+bacula   29551  0.0  0.1  87672  3096 ?        Ssl  15:48   0:00 /usr/sbin/bacula-dir -c /etc/bacula/bacula-dir.conf -u bacula -g bacula
+neo      30344  0.0  0.0   7748   876 pts/0    S+   15:57   0:00 grep --color=auto bacula
+				</screen>
+			</step>
+			<step>
+				<para>bconsole</para>
+				<screen>
+neo@backup:/etc/bacula$ sudo bconsole
+Connecting to Director localhost:9101
+1000 OK: backup.example.com-dir Version: 5.0.2 (28 April 2010)
+Enter a period to cancel a command.
+*help
+  Command       Description
+  =======       ===========
+  add           Add media to a pool
+  autodisplay   Autodisplay console messages
+  automount     Automount after label
+  cancel        Cancel a job
+  create        Create DB Pool from resource
+  delete        Delete volume, pool or job
+  disable       Disable a job
+  enable        Enable a job
+  estimate      Performs FileSet estimate, listing gives full listing
+  exit          Terminate Bconsole session
+  gui           Non-interactive gui mode
+  help          Print help on specific command
+  label         Label a tape
+  list          List objects from catalog
+  llist         Full or long list like list command
+  messages      Display pending messages
+  memory        Print current memory usage
+  mount         Mount storage
+  prune         Prune expired records from catalog
+  purge         Purge records from catalog
+  python        Python control commands
+  quit          Terminate Bconsole session
+  query         Query catalog
+  restore       Restore files
+  relabel       Relabel a tape
+  release       Release storage
+  reload        Reload conf file
+  run           Run a job
+  status        Report status
+  setdebug      Sets debug level
+  setip         Sets new client address -- if authorized
+  show          Show resource records
+  sqlquery      Use SQL to query catalog
+  time          Print current time
+  trace         Turn on/off trace to file
+  unmount       Unmount storage
+  umount        Umount - for old-time Unix guys, see unmount
+  update        Update volume, pool or stats
+  use           Use catalog xxx
+  var           Does variable expansion
+  version       Print Director version
+  wait          Wait until no jobs are running
+
+When at a prompt, entering a period cancels the command.
+
+*
+				</screen>
+			</step>
+
+			<step>
+				<para>修改配置文件，增加备份策略.</para>
+				<para>备份配置文件，以免把文件改坏。</para>
+				<screen>
+root@backup:~# cd /etc/bacula/
+root@backup:/etc/bacula# mkdir original
+root@backup:/etc/bacula# cp *.conf original/
+root@backup:/etc/bacula#
+				</screen>
+				<para>bacula-dir.conf</para>
+				<screen>
+root@backup:/etc/bacula# vim bacula-dir.conf
+Job {
+  Name = "BackupClient2"
+  Client = web-fd
+  JobDefs = "DefaultJob"
+}
+
+				</screen>
+			</step>
+		</procedure>
+	</section>
+	<section>
+		<title>Install Backup Client</title>
+		<procedure>
+			<step>
+				<para></para>
+				<screen>
+neo@web:~$ sudo apt-get install bacula-client
+				</screen>
+			</step>
+		</procedure>
+	</section>
+</section>
+<section id="amanda">
+	<title>Amanda: Open Source Backup</title>
+	<para>http://www.amanda.org/</para>
+	<para>Amanda is the most popular open source backup and recovery software in the world. Amanda protects more than half a million of servers and desktops running various versions of Linux, UNIX, BSD, Mac OS-X and Microsoft Windows operating systems worldwide.</para>
+</section>
+<section id="safekeep">
+	<title>SafeKeep</title>
+	<para><ulink url="http://safekeep.sourceforge.net/index.shtml">http://safekeep.sourceforge.net/index.shtml</ulink></para>
+</section>
+<section id="opendedup">
+	<title>Opendedup</title>
+	<para>http://www.opendedup.org/</para>
+	<para></para>
+</section>
+<!--
+	<section>
+		<title>dump</title>
+	</section>
+ -->
+</chapter>

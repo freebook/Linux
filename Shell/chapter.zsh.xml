@@ -1,0 +1,121 @@
+<chapter id="zsh">
+	<title>Z Shell</title>
+	<!-- 
+http://hi.baidu.com/storymedia/blog/item/598be3fd4998f549d6887d89.html
+http://www.ha97.com/book/OpenSource_Guide/ch30.html	
+	 -->
+	<para><ulink url="http://www.zsh.org/">http://www.zsh.org/</ulink></para>
+<section id="zsh.install">
+	<title>installing Z shell</title>
+$ sudo apt-get install zsh
+</section>
+<section id="zsh.zshrc">
+	<title>Starting file</title>
+	<section>
+		<title>~/.zshrc</title>
+		<screen>
+neo@netkiller:~$ cat .zshrc
+# Created by newuser for 4.3.9
+PROMPT='%n@%M:%~$ '
+
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    eval "`dircolors -b`"
+    alias ls='ls --color=auto'
+    alias dir='dir --color=auto'
+    alias vdir='vdir --color=auto'
+
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+
+# some more ls aliases
+alias ll='ls -l'
+alias la='ls -A'
+alias l='ls -CF'
+
+# Home/End/Del key
+bindkey '\e[1~' beginning-of-line
+bindkey '\e[4~' end-of-line
+bindkey "\e[3~" delete-char
+		</screen>
+	</section>
+
+</section>
+<section id="zsh.prompt">
+	<title>Prompting</title>
+	<screen>
+$ PROMPT='%n@%M:%~$ '
+neo@netkiller:~$
+	</screen>
+	<screen>
+autoload colors; colors
+export PS1="%B[%{$fg[red]%}%n%{$reset_color%}%b@%B%{$fg[cyan]%}%m%b%{$reset_color%}:%~%B]%b "	
+	</screen>
+</section>
+<section id="zsh.alias">
+	<title>Aliases</title>
+	<screen>
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    eval "`dircolors -b`"
+    alias ls='ls --color=auto'
+    alias dir='dir --color=auto'
+    alias vdir='vdir --color=auto'
+
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+
+# some more ls aliases
+alias ll='ls -l'
+alias la='ls -A'
+alias l='ls -CF'		
+	</screen>
+</section>
+<section id="zsh.history">
+	<title>History</title>
+	<para></para>
+	<screen>
+$ !$
+
+	</screen>
+	<screen>
+$ history
+   18  cd workspace/Document
+   19  ls
+   20  ls
+
+$ !20
+ls
+Docbook  makedoc  Tex		
+	</screen>
+</section>
+
+<section id="zsh.faq">
+	<title>FAQ</title>
+	<section>
+		<title>Home/End key</title>
+		<screen>
+bindkey '\e[1~' beginning-of-line
+bindkey '\e[4~' end-of-line			
+		</screen>
+	</section>
+</section>	
+</chapter>
+<!-- 
+<chapter id="csh">
+	<title>Berkeley UNIX C shell (csh)</title>
+	<section>
+$ sudo apt-get install csh	
+	</section>
+</chapter>
+<chapter id="ksh">
+	<title>KornShell</title>
+	<section>
+$ sudo apt-get install ksh	
+	</section>
+</chapter>
+-->

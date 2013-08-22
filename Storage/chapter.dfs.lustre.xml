@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="gluster">
+	<title>GlusterFS</title>
+	<para>http://www.gluster.org/</para>
+   	<screen>
+$ apt-cache search glusterfs
+glusterfs-client - clustered file-system (client package)
+glusterfs-dbg - GlusterFS debugging symbols
+glusterfs-examples - example files for the glusterfs server and client
+glusterfs-server - clustered file-system (server package)
+libglusterfs-dev - GlusterFS development libraries and headers (development files)
+libglusterfs0 - GlusterFS libraries and translator modules
+    </screen>
+	<section>
+	    <title>glusterfs-server</title>
+	    <screen>
+$ sudo apt-get install glusterfs-server
+$ sudo cp /etc/glusterfs/glusterfsd.vol /etc/glusterfs/glusterfsd.vol.orig
+	    </screen>
+	    <screen>
+$ cat /etc/glusterfs/glusterfsd.vol
+### file: server-volume.vol.sample
+
+#####################################
+###  GlusterFS Server Volume File  ##
+#####################################
+
+#### CONFIG FILE RULES:
+### "#" is comment character.
+### - Config file is case sensitive
+### - Options within a volume block can be in any order.
+### - Spaces or tabs are used as delimitter within a line.
+### - Multiple values to options will be : delimitted.
+### - Each option should end within a line.
+### - Missing or commented fields will assume default values.
+### - Blank/commented lines are allowed.
+### - Sub-volumes should already be defined above before referring.
+
+### Export volume "brick" with the contents of "/home/export" directory.
+volume brick
+  type storage/posix                   # POSIX FS translator
+  option directory /home/export        # Export this directory
+end-volume
+
+### Add network serving capability to above brick.
+volume server
+  type protocol/server
+  option transport-type tcp
+# option transport-type unix
+# option transport-type ib-sdp
+# option transport.socket.bind-address 192.168.1.10     # Default is to listen on all interfaces
+# option transport.socket.listen-port 6996              # Default is 6996
+
+# option transport-type ib-verbs
+# option transport.ib-verbs.bind-address 192.168.1.10     # Default is to listen on all interfaces
+# option transport.ib-verbs.listen-port 6996              # Default is 6996
+# option transport.ib-verbs.work-request-send-size  131072
+# option transport.ib-verbs.work-request-send-count 64
+# option transport.ib-verbs.work-request-recv-size  131072
+# option transport.ib-verbs.work-request-recv-count 64
+
+# option client-volume-filename /etc/glusterfs/glusterfs-client.vol
+  subvolumes brick
+# NOTE: Access to any volume through protocol/server is denied by
+# default. You need to explicitly grant access through # "auth"
+# option.
+  option auth.addr.brick.allow * # Allow access to "brick" volume
+end-volume
+
+	    </screen>
+	    <screen>
+$ sudo mkdir /home/export
+$ sudo /etc/init.d/glusterfs-server start
+$ sudo /etc/init.d/glusterfs-server status
+ * GlusterFS server is running.
+	    </screen>
+	</section>
+	<section>
+	    <title>glusterfs-client</title>
+	    <para></para>
+	    <screen>
+$ sudo apt-get install glusterfs-client
+$ sudo cp /etc/glusterfs/glusterfs.vol /etc/glusterfs/glusterfs.vol.orig
+        </screen>
+        <screen>
+# cat /etc/glusterfs/glusterfs.vol
+### file: client-volume.vol.sample
+
+#####################################
+###  GlusterFS Client Volume File  ##
+#####################################
+
+#### CONFIG FILE RULES:
+### "#" is comment character.
+### - Config file is case sensitive
+### - Options within a volume block can be in any order.
+### - Spaces or tabs are used as delimitter within a line.
+### - Each option should end within a line.
+### - Missing or commented fields will assume default values.
+### - Blank/commented lines are allowed.
+### - Sub-volumes should already be defined above before referring.
+
+### Add client feature and attach to remote subvolume
+volume client
+  type protocol/client
+  option transport-type tcp
+# option transport-type unix
+# option transport-type ib-sdp
+  option remote-host 192.168.80.1         # IP address of the remote brick
+# option transport.socket.remote-port 6996              # default server port is 6996
+
+# option transport-type ib-verbs
+# option transport.ib-verbs.remote-port 6996              # default server port is 6996
+# option transport.ib-verbs.work-request-send-size  1048576
+# option transport.ib-verbs.work-request-send-count 16
+# option transport.ib-verbs.work-request-recv-size  1048576
+# option transport.ib-verbs.work-request-recv-count 16
+
+# option transport-timeout 30          # seconds to wait for a reply
+                                       # from server for each request
+  option remote-subvolume brick        # name of the remote volume
+end-volume
+
+### Add readahead feature
+#volume readahead
+#  type performance/read-ahead
+#  option page-size 1MB     # unit in bytes
+#  option page-count 2       # cache per file  = (page-count x page-size)
+#  subvolumes client
+#end-volume
+
+### Add IO-Cache feature
+#volume iocache
+#  type performance/io-cache
+#  option page-size 256KB
+#  option page-count 2
+#  subvolumes readahead
+#end-volume
+
+### Add writeback feature
+#volume writeback
+#  type performance/write-behind
+#  option aggregate-size 1MB
+#  option window-size 2MB
+#  option flush-behind off
+#  subvolumes iocache
+#end-volume
+
+        </screen>
+        <screen>
+mkdir /mnt/glusterfs
+
+glusterfs -f /etc/glusterfs/glusterfs.vol /mnt/glusterfs
+or
+mount -t glusterfs /etc/glusterfs/glusterfs.vol /mnt/glusterfs
+        </screen>
+        <para>fstab</para>
+        <screen>
+/etc/glusterfs/glusterfs.vol  /mnt/glusterfs  glusterfs  defaults  0  0
+        </screen>
+	</section>
+	<section>
+	    <title>Testing</title>
+	    <para>client</para>
+	    <screen>
+touch /mnt/glusterfs/test1
+touch /mnt/glusterfs/test2
+	    </screen>
+	    <para>server</para>
+	    <screen>
+# ll /mnt/glusterfs
+total 0
+-rw-r--r-- 1 root root 0 Jun 16 11:57 test1
+-rw-r--r-- 1 root root 0 Jun 16 11:57 test2
+	    </screen>
+	</section>
+
+	<section id="gluster.raid">
+	    <title>RAID</title>
+		<para>http://www.gluster.com/community/documentation/index.php/GlusterFS_User_Guide</para>
+		<para>http://www.gluster.com/community/documentation/index.php/Storage_Server_Installation_and_Configuration</para>
+	    <para>ref:http://www.howtoforge.com/high-availability-storage-cluster-with-glusterfs-on-ubuntu-p2</para>
+
+	    <section>
+			<title>Mirror</title>
+	    	<example>
+	        	<title>Mirror</title>
+	        	<screen>
+glusterfs-volgen --name store1 --raid 1 gluster1:/home/export gluster2:/home/export
+            	</screen>
+	    	</example>
+	    </section>
+	    <section>
+	    	<title>Strip</title>
+		    <example>
+		        <title>Strip</title>
+		        <screen>
+glusterfs-volgen --name store1 --raid 0 gluster1:/home/export gluster2:/home/export
+		        </screen>
+		    </example>
+		</section>
+	</section>
+	<section>
+		<title>Filesystem Administration</title>
+		<screen>
+		<![CDATA[
+# /etc/init.d/glusterd start
+
+gluster peer probe gluster1
+gluster peer probe gluster2
+
+# gluster peer status
+Number of Peers: 3
+
+Hostname: gluster1
+Uuid: 195c5908-750f-4051-accc-697ab72fa3f2
+State: Probe Sent to Peer (Connected)
+
+Hostname: gluster2
+Uuid: 5f9887a9-da15-443f-aab1-5d9952247507
+State: Probe Sent to Peer (Connected)
+
+# gluster peer detach gluster3
+Detach successful
+        ]]>
+		</screen>
+		<para>To create a new volume</para>
+		<screen>
+gluster volume create test-volume gluster1:/exp3 gluster2:/exp4
+	    </screen>
+	</section>
+	<section>
+		<title>CentOS 6.3</title>
+		<screen>
+一，准备两台服务器
+serverA(Client+Server)  202.231.13.6（内网172.16.0.5）cpu:4核Intel(R) Xeon(R) CPU E31220 @ 3.10GHz 内存：4G 硬盘：500G
+serverB(Server)  211.14.14.14（内网172.16.0.3）cpu:4核Intel(R) Xeon(R) CPU E31220 @ 3.10GHz 内存：4G 硬盘：500G
+
+二，安装步骤
+1，yum search gluster
+2，yum install glusterfs-server
+3，yum install fuse fuse-libs
+4，cp /etc/glusterfs/glusterfsd.vol /etc/glusterfs/glusterfsd.vol.orig
+5，mkdir /www/export
+
+三，启动
+modprobe fuse
+/etc/init.d/glusterd start
+
+四，创建盘
+
+服务器有两台,要先绑定在一起(假设使用ServerA做主服务器)
+ServerA# gluster peer probe 172.16.0.3
+创建Volume,名为gluster-volume
+分布式：ServerA# gluster volume create gluster-volume 172.16.0.5:/www/export 172.16.0.3:/www/export
+镜像式：ServerA# gluster volume create gluster-volume replica 2 172.16.0.5:/www/export 172.16.0.3:/www/export
+条带式：ServerA# gluster volume create gluster-volume stripe 2 172.16.0.5:/www/export 172.16.0.3:/www/export
+启动volume
+ServerA# gluster volume start gluster-volume
+查看当前所有volume状态
+ServerA# gluster volume info
+若要使用Cache,则使用
+ServerA# gluster volume set gluster-volume performance.cache-size 1GB
+
+Gluster自动生成配置文件，在/etc/glusterd/vols/gluster-volume/文件夹中
+
+在客户端挂载gluster镜像,客户端直接使用Server端的配置文件，不必创建自己的配置文件了
+Client# modprobe fuse
+Client# /etc/init/glusterd start
+Client# mkdir /mnt/local-volume
+Client# mount.glusterfs 172.16.0.5:/gluster-volume /mnt/local-volume
+Client# umount.glusterfs /mnt/local-volume
+
+
+命令扩展：
+gluster volume stop gluster-volume
+gluster volume delete gluster-volume
+
+		</screen>
+	</section>
+</section>
+<section id="lustre">
+	<title>Lustre</title>
+	<title>http://www.lustre.org/</title>
+</section>
