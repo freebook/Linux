@@ -53,6 +53,43 @@ $ curl -s http://www.example.com | egrep -o '<a href="(.*)">.*</a>' | sed -e 's/
 echo 192.168.2.1-a1f4.40c1.5756 | sed -r 's|(.*-)(..)(..).(..)(..).(..)(..)|\1\2:\3:\4:\5:\6:\7|g'
 			</screen>
 		</section>
+		<section>
+			<title>首字母大写</title>
+			<screen>
+$ cat /etc/passwd | cut -d: -f1 | sed 's/\b[a-z]/\U&/g'
+Root
+Daemon
+Bin
+Sys
+Sync
+Games
+Man
+Lp
+Mail
+News
+Uucp
+Proxy
+Www-Data
+Backup
+List
+Irc
+Gnats
+Nobody
+Libuuid
+Syslog
+Messagebus
+Whoopsie
+Landscape
+Sshd
+Neo
+Ntop
+Redis
+Postgres
+Colord
+Mysql
+Zookeeper
+			</screen>
+		</section>
 	</section>
 	<section>
 		<title>编辑文件</title>
