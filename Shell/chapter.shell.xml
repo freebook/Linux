@@ -213,32 +213,46 @@ $ mktemp -d --suffix=.tmp -p /tmp deploy.XXXXXX
 		<title>History 命令历史记录</title>
 		<section>
 			<title>.bash_history</title>
+			<para>从安全角度考虑禁止记录history</para>
 			<screen>
 ln -s /dev/null .bash_history
 			</screen>
-			<para>定制.bash_history格式</para>
-			<screen>
+			<section>
+				<title>格式定义</title>
+				<para>定制.bash_history格式</para>
+				<screen>
 export HISTSIZE=1000
 export HISTFILESIZE=2000
 export HISTTIMEFORMAT="%Y-%m-%d-%H:%M:%S "
 export HISTFILE="~/.bash_history"
+				</screen>
 
-			</screen>
-
-			<para>看看实际效果</para>
-			<screen>
+				<para>看看实际效果</para>
+				<screen>
 $ history | head
     1  2012-02-27-09:10:45 do-release-upgrade
     2  2012-02-27-09:10:45 vim /etc/network/interfaces
     3  2012-02-27-09:10:45 vi /etc/network/interfaces
     4  2012-02-27-09:10:45 ping www.163.com
-			</screen>
-			<tip>
-				<para>CentOS 可以添加到 /etc/bashrc 这样可以对所有用户起作用</para>
-				<screen>
-echo 'export HISTTIMEFORMAT="%Y-%m-%d-%H:%M:%S "' >> /etc/bashrc
 				</screen>
-			</tip>
+				<tip>
+					<para>CentOS 可以添加到 /etc/bashrc 这样可以对所有用户起作用</para>
+					<screen>
+echo 'export HISTTIMEFORMAT="%Y-%m-%d-%H:%M:%S "' >> /etc/bashrc
+					</screen>
+				</tip>
+			</section>
+			<section>
+				<title>设置忽略命令</title>
+				<para>HISTIGNORE 可以设置那些命令不记入history列表。</para>
+				<screen>
+HISTIGNORE="ls:ll:la:cd:exit:clear:logout"
+HISTTIMEFORMAT="[%Y-%m-%d - %H:%M:%S] "
+HISTFILE=~/.history
+HISTSIZE=50000
+SAVEHIST=50000
+				</screen>
+			</section>
 		</section>
 		<section>
 			<title>.mysql_history</title>
