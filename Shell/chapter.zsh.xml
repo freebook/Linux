@@ -1,13 +1,15 @@
 <chapter id="zsh">
 	<title>Z Shell</title>
-	<!-- 
+	<!--
 http://hi.baidu.com/storymedia/blog/item/598be3fd4998f549d6887d89.html
-http://www.ha97.com/book/OpenSource_Guide/ch30.html	
+http://www.ha97.com/book/OpenSource_Guide/ch30.html
 	 -->
 	<para><ulink url="http://www.zsh.org/">http://www.zsh.org/</ulink></para>
 <section id="zsh.install">
 	<title>installing Z shell</title>
+	<screen>
 $ sudo apt-get install zsh
+	</screen>
 </section>
 <section id="zsh.zshrc">
 	<title>Starting file</title>
@@ -51,7 +53,7 @@ neo@netkiller:~$
 	</screen>
 	<screen>
 autoload colors; colors
-export PS1="%B[%{$fg[red]%}%n%{$reset_color%}%b@%B%{$fg[cyan]%}%m%b%{$reset_color%}:%~%B]%b "	
+export PS1="%B[%{$fg[red]%}%n%{$reset_color%}%b@%B%{$fg[cyan]%}%m%b%{$reset_color%}:%~%B]%b "
 	</screen>
 </section>
 <section id="zsh.alias">
@@ -72,7 +74,7 @@ fi
 # some more ls aliases
 alias ll='ls -l'
 alias la='ls -A'
-alias l='ls -CF'		
+alias l='ls -CF'
 	</screen>
 </section>
 <section id="zsh.history">
@@ -90,7 +92,7 @@ $ history
 
 $ !20
 ls
-Docbook  makedoc  Tex		
+Docbook  makedoc  Tex
 	</screen>
 </section>
 
@@ -100,22 +102,22 @@ Docbook  makedoc  Tex
 		<title>Home/End key</title>
 		<screen>
 bindkey '\e[1~' beginning-of-line
-bindkey '\e[4~' end-of-line			
+bindkey '\e[4~' end-of-line
 		</screen>
 	</section>
-</section>	
+</section>
 </chapter>
-<!-- 
+<!--
 <chapter id="csh">
 	<title>Berkeley UNIX C shell (csh)</title>
 	<section>
-$ sudo apt-get install csh	
+$ sudo apt-get install csh
 	</section>
 </chapter>
 <chapter id="ksh">
 	<title>KornShell</title>
 	<section>
-$ sudo apt-get install ksh	
+$ sudo apt-get install ksh
 	</section>
 </chapter>
 -->

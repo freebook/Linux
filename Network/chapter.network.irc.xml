@@ -18,7 +18,7 @@
 
 /charset utf-8
 
-/serv irc.freenode.net 
+/serv irc.freenode.net
 
 /nick 更改昵称
 
@@ -46,7 +46,7 @@
 
 /kick 把用户踢出聊天室
 
-/quit 退出聊天室		
+/quit 退出聊天室
 		</screen>
 		<screen>
 IRC命令有二点值得您注意：
@@ -88,7 +88,7 @@ IRC命令有二点值得您注意：
 
 +o 用户昵称或/m(ode)-o用户昵称只有聊天室管理员才能使用这个命令。
 
-/knock 
+/knock
 /knock 命令可以让您询问私人聊天室管理员是否可以进入该私人聊天室。其命令格式是：/k(nock) 房间名
 
 消息]
@@ -107,7 +107,7 @@ IRC命令有二点值得您注意：
 
 接受您的私人消息的用户必须和您在同一间聊天室。
 
-“用户昵称”和“消息”这两个参数是不能省略的。 
+“用户昵称”和“消息”这两个参数是不能省略的。
 如果某个用户的昵称太长，在不会产生混淆的情况下，您可以只输入用户昵称的头几个字母，系统会进行自动匹配。
 
 例如：聊天室里除了您之外还有两个用户，他们的昵称分别是xiaobao和softman。您若想给softman发送悄悄话，可以在输入框里输入下面的命令：
@@ -203,7 +203,7 @@ sudo apt-get install ircd-irc2
 		<para>Configuration</para>
 		<screen>
 $ sudo vim /etc/ircd/ircd.conf
-$ sudo /etc/init.d/ircd-irc2 start		
+$ sudo /etc/init.d/ircd-irc2 start
 		</screen>
 	</section>
 	<section id="ircd-hybrid">
@@ -235,7 +235,7 @@ $ sudo apt-get install ircii
 			<para>remove the string: change_this_in_etc_irc_servers</para>
 			<para>add default irc server.</para>
 			<screen>
-172.16.0.1			
+172.16.0.1
 			</screen>
 			<para>running irc client</para>
 			<screen>
@@ -261,11 +261,23 @@ xchat --url=irc://irc.freenode.net/trac
 			<para>-e 可以避免开启多个窗口，新URL将在TAB中打开。</para>
 			<screen>
 xchat --url=irc://irc.freenode.net/trac -e
-			</screen>			
+			</screen>
 		</section>
 		<section id="irc.web">
 			<title>Web IRC</title>
 			<ulink url="http://www.mibbit.com" />
-		</section>		
+		</section>
+		<section id="irc.irssi">
+			<title>Irssi - a modular IRC client for UNIX</title>
+			<screen>
+sudo apt-get install irssi
+			</screen>
+			<para>进入 irssi 输入irc命令即可</para>
+			<screen>
+/connect irc.freenode.net
+/join #ubuntu,#ubuntuforums,#ubuntu+1
+/quit
+			</screen>
+		</section>
 	</section>
 </chapter>
