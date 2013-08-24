@@ -858,6 +858,18 @@ Please input your name: neo
 $ echo $named
 			</screen>
 		</example>
+		<screen>
+		<![CDATA[
+READ_TIMEOUT=60  
+read -t "$READ_TIMEOUT" input  
+   
+# if you do not want quotes, then escape it  
+input=$(sed "s/[;\`\"\$\' ]//g" <<< $input)  
+   
+# For reading number, then you can escape other characters  
+input=$(sed 's/[^0-9]*//g' <<< $input)  	
+		]]>	
+		</screen>
 	</section>
 </section>
 </chapter>

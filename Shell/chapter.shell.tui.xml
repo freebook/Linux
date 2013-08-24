@@ -1,6 +1,6 @@
-<chapter id="shell.tui">
-	<title>Shell TUI</title>
-	<para>dialog, whiptail, gdialog, kdialog and nautilus</para>
+<chapter id="shell.terminal">
+	<title>Shell Terminal</title>
+	<subtitle>dialog, whiptail, gdialog, kdialog and nautilus</subtitle>
 	<section id="resize">
 		<title>terminal</title>
 		<section id="resize">
@@ -54,11 +54,102 @@ stty $OLDCONFIG          # restore configuration
 	</section>
 	<section id="tput">
 		<title>tput</title>
+		<para>为输出着色</para>
+		<screen>
+tput Color Capabilities:
+
+tput setab [1-7] – Set a background color using ANSI escape
+tput setb [1-7] – Set a background color
+tput setaf [1-7] – Set a foreground color using ANSI escape
+tput setf [1-7] – Set a foreground color
+
+tput Text Mode Capabilities:
+
+tput bold – Set bold mode
+tput dim – turn on half-bright mode
+tput smul – begin underline mode
+tput rmul – exit underline mode
+tput rev – Turn on reverse mode
+tput smso – Enter standout mode (bold on rxvt)
+tput rmso – Exit standout mode
+tput sgr0 – Turn off all attributes
+
+Color Code for tput:
+
+0 – Black
+1 – Red
+2 – Green
+3 – Yellow
+4 – Blue
+5 – Magenta
+6 – Cyan	
+7 – White
+		</screen>
+		
+		<screen>
+NORMAL=$(tput sgr0)  
+RED=$(tput setaf 1)  
+GREEN=$(tput setaf 2; tput bold)  
+YELLOW=$(tput setaf 3)  
+BLUE=$(tput setaf 4) 
+MAGENTA=$(tput setaf 5) 
+CYAN=$(tput setaf 6) 
+WHITE=$(tput setaf 7) 
+   
+function exception(){
+	echo -e "$WHITE$*$NORMAL"
+}
+
+function critical() {  
+    echo -e "$RED$*$NORMAL"  
+}  
+   
+function info() {  
+    echo -e "$GREEN$*$NORMAL"  
+}  
+   
+function warning() {  
+    echo -e "$YELLOW$*$NORMAL"  
+}  
+  
+function error(){
+	echo -e "$MAGENTA$*$NORMAL"
+} 
+ 
+function debug(){
+	echo -e "$CYAN$*$NORMAL"
+} 
+ 
+# To print critical  
+critical "kernel error"  
+
+# To print exception 
+exception "file system exception"
+   
+# To print error  
+error "The configuration file does not exist"  
+   
+# To print warning  
+warning "You have to use higher version."
+	
+# To print info  
+info "Task has been completed."	
+
+# To print debug 
+debug "This is a debug message."
+		</screen>
+		<section>
+			<title>Change the prompt color using tput</title>
+			<screen>
+$ export PS1="\[$(tput bold)$(tput setb 4)$(tput setaf 7)\]\u@\h:\w $ \[$(tput sgr0)\]"			
+			</screen>
+		</section>
+		
 	</section>
 	<section id="dialog">
 		<title>dialog</title>
 		<screen>
-neo@netkiller:~$ sudo apt-get install dialog		
+$ sudo apt-get install dialog		
 		</screen>
 		<section>
 			<title>--inputbox</title>

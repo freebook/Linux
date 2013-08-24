@@ -56,6 +56,7 @@ echo 192.168.2.1-a1f4.40c1.5756 | sed -r 's|(.*-)(..)(..).(..)(..).(..)(..)|\1\2
 		<section>
 			<title>首字母大写</title>
 			<screen>
+			<![CDATA[
 $ cat /etc/passwd | cut -d: -f1 | sed 's/\b[a-z]/\U&/g'
 Root
 Daemon
@@ -88,6 +89,7 @@ Postgres
 Colord
 Mysql
 Zookeeper
+			]]>
 			</screen>
 		</section>
 	</section>
