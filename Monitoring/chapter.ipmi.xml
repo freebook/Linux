@@ -582,6 +582,7 @@ Channel 0x1 info:
     Access Mode         : always available
 				</screen>
 			</section>
+
 		</section>
 		<section id="ipmitool.idrac">
 			<title>Example for iDRAC</title>
@@ -657,6 +658,12 @@ ID  Name	     Callin  Link Auth	IPMI Msg   Channel Priv Limit
 
 服务器 reset
 #ipmitool -I lan -U root -P secpass -H 10.10.0.5 power reset
+				</screen>
+			</section>
+			<section>
+				<title>启动列表</title>
+				<screen>
+ipmitool -I lan -H 10.10.0.5 -U ADMIN -P ADMIN chassis bootdev pxe
 				</screen>
 			</section>
 		</section>
