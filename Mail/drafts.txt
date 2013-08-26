@@ -1,0 +1,133 @@
+200 "Welcome to NewsFan News server",  5.7e1,, S2
+help
+100 Legal commands
+  authinfo user Name|pass Password
+  article [MessageID|Number]
+  body [MessageID|Number]
+  check MessageID
+  date
+  group newsgroup
+  head [MessageID|Number]
+  help
+  ihave
+  last
+  list [active|active.times|newsgroups|subscriptions]
+  listgroup newsgroup
+  mode stream
+  mode reader
+  newgroups yymmdd hhmmss [GMT] [<distributions>]
+  newnews newsgroups yymmdd hhmmss [GMT] [<distributions>]
+  next
+  post
+  slave
+  stat [MessageID|Number]
+  takethis MessageID
+  xgtitle [group_pattern]
+  xhdr header [range|MessageID]
+  xover [range]
+  xpat header range|MessageID pat [morepat...]
+.
+
+我想写一个基于数据库的"新闻组"
+
+可以自己建数据库.也可以使用现有的.BBS的数据库,这样就可以实现能过nntp协议访问bbs了..
+我之前写过bbs to mailing list的patch.但不能做到mailing list to bbs:(
+
+打算这样设计.请指点.
+有个配置文件如下:
+[命令] = [SQL语句]
+
+依不同的BBS改变你的sql就可以..
+list  列出版区,
+article 列出文章...
+
+/* =================================================================== */
+   configure:
+/* =================================================================== */
+
+-------------------------------------------------------------------------
+list [active|active.times|newsgroups|subscriptions]
+list = "select name,count(id),count(other),status from list"
+
+215 list of newsgroups follows
+聊天灌水.情感 335388 254959 y
+休闲娱乐.讽刺与幽默 276702 196426 y
+本站站务.公告 494 31 y
+本站站务.站务讨论 55851 12 y
+财会金融 5371 1100 y
+计算机.软件.编程 5530 4347 y
+计算机.软件.编程.ASP 19448 15572 y
+计算机.软件.编程.C语言 19768 11996 y
+计算机.软件.编程.Java 24306 17866 y
+计算机.软件.编程.Perl 1992 1732 y
+计算机.软件.编程.PHP 8800 7104 y
+计算机.软件.操作系统 12898 7884 y
+计算机.软件.操作系统.DOS 4238 2970 y
+计算机.软件.操作系统.Linux 48810 15069 y
+-------------------------------------------------------------------------
+
+
+
+
+
+
+-------------------------------------------------------------------------
+date
+date = "select to_char('%Y%M%D%H%S....',now())"
+111 20060614031103
+-------------------------------------------------------------------------
+
+
+
+
+
+-------------------------------------------------------------------------
+authinfo user Name|pass Password
+authinfo = select user,passwd from member
+
+-------------------------------------------------------------------------
+
+
+
+
+
+-------------------------------------------------------------------------
+newgroups yymmdd hhmmss [GMT] [<distributions>]
+newgroups = "select list from bbs where data xxx between xxx and xxx"
+-------------------------------------------------------------------------
+
+
+
+
+
+-------------------------------------------------------------------------
+post
+post = "insert into article('title','content') value('','');"
+-------------------------------------------------------------------------
+
+
+
+
+
+-------------------------------------------------------------------------
+article [MessageID|Number]
+article = "select * from article where id=??? or number=??;"
+-------------------------------------------------------------------------
+
+
+
+
+
+-------------------------------------------------------------------------
+head [MessageID|Number]
+article = "select title from article where id=??? or number=??;"
+-------------------------------------------------------------------------
+
+
+
+
+
+-------------------------------------------------------------------------
+body [MessageID|Number]
+article = "select body from article where id=??? or number=??;"
+-------------------------------------------------------------------------

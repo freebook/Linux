@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="mail.service">
+	<title>邮件被拒收处理方法</title>
+
+	<section id="netease">
+		<title>NetEase</title>
+		<para>网易客服:服务热线020-83568090-1</para>
+		<para>
+			全国24小时客服电话: 020-83568090 (163/126免费邮箱、188邮箱、免费相册、博客等)
+			<ulink url=""></ulink>
+		</para>
+	</section>
+	<section id="sohu">
+		<title>Sohu</title>
+		<para>搜狐客服:</para>
+		<para>webmaster@vip.sohu.com</para>
+		<para>热线电话： 010-58511234</para>
+		<para>
+			<ulink url="http://mail.sohu.com/info/policy/">http://mail.sohu.com/info/policy/</ulink>
+		</para>
+	</section>
+	<section id="tom">
+		<title>Tom</title>
+		<para>
+			<ulink url="http://pr.tom.com/about/about_contact_1.htm">http://pr.tom.com/about/about_contact_1.htm</ulink>
+		</para>
+		<screen>
+			1.发送频率,包括一次性发信数量,每次发信的频率间隔多长时间.
+			2.系统发送日志,例如您们发信系统发送不成功的一些日志.
+			3.对tom邮箱telnet一次,把测试结果返回.(telnet tommx.163.net 25)
+			4.提供发信失败的具体时间和发件人和收件人地址.
+			5.如有退信请提供完整的退信内容.
+			6.请提供贵司的域名和发信IP. 
+		</screen>
+		<para>test_tom163@163.com</para>
+	</section>
+	<section id="qq">
+		<title>QQ</title>
+		<para>客服电话：0755-83765566</para>
+		<command></command>
+		<screen>
+		</screen>
+	</section>
+	<section id="21cn">
+		<title>21CN</title>
+		<para>咨询热线: 	020-38733114 （7*24小时服务）,咨询邮箱:webmaster@21cn.com</para>
+		<para>垃圾邮件处理专题<ulink url="http://mail.21cn.com/help/spam.htm">http://mail.21cn.com/help/spam.htm</ulink></para>
+		<para>退信专题:<ulink url="http://mail.21cn.com/help/tuixin_index1.htm">http://mail.21cn.com/help/tuixin_index1.htm</ulink></para>
+	</section>
+</chapter>
+<!--
+<chapter>
+	<title>Telnet Debug</title>
+	<para>使用telnet简单调试新闻组</para>
+	<para>
+		<userinput>telnet 127.0.0.1 119</userinput>
+	</para>
+
+	<section>
+		<title>访问Demo程序</title>
+		<para>
+			<graphic fileref="images/bg7nyt_jasperreports_demo.jpg" />
+		</para>
+
+	</section>
+</chapter>
+ -->
+<chapter id="faq">
+	<title>邮件错误代码</title>
+	<para>This is the first chapter in my book.</para>
+	<procedure>
+		<step>
+			<para>查看返回代码确定问题根源</para>
+			<para>邮件服务返回代码含义:</para>
+			<screen>
+			<![CDATA[
+* 500 格式错误，命令不可识别（此错误也包括命令行过长）
+* 501 参数格式错误
+* 502 命令不可实现
+* 503 错误的命令序列
+* 504 命令参数不可实现
+* 211 系统状态或系统帮助响应
+* 214 帮助信息
+* 220 服务就绪
+* 221 服务关闭传输信道
+* 421 服务未就绪，关闭传输信道（当必须关闭时，此应答可以作为对任何命令的响应）
+* 250 要求的邮件操作完成
+* 251 用户非本地，将转发向
+* 450 要求的邮件操作未完成，邮箱不可用（例如，邮箱忙）
+* 550 要求的邮件操作未完成，邮箱不可用（例如，邮箱未找到，或不可访问）
+* 451 放弃要求的操作；处理过程中出错
+* 551 用户非本地，请尝试
+* 452 系统存储不足，要求的操作未执行
+* 552 过量的存储分配，要求的操作未执行
+* 553 邮箱名不可用，要求的操作未执行（例如邮箱格式错误）
+* 354 开始邮件输入，以.结束
+* 554 操作失败
+* 535 用户验证失败
+* 235 用户验证成功
+* 334 等待用户输入验证信息
+			]]>
+			</screen>
+		</step>
+		<step>
+			<para>确认邮箱拼写正确</para>
+		</step>
+		<step>
+			<para>客户邮箱可能长时间没有使用，需要登录激活.</para>
+		</step>
+		<step>
+			<para>请客户检查邮箱是否设置拒收.</para>
+		</step>
+		<step>
+			<para>客户邮箱释放已经满，没足够的空间</para>
+		</step>
+		<step>
+			<para>将拒收邮件发给拒收方的客服</para>
+		</step>
+	</procedure>
+	<section id="smtp.code">
+		<title>SMTP 错误代码大全</title>
+		<screen>
+			421 Service not available, closing transmission channel (This
+			may be a
+			reply to any command if the service knows it must shut down)
+			450 Requested mail action not taken: mailbox unavailable (E.g.,
+			mailbox
+			busy)
+			451 Requested action aborted: local error in processing
+			452 Requested action not taken: insufficient system storage
+
+
+			500 Syntax
+			error, command unrecognized (This may include errors such as
+			command
+			line too long)
+			501 Syntax error in parameters or arguments
+			502 Command
+			not implemented
+			503 Bad sequence of commands
+			504 Command parameter not
+			implemented
+			550 Requested action not taken: mailbox unavailable (E.g.,
+			mailbox not
+			found, no access)
+			551 User not local; please try
+			552
+			Requested mail action aborted: exceeded storage allocation
+			553
+			Requested action not taken: mailbox name not allowed (E.g., mailbox
+			syntax incorrect)
+			554 Transaction failedThe other codes that provide
+			you with helpful
+			information about what’s happening with your messages
+			are:
+
+			211 System status, or system help reply
+			214 Help message
+			(Information on how to use the receiver or the meaning
+			of a particular
+			non-standard command; this reply is useful
+			only to the human user)
+			220
+			Service ready
+			221 Service closing transmission channel
+			250 Requested
+			mail action okay, completed
+			251 User not local; will forward to
+			354
+			Start mail input; end with . (a dot)
+
+			‘*************************
+			‘*
+			邮件服务返回代码含义
+			‘* 500 格式错误，命令不可识别（此错误也包括命令行过长）
+			‘* 501 参数格式错误
+			‘* 502 命令不可实现
+			‘* 503 错误的命令序列
+			‘* 504 命令参数不可实现
+			‘* 211 系统状态或系统帮助响应
+			‘* 214 帮助信息
+			‘* 220 服务就绪
+			‘* 221 服务关闭传输信道
+			‘* 421 服务未就绪，关闭传输信道（当必须关闭时，此应答可以作为对任何命令的响应）
+			‘* 250
+			要求的邮件操作完成
+			‘* 251 用户非本地，将转发向
+			‘* 450 要求的邮件操作未完成，邮箱不可用（例如，邮箱忙）
+			‘* 550
+			要求的邮件操作未完成，邮箱不可用（例如，邮箱未找到，或不可访问）
+			‘* 451 放弃要求的操作；处理过程中出错
+			‘* 551
+			用户非本地，请尝试
+			‘* 452 系统存储不足，要求的操作未执行
+			‘* 552 过量的存储分配，要求的操作未执行
+			‘* 553
+			邮箱名不可用，要求的操作未执行（例如邮箱格式错误）
+			‘* 354 开始邮件输入，以.结束
+			‘* 554 操作失败
+			‘* 535 用户验证失败
+			‘* 235 用户验证成功
+			‘* 334 等待用户输入验证信息
+			</screen>
+	</section>
+	<section id="smtp.error">
+		<title>SMTP错误、DNS错误代码表</title>
+		<para>SMTP错误、DNS错误代码表.</para>
+		<screen>
+			<![CDATA[
+表(一) SMTP 代码
+代码 释义
+421 <domain> Service not available, closing transmission channel 括号内的主机无法提供正常服务，关闭传送管道，邮件将滞留在主机上
+450  Requested mail action not taken: mailbox unavailable  所要求的邮件动作无法执行：邮件信箱无法提供服务，邮件将滞留在主机上
+451 Requested action aborted: local error in processing 要求动作中断：本地端错误
+452  Requested action not taken: insufficient system storage 要求动作无法执行：系统空间不足
+550  Requested action not taken: mailbox unavailable  所要求动作无法执行：信箱不存在，邮件将退回给寄件者
+551  User not local; please try <forward-path> 邮件服务器知道使用者不属于本地端，将尝试括号内的转送路径
+552 Requested mail action aborted: exceeded storage allocation 所要求的动作中断：超出所分配的储存空间，邮件将退回给寄件者
+553 Requested action not taken: mailbox name not allowed 所要求的动作未执行：信箱不允许该动作执行
+553 Requested action not taken: Local user only 发件箱收到通信的提示--请检查接收方的邮件MX记录
+554  Transaction failed 传送失败
+
+
+表(二) DSN 错误代码
+注意事项：第一个字符为 4 或 5
+4.X.X 代表暂时错误，邮件服务器将稍后再试
+5.X.X 代表邮件传送失败
+
+类别 代码 释义 　
+X.1.X 表示邮件地址(Address)问题 X.1.0 Other address status  其它邮件地址问题
+X.1.1 Bad destination mailbox address 收件地址信箱错误
+X.1.2  Bad destination system address 收件地址系统错误
+X.1.3 Bad destination mailbox address syntax 收件地址信箱句法错误
+X.1.4 Destination mailbox address ambiguous 收件地址信箱不清
+X .1.5 Destination mailbox address valid 收件地址信箱无效
+X.1.6  Mailbox has moved 信箱已移除
+X.1.7 Bad sender's mailbox address syntax 寄件者信箱句法错误
+X.1.8  Bad sender's system address 寄件者系统错误
+X.2.X 表示收件者信箱(Mailbox)问题 X.2.0 Other or undefined mailbox status 其它或未定义的收件者信箱问题
+X.2.1 Mailbox disabled, not accepting messages 信箱无法运作，无法接收信件
+X.2.2  Mailbox full 信箱已满
+X.2.3 Message length exceeds administrative limit. 邮件长度超出管理者限制
+X.2.4  Mailing list expansion problem 此信箱属于特定邮件群组，但群组无法开展
+X.3.X 表示目的地邮件系统(Mail System)问题 X.3.0 Other or undefined mail system status 其它或未定义的邮件系统问题
+X.3.1 Mail system full 邮件系统储存空间已满
+X.3.2 System not accepting network messages 主机无法接收信件，可能暂时关机、维修等
+X.3.3  System not capable of selected features 指定的邮件特征无法为收件主机所接收
+X.3.4 Message too big for system 邮件大小超出邮件系统限制
+X.3.5  System incorrectly configured 系统设定错误，无法接收邮件
+X.4.X 表示邮件传送系统网络与路由(Network and Routing)问题 X.4.0 Other or undefined network or routing status 其它或未定义的网络与路邮设定问题
+X.4.1  No answer from host 主机无响应
+X.4.2 Bad connection 联机错误
+X.4.3  Directory server failure 网络系统无法转送邮件，例如无法联机到DNS服务器
+X.4.4  Unable to route  邮件系统所需的路由信息不足，无法决定传送路由
+X.4.5  Network congestion 网络壅塞
+X.4.6 Routing loop detected 邮件因错误的路由设定，多次遶行而无法传送
+X.4.7  Delivery time expired 邮件滞留主机过久
+X.5.X
+表示邮件传送协议问题 (Mail Delivery Protocol)问题，可能是寄件方、收信方或是传送邮件系统的问题 X.5.0  Other or undefined protocol status 其它或未定义的通讯协议问题
+X.5.1 Invalid command 命令无效
+X.5.2 Syntax error 邮件传送协议的句法错误
+X.5.3  Too many recipients 太多收件者
+X.5.4  Invalid command arguments 命令叙述错误
+X.5.5  Wrong protocol version 错误的通讯协议版本
+X.6.X
+表示邮件内容或媒介(Message Content or Media)的问题，收件者与寄件者双方必需支持同样的内容类别(Content Type) X.6.0 Other or undefined media error 其它或未定义的媒介问题
+X.6.1 Media not supported 传送协议或转送邮件的系统不支持该媒介
+X.6.2 Conversion required and prohibited 邮件内容在传送之前必需经过转换动作，但该动作不被允许
+X.6.3  Conversion required but not supported 邮件内容在转送之前须经过转换动作，但无法执行
+X.6.4 Conversion with loss performed 邮件传送成功，但部份内容因无法转换而遗失
+X.6.5  Conversion failed 转换动作失败
+X.7.X 表示安全或邮件监控规则(Security or Policy) 的问题 X.7.0  Other or undefined security status 其它安全或邮件监控规则问题
+X.7.1 Delivery not authorized, message refused 寄件者无授权传送信件
+X.7.2 Mailing list expansion prohibited 寄件者无授权寄信予该邮件群组
+X.7.3 Security conversion required but not possible 邮件安全协定
+X.7.4 Security features not supported 邮件含有安全特征如认证措施，但不为传送协议所接受
+X.7.5 Cryptographic failure 经授权得以认证或解密该邮件的系统无法完成该动作，因所需信息不完全
+X.7.6 Cryptographic algorithm not supported 经授权得以认证或解密该邮件的系统无法完成该动作，因算法不支持
+X.7.7  Message integrity failure 经授权得以认证该邮件的系统无法完成该动作，因邮件已损毁
+
+*******************************************************************************
+发送邮件常见出错代码
+
+按照下列“Q”代表问题，“A”代表解答。
+Q:the server says:550 relaying mail to <> is not allowed
+Q:The server says:550 <>... relaying denied
+Q:the server says:550 5.7.1 relaying not permitted:
+A:使用某些Smtp服务器时，限制了收件人的地址，只能换一个Smtp服务器。
+Q:The server says:550 <>:local user only
+Q:The server says:550 <>:Invalid User
+Q:The server says:550 Invalid recipient
+A:使用163.net，163.com，yeah.net和netease.com之类的Smtp服务器时，只能用自身的信箱发信，所以要在Outlook Express的“帐户属性”中的“个人信息”里面填写正确的邮件地址。
+
+Q:the server says:551 delivery not allowed to non-local recipient
+Q:The server says:553 Relay restriction.
+Q:The server says:553 From <>, message blocked.
+Q:The server says:553 sorry,you are not allow to use this SMTP to relay your eami
+Q:The server says:553 sorry, that domain isn't in my list of allowed rcpthosts
+A:使用21cn.com，china.com，371.net，sina.com等大多数信箱的smtp服务器时，只能用自身的信箱发信，所以要在Outlook Express的“帐户属性”中的“个人信息”里面填写正确的邮件地址。
+
+Q:The server says:505 client was not authenticated
+Q:The server says:553 authentication is required to send mail as <>
+A:使用263.net和sohu.com的Smtp服务器时，不但要用自身的邮箱发信，而且要加入身份验证，所以即要在“个人信息”中填写正确邮箱地址，又要选中“SMTP服务器需要认证”。
+
+Q:The server says:535 Error:authenticatin failed
+Q:The server says:535 Authentication unsuccessful
+Q:The server says:452 Insufficient system storage
+A:在使用Esmtp认证的过程中出错，检查一下Esmtp设置，多试几次。
+
+Q:The server says:553 <>...domain name required
+Q:The server says:550 Unable to relay for ...
+A:多出现在用Wingate代理服务器发送邮件时。虽然在Wingate中“POP3 邮箱帐号”要使用“用户名#POP3地址”的格式，但在“帐户属性”中的“个人信息”中还是要填写一般的格式。
+
+Q:The server says:553 mailbox name not allowed
+A:收件人邮箱地址不允许，需检查收件人地址是否正确。
+
+Q:the server says:553 sorry, your envelop sender is in my badmailfrom list
+A:服务器限制了收件人的地址，只能换一个smtp服务器发信。
+
+Q:the server says:554 Transaction failed
+Q:The server says:451 Requested action aborted,errno=28
+A:传输失败，检查网络问题。
+
+Q:the server says:503 error:needmail command
+Q:The server says:503 need mail before RCPT.
+Q:The server says:503 Bad sequence of commands
+A:消息命令顺序出错，一般出现在其他错误之后，先检查之前出现的错误提示。
+
+Q:The Server says:501 syntax.helo hostname
+Q:The server says:501 Invalid domain name
+Q:The server says:502 unimplemented command
+Q:the server says:503 5.0.0 polite people say HELO first
+Q:The server says:533 relay restriction
+Q:The server says:544 <>:Recipient address rejected: Relay access denied
+A:传输中的语法错误，原因不明。
+			]]>
+		</screen>
+	</section>
+	<section id="outlook">
+		<title>Outlook Express</title>
+		<para>Outlook Express错误代码表.</para>
+		<screen>
+		<![CDATA[
+错误码   一般意义
+0x800C0131 可能是 Folders.dbx 文件属性错误或损坏
+0x800C013E 可能是 Folders.dbx 文件属性错误或损坏
+0x800CCC00 身份验证（Authentication）未载入
+0x800CCC01 认证（Certificate）内容错误
+0x800CCC02 认证日期错误
+0x800CCC03 使用者已连线
+0x800CCC05 未连接到服务器
+0x800CCC0A 邮件下载未完成
+0x800CCC0B 服务器忙碌中
+0x800CCC0D 找不到主机（检查你的SMTP服务器是不是设错，亦可能是对方Server 的问题，例如 Mail Server 没有开机、对方的DNS 服务器死掉了等等）
+0x800CCC0E 联机到服务器失败，无法与主机建立联机。可能对方主机正在维护中、或是网络联机品质不好、服务器关机、邮件服务器尚未启动等等，等一段时间再试。
+如果你的防毒软体有类似「电子邮件防护」这类的功能，建议先关闭「电子邮件防护」再做收发邮件的测试，从经验中得知，有时会因为防毒软体的「电子邮件防护」的干扰，会产生不能收发邮件的情形。
+0x800CCC0F 服务器结束连线（对方服务器负荷过重、网路传输堵塞易造成此现象，可以试着增加你连线逾时的等候时间试试看，或是换一连线品质较佳的 ISP）
+0x800CCC10 服务器无法辨认此邮件位址
+0x800CCC11 服务器无法辨认的 Mailing list
+0x800CCC12 无法传送 Winsock request
+0x800CCC13 无法接收 Winsock reply
+0x800CCC14 无法起始 Winsock
+0x800CCC15 无法开启 Windows Socket
+0x800CCC16 无法辨认使用者帐号，使用者帐号错误
+0x800CCC17 使用者中断操作
+0x800CCC18 登入失败 （例如：不需要安全密码认证登入，但却设了安全密码认证登入）
+0x800CCC19 连接服务器超时
+0x800CCC1A 无法以 SSL 建立连线
+
+Winsock 错误
+
+0x800CCC40 Network subsystem 无法使用
+0x800CCC41 Windows Sockets 不支持此应用程序
+0x800CCC43 Bad address.
+0x800CCC44 Windows Sockets 无法载入
+0x800CCC45 Operation now in progress..
+
+SMTP 错误
+
+0x800CCC60 不合法的回应
+0x800CCC61 不明的错误代码
+0x800CCC62 收到语法错误
+0x800CCC63 语法参数不正确
+0x800CCC64 指令不完整
+0x800CCC65 不正确的指令序列
+0x800CCC66 指令不完整
+0x800CCC67 没有这个指令
+0x800CCC68 邮件信箱被锁住或忙碌中
+0x800CCC69 找不到邮件信箱
+0x800CCC6A 处理要求错误
+0x800CCC6B 邮件信箱不在此服务器上
+0x800CCC6C 已无空间储存邮件
+0x800CCC6D 已超过限制的储存容量上限
+0x800CCC6E 不合法的邮件信箱名称
+0x800CCC6F Transaction error，出现这讯息，可能是服务器不接受你的邮件，请跟你的 ISP 联络。
+0x800CCC78 不明的寄件者，或邮件回覆（reply-to）地址不正确，或需要身分认证（Yahoo 邮件需要 SMTP 认证）。
+0x800CCC79 收件者被服务器拒绝 （Relay Denied：最常发生於 Outlook Express 的 SMTP 设定不正确，请使用提供你连线服务的ISP公司之SMTP服务器来寄信，）
+0x800CCC7A 没有指定寄件者
+0x800CCC7B 没有指定收件者
+
+POP3 错误
+
+0x800CCC90 登入邮件服务器发生错误，检查一下你是不是有使用该服务器的权限。或者：不需要安全密码认证登入，但却设了安全密码认证登入
+0x800CCC91 使用者名称错误或找不到此使用者
+0x800CCC92 帐号、密码错误
+0x800CCC93 无法解释回应
+0x800CCC94 需要指令
+0x800CCC95 服务器上已无邮件
+0x800CCC96 没有邮件标记为要下载
+0x800CCC97 Message ID 超出范围
+
+NNTP 错误
+
+0x800CCCA0 新闻服务器回应错误，可能你没有拥有可使用该服务器的权限。
+0x800CCCA1 读取新闻群组失败
+0x800CCCA2 要求服务器邮件清单失败
+0x800CCCA3 无法显示清单
+0x800CCCA4 无法开启群组
+0x800CCCA5 服务器无此群组
+0x800CCCA6 邮件不在服务器上
+0x800CCCA7 找不到件标题
+0x800CCCA8 找不到邮件本文
+0x800CCCA9 无法发布到服务器上
+0x800CCCAA 无法开启下封邮件
+0x800CCCAB 无法显示日期
+0x800CCCAC 无法显示标题
+0x800CCCAD 无法显示 MIME 标题
+0x800CCCAE 使用者名称或密码不正确
+
+RAS 错误
+
+0x800CCCC2 未安装拨号网路
+0x800CCCC3 找不到拨号网路
+0x800CCCC4 拨号网路错误
+0x800CCCC5 Connectoid 坏或遗失
+0x800CCCC6 取得拨号设定时错误
+
+IMAP 错误
+
+0x800CCCD1 登入失败
+0x800CCCD2 Message tagged
+0x800CCCD3 Invalid response to request.
+0x800CCCD4 语法错误
+0x800CCCD5 不是 IMAP 服务器
+0x800CCCD6 Buffer 已超过上限
+0x800CCCD7 Recovery error
+0x800CCCD8 资料不完整
+0x800CCCD9 连接被拒
+0x800CCCDA 不明的回应
+0x800CCCDB User ID 已更改
+0x800CCCDC User ID 指令失败
+0x800CCCDD Unexpected disconnect
+0x800CCCDE Invalid server state
+0x800CCCDF 无法认证用户端
+
+邮件扫描错误
+
+0x8004210a
+（或0x800ccc19） 安装了杀毒软件，并打开了“扫描收到的电子邮件”和“扫描发送的电子邮件”
+
+		]]>
+		</screen>
+	</section>
+</chapter>
+

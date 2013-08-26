@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.mail.client.xml 471 2012-10-23 05:48:27Z netkiller $ -->
+<chapter id="constituent">
+	<title>Mail server constituent</title>
+	<para>Mail Transfer Agent (MTA) : sendmail, Postfix, and Exim</para>
+	<para>Mail Delivery Agent (MDA) : procmail and maildrop</para>
+	<para>Mail User Agent (MUA) 	: An e-mail client</para>
+	<!--
+	<para>This is the first chapter in my book.</para>
+	<sect1>
+		<title>My first section</title>
+		<para>This is the first section in my book.</para>
+	</sect1>
+	 -->
+</chapter>
+<chapter id="mua">
+	<title>mail user agent (MUA)</title>
+	<section id="mutt">
+		<title>mutt - text-based mailreader supporting MIME, GPG, PGP and threading</title>
+		<para>install</para>
+		<screen>
+		<![CDATA[
+$ sudo apt-get install mutt
+		]]>
+		</screen>
+		<para>how to use the Maildir format with the Mutt</para>
+		<screen>
+		<![CDATA[
+$ vim ~/.muttrc
+
+alias rooty Cron Daemony <root@netkiller>
+set mbox_type=Maildir
+set folder="~/Maildir"
+set mask="!^\\.[^.]"
+set mbox="~/Maildir"
+set record="+.Sent"
+set postponed="+.Drafts"
+set spoolfile="~/Maildir"
+
+mailboxes `echo -n "+ "; find ~/Maildir -maxdepth 1 -type d -name ".*" -printf "+'%f' "`
+macro index c "<change-folder>?<toggle-mailboxes>" "open a different folder"
+macro pager c "<change-folder>?<toggle-mailboxes>" "open a different folder"
+macro index C "<copy-message>?<toggle-mailboxes>" "copy a message to a mailbox"
+macro index M "<save-message>?<toggle-mailboxes>" "move a message to a mailbox"
+macro compose A "<attach-message>?<toggle-mailboxes>" "attach message(s) to this message"
+
+		]]>
+		</screen>
+		<section>
+			<title>发送邮件</title>
+			<para>同时携带附件.</para>
+			<screen>
+mutt -s "helloworld" user@example.com -a /opt/backup/file.tar.gz
+			</screen>
+		</section>
+	</section>
+	<section id="alpine">
+		<title>alpine - Text-based email client, friendly for novices but powerful</title>
+		<screen>
+$ sudo apt-get install alpine
+		</screen>
+	</section>
+	<section id="fetchmail">
+		<title>fetchmail - SSL enabled POP3, APOP, IMAP mail gatherer/forwarder</title>
+	</section>
+
+	<section id="gpg4win">
+		<title>GPG4WIN</title>
+		<para>http://www.gpg4win.org/</para>
+
+	</section>
+	<section id="evolution">
+		<title>Evolution</title>
+		<para>http://www.gpg4win.org/</para>
+
+	</section>
+</chapter>

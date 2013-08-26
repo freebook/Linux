@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE subject SYSTEM "/usr/share/xml/docbook/schema/dtd/5.0/docbook.dtd"
+	[
+	<!ENTITY homepage "http://netkiller.sf.net/">
+	<!ENTITY mirror "http://netkiller.hikz.com/">
+
+	<!ENTITY Neo "http://netkiller.sf.net/">
+	<!ENTITY BG7NYT "&Neo;">
+	<!ENTITY Netkiller "<emphasis><trademark>Netkiller</trademark></emphasis>">
+
+	<!ENTITY book.info.author.xml		SYSTEM "../common/book.info.author.xml">
+	<!ENTITY book.info.legalnotice.xml	SYSTEM "../common/book.info.legalnotice.xml">
+	<!ENTITY book.info.abstract.xml		SYSTEM "../common/book.info.abstract.xml">
+	<!ENTITY book.preface.xml			SYSTEM "../common/book.preface.xml">
+	<!ENTITY preface.about.me.xml       SYSTEM "../common/about.me.xml">
+	<!ENTITY book.dedication.xml       	SYSTEM "../common/book.dedication.xml">
+<!--
+	<!ENTITY book.preface 		SYSTEM "book.preface.xml">
+	<!ENTITY book.dedication 	SYSTEM "book.dedication.xml">
+	<!ENTITY book.appendix 		SYSTEM "book.appendix.xml">
+	<!ENTITY book.history 		SYSTEM "book.history.xml">
+-->
+	<!ENTITY part.mail 				SYSTEM "part.mail.xml">
+	<!ENTITY chapter.mail.client 	SYSTEM "chapter.mail.client.xml">
+	<!ENTITY chapter.mail.exim4 	SYSTEM "chapter.mail.exim4.xml">
+	<!ENTITY chapter.mail.postfix 	SYSTEM "chapter.mail.postfix.xml">
+
+	<!ENTITY chapter.fax.xml 		SYSTEM "chapter.fax.xml">
+	<!ENTITY chapter.faq.xml 		SYSTEM "chapter.faq.xml">
+]>
+
+<book xml:base="http://netkiller.sf.net/mail/" xmlns="http://docbook.org/ns/docbook"
+	xml:lang="en-us">
+	<info>
+		<title>Netkiller Mail Server 手札</title>
+		<subtitle><ulink url="../postfix/index.html">《Netkiller Postfix Integrated Solution》</ulink>后续文档</subtitle>
+
+		&book.info.author.xml;
+
+		<copyright>
+			<year>2010</year>
+			<year>2011</year>
+			<year>2012</year>
+			<year>2013</year>
+			<holder>Copyright netkiller</holder>
+		</copyright>
+		&book.info.legalnotice.xml;
+		&book.info.abstract.xml;
+	</info>
+
+	&book.dedication.xml;
+	&book.preface.xml;
+	&part.mail;
+	&chapter.faq.xml;
+	&chapter.fax.xml;
+
+</book>
+

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.mail.exim4.xml 457 2012-08-24 11:38:17Z netkiller $ -->
+<chapter id="index"><?dbhtml dir="exim4" ?>
+	<title>exim4 - meta-package to ease Exim MTA (v4) installation</title>
+<section id="install">
+	<title>install</title>
+	<section>
+		<title>ubuntu/debian</title>
+		<screen>
+$ sudo apt-get install exim4
+		</screen>
+		<section>
+			<title>configure</title>
+			<screen>
+$ sudo dpkg-reconfigure exim4-config
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>CentOS/Redhat</title>
+		<screen>
+# yum install exim
+		</screen>
+		<!-- system-switch-mail -->
+	</section>
+</section>
+
+	<section id="faq">
+		<title>FAQ</title>
+		<section>
+			<title>Mailing to remote domains not supported</title>
+			<para></para>
+			<screen>
+$ sudo vim /etc/exim4/update-exim4.conf.conf
+
+#dc_eximconfig_configtype='local'
+dc_eximconfig_configtype='internet'
+
+			</screen>
+		</section>
+	</section>
+</chapter>

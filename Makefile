@@ -38,9 +38,9 @@ linux: clean
 debian:
 	$(call reset,debian)
 	$(call book,System,debian)
-centos:
-	$(call reset,centos)
-	$(call book,CentOS,centos)
+mail:
+	$(call reset,mail)
+	$(call book,Mail,mail)
 monitoring:
 	$(call reset,monitoring)
 	$(call book,Monitoring,monitoring)	

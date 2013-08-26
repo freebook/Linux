@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.mail.postfix.xml 457 2012-08-24 11:38:17Z netkiller $ -->
+<chapter id="index"><?dbhtml dir="postfix" ?>
+	<title>postfix - High-performance mail transport agent</title>
+	<para><ulink url="/archives/public_html/book/postfix/index.html">Postfix Solution</ulink></para>
+	<section id="install">
+		<title>install</title>
+		<screen>
+$ sudo apt-get install postfix
+		</screen>
+	</section>
+	<section id="configure">
+		<title>configure</title>
+		<screen>
+$ sudo dpkg-reconfigure postfix-config
+		</screen>
+	</section>
+	<section id="rspamd">
+		<title>Rspamd</title>
+		<para>Rspamd是一个反垃圾邮件系统，因为使用事件模型和正则表达式优化，其设计工作速度比SpamAssassin还 要快。目前推出的功能： regexp规则过滤的不同部分的信息;一些内置的功能分析的信息;模糊哈希支持; SURBL滤波器;电子邮件和性质表支持;控制界面进行远程管理和统计信息收集，一个Perl和卢阿插件系统;统计支持（定向结构刨花板/簸扬） ;兼容SpamAssassin ;和一个客户端程序的电子邮件扫描。类似的规则， rspamd约10倍SpamAssassin 。</para>
+	</section>
+</chapter>
