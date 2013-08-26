@@ -165,6 +165,26 @@ alias cp='cp -i'
 -bash: alias: cp: not found
 			</screen>
 		</section>
+		<section>
+			<title>-a, --archive same as -dR --preserve=all</title>
+			<screen>
+# cp -a file file2			
+			</screen>
+			<para>-a 参数可以保留原文件的日期与权限等等信息。</para>
+			<screen>
+# ll
+-rw-r--r--. 1 root root      2559 Aug 27 05:00 yum.sh
+
+# cp -a yum.sh yum1.sh
+# cp yum.sh yum2.sh
+
+# ll yum*
+-rw-r--r--. 1 root root 2559 Aug 27 05:00 yum1.sh
+-rw-r--r--. 1 root root 2559 Aug 27 05:58 yum2.sh
+-rw-r--r--. 1 root root 2559 Aug 27 05:00 yum.sh				
+			</screen>
+			<para>现在可以看到 yum1.sh 与 yum.sh 日期是相同的，而没有实现-a参数的 yum2.sh 日期为当前日期。</para>
+		</section>
 	</section>
 	<section id="rm">
 		<title>rm - remove files or directories</title>
