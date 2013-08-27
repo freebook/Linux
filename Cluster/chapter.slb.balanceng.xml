@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="balance">
+	<title>balance - Load balancing solution and generic tcp proxy</title>
+	<subtitle>balance 3.42 - A simple TCP proxy with load balancing and failover mechanisms.</subtitle>
+	<section id="balance">
+		<title>balance</title>
+		<para>https://www.inlab.de/balance.html</para>
+		<section>
+			<title>编译安装</title>
+			<screen>
+cd /usr/local/src/
+wget http://www.inlab.de/balance-3.54.tar.gz
+tar zxvf balance-3.54.tar.gz
+cd balance-3.54
+
+make
+make install
+			</screen>
+		</section>
+		<section>
+			<title>Ubuntu 安装</title>
+			<screen>
+$ apt-cache search balance| grep ^bal
+balance - Load balancing solution and generic tcp proxy
+			</screen>
+			<screen>
+$ sudo apt-get install balance
+			</screen>
+		</section>
+		<section>
+			<title>测试安装是否正确</title>
+			<para>测试，将本机80端口负载均衡到192.168.2.10:80</para>
+			<screen>
+balance -f 8000 192.168.2.10:80
+			</screen>
+		</section>
+		<section>
+			<title>用法</title>
+			<para>负载均衡 3 个节点</para>
+			<screen>
+balance -f 8000 192.168.2.10:80 192.168.2.12:80 192.168.2.13:80
+			</screen>
+		</section>
+	</section>
+	<section id="BalanceNG">
+		<title>BalanceNG</title>
+		<para><ulink url="http://www.inlab.de/balanceng/index.html"/></para>
+	</section>
+	<section id="RBridge">
+		<title>RBridge</title>
+		<para><ulink url="http://www.inlab.de/rbridge/index.html"/></para>
+		<screen>
+wget http://www.inlab.de/rbridge/RBridge-3.185-Linux-x86.tar.gz
+tar zxvf RBridge-3.185-Linux-x86.tar.gz
+cd RBridge-3.185-Linux-x86/
+		</screen>
+		<screen>
+cp rbridge.conf.example rbridge.conf
+./rbridge start
+		</screen>
+	</section>
+</chapter>

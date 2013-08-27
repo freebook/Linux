@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	<!ENTITY part.cluster 				SYSTEM "part.cluster.xml">
-	<!ENTITY chapter.cluster.lvs	 	SYSTEM "chapter.cluster.lvs.xml">
-	<!ENTITY chapter.cluster.keepalived SYSTEM "chapter.cluster.keepalived.xml">
-	<!ENTITY chapter.cluster.heartbeat 	SYSTEM "chapter.cluster.heartbeat.xml">
-	<!ENTITY chapter.cluster.piranha.xml 	SYSTEM "../../CentOS/chapter.network.piranha.xml">
-	<!ENTITY chapter.cluster.haproxy 	SYSTEM "chapter.cluster.haproxy.xml">
-	<!ENTITY chapter.slb.perlbal.xml    SYSTEM "chapter.slb.perlbal.xml">
-	<!ENTITY chapter.example.xml	    SYSTEM "chapter.example.xml">
+<!ENTITY part.cluster.xml				SYSTEM "part.cluster.xml">
+<!ENTITY chapter.slb.keepalived.xml		SYSTEM "chapter.slb.keepalived.xml">
+<!ENTITY chapter.ha.heartbeat.xml		SYSTEM "chapter.ha.heartbeat.xml">
+<!ENTITY chapter.slb.lvs.xml 			SYSTEM "chapter.slb.lvs.xml">
+<!ENTITY chapter.slb.piranha.xml 		SYSTEM "../../CentOS/chapter.network.piranha.xml">
+<!ENTITY chapter.slb.haproxy.xml		SYSTEM "chapter.slb.haproxy.xml">
+<!ENTITY chapter.slb.perlbal.xml    	SYSTEM "chapter.slb.perlbal.xml">
+<!ENTITY chapter.slb.balanceng.xml  	SYSTEM "chapter.slb.balanceng.xml">
+<!ENTITY chapter.slb.example.xml		SYSTEM "chapter.slb.example.xml">
