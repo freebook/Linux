@@ -36,7 +36,34 @@ $ unset logfile
     	<screen>
 echo ${#PATH}
     	</screen>
-    </section>    	
+    </section>   
+    <section>
+    	<title>case 高级用法</title>
+    	<para>匹配 Yes,YES,YeS,yES,yEs ...</para>
+    	<screen>
+    	<![CDATA[
+read -p "Do you want to continue [Y/n]?" BOOLEAN
+
+case $BOOLEAN in
+    [yY][eE][sS])
+        echo 'Thanks' $BOOLEAN
+        ;;
+    [yY]|[nN])
+        echo 'Thanks' $BOOLEAN
+        ;;
+    'T'|'F')
+        echo 'Thanks' $BOOLEAN
+        ;;
+    [Tt]ure|[Ff]alse)
+        echo 'Thanks' $BOOLEAN
+        ;;
+    *)
+        exit 1
+        ;;
+esac    	
+	]]>
+    	</screen>
+    </section>
 	<section>
 		<title>有趣的Shell</title>
 		<para>运行后会不停的fork新的进程，直到你的资源消耗尽。</para>
