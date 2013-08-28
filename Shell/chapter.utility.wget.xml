@@ -89,6 +89,25 @@
 -X, –exclude-directories=LIST 不被包含目录的列表
 -np, –no-parent 不要追溯到父目录
 	</screen>	
+	<section id="wget.input">
+		<title>Logging and input file</title>
+		<section>
+			<title>-i,  --input-file=FILE     download URLs found in local or external FILE.</title>
+			<para>准备输入文件，将要下载的链接放入文件中，例如：</para>
+			<screen>
+$ vim file.lst
+
+http://www.example.com/file1.txt
+http://www.example.com/file2.txt
+...
+http://www.example.com/file10.txt
+			</screen>
+			<para>开始下载</para>
+			<screen>
+$ wget -i file.lst
+			</screen>
+		</section>
+	</section>
 	<section id="wget.http.options">
 		<title>HTTP options</title>
 		<section id="post-data">
