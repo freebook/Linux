@@ -69,6 +69,10 @@
 
 	<!ENTITY % distributed.doctype.entity.xml SYSTEM "Distributed/doctype.entity.xml">
 	%distributed.doctype.entity.xml;
+	
+	<!ENTITY % mail.doctype.entity.xml 			SYSTEM "Mail/doctype.entity.xml">
+	%mail.doctype.entity.xml;
+	<!ENTITY part.mail.xml				 	SYSTEM "part.mail.xml">
 
 	<!ENTITY chapter.voip 	SYSTEM "chapter.voip.xml">
 
@@ -174,6 +178,8 @@ a2p,acyclic,addftinfo,addpart,afmtodit,animate,anytopnm,apg,apgbfm,apport-bug,ap
 	&part.cluster.xml;
 	&part.distributed.xml;
 <!-- =========================================================================== -->
+	&part.mail.xml;
+<!-- =========================================================================== -->	
 	&part.security.xml;
 <!-- =========================================================================== -->
 <!-- &chapter.gps; -->

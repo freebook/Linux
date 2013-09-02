@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.mail.postfix.xml 457 2012-08-24 11:38:17Z netkiller $ -->
+<!-- 
+<part id="mail.server.postfix">
+	<title>Postfix</title>
+</part>
+ -->
 <chapter id="index"><?dbhtml dir="postfix" ?>
 	<title>postfix - High-performance mail transport agent</title>
 	<para><ulink url="/archives/public_html/book/postfix/index.html">Postfix Solution</ulink></para>

@@ -20,13 +20,10 @@
 	<!ENTITY book.appendix 		SYSTEM "book.appendix.xml">
 	<!ENTITY book.history 		SYSTEM "book.history.xml">
 -->
-	<!ENTITY part.mail 				SYSTEM "part.mail.xml">
-	<!ENTITY chapter.mail.client 	SYSTEM "chapter.mail.client.xml">
-	<!ENTITY chapter.mail.exim4 	SYSTEM "chapter.mail.exim4.xml">
-	<!ENTITY chapter.mail.postfix 	SYSTEM "chapter.mail.postfix.xml">
 
-	<!ENTITY chapter.fax.xml 		SYSTEM "chapter.fax.xml">
-	<!ENTITY chapter.faq.xml 		SYSTEM "chapter.faq.xml">
+	<!ENTITY % doctype.entity.xml 			SYSTEM "doctype.entity.xml">
+	%doctype.entity.xml;
+
 ]>
 
 <book xml:base="http://netkiller.sf.net/mail/" xmlns="http://docbook.org/ns/docbook"
@@ -50,9 +47,9 @@
 
 	&book.dedication.xml;
 	&book.preface.xml;
-	&part.mail;
-	&chapter.faq.xml;
-	&chapter.fax.xml;
+	
+	&chapter.mail.xml;
+	<!-- &chapter.fax.xml; -->
 
 </book>
 

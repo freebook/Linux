@@ -1,16 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<part id="mail.client">
-	<title>Client</title>
-	&chapter.mail.client;
-</part>
-<part id="mail.server.exim4">
-	<title>Exim4</title>
-	&chapter.mail.exim4;
-</part>
-<part id="mail.server.postfix">
-	<title>Postfix</title>
-	&chapter.mail.postfix;
-</part>
+	
+	&chapter.mail.client.xml;
+	&chapter.mail.exim4.xml;	
+	&chapter.mail.postfix.xml;
+
 <chapter id="mail.format">
 	<title>邮件原文</title>
 	<section id="format.subject">
@@ -140,3 +133,6 @@ mail($to,$subject,$txt,$headers);
 		</screen>
 	</section>
 </chapter>
+
+	&chapter.faq.xml;
+	&chapter.fax.xml;

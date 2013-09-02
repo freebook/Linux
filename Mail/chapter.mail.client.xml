@@ -12,8 +12,8 @@
 		<para>This is the first section in my book.</para>
 	</sect1>
 	 -->
-</chapter>
-<chapter id="mua">
+
+<section id="mua">
 	<title>mail user agent (MUA)</title>
 	<section id="mutt">
 		<title>mutt - text-based mailreader supporting MIME, GPG, PGP and threading</title>
@@ -74,4 +74,5 @@ $ sudo apt-get install alpine
 		<para>http://www.gpg4win.org/</para>
 
 	</section>
+</section>
 </chapter>
