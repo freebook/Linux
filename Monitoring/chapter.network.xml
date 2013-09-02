@@ -3,7 +3,6 @@
 <chapter id="network.monitor">
 	<title>Network Management Software &amp; Network Monitoring</title>
 
-	&chapter.network.webmin.xml;
 	&chapter.network.mrtg.xml;
 	&chapter.network.cacti.xml;
 	&chapter.network.nagios.xml;
@@ -13,6 +12,7 @@
 	&chapter.network.ntop.xml;
 	&chapter.network.observium.xml;
 	&chapter.network.opentsdb.xml;
+	
 	<section id="bandwidth">
 		<title>Bandwidth</title>
 		<para><ulink url="http://bandwidthd.sourceforge.net/" /></para>

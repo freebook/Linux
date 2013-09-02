@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="webmin">
+	<title>Webmin</title>
+	<para>网站</para>
+	<para><ulink url="http://www.webmin.com/">http://www.webmin.com/</ulink></para>
+	<procedure>
+		<title>Webmin 安装步骤:</title>
+		<step>
+			<para><ulink url="http://prdownloads.sourceforge.net/webadmin/webmin_1.380_all.deb">Debian Package</ulink></para>
+		</step>
+		<step>
+			<para>命令:</para>
+			<literallayout>
+			<![CDATA[ sudo dpkg --install webmin_1.380_all.deb ]]>
+			</literallayout>
+			<para>sudo apt-get install perl libnet-ssleay-perl openssl libauthen-pam-perl libpam-runtime libio-pty-perl libmd5-perl</para>
+			<para>Webmin install complete. You can now login to https://netkiller.8800.org:10000/
+				as root with your root password, or as any user who can use sudo
+				to run commands as root.
+			</para>
+		</step>
+		<step>
+			<para>script</para>
+			<para>Usage: /etc/init.d/webmin { start | stop }</para>
+		</step>
+		<step>
+			<para>nmap localhost</para>
+		</step>
+	</procedure>
+	<section>
+		<title>webalizer</title>
+		<screen>
+# apt-get install webmin-webalizer
+		</screen>
+	</section>
+</section>

@@ -1,8 +1,8 @@
 XSLTPROC = /usr/bin/xsltproc
-DSSSL = /home/neo/workspace/Document/Docbook/docbook-xsl/docbook.xsl
+DSSSL = docbook-xsl/docbook.xsl
 TMPDIR = $(shell mktemp -d --suffix=.tmp -p /tmp ebook.$html.XXXXXX)
 DOCBOOK=''
-PUBLIC_HTML=/home/neo/workspace/public_html
+PUBLIC_HTML=~/public_html
 
 define reset
 	@mkdir -p ${PUBLIC_HTML}/$(1)

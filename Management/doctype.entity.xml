@@ -5,3 +5,6 @@
 <!ENTITY chapter.rexify.xml					SYSTEM "chapter.rexify.xml">
 <!ENTITY chapter.saltstack.xml				SYSTEM "chapter.saltstack.xml">
 <!ENTITY chapter.chef.xml					SYSTEM "chapter.chef.xml">
+
+<!ENTITY chapter.webmin.xml					SYSTEM "chapter.webmin.xml">
+<!ENTITY chapter.ajenti.xml					SYSTEM "chapter.ajenti.xml">

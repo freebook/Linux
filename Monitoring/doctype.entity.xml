@@ -6,7 +6,6 @@
 <!ENTITY chapter.system.utility.xml		SYSTEM "chapter.system.utility.xml">
 
 <!ENTITY chapter.network.xml 			SYSTEM "chapter.network.xml">
-<!ENTITY chapter.network.webmin.xml		SYSTEM "chapter.network.webmin.xml">
 <!ENTITY chapter.network.mrtg.xml		SYSTEM "chapter.network.mrtg.xml">
 <!ENTITY chapter.network.cacti.xml 		SYSTEM "chapter.network.cacti.xml">
 <!ENTITY chapter.network.nagios.xml 	SYSTEM "chapter.network.nagios.xml">

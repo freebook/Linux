@@ -67,4 +67,12 @@
 
 	&chapter.rexify.xml;
 
+<chapter id="wsa">
+	<title>基于Web的系统管理软件</title>
+	<subtitle>web-based interface for system administration</subtitle>
+	&chapter.webmin.xml;
+	&chapter.ajenti.xml;
+</chapter>
+
+
 </part>
