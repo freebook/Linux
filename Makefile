@@ -1,6 +1,6 @@
 XSLTPROC = /usr/bin/xsltproc
-DSSSL = docbook-xsl/docbook.xsl
-TMPDIR = $(shell mktemp -d --suffix=.tmp -p /tmp ebook.$html.XXXXXX)
+DSSSL = ../docbook-xsl/docbook.xsl
+TMPDIR = $(shell mktemp -d --suffix=.tmp -p /tmp linux.$html.XXXXXX)
 DOCBOOK=''
 PUBLIC_HTML=~/public_html
 
