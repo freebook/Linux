@@ -51,9 +51,7 @@ awk '{printf ("%4.1f\n",$1)}' 2
 awk '{printf ("%e\n",$1)}' 2
 		]]>
 		</screen>
-	</section>
-	<section>
-		<title>查找文件并删除</title>
+		<para>print 拼装rm命令实现，查找文件并删除</para>
 		<screen>
 #!/bin/sh
 LOCATE=/home/samba
@@ -62,9 +60,8 @@ find $LOCATE -name '*.nws'>>log
 gawk '{print "rm -rf "$1}' log > rmfile
 chmod 755 rmfile
 ./rmfile
-		</screen>
+		</screen>		
 	</section>
-
 	<section>
 		<title>Pattern(字符匹配)</title>
 		<screen>
@@ -131,6 +128,24 @@ cat /var/log/rinetd.log | awk -F' ' '$7 ~ /0/ {print $1"\t"$2"\t"$7"\t"$8"\t"$9}
 	</section>
 	<section>
 		<title>Built-in Variables</title>
+		<section>
+			<title>NR</title>
+			<para>NR=n 指定n行号</para>
+			<screen>
+# awk -F':' 'NR==1 {print $(1)}' /etc/passwd
+root
+
+# awk -F':' 'NR==2 {print $(1)}' /etc/passwd
+bin			
+			</screen>
+			<para>取 1，3，4行</para>
+			<screen>
+# awk 'NR==1; NR==3; NR==4 {print $1}' /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin			
+			</screen>
+		</section>
 		<section>
 			<title>NF</title>
 			<screen>
