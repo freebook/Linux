@@ -258,6 +258,19 @@ haproxy:
 haproxy:
     True
 		</screen>
+		<para>运行模块，目录如下</para>
+		<screen>
+# find /srv/salt/php
+/srv/salt/php
+/srv/salt/php/init.sls
+/srv/salt/php/php-fpm.sls
+/srv/salt/php/cli.sls
+		</screen>
+		<para>php 目录下含多个sls文件</para>
+		<screen>
+salt 'centos*' state.sls php.cli
+salt 'centos*' state.sls php.php-fpm
+		</screen>
 		<section>
 			<title>cmd</title>
 
@@ -1015,6 +1028,26 @@ nodegroups:
   group2: 'G@os:Debian and foo.domain.com'
 			</screen>
 		</section>
-
+		<section>
+			<title>File Server Backend</title>
+			<screen>
+fileserver_backend:
+  - roots
+			</screen>
+		</section>
+	</section>
+	<section id="salt.faq">
+		<title>FAQ</title>
+		<section>
+			<title>Git fileserver backend is enabled in configuration but could not be loaded, is git-python installed</title>
+			<screen>
+2013-09-03 11:11:18,101 [salt.loaded.int.pillar.git_pillar           ][ERROR   ] Git fileserver backend is enabled in configuration but could not be loaded, is git-python installed?
+			</screen>
+			<para>编辑 /etc/salt/master 配置如下</para>
+			<screen>
+fileserver_backend:
+  - roots
+			</screen>
+		</section>
 	</section>
 </chapter>
