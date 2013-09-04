@@ -12,9 +12,16 @@
 /bin/tcsh
 /bin/csh
 /bin/ksh
+
+# chsh --list-shells
+/bin/sh
+/bin/bash
+/sbin/nologin
+/bin/dash
+/bin/zsh
 		</screen>
 		<screen>
-neo@netkiller:~$ chsh -s /bin/zsh
+$ chsh -s /bin/zsh
 or
 $ usermod -s /bin/zsh
 		</screen>

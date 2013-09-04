@@ -1036,6 +1036,48 @@ fileserver_backend:
 			</screen>
 		</section>
 	</section>
+	<section id="salt.stack">
+		<title>sls 脚本</title>
+		<para>安装 vim 语法加亮插件</para>
+		<screen>
+mkdir ~/.vim/
+git clone https://github.com/saltstack/salt-vim.git
+mv salt-vim/{ftdetect,ftplugin,syntax} ~/.vim/
+		</screen>
+		<para>配置.vimrc文件</para>
+		<screen>
+		<![CDATA[
+cat >> ~/.vimrc <<EOF
+set nocompatible
+filetype plugin indent on
+
+set nocompatible
+set tabstop=2
+set shiftwidth=2
+set expandtab
+EOF
+		]]>
+		</screen>
+		<section>
+			<title>pkg</title>
+			<para>pkg 负责包的安装与卸载</para>
+			<screen>
+rsync:
+  pkg:
+    - installed
+			</screen>
+		</section>
+		<section>
+			<title>service</title>
+			<para>service 负责管理服务脚本的启用，禁用，启动，停止，重启等等工作</para>
+			<screen>
+  service:
+    - name: rsync
+    - running
+    - enable: True
+			</screen>
+		</section>
+	</section>
 	<section id="salt.faq">
 		<title>FAQ</title>
 		<section>
