@@ -1,8 +1,11 @@
 XSLTPROC = /usr/bin/xsltproc
 DSSSL = ../docbook-xsl/docbook.xsl
 TMPDIR = $(shell mktemp -d --suffix=.tmp -p /tmp linux.$html.XXXXXX)
-DOCBOOK=''
+WORKSPACE=~/workspace
+PROJECT=Linux
+DOCBOOK=linux
 PUBLIC_HTML=~/public_html
+HTMLHELP=$(PUBLIC_HTML)/htmlhelp/${DOCBOOK}/chm
 
 define reset
 	@mkdir -p ${PUBLIC_HTML}/$(1)
@@ -21,7 +24,7 @@ define test
 endef
 
 
-all: linux debian monitoring storage www shell security
+all: linux debian monitoring storage www shell security htmlhelp
 
 show:
 	@echo $(DOCBOOK)
@@ -56,6 +59,14 @@ shell:
 security:
 	$(call reset,security)
 	$(call book,Security,security)
+
+htmlhelp:
+	@rm -rf $(HTMLHELP) && mkdir -p $(HTMLHELP)
+	@test -d images && rsync -a images $(HTMLHELP) 
+	@${XSLTPROC} -o $(HTMLHELP)/ --stringparam htmlhelp.chm ../$(PROJECT).chm ../docbook-xsl/htmlhelp/template.xsl $(WORKSPACE)/${PROJECT}/book.xml
+	@test -f $(HTMLHELP)/htmlhelp.hhp && ../common/chm.sh $(HTMLHELP)
+	@iconv -f UTF-8 -t GB18030 -o $(HTMLHELP)/htmlhelp.hhp < $(HTMLHELP)/htmlhelp.hhp
+	@iconv -f UTF-8 -t GB18030 -o $(HTMLHELP)/toc.hhc < $(HTMLHELP)/toc.hhc	
 
 #%.html: %.xml $(DSSSL)
 #	$(XSLTPROC) -o $@ \

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.puppet.xml 477 2012-11-01 09:14:23Z netkiller $ -->
-<chapter id="puppet"><?dbhtml dir="puppet" ?>
+<chapter id="index"><?dbhtml dir="puppet" ?>
 	<title>Puppet</title>
 	<para>http://www.puppetlabs.com</para>
 	<para>Puppet is the leading open source platform for IT systems management</para>

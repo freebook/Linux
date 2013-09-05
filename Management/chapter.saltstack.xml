@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="saltstack">
+<chapter id="index"><?dbhtml dir="saltstack" ?>
 	<title>SaltStack</title>
 	<para>http://saltstack.com/</para>
 	<section>
