@@ -15,6 +15,17 @@ sudo apt-get install cconv
 cconv -f UTF8-CN -t UTF8-HK zh-cn.txt -o zh-hk.txt
 			</screen>
 		</section>
+		<section>
+			<title>uconv - convert data from one encoding to another</title>
+			<para>安装</para>
+			<screen>
+sudo apt-get install libicu-dev			
+			</screen>
+			<para>例子</para>
+			<screen>
+$ uconv -f cp1252 -t UTF-8 -o file_in_utf8.txt file_in_cp1252_encoding.txt			
+			</screen>
+		</section>
 	</section>
 
 	<section id="expr">
