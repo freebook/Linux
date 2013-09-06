@@ -12,8 +12,8 @@
 	<!ENTITY book.info.author.xml		SYSTEM "../common/book.info.author.xml">
 	<!ENTITY book.info.legalnotice.xml 	SYSTEM "../common/book.info.legalnotice.xml">
 	<!ENTITY book.info.abstract.xml 	SYSTEM "../common/book.info.abstract.xml">
-    <!ENTITY book.preface.xml           SYSTEM "../common/book.preface.xml">
-	<!ENTITY preface.about.me.xml       SYSTEM "../common/about.me.xml">
+	<!ENTITY book.preface.xml           	SYSTEM "../common/book.preface.xml">
+	<!ENTITY preface.about.me.xml       	SYSTEM "../common/about.me.xml">
 	<!ENTITY book.dedication.xml       	SYSTEM "../common/book.dedication.xml">
 
 <!--
@@ -30,7 +30,7 @@
 	xmlns="http://docbook.org/ns/docbook" xml:lang="zh-cn">
 	<info>
 		<title>Netkiller Linux Storage 手札</title>
-		<subtitle>File System, Network File System, Distributed Filesystem... </subtitle>
+		<subtitle>File Share, Network File System, Distributed Filesystem... </subtitle>
 
 		&book.info.author.xml;
 
