@@ -8,6 +8,25 @@
 # yum groupinstall "X Window System" Desktop "Desktop Platform" Font
 	</screen>
 	<para>修改/etc/inittab文件id:5:initdefault:</para>
+	<section id="xinput">
+		<title>xinput - utility to configure and test X input devices</title>
+		<screen>
+$ xinput list
+⎡ Virtual core pointer                    	id=2	[master pointer  (3)]
+⎜   ↳ Virtual core XTEST pointer              	id=4	[slave  pointer  (2)]
+⎜   ↳ Dell Dell USB Optical Mouse             	id=9	[slave  pointer  (2)]
+⎜   ↳ SynPS/2 Synaptics TouchPad              	id=13	[slave  pointer  (2)]
+⎜   ↳ TPPS/2 IBM TrackPoint                   	id=14	[slave  pointer  (2)]
+⎣ Virtual core keyboard                   	id=3	[master keyboard (2)]
+    ↳ Virtual core XTEST keyboard             	id=5	[slave  keyboard (3)]
+    ↳ Power Button                            	id=6	[slave  keyboard (3)]
+    ↳ Video Bus                               	id=7	[slave  keyboard (3)]
+    ↳ Sleep Button                            	id=8	[slave  keyboard (3)]
+    ↳ CNF7237&CNF7238                         	id=10	[slave  keyboard (3)]
+    ↳ Asus Laptop extra buttons               	id=11	[slave  keyboard (3)]
+    ↳ AT Translated Set 2 keyboard            	id=12	[slave  keyboard (3)]		
+		</screen>
+	</section>
 </chapter>
 
 <chapter id="x.setup">
