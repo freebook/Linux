@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.cmd.text.xml 591 2013-05-20 10:15:16Z netkiller $ -->
-<chapter id="text">
+<section id="text">
 	<title>Text Processing</title>
 	<section id="iconv">
 		<title>iconv - Convert encoding of given files from one encoding to another</title>
@@ -19,11 +19,11 @@ cconv -f UTF8-CN -t UTF8-HK zh-cn.txt -o zh-hk.txt
 			<title>uconv - convert data from one encoding to another</title>
 			<para>安装</para>
 			<screen>
-sudo apt-get install libicu-dev			
+sudo apt-get install libicu-dev
 			</screen>
 			<para>例子</para>
 			<screen>
-$ uconv -f cp1252 -t UTF-8 -o file_in_utf8.txt file_in_cp1252_encoding.txt			
+$ uconv -f cp1252 -t UTF-8 -o file_in_utf8.txt file_in_cp1252_encoding.txt
 			</screen>
 		</section>
 	</section>
@@ -370,4 +370,4 @@ hsab/nib/:www/:noitacilppA beW:08:08:x:www
 nigolon/nibs/:xnign/ehcac/rav/:resu xnign:894:794:x:xnign
 		</screen>
 	</section>
-</chapter>
+</section>

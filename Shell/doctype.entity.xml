@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	<!ENTITY part.shell.xml						SYSTEM "part.shell.xml">
-
 	<!ENTITY chapter.shell.xml					SYSTEM "chapter.shell.xml">
 	<!ENTITY chapter.bash.xml					SYSTEM "chapter.bash.xml">
 	<!ENTITY chapter.bash.prompt.xml			SYSTEM "chapter.bash.prompt.xml">

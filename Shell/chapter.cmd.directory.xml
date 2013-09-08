@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.cmd.directory.xml 376 2012-03-21 03:35:46Z netkiller $ -->
-<chapter id="directory">
+<section id="directory">
     <title>Directory and File System Related</title>
     <section id="dirname">
     	<title>dirname</title>
@@ -8,7 +8,7 @@
 $ dirname /usr/bin/find
 /usr/bin
     	</screen>
-    </section>    
+    </section>
     <section id="filename">
     	<title>filename</title>
     	<screen>
@@ -23,7 +23,7 @@ b=${file%.*}
 echo $b
 	    	</screen>
 	    	<screen>
-$ for file in *.JPG;do mv $file ${file%.*}.jpg;done 	
+$ for file in *.JPG;do mv $file ${file%.*}.jpg;done
 	    	</screen>
 	    </section>
 	    <section>
@@ -31,7 +31,7 @@ $ for file in *.JPG;do mv $file ${file%.*}.jpg;done
 	    	<screen>
 file=test.txt
 b=${file##*.}
-echo $b	    	
+echo $b
 	    	</screen>
 	    </section>
     </section>
@@ -83,21 +83,21 @@ rename .mp3 .MP3 *.mp3
 
 rename GIF gif *.GIF
 		</screen>
-		
+
 		<screen>
-for file in *.GIF 
-do 
-        mv $file ${file%.*}.gif 
-done		
+for file in *.GIF
+do
+        mv $file ${file%.*}.gif
+done
 		</screen>
-		
+
 		<screen>
 $ mkdir chapter.command.xxx.xml
 $ mkdir chapter.command.bbb.xml
 $ mkdir chapter.command.ccc.xml
 $ mkdir chapter.command.ddd.xml
 
-$ rename 's/command/cmd/' *.command.*.xml		
+$ rename 's/command/cmd/' *.command.*.xml
 		</screen>
 	</section>
 	<section id="touch">
@@ -111,8 +111,8 @@ touch [-acdmt] 文件
 -d : 后面可以接日期，也可以使用 --date="日期或时间"
 -m : 仅修改mtime。
 -t : 后面可以接时间，格式为 [YYMMDDhhmm]
-		
-# touch filename		
+
+# touch filename
 # touch -d 20050809 filename
 # touch -t 0507150202 bashrc
 # touch -d "2 days ago" bashrc
@@ -135,14 +135,14 @@ BOINC/       Examples@   mbox                   Pictures/  Templates/
 		</screen>
 		<para>{}通配符</para>
 		<screen>
-ls {*.py,*.php,*.{sh,shell}}		
-		</screen>		
+ls {*.py,*.php,*.{sh,shell}}
+		</screen>
 		<para>take a look at below</para>
 		<screen>
 alias l='ls -CF'
 alias la='ls -A'
 alias ll='ls -l'
-alias ls='ls --color=auto'		
+alias ls='ls --color=auto'
 		</screen>
 
 	</section>
@@ -168,7 +168,7 @@ alias cp='cp -i'
 		<section>
 			<title>-a, --archive same as -dR --preserve=all</title>
 			<screen>
-# cp -a file file2			
+# cp -a file file2
 			</screen>
 			<para>-a 参数可以保留原文件的日期与权限等等信息。</para>
 			<screen>
@@ -181,7 +181,7 @@ alias cp='cp -i'
 # ll yum*
 -rw-r--r--. 1 root root 2559 Aug 27 05:00 yum1.sh
 -rw-r--r--. 1 root root 2559 Aug 27 05:58 yum2.sh
--rw-r--r--. 1 root root 2559 Aug 27 05:00 yum.sh				
+-rw-r--r--. 1 root root 2559 Aug 27 05:00 yum.sh
 			</screen>
 			<para>现在可以看到 yum1.sh 与 yum.sh 日期是相同的，而没有实现-a参数的 yum2.sh 日期为当前日期。</para>
 		</section>
@@ -237,6 +237,6 @@ $ tac /etc/issue
 Kernel \r on an \m
 CentOS release 5.4 (Final)
 		</screen>
-	</section>	
+	</section>
 	&chapter.cmd.directory.find.xml;
-</chapter>
+</section>

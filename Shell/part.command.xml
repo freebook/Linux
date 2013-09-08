@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<part id="index"><?dbhtml dir="cli" ?>
-	<title>System Commands</title>
-	&chapter.command.xml;
-	&chapter.utility.xml;
-</part>	

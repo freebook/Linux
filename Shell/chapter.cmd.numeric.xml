@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.cmd.numeric.xml 375 2012-03-21 03:00:42Z netkiller $ -->
-<chapter id="numeric">
+<section id="numeric">
 	<title>Numeric</title>
 	<section>
 		<title>数值运算</title>
@@ -104,4 +104,4 @@ $ echo "4*5" | bc
 2
 		</screen>
 	</section>
-</chapter>
+</section>

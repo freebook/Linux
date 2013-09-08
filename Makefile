@@ -13,7 +13,7 @@ define reset
 endef
 
 define book
-	@rsync -au common/docbook.css $(PUBLIC_HTML)/$(2)/
+	@rsync -au ../common/docbook.css $(PUBLIC_HTML)/$(2)/
 	@$(XSLTPROC) -o $(PUBLIC_HTML)/$(2)/ $(DSSSL) $(1)/book.xml
 	@$(shell test -d $(PUBLIC_HTML)/$(2)/images && find $(PUBLIC_HTML)/$(2)/images/ -type f -exec rm -rf {} \;)
 	@$(shell test -d $(1)/images && rsync -au --exclude=.svn $(1)/images $(PUBLIC_HTML)/$(2)/)

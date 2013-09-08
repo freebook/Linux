@@ -11,6 +11,7 @@
 	<section id="xinput">
 		<title>xinput - utility to configure and test X input devices</title>
 		<screen>
+		<![CDATA[
 $ xinput list
 ⎡ Virtual core pointer                    	id=2	[master pointer  (3)]
 ⎜   ↳ Virtual core XTEST pointer              	id=4	[slave  pointer  (2)]
@@ -24,7 +25,8 @@ $ xinput list
     ↳ Sleep Button                            	id=8	[slave  keyboard (3)]
     ↳ CNF7237&CNF7238                         	id=10	[slave  keyboard (3)]
     ↳ Asus Laptop extra buttons               	id=11	[slave  keyboard (3)]
-    ↳ AT Translated Set 2 keyboard            	id=12	[slave  keyboard (3)]		
+    ↳ AT Translated Set 2 keyboard            	id=12	[slave  keyboard (3)]
+		]]>
 		</screen>
 	</section>
 </chapter>

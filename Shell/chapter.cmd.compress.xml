@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.cmd.compress.xml 663 2013-08-15 09:45:39Z netkiller $ -->
-<chapter id="package">
+<section id="package">
 	<title>package / compress and decompress</title>
 	<section id="tar">
 		<title>tar — The GNU version of the tar archiving utility</title>
@@ -264,4 +264,4 @@ sudo apt-get install rar unrar
 $ sudo apt-get install p7zip
 		</screen>
 	</section>
-</chapter>
+</section>

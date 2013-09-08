@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.command.xml 548 2013-03-28 07:57:46Z netkiller $ -->
+<chapter id="index"><?dbhtml dir="cli" ?>
+	<title>Commands</title>
+	&chapter.utility.xml;
 
 	&chapter.cmd.man.xml;
 	&chapter.cmd.sys.xml;
@@ -9,7 +12,7 @@
 	&chapter.cmd.numeric.xml;
 	&chapter.cmd.text.xml;
 
-<chapter id="log">
+<section id="log">
 	<title>Logging</title>
 	<section id="logger">
 		<title>logger - a shell command interface to the syslog(3) system log module</title>
@@ -30,9 +33,9 @@
 		]]>
 		</screen>
 	</section>
-</chapter>
+</section>
 
-<chapter id="password">
+<section id="password">
 	<title>Password</title>
 	<section>
 		<title>Shadow password suite configuration.</title>
@@ -144,9 +147,9 @@ jam:jampass
 echo "mypasword" | passwd –stdin neo
 		</screen>
 	</section>
-</chapter>
+</section>
 
-<chapter id="binutils">
+<section id="binutils">
 	<title>binutils</title>
 	<screen>
 $ sudo apt-get install binutils
@@ -157,6 +160,8 @@ $ sudo apt-get install binutils
 tcpdump -i eth0 -s 0 -l -w - dst port 80 | strings
 		</screen>
 	</section>
-</chapter>
+</section>
 
 	&chapter.miscellaneous.xml;
+
+</chapter>

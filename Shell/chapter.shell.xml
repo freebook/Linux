@@ -361,3 +361,5 @@ Mon Feb 27 11:48:37 CST 2012
 	&chapter.zsh.xml;
 	&chapter.shell.tui.xml;
 	&chapter.shell.example.xml;
+
+	&chapter.command.xml;
