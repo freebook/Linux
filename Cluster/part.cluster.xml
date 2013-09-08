@@ -1,4 +1,4 @@
-﻿<part id="index">
+﻿<part id="index"><?dbhtml dir="slb" ?>
 	<title>Server Load Balancing</title>
 	<subtitle>Load Balancing / High-Availability</subtitle>
 	<info>
