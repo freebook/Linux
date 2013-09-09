@@ -82,6 +82,12 @@
 				<para>在Linux系统里SIGHUP信号被定义为刷新配置文件,有些程序没有提供reload参数,你可以给进程发送HUP信号,让它刷新配置文件,而不用restart.通过pkill,killall,kill 都可以发送HUP信号例如: pkill -HUP httpd</para>
 				</note>
 			</para>
+			<para>
+			<tip>
+				<title>对Linux高级玩家的忠告</title>
+				<para>其实升级Linux内核也无需reboot（重新启动）目前Linux已经具被改特性，这之前只有小型机才有的特性</para>
+			</tip>
+			</para>
 		</abstract>
 		&book.info.abstract.xml;
 
@@ -92,8 +98,7 @@
 <!-- =========================================================================== -->
 	&chapter.system.xml;
 <!-- =========================================================================== -->
-	&part.command.xml;
-	&part.shell.xml;
+	&chapter.shell.xml;
 <!-- =========================================================================== -->
 	&chapter.boinc;
 	&chapter.x.xml;

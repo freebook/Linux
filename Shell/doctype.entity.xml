@@ -6,7 +6,6 @@
 	<!ENTITY chapter.shell.tui.xml 				SYSTEM "chapter.shell.tui.xml">
 	<!ENTITY chapter.shell.example.xml	 		SYSTEM "chapter.shell.example.xml">
 
-	<!ENTITY part.command.xml					SYSTEM "part.command.xml">
 	<!ENTITY chapter.command.xml				SYSTEM "chapter.command.xml">
 	<!ENTITY chapter.cmd.sys.xml				SYSTEM "chapter.cmd.sys.xml">
 	<!ENTITY chapter.cmd.man.xml				SYSTEM "chapter.cmd.man.xml">

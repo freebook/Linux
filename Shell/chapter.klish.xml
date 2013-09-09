@@ -62,3 +62,8 @@ make: *** [all] Error 2
 		</section>
 	</section>
 </section>
+<section id="lshell">
+	<title>Limited command Shell (lshell)</title>
+	<para><ulink url="https://github.com/ghantoos/lshell" /></para>
+	<para>主要功能就是能够限制那些命令用户可以运行</para>
+</section>
