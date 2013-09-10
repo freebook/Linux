@@ -14,5 +14,6 @@
 	<!ENTITY chapter.system.logging.xml 	SYSTEM "chapter.system.logging.xml">
 	<!ENTITY chapter.system.sys.xml			SYSTEM "chapter.system.sys.xml">
 	<!ENTITY chapter.udev.xml				SYSTEM "chapter.udev.xml">
+	<!ENTITY chapter.etc.xml				SYSTEM "chapter.etc.xml">
 
 	<!ENTITY chapter.boinc 					SYSTEM "chapter.boinc.xml">
