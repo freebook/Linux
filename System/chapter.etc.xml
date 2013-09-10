@@ -1,0 +1,9 @@
+<chapter>
+    <title>/etc</title>
+    <section>
+    	<title>/etc/inputrc</title>
+    	<para>键盘映射配置文件,用户不同终端下的键盘定义</para>
+    	<screen>
+    	</screen>
+    </section>
+</chapter>
