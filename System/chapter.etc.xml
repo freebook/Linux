@@ -29,4 +29,20 @@ $endif
         ]]>
     	</screen>
     </section>
+    <section id="etc.shells">
+        <title>/etc/shells</title>
+        <para>系统有效地登陆Shell</para>
+        <screen>
+% cat /etc/shells 
+# /etc/shells: valid login shells
+/bin/sh
+/bin/dash
+/bin/bash
+/bin/rbash
+/usr/bin/tmux
+/usr/bin/screen
+/bin/zsh
+/usr/bin/zsh            
+        </screen>
+    </section>
 </chapter>
