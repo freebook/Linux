@@ -220,6 +220,23 @@ $ ls davfs/
 branches  lost+found  tags  trunk
 		</screen>
 	</section>
+	<section id="fs.redisfs">
+		<title>redisfs</title>
+		<para>Redis Filesystem</para>
+		<para></para>
+		<screen>
+redisfs --host=localhost --port=6379 --mount=/mnt/redis  [--read-only] [--debug] [--prefix=skx]
+		</screen>
+		<para>创建快照</para>
+		<screen>
+redisfs-snapsot --from=skx --to=snap			
+		</screen>
+		<para>Mount 快照</para>
+		<screen>
+mkdir /tmp/snapsot
+redisfs --prefix=snap --mount=/tmp/snapsot
+		</screen>
+	</section>
 	<section id="fs.test">
 		<title>File system test</title>
 		<section>
