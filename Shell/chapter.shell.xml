@@ -218,6 +218,21 @@ echo 1 | sudo tee /proc/sys/net/ipv4/ip_forward;
 			</section>
 		</section>
 		<section>
+			<title>创建文件</title>
+			<screen>
+			<![CDATA[	
+cat << EOF > foo.sh
+   printf "%s was here" "$name"
+EOF			
+
+cat >> foo.sh <<EOF
+   printf "%s was here" "$name"
+EOF
+			]]>
+			</screen>
+			
+		</section>
+		<section>
 			<title>快速清空一个文件的内容</title>
 			<screen>
 $ > /www/access.log
