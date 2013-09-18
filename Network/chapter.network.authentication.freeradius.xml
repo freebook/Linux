@@ -6,23 +6,27 @@
 		<listitem><para>FreeRADIUS</para></listitem>
 		<listitem><para>D-Link DI-624+A</para></listitem>
 	</itemizedlist>
-
-	<para>some package of freeradius.</para>
-	<screen>
+	<section>
+		<title>安装 FreeRADIUS</title>
+		<section>
+			<title>Ubuntu</title>
+			<para>some package of freeradius.</para>
+			<screen>
 netkiller@shenzhen:~$ apt-cache search freeradius
+
 freeradius - a high-performance and highly configurable RADIUS server
 freeradius-dialupadmin - set of PHP scripts for administering a FreeRADIUS server
 freeradius-iodbc - iODBC module for FreeRADIUS server
 freeradius-krb5 - kerberos module for FreeRADIUS server
 freeradius-ldap - LDAP module for FreeRADIUS server
 freeradius-mysql - MySQL module for FreeRADIUS server
-	</screen>
-	<para>install</para>
-	<screen>
+			</screen>
+			<para>install</para>
+			<screen>
 netkiller@shenzhen:~$ sudo apt-get install freeradius
-	</screen>
-	<para>OK, we have installed let's quickly test it. the '******' is your password.</para>
-	<screen>
+			</screen>
+			<para>OK, we have installed let's quickly test it. the '******' is your password.</para>
+			<screen>
 netkiller@shenzhen:~$ radtest netkiller ****** localhost 0 testing123
 Sending Access-Request of id 237 to 127.0.0.1 port 1812
         User-Name = "netkiller"
@@ -30,10 +34,10 @@ Sending Access-Request of id 237 to 127.0.0.1 port 1812
         NAS-IP-Address = 255.255.255.255
         NAS-Port = 0
 rad_recv: Access-Accept packet from host 127.0.0.1:1812, id=237, length=20
-	</screen>
-	<para>if you can see 'Access-Accept', you have succeed</para>
-	<para>let me to input an incorrect password.</para>
-	<screen>
+			</screen>
+			<para>if you can see 'Access-Accept', you have succeed</para>
+			<para>let me to input an incorrect password.</para>
+			<screen>
 netkiller@shenzhen:~$ radtest netkiller ****** localhost 0 testing123
 Sending Access-Request of id 241 to 127.0.0.1 port 1812
         User-Name = "netkiller"
@@ -46,19 +50,26 @@ Re-sending Access-Request of id 241 to 127.0.0.1 port 1812
         NAS-IP-Address = 255.255.255.255
         NAS-Port = 0
 rad_recv: Access-Reject packet from host 127.0.0.1:1812, id=241, length=20
-	</screen>
-	<para>you will see 'Access-Reject'.</para>
-
-	<para></para>
-	<screen>
+			</screen>
+			<para>you will see 'Access-Reject'.</para>
+			<para>默认你只能通过localhost访问radius, 如需其他网络访问需要在配置文件中添加类似下面配置，配置文件在  /etc/freeradius/clients.conf</para>
+			<screen>
 # vim /etc/freeradius/clients.conf
 
 client 172.16.0.0/24 {
        secret          = testing123
        shortname       = freeradius.example.com
 }
-
-	</screen>
+			</screen>
+		</section>
+		<section>
+			<title>CentOS</title>
+			<screen>
+# yum install freeradius freeradius-utils			
+			</screen>
+			<para>CentOS与Ubuntu安装包有所不同，配置文件在 /etc/raddb下面</para>
+		</section>		
+	</section>
 	<section id="freeradius.ldap">
 		<title>ldap</title>
 		<para></para>

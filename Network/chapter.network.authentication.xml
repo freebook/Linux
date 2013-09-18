@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="network.authentication">
+<chapter id="authentication">
 	<title>Authentication</title>
 	<section id="login.defs">
 		<title>/etc/login.defs</title>
@@ -223,7 +223,7 @@ su: incorrect password
 			</screen>
 		</section>
 	</section>
-	<section>
+	<section id="network.auth">
 		<title>Network Authentication</title>
 
 		&chapter.network.authentication.nis.xml;

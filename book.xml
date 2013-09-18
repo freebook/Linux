@@ -87,7 +87,7 @@
 	<!ENTITY home "<![CDATA[ <ulink url='&homepage;'>&homepage;</ulink> ]]>">
 
 ]>
-<book xml:base="http://netkiller.hikz.com/book/linux/"
+<book xml:base="http://netkiller.github.com/linux/"
 	xmlns="http://docbook.org/ns/docbook" xml:lang="zh-cn">
 	<info>
 		<title>Netkiller Linux 手札</title>
