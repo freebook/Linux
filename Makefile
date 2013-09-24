@@ -5,7 +5,7 @@ WORKSPACE=~/workspace
 PROJECT=Linux
 DOCBOOK=linux
 PUBLIC_HTML=~/public_html
-HTMLHELP=$(PUBLIC_HTML)/htmlhelp/${DOCBOOK}/chm
+HTMLHELP=~/htmlhelp/${DOCBOOK}/chm
 
 define reset
 	@mkdir -p ${PUBLIC_HTML}/$(1)

@@ -1,3 +1,6 @@
-<chapter>
+<chapter id="hadoop">
 	<title>Hadoop</title>
+</chapter>
+<chapter id="hpcc">
+	<title>HPCC Systems (High Performance Computing Cluster)</title>
 </chapter>
