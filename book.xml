@@ -9,7 +9,7 @@
 <!DOCTYPE subject SYSTEM "/usr/share/xml/docbook/schema/dtd/5.0/docbook.dtd"
 	[
 	<!ENTITY homepage "http://netkiller.sf.net/">
-	<!ENTITY mirror "http://netkiller.zenw.org/">
+	<!ENTITY mirror "http://netkiller.github.io/">
 
 	<!ENTITY Neo "http://netkiller.sf.net/">
 	<!ENTITY BG7NYT "&Neo;">

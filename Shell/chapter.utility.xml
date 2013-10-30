@@ -10,4 +10,21 @@
 	&chapter.klish.xml;
 	&chapter.utility.wget.xml;
 	&chapter.utility.tui.xml;
+	<section id="parallel">
+		<title>parallel - build and execute shell command lines from standard input in parallel</title>
+		<subtitle>并行执行shell命令</subtitle>
+		<screen>
+$ sudo apt-get install parallel		
+		</screen>
+		<example>
+			<title>parallel - build and execute shell command lines from standard input in parallel</title>
+			<screen>
+$ cat *.csv | parallel  --pipe grep '13113'			
+			</screen>
+			<para>设置块大小</para>
+			<screen>
+$ cat *.csv | parallel --block 10M --pipe grep '131136688'			
+			</screen>	
+		</example>
+	</section>
 </chapter>

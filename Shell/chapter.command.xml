@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.command.xml 548 2013-03-28 07:57:46Z netkiller $ -->
 <chapter id="index"><?dbhtml dir="cli" ?>
-	<title>Commands</title>
+	<title>Shell command</title>
 	&chapter.utility.xml;
 
 	&chapter.cmd.man.xml;
