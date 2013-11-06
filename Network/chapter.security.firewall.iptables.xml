@@ -78,6 +78,13 @@ net.ipv4.ip_forward = 0
 net.ipv4.icmp_echo_ignore_all = 1
 		</screen>
 	</section>
+	<section>
+		<title>sysctl.d</title>
+		<screen>
+$ ls /etc/sysctl.d/		
+$ cat /etc/sysctl.d/30-postgresql-shm.conf
+		</screen>
+	</section>
 </section>
 
 <!-- http://www.centos.org/docs/5/html/Deployment_Guide-en-US/ch-iptables.html -->

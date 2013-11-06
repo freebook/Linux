@@ -77,8 +77,8 @@ daemon          hard    nofile          40960
 		<para>设置</para>
 		<para>有多种方法加大Linux的threads数，下买是临时更改</para>
 		<screen>
-１、sysctl -w kernel.threads-max=65536
-２、echo 65536 > /proc/sys/kernel/threads-max
+sysctl -w kernel.threads-max=65536
+echo 65536 > /proc/sys/kernel/threads-max
 		</screen>
 		<para>永久修改</para>
 		<screen>
