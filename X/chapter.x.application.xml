@@ -59,5 +59,11 @@ yum install vym
 greenshot
 	</screen>
 </section>
+
+<section id="winswitch">
+	<title>Window Switch</title>
+	<para>http://winswitch.org/</para>
+</section>
+
 </chapter>
 
