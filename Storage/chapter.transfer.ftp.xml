@@ -56,10 +56,10 @@ sudo apt-get install axel
 		</screen>
 	</section>
 </chapter>
-<chapter id="ftp">
+<chapter id="index"><?dbhtml dir="ftp" ?>
 	<title>FTP (File Transfer Protocol)</title>
 	<para>参考http://netkiller.8800.org/article/ftpserver/</para>
-	<section id="ftp.lftp">
+	<section id="lftp">
 		<title>lftp</title>
 		<section>
 			<title>pget</title>
@@ -83,7 +83,7 @@ FTPCMD
 			</screen>
 		</section>
 	</section>
-	<section id="ftp.ncftp">
+	<section id="ncftp">
 		<title>ncftp</title>
 		<screen>
 sudo apt-get install ncftp
@@ -124,11 +124,11 @@ $ ncftpput -R -u netkiller -p password netkiller.hikz.com /home/netkiller/www ~/
 			</screen>
 		</section>
 	</section>
-	<section id="ftp.filezilla">
+	<section id="filezilla">
 		<title>FileZilla</title>
 		<para>http://filezilla-project.org/</para>
 	</section>
-	<section id="ftp.vsftpd">
+	<section id="vsftpd">
 		<title>vsftpd - The Very Secure FTP Daemon</title>
 		<screen>
 $ sudo apt-get install vsftpd
@@ -326,7 +326,7 @@ ncftp ftp://www:chen@172.16.0.1
 		</section>
 
 	</section>
-	<section id="ftp.proftpd">
+	<section id="proftpd">
 		<title>ProFTPD + MySQL / OpenLDAP 用户认证</title>
 		<para>准备工作</para>
 		<para>下载ProFTPD : ftp://ftp.proftpd.org/distrib/source/proftpd-1.2.7.tar.gz</para>
@@ -1329,7 +1329,7 @@ LDAPNegativeCache       on
 			</screen>
 		</section>
 	</section>
-	<section id="ftp.pureftpd">
+	<section id="pureftpd">
 		<title>Pure-FTPd + LDAP + MySQL + PGSQL + Virtual-Users + Quota</title>
 		<para>参考 http://netkiller.sourceforge.net/pureftpd/</para>
 	</section>

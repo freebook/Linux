@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="lvm">
+<chapter id="index"><?dbhtml dir="lvm" ?>
 	<title>Logical Volume Manager (LVM)</title>
 	<para>vg,lv命名规则，建议采用：</para>
 	<para>1. /dev/vg00/lvol00</para>
@@ -15,7 +15,7 @@
 # lvcreate -l 10239 -n lv0 vg1
   Logical volume "lv0" created
 	</screen>
-	<section id="lvm.pv">
+	<section id="pv">
 		<title>物理卷管理（physical volume）</title>
 		<section id="pvcreate">
 			<title>pvcreate</title>
@@ -59,7 +59,7 @@
 			</screen>
 		</section>
 	</section>
-	<section id="lvm.vg">
+	<section id="vg">
 		<title>卷组管理（Volume Group）</title>
 		<section id="vgcreate">
 			<title>vgcreate</title>
@@ -229,7 +229,7 @@ vgextend vg1 /dev/sdb3
 			</screen>
 		</section>
 	</section>
-	<section id="lvm.lv">
+	<section id="lv">
 		<title>逻辑卷管理（logical volume）</title>
 		<section id="lvcreate">
 			<title>lvcreate</title>
@@ -363,7 +363,7 @@ Do you really want to remove active logical volume snap0? [y/n]: y
 			</section>
 		</section>
 	</section>
-	<section id="lvm.format">
+	<section id="format">
 		<title>Format</title>
 		<screen>
 # mkfs.ext4 /dev/vg1/lv0
@@ -393,7 +393,7 @@ This filesystem will be automatically checked every 24 mounts or
 
 		</screen>
 	</section>
-	<section id="lvm.mount">
+	<section id="mount">
 		<title>mount</title>
 		<section>
 			<title>lv</title>
@@ -417,7 +417,7 @@ This filesystem will be automatically checked every 24 mounts or
 			</screen>
 		</section>
 	</section>
-	<section id="lvm.backup">
+	<section id="backup">
 		<title>snapshot backup</title>
 		<para>dump + restore</para>
 		<screen>
