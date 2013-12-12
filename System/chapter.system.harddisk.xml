@@ -55,6 +55,13 @@ lrwxrwxrwx 1 root root 10 2009-07-11 00:52 cc2c1be9-a6e0-4494-a5f0-76b39d3fc1f0 
 	</section>
 	<section id="swap">
 		<title>临时增加 swap 分区</title>
+		<para>查看交换分区信息</para>
+		<screen>
+$ swapon -s
+Filename				Type		Size	Used	Priority
+/dev/md127p3                            partition	15359992	1654332	-1
+		</screen>
+		<para>新增交换分区</para>
 		<screen>
 dd if=/dev/zero of=/root/swap0 bs=1M count=2048
 mkswap /root/swap0
