@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="lvs">
+<chapter id="index"><?dbhtml dir="lvs" ?>
 	<title>Linux Virtual Server</title>
 	<para>Session</para>
 	<para>
@@ -14,7 +14,7 @@ echo 1 > /proc/sys/net/ipv4/vs/expire_nodest_conn
 可以考虑用分布式的测试工具，或者多台机器一起跑ab。
 
 	</para>
-	<section id="lvs.ipvsadm">
+	<section id="ipvsadm">
 		<title>环境配置</title>
 		<para>ssh</para>
 		<screen>
@@ -58,7 +58,7 @@ neo@ubuntu:~$
 		</screen>
 	</section>
 
-	<section id="lvs.nat">
+	<section id="nat">
 		<title>VS/NAT</title>
 		<para><graphic fileref="images/VS-NAT.gif" /></para>
 		<para><graphic fileref="images/RunningExample.gif" /></para>
@@ -86,7 +86,7 @@ sudo ipvsadm -a -t 172.16.0.1:80 -r 192.168.0.4:80 -m
 sudo ipvsadm -a -t 172.16.0.1:80 -r 192.168.0.5:80 -m -w 2
 		</screen>
 	</section>
-	<section id="lvs.tun">
+	<section id="tun">
 		<title>VS/TUN</title>
 		<para><graphic fileref="images/VS-IPTunneling.gif" /></para>
 		<para><graphic fileref="images/VS-TUN-flow.jpg" /></para>
@@ -231,7 +231,7 @@ neo@master:~$
 		</screen>
 
 	</section>
-	<section id="lvs.dr">
+	<section id="dr">
 		<title>VS/DR</title>
 		<para><graphic fileref="images/VS-DRouting.gif" /></para>
 		<para><graphic fileref="images/VS-DR-flow.jpg" /></para>
@@ -409,7 +409,7 @@ NETMASK=255.255.255.255
 		</section>
 	</section>
 
-	<section id="lvs.script">
+	<section id="script">
 		<title>ipvsadm script</title>
 		<para>save/restore</para>
 		<screen>
@@ -437,7 +437,7 @@ and
 Timeout (tcp tcpfin udp): 900 120 300
 		</screen>
 	</section>
-	<section id="lvs.debug">
+	<section id="debug">
 		<title>debug</title>
 		<screen>
 tcpdump -n -i eth0 port 80 or icmp or arp
@@ -455,7 +455,7 @@ tcpdump -n -i eth0 port 80 or icmp or arp
 ]]>
 		</screen>
 	</section>
-	<section id="lvs.monitor">
+	<section id="monitor">
 		<title>ipvsadm monitor</title>
 		<para>monitor.py</para>
 		<screen>

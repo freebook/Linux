@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="lighttpd.module">
+<section id="module">
 	<title>Module</title>
 		<screen>
 server.modules              = (
@@ -112,7 +112,7 @@ $HTTP["host"] =~ "^.*\.(example.org)$" {
 }
 			]]>
 			</screen>
-			<section id="lighttpd.rewrite.qsa">
+			<section id="rewrite.qsa">
 				<title>Lighttpd Rewrite QSA</title>
 				<screen>
 				<![CDATA[
@@ -308,7 +308,7 @@ $HTTP["user-agent"] =~ "Baiduspider+" {
 		</screen>
 	</section>
 </section>
-<section id="lighttpd.other">
+<section id="other">
 	<title>其他模块</title>
 	<section id="mod_secdownload">
 		<title>mod_secdownload 防盗链</title>

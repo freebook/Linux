@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="lighttpd">
+<chapter id="index"><?dbhtml dir="lighttpd" ?>
 	<title>Lighttpd</title>
 <section id="lighttpd.install">
 	<title>安装Lighttpd</title>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="lamp.install">
+<section id="install">
 	<title>Install</title>
 	<section>
 		<title>Quick install apache with aptitude</title>
@@ -172,7 +172,7 @@ netkiller@Linux-server:~$
 		</screen>
 	</section>
 
-<section id="lamp.src">
+<section id="src">
 	<title>Compile and then install Apache</title>
 	<section>
 		<title>Apache 安装与配置</title>

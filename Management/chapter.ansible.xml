@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="ansible">
+<chapter id="index"><?dbhtml dir="ansible" ?>
 	<title>ansible</title>
 	<para>http://ansible.github.com/</para>
 	<para>Ansible is a radically simple model-driven configuration management, deployment, and command execution framework. </para>
-	<section id="ansible.install">
+	<section id="install">
 		<title>install</title>
 		<screen>
 yum install ansible
 		</screen>
 	</section>
-	<section id="ansible.first">
+	<section id="first">
 		<title>Getting Started</title>
 		<para>Your first commands</para>
 		<para>/etc/ansible/hosts</para>
@@ -70,14 +70,14 @@ ssh-copy-id root@192.168.2.15
 }
 		</screen>
 	</section>
-	<section id="ansible.command">
+	<section id="command">
 		<title>ansible - run a command somewhere else</title>
 		<para>指定用户</para>
 		<screen>
 # ansible all -m ping -u root
 		</screen>
 	</section>
-	<section id="ansible.playbook">
+	<section id="playbook">
 		<title>ansible-playbook - run an ansible playbook</title>
 		<para>定义组</para>
 		<screen>

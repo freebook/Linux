@@ -1,7 +1,7 @@
 <!-- http://tldp.org/LDP/abs/html/index.html -->
-<chapter id="bash">
+<chapter id="index"><?dbhtml dir="bash" ?>
 	<title>Bash Shell</title>
-	<section id="bash.option">
+	<section id="option">
 		<title>bash - GNU Bourne-Again SHell</title>
 		<section>
 			<title>-n 检查脚本是否有语法错误</title>
@@ -21,9 +21,9 @@
 		<title>Internal Environment Variables</title>
 		<ulink url="http://tldp.org/LDP/abs/html/internalvariables.html" />
 	</section>
-<section id="bash.variable">
+<section id="variable">
 	<title>variable</title>
-	<section id="bash.variable.set">
+	<section id="variable.set">
 		<title>set</title>
 		<screen>
 		<![CDATA[
@@ -46,7 +46,7 @@ export CATALINA_OUT=/www/logs/tomcat/catalina.out
 unset CATALINA_OUT
 		</screen>
 	</section>
-	<section id="bash.variable.declare">
+	<section id="variable.declare">
 		<title>declare</title>
 		<screen>
 功能说明：声明 shell 变量。
@@ -523,7 +523,7 @@ Neo Chen
 	   </tgroup>
 	</table>
 
-	<section id="bash.if">
+	<section id="if">
 		<title>if</title>
 		<example>
 			<title>Basic conditional example if .. then</title>
@@ -590,9 +590,9 @@ esac
 	</section>
 </section>
 
-<section id="bash.loop">
+<section id="loop">
 	<title>Loops for, while and until</title>
-	<section id="bash.for">
+	<section id="for">
 		<title>for</title>
 		<programlisting>
 		<![CDATA[
@@ -690,7 +690,7 @@ done
 for n in  {23..32} {49,50} {81..92}; do mkdir /tmp/$n; echo $n; done
 		</screen>
 	</section>
-	<section id="bash.while">
+	<section id="while">
 		<title>while</title>
 		<programlisting>
 		<![CDATA[
@@ -748,7 +748,7 @@ $ cat mount.conf
 		]]>
 		</programlisting>
 	</section>
-	<section id="bash.until">
+	<section id="until">
 		<title>until</title>
 		<programlisting>
 		<![CDATA[
@@ -762,7 +762,7 @@ done
 		</programlisting>
 	</section>
 </section>
-<section id="bash.functions">
+<section id="functions">
 	<title>Functions</title>
 	<example>
 		<title>Functions with parameters sample</title>

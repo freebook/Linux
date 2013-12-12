@@ -4,9 +4,9 @@
 	&chapter.lighttpd.xml;
 	&chapter.nginx.xml;
 	&chapter.tomcat.xml;
-	&chapter.web.resin;
+	&chapter.resin.xml;
 	&chapter.web.app;
 	&chapter.web.optimization;
-	&chapter.web.varnish;
+	&chapter.varnish.xml;
     &chapter.web.cherokee.xml;
     &chapter.web.jetty.xml;

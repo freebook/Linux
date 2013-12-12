@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.cluster.haproxy.xml 609 2013-06-02 04:43:20Z netkiller $ -->
-<chapter id="haproxy">
+<chapter id="index"><?dbhtml dir="haproxy" ?>
 	<title>HAProxy - fast and reliable load balancing reverse proxy</title>
-	<section id="haproxy.install">
+	<section id="install">
 		<title>Installing</title>
 	<!-- http://blog.chenlb.com/2009/06/install-haproxy-and-configure-load-balance.html -->
 		<section>
@@ -34,7 +34,7 @@ yum install haproxy
 			</screen>
 		</section>
 	</section>
-	<section id="haproxy.cfg">
+	<section id="cfg">
 		<title>haproxy.cfg</title>
 		<para>默认配置文件</para>
 		<screen>
@@ -245,7 +245,7 @@ server xxxxx xxx.xxx.xxx.xxx:xxx check port 80 inter 1500 rise 3 fall 3 weight 1
 			<para>weight 代表权重</para>
 		</section>
 	</section>
-	<section id="haproxy.example">
+	<section id="example">
 		<title>Example 配置实例</title>
 		<section>
 			<title>HTTP 配置实例</title>

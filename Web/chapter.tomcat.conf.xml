@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="tomcat.server">
+<section id="server">
 	<title>配置 Tomcat 服务器</title>
 	<section>
 		<title>server.xml</title>
 
-		<section id="tomcat.connector">
+		<section id="connector">
 			<title>Connector</title>
 			<para>tomcat 端口默认为8080, 可以通过修改下面port项改为80端口，但不建议你这样使用80端口,tomcat 会继承root权限，这是非常危险的做法。</para>
 			<screen>
@@ -159,7 +159,7 @@ mkdir $CATALINA_HOME/neo
 			]]>
 			</screen>
 		</section>
-		<section id="tomcat.access_log">
+		<section id="access_log">
 			<title>access_log</title>
 			<screen>
 			<![CDATA[
@@ -247,7 +247,7 @@ mkdir $CATALINA_HOME/neo
 	</section>
 </section>
 
-<section id="tomcat.script">
+<section id="script">
 	<title>Init.d Script</title>
 	<section>
 		<title>Script 1</title>

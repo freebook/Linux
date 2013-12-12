@@ -1,9 +1,9 @@
-<chapter id="lamp">
+<chapter id="index"><?dbhtml dir="httpd" ?>
 	<title>Apache httpd</title>
 	<subtitle>LAMP</subtitle>
 	&chapter.httpd.install.xml;
 	&chapter.httpd.module.xml;
-	<section id="lamp.referal">
+	<section id="referal">
 		<title>设置Apache实现防盗连</title>
 		<screen>
 SetEnvIf Referer "http://news.netkiller.com/" local_referal
@@ -29,7 +29,7 @@ RewriteCond % !^http://www.xxx.cn$      [NC]
 RewriteRule .*\.(jpg|jpeg|gif|png|bmp|rar|zip|exe)$ http://download.example.com/err.html [R,NC]
 		</screen>
 	</section>
-	<section id="lamp.error">
+	<section id="error">
 		<title>Error Prompt</title>
 		<section>
 			<title>Invalid command 'Order', perhaps misspelled or defined by a module not included in the server configuration</title>

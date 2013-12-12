@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.nginx.conf.xml 654 2013-07-30 07:30:20Z netkiller $ -->
-<section id="nginx.conf">
+<section id="conf">
 	<title>nginx 配置文件</title>
 	<para>worker_processes = CPU 数量</para>
 	<screen>
@@ -10,7 +10,7 @@ worker_processes  1;
 error_log  /var/log/nginx/error.log warn;
 pid        /var/run/nginx.pid;
 	</screen>
-	<section id="nginx.events">
+	<section id="events">
 		<title>events</title>
 		<screen>
 events {
@@ -19,7 +19,7 @@ events {
 		</screen>
 	</section>
 
-	<section id="nginx.http">
+	<section id="http">
 		<title>http 配置</title>
 
 		<section>
@@ -29,7 +29,7 @@ real_ip_header X-Forwarded-For;
 			</screen>
 		</section>
 
-		<section id="nginx.gzip">
+		<section id="gzip">
 			<title>gzip</title>
 			<screen>
 gzip  on;
@@ -44,7 +44,7 @@ gzip_disable "MSIE [1-6].";
 gzip_types text/plain application/x-javascript text/css text/javascript;
 			</screen>
 		</section>
-		<section id="nginx.server_tokens">
+		<section id="server_tokens">
 			<title>server_tokens</title>
 			<para>隐藏nginx版本号</para>
 			<screen>
@@ -55,7 +55,7 @@ server_tokens off;
 }
 			</screen>
 		</section>
-		<section id="nginx.ssi">
+		<section id="ssi">
 			<title>ssi</title>
 			<screen>
 http {
@@ -81,9 +81,9 @@ client_max_body_size 8m;
 		</section>
 	</section>
 
-	<section id="nginx.http.server">
+	<section id="http.server">
 		<title>server</title>
-		<section id="nginx.http.server">
+		<section id="http.server">
 			<title>单域名虚拟主机</title>
 			<screen>
 # cat /etc/nginx/conf.d/images.conf
@@ -147,7 +147,7 @@ server_name ~^(.+)\.example\.com$;
 server_name ~^(www\.)?(.+)$;
 			</screen>
 		</section>
-		<section id="nginx.http.server.ssl">
+		<section id="http.server.ssl">
 			<title>ssl 虚拟主机</title>
 			<screen>
 mkdir /etc/nginx/ssl
@@ -190,7 +190,7 @@ $ openssl s_client -connect www.example.com:443
 			</screen>
 		</section>
 
-		<section id="nginx.http.server.subdomain">
+		<section id="http.server.subdomain">
 			<title>泛解析主机</title>
 			<screen>
 server {
@@ -239,7 +239,7 @@ server {
 }
 			</screen>
 		</section>
-		<section id="nginx.http.server.location">
+		<section id="http.server.location">
 			<title>location</title>
 			<screen>
     location / {
@@ -254,7 +254,7 @@ server {
     }
 			</screen>
 		</section>
-		<section id="nginx.expires">
+		<section id="expires">
 			<title>expires</title>
 			<para>expires 格式</para>
 			<example>
@@ -359,7 +359,7 @@ location ~ .*\.(html|htm)$
 				</screen>
 			</example>
 		</section>
-		<section id="nginx.access">
+		<section id="access">
 			<title>access</title>
 			<screen>
 #防止access文件被下载
@@ -388,7 +388,7 @@ location ~ .*\.(sqlite|sq3)$ {
 }
 			</screen>
 		</section>
-		<section id="nginx.auth_basic">
+		<section id="auth_basic">
 			<title>auth_basic</title>
 			<screen>
 cd /usr/local/nginx/conf
@@ -415,7 +415,7 @@ htpasswd -c -d htpasswd user_name
 				<para>必须使用 -d  Force CRYPT encryption of the password. 选项，</para>
 			</tip>
 		</section>
-		<section id="nginx.autoindex">
+		<section id="autoindex">
 			<title>autoindex</title>
 			<screen>
 # vim /etc/nginx/sites-enabled/default
@@ -429,7 +429,7 @@ location  /  {
 Reloading nginx configuration: nginx.
 			</screen>
 		</section>
-		<section id="nginx.rewrite">
+		<section id="rewrite">
 			<title>rewrite</title>
 			<screen>
 Rewrite Flags
@@ -482,7 +482,7 @@ if ($host ~ '(.*)\.static\.example\.com' ) {
 		</section>
 
 
-		<section id="nginx.cache">
+		<section id="cache">
 			<title>Cache</title>
 			<screen>
 			<![CDATA[
@@ -492,7 +492,7 @@ add_header     Nginx-Cache     "$upstream_cache_status  from  www.example.com";
 			]]>
 			</screen>
 		</section>
-		<section id="nginx.stub_status">
+		<section id="stub_status">
 			<title>stub_status</title>
 			<screen>
 location /nginx_status {
@@ -504,7 +504,7 @@ location /nginx_status {
 			</screen>
 		</section>
 
-		<section id="nginx.add_header">
+		<section id="add_header">
 			<title>add_header</title>
 			<para># 相关页面设置Cache-Control头信息</para>
 			<screen>
@@ -578,7 +578,7 @@ location /images/ {
 			</example>
 		</section>
 	</section>
-	<section id="nginx.proxy">
+	<section id="proxy">
 		<title>Proxy</title>
 		<screen>
 # cat /etc/nginx/nginx.conf

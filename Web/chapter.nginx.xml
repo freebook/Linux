@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.nginx.xml 592 2013-05-21 05:23:04Z netkiller $ -->
-<chapter id="nginx">
+<chapter id="index"><?dbhtml dir="nginx" ?>
 	<title>Nginx</title>
-	<section id="nginx.install">
+	<section id="install">
 		<title>Installing</title>
 		<section>
 			<title>Installing by apt-get under the debain/ubuntu</title>
@@ -17,7 +17,7 @@ sudo /etc/init.d/nginx start
 			]]>
 			</screen>
 		</section>
-		<section id="nginx.centos">
+		<section id="centos">
 			<title>CentOS</title>
 			<para>http://nginx.org/packages/centos/$releasever/$basearch/</para>
 			<para>$releasever 是版本号</para>
@@ -56,7 +56,7 @@ chkconfig nginx on
 service nginx start
 			</screen>
 		</section>
-		<section id="nginx.source">
+		<section id="source">
 			<title>installing by source</title>
 			<!-- http://blog.s135.com/nginx_php_v6/ -->
 			<screen>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.cluster.heartbeat.xml 374 2012-03-20 09:43:09Z netkiller $ -->
-<chapter id="heartbeat">
+<chapter id="index"><?dbhtml dir="heartbeat" ?>
 	<title>heartbeat+ldirectord</title>
-	<section id="heartbeat.install">
+	<section id="install">
 		<title>heartbeat</title>
 		<para></para>
 		<screen>

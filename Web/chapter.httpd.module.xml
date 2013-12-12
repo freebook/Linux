@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="httpd.module">
+<section id="module">
 	<title>Module</title>
 	<screen>
 模块的做用如下：
@@ -64,7 +64,7 @@ Compiled in modules:
 		</screen>
 	</section>
 
-	<section id="httpd.core">
+	<section id="core">
 		<title>Core</title>
 		<section>
 			<title>Listen</title>
@@ -206,7 +206,7 @@ ServerSignature Off
 			</screen>
 		</section>
 
-		<section id="httpd.worker">
+		<section id="worker">
 			<title>worker</title>
 			<para>worker</para>
 			<screen>
@@ -281,7 +281,7 @@ MaxClients<ThreadsPerChild* ServerLimit，MaxClients如果大于400将被限制�
 			</screen>
 		</section>
 	</section>
-	<section id="httpd.log">
+	<section id="log">
 		<title>Apache Log</title>
 		<section>
 			<title>LogLevel</title>
@@ -493,7 +493,7 @@ ErrorLog "|/usr/bin/your_script"
 			</screen>
 		</section>
 	</section>
-	<section id="httpd.mod_access">
+	<section id="mod_access">
 		<title>mod_access</title>
 		<screen>
 		<![CDATA[
@@ -562,7 +562,7 @@ Example: Allow from 10.1.0.0/16
 		]]>
 		</screen>
 	</section>
-	<section id="httpd.vhost">
+	<section id="vhost">
 		<title>VirtualHost</title>
 		<para>conf/extra/httpd-vhosts.conf</para>
 		<para>or</para>
@@ -626,7 +626,7 @@ Alias /logs "/www/logs"
 		]]>
 		</screen>
 	</section>
-	<section id="httpd.redirect">
+	<section id="redirect">
 		<title>Redirect / RedirectMatch</title>
 		<para>Redirect</para>
 		<screen>
@@ -653,7 +653,7 @@ RedirectMatch (.*)\.gif$ http://www.domain.com$1.jpg
 		]]>
 		</screen>
 	</section>
-	<section id="httpd.rewrite">
+	<section id="rewrite">
 		<title>Rewrite</title>
 		<para>Rewrite 需要 AllowOverride All</para>
 		<screen>
@@ -762,7 +762,7 @@ RewriteRule ^(.*)$ http://www.domain.com/$1 [R=permanent,L]
 			</screen>
 		</section>
 	</section>
-	<section id="httpd.proxy">
+	<section id="proxy">
 		<title>Proxy</title>
 		<screen>
 		<![CDATA[
@@ -805,7 +805,7 @@ ProxyRequests Off
 			</screen>
 		</section>
 	</section>
-	<section id="httpd.deflate">
+	<section id="deflate">
 			<title>Deflate</title>
 			<para>mod_deflate</para>
 			<para>httpd.conf中中加入下列语句：</para>
@@ -880,7 +880,7 @@ curl -H Accept-Encoding:gzip,defalte http://www.example.com/index.html | gunzip
 			<para>gunzip 可以解压压缩内容</para>
 		</section>
 	</section>
-	<section id="httpd.expires">
+	<section id="expires">
 		<title>Expires</title>
 		<screen>
 		<![CDATA[
@@ -904,7 +904,7 @@ FileETag none
 		]]>
 		</screen>
 	</section>
-	<section id="httpd.cache">
+	<section id="cache">
 		<title>Cache</title>
 		<para>htcacheclean -- program for cleaning the disk cache.</para>
 		<section>
@@ -944,7 +944,7 @@ FileETag none
 			</screen>
 		</section>
 	</section>
-	<section id="httpd.usertrack">
+	<section id="usertrack">
 		<title>usertrack</title>
 		<para>跟踪用户信息</para>
 		<para>跟踪用户的cookie,使用log日志文件记录用户的cookie</para>
@@ -959,7 +959,7 @@ CookieStyle Cookie
 LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\" %{cookie}n" combined
 		</screen>
 	</section>
-	<section id="httpd.charset">
+	<section id="charset">
 		<title>Charset</title>
 		<para>Default charset</para>
 		<screen>
@@ -994,7 +994,7 @@ AddDefaultCharset UTF-8
 		]]>
 		</screen>
 	</section>
-	<section id="httpd.dir">
+	<section id="dir">
 		<title>Dir</title>
 		<screen>
 		<![CDATA[
@@ -1004,7 +1004,7 @@ AddDefaultCharset UTF-8
 		]]>
 		</screen>
 	</section>
-	<section id="httpd.ssi">
+	<section id="ssi">
 		<title>Includes</title>
 		<screen>
 		<![CDATA[
@@ -1022,7 +1022,7 @@ AddDefaultCharset UTF-8
 		]]>
 		</screen>
 	</section>
-	<section id="httpd.status">
+	<section id="status">
 		<title>Apache Status</title>
 		<para>开启Apache的status模块，需要修改httpd.conf，增加以下配置段：</para>
 		<screen>
@@ -1050,7 +1050,7 @@ ExtendedStatus On
 		</screen>
 	</section>
 
-	<section id="httpd.mod_perl">
+	<section id="mod_perl">
 		<title>Mod Perl</title>
 		<para>ref: http://search.cpan.org/~agrundma/Catalyst-Engine-Apache-1.07/lib/Catalyst/Engine/Apache2/MP20.pm</para>
 		<command>$ sudo apt-get install libapache2-mod-perl2 </command>
@@ -1117,12 +1117,12 @@ $ sudo /etc/init.d/apache2 restart
 		</screen>
 	</section>
 
-	<section id="httpd.mod_pagespeed">
+	<section id="mod_pagespeed">
 		<title>mod_pagespeed - </title>
 		<para><ulink url="https://developers.google.com/speed/pagespeed/mod" /></para>
 	</section>
 
-	<section id="httpd.faq">
+	<section id="faq">
 		<title>Module FAQ</title>
 		<para></para>
 	 	<screen>

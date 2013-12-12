@@ -1,17 +1,17 @@
-<chapter id="zsh">
+<chapter id="index"><?dbhtml dir="zsh" ?>
 	<title>Z Shell</title>
 	<!--
 http://hi.baidu.com/storymedia/blog/item/598be3fd4998f549d6887d89.html
 http://www.ha97.com/book/OpenSource_Guide/ch30.html
 	 -->
 	<para><ulink url="http://www.zsh.org/">http://www.zsh.org/</ulink></para>
-<section id="zsh.install">
+<section id="install">
 	<title>installing Z shell</title>
 	<screen>
 $ sudo apt-get install zsh
 	</screen>
 </section>
-<section id="zsh.zshrc">
+<section id="zshrc">
 	<title>Starting file</title>
 	<section>
 		<title>~/.zshrc</title>
@@ -45,7 +45,7 @@ bindkey "\e[3~" delete-char
 	</section>
 
 </section>
-<section id="zsh.prompt">
+<section id="prompt">
 	<title>Prompting</title>
 	<screen>
 $ PROMPT='%n@%M:%~$ '
@@ -56,7 +56,7 @@ autoload colors; colors
 export PS1="%B[%{$fg[red]%}%n%{$reset_color%}%b@%B%{$fg[cyan]%}%m%b%{$reset_color%}:%~%B]%b "
 	</screen>
 </section>
-<section id="zsh.alias">
+<section id="alias">
 	<title>Aliases</title>
 	<screen>
 # enable color support of ls and also add handy aliases
@@ -77,7 +77,7 @@ alias la='ls -A'
 alias l='ls -CF'
 	</screen>
 </section>
-<section id="zsh.history">
+<section id="history">
 	<title>History</title>
 	<para></para>
 	<screen>
@@ -96,7 +96,7 @@ Docbook  makedoc  Tex
 	</screen>
 </section>
 
-<section id="zsh.faq">
+<section id="faq">
 	<title>FAQ</title>
 	<section>
 		<title>Home/End key</title>

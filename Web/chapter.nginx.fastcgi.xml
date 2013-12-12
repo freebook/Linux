@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="nginx.fastcgi">
+<section id="fastcgi">
 	<title>fastcgi</title>
-	<section id="nginx.fastcgi.spawn-fcgi">
+	<section id="fastcgi.spawn-fcgi">
 		<title>spawn-fcgi</title>
 		<para>config php fastcgi</para>
 		<screen>
@@ -75,7 +75,7 @@ sudo vim /var/www/nginx-default/index.php
 		]]>
 		</screen>
 	</section>
-	<section id="nginx.fastcgi.php-fpm">
+	<section id="fastcgi.php-fpm">
 		<title>php-fpm</title>
 		<section>
 			<title>php5-fpm</title>
@@ -86,7 +86,7 @@ sudo apt-get install php5-cli php5-cgi php5-fpm
 /etc/init.d/php5-fpm start
 			</screen>
 		</section>
-		<section id="nginx.php-fpm">
+		<section id="php-fpm">
 			<title>编译 php-fpm</title>
 			<screen>
 			<![CDATA[

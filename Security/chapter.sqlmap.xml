@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.sqlmap.xml 369 2012-03-10 10:42:28Z netkiller $ -->
-<chapter id="sqlmap">
+<chapter id="index"><?dbhtml dir="sqlmap" ?>
 	<title>sqlmap - automatic SQL injection and database takeover tool</title>
 	<para>http://sqlmap.sourceforge.net/</para>
 	<para>sqlmap is an open source penetration testing tool that automates the process of detecting and exploiting SQL injection flaws and taking over of database servers. It comes with a powerful detection engine, many niche features for the ultimate penetration tester and a broad range of switches lasting from database fingerprinting, over data fetching from the database, to accessing the underlying file system and executing commands on the operating system via out-of-band connections.</para>
-	<section id="sqlmap.installation">
+	<section id="installation">
 		<title>Installation</title>
 		<screen>
 $ apt-cache search sqlmap
@@ -248,7 +248,7 @@ Options:
 		]]>
 		</screen>
 	</section>
-	<section id="sqlmap.script">
+	<section id="script">
 		<title>开始入住实验</title>
 		<para>当你运行sqlmap的时候，我建议你运行下面命令监控你的web服务器日志</para>
 		<screen>
@@ -400,7 +400,7 @@ unionuse = False
 		</section>
 
 	</section>
-	<section id="sqlmap.request">
+	<section id="request">
 		<title>Request参数</title>
 		<section>
 			<title>--method, --data</title>
@@ -485,7 +485,7 @@ $ sqlmap -u "http://172.16.0.44/test/testdb.php?id=12" --user-agent="Mozilla/5.0
 			<title>--timeout</title>
 		</section>
 	</section>
-	<section id="sqlmap.injection">
+	<section id="injection">
 		<title>Injection</title>
 		<section>
 			<title>--dbms</title>
@@ -539,7 +539,7 @@ back-end DBMS: MySQL >= 5.0.0
 			<title>--excl-reg</title>
 		</section>
 	</section>
-	<section id="sqlmap.techniques">
+	<section id="techniques">
 		<title>Techniques</title>
 		<section>
 			<title>--stacked-test</title>
@@ -562,7 +562,7 @@ $ sqlmap -u "http://172.16.0.44/team.php?id=3429" --union-test
 			<title>--union-use</title>
 		</section>
 	</section>
-	<section id="sqlmap.enumeration">
+	<section id="enumeration">
 		<title>Enumeration</title>
 		<section>
 			<title>dbs</title>
@@ -838,7 +838,7 @@ sql-shell>
 			</screen>
 		</section>
 	</section>
-	<section id="sqlmap.miscellaneous">
+	<section id="miscellaneous">
 		<title>Miscellaneous</title>
 		<section>
 			<title>--update</title>

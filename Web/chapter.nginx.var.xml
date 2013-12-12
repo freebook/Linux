@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.nginx.var.xml 654 2013-07-30 07:30:20Z netkiller $ -->
-<section id="nginx.var">
+<section id="var">
 	<title>Nginx 变量</title>
 	<para>可用的全局变量</para>
 	<screen>

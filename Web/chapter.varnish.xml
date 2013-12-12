@@ -1,0 +1,535 @@
+<chapter id="index"><?dbhtml dir="varnish" ?>
+	<title>varnish - a state-of-the-art, high-performance HTTP accelerator</title>
+	<section id="install">
+		<title>Varnish Install</title>
+		<para>http://varnish.projects.linpro.no/</para>
+		<procedure>
+			<step>
+		    	<para>install</para>
+				<screen>
+				<![CDATA[
+$ sudo apt-get install varnish
+				]]>
+				</screen>
+			</step>
+			<step>
+		    	<para>/etc/default/varnish</para>
+		    	<screen>
+		    	<![CDATA[
+$ sudo vim /etc/default/varnish
+DAEMON_OPTS="-a :80 \
+             -T localhost:6082 \
+             -f /etc/varnish/default.vcl \
+             -s file,/var/lib/varnish/$INSTANCE/varnish_storage.bin,1G"
+		    	]]>
+		    	</screen>
+			</step>
+			<step>
+			    <para>/etc/varnish/default.vcl</para>
+			    <screen>
+			    <![CDATA[
+$ sudo vim /etc/varnish/default.vcl
+
+backend default {
+	.host = "127.0.0.1";
+	.port = "8080";
+}
+			    ]]>
+			    </screen>
+			    <!--
+acl purge {
+       "localhost";
+       "127.0.0.1";
+       "172.16.1.0"/24;
+}
+
+sub vcl_recv {
+       if (req.request == "PURGE") {
+               if (!client.ip ~ purge) {
+                       error 405 "Not allowed.";
+               }
+               lookup;
+       }
+
+       if (req.http.host ~ "^netkiller.8800.org") {
+               set req.backend = default;
+               if (req.request != "GET" && req.request != "HEAD") {
+                       pipe;
+               }
+               else {
+                       lookup;
+               }
+       }
+       else {
+               error 404 "Neo's Cache Server http://netkiller.8800.org";
+               lookup;
+       }
+}
+
+sub vcl_hit {
+       if (req.request == "PURGE") {
+               set obj.ttl = 0s;
+               error 200 "Purged.";
+       }
+}
+
+sub vcl_miss {
+       if (req.request == "PURGE") {
+               error 404 "Not in cache.";
+       }
+}
+
+sub vcl_fetch {
+       if (req.request == "GET" && req.url ~ "\.(css|js)$") {
+               set obj.ttl = 3600s;
+       }
+       else {
+               set obj.ttl = 1d;
+       }
+}
+			     -->
+			</step>
+			<step>
+				<para>reload</para>
+				<screen>
+				<![CDATA[
+$ sudo /etc/init.d/varnish force-reload
+ * Stopping HTTP accelerator				[ OK ]
+ * Starting HTTP accelerator
+				]]>
+				</screen>
+			</step>
+		</procedure>
+
+	</section>
+
+	<section id="utility">
+		<title>varnish utility</title>
+		<section>
+			<title>status</title>
+			<screen>
+$ varnishstat
+or
+$ varnishstat -n /var/lib/varnish/atom-netkiller/
+			</screen>
+			<para>HTTP Head</para>
+			<screen>
+$ curl -I http://bg7nyt.mooo.com/
+HTTP/1.1 404 Not Found
+X-Powered-By: PHP/5.2.6-3ubuntu4.2
+Content-type: text/html
+Server: lighttpd/1.4.19
+Content-Length: 539
+Date: Wed, 23 Sep 2009 00:05:11 GMT
+X-Varnish: 938430316
+Age: 0
+Via: 1.1 varnish
+Connection: keep-alive
+			</screen>
+			<para>test gzip,defalte</para>
+			<screen>
+$ curl -H Accept-Encoding:gzip,defalte -I http://bg7nyt.mooo.com/
+HTTP/1.1 200 OK
+X-Powered-By: PHP/5.2.6-3ubuntu4.2
+Content-Encoding: gzip
+Vary: Accept-Encoding
+Content-type: text/html
+Server: lighttpd/1.4.19
+Date: Wed, 23 Sep 2009 00:08:51 GMT
+X-Varnish: 938430335
+Age: 0
+Via: 1.1 varnish
+Connection: keep-alive
+
+			</screen>
+		</section>
+
+		<section>
+			<title>varnishadm</title>
+			<para>help messages</para>
+			<screen>
+			<![CDATA[
+$ varnishadm -T 127.0.0.1:6082 help
+help [command]
+ping [timestamp]
+status
+start
+stop
+stats
+vcl.load <configname> <filename>
+vcl.inline <configname> <quoted_VCLstring>
+vcl.use <configname>
+vcl.discard <configname>
+vcl.list
+vcl.show <configname>
+param.show [-l] [<param>]
+param.set <param> <value>
+quit
+purge.url <regexp>
+purge.hash <regexp>
+purge <field> <operator> <arg> [&& <field> <oper> <arg>]...
+purge.list
+			]]>
+			</screen>
+			<section>
+				<title>清除缓存</title>
+				<para>通过Varnish管理端口，使用正则表达式批量清除缓存：</para>
+				<para>清除所有缓存</para>
+				<screen>
+/usr/local/varnish/bin/varnishadm -T 127.0.0.1:6082 url.purge *$
+				</screen>
+				<para>http://bg7nyt.mooo.com/zh-cn/technology/news.html 清除类/zh-cn/下所有缓存</para>
+				<screen>
+/usr/local/varnish/bin/varnishadm -T 127.0.0.1:6082 url.purge /zh-cn/
+				</screen>
+				<para></para>
+				<screen>
+/usr/local/varnish/bin/varnishadm -T 127.0.0.1:3500 url.purge w*$
+				</screen>
+			</section>
+		</section>
+		<section>
+			<title>varnishtop</title>
+			<screen>
+varnishtop -i rxurl
+
+varnishtop -i txurl
+
+varnishtop -i RxHeader -I Accept-Encoding
+			</screen>
+		</section>
+		<section>
+			<title>varnishhist</title>
+		</section>
+		<section>
+			<title>varnishsizes</title>
+		</section>
+	</section>
+	<section id="log">
+		<title>log file</title>
+		<para>log file</para>
+		<screen>
+$ sudo vim  /etc/default/varnishlog
+VARNISHLOG_ENABLED=1
+$ sudo /etc/init.d/varnishlog start
+ * Starting HTTP accelerator log deamon    [ OK ]
+
+$ sudo vim  /etc/default/varnishncsa
+VARNISHNCSA_ENABLED=1
+$ sudo /etc/init.d/varnishncsa start
+ * Starting HTTP accelerator log deamon    [ OK ]
+		</screen>
+	</section>
+	<section id="vcl">
+		<title>Varnish Configuration Language - VCL</title>
+		<para>Varnish配置文件VCL中的函数详解</para>
+		<screen>
+
+		</screen>
+		<para>内置的例程</para>
+		<screen>
+vcl_recv
+有请求到达后成功接收并分析时被调用，一般以以下几个关键字结束。
+error code [reason] 返回code给客户端，并放弃处理该请求
+pass 进入pass模式，把控制权交给vcl_pass
+pipe 进入pipe模式，把控制权交给vcl_pipe
+lookup 在缓存里查找被请求的对象，根据查找结果把控制权交给vcl_hit或vcl_miss
+
+vcl_pipe
+进入pipe模式时被调用。请求被直接发送到backend，后端和客户端之间的后继数据不进行处理，只是简单传递，直到一方关闭连接。一般以以下几个关键字结束。
+error code [reason]
+pipe
+
+vcl_pass
+进入pass模式时被调用。请求被送到后端，后端应答数据送给客户端，但不进入缓存。同一连接的后继请求正常处理。一般以以下几个关键字结束。
+error code [reason]
+pass
+
+vcl_hash
+目前不使用
+
+vcl_hit
+在lookup以后如果在cache中找到请求的内容事调用。一般以以下几个关键字结束。
+error code [reason]
+pass
+deliver 将找到的内容发送给客户端，把控制权交给vcl_deliver.
+
+vcl_miss
+lookup后但没有找到缓存内容时调用，可以用于判断是否需要从后端服务器取内容。一般以以下几个关键字结束。
+error code [reason]
+pass
+fetch 从后端取得请求的内容，把控制权交给vcl_fetch.
+
+
+vcl_fetch
+从后端取得内容后调用。一般以以下几个关键字结束。
+error code [reason]
+pass
+insert 将取到的内容插入缓存，然后发送给客户端，把控制权交给vcl_deliver
+
+
+vcl_deliver
+缓存内容发动给客户端前调用。一般以以下几个关键字结束。
+error code [reason]
+deliver 内容发送给客户端
+
+vcl_timeout
+在缓存内容到期前调用。一般以以下几个关键字结束。
+fetch 从后端取得该内容
+discard 丢弃该内容
+
+
+
+vcl_discard
+由于到期或者空间不足而丢弃缓存内容时调用。一般以以下几个关键字结束。
+discard 丢弃
+keep 继续保留在缓存里
+
+如果这些内置例程没有被定义，则执行缺省动作
+
+
+一些内置的变量
+now 当前时间，标准时间点（1970？）到现在的秒数
+
+backend.host 后端的IP或主机名
+backend.port 后端的服务名或端口
+
+请求到达后有效的变量
+client.ip 客户端IP
+server.ip 服务端IP
+req.request 请求类型，比如GET或者HEAD或者POST
+req.url 请求的URL
+req.proto 请求的HTTP版本号
+req.backend 请求对应的后端
+req.http.header 对应的HTTP头
+
+往后段的请求时有效的变量
+bereq.request 比如GET或HEAD
+bereq.url URL
+bereq.proto 协议版本
+bereq.http.header HTTP头
+
+从cache或后端取到内容后有效的变量
+obj.proto HTTP协议版本
+obj.status HTTP状态代码
+obj.response HTTP状态信息
+obj.valid 是否有效的HTTP应答
+obj.cacheable 是否可以缓存的内容，也就是说如果HTTP返回是200、203、300、301、302、404、410并且有非0的生存期，则为可缓存
+obj.ttl 生存期，秒
+obj.lastuse 上一次请求到现在间隔秒数
+
+对客户端应答时有效的变量
+resp.proto response的HTTP版本
+resp.status 回给客户端的HTTP状态代码
+resp.response 回给客户端的HTTP状态信息
+resp.http.header HTTP头
+		</screen>
+		<section>
+			<title>unset / set</title>
+			<screen>
+ sub vcl_deliver {
+##### Remove some headers
+    unset resp.http.Server;
+    unset resp.http.X-Powered-By;
+    unset resp.http.X-Varnish;
+    unset resp.http.Via;
+###
+	if (obj.hits > 0){
+		set resp.http.X-Cache = "cdn cache server v2.0";
+	}else{
+		set resp.http.X-Cache = "MISS ";
+	}
+	return (deliver);
+}
+			</screen>
+		</section>
+	</section>
+	<section id="example">
+		<title>example</title>
+		<example>
+			<title>default.vcl</title>
+			<screen>
+			<![CDATA[
+neo@netkiller:/etc/varnish$ cat default.vcl
+# This is a basic VCL configuration file for varnish.  See the vcl(7)
+# man page for details on VCL syntax and semantics.
+#
+# Default backend definition.  Set this to point to your content
+# server.
+#
+backend default {
+    .host = "127.0.0.1";
+    .port = "8080";
+}
+#
+# Below is a commented-out copy of the default VCL logic.  If you
+# redefine any of these subroutines, the built-in logic will be
+# appended to your code.
+#
+sub vcl_recv {
+    if (req.http.x-forwarded-for) {
+        set req.http.X-Forwarded-For =
+            req.http.X-Forwarded-For ", " client.ip;
+    } else {
+        set req.http.X-Forwarded-For = client.ip;
+    }
+    if (req.request != "GET" &&
+      req.request != "HEAD" &&
+      req.request != "PUT" &&
+      req.request != "POST" &&
+      req.request != "TRACE" &&
+      req.request != "OPTIONS" &&
+      req.request != "DELETE") {
+        /* Non-RFC2616 or CONNECT which is weird. */
+        return (pipe);
+    }
+    if (req.request != "GET" && req.request != "HEAD") {
+        /* We only deal with GET and HEAD by default */
+        return (pass);
+    }
+    if (req.http.Authorization || req.http.Cookie) {
+        /* Not cacheable by default */
+/*        return (pass);*/
+        return (lookup);
+    }
+    return (lookup);
+}
+
+sub vcl_pipe {
+    # Note that only the first request to the backend will have
+    # X-Forwarded-For set.  If you use X-Forwarded-For and want to
+    # have it set for all requests, make sure to have:
+    # set req.http.connection = "close";
+    # here.  It is not set by default as it might break some broken web
+    # applications, like IIS with NTLM authentication.
+    return (pipe);
+}
+
+sub vcl_pass {
+    return (pass);
+}
+
+sub vcl_hash {
+    set req.hash += req.url;
+    if (req.http.host) {
+        set req.hash += req.http.host;
+    } else {
+        set req.hash += server.ip;
+    }
+    return (hash);
+}
+
+sub vcl_hit {
+    if (!obj.cacheable) {
+        return (pass);
+    }
+    return (deliver);
+}
+
+sub vcl_miss {
+    return (fetch);
+}
+
+sub vcl_fetch {
+    if (!beresp.cacheable) {
+        return (pass);
+    }
+    if (beresp.http.Set-Cookie) {
+#        return (pass);
+        return (deliver);
+    }
+    return (deliver);
+}
+
+sub vcl_deliver {
+    return (deliver);
+}
+#
+# sub vcl_error {
+#     set obj.http.Content-Type = "text/html; charset=utf-8";
+#     synthetic {"
+# <?xml version="1.0" encoding="utf-8"?>
+# <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+#  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+# <html>
+#   <head>
+#     <title>"} obj.status " " obj.response {"</title>
+#   </head>
+#   <body>
+#     <h1>Error "} obj.status " " obj.response {"</h1>
+#     <p>"} obj.response {"</p>
+#     <h3>Guru Meditation:</h3>
+#     <p>XID: "} req.xid {"</p>
+#     <hr>
+#     <p>Varnish cache server</p>
+#   </body>
+# </html>
+# "};
+#     return (deliver);
+# }
+			]]>
+			</screen>
+		</example>
+	</section>
+</chapter>
+<chapter id="trafficserver">
+	<title>Apache Traffic Server</title>
+	<section id="ts.install">
+		<title>Install</title>
+		<screen>
+yum install gcc gcc-c++ make autoconf -y
+yum -y install  tcl lzma tcl-devel expat expat-devel pcre-devel perl perl-devel
+		</screen>
+		<screen>
+cd /usr/local/src/
+wget http://mirror.bjtu.edu.cn/apache//trafficserver/trafficserver-3.0.1.tar.bz2
+tar -xvjf trafficserver-3.0.1.tar.bz2
+		</screen>
+		<screen>
+		<![CDATA[
+cd trafficserver-3.0.1
+./configure --prefix=/srv/trafficserver-3.0.1 && make && make install
+		]]>
+		</screen>
+	</section>
+	<section id="tc.config">
+		<title>Configure</title>
+		<screen>
+		<![CDATA[
+修改配置
+vi records.config
+  CONFIG proxy.config.proxy_name STRING cache1 			### 修改成cache的server name即可
+  CONFIG proxy.config.cluster.ethernet_interface STRING eth0 	### 修改成需要侦听的interface名称，默认是 null
+  CONFIG proxy.config.admin.user_id STRING nobody 		### 用来运行 traffic server 的用户,默认是nobody
+  CONFIG proxy.config.http.server_port INT 80			### traffic server 侦听的端口，默认是8080
+
+vi cache.config
+dest_domain=www.example.com scheme=http     revalidate=2h
+
+vi remap.conf
+map http://www.example.com	http://10.0.0.51  #前一个是用户访问的地址，后一个是源站点的IP，或者域名
+
+配置变更应用生效
+/srv/ts/bin/traffic_line -x
+
+启动服务
+
+/srv/ts/bin/trafficserver start
+
+
+./traffic_shell
+show
+show:cache
+show:cache-stats
+show:proxy-stats
+
+./logstats -i www.example.com
+
+如果服务器down掉，默认会生成core文件，在/ts
+使用
+
+ts/bin/traffic_server -c core.1234
+		]]>
+		</screen>
+	</section>
+</chapter>

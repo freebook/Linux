@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="lighttpd.fastcgi">
+<section id="fastcgi">
 	<title>fastcgi</title>
 	<section>
 		<title>enable fastcgi</title>
@@ -7,7 +7,7 @@
 		<screen>
 $ sudo lighty-enable-mod fastcgi
 		</screen>
-		<section id="lighttpd.fastcgi.spawn-fcgi">
+		<section id="fastcgi.spawn-fcgi">
 			<title>spawn-fcgi</title>
 			<screen>
 			<![CDATA[
@@ -50,7 +50,7 @@ fastcgi.server    = ( ".php" =>
 			]]>
 			</screen>
 		</section>
-		<section  id="lighttpd.fastcgi.php-fpm">
+		<section  id="fastcgi.php-fpm">
 			<title>php-fpm</title>
 			<para></para>
 			<screen>

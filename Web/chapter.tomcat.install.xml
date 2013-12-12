@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.tomcat.install.xml 644 2013-07-22 09:40:47Z netkiller $ -->
-<section id="tomcat.install">
+<section id="install">
 	<title>Tomcat 安装与配置</title>
 	<section id="jdk">
 		<title>Tomcat 6</title>
@@ -75,7 +75,7 @@ make && make install
 
 	</section>
 
-	<section id="tomcat.7">
+	<section id="tomcat7">
 		<title>Tomcat 7</title>
 		<section>
 			<title>Server JRE</title>
@@ -339,7 +339,7 @@ Mon Jul 22 16:41:46 HKT 2013
 		</screen>
 	</section>
 
-	<section id="tomcat.mod_jk">
+	<section id="mod_jk">
 		<title>mod_jk</title>
 		<para>mod_jk 安装</para>
 		<screen>
@@ -403,7 +403,7 @@ JkMount  /jk/* worker1
 		</screen>
 		<para>分别测试apache,tomcat</para>
 	</section>
-	<section id="tomcat.proxy_ajp">
+	<section id="proxy_ajp">
 		<title>mod_proxy_ajp</title>
 		<para>包含虚拟主机配置文件</para>
 		<command># vi conf/httpd.conf</command>
