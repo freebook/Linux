@@ -23,7 +23,18 @@ $ cat /sys/class/net/eth0/statistics/tx_bytes
 	</section>
 	<section id="proc">
 		<title>/proc</title>
-
+		<section id="smaps">
+			<title>进程内存监控</title>
+			<para>/proc/进程id/smaps</para>
+			<screen>
+# cat /proc/1/smaps
+			</screen>
+			<para>查看进程使用交换分区的情况</para>
+			<screen>
+# awk '/^Swap:/ {SWAP+=$2}END{print SWAP" KB"}' /proc/25020/smaps   
+532 KB			
+			</screen>
+		</section>
 	</section>
 </chapter>
 

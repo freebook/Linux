@@ -91,6 +91,10 @@ find . -type f -mtime +7 -delete
 		<screen>
 find -exec ls -l {} \; | grep '2011-01-18'
 		</screen>
+		<para>查找*.html文件中aaa替换为bbb</para>
+		<screen>
+find . -name "*.html" -type f -exec sed -i "s/aaa/bbb/" {} \;		
+		</screen>
 	</section>
 	<section id="xargs">
 		<title>xargs</title>

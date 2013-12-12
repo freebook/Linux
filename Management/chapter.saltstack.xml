@@ -26,6 +26,7 @@ chkconfig salt-minion on
 			<![CDATA[
 cp /etc/salt/minion{,.original}
 sed -i '12,12imaster: salt.example.org' /etc/salt/minion
+
 cat >> /etc/hosts <<'EOF'
 
 192.168.2.1    salt.example.org
