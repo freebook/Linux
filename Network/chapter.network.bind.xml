@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.network.bind.xml 653 2013-07-29 10:12:42Z netkiller $ -->
-<chapter id="bind">
+<chapter id="index"><?dbhtml dir="bind" ?>
 	<title>DNS/Bind</title>
-	<section id="bind.install">
+	<section id="install">
 		<title>安装 bind9 </title>
 		<para>neo@master:~$ # apt-get install bind9 </para>
 		<para>named.conf.local.neo.org</para>
@@ -59,7 +59,7 @@ nameserver 172.16.0.2
 neo@master:~$
 		</screen>
 	</section>
-	<section id="bind.forwarders">
+	<section id="forwarders">
 		<title>forwarders</title>
 		<screen>
 options {
@@ -68,7 +68,7 @@ options {
 };
 		</screen>
 	</section>
-	<section id="bind.dlb">
+	<section id="dlb">
 		<title>Load Balancing</title>
 		<para>Load Balancing (DNS 轮循负载均衡)</para>
 		<para>Bind 8</para>
@@ -122,7 +122,7 @@ www IN A         10.50.1.122
 neo@master:~$
 		</screen>
 	</section>
-	<section id="bind.view">
+	<section id="view">
 		<title>view</title>
 		<screen>
 acl "cnc_view" {
@@ -152,7 +152,7 @@ zone "." { type hint; file "named.root"; };
 
 		</screen>
 	</section>
-	<section id="bind.slave">
+	<section id="slave">
 		<title>Master / Slave</title>
 		<section>
 			<title>master /etc/named.conf</title>
@@ -324,9 +324,9 @@ ns1.example.com.            1800    IN      A       120.100.100.20
 			</section>
 		</section>
 	</section>
-<section id="bind.tools">
+<section id="tools">
 		<title>DNS tools</title>
-	<section id="bind.dig">
+	<section id="dig">
 		<title>dig - DNS lookup utility</title>
 		<para>dig</para>
 		<para><![CDATA[ dig @<name server> <domain name> ]]></para>

@@ -1,6 +1,6 @@
-<chapter id="dhcp">
+<chapter id="index"><?dbhtml dir="dhcp" ?>
 	<title>DHCP</title>
-	<section id="dhcp.server">
+	<section id="server">
 		<title>DHCP Server</title>
 		<para></para>
 		<para>eth0 公网ip</para>
@@ -32,7 +32,7 @@ subnet 192.168.1.0 netmask 255.255.255.0 {
 		]]>
 		</screen>
 	</section>
-	<section id="dhcp.client">
+	<section id="client">
 		<title>dhclient</title>
 		<para>all interface</para>
 		<screen>
@@ -43,7 +43,7 @@ $ sudo dhclient
 $ sudo dhclient eth0	
 		</screen>
 	</section>
-	<section id="dhcp.windows">
+	<section id="windows">
 		<title>release matching connections</title>
 		<para>windows</para>
 		<screen>

@@ -1,4 +1,4 @@
-<chapter id="innd">
+<chapter id="index"><?dbhtml dir="innd" ?>
 	<title>News Group (innd)</title>
 	<para>homepage: http://www.isc.org/inn.html</para>
 	<procedure><title>innd</title>
@@ -56,19 +56,19 @@ Starting INND system:                                      [  OK  ]
 	</procedure>
 	<ulink url="news://neo.example.org">news://news.example.org</ulink>
 
-<section id="innd.authentication">
-	<title>User Authentication</title>
-	<procedure>
-		<title>Authinfo</title>
-		<step>
-			<para>ckpasswd</para>
-			<screen>
+	<section id="authentication">
+		<title>User Authentication</title>
+		<procedure>
+			<title>Authinfo</title>
+			<step>
+				<para>ckpasswd</para>
+				<screen>
 chown root /usr/lib/news/bin/auth/passwd/ckpasswd
 chmod 4555 /usr/lib/news/bin/auth/passwd/ckpasswd
-			</screen>
-		</step>
-		<step><para>shadow auth</para>
-			<screen>
+				</screen>
+			</step>
+			<step><para>shadow auth</para>
+				<screen>
 $ sudo vim /etc/news/readers.conf
 
 auth local {
@@ -79,10 +79,10 @@ access local {
         users: "neo"
         newsgroups: "*,!junk,!control,!control.*"
 }
-			</screen>
-		</step>
-		<step><para>passwd file</para>
-			<screen>
+				</screen>
+			</step>
+			<step><para>passwd file</para>
+				<screen>
 auth local {
        auth: "ckpasswd -f /etc/news/newsusers"
 }
@@ -91,16 +91,16 @@ access local {
         users: "neo"
         newsgroups: "*,!junk,!control,!control.*"
 }
-			</screen>
-		</step>
-		<step><para>dbm,ndbm</para>
-			<screen>
+				</screen>
+			</step>
+			<step><para>dbm,ndbm</para>
+				<screen>
 auth: "ckpasswd -d /etc/news/newsusers.ndbm"
-			</screen>
-		</step>
-	</procedure>
-</section>
-	<section id="innd.ctlinnd">
+				</screen>
+			</step>
+		</procedure>
+	</section>
+	<section id="ctlinnd">
 		<title>usenet 管理</title>
 		<screen>
 Usenet新闻组有以下几大类：
@@ -168,7 +168,7 @@ sudo ctlinnd newgroup rec.photographic.equipment.lens
 这 个 "go" 功 能 是 使 已 暂 停 服 务 的 innd 继 续 服 务 ，例 如 是 在 "pause" 或 是 "throttle" 后 ，可 以 使 用 这个 功 能 ， 但 是 要 注 意 笔 者 刚 才 提 过 [reason] 一 事 ， 在 "go" 中 使 用 的 [reason] 必须 要 与 "pause" 或是 "throttle" 中 的 [reason] 相 同 。
 		</screen>
 	</section>
-	<section id="innd.ssl">
+	<section id="ssl">
 		<title>通过SSL连接</title>
 		<screen>
 $ cat /etc/news/sasl.conf
@@ -204,7 +204,7 @@ Email Address []:openunix@163.com
 $ sudo chmod 640 cert.pem
 		</screen>
 	</section>
-	<section id="innd.rpm">
+	<section id="rpm">
 		<title>src.rpm 安装</title>
 			<para>下载文件</para>
 			<screen>

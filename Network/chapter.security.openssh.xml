@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.security.openssh.xml 651 2013-07-25 09:39:11Z netkiller $ -->
-<chapter id="openssh">
+<chapter id="index"><?dbhtml dir="openssh" ?>
 	<title>OpenSSH</title>
-	<section id="openssh.faq">
+	<section id="faq">
 		<title>安装 OpenSSH</title>
 		<para>使用下面命令安装OpenSSH</para>
 		<para>sudo apt-get install ssh</para>
 	</section>
-	<section id="openssh.config">
+	<section id="config">
 		<title>/etc/ssh/</title>
-		<section id="openssh.sshd_config">
+		<section id="sshd_config">
 			<title>sshd_config</title>
 			<screen>
 # vi /etc/ssh/sshd_config
 			</screen>
-			<section id="openssh.maxauthtries">
+			<section id="maxauthtries">
 				<title>Authentication 配置</title>
 				<para>连接后2m没有任何键盘输入以及屏幕输出，将自动切换SSH连接。</para>
 				<screen>
@@ -30,7 +30,7 @@ MaxAuthTries 6
 				</screen>
 			</section>
 
-			<section id="openssh.authorizedkeysfile">
+			<section id="authorizedkeysfile">
 				<title>Automatic SSH / SSH without password</title>
 				<para>config /etc/ssh/sshd_config</para>
 				<screen>
@@ -138,14 +138,14 @@ ls -l .ssh/
 					<para>禁止证书登陆 PubkeyAuthentication no; 或者 AuthorizedKeysFile      /dev/null</para>
 				</tip>
 			</section>
-			<section id="openssh.passwordauthentication">
+			<section id="passwordauthentication">
 				<title>disable password authentication</title>
 				<para>建议你使用证书登录，并禁用密码认证 PasswordAuthentication yes，这样更安全，且不会骇客穷举你的口令。</para>
 				<screen>
 PasswordAuthentication no
 				</screen>
 			</section>
-			<section id="openssh.gssapi">
+			<section id="gssapi">
 				<title>GSSAPI options</title>
 				<para>GSSAPI 基本用不到建议关闭</para>
 				<screen>
@@ -157,7 +157,7 @@ GSSAPICleanupCredentials yes
 #GSSAPIKeyExchange no
 				</screen>
 			</section>
-			<section id="openssh.ignoreuserknownhosts">
+			<section id="ignoreuserknownhosts">
 				<title>忽略known_hosts文件</title>
 				<para>/etc/ssh/sshd_config</para>
 				<screen>
@@ -165,7 +165,7 @@ IgnoreUserKnownHosts yes
 				</screen>
 			</section>
 		</section>
-		<section id="openssh.ssh_config">
+		<section id="ssh_config">
 			<title>ssh_config</title>
 			<section>
 				<title>ForwardAgent</title>
@@ -177,7 +177,7 @@ ForwardAgent yes
 		</section>
 	</section>
 
-	<section id="openssh.tunnel">
+	<section id="tunnel">
 		<title>OpenSSH Tunnel</title>
 		<para>mysql tunnel</para>
 		<screen>
@@ -203,7 +203,7 @@ ssh neo@www.example.com -D 1080
 		</section>
 	</section>
 
-	<section id="openssh.ssh-keygen">
+	<section id="ssh-keygen">
 		<title>ssh-keygen — authentication key generation, management and conversion</title>
 		<section>
 			<title>.ssh/known_hosts</title>
@@ -240,13 +240,13 @@ Original contents retained as /home/neo/.ssh/known_hosts.old
 
 	</section>
 
-	<section id="openssh.ssh-copy-id">
+	<section id="ssh-copy-id">
 		<title>ssh-copy-id - install your public key in a remote machine's authorized_keys</title>
 		<screen>
 ssh-copy-id [-i [identity_file]] [user@]machine
 		</screen>
 	</section>
-	<section id="openssh.ssh-agent">
+	<section id="ssh-agent">
 		<title>ssh-agent</title>
 		<screen>
 $ ssh-agent
@@ -306,10 +306,10 @@ The agent has no identities.
 		</section>
 	</section>
 
-	<section id="openssh.windows">
+	<section id="windows">
 		<title>OpenSSH for Windows</title>
 		<para>homepage: http://sshwindows.sourceforge.net/</para>
-		<section id="openssh.client.putty">
+		<section id="client.putty">
 			<title>Putty Client</title>
 			<procedure>
 				<step>

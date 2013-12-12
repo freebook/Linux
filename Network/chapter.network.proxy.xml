@@ -1,6 +1,6 @@
-<chapter id="proxy">
+<chapter id="index"><?dbhtml dir="proxy" ?>
 	<title>Proxy Server</title>
-	<section id="proxy.apache">
+	<section id="apache">
 		<title>Apache Proxy</title>
 		<command></command>
 		<screen>

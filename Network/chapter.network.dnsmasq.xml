@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="dnsmasq">
+<chapter id="index"><?dbhtml dir="dnsmasq" ?>
 	<title>dnsmasq</title>
-	<section id="dnsmasq.install">
+	<section id="install">
 		<title>Install</title>
 		<section>
 			<title>CentOS / Redhat</title>
@@ -22,7 +22,7 @@ iptables -A INPUT -p udp -m udp –dport 53 -j ACCEPT
 			</screen>
 		</section>
 	</section>
-	<section id="dnsmasq.conf">
+	<section id="conf">
 		<title>/etc/dnsmasq.conf</title>
 		<para>一般配置下面三处即可</para>
 		<screen>
@@ -35,7 +35,7 @@ conf-dir=/etc/dnsmasq.d
 /etc/init.d/dnsmasq restart
 		</screen>
 	</section>
-	<section id="dnsmasq.resolv-file">
+	<section id="resolv-file">
 		<title>dnsmasq.resolv.conf</title>
 		<para>让dnsmasq 接管DNS解析</para>
 		<screen>
@@ -73,7 +73,7 @@ or
 sudo killall -s SIGHUP dnsmasq
 		</screen>
 	</section>
-	<section id="dnsmasq.addn-hosts">
+	<section id="addn-hosts">
 		<title>dnsmasq.hosts</title>
 		<para>dnsmasq 默认会读取 /etc/hosts 如果你不想让它解析/etc/hosts文件，可以自己定义一个文件。</para>
 		<screen>
@@ -101,7 +101,7 @@ nslookup test.example.com 172.16.3.51
 		</screen>
 		<tip><para>注释no-hosts选项，可以实现 /etc/hosts 与 /etc/dnsmasq.hosts 共用</para></tip>
 	</section>
-	<section id="dnsmasq.server">
+	<section id="server">
 		<title>/etc/dnsmasq.d/dnsmasq.server.conf</title>
 		<para>配置域名使用那些DNS解析</para>
 		<screen>
@@ -125,7 +125,7 @@ server=/uk/208.67.220.220
 #server=/3.168.192.in-addr.arpa/10.1.2.3
 		</screen>
 	</section>
-	<section id="dnsmasq.address">
+	<section id="address">
 		<title>/etc/dnsmasq.d/dnsmasq.address.conf</title>
 		<screen>
 vim /etc/dnsmasq.d/dnsmasq.address.conf
@@ -150,7 +150,7 @@ address=/www.download.com/127.0.0.1
 			</screen>
 		</section>
 	</section>
-	<section id="dnsmasq.faq">
+	<section id="faq">
 		<title>FAQ</title>
 		<para>dnsdomainname: Unknown host</para>
 		<screen>

@@ -578,7 +578,7 @@ SSH(ACCEPT) net all        -           -            -         -                s
 		<title>Smooth Firewall</title>
 		<para></para>
 	</section>
-	<section>
+	<section id="sphirewall">
 		<title>Sphirewall</title>
 		<para>http://sphirewall.net/</para>
 	</section>
