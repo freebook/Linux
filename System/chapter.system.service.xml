@@ -75,6 +75,13 @@ exec /etc/init.d/rc S
 		<title>sysv-rc-conf</title>
 		<para>(ubuntu下sysv-rc-conf命令等同redhat下chkconfig命令)</para>
 		<screen>
+$ sudo apt-get install sysv-rc-conf
+		</screen>
+		<para>进入sysv-rc-conf TUI用户界面，你可以使用键盘方向键切换，使用空格键选择“X”表示选中，这个软件也支持鼠标操作。</para>
+		<screen>
+$ sudo sysv-rc-conf
+		</screen>
+		<screen>
 sysv-rc-conf gmond on
 sysv-rc-conf --list gmond
 		</screen>
@@ -151,7 +158,7 @@ ok: run: git-daemon: (pid 10323) 1s
 
 $ sudo sv restart git-daemon
 ok: run: git-daemon: (pid 10327) 1s
-		
+
 $ sudo sv stop git-daemon
 ok: down: git-daemon: 1s, normally up
 		</screen>
@@ -160,7 +167,7 @@ ok: down: git-daemon: 1s, normally up
 			<screen>
 $ sudo runsv git-daemon
 			</screen>
-		</section>		
+		</section>
 		<section id="runsvdir">
 			<title>runsvdir</title>
 			<para>运行/etc/service目录下的所有服务</para>
