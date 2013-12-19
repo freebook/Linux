@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="module">
 	<title>Module</title>
-		<screen>
+	<screen>
 server.modules              = (
 #                               "mod_rewrite",
 #                               "mod_redirect",
@@ -25,54 +25,54 @@ server.modules              = (
 #                               "mod_rrdtool",
                                 "mod_accesslog" )
 
-		</screen>
-		<section id="mod_simple_vhost">
-			<title>simple_vhost</title>
-			<screen>
+	</screen>
+	<section id="mod_simple_vhost">
+		<title>simple_vhost</title>
+		<screen>
 $ sudo lighty-enable-mod simple-vhost
-			</screen>
-			<para>simple-vhost.default-host = "www.example.com"</para>
+		</screen>
+		<para>simple-vhost.default-host = "www.example.com"</para>
 
-			<para>create your virtual host directory</para>
-			<screen>
+		<para>create your virtual host directory</para>
+		<screen>
 $ mkdir -p /var/www/www.example.com/html
-			</screen>
-			<para>create a test file</para>
-			<screen>
+		</screen>
+		<para>create a test file</para>
+		<screen>
 $ echo helloworld!!!> /var/www/www.example.com/html/index.html
-			</screen>
-		</section>
-		<section id="ssl">
-			<title>ssl</title>
-			<para>启用 ssl 模块</para>
-			<screen>
+		</screen>
+	</section>
+	<section id="ssl">
+		<title>ssl</title>
+		<para>启用 ssl 模块</para>
+		<screen>
 $ sudo lighttpd-enable-mod ssl
 [sudo] password for neo:
 Available modules: auth cgi fastcgi proxy rrdtool simple-vhost ssi ssl status userdir
 Already enabled modules: cgi fastcgi simple-vhost
 Enabling ssl: ok
 Run /etc/init.d/lighttpd force-reload to enable changes
-			</screen>
-			<para>创建 ssl 证书</para>
-			<screen>
+		</screen>
+		<para>创建 ssl 证书</para>
+		<screen>
 $ sudo openssl req -new -x509 -keyout server.pem -out server.pem -days 365 -nodes
 $ sudo chmod 400 server.pem
-			</screen>
-		</section>
-		<section id="redirect">
-			<title>redirect</title>
-			<screen>
-			<![CDATA[
+		</screen>
+	</section>
+	<section id="redirect">
+		<title>redirect</title>
+		<screen>
+		<![CDATA[
 url.redirect                = ( "^/music/(.+)" => "http://www.example.org/$1" )
-			]]>
-			</screen>
-			<para>301重定向</para>
-			<screen>
+		]]>
+		</screen>
+		<para>301重定向</para>
+		<screen>
 RewriteCond %{HTTP_HOST} ^example\.org$ [NC]
 RewriteRule ^(.*)$ http://www.example.org/$1 [R=301,L]
-			</screen>
-			<para>lighttpd 实现上面 apache功能</para>
-			<screen>
+		</screen>
+		<para>lighttpd 实现上面 apache功能</para>
+		<screen>
 $HTTP["host"] =~ "^example\.org" {
     url.redirect = (
         "^/(.*)$" => "http://www.example.org/$1"
@@ -82,40 +82,40 @@ $HTTP["host"] =~ "^example\.org" {
 $HTTP["host"] =~ "^example\.com$" {
   url.redirect = ( "^/(.*)" => "http://www.example.com/$1" )
 }
-			</screen>
-		</section>
-		<section id="rewrite">
-			<title>rewrite</title>
-			<para>example 1</para>
-			<screen>
+		</screen>
+	</section>
+	<section id="rewrite">
+		<title>rewrite</title>
+		<para>example 1</para>
+		<screen>
 url.rewrite-once = ( "^/wiki/(.*)$" => "/wiki/awki.cgi/$1" )
 $HTTP["url"] =~ "^/wiki" {
   $HTTP["url"] !~ "^/wiki/awki.cgi/" {
     url.access-deny = ("")
   }
 }
-			</screen>
-			<para>example 2</para>
-			<screen>
+		</screen>
+		<para>example 2</para>
+		<screen>
 $HTTP["host"] =~ "^.*\.(example.org)$" {
   url.rewrite-once = ( "^/(.*)" => "/index.php/$1" )
 }
-			</screen>
-			<para>example 3</para>
-			<screen>
-			<![CDATA[
+		</screen>
+		<para>example 3</para>
+		<screen>
+		<![CDATA[
 $HTTP["host"] =~ "^.*\.(example.org)$" {
   url.rewrite = (
         "^/(images|stylesheet).*" => "/$0",
         "^/(.*)" => "/index.php/$1"
   )
 }
-			]]>
-			</screen>
-			<section id="rewrite.qsa">
-				<title>Lighttpd Rewrite QSA</title>
-				<screen>
-				<![CDATA[
+		]]>
+		</screen>
+		<section id="rewrite.qsa">
+			<title>Lighttpd Rewrite QSA</title>
+			<screen>
+			<![CDATA[
 # Apache
 RewriteRule ^/index\.html$ /index.php [QSA]
 RewriteRule ^/team_(.*)\.html$ /team.php?id=$1 [QSA]
@@ -123,43 +123,43 @@ RewriteRule ^/team_(.*)\.html$ /team.php?id=$1 [QSA]
 #lighttpd
 "^/index\.html(.*)"                     => "/index.php$1",
 "^/team_(\w+)\.html\?(.*)"              => "/team.php?id=$1&$2",
-				]]>
-				</screen>
-				<para>ref: http://redmine.lighttpd.net/wiki/lighttpd/MigratingFromApache</para>
-				<screen>
-				<![CDATA[
+			]]>
+			</screen>
+			<para>ref: http://redmine.lighttpd.net/wiki/lighttpd/MigratingFromApache</para>
+			<screen>
+			<![CDATA[
 url.rewrite = (
         "^/index\.html(.*)"                     => "/index.php$1",
         "^/index\.html"                         => "/index.php",
         "^/team_(.*)\.html"                     => "/team.php?id=$1",
         "^/team_(\w+)\.html\?(.*)"              => "/team.php?id=$1&$2"
 )
-				]]>
-				</screen>
-			</section>
+			]]>
+			</screen>
 		</section>
-		<section id="alias">
-			<title>alias</title>
-			<screen>
-			<![CDATA[
+	</section>
+	<section id="alias">
+		<title>alias</title>
+		<screen>
+		<![CDATA[
 $HTTP["host"] =~ "^.*\.(example.org)$" {
     alias.url = (
         "/images" => "/home/neo/workspace/Development/photography/application/photography/images",
         "/stylesheet" => "/home/neo/workspace/Development/photography/application/photography/stylesheet"
     )
 }
-			]]>
-			</screen>
-		</section>
-		<section id="auth">
-			<title>auth</title>
-			<para>enable auth</para>
-			<screen>
+		]]>
+		</screen>
+	</section>
+	<section id="auth">
+		<title>auth</title>
+		<para>enable auth</para>
+		<screen>
 $ sudo lighttpd-enable-mod auth
-			</screen>
-			<para>/etc/lighttpd/conf-enabled/05-auth.conf</para>
-			<screen>
-			<![CDATA[
+		</screen>
+		<para>/etc/lighttpd/conf-enabled/05-auth.conf</para>
+		<screen>
+		<![CDATA[
 $ sudo vim  conf-enabled/05-auth.conf
 
 auth.backend = "plain"
@@ -172,48 +172,48 @@ auth.require = ( "/tmp/" =>
         "require" => "user=neo"
         )
 )
-			]]>
-			</screen>
-			<para>create a passwd file</para>
-			<screen>
+		]]>
+		</screen>
+		<para>create a passwd file</para>
+		<screen>
 $ sudo vim .secret
 neo:chen
 
 $ sudo chmod 400 .secret
 $ sudo chown www-data /etc/lighttpd/.secret
-			</screen>
-			<para>$ sudo /etc/init.d/lighttpd reload</para>
-		</section>
-		<section id="compress">
-			<title>compress</title>
-			<para>创建cache目录</para>
-			<screen>
+		</screen>
+		<para>$ sudo /etc/init.d/lighttpd reload</para>
+	</section>
+	<section id="compress">
+		<title>compress</title>
+		<para>创建cache目录</para>
+		<screen>
 mkdir -p /var/cache/lighttpd/compress
-			</screen>
-			<para>配置lighttpd.conf文件</para>
-			<para>找到server.modules列表,去掉"mod_compress"注释,再打开compress module的注释</para>
-			<screen>
+		</screen>
+		<para>配置lighttpd.conf文件</para>
+		<para>找到server.modules列表,去掉"mod_compress"注释,再打开compress module的注释</para>
+		<screen>
 #### compress module
 compress.cache-dir         = "/var/lighttpd/cache/compress/"
 compress.filetype          = ("text/plain", "text/html")
-			</screen>
-			<para>Compressing Dynamic Content</para>
-			<para>php.ini</para>
-			<screen>
+		</screen>
+		<para>Compressing Dynamic Content</para>
+		<para>php.ini</para>
+		<screen>
 zlib.output_compression = On
 zlib.output_handler = On
-			</screen>
-			<para>最后使用telnet测试</para>
-			<command>telnet www.bg7nyt.cn 80</command>
-			<screen>
+		</screen>
+		<para>最后使用telnet测试</para>
+		<command>telnet www.bg7nyt.cn 80</command>
+		<screen>
 GET /index.html HTTP/1.0
 Host: 10.10.100.183
 Accept-Encoding: gzip,deflate
-			</screen>
-			<para>看到乱码输出,而非HTML,表示配置成功.</para>
-			<example>
-				<title>lighttpd compress</title>
-				<screen>
+		</screen>
+		<para>看到乱码输出,而非HTML,表示配置成功.</para>
+		<example>
+			<title>lighttpd compress</title>
+			<screen>
 $HTTP["host"] =~ "www\.example\.com$" {
 
 	compress.cache-dir = "/www/compress/"
@@ -223,39 +223,39 @@ $HTTP["host"] =~ "www\.example\.com$" {
 		expire.url = (""=>"access 30 seconds")
 	}
 }
-				</screen>
-			</example>
-		</section>
-		<section id="expire">
-			<title>expire</title>
-			<command><![CDATA[  <access|modification> <number> <years|months|days|hours|minutes|seconds> ]]></command>
-			<screen>
-expire.url = ( "/images/" => "access 1 hours" )
 			</screen>
-			<para>Example to include all sub-directories: </para>
-			<screen>
+		</example>
+	</section>
+	<section id="expire">
+		<title>expire</title>
+		<command><![CDATA[  <access|modification> <number> <years|months|days|hours|minutes|seconds> ]]></command>
+		<screen>
+expire.url = ( "/images/" => "access 1 hours" )
+		</screen>
+		<para>Example to include all sub-directories: </para>
+		<screen>
 $HTTP["url"] =~ "^/images/" {
 	expire.url = ( "" => "access 1 hours" )
 }
-			</screen>
-			<example>
-				<title>lighttpd expire</title>
-				<screen>
+		</screen>
+		<example>
+			<title>lighttpd expire</title>
+			<screen>
 $HTTP["host"] =~ "www\.example\.com$" {
 	$HTTP["url"] =~ "(\.png|\.css|\.js|\.jpg|\.gif)$" {
 		expire.url = (""=>"access 30 seconds")
 	}
 }
-				</screen>
-			</example>
-		</section>
-		<section id="status">
-			<title>status</title>
-			<screen>
+			</screen>
+		</example>
+	</section>
+	<section id="status">
+		<title>status</title>
+		<screen>
 $ sudo lighty-enable-mod status
 $ sudo /etc/init.d/lighttpd force-reload
-			</screen>
-		</section>
+		</screen>
+	</section>
 	<section id="setenv">
 		<title>setenv</title>
 		<screen>
@@ -304,6 +304,18 @@ $HTTP["user-agent"] =~ "Googlebot|Sosospider+|eMule|Wget|^Java|^PHP|Ruby|Python"
 		<screen>
 $HTTP["user-agent"] =~ "Baiduspider+" {
     connection.delay-seconds = 10
+}
+		</screen>
+	</section>
+	<section id="ngx_http_spdy_module">
+		<title>spdy</title>
+		<screen>
+server {
+    listen 443 ssl spdy;
+
+    ssl_certificate server.crt;
+    ssl_certificate_key server.key;
+    ...
 }
 		</screen>
 	</section>
