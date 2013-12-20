@@ -21,7 +21,20 @@ events {
 
 	<section id="http">
 		<title>http 配置</title>
-
+		<para>自定义缓冲区相关设置</para>
+		<screen>
+client_body_buffer_size  1K;
+client_header_buffer_size 1k;
+client_max_body_size 1k;
+large_client_header_buffers 2 1k;		
+		</screen>
+		<para>超时相关设置</para>
+		<screen>
+client_body_timeout   10;
+client_header_timeout 10;
+keepalive_timeout  	  65;
+send_timeout          10;		
+		</screen>
 		<section>
 			<title>X-Forwarded-For</title>
 			<screen>
@@ -78,6 +91,9 @@ client_header_buffer_size 32k;
 large_client_header_buffers 4 32k;
 client_max_body_size 8m;
 			</screen>
+			<para>ssi_silent_errors 默认值是off，开启后在处理SSI文件出错时不输出错误提示:"[an error occurred while processing the directive] "</para>
+			<para>ssi_types 默认是ssi_types text/html，如果需要shtml支持，则需要设置：ssi_types text/shtml</para>
+			<para>ssi_value_length 默认值是 256，用于定义SSI参数的长度。</para>
 		</section>
 	</section>
 
