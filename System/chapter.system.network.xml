@@ -241,7 +241,7 @@ nameserver 202.96.134.133
 		</screen>
 	</section>
 	<section id="forwarding">
-		<title>sysctl</title>
+		<title>IP forwarding(IP转发)</title>
 		<para>enable IP forwarding</para>
 		<screen>
 neo@shenzhen:~$ sysctl net.ipv4.ip_forward

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.security.firewall.iptables.xml 583 2013-05-14 10:04:59Z netkiller $ -->
 <section id="sysctl">
-	<title>sysctl - configure kernel parameters at runtime</title>
+	<title>TCP/IP 相关内核配置项</title>
 	<para></para>
 	<bridgehead renderas="sect3">checking status</bridgehead>
 	<screen>
@@ -76,13 +76,6 @@ net.ipv4.ip_forward = 0
 		<screen>
 # Disable ping requests
 net.ipv4.icmp_echo_ignore_all = 1
-		</screen>
-	</section>
-	<section>
-		<title>sysctl.d</title>
-		<screen>
-$ ls /etc/sysctl.d/		
-$ cat /etc/sysctl.d/30-postgresql-shm.conf
 		</screen>
 	</section>
 </section>

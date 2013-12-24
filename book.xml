@@ -76,7 +76,7 @@
 	<!ENTITY part.mail.xml				 	SYSTEM "part.mail.xml">
 
 	<!ENTITY chapter.voip 	SYSTEM "chapter.voip.xml">
-
+	
 	<!ENTITY part.im 			SYSTEM "part.im.xml">
 	<!ENTITY chapter.gps 		SYSTEM "chapter.gps.xml">
 

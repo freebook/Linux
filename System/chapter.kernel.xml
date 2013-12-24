@@ -1,6 +1,18 @@
-<chapter>
+<chapter id="kernel">
 	<title>Kernel</title>
-	<screen>
+	<chapterinfo>
+		<abstract>
+		  <para></para>
+		</abstract>
+		<keywordset>
+			<keyword>sys</keyword>
+			<keyword>proc</keyword>
+			<keyword>sysctl</keyword>
+		</keywordset>
+	</chapterinfo>
+	<section id="sys.proc">
+		<title>编译安装内核</title>
+		<screen>
 wget -q -c http://www.kernel.org/pub/linux/kernel/v3.0/linux-3.0.1.tar.bz2
 tar jxvf linux-3.0.1.tar.bz2
 
@@ -11,5 +23,50 @@ make menuconfig
 make
 make modules_install
 make install
-	</screen>
+		</screen>
+	</section>
+	<section id="sysctl">
+		<title>sysctl - configure kernel parameters at runtime</title>
+		<section>
+			<title>sysctl.d</title>
+			<screen>
+$ ls /etc/sysctl.d/		
+$ cat /etc/sysctl.d/30-postgresql-shm.conf
+			</screen>
+		</section>		
+		<section id="vm.overcommit_memory">
+			<title>vm.overcommit_memory</title>
+			<para>内存与交换分区分配相关</para>
+			<para>https://access.redhat.com/site/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Performance_Tuning_Guide/s-memory-captun.html</para>
+			<screen>
+vm.overcommit_memory = 1
+			</screen>
+		</section>
+
+	</section>
+	<section id="sys">
+		<title>/sys</title>
+		<section>
+			<title>/sys/class/net/</title>
+			<screen>
+$ cat /sys/class/net/eth0/statistics/rx_bytes
+$ cat /sys/class/net/eth0/statistics/tx_bytes
+			</screen>
+		</section>
+	</section>
+	<section id="proc">
+		<title>/proc</title>
+		<section id="smaps">
+			<title>进程内存监控</title>
+			<para>/proc/进程id/smaps</para>
+			<screen>
+# cat /proc/1/smaps
+			</screen>
+			<para>查看进程使用交换分区的情况</para>
+			<screen>
+# awk '/^Swap:/ {SWAP+=$2}END{print SWAP" KB"}' /proc/25020/smaps
+532 KB
+			</screen>
+		</section>
+	</section>
 </chapter>
