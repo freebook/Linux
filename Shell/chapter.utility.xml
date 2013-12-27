@@ -3,9 +3,9 @@
 <chapter id="utility">
 	<title>Utility Programs</title>
 	&chapter.cmd.text.vim.xml;
+	&chapter.utility.curl.xml;
 	&chapter.cmd.text.awk.xml;
 	&chapter.cmd.text.sed.xml;
-	&chapter.cmd.curl.xml;
 	&chapter.utility.expect.xml;
 	&chapter.klish.xml;
 	&chapter.utility.wget.xml;

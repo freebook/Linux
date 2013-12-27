@@ -2,7 +2,6 @@
 <!-- $Id: chapter.command.xml 548 2013-03-28 07:57:46Z netkiller $ -->
 <chapter id="index"><?dbhtml dir="cli" ?>
 	<title>Shell command</title>
-	&chapter.utility.xml;
 
 	&chapter.cmd.man.xml;
 	&chapter.cmd.sys.xml;
@@ -132,15 +131,15 @@ www09:x:529:529::/home/www09:/sbin/nologin
 		<para></para>
 		<screen>
 # cat passwd.txt
-neo:neopass　
+neo:neopass
 jam:jampass
 
-# cat passwd.txt | chpasswd　
+# cat passwd.txt | chpasswd
 		</screen>
 		<screen>
 		<![CDATA[
 #　chpasswd　-c　<　passwd.txt
-		]]>　
+		]]>
 		</screen>
 		<para>passwd 命令实现相同功能</para>
 		<screen>

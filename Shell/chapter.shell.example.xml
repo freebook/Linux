@@ -193,5 +193,26 @@ done
         	</screen>
         </section>
     </section>
- 
+ 	<section>
+		<title>to convert utf-8 from gb2312 code</title>
+		<programlisting>
+		<![CDATA[
+perl   -  MEncode   -  pi   -  e   '  $_=encode_utf8(decode(gb2312=>$_))  '   filename
+for f in `find .`; do [ -f $f ] && perl -MEncode -pi -e '$_=encode_utf8(decode(gb2312=>$_))' $f; done;
+		]]>
+		</programlisting>
+	</section>		
+	<section>
+		<title>使用内存的百分比 </title>
+		<screen>
+$ free | sed -n 2p | awk '{print "used="$3/$2*100"%","free="$4/$2*100"%"}'
+used=53.9682% free=46.0318%		
+		</screen>
+	</section>
+	<section>
+		<title>合并apache被cronlog分割的log文件</title>
+		<screen>
+$ find 2009 -type f -name access.log -exec cat {} >> access.log \;
+		</screen>
+	</section>
 </chapter>
