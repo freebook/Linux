@@ -134,5 +134,5 @@ mail($to,$subject,$txt,$headers);
 	</section>
 </chapter>
 
-	&chapter.faq.xml;
 	&chapter.fax.xml;
+	&chapter.faq.xml;

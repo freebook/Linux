@@ -461,6 +461,9 @@ $ sqlmap -u "http://172.16.0.44/test/testdb.php?id=12" --user-agent="Mozilla/5.0
 			<title>--headers</title>
 		</section>
 		<section>
+			<title>--referer</title>
+		</section>		
+		<section>
 			<title>auth</title>
 			<section>
 				<title>--auth-type</title>
@@ -472,9 +475,7 @@ $ sqlmap -u "http://172.16.0.44/test/testdb.php?id=12" --user-agent="Mozilla/5.0
 		<section>
 			<title>--proxy</title>
 		</section>
-		<section>
-			<title></title>
-		</section>
+
 		<section>
 			<title>--threads</title>
 		</section>
