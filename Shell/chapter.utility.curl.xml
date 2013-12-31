@@ -194,6 +194,27 @@ $ curl -H Accept-Encoding:gzip,defalte http://www.example.com/product/374218.htm
 curl -H HOST:www.example.com -I http://172.16.1.10/product/374218.html
 			</screen>
 		</section>
+		<section>
+			<title>HTTP 认证</title>
+			<para>未认证返回401</para>
+			<screen>
+			<![CDATA[
+# curl --compressed http://webservice.example.com/members
+<html>
+<head><title>401 Authorization Required</title></head>
+<body bgcolor="white">
+<center><h1>401 Authorization Required</h1></center>
+<hr><center>nginx</center>
+</body>
+</html>
+			]]>
+			</screen>
+			<para><![CDATA[-u/--user <user[:password]> Set server user and password]]></para>
+			<para>使用 -u或者 --user 指定用户与密码</para>
+			<screen>
+# curl --compressed -uneo:chen http://webservice.example.com/members
+			</screen>
+		</section>
 	</section>
 	<section>
 		<title>curl-config</title>
