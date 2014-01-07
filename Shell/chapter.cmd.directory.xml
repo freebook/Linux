@@ -238,5 +238,24 @@ Kernel \r on an \m
 CentOS release 5.4 (Final)
 		</screen>
 	</section>
+	<section id="split">
+		<title>split - split a file into pieces</title>
+		<section>
+			<title>按行分割文件</title>
+			<subtitle>-l, --lines=NUMBER put NUMBER lines per output file</subtitle>
+			<para>每10000行产生一个新文件</para>
+			<screen>
+# split -l 10000 book.txt myfile		
+			</screen>			
+		</section>
+		<section>
+			<title>按尺寸分割文件</title>
+			<subtitle>-b, --bytes=SIZE put SIZE bytes per output file</subtitle>
+			<para>下面的例子是每10兆分割为一个新文件</para>
+			<screen>
+split -b 10m large.bin new_file_prefix			
+			</screen>
+		</section>
+	</section>
 	&chapter.cmd.directory.find.xml;
 </section>

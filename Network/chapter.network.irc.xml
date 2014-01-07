@@ -279,5 +279,13 @@ sudo apt-get install irssi
 /quit
 			</screen>
 		</section>
+		<section id="f-irc">
+			<title>F-IRC</title>
+			<para>http://www.vanheusden.com/f-irc/</para>
+			<screen>
+
+			</screen>
+		</section>
+
 	</section>
 </chapter>
