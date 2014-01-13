@@ -9,7 +9,7 @@
 sudo apt-get install ubuntu-restricted-extras
 		</screen>
 	</section>
-	<section>
+	<section id="ibus">
 		<title>Keyboard Input Methods(输入法)</title>
 		<screen>
 ibus-daemon -r -d -x
