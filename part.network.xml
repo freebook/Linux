@@ -10,13 +10,13 @@
 	&chapter.network.proxy;
 	&chapter.security.firewall;
 	&chapter.security.stunnel;
+	&chapter.security.openssh;
 	&chapter.network.vpn;
 	&chapter.network.p2p;
 	&chapter.network.innd;
 	&chapter.network.irc;
 	&chapter.network.jabber;
 	&chapter.network.snmp;
-	&chapter.network.authentication.xml;
-	&chapter.security.openssh;
+	
 	
 </part>

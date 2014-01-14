@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="nis">
+	<title>Network Information Service (NIS)</title>
+	<section id="nis.install">
+		<title>安装NIS服务器</title>
+		<procedure>
+			<title>安装NIS服务器</title>
+			<step>
+				<para>ypserv</para>
+				<screen>
+				<![CDATA[
+# yum install ypserv -y
+				]]>
+				</screen>
+			</step>
+			<step>
+				<para>/etc/hosts</para>
+				<screen>
+				<![CDATA[
+[root@nis ~]# hostname nis.example.com				
+[root@nis ~]# echo "192.168.3.5 nis.example.com" >> /etc/hosts
+[root@nis ~]# cat /etc/hosts
+# Do not remove the following line, or various programs
+# that require network functionality will fail.
+127.0.0.1 datacenter.example.com datacenter localhost.localdomain localhost
+::1 localhost6.localdomain6 localhost6
+127.0.0.1 kerberos.example.com
+192.168.3.5 nis.example.com
+				]]>
+				</screen>
+			</step>
+			<step>
+				<para>设置NIS域名</para>
+				<screen>
+				<![CDATA[
+# nisdomainname example.com
+# nisdomainname
+example.com
+				]]>
+				</screen>
+				<para>加入 /etc/rc.local 开机脚本</para>
+				<screen>
+				<![CDATA[
+# echo '/bin/nisdomainname example.com' >> /etc/rc.local
+# echo 'NISDOMAIN=example.com' >> /etc/sysconfig/network
+				]]>
+				</screen>
+			</step>
+			<step>
+				<para>设置/etc/ypserv.conf主配置文件</para>
+				<para>
+				</para>
+				<screen>
+				<![CDATA[
+# vim /etc/ypserv.conf
+
+127.0.0.0/255.255.255.0 : * : * : none
+192.168.3.0/255.255.255.0 : * : * : none
+* : * : * : deny
+				]]>
+				</screen>
+			</step>
+			<step>
+				<para>创建 /var/yp/securenets 文件</para>
+				<para>securenets 安全配置文件</para>
+				<screen>
+				<![CDATA[
+# vim /var/yp/securenets
+host 127.0.0.1
+255.255.255.0 192.168.3.0
+				]]>
+				</screen>
+			</step>
+			<step>
+				<para>启动NIS服务器</para>
+				<para>NIS服务器需要portmap服务的支持，并且需要启动ypserv和yppasswdd两个服务</para>
+				<screen>
+				<![CDATA[
+[root@nis ~]# service portmap status
+portmap (pid 2336)
+is running...
+[root@nis ~]# service ypserv start
+Starting YP
+server services: [ OK ]
+[root@nis ~]# service yppasswdd start
+Starting YP passwd service: [ OK ]
+				]]>
+				</screen>
+			</step>
+			<step>
+				<para>构建NIS数据库</para>
+				<para>32bit: /usr/lib/yp/ypinit -m</para>
+				<para>64bit: /usr/lib64/yp/ypinit -m</para>
+				<screen>
+				<![CDATA[
+[root@nis ~]# /usr/lib64/yp/ypinit -m
+
+At this point, we have to construct a list of the hosts which will run NIS
+servers.  nis.example.com is in the list of NIS server hosts.  Please continue to add
+the names for the other hosts, one per line.  When you are done with the
+list, type a <control D>.
+        next host to add:  nis.example.com
+        next host to add:
+        next host to add:
+The current list of NIS servers looks like this:
+
+nis.example.com
+
+
+Is this correct?  [y/n: y]
+We need a few minutes to build the databases...
+Building /var/yp/example.com/ypservers...
+Running /var/yp/Makefile...
+gmake[1]: Entering directory `/var/yp/example.com'
+Updating passwd.byname...
+Updating passwd.byuid...
+Updating group.byname...
+Updating group.bygid...
+Updating hosts.byname...
+Updating hosts.byaddr...
+Updating rpc.byname...
+Updating rpc.bynumber...
+Updating services.byname...
+Updating services.byservicename...
+Updating netid.byname...
+Updating protocols.bynumber...
+Updating protocols.byname...
+Updating mail.aliases...
+gmake[1]: Leaving directory `/var/yp/example.com'
+
+nis.example.com has been set up as a NIS master server.
+
+Now you can run ypinit -s nis.example.com on all slave server.
+
+				]]>
+				</screen>
+				<para>检查</para>
+				<screen>
+				<![CDATA[
+# ls /var/yp/
+binding example.com Makefile nicknames securenets ypservers				
+				]]>
+				</screen>
+			</step>
+			<step>
+				<para>Service</para>
+				<screen>
+				<![CDATA[
+[root@datacenter ~]# chkconfig --list | grep yp
+ypbind          0:off   1:off   2:off   3:off   4:off   5:off   6:off
+yppasswdd       0:off   1:off   2:off   3:off   4:off   5:off   6:off
+ypserv          0:off   1:off   2:off   3:off   4:off   5:off   6:off
+ypxfrd          0:off   1:off   2:off   3:off   4:off   5:off   6:off
+
+[root@nis ~]# chkconfig ypserv on
+[root@nis ~]# chkconfig yppasswdd on
+				]]>
+				</screen>
+			</step>
+		</procedure>
+	</section>
+	<section id="nis.server.slave">
+		<title>Slave NIS Server</title>
+		<para>Now you can run ypinit -s nis.example.com on all slave server.
+		</para>
+		<screen>
+		<![CDATA[
+# ypinit -s nis.example.com		
+		]]>
+		</screen>
+	</section>
+	<section id="nis.client">
+		<title>客户机软件安装</title>
+		<procedure>
+			<title>安装NIS客户端软件</title>
+			<step>
+				<para>NIS客户机需要安装ypbind和yp-tools两个软件包</para>
+				<screen>
+				<![CDATA[
+# yum install ypbind yp-tools -y
+				]]>
+				</screen>
+			</step>
+			<step>
+				<para>NIS域名</para>
+				<screen>
+				<![CDATA[
+# nisdomainname example.com
+				]]>
+				</screen>
+			</step>
+			<step>
+				<para>/etc/hosts</para>
+				<screen>
+				<![CDATA[
+192.168.3.5 nis.example.com
+				]]>
+				</screen>
+			</step>
+			<step>
+				<para>/etc/yp.conf</para>
+				<screen>
+				<![CDATA[
+# vim /etc/yp.conf
+domain example.com server nis.example.com
+				]]>
+				</screen>
+			</step>
+			<step>
+				<para>/etc/nsswitch.conf</para>
+				<screen>
+				<![CDATA[
+# vim /etc/nsswitch.conf
+passwd: files nis
+shadow: files nis
+group: files nis
+hosts: files nis dns
+				]]>
+				</screen>
+			</step>
+			<step>
+				<para>启动ypbind服务程序</para>
+				<screen>
+				<![CDATA[
+[root@test ~]# service portmap status
+portmap is stopped
+[root@test ~]# service portmap start
+Starting portmap: [ OK ]
+[root@test ~]# service ypbind start
+Turning on allow_ypbind SELinux boolean
+Binding to the NIS domain: [ OK ]
+Listening for an NIS domain server..
+				]]>
+				</screen>
+			</step>
+			<step>
+				<para>yp-tools 测试工具</para>
+				<para>yptest 命令可对NIS服务器进行自动测试</para>
+				<screen>
+				<![CDATA[
+# yptest	
+				]]>
+				</screen>
+				<para>ypwhich 命令可显示NIS客户机所使用的NIS服务器的主机名称和数据库文件列表</para>
+				<screen>
+				<![CDATA[
+# ypwhich
+# ypwhich -x			
+				]]>
+				</screen>
+				<para>ypcat命令显示数据库文件列表和指定数据库的内容</para>
+				<screen>
+				<![CDATA[
+# ypcat -x
+# ypcat passwd				
+				]]>
+				</screen>
+			</step>
+			<step>
+				<para>NIS Client Service</para>
+				<screen>
+				<![CDATA[
+# chkconfig ypbind on				
+				]]>
+				</screen>
+			</step>
+		</procedure>
+	</section>
+	<section id="nis.authentication">
+		<title>Authentication Configuration</title>
+		<screen>
+		<![CDATA[
+# authconfig-tui		
+		]]>
+		</screen>
+		<para>Use NIS</para>
+		<screen>
+		<![CDATA[
+                ┌────────────────┤ Authentication Configuration ├─────────────────┐
+                │                                                                 │
+                │  User Information        Authentication                         │
+                │  [ ] Cache Information   [*] Use MD5 Passwords                  │
+                │  [ ] Use Hesiod          [*] Use Shadow Passwords               │
+                │  [ ] Use LDAP            [ ] Use LDAP Authentication            │
+                │  [*] Use NIS             [ ] Use Kerberos                       │
+                │  [ ] Use Winbind         [ ] Use SMB Authentication             │
+                │                          [ ] Use Winbind Authentication         │
+                │                          [ ] Local authorization is sufficient  │
+                │                                                                 │
+                │            ┌────────┐                      ┌──────┐             │
+                │            │ Cancel │                      │ Next │             │
+                │            └────────┘                      └──────┘             │
+                │                                                                 │
+                │                                                                 │
+                └─────────────────────────────────────────────────────────────────┘		
+		]]>
+		</screen>
+		<para>NIS Settings</para>
+		<screen>
+		<![CDATA[
+                        ┌─────────────────┤ NIS Settings ├─────────────────┐
+                        │                                                  │
+                        │ Domain: example.com_____________________________ │
+                        │ Server: nis.example.com_________________________ │
+                        │                                                  │
+                        │         ┌──────┐                 ┌────┐          │
+                        │         │ Back │                 │ Ok │          │
+                        │         └──────┘                 └────┘          │
+                        │                                                  │
+                        │                                                  │
+                        └──────────────────────────────────────────────────┘
+		]]>
+		</screen>
+	</section>
+	<section id="nis.example">
+		<title>application example</title>
+		<para>nis server:</para>
+		<para>在NIS服务器上创建一个test用户</para>
+		<screen>
+		<![CDATA[
+# adduser test
+# passwd test
+# /usr/lib64/yp/ypinit -m
+		]]>
+		</screen>
+		<para>nis client</para>
+		<para>使用test用户登录到客户机</para>
+		<screen>
+		<![CDATA[
+ssh test@client.example.com		
+		]]>
+		</screen>
+		<para>测试</para>
+		<screen>
+		<![CDATA[
+[root@test ~]# yptest
+Test 1: domainname
+Configured domainname is "example.com"
+
+Test 2: ypbind
+Used NIS server:
+nis.example.com
+
+Test 3: yp_match
+WARNING: No such key in map (Map
+passwd.byname, key nobody)
+
+Test 4: yp_first
+neo
+neo:$1$e1nd3pts$s7NikMnKwpL4vUp2LM/N9.:500:500::/home/neo:/bin/bash
+
+Test 5: yp_next
+test
+test:$1$g4.VCB7i$I/N5W/imakprFdtP02i8/.:502:502::/home/test:/bin/bash
+svnroot svnroot:!!:501:501::/home/svnroot:/bin/bash
+
+Test 6: yp_master
+nis.example.com
+
+Test 7: yp_order
+1271936660
+
+Test 8: yp_maplist
+rpc.byname
+protocols.bynumber
+ypservers
+passwd.byname
+hosts.byname
+rpc.bynumber
+group.bygid
+services.byservicename
+mail.aliases
+passwd.byuid
+services.byname
+netid.byname
+protocols.byname
+group.byname
+hosts.byaddr
+
+Test 9: yp_all
+neo
+neo:$1$e1nd3pts$s7NikMnKwpL4vUp2LM/N9.:500:500::/home/neo:/bin/bash
+test
+test:$1$g4.VCB7i$I/N5W/imakprFdtP02i8/.:502:502::/home/test:/bin/bash
+svnroot svnroot:!!:501:501::/home/svnroot:/bin/bash
+1 tests failed		
+		]]>
+		</screen>
+		<para>更改密码</para>
+		<screen>
+		<![CDATA[
+$ yppasswd
+Changing NIS account information for test on nis.example.com.
+Please enter old password:
+Changing NIS password for test on
+nis.example.com.
+Please enter new password:
+Please retype new password:
+
+The NIS password has been changed on nis.example.com.		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+-bash-3.2$ ypcat hosts 
+127.0.0.1 localhost.localdomain localhost 
+127.0.0.1 kerberos.example.com
+192.168.3.5 nis.example.com
+
+-bash-3.2$ ypcat passwd
+neo:$1$e1nd3pts$s7NikMnKwpL4vUp2LM/N9.:500:500::/home/neo:/bin/bash
+test:$1$g4.VCB7i$I/N5W/imakprFdtP02i8/.:502:502::/home/test:/bin/bash
+svnroot:!!:501:501::/home/svnroot:/bin/bash
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+-bash-3.2$
+ypwhich
+nis.example.com
+
+ypwhich -x
+Use "ethers" for map "ethers.byname"
+Use "aliases" for map "mail.aliases"
+Use "services" for map "services.byname"
+Use "protocols" for map "protocols.bynumber"
+Use "hosts" for map "hosts.byname"
+Use "networks" for map "networks.byaddr"
+Use "group" for map "group.byname"
+Use "passwd" for map "passwd.byname"
+		]]>
+		</screen>
+	</section>
+
+	<section id="nis.home">
+		<title>Mount /home volume from NFS</title>
+		<para>在NIS服务器中将“/home”输出为NFS共享目录</para>
+		<screen>
+		<![CDATA[
+# vi /etc/exports
+/home 192.168.3.0/24(sync,rw,no_root_squash)		
+		]]>
+		</screen>
+		<para>重启NFS服务</para>
+		<screen>
+		<![CDATA[
+# service nfs restart
+		]]>
+		</screen>
+		<para>在NIS客户端中挂载“/home”目录</para>
+		<screen>
+		<![CDATA[
+		# vi /etc/fstab
+192.168.1.10:/home/ /home nfs 	defaults 0 0		
+		]]>
+		</screen>
+		<para>mount home volume</para>
+		<screen>
+		<![CDATA[
+# mount /home
+		]]>
+		</screen>
+	</section>
+</section>
+
+
+
+
+
+
+
+

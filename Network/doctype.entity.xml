@@ -26,9 +26,3 @@
 	<!ENTITY chapter.security.firewall.iptables SYSTEM "chapter.security.firewall.iptables.xml">
 	<!ENTITY chapter.security.stunnel 		SYSTEM "chapter.security.stunnel.xml">
 	<!ENTITY chapter.security.openssh 		SYSTEM "chapter.security.openssh.xml">	
-	
-	<!ENTITY chapter.network.authentication.xml 			SYSTEM "chapter.network.authentication.xml">
-	<!ENTITY chapter.network.authentication.nis.xml 		SYSTEM "chapter.network.authentication.nis.xml">
-	<!ENTITY chapter.network.authentication.ldap.xml 		SYSTEM "chapter.network.authentication.ldap.xml">
-	<!ENTITY chapter.network.authentication.kerberos.xml 	SYSTEM "chapter.network.authentication.kerberos.xml">
-	<!ENTITY chapter.network.authentication.freeradius.xml 	SYSTEM "chapter.network.authentication.freeradius.xml">

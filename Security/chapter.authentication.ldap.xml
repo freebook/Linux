@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="network.authentication.ldap">
+	<title>OpenLDAP</title>
+	<section>
+		<title>Server</title>
+		<procedure>
+			<step>
+				<para>First, install the OpenLDAP server daemon slapd and ldap-utils, a package containing LDAP management utilities:</para>
+				<screen>
+sudo apt-get install slapd ldap-utils				
+				</screen>
+				<para>By default the directory suffix will match the domain name of the server. For example, if the machine's Fully Qualified Domain Name (FQDN) is ldap.example.com, the default suffix will be dc=example,dc=com. If you require a different suffix, the directory can be	reconfigured using dpkg-reconfigure. Enter the following in a terminal prompt:</para>
+				<screen>
+sudo dpkg-reconfigure slapd				
+				</screen>
+			</step>
+		
+			<step>
+				<para>example.com.ldif</para>
+				<screen>
+dn: ou=people,dc=example,dc=com
+objectClass: organizationalUnit
+ou: people
+
+dn: ou=groups,dc=example,dc=com
+objectClass: organizationalUnit
+ou: groups
+
+dn: uid=john,ou=people,dc=example,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+uid: john
+sn: Doe
+givenName: John
+cn: John Doe
+displayName: John Doe
+uidNumber: 1000
+gidNumber: 10000
+userPassword: password
+gecos: John Doe
+loginShell: /bin/bash
+homeDirectory: /home/john
+shadowExpire: -1
+shadowFlag: 0
+shadowWarning: 7
+shadowMin: 8
+shadowMax: 999999
+shadowLastChange: 10877
+mail: john.doe@example.com
+postalCode: 31000
+l: Toulouse
+o: Example
+mobile: +33 (0)6 xx xx xx xx
+homePhone: +33 (0)5 xx xx xx xx
+title: System Administrator
+postalAddress: 
+initials: JD
+
+dn: cn=example,ou=groups,dc=example,dc=com
+objectClass: posixGroup
+cn: example
+gidNumber: 10000
+				</screen>
+			</step>
+		
+			<step>
+				<para>To add the entries to the LDAP directory use the ldapadd utility:</para>
+				<screen>
+ldapadd -x -D cn=admin,dc=example,dc=com -W -f example.com.ldif
+				</screen>
+				<para>We can check that the content has been correctly added with the tools from the ldap-utils package. In order to execute a search of the LDAP directory:</para>
+				<screen>
+ldapsearch -xLLL -b "dc=example,dc=com" uid=john sn givenName cn
+
+dn: uid=john,ou=people,dc=example,dc=com
+cn: John Doe
+sn: Doe
+givenName: John				
+				</screen>
+			</step>
+		</procedure>
+		<para>Just a quick explanation:</para>
+		<para>-x: will not use SASL authentication method, which is the default.</para>
+		<para>-LLL: disable printing LDIF schema information.</para>
+	</section>
+	<section>
+		<title>Client</title>
+		<procedure>
+			<step>
+				<para>libnss-ldap</para>
+				<screen>
+sudo apt-get install libnss-ldap
+				</screen>
+			</step>
+			<step>
+				<para>reconfigure ldap-auth-config</para>
+				<screen>
+sudo dpkg-reconfigure ldap-auth-config
+				</screen>
+			</step>
+			<step>
+				<para>auth-client-config</para>
+				<screen>
+sudo auth-client-config -t nss -p lac_ldap				
+				</screen>
+			</step>
+			<step>
+				<para>pam-auth-update.</para>
+				<screen>
+sudo pam-auth-update
+				</screen>
+			</step>
+		</procedure>	
+	</section>
+	<section>
+		<title>User and Group Management</title>
+		<screen>
+sudo apt-get install ldapscripts
+		</screen>
+		<para> /etc/ldapscripts/ldapscripts.conf </para>
+		<screen>
+SERVER=localhost
+BINDDN='cn=admin,dc=example,dc=com'
+BINDPWDFILE="/etc/ldapscripts/ldapscripts.passwd"
+SUFFIX='dc=example,dc=com'
+GSUFFIX='ou=Groups'
+USUFFIX='ou=People'
+MSUFFIX='ou=Computers'
+GIDSTART=10000
+UIDSTART=10000
+MIDSTART=10000		
+		</screen>
+		<para>Now, create the ldapscripts.passwd file to allow authenticated access to the directory:</para>
+		<screen>
+sudo sh -c "echo -n 'secret' > /etc/ldapscripts/ldapscripts.passwd"
+sudo chmod 400 /etc/ldapscripts/ldapscripts.passwd		
+		</screen>
+	</section>
+</section>

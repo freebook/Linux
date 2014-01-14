@@ -223,13 +223,13 @@ su: incorrect password
 			</screen>
 		</section>
 	</section>
-	<section id="network.auth">
+	<section id="auth">
 		<title>Network Authentication</title>
 
-		&chapter.network.authentication.nis.xml;
-		&chapter.network.authentication.ldap.xml;
-		&chapter.network.authentication.kerberos.xml;
-		&chapter.network.authentication.freeradius.xml;
+		&chapter.authentication.nis.xml;
+		&chapter.authentication.ldap.xml;
+		&chapter.authentication.kerberos.xml;
+		&chapter.authentication.freeradius.xml;
 		<section id="sasl">
 			<title>SASL (Simple Authentication and Security Layer)</title>
 		</section>
