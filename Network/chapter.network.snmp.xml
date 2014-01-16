@@ -211,8 +211,8 @@ IF-MIB::ifNumber.0 = INTEGER: 37
 
 		</screen>
 	</section>
-	<section>
-		<title>Linux</title>
+	<section id="snmpwalk">
+		<title>SNMP 命令</title>
 		<screen>
 $ snmpwalk -c public -v2c 172.16.1.10 hrSWRunPerfMem | awk 'BEGIN {total_mem=0} { if ($NF == "KBytes") {total_mem=total_mem+$(NF-1)}}  END {print total_mem}'
 655784

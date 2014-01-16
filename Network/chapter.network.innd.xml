@@ -228,7 +228,7 @@ mv history.n.index history.index
 sudo -u news /usr/lib/news/bin/inncheck
 			</screen>
 	</section>
-	<section>
+	<section id="newsgroup">
 		<title>常用新闻组</title>
 		<para><ulink url="news://news.newsfan.net"></ulink></para>
 		<para><ulink url="news://news.nntp.hk"></ulink></para>
