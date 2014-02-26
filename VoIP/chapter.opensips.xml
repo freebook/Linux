@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="opensips">
+<chapter id="opensips">
 	<title>OpenSIPS</title>
 	<subtitle>OpenSER SIP Server 已经更名为 OpenSIPS</subtitle>
 	<para>OpenSER SIP Server 已经更名为 OpenSIPS</para>
 	<para>http://www.openser.org/ 域名将跳转至 <ulink url="http://www.opensips.org/" /></para>
-	<section>
+	<section id="opensips.install">
 		<title>安装 OpenSIPS</title>
 		<section>
 			<title>centos 6.5 默认安装</title>
@@ -230,7 +230,7 @@ udp        0      0 192.168.6.9:5060            0.0.0.0:*
 			<para></para>
 		</section>
 	</section>
-	<section>
+	<section id="opensips.database">
 		<title>数据库部署</title>
 		<para>你只能选择其中一种作为opensips的数据库</para>
 		<section>
@@ -373,7 +373,7 @@ Install tables for imc cpl siptrace domainpolicy carrierroute userblacklist regi
 opensipsctl start
 		</screen>
 	</section>
-	<section>
+	<section id="opensips.test">
 		<title>测试 opensips</title>
 		<para>首先创建一些账号</para>
 		<screen>
@@ -397,4 +397,4 @@ new user '1005' added
 1002
 		</screen>
 	</section>
-</section>
+</chapter>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="gatekeeper">
+	<title>Gnu Gatekeeper</title>
+	<para>http://www.gnugk.org/</para>
+	<section id="gatekeeper.install">
+		<title>Gnu Gatekeeper Install</title>
+		<screen>
+sudo apt-get install gnugk
+sudo apt-get install ohphone
+		</screen>
+		<para>start|stop|restart|force-reload</para>
+		<screen>
+netkiller@shenzhen:~$ sudo /etc/init.d/gnugk
+Usage: /etc/init.d/gnugk {start|stop|restart|force-reload}
+		</screen>
+		<para>Start</para>
+		<screen>
+netkiller@shenzhen:~$ sudo /etc/init.d/gnugk start
+Starting H.323 gatekeeper: gnugk.
+netkiller@shenzhen:~$
+
+netkiller@shenzhen:~$ sudo /etc/init.d/gnugk stop
+Stopping H.323 gatekeeper: gnugk.
+netkiller@shenzhen:~$
+		</screen>
+	</section>
+	<section id="gatekeeper.configure">
+		<title>Gnu Gatekeeper Configure</title>
+		<para>gatekeeper.ini</para>
+		<screen>
+[Gatekeeper::Main]
+Fourtytwo=42
+[GkStatus::Auth]
+rule=allow
+		</screen>
+	</section>
+	<section id="gatekeeper.test">
+		<title>Gnu Gatekeeper Test</title>
+		<para>How do I test Gatekeeper</para>
+		<para>first, telnet tools</para>
+		<screen>
+netkiller@shenzhen:~$ telnet 127.0.0.1 7000
+Trying 127.0.0.1...
+Connected to 127.0.0.1.
+Escape character is '^]'.
+Version:
+Gatekeeper(GNU) Version(2.2.5) Ext(pthreads=1,radius=1,mysql=1,pgsql=1,firebird=1,large_fdset=0,crypto/ssl=1) Build(Feb  2 2007, 21:39:07) Sys(Linux i686 2.6.20-15-server)
+GkStatus: Version(2.0) Ext()
+Toolkit: Version(1.0) Ext(basic)
+Startup: Fri, 09 Nov 2007 17:26:23 -0500   Running: 0 days 00:08:34
+;
+		</screen>
+
+		<section>
+			<title>Part I - Microsoft Windows NetMeeting</title>
+			<para>Windows XP</para>
+			<para>Start NetMeeting</para>
+			<para>Start->Run->conf</para>
+			<screenshot>
+				<graphic fileref="../images/voip/step_1.png"/>
+				<graphic fileref="../images/voip/step_2.png"/>
+				<graphic fileref="../images/voip/step_3.png"/>
+				<graphic fileref="../images/voip/step_4.png"/>
+				<graphic fileref="../images/voip/step_5.png"/>
+				<graphic fileref="../images/voip/step_6.png"/>
+				<graphic fileref="../images/voip/step_7.png"/>
+				<graphic fileref="../images/voip/step_8.png"/>
+				<graphic fileref="../images/voip/step_9.png"/>
+				<graphic fileref="../images/voip/step_10.png"/>
+				<graphic fileref="../images/voip/firewall.png"/>
+			</screenshot>
+			<para>Tools -> Option -> Advence</para>
+			<screenshot>
+				<graphic fileref="../images/voip/netmeeting-option.png"/>
+			</screenshot>
+			<para>网关守卫设置</para>
+			<screenshot>
+				<graphic fileref="../images/voip/netmeeting_gateway.png"/>
+			</screenshot>
+		</section>
+		<section>
+			<title>Part II - ohphone</title>
+			<para>For example:</para>
+			<para>netkiller</para>
+			<screen>
+neo@machine1:~$ ohphone -l -a -u neo
+			</screen>
+			<para>neo</para>
+			<screen>
+netkiller@machine2:~$ ohphone -u netkiller neo
+			</screen>
+
+		</section>
+	</section>
+</chapter>
