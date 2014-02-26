@@ -3,6 +3,8 @@
 <chapter id="index"><?dbhtml dir="voip" ?>
 	<title>Voice over IP</title>
 	<para>安装环境 ubuntu 7.10</para>
+<section id="pbx">
+	<title>PBX</title>
 	<section id="gatekeeper">
 		<title>Gnu Gatekeeper</title>
 		<para>http://www.gnugk.org/</para>
@@ -61,25 +63,25 @@ Startup: Fri, 09 Nov 2007 17:26:23 -0500   Running: 0 days 00:08:34
 			<para>Start NetMeeting</para>
 			<para>Start->Run->conf</para>
 			<screenshot>
-				<graphic fileref="images/voip/step_1.png"/>
-				<graphic fileref="images/voip/step_2.png"/>
-				<graphic fileref="images/voip/step_3.png"/>
-				<graphic fileref="images/voip/step_4.png"/>
-				<graphic fileref="images/voip/step_5.png"/>
-				<graphic fileref="images/voip/step_6.png"/>
-				<graphic fileref="images/voip/step_7.png"/>
-				<graphic fileref="images/voip/step_8.png"/>
-				<graphic fileref="images/voip/step_9.png"/>
-				<graphic fileref="images/voip/step_10.png"/>
-				<graphic fileref="images/voip/firewall.png"/>
+				<graphic fileref="../images/voip/step_1.png"/>
+				<graphic fileref="../images/voip/step_2.png"/>
+				<graphic fileref="../images/voip/step_3.png"/>
+				<graphic fileref="../images/voip/step_4.png"/>
+				<graphic fileref="../images/voip/step_5.png"/>
+				<graphic fileref="../images/voip/step_6.png"/>
+				<graphic fileref="../images/voip/step_7.png"/>
+				<graphic fileref="../images/voip/step_8.png"/>
+				<graphic fileref="../images/voip/step_9.png"/>
+				<graphic fileref="../images/voip/step_10.png"/>
+				<graphic fileref="../images/voip/firewall.png"/>
 			</screenshot>
 			<para>Tools -> Option -> Advence</para>
 			<screenshot>
-				<graphic fileref="images/voip/netmeeting-option.png"/>
+				<graphic fileref="../images/voip/netmeeting-option.png"/>
 			</screenshot>
 			<para>网关守卫设置</para>
 			<screenshot>
-				<graphic fileref="images/voip/netmeeting_gateway.png"/>
+				<graphic fileref="../images/voip/netmeeting_gateway.png"/>
 			</screenshot>
 		</section>
 		<section>
@@ -137,30 +139,22 @@ netkiller@shenzhen:~$
 		</screen>
 	</section>
 
-	<section id="OpenSER">
-		<title>OpenSER SIP Server</title>
-		<para>http://www.openser.org/</para>
-		<screen>
-netkiller@shenzhen:~$ apt-cache search openser
-openser - very fast and configurable SIP proxy
-openser-cpl-module - CPL module (CPL interpreter engine) for OpenSER
-openser-dbg - very fast and configurable SIP proxy [debug symbols]
-openser-jabber-module - Jabber module (SIP-Jabber message translation) for OpenSER
-openser-mysql-module - MySQL database connectivity module for OpenSER
-openser-postgres-module - PostgreSQL database connectivity module for OpenSER
-openser-radius-modules - radius modules for OpenSER
-openser-unixodbc-module - unixODBC database connectivity module for OpenSER
-		</screen>
+	<section id="freeswitch">
+		<title></title>
+		<ulink url="https://www.freeswitch.org/" />
 	</section>
-<!--
+	
 	<section>
 		<title>Yate - Yet Another Telephony Engine (includes SIP to H.323 translation)</title>
 		<para>http://yate.null.ro/pmwiki/</para>
 	</section>
+</section>
+
+	&chapter.opensips.xml;
+
 	<section>
 		<title>VOCAL (includes a SIP to H.323 translator)</title>
 		<para>http://www.vovida.org/</para>
 	</section>
- -->
 
 </chapter>
