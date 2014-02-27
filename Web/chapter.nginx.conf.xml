@@ -347,14 +347,7 @@ location / {
         }
 }
 			</screen>
-			<para>add_header 实例</para>
-			<screen>
-location ~* \.(?:ico|css|js|gif|jpe?g|png)$ {
-    expires 30d;
-    add_header Pragma public;
-    add_header Cache-Control "public";
-}
-			</screen>
+			
 			<example>
 				<title>nginx expires</title>
 				<screen>
@@ -374,6 +367,32 @@ location ~ .*\.(html|htm)$
 }
 				</screen>
 			</example>
+			<section>
+				<title>通过 add_header / more_set_headers 设置缓存</title>
+				<para>add_header 实例</para>
+				<screen>
+location ~* \.(?:ico|css|js|gif|jpe?g|png)$ {
+    expires 30d;
+    add_header Pragma public;
+    add_header Cache-Control "public";
+}
+				</screen>
+				<para>more_set_headers 实例</para>
+				<screen>
+location ~ \.(ico|pdf|flv|jp?g|png|gif|js|css|webp|swf)(\.gz)?(\?.*)?$ {
+           more_set_headers 'Cache-Control: max-age=86400';
+           ...
+           proxy_cache_valid 200 2592000;
+           ...
+}				
+				</screen>
+				<para>s-maxage 作用于 Proxy</para>
+				<screen>
+location ~ \.(ico|pdf|flv|jp?g|png|gif|js|css|webp|swf)(\.gz)?(\?.*)?$ {
+           more_set_headers 'Cache-Control: s-maxage=86400';
+}
+				</screen>
+			</section>
 		</section>
 		<section id="access">
 			<title>access</title>
@@ -785,7 +804,7 @@ server {
 			</screen>
 		</section>
 
-		<section>
+		<section id="proxy.expires">
 			<title>expires</title>
 			<screen>
 location / {

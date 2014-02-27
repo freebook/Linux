@@ -894,15 +894,51 @@ ExpiresByType text/css  "access plus 30 minutes"
 ExpiresByType text/js   "access plus 30 minutes"
 ExpiresByType application/x-javascript   "access plus 30 minutes"
 ExpiresByType application/x-shockwave-flash     "access plus 30 minutes"
-
-<FilesMatch “\.(ico|jpg|jpeg|png|gif|js|css|swf|html|htm|gzip)$”>
-ExpiresActive on
-ExpiresDefault “access plus 2 hours”
-Header set Cache-Control “max-age=1800, public”
-FileETag none
-</FilesMatch>
 		]]>
 		</screen>
+		<section>
+			<title>FilesMatch</title>
+			<screen>
+			<![CDATA[
+<FilesMatch “\.(ico|jpg|jpeg|png|gif|js|css|swf|html|htm|gzip)$”>
+	ExpiresActive on
+	ExpiresDefault “access plus 2 hours”
+</FilesMatch>
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Cache-Control</title>
+			<screen>
+			<![CDATA[
+<FilesMatch "\.(gif|jpe?g|png|ico|css|js|swf)$">
+	Header set Cache-Control “max-age=1800, public”
+	Header set Cache-Control "s-maxage=600"
+</FilesMatch>
+			]]>
+			</screen>
+			<para>max-age 针对浏览器推送缓存时间</para>
+			<para>s-maxage 针对代理服务器推送缓存时间</para>
+		</section>
+		<section>
+			<title>ETag</title>
+			<screen>
+			<![CDATA[
+<FilesMatch "\.(gif|jpe?g|png|ico|css|js|swf)$">
+	FileETag none
+</FilesMatch>
+
+<FilesMatch "\.(gif|jpe?g|png|ico|css|js|swf)$">
+	FileETag MTime
+</FilesMatch>
+			]]>
+			</screen>
+			<para>禁用ETag， FileETag none</para>
+			<para>INode 使用文件i-node 做为 etag</para>
+			<para>MTime 使用修改时间做为etag</para>
+			<para>Size 使用文件尺寸做为etag</para>
+			<para>All 相当于 FileETag INode MTime Size </para>
+		</section>
 	</section>
 	<section id="cache">
 		<title>Cache</title>
