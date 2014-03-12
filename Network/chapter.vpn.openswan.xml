@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.network.vpn.openswan.xml 420 2012-05-29 11:42:48Z netkiller $ -->
+<section id="openswan">
+	<title>openswan - IPSEC utilities for Openswan</title>
+	<para>http://www.openswan.org/</para>
+	<screen>
+# yum install openswan
+	</screen>
+	<screen>
+vi /etc/sysctl.conf
+net.ipv4.ip_forward = 1
+net.ipv4.conf.default.rp_filter = 0
+net.ipv4.conf.all.accept_redirects = 0
+net.ipv4.conf.all.send_redirects = 0
+	</screen>
+	<screen>
+ipsec newhostkey --output /etc/ipsec.secert
+	</screen>
+</section>
+<section id="strongswan">
+	<title>strongswan - IPSec utilities for strongSwan</title>
+	<para>http://www.strongswan.org/</para>
+	<screen>
+
+	</screen>
+</section>

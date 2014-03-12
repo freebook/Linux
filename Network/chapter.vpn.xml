@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: chapter.network.vpn.xml 652 2013-07-26 10:06:01Z netkiller $ -->
+<!-- $Id: chapter.vpn.xml 652 2013-07-26 10:06:01Z netkiller $ -->
 <chapter id="index"><?dbhtml dir="vpn" ?>
 	<title>VPN (Virtual Private Network)</title>
-	&chapter.network.vpn.openvpn;
-	&chapter.network.vpn.pptpd;
-	&chapter.network.vpn.l2tp;
-	&chapter.network.vpn.ipsec-tools;
+	&chapter.vpn.openvpn.xml;
+	&chapter.vpn.pptpd.xml;
+	&chapter.vpn.l2tp.xml;
+	&chapter.vpn.ipsec.xml;
 	<section id="n2n">
 		<title>N2N VPN</title>
 		<ulink url="http://www.ntop.org/products/n2n/" />

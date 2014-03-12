@@ -1,0 +1,2353 @@
+<!-- $Id: chapter.network.vpn.openvpn.xml 618 2013-06-15 08:54:34Z netkiller $ -->
+<section id="openvpn">
+	<title>OpenVPN (openvpn - Virtual Private Network daemon)</title>
+	<graphic fileref="images/vpn/openvpn.png"/>
+	<para>http://openvpn.net/</para>
+	<section id="openvpn.install">
+		<title>源码安装</title>
+		<procedure><title>OpenVPN 编译安装步骤</title>
+			<step>
+				<para>安装liblzo,libssl支持库</para>
+				<screen>
+netkiller@neo:~$ sudo apt-get install liblzo-dev
+netkiller@neo:~$ sudo apt-get install libssl-dev
+				</screen>
+			</step>
+			<step><para>取得安装包</para>
+				<screen>
+netkiller@neo:/usr/local$ sudo chmod 777 /usr/local/src/
+netkiller@neo:~$ cd /usr/local/src/
+netkiller@neo:/usr/local/src$ wget http://openvpn.net/release/openvpn-2.0.9.tar.gz
+netkiller@neo:/usr/local/src$ tar zxvf openvpn-2.0.9.tar.gz
+netkiller@neo:/usr/local/src$ cd openvpn-2.0.9/
+netkiller@neo:/usr/local/src/openvpn-2.0.9$
+				</screen>
+			</step>
+			<step>
+				<para>编译安装</para>
+				<screen>
+netkiller@neo:/usr/local/src/openvpn-2.0.9$ ./configure --prefix=/usr/local/openvpn-2.0.9 --enable-pthread
+netkiller@neo:/usr/local/src/openvpn-2.0.9$ make
+netkiller@neo:/usr/local/src/openvpn-2.0.9$ sudo make install
+				</screen>
+			</step>
+			<step>
+				<para>配置文件</para>
+				<screen>
+netkiller@neo:/usr/local/src/openvpn-2.0.9$ sudo ln -s /usr/local/openvpn-2.0.9/ /usr/local/openvpn
+netkiller@neo:/usr/local/src/openvpn-2.0.9$ cd /usr/local/openvpn
+netkiller@neo:/usr/local/openvpn$ sudo mkdir etc
+netkiller@neo:/usr/local/openvpn$ sudo mkdir log
+netkiller@neo:/usr/local/openvpn$ sudo vi etc/openvpn.conf
+				</screen>
+				<example>
+					<title>openvpn.conf</title>
+					<screen>
+
+					</screen>
+					<para>sudo cp ca.crt dh1024.pem server.crt server.key /usr/local/openvpn/etc/</para>
+				</example>
+			</step>
+			<step>
+				<para>创建证书</para>
+				<para>修改vars文件的环境变量</para>
+				<screen>
+netkiller@neo:/usr/share/openvpn$ sudo vi vars
+export KEY_COUNTRY=CN
+export KEY_PROVINCE=GD
+export KEY_CITY=Shenzhen
+export KEY_ORG=http://netkiller.sourceforge.net/
+export KEY_EMAIL=openunix@163.com
+				</screen>
+
+				<screen>
+netkiller@neo:/usr/local/openvpn$ cd /usr/share/openvpn/
+netkiller@neo:/usr/share/openvpn$
+
+netkiller@neo:~/openvpn-2.1_rc1/easy-rsa/2.0$ sudo make install DESTDIR=/usr/share/openvpn
+install -c --directory "/usr/share/openvpn/"
+install -c --mode=0755 build-* "/usr/share/openvpn/"
+install -c --mode=0755 clean-all list-crl inherit-inter pkitool revoke-full sign-req whichopensslcnf "/usr/share/openvpn/"
+install -c --mode=0644 openssl-0.9.6.cnf openssl.cnf README vars "/usr/share/openvpn/"
+netkiller@neo:~/openvpn-2.1_rc1/easy-rsa/2.0$
+
+netkiller@neo:/usr/share/openvpn$ sudo chmod +x vars
+netkiller@neo:/usr/share/openvpn$
+netkiller@neo:/usr/share/openvpn$ sudo ./clean-all
+
+netkiller@neo:/usr/share/openvpn$ sudo ./build-ca
+netkiller@neo:/usr/share/openvpn$ sudo ./build-key-server server
+netkiller@neo:/usr/share/openvpn$ sudo ./build-key client1
+
+netkiller@neo:/usr/share/openvpn$ sudo mkdir /etc/openvpn
+netkiller@neo:/usr/share/openvpn$ cd /etc/openvpn/
+netkiller@neo:/etc/openvpn$ sudo vi server.ovpn
+netkiller@neo:/etc/openvpn$ sudo cp /usr/share/openvpn/keys/dh1024.pem .
+netkiller@neo:/etc/openvpn$ sudo cp /usr/share/openvpn/keys/server.crt .
+netkiller@neo:/etc/openvpn$ sudo cp /usr/share/openvpn/keys/server.key .
+netkiller@neo:/etc/openvpn$ sudo cp /usr/share/openvpn/keys/ca.crt .
+
+root@neo:/home/netkiller/openvpn-2.1_rc1/sample-config-files# cp * /etc/openvpn/
+root@neo:/home/netkiller/openvpn-2.1_rc1/sample-config-files# cd /etc/openvpn/
+				</screen>
+			</step>
+			<step>
+				<para>启动</para>
+				<screen>
+/usr/local/openvpn/sbin/openvpn --config /usr/local/openvpn/etc/openvpn.conf
+				</screen>
+			</step>
+			<step>
+				<para>Script</para>
+				<para>/etc/init.d/openvpn</para>
+				<screen>
+				<![CDATA[
+#!/bin/bash
+# vpn init file for OpenVPN
+#
+# chkconfig: - 100 100
+# description: OpenVPN is a full-featured SSL VPN solution which can accomodate a wide range of configurations,
+#				including remote access, site-to-site VPNs, WiFi security,
+#				and enterprise-scale remote access solutions with load balancing, failover,
+#				and fine-grained access-controls
+#				as it is designed and optimized for high performance environments.
+# author: Neo Chen<openunix@163.com>
+#
+# processname: $PROG
+# config:
+# pidfile: /var/run/openvpn
+
+# source function library
+. /etc/init.d/functions
+
+PREFIX=/usr/local/openvpn
+PROG=$PREFIX/sbin/openvpn
+OPTIONS="-f /usr/local/openvpn/etc/openvpn.conf"
+USER=daemon
+RETVAL=0
+prog="openvpn"
+
+start() {
+        echo -n $"Starting $prog: "
+        if [ $UID -ne 0 ]; then
+                RETVAL=1
+                failure
+        else
+                daemon --user=$USER $PROG $OPTIONS
+                RETVAL=$?
+                [ $RETVAL -eq 0 ] && touch /var/lock/subsys/openvpn
+        fi;
+        echo
+        return $RETVAL
+}
+
+stop() {
+        echo -n $"Stopping $prog: "
+        if [ $UID -ne 0 ]; then
+                RETVAL=1
+                failure
+        else
+                killproc $PROG
+                RETVAL=$?
+                [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/openvpn
+        fi;
+        echo
+        return $RETVAL
+}
+
+reload(){
+        echo -n $"Reloading $prog: "
+        killproc $PROG -HUP
+        RETVAL=$?
+        echo
+        return $RETVAL
+}
+
+restart(){
+	stop
+	start
+}
+
+condrestart(){
+    [ -e /var/lock/subsys/openvpn ] && restart
+    return 0
+}
+
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  restart)
+	restart
+        ;;
+  reload)
+	reload
+        ;;
+  condrestart)
+	condrestart
+	;;
+  status)
+        status openvpn
+	RETVAL=$?
+        ;;
+  *)
+	echo $"Usage: $0 {start|stop|status|restart|condrestart|reload}"
+	RETVAL=1
+esac
+
+exit $RETVAL
+				]]>
+				</screen>
+				<para>添加x权限</para>
+				<screen>
+sudo chmod +x /etc/init.d/openvpn
+				</screen>
+			</step>
+		</procedure>
+	</section>
+	<section id="openvpn.server">
+		<title>Openvpn Server</title>
+		<para>Ubuntu/Debian 环境安装</para>
+		<procedure>
+			<title>Openvpn Server 安装步骤</title>
+			<step>
+				<para>相关软件包</para>
+				<screen>
+netkiller@shenzhen:~$ apt-cache search openvpn
+carpaltunnel - Configuration helper for OpenVPN
+kvpnc - vpn clients frontend for KDE
+network-manager-openvpn - network management framework (OpenVPN plugin)
+openvpn - Virtual Private Network daemon
+tunneldigger - Configures OpenVPN tunnel networks
+tunneldigger-utils - Utilities for TunnelDigger-configured OpenVPN tunnels
+You have new mail in /var/mail/netkiller
+netkiller@shenzhen:~$
+				</screen>
+				<para>This is for Dapper ubuntu and openvpn</para>
+				<screen>
+netkiller@shenzhen:~$ sudo apt-get install openvpn
+				</screen>
+				<itemizedlist>
+					<listitem><para>config file</para><para>/etc/openvpn/</para></listitem>
+					<listitem><para>share</para><para>/usr/share/openvpn/</para></listitem>
+					<listitem><para>doc</para><para>/usr/share/doc/openvpn/</para></listitem>
+					<listitem><para>example</para><para>/usr/share/doc/openvpn/examples/</para></listitem>
+				</itemizedlist>
+			</step>
+		</procedure>
+		<section>
+			<title>create keys for the server</title>
+			<procedure>
+				<title>CREATE KEYS FOR THE SERVER AND THE CLIENTS</title>
+				<step>
+					<para>Change to the directory /usr/share/doc/openvpn/examples/easy-rsa/2.0</para>
+					<screen>
+netkiller@shenzhen:~$ cd /usr/share/doc/openvpn/examples/easy-rsa/2.0
+netkiller@shenzhen:/usr/share/doc/openvpn/examples/easy-rsa/2.0$ ls
+build-ca  build-dh  build-inter  build-key  build-key-pass  build-key-pkcs12  build-key-server  build-req  build-req-pass  clean-all  inherit-inter  list-crl  Makefile  openssl-0.9.6.cnf.gz  openssl.cnf  pkitool  README.gz  revoke-full  sign-req  vars  whichopensslcnf
+					</screen>
+					<para>backup vars to vars.original</para>
+					<screen>
+sudo cp vars vars.original
+					</screen>
+					<para>vi vars and change with you</para>
+					<screen>
+export KEY_COUNTRY="CN"
+export KEY_PROVINCE="GD"
+export KEY_CITY="Shenzhen"
+export KEY_ORG="http://netkiller.sourceforge.net/"
+export KEY_EMAIL="openunix@163.com"
+					</screen>
+					<para>type the commands</para>
+					<itemizedlist>
+						<listitem><para>vars</para></listitem>
+						<listitem><para>clean-all</para></listitem>
+						<listitem><para>build-ca</para></listitem>
+						<listitem><para>build-key-server server</para></listitem>
+						<listitem><para>build-key client1</para></listitem>
+						<listitem><para>build-dh</para></listitem>
+					</itemizedlist>
+				</step>
+				<step><para>vars and clean-all</para>
+					<screen>
+netkiller@shenzhen:/usr/share/doc/openvpn/examples/easy-rsa/2.0$ source ./vars
+NOTE: If you run ./clean-all, I will be doing a rm -rf on /usr/share/doc/openvpn/examples/easy-rsa/2.0/keys
+netkiller@shenzhen:/usr/share/doc/openvpn/examples/easy-rsa/2.0$ ./clean-all
+
+$ sudo mkdir keys
+$ sudo chown neo.neo keys
+					</screen>
+				</step>
+				<step><para>build-ca</para>
+					<screen>
+netkiller@shenzhen:/usr/share/doc/openvpn/examples/easy-rsa/2.0$ ./build-ca
+Generating a 1024 bit RSA private key
+..........................++++++
+.............++++++
+writing new private key to 'ca.key'
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [CN]:
+State or Province Name (full name) [GD]:
+Locality Name (eg, city) [Shenzhen]:
+Organization Name (eg, company) [http://netkiller.8800.org]:
+Organizational Unit Name (eg, section) []:
+Common Name (eg, your name or your server's hostname) [http://netkiller.8800.org CA]:
+Email Address [openunix@163.com]:
+					</screen>
+				</step>
+				<step>
+					<para>build-key-server server</para>
+					<para>You will have to answer the same questions above. It will ask you for a password, I suggest you don’t put a password when it ask.</para>
+					<screen>
+netkiller@shenzhen:/usr/share/doc/openvpn/examples/easy-rsa/2.0$ ./build-key-server server
+Generating a 1024 bit RSA private key
+...................................++++++
+...........................................++++++
+writing new private key to 'server.key'
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [CN]:
+State or Province Name (full name) [GD]:
+Locality Name (eg, city) [Shenzhen]:
+Organization Name (eg, company) [http://netkiller.8800.org]:
+Organizational Unit Name (eg, section) []:
+Common Name (eg, your name or your server's hostname) [server]:
+Email Address [openunix@163.com]:
+
+Please enter the following 'extra' attributes
+to be sent with your certificate request
+A challenge password []:
+An optional company name []:
+Using configuration from /usr/share/doc/openvpn/examples/easy-rsa/2.0/openssl.cnf
+Check that the request matches the signature
+Signature ok
+The Subject's Distinguished Name is as follows
+countryName           :PRINTABLE:'CN'
+stateOrProvinceName   :PRINTABLE:'GD'
+localityName          :PRINTABLE:'Shenzhen'
+organizationName      :PRINTABLE:'http://netkiller.8800.org'
+commonName            :PRINTABLE:'server'
+emailAddress          :IA5STRING:'openunix@163.com'
+Certificate is to be certified until Nov 10 18:09:52 2017 GMT (3650 days)
+Sign the certificate? [y/n]:y
+
+
+1 out of 1 certificate requests certified, commit? [y/n]y
+Write out database with 1 new entries
+Data Base Updated
+					</screen>
+					<para>enter yes to sign the certificate. </para>
+				</step>
+				<step>
+					<para>build-dh</para>
+					<screen>
+# ./build-dh
+Generating DH parameters, 1024 bit long safe prime, generator 2
+This is going to take a long time
+.........................+..............................+....................................................+..........................................................................................+............................................................+..........................................+..........................+.............................................................................................................+....................+...................+...............................................+..+...........................................................+................+..........................................................+............................................................................+..........+..........................................................................+...........+.............................................................................................................................................................................+....+..........................................................+........+...................................+.........................................................+...........................................................................................+..............................................................................................+.................................++*++*++*
+					</screen>
+				</step>
+			</procedure>
+		</section>
+		<section>
+			<title>create keys for the clients</title>
+			<procedure>
+				<title>create keys for the clients</title>
+				<step>
+					<para>build-key client1</para>
+					<para>Now to build the client files</para>
+					<screen>
+netkiller@shenzhen:/usr/share/doc/openvpn/examples/easy-rsa/2.0$ ./build-key client1
+Generating a 1024 bit RSA private key
+.++++++
+...........++++++
+writing new private key to 'client1.key'
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [CN]:
+State or Province Name (full name) [GD]:
+Locality Name (eg, city) [Shenzhen]:
+Organization Name (eg, company) [http://netkiller.8800.org]:
+Organizational Unit Name (eg, section) []:
+Common Name (eg, your name or your server's hostname) [client1]:
+Email Address [openunix@163.com]:
+
+Please enter the following 'extra' attributes
+to be sent with your certificate request
+A challenge password []:
+An optional company name []:
+Using configuration from /usr/share/doc/openvpn/examples/easy-rsa/2.0/openssl.cnf
+Check that the request matches the signature
+Signature ok
+The Subject's Distinguished Name is as follows
+countryName           :PRINTABLE:'CN'
+stateOrProvinceName   :PRINTABLE:'GD'
+localityName          :PRINTABLE:'Shenzhen'
+organizationName      :PRINTABLE:'http://netkiller.8800.org'
+commonName            :PRINTABLE:'client1'
+emailAddress          :IA5STRING:'openunix@163.com'
+Certificate is to be certified until Nov 10 18:15:39 2017 GMT (3650 days)
+Sign the certificate? [y/n]:y
+
+
+1 out of 1 certificate requests certified, commit? [y/n]y
+Write out database with 1 new entries
+Data Base Updated
+				</screen>
+				<para>And once again you will need to answer the questions above. I still don’t recommend you putting a password as it can cause problems when I have tried.</para>
+				<para>注意在进入 Common Name (eg, your name or your server's hostname) []: 的输入时, 每个证书输入的名字必须不同.</para>
+			</step>
+			<step>
+				<para>All the files you just generated are located in /usr/share/doc/openvpn/examples/easy-rsa/2.0/keys</para>
+				<para>If you do a list command in the keys folder you should have something like:</para>
+				<screen>
+netkiller@shenzhen:/usr/share/doc/openvpn/examples/easy-rsa/2.0$ ls keys/
+01.pem  ca.crt  client1.crt  client1.key  index.txt       index.txt.attr.old  serial      server.crt  server.key
+02.pem  ca.key  client1.csr  dh1024.pem   index.txt.attr  index.txt.old       serial.old  server.csr
+			</screen>
+			<para>Copy the files ca.crt, ca.key, dh1024.pem, server.crt, and server.key to the /etc/openvpn/keys</para>
+			<screen>
+netkiller@shenzhen:/usr/share/doc/openvpn/examples/easy-rsa/2.0$ cd keys/
+netkiller@shenzhen:/usr/share/doc/openvpn/examples/easy-rsa/2.0/keys$ sudo cp keys/ca.key keys/ca.crt keys/dh1024.pem keys/server.key keys/server.crt /etc/openvpn/
+				</screen>
+				<para>We will worry about the client files after we configure the client config file.</para>
+			</step>
+			<step>
+				<para>CONFIGURE THE SERVER</para>
+				<para>Change to the directory /usr/share/doc/openvpn/examples/sample-config-files</para>
+				<screen>
+netkiller@shenzhen:/usr/share/doc/openvpn/examples/sample-config-files$ sudo gunzip server.conf.gz
+netkiller@shenzhen:/usr/share/doc/openvpn/examples/sample-config-files$ sudo cp server.conf /etc/openvpn/
+netkiller@shenzhen:/usr/share/doc/openvpn/examples/sample-config-files$ cd /etc/openvpn/
+netkiller@shenzhen:/etc/openvpn$
+			</screen>
+			<para>为用户添加路由</para>
+			<para>push "route 192.168.1.0 255.255.255.0"</para>
+			<example>
+				<title>server.conf</title>
+				<screen>
+				<![CDATA[
+#################################################
+# Sample OpenVPN 2.0 config file for            #
+# multi-client server.                          #
+#                                               #
+# This file is for the server side              #
+# of a many-clients <-> one-server              #
+# OpenVPN configuration.                        #
+#                                               #
+# OpenVPN also supports                         #
+# single-machine <-> single-machine             #
+# configurations (See the Examples page         #
+# on the web site for more info).               #
+#                                               #
+# This config should work on Windows            #
+# or Linux/BSD systems.  Remember on            #
+# Windows to quote pathnames and use            #
+# double backslashes, e.g.:                     #
+# "C:\\Program Files\\OpenVPN\\config\\foo.key" #
+#                                               #
+# Comments are preceded with '#' or ';'         #
+#################################################
+
+# Which local IP address should OpenVPN
+# listen on? (optional)
+;local a.b.c.d
+;local 192.168.1.7
+
+# Which TCP/UDP port should OpenVPN listen on?
+# If you want to run multiple OpenVPN instances
+# on the same machine, use a different port
+# number for each one.  You will need to
+# open up this port on your firewall.
+port 1194
+
+# TCP or UDP server?
+;proto tcp
+proto udp
+
+# "dev tun" will create a routed IP tunnel,
+# "dev tap" will create an ethernet tunnel.
+# Use "dev tap0" if you are ethernet bridging
+# and have precreated a tap0 virtual interface
+# and bridged it with your ethernet interface.
+# If you want to control access policies
+# over the VPN, you must create firewall
+# rules for the the TUN/TAP interface.
+# On non-Windows systems, you can give
+# an explicit unit number, such as tun0.
+# On Windows, use "dev-node" for this.
+# On most systems, the VPN will not function
+# unless you partially or fully disable
+# the firewall for the TUN/TAP interface.
+;dev tap
+dev tun
+
+# Windows needs the TAP-Win32 adapter name
+# from the Network Connections panel if you
+# have more than one.  On XP SP2 or higher,
+# you may need to selectively disable the
+# Windows firewall for the TAP adapter.
+# Non-Windows systems usually don't need this.
+;dev-node MyTap
+
+# SSL/TLS root certificate (ca), certificate
+# (cert), and private key (key).  Each client
+# and the server must have their own cert and
+# key file.  The server and all clients will
+# use the same ca file.
+#
+# See the "easy-rsa" directory for a series
+# of scripts for generating RSA certificates
+# and private keys.  Remember to use
+# a unique Common Name for the server
+# and each of the client certificates.
+#
+# Any X509 key management system can be used.
+# OpenVPN can also use a PKCS #12 formatted key file
+# (see "pkcs12" directive in man page).
+ca ca.crt
+cert server.crt
+key server.key  # This file should be kept secret
+
+# Diffie hellman parameters.
+# Generate your own with:
+#   openssl dhparam -out dh1024.pem 1024
+# Substitute 2048 for 1024 if you are using
+# 2048 bit keys.
+dh dh1024.pem
+
+# Configure server mode and supply a VPN subnet
+# for OpenVPN to draw client addresses from.
+# The server will take 10.8.0.1 for itself,
+# the rest will be made available to clients.
+# Each client will be able to reach the server
+# on 10.8.0.1. Comment this line out if you are
+# ethernet bridging. See the man page for more info.
+server 10.8.0.0 255.255.255.0
+
+# Maintain a record of client <-> virtual IP address
+# associations in this file.  If OpenVPN goes down or
+# is restarted, reconnecting clients can be assigned
+# the same virtual IP address from the pool that was
+# previously assigned.
+ifconfig-pool-persist ipp.txt
+
+# Configure server mode for ethernet bridging.
+# You must first use your OS's bridging capability
+# to bridge the TAP interface with the ethernet
+# NIC interface.  Then you must manually set the
+# IP/netmask on the bridge interface, here we
+# assume 10.8.0.4/255.255.255.0.  Finally we
+# must set aside an IP range in this subnet
+# (start=10.8.0.50 end=10.8.0.100) to allocate
+# to connecting clients.  Leave this line commented
+# out unless you are ethernet bridging.
+;server-bridge 10.8.0.4 255.255.255.0 10.8.0.50 10.8.0.100
+
+# Push routes to the client to allow it
+# to reach other private subnets behind
+# the server.  Remember that these
+# private subnets will also need
+# to know to route the OpenVPN client
+# address pool (10.8.0.0/255.255.255.0)
+# back to the OpenVPN server.
+;push "route 192.168.10.0 255.255.255.0"
+;push "route 192.168.20.0 255.255.255.0"
+push "route 192.168.1.0 255.255.255.0"
+
+# To assign specific IP addresses to specific
+# clients or if a connecting client has a private
+# subnet behind it that should also have VPN access,
+# use the subdirectory "ccd" for client-specific
+# configuration files (see man page for more info).
+
+# EXAMPLE: Suppose the client
+# having the certificate common name "Thelonious"
+# also has a small subnet behind his connecting
+# machine, such as 192.168.40.128/255.255.255.248.
+# First, uncomment out these lines:
+;client-config-dir ccd
+;route 192.168.40.128 255.255.255.248
+
+# Then create a file ccd/Thelonious with this line:
+#   iroute 192.168.40.128 255.255.255.248
+# This will allow Thelonious' private subnet to
+# access the VPN.  This example will only work
+# if you are routing, not bridging, i.e. you are
+# using "dev tun" and "server" directives.
+
+# EXAMPLE: Suppose you want to give
+# Thelonious a fixed VPN IP address of 10.9.0.1.
+# First uncomment out these lines:
+;client-config-dir ccd
+;route 10.9.0.0 255.255.255.252
+# Then add this line to ccd/Thelonious:
+#   ifconfig-push 10.9.0.1 10.9.0.2
+
+
+# Suppose that you want to enable different
+# firewall access policies for different groups
+# of clients.  There are two methods:
+# (1) Run multiple OpenVPN daemons, one for each
+#     group, and firewall the TUN/TAP interface
+#     for each group/daemon appropriately.
+# (2) (Advanced) Create a script to dynamically
+#     modify the firewall in response to access
+#     from different clients.  See man
+#     page for more info on learn-address script.
+;learn-address ./script
+
+# If enabled, this directive will configure
+# all clients to redirect their default
+# network gateway through the VPN, causing
+# all IP traffic such as web browsing and
+# and DNS lookups to go through the VPN
+# (The OpenVPN server machine may need to NAT
+# the TUN/TAP interface to the internet in
+# order for this to work properly).
+# CAVEAT: May break client's network config if
+# client's local DHCP server packets get routed
+# through the tunnel.  Solution: make sure
+# client's local DHCP server is reachable via
+# a more specific route than the default route
+# of 0.0.0.0/0.0.0.0.
+;push "redirect-gateway"
+
+# Certain Windows-specific network settings
+# can be pushed to clients, such as DNS
+# or WINS server addresses.  CAVEAT:
+# http://openvpn.net/faq.html#dhcpcaveats
+;push "dhcp-option DNS 10.8.0.1"
+;push "dhcp-option WINS 10.8.0.1"
+
+# Uncomment this directive to allow different
+# clients to be able to "see" each other.
+# By default, clients will only see the server.
+# To force clients to only see the server, you
+# will also need to appropriately firewall the
+# server's TUN/TAP interface.
+client-to-client
+
+# Uncomment this directive if multiple clients
+# might connect with the same certificate/key
+# files or common names.  This is recommended
+# only for testing purposes.  For production use,
+# each client should have its own certificate/key
+# pair.
+#
+# IF YOU HAVE NOT GENERATED INDIVIDUAL
+# CERTIFICATE/KEY PAIRS FOR EACH CLIENT,
+# EACH HAVING ITS OWN UNIQUE "COMMON NAME",
+# UNCOMMENT THIS LINE OUT.
+;duplicate-cn
+
+# The keepalive directive causes ping-like
+# messages to be sent back and forth over
+# the link so that each side knows when
+# the other side has gone down.
+# Ping every 10 seconds, assume that remote
+# peer is down if no ping received during
+# a 120 second time period.
+keepalive 10 120
+
+# For extra security beyond that provided
+# by SSL/TLS, create an "HMAC firewall"
+# to help block DoS attacks and UDP port flooding.
+#
+# Generate with:
+#   openvpn --genkey --secret ta.key
+#
+# The server and each client must have
+# a copy of this key.
+# The second parameter should be '0'
+# on the server and '1' on the clients.
+;tls-auth ta.key 0 # This file is secret
+
+# Select a cryptographic cipher.
+# This config item must be copied to
+# the client config file as well.
+;cipher BF-CBC        # Blowfish (default)
+;cipher AES-128-CBC   # AES
+;cipher DES-EDE3-CBC  # Triple-DES
+
+# Enable compression on the VPN link.
+# If you enable it here, you must also
+# enable it in the client config file.
+comp-lzo
+
+# The maximum number of concurrently connected
+# clients we want to allow.
+;max-clients 100
+
+# It's a good idea to reduce the OpenVPN
+# daemon's privileges after initialization.
+#
+# You can uncomment this out on
+# non-Windows systems.
+;user nobody
+;group nogroup
+
+# The persist options will try to avoid
+# accessing certain resources on restart
+# that may no longer be accessible because
+# of the privilege downgrade.
+persist-key
+persist-tun
+
+# Output a short status file showing
+# current connections, truncated
+# and rewritten every minute.
+status openvpn-status.log
+
+# By default, log messages will go to the syslog (or
+# on Windows, if running as a service, they will go to
+# the "\Program Files\OpenVPN\log" directory).
+# Use log or log-append to override this default.
+# "log" will truncate the log file on OpenVPN startup,
+# while "log-append" will append to it.  Use one
+# or the other (but not both).
+log         openvpn.log
+;log-append  openvpn.log
+
+# Set the appropriate level of log
+# file verbosity.
+#
+# 0 is silent, except for fatal errors
+# 4 is reasonable for general usage
+# 5 and 6 can help to debug connection problems
+# 9 is extremely verbose
+verb 3
+
+# Silence repeating messages.  At most 20
+# sequential messages of the same message
+# category will be output to the log.
+;mute 20
+					]]>
+					</screen>
+				</example>
+				<para>test</para>
+				<screen>
+netkiller@shenzhen:/etc/openvpn$ sudo openvpn --config /etc/openvpn/server.conf
+Tue Nov 13 14:12:33 2007 OpenVPN 2.0.9 i486-pc-linux-gnu [SSL] [LZO] [EPOLL] built on Mar  2 2007
+Tue Nov 13 14:12:33 2007 Diffie-Hellman initialized with 1024 bit key
+Tue Nov 13 14:12:33 2007 TLS-Auth MTU parms [ L:1542 D:138 EF:38 EB:0 ET:0 EL:0 ]
+Tue Nov 13 14:12:33 2007 TUN/TAP device tun0 opened
+Tue Nov 13 14:12:33 2007 ifconfig tun0 10.8.0.1 pointopoint 10.8.0.2 mtu 1500
+Tue Nov 13 14:12:33 2007 route add -net 10.8.0.0 netmask 255.255.255.0 gw 10.8.0.2
+Tue Nov 13 14:12:33 2007 Data Channel MTU parms [ L:1542 D:1450 EF:42 EB:135 ET:0 EL:0 AF:3/1 ]
+Tue Nov 13 14:12:33 2007 UDPv4 link local (bound): [undef]:1194
+Tue Nov 13 14:12:33 2007 UDPv4 link remote: [undef]
+Tue Nov 13 14:12:33 2007 MULTI: multi_init called, r=256 v=256
+Tue Nov 13 14:12:33 2007 IFCONFIG POOL: base=10.8.0.4 size=62
+Tue Nov 13 14:12:33 2007 IFCONFIG POOL LIST
+Tue Nov 13 14:12:33 2007 Initialization Sequence Completed
+				</screen>
+			</step>
+			<step>
+				<para>firewall 配置</para>
+				<screen>
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+iptables -A FORWARD -i eth0 -o tun+ -j ACCEPT
+				</screen>
+				<example>
+					<title>Openvpn 桥接模式服务器配置实例</title>
+					<screen>
+# Generated by iptables-save v1.4.7 on Sat Jun 15 15:54:31 2013
+*nat
+:PREROUTING ACCEPT [40:5588]
+:POSTROUTING ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+-A POSTROUTING -o br0 -j MASQUERADE
+COMMIT
+# Completed on Sat Jun 15 15:54:31 2013
+# Generated by iptables-save v1.4.7 on Sat Jun 15 15:54:31 2013
+*filter
+:INPUT DROP [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT DROP [81:14706]
+-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A INPUT -p icmp -j ACCEPT
+-A INPUT -i lo -j ACCEPT
+-A INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
+-A INPUT -p tcp -m state --state NEW -m tcp --dport 27017 -j ACCEPT
+-A INPUT -p udp --dport 1194 -j ACCEPT
+-A INPUT -j REJECT --reject-with icmp-host-prohibited
+-A FORWARD -i br0 -o tun+ -j ACCEPT
+-A FORWARD -i tun+ -o br0 -j ACCEPT
+-A OUTPUT -j ACCEPT
+COMMIT
+# Completed on Sat Jun 15 15:54:31 2013
+					</screen>
+				</example>
+				<example>
+					<title>双网卡配置实例 </title>
+					<screen>
+iptables -P INPUT DROP
+iptables -P OUTPUT DROP
+iptables -P FORWARD DROP
+
+iptables -A INPUT -i eth0 -p udp --dport openvpn -j ACCEPT
+iptables -A OUTPUT -o eth0 -p udp --sport openvpn -j ACCEPT
+
+iptables -A INPUT -i tun+ -j ACCEPT
+iptables -A OUTPUT -o tun+ -j ACCEPT
+
+iptables -A FORWARD -i tun+ -o eth1 -j ACCEPT
+iptables -A FORWARD -i eth1 -o tun+ -j ACCEPT
+
+iptables -t nat -A POSTROUTING -s 172.31.0.0/24 -o eth1 -j MASQUERADE
+					</screen>
+				</example>
+			</step>
+			<step>
+				<para>Start</para>
+				<screen>
+netkiller@shenzhen:~$ sudo /etc/init.d/openvpn start
+Starting virtual private network daemon: server(OK).
+				</screen>
+			</step>
+		</procedure>
+		</section>
+	</section>
+	<section id="openvpn.revoke">
+		<title>吊销(revoke)用户证书</title>
+		<screen>
+$ . vars
+$ ./revoke-full client1
+$ sudo cp keys/crl.pem /etc/openvpn/
+		</screen>
+		<para>命令执行完成之后， 会在 keys 目录下面， 生成一个 crl.pem 文件,这个文件中包含了吊销证书的名单。</para>
+		<para>确认成功注销某个证书，可以打开keys/index.txt 文件，可以看到前面已被标记为R的注销证书</para>
+		<screen>
+$ grep ^R keys/index.txt
+R       200908052722Z   110218014133Z   04      unknown /C=CN/ST=GD/L=Shenzhen/O=EXAMPLE.COM/CN=client1/emailAddress=client1@EXAMPLE.com
+		</screen>
+		<para>在服务端的配置文件 server.conf 中，加入这样一行：</para>
+		<screen>
+crl-verify crl.pem
+		</screen>
+	</section>
+	<section id="openvpn.client">
+		<title>Openvpn Client</title>
+		<screen>
+$ cd /usr/share/doc/openvpn/examples/easy-rsa/2.0
+$ cp keys/ca.crt keys/client1.crt keys/client1.key /etc/openvpn/
+		</screen>
+		<procedure>
+			<title>Openvpn Client 安装步骤</title>
+			<step>
+				<para>CONFIGURE THE CLIENTS</para>
+				<para>修改 remote my-server-1 1194</para>
+				<example>
+					<title>client.conf</title>
+					<screen>
+<![CDATA[
+##############################################
+# Sample client-side OpenVPN 2.0 config file #
+# for connecting to multi-client server.     #
+#                                            #
+# This configuration can be used by multiple #
+# clients, however each client should have   #
+# its own cert and key files.                #
+#                                            #
+# On Windows, you might want to rename this  #
+# file so it has a .ovpn extension           #
+##############################################
+
+# Specify that we are a client and that we
+# will be pulling certain config file directives
+# from the server.
+client
+
+# Use the same setting as you are using on
+# the server.
+# On most systems, the VPN will not function
+# unless you partially or fully disable
+# the firewall for the TUN/TAP interface.
+;dev tap
+dev tun
+
+# Windows needs the TAP-Win32 adapter name
+# from the Network Connections panel
+# if you have more than one.  On XP SP2,
+# you may need to disable the firewall
+# for the TAP adapter.
+;dev-node MyTap
+
+# Are we connecting to a TCP or
+# UDP server?  Use the same setting as
+# on the server.
+;proto tcp
+proto udp
+
+# The hostname/IP and port of the server.
+# You can have multiple remote entries
+# to load balance between the servers.
+remote vpn.netkiller.8800.org 1194
+;remote my-server-2 1194
+
+# Choose a random host from the remote
+# list for load-balancing.  Otherwise
+# try hosts in the order specified.
+;remote-random
+
+# Keep trying indefinitely to resolve the
+# host name of the OpenVPN server.  Very useful
+# on machines which are not permanently connected
+# to the internet such as laptops.
+resolv-retry infinite
+
+# Most clients don't need to bind to
+# a specific local port number.
+nobind
+
+# Downgrade privileges after initialization (non-Windows only)
+;user nobody
+;group nogroup
+
+# Try to preserve some state across restarts.
+persist-key
+persist-tun
+
+# If you are connecting through an
+# HTTP proxy to reach the actual OpenVPN
+# server, put the proxy server/IP and
+# port number here.  See the man page
+# if your proxy server requires
+# authentication.
+;http-proxy-retry # retry on connection failures
+;http-proxy [proxy server] [proxy port #]
+
+# Wireless networks often produce a lot
+# of duplicate packets.  Set this flag
+# to silence duplicate packet warnings.
+;mute-replay-warnings
+
+# SSL/TLS parms.
+# See the server config file for more
+# description.  It's best to use
+# a separate .crt/.key file pair
+# for each client.  A single ca
+# file can be used for all clients.
+ca ca.crt
+cert client1.crt
+key client1.key
+
+# Verify server certificate by checking
+# that the certicate has the nsCertType
+# field set to "server".  This is an
+# important precaution to protect against
+# a potential attack discussed here:
+#  http://openvpn.net/howto.html#mitm
+#
+# To use this feature, you will need to generate
+# your server certificates with the nsCertType
+# field set to "server".  The build-key-server
+# script in the easy-rsa folder will do this.
+;ns-cert-type server
+
+# If a tls-auth key is used on the server
+# then every client must also have the key.
+;tls-auth ta.key 1
+
+# Select a cryptographic cipher.
+# If the cipher option is used on the server
+# then you must also specify it here.
+;cipher x
+
+# Enable compression on the VPN link.
+# Don't enable this unless it is also
+# enabled in the server config file.
+comp-lzo
+
+# Set log file verbosity.
+verb 3
+
+# Silence repeating messages
+;mute 20
+]]>
+					</screen>
+				</example>
+			</step>
+			<step>
+				<para>禁止Server端 redirect-gateway def1</para>
+				<screen>
+redirect-gateway local
+				</screen>
+			</step>
+		</procedure>
+	</section>
+
+	<section id="openvpn.windows">
+		<title>OpenVPN GUI for Windows</title>
+		<section>
+			<title>Windows Server</title>
+		<procedure>
+			<title>For Windows Server</title>
+			<step>
+				<para>http://openvpn.se/</para>
+				<para>http://openvpn.se/files/install_packages/openvpn-2.0.9-gui-1.0.3-install.exe</para>
+				<para>下载安装后,会在系统托盘上显示图标.这时并不能使用,使用创建配置文件后托盘图标才会显示连接菜单</para>
+			</step>
+			<step>
+				<para>创建证书</para>
+				<screen>
+C:\Documents and Settings\Neo>cd "\Program Files\OpenVPN\easy-rsa"
+C:\Program Files\OpenVPN\easy-rsa>
+C:\Program Files\OpenVPN\easy-rsa>init-config.bat
+				</screen>
+				<para>编辑vars.bat</para>
+				<screen>
+set KEY_COUNTRY=CN
+set KEY_PROVINCE=GD
+set KEY_CITY=Shenzhen
+set KEY_ORG=netkiller.org.cn
+set KEY_EMAIL=openunix@163.com
+				</screen>
+
+				<screen>
+C:\Program Files\OpenVPN\easy-rsa>clean-all.bat
+C:\Program Files\OpenVPN\easy-rsa>vars.bat
+				</screen>
+				<para>创建CA证书</para>
+				<screen>
+				<![CDATA[
+C:\Program Files\OpenVPN\easy-rsa>build-ca.bat
+Loading 'screen' into random state - done
+Generating a 1024 bit RSA private key
+......++++++
+......++++++
+writing new private key to 'keys\ca.key'
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [CN]:
+State or Province Name (full name) [GD]:
+Locality Name (eg, city) [Shenzhen]:
+Organization Name (eg, company) [netkiller.org.cn]:
+Organizational Unit Name (eg, section) []:vpn
+Common Name (eg, your name or your server's hostname) []:netkiller.org.cn
+Email Address [openunix@163.com]:
+
+C:\Program Files\OpenVPN\easy-rsa>
+				]]>
+				</screen>
+				<para>dh</para>
+				<screen>
+				<![CDATA[
+C:\Program Files\OpenVPN\easy-rsa>build-dh.bat
+Loading 'screen' into random state - done
+Generating DH parameters, 1024 bit long safe prime, generator 2
+This is going to take a long time
+..........................+...................+.................................
+.................................+...........+.....................+.......+....
+...............................................................+..+.............
+.+.......................................+......................................
+...+..+...........+................................+............................
+................................................+.....+.........................
+................................................+.....+......+..................
+....................................+...........................................
+.........................................................................+.....+
+.......................................+.....................+..................
+....+...........................................................................
+......................+............................+............................
+................................................................................
+................................................................................
+............................+.................+......................+......+...
+.............+...................+..............................................
+.................+............................................+.................
+................................................................................
+................................+....+.................+........................
+...................+.......+....................................................
+..+...............+.............................................................
+................................................................................
+...............................................................+................
+.......+.........................................................++*++*++*
+
+C:\Program Files\OpenVPN\easy-rsa>
+				]]>
+				</screen>
+				<para>server key</para>
+				<screen>
+				<![CDATA[
+C:\Program Files\OpenVPN\easy-rsa>build-key-server.bat server
+Loading 'screen' into random state - done
+Generating a 1024 bit RSA private key
+........++++++
+....................++++++
+writing new private key to 'keys\server.key'
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [CN]:
+State or Province Name (full name) [GD]:
+Locality Name (eg, city) [Shenzhen]:
+Organization Name (eg, company) [netkiller.org.cn]:
+Organizational Unit Name (eg, section) []:vpn
+Common Name (eg, your name or your server's hostname) []:netkiller.org.cn
+Email Address [openunix@163.com]:
+
+Please enter the following 'extra' attributes
+to be sent with your certificate request
+A challenge password []:chen
+An optional company name []:
+Using configuration from openssl.cnf
+Loading 'screen' into random state - done
+Check that the request matches the signature
+Signature ok
+The Subject's Distinguished Name is as follows
+countryName           :PRINTABLE:'CN'
+stateOrProvinceName   :PRINTABLE:'GD'
+localityName          :PRINTABLE:'Shenzhen'
+organizationName      :PRINTABLE:'netkiller.org.cn'
+organizationalUnitName:PRINTABLE:'vpn'
+commonName            :PRINTABLE:'netkiller.org.cn'
+emailAddress          :IA5STRING:'openunix@163.com'
+Certificate is to be certified until Jun  9 03:14:55 2017 GMT (3650 days)
+Sign the certificate? [y/n]:y
+
+
+1 out of 1 certificate requests certified, commit? [y/n]y
+Write out database with 1 new entries
+Data Base Updated
+
+C:\Program Files\OpenVPN\easy-rsa>
+				]]>
+				</screen>
+				<para>client key</para>
+				<screen>
+				<![CDATA[
+C:\Program Files\OpenVPN\easy-rsa>build-key.bat client
+Loading 'screen' into random state - done
+Generating a 1024 bit RSA private key
+......++++++
+....................++++++
+writing new private key to 'keys\client.key'
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [CN]:
+State or Province Name (full name) [GD]:
+Locality Name (eg, city) [Shenzhen]:
+Organization Name (eg, company) [netkiller.org.cn]:
+Organizational Unit Name (eg, section) []:vpn
+Common Name (eg, your name or your server's hostname) []:netkiller.org.cn
+Email Address [openunix@163.com ]:
+
+Please enter the following 'extra' attributes
+to be sent with your certificate request
+A challenge password []:chen
+An optional company name []:
+Using configuration from openssl.cnf
+Loading 'screen' into random state - done
+DEBUG[load_index]: unique_subject = "yes"
+Check that the request matches the signature
+Signature ok
+The Subject's Distinguished Name is as follows
+countryName           :PRINTABLE:'CN'
+stateOrProvinceName   :PRINTABLE:'GD'
+localityName          :PRINTABLE:'Shenzhen'
+organizationName      :PRINTABLE:'netkiller.org.cn'
+organizationalUnitName:PRINTABLE:'vpn'
+commonName            :PRINTABLE:'netkiller.org.cn'
+emailAddress          :IA5STRING:'openunix@163.com^I'
+Certificate is to be certified until Jun  9 03:17:55 2017 GMT (3650 days)
+Sign the certificate? [y/n]:y
+failed to update database
+TXT_DB error number 2
+
+C:\Program Files\OpenVPN\easy-rsa>
+				]]>
+				</screen>
+			</step>
+			<step>
+				<para>配置</para>
+				<example>
+					<title>server.ovpn</title>
+					<screen>
+<![CDATA[
+#################################################
+# Sample OpenVPN 2.0 config file for            #
+# multi-client server.                          #
+#                                               #
+# This file is for the server side              #
+# of a many-clients <-> one-server              #
+# OpenVPN configuration.                        #
+#                                               #
+# OpenVPN also supports                         #
+# single-machine <-> single-machine             #
+# configurations (See the Examples page         #
+# on the web site for more info).               #
+#                                               #
+# This config should work on Windows            #
+# or Linux/BSD systems.  Remember on            #
+# Windows to quote pathnames and use            #
+# double backslashes, e.g.:                     #
+# "C:\\Program Files\\OpenVPN\\config\\foo.key" #
+#                                               #
+# Comments are preceded with '#' or ';'         #
+#################################################
+
+# Which local IP address should OpenVPN
+# listen on? (optional)
+;local a.b.c.d
+
+# Which TCP/UDP port should OpenVPN listen on?
+# If you want to run multiple OpenVPN instances
+# on the same machine, use a different port
+# number for each one.  You will need to
+# open up this port on your firewall.
+port 1194
+
+# TCP or UDP server?
+;proto tcp
+proto udp
+
+# "dev tun" will create a routed IP tunnel,
+# "dev tap" will create an ethernet tunnel.
+# Use "dev tap0" if you are ethernet bridging
+# and have precreated a tap0 virtual interface
+# and bridged it with your ethernet interface.
+# If you want to control access policies
+# over the VPN, you must create firewall
+# rules for the the TUN/TAP interface.
+# On non-Windows systems, you can give
+# an explicit unit number, such as tun0.
+# On Windows, use "dev-node" for this.
+# On most systems, the VPN will not function
+# unless you partially or fully disable
+# the firewall for the TUN/TAP interface.
+;dev tap
+dev tun
+
+# Windows needs the TAP-Win32 adapter name
+# from the Network Connections panel if you
+# have more than one.  On XP SP2 or higher,
+# you may need to selectively disable the
+# Windows firewall for the TAP adapter.
+# Non-Windows systems usually don't need this.
+;dev-node MyTap
+
+# SSL/TLS root certificate (ca), certificate
+# (cert), and private key (key).  Each client
+# and the server must have their own cert and
+# key file.  The server and all clients will
+# use the same ca file.
+#
+# See the "easy-rsa" directory for a series
+# of scripts for generating RSA certificates
+# and private keys.  Remember to use
+# a unique Common Name for the server
+# and each of the client certificates.
+#
+# Any X509 key management system can be used.
+# OpenVPN can also use a PKCS #12 formatted key file
+# (see "pkcs12" directive in man page).
+ca ca.crt
+cert server.crt
+key server.key  # This file should be kept secret
+
+# Diffie hellman parameters.
+# Generate your own with:
+#   openssl dhparam -out dh1024.pem 1024
+# Substitute 2048 for 1024 if you are using
+# 2048 bit keys.
+dh dh1024.pem
+
+# Configure server mode and supply a VPN subnet
+# for OpenVPN to draw client addresses from.
+# The server will take 10.8.0.1 for itself,
+# the rest will be made available to clients.
+# Each client will be able to reach the server
+# on 10.8.0.1. Comment this line out if you are
+# ethernet bridging. See the man page for more info.
+server 10.8.0.0 255.255.255.0
+
+# Maintain a record of client <-> virtual IP address
+# associations in this file.  If OpenVPN goes down or
+# is restarted, reconnecting clients can be assigned
+# the same virtual IP address from the pool that was
+# previously assigned.
+ifconfig-pool-persist ipp.txt
+
+# Configure server mode for ethernet bridging.
+# You must first use your OS's bridging capability
+# to bridge the TAP interface with the ethernet
+# NIC interface.  Then you must manually set the
+# IP/netmask on the bridge interface, here we
+# assume 10.8.0.4/255.255.255.0.  Finally we
+# must set aside an IP range in this subnet
+# (start=10.8.0.50 end=10.8.0.100) to allocate
+# to connecting clients.  Leave this line commented
+# out unless you are ethernet bridging.
+;server-bridge 10.8.0.4 255.255.255.0 10.8.0.50 10.8.0.100
+
+# Push routes to the client to allow it
+# to reach other private subnets behind
+# the server.  Remember that these
+# private subnets will also need
+# to know to route the OpenVPN client
+# address pool (10.8.0.0/255.255.255.0)
+# back to the OpenVPN server.
+;push "route 192.168.10.0 255.255.255.0"
+;push "route 192.168.20.0 255.255.255.0"
+
+# To assign specific IP addresses to specific
+# clients or if a connecting client has a private
+# subnet behind it that should also have VPN access,
+# use the subdirectory "ccd" for client-specific
+# configuration files (see man page for more info).
+
+# EXAMPLE: Suppose the client
+# having the certificate common name "Thelonious"
+# also has a small subnet behind his connecting
+# machine, such as 192.168.40.128/255.255.255.248.
+# First, uncomment out these lines:
+;client-config-dir ccd
+;route 192.168.40.128 255.255.255.248
+# Then create a file ccd/Thelonious with this line:
+#   iroute 192.168.40.128 255.255.255.248
+# This will allow Thelonious' private subnet to
+# access the VPN.  This example will only work
+# if you are routing, not bridging, i.e. you are
+# using "dev tun" and "server" directives.
+
+# EXAMPLE: Suppose you want to give
+# Thelonious a fixed VPN IP address of 10.9.0.1.
+# First uncomment out these lines:
+;client-config-dir ccd
+;route 10.9.0.0 255.255.255.252
+# Then add this line to ccd/Thelonious:
+#   ifconfig-push 10.9.0.1 10.9.0.2
+
+# Suppose that you want to enable different
+# firewall access policies for different groups
+# of clients.  There are two methods:
+# (1) Run multiple OpenVPN daemons, one for each
+#     group, and firewall the TUN/TAP interface
+#     for each group/daemon appropriately.
+# (2) (Advanced) Create a script to dynamically
+#     modify the firewall in response to access
+#     from different clients.  See man
+#     page for more info on learn-address script.
+;learn-address ./script
+
+# If enabled, this directive will configure
+# all clients to redirect their default
+# network gateway through the VPN, causing
+# all IP traffic such as web browsing and
+# and DNS lookups to go through the VPN
+# (The OpenVPN server machine may need to NAT
+# the TUN/TAP interface to the internet in
+# order for this to work properly).
+# CAVEAT: May break client's network config if
+# client's local DHCP server packets get routed
+# through the tunnel.  Solution: make sure
+# client's local DHCP server is reachable via
+# a more specific route than the default route
+# of 0.0.0.0/0.0.0.0.
+;push "redirect-gateway"
+
+# Certain Windows-specific network settings
+# can be pushed to clients, such as DNS
+# or WINS server addresses.  CAVEAT:
+# http://openvpn.net/faq.html#dhcpcaveats
+;push "dhcp-option DNS 10.8.0.1"
+;push "dhcp-option WINS 10.8.0.1"
+
+# Uncomment this directive to allow different
+# clients to be able to "see" each other.
+# By default, clients will only see the server.
+# To force clients to only see the server, you
+# will also need to appropriately firewall the
+# server's TUN/TAP interface.
+;client-to-client
+
+# Uncomment this directive if multiple clients
+# might connect with the same certificate/key
+# files or common names.  This is recommended
+# only for testing purposes.  For production use,
+# each client should have its own certificate/key
+# pair.
+#
+# IF YOU HAVE NOT GENERATED INDIVIDUAL
+# CERTIFICATE/KEY PAIRS FOR EACH CLIENT,
+# EACH HAVING ITS OWN UNIQUE "COMMON NAME",
+# UNCOMMENT THIS LINE OUT.
+;duplicate-cn
+
+# The keepalive directive causes ping-like
+# messages to be sent back and forth over
+# the link so that each side knows when
+# the other side has gone down.
+# Ping every 10 seconds, assume that remote
+# peer is down if no ping received during
+# a 120 second time period.
+keepalive 10 120
+
+# For extra security beyond that provided
+# by SSL/TLS, create an "HMAC firewall"
+# to help block DoS attacks and UDP port flooding.
+#
+# Generate with:
+#   openvpn --genkey --secret ta.key
+#
+# The server and each client must have
+# a copy of this key.
+# The second parameter should be '0'
+# on the server and '1' on the clients.
+;tls-auth ta.key 0 # This file is secret
+
+# Select a cryptographic cipher.
+# This config item must be copied to
+# the client config file as well.
+;cipher BF-CBC        # Blowfish (default)
+;cipher AES-128-CBC   # AES
+;cipher DES-EDE3-CBC  # Triple-DES
+
+# Enable compression on the VPN link.
+# If you enable it here, you must also
+# enable it in the client config file.
+comp-lzo
+
+# The maximum number of concurrently connected
+# clients we want to allow.
+;max-clients 100
+
+# It's a good idea to reduce the OpenVPN
+# daemon's privileges after initialization.
+#
+# You can uncomment this out on
+# non-Windows systems.
+;user nobody
+;group nobody
+
+# The persist options will try to avoid
+# accessing certain resources on restart
+# that may no longer be accessible because
+# of the privilege downgrade.
+persist-key
+persist-tun
+
+# Output a short status file showing
+# current connections, truncated
+# and rewritten every minute.
+status openvpn-status.log
+
+# By default, log messages will go to the syslog (or
+# on Windows, if running as a service, they will go to
+# the "\Program Files\OpenVPN\log" directory).
+# Use log or log-append to override this default.
+# "log" will truncate the log file on OpenVPN startup,
+# while "log-append" will append to it.  Use one
+# or the other (but not both).
+;log         openvpn.log
+;log-append  openvpn.log
+
+# Set the appropriate level of log
+# file verbosity.
+#
+# 0 is silent, except for fatal errors
+# 4 is reasonable for general usage
+# 5 and 6 can help to debug connection problems
+# 9 is extremely verbose
+verb 3
+
+# Silence repeating messages.  At most 20
+# sequential messages of the same message
+# category will be output to the log.
+;mute 20
+
+]]>
+					</screen>
+				</example>
+			</step>
+
+		</procedure>
+		</section>
+		<section>
+			<title>Windows Client</title>
+			<procedure>
+				<title>For Windows Client</title>
+				<step>
+					<para>配置文件</para>
+					<para>将C:\Program Files\OpenVPN\sample-config目录下的client.ovpn复制到C:\Program Files\OpenVPN\config</para>
+					<para>ca.crt, client.crt, client.key 三个文件复制到 C:\Program Files\OpenVPN\config</para>
+					<para>修改;remote my-server-1 1194</para>
+					<screen>
+remote vpn.netkiller.8800.org 1194
+					</screen>
+					<para>编辑client.ovpn文件</para>
+					<example>
+						<title>client.ovpn</title>
+						<screen>
+##############################################
+# Sample client-side OpenVPN 2.0 config file #
+# for connecting to multi-client server.     #
+#                                            #
+# This configuration can be used by multiple #
+# clients, however each client should have   #
+# its own cert and key files.                #
+#                                            #
+# On Windows, you might want to rename this  #
+# file so it has a .ovpn extension           #
+##############################################
+
+# Specify that we are a client and that we
+# will be pulling certain config file directives
+# from the server.
+client
+
+# Use the same setting as you are using on
+# the server.
+# On most systems, the VPN will not function
+# unless you partially or fully disable
+# the firewall for the TUN/TAP interface.
+;dev tap
+dev tun
+
+# Windows needs the TAP-Win32 adapter name
+# from the Network Connections panel
+# if you have more than one.  On XP SP2,
+# you may need to disable the firewall
+# for the TAP adapter.
+;dev-node MyTap
+
+# Are we connecting to a TCP or
+# UDP server?  Use the same setting as
+# on the server.
+;proto tcp
+proto udp
+
+# The hostname/IP and port of the server.
+# You can have multiple remote entries
+# to load balance between the servers.
+remote netkiller.8800.org 1194
+;remote my-server-2 1194
+
+# Choose a random host from the remote
+# list for load-balancing.  Otherwise
+# try hosts in the order specified.
+;remote-random
+
+# Keep trying indefinitely to resolve the
+# host name of the OpenVPN server.  Very useful
+# on machines which are not permanently connected
+# to the internet such as laptops.
+resolv-retry infinite
+
+# Most clients don't need to bind to
+# a specific local port number.
+nobind
+
+# Downgrade privileges after initialization (non-Windows only)
+;user nobody
+;group nobody
+
+# Try to preserve some state across restarts.
+persist-key
+persist-tun
+
+# If you are connecting through an
+# HTTP proxy to reach the actual OpenVPN
+# server, put the proxy server/IP and
+# port number here.  See the man page
+# if your proxy server requires
+# authentication.
+;http-proxy-retry # retry on connection failures
+;http-proxy [proxy server] [proxy port #]
+
+# Wireless networks often produce a lot
+# of duplicate packets.  Set this flag
+# to silence duplicate packet warnings.
+;mute-replay-warnings
+
+# SSL/TLS parms.
+# See the server config file for more
+# description.  It's best to use
+# a separate .crt/.key file pair
+# for each client.  A single ca
+# file can be used for all clients.
+ca ca.crt
+cert client1.crt
+key client1.key
+
+# Verify server certificate by checking
+# that the certicate has the nsCertType
+# field set to "server".  This is an
+# important precaution to protect against
+# a potential attack discussed here:
+#  http://openvpn.net/howto.html#mitm
+#
+# To use this feature, you will need to generate
+# your server certificates with the nsCertType
+# field set to "server".  The build-key-server
+# script in the easy-rsa folder will do this.
+;ns-cert-type server
+
+# If a tls-auth key is used on the server
+# then every client must also have the key.
+;tls-auth ta.key 1
+
+# Select a cryptographic cipher.
+# If the cipher option is used on the server
+# then you must also specify it here.
+;cipher x
+
+# Enable compression on the VPN link.
+# Don't enable this unless it is also
+# enabled in the server config file.
+comp-lzo
+
+# Set log file verbosity.
+verb 3
+
+# Silence repeating messages
+;mute 20
+						</screen>
+					</example>
+				</step>
+				<step>
+					<para>连接到VPN服务器</para>
+					<para>托盘图标上->右键->选择 [Connect] 菜单</para>
+				</step>
+			</procedure>
+			<section>
+				<title>客户端路由设置</title>
+				<para>client.ovpn 中加入</para>
+				<screen>
+# Silence repeating messages
+;mute 20
+up client.ovpn_up.bat
+				</screen>
+				<para>client.ovpn_up.bat</para>
+				<screen>
+				<![CDATA[
+@echo off
+@echo 5秒后执行添加路由
+set t=5
+ping -n %t% 127.0.0.1>nul
+@echo 开始执行添加路由
+
+route ADD 0.0.0.0 MASK 0.0.0.0 192.168.90.254
+
+route DELETE 0.0.0.0 MASK 128.0.0.0 10.8.0.21
+route DELETE 128.0.0.0 MASK 128.0.0.0 10.8.0.21
+
+
+rem route ADD 10.0.0 MASK 255.0.0.0 192.168.90.252
+rem route ADD 192.168.0 MASK 255.255.0.0 192.168.90.252
+rem route ADD 202.96.0.0 MASK 255.255.0.0 192.168.90.252
+				]]>
+				</screen>
+			</section>
+		</section>
+	</section>
+	<section>
+		<title>point-to-point VPNs</title>
+		<procedure>
+			<title>This example demonstrates a bare-bones point-to-point OpenVPN configuration.</title>
+			<step>
+				<para>Generate a static key</para>
+				<screen>
+$ cd /etc/openvpn/
+$ sudo openvpn --genkey --secret static.key
+				</screen>
+			</step>
+			<step>
+				<para>server configuration file</para>
+				<screen>
+$ cd /usr/share/doc/openvpn/examples/sample-config-files
+$ sudo cp static-office.conf office.up /etc/openvpn/
+				</screen>
+				<para>static-office.conf</para>
+				<screen>
+$ sudo vim static-office.conf
+				</screen>
+			</step>
+			<step>
+				<para>client configuration file</para>
+				<screen>
+$ cd /usr/share/doc/openvpn/examples/sample-config-files
+$ sudo cp static-home.conf home.up /etc/openvpn/
+$ cd /etc/openvpn/
+$ scp user@netkiller.8800.org:/etc/openvpn/static.key .
+				</screen>
+				<para>static-home.conf</para>
+				<screen>
+remote netkiller.8800.org
+				</screen>
+			</step>
+		</procedure>
+		<para>OpenVPN GUI for Windows</para>
+		<!--
+iptables -t nat -A POSTROUTING -s 10.1.0.0/24 -o eth0 -j MASQUERADE
+C:\>route delete 0.0.0.0
+C:\>route add 0.0.0.0 mask 0.0.0.0 10.8.0.1
+		 -->
+		<screen>
+copy C:\Program Files\OpenVPN\sample-config\sample.ovpn C:\Program Files\OpenVPN\config
+		</screen>
+	</section>
+<section id="openvpn.example">
+	<title>VPN 案例</title>
+
+	<section>
+		<title>server and client vpn</title>
+		<screen>
+		<![CDATA[
+office (linux)                                   home (xp)
+--------------                                   ----------
+172.16.0.1 eth0                                  192.168.0.1
+    ^                                                ^
+    |                                                |
+10.8.0.1 tun0  --> 10.8.0.2 <---> 10.8.0.5 <--   10.8.0.6
+
+testing home - > office
+----------------------------------------------------------
+
+ping 10.8.0.1 OK
+ping 172.16.0.1 OK
+ping 172.16.0.254 OK
+		]]>
+		</screen>
+		<example>
+			<title>office.conf</title>
+			<para>office</para>
+			<screen>
+			<![CDATA[
+$ sudo sysctl -w net.ipv4.ip_forward=1
+$ sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+#################################################
+# Sample OpenVPN 2.0 config file for            #
+# multi-client server.                          #
+#                                               #
+# This file is for the server side              #
+# of a many-clients <-> one-server              #
+# OpenVPN configuration.                        #
+#                                               #
+# OpenVPN also supports                         #
+# single-machine <-> single-machine             #
+# configurations (See the Examples page         #
+# on the web site for more info).               #
+#                                               #
+# This config should work on Windows            #
+# or Linux/BSD systems.  Remember on            #
+# Windows to quote pathnames and use            #
+# double backslashes, e.g.:                     #
+# "C:\\Program Files\\OpenVPN\\config\\foo.key" #
+#                                               #
+# Comments are preceded with '#' or ';'         #
+#################################################
+
+# Which local IP address should OpenVPN
+# listen on? (optional)
+;local a.b.c.d
+
+# Which TCP/UDP port should OpenVPN listen on?
+# If you want to run multiple OpenVPN instances
+# on the same machine, use a different port
+# number for each one.  You will need to
+# open up this port on your firewall.
+port 1194
+
+# TCP or UDP server?
+;proto tcp
+proto udp
+
+# "dev tun" will create a routed IP tunnel,
+# "dev tap" will create an ethernet tunnel.
+# Use "dev tap0" if you are ethernet bridging
+# and have precreated a tap0 virtual interface
+# and bridged it with your ethernet interface.
+# If you want to control access policies
+# over the VPN, you must create firewall
+# rules for the the TUN/TAP interface.
+# On non-Windows systems, you can give
+# an explicit unit number, such as tun0.
+# On Windows, use "dev-node" for this.
+# On most systems, the VPN will not function
+# unless you partially or fully disable
+# the firewall for the TUN/TAP interface.
+;dev tap
+dev tun
+
+# Windows needs the TAP-Win32 adapter name
+# from the Network Connections panel if you
+# have more than one.  On XP SP2 or higher,
+# you may need to selectively disable the
+# Windows firewall for the TAP adapter.
+# Non-Windows systems usually don't need this.
+;dev-node MyTap
+
+# SSL/TLS root certificate (ca), certificate
+# (cert), and private key (key).  Each client
+# and the server must have their own cert and
+# key file.  The server and all clients will
+# use the same ca file.
+#
+# See the "easy-rsa" directory for a series
+# of scripts for generating RSA certificates
+# and private keys.  Remember to use
+# a unique Common Name for the server
+# and each of the client certificates.
+#
+# Any X509 key management system can be used.
+# OpenVPN can also use a PKCS #12 formatted key file
+# (see "pkcs12" directive in man page).
+ca ca.crt
+cert server.crt
+key server.key  # This file should be kept secret
+
+# Diffie hellman parameters.
+# Generate your own with:
+#   openssl dhparam -out dh1024.pem 1024
+# Substitute 2048 for 1024 if you are using
+# 2048 bit keys.
+dh dh1024.pem
+
+# Configure server mode and supply a VPN subnet
+# for OpenVPN to draw client addresses from.
+# The server will take 10.8.0.1 for itself,
+# the rest will be made available to clients.
+# Each client will be able to reach the server
+# on 10.8.0.1. Comment this line out if you are
+# ethernet bridging. See the man page for more info.
+server 10.8.0.0 255.255.255.0
+
+# Maintain a record of client <-> virtual IP address
+# associations in this file.  If OpenVPN goes down or
+# is restarted, reconnecting clients can be assigned
+# the same virtual IP address from the pool that was
+# previously assigned.
+ifconfig-pool-persist ipp.txt
+
+# Configure server mode for ethernet bridging.
+# You must first use your OS's bridging capability
+# to bridge the TAP interface with the ethernet
+# NIC interface.  Then you must manually set the
+# IP/netmask on the bridge interface, here we
+# assume 10.8.0.4/255.255.255.0.  Finally we
+# must set aside an IP range in this subnet
+# (start=10.8.0.50 end=10.8.0.100) to allocate
+# to connecting clients.  Leave this line commented
+# out unless you are ethernet bridging.
+;server-bridge 10.8.0.4 255.255.255.0 10.8.0.50 10.8.0.100
+
+# Configure server mode for ethernet bridging
+# using a DHCP-proxy, where clients talk
+# to the OpenVPN server-side DHCP server
+# to receive their IP address allocation
+# and DNS server addresses.  You must first use
+# your OS's bridging capability to bridge the TAP
+# interface with the ethernet NIC interface.
+# Note: this mode only works on clients (such as
+# Windows), where the client-side TAP adapter is
+# bound to a DHCP client.
+;server-bridge
+
+# Push routes to the client to allow it
+# to reach other private subnets behind
+# the server.  Remember that these
+# private subnets will also need
+# to know to route the OpenVPN client
+# address pool (10.8.0.0/255.255.255.0)
+# back to the OpenVPN server.
+;push "route 192.168.10.0 255.255.255.0"
+;push "route 192.168.20.0 255.255.255.0"
+push "route 172.16.0.0 255.255.255.0"
+
+# To assign specific IP addresses to specific
+# clients or if a connecting client has a private
+# subnet behind it that should also have VPN access,
+# use the subdirectory "ccd" for client-specific
+# configuration files (see man page for more info).
+
+# EXAMPLE: Suppose the client
+# having the certificate common name "Thelonious"
+# also has a small subnet behind his connecting
+# machine, such as 192.168.40.128/255.255.255.248.
+# First, uncomment out these lines:
+;client-config-dir ccd
+;route 192.168.40.128 255.255.255.248
+# Then create a file ccd/Thelonious with this line:
+#   iroute 192.168.40.128 255.255.255.248
+# This will allow Thelonious' private subnet to
+# access the VPN.  This example will only work
+# if you are routing, not bridging, i.e. you are
+# using "dev tun" and "server" directives.
+
+# EXAMPLE: Suppose you want to give
+# Thelonious a fixed VPN IP address of 10.9.0.1.
+# First uncomment out these lines:
+;client-config-dir ccd
+;route 10.9.0.0 255.255.255.252
+route 192.168.102.0 255.255.255.0
+# Then add this line to ccd/Thelonious:
+#   ifconfig-push 10.9.0.1 10.9.0.2
+
+# Suppose that you want to enable different
+# firewall access policies for different groups
+# of clients.  There are two methods:
+# (1) Run multiple OpenVPN daemons, one for each
+#     group, and firewall the TUN/TAP interface
+#     for each group/daemon appropriately.
+# (2) (Advanced) Create a script to dynamically
+#     modify the firewall in response to access
+#     from different clients.  See man
+#     page for more info on learn-address script.
+;learn-address ./script
+
+# If enabled, this directive will configure
+# all clients to redirect their default
+# network gateway through the VPN, causing
+# all IP traffic such as web browsing and
+# and DNS lookups to go through the VPN
+# (The OpenVPN server machine may need to NAT
+# or bridge the TUN/TAP interface to the internet
+# in order for this to work properly).
+;push "redirect-gateway def1 bypass-dhcp"
+;push "redirect-gateway"
+
+# Certain Windows-specific network settings
+# can be pushed to clients, such as DNS
+# or WINS server addresses.  CAVEAT:
+# http://openvpn.net/faq.html#dhcpcaveats
+# The addresses below refer to the public
+# DNS servers provided by opendns.com.
+;push "dhcp-option DNS 208.67.222.222"
+;push "dhcp-option DNS 208.67.220.220"
+
+# Uncomment this directive to allow different
+# clients to be able to "see" each other.
+# By default, clients will only see the server.
+# To force clients to only see the server, you
+# will also need to appropriately firewall the
+# server's TUN/TAP interface.
+client-to-client
+
+# Uncomment this directive if multiple clients
+# might connect with the same certificate/key
+# files or common names.  This is recommended
+# only for testing purposes.  For production use,
+# each client should have its own certificate/key
+# pair.
+#
+# IF YOU HAVE NOT GENERATED INDIVIDUAL
+# CERTIFICATE/KEY PAIRS FOR EACH CLIENT,
+# EACH HAVING ITS OWN UNIQUE "COMMON NAME",
+# UNCOMMENT THIS LINE OUT.
+;duplicate-cn
+
+# The keepalive directive causes ping-like
+# messages to be sent back and forth over
+# the link so that each side knows when
+# the other side has gone down.
+# Ping every 10 seconds, assume that remote
+# peer is down if no ping received during
+# a 120 second time period.
+keepalive 10 120
+
+# For extra security beyond that provided
+# by SSL/TLS, create an "HMAC firewall"
+# to help block DoS attacks and UDP port flooding.
+#
+# Generate with:
+#   openvpn --genkey --secret ta.key
+#
+# The server and each client must have
+# a copy of this key.
+# The second parameter should be '0'
+# on the server and '1' on the clients.
+;tls-auth ta.key 0 # This file is secret
+
+# Select a cryptographic cipher.
+# This config item must be copied to
+# the client config file as well.
+;cipher BF-CBC        # Blowfish (default)
+;cipher AES-128-CBC   # AES
+;cipher DES-EDE3-CBC  # Triple-DES
+
+# Enable compression on the VPN link.
+# If you enable it here, you must also
+# enable it in the client config file.
+comp-lzo
+
+# The maximum number of concurrently connected
+# clients we want to allow.
+;max-clients 100
+
+# It's a good idea to reduce the OpenVPN
+# daemon's privileges after initialization.
+#
+# You can uncomment this out on
+# non-Windows systems.
+;user nobody
+;group nogroup
+
+# The persist options will try to avoid
+# accessing certain resources on restart
+# that may no longer be accessible because
+# of the privilege downgrade.
+persist-key
+persist-tun
+
+# Output a short status file showing
+# current connections, truncated
+# and rewritten every minute.
+status openvpn-status.log
+
+# By default, log messages will go to the syslog (or
+# on Windows, if running as a service, they will go to
+# the "\Program Files\OpenVPN\log" directory).
+# Use log or log-append to override this default.
+# "log" will truncate the log file on OpenVPN startup,
+# while "log-append" will append to it.  Use one
+# or the other (but not both).
+log         openvpn.log
+log-append  openvpn.log
+
+# Set the appropriate level of log
+# file verbosity.
+#
+# 0 is silent, except for fatal errors
+# 4 is reasonable for general usage
+# 5 and 6 can help to debug connection problems
+# 9 is extremely verbose
+verb 3
+
+# Silence repeating messages.  At most 20
+# sequential messages of the same message
+# category will be output to the log.
+;mute 20
+			]]>
+			</screen>
+		</example>
+		<example>
+			<title>home.ovpn</title>
+			<screen>
+			<![CDATA[
+##############################################
+# Sample client-side OpenVPN 2.0 config file #
+# for connecting to multi-client server.     #
+#                                            #
+# This configuration can be used by multiple #
+# clients, however each client should have   #
+# its own cert and key files.                #
+#                                            #
+# On Windows, you might want to rename this  #
+# file so it has a .ovpn extension           #
+##############################################
+
+# Specify that we are a client and that we
+# will be pulling certain config file directives
+# from the server.
+client
+
+# Use the same setting as you are using on
+# the server.
+# On most systems, the VPN will not function
+# unless you partially or fully disable
+# the firewall for the TUN/TAP interface.
+;dev tap
+dev tun
+
+# Windows needs the TAP-Win32 adapter name
+# from the Network Connections panel
+# if you have more than one.  On XP SP2,
+# you may need to disable the firewall
+# for the TAP adapter.
+;dev-node MyTap
+
+# Are we connecting to a TCP or
+# UDP server?  Use the same setting as
+# on the server.
+;proto tcp
+proto udp
+
+# The hostname/IP and port of the server.
+# You can have multiple remote entries
+# to load balance between the servers.
+remote netkiller.8800.org 1194
+;remote my-server-2 1194
+
+# Choose a random host from the remote
+# list for load-balancing.  Otherwise
+# try hosts in the order specified.
+;remote-random
+
+# Keep trying indefinitely to resolve the
+# host name of the OpenVPN server.  Very useful
+# on machines which are not permanently connected
+# to the internet such as laptops.
+resolv-retry infinite
+
+# Most clients don't need to bind to
+# a specific local port number.
+nobind
+
+# Downgrade privileges after initialization (non-Windows only)
+;user nobody
+;group nobody
+
+# Try to preserve some state across restarts.
+persist-key
+persist-tun
+
+# If you are connecting through an
+# HTTP proxy to reach the actual OpenVPN
+# server, put the proxy server/IP and
+# port number here.  See the man page
+# if your proxy server requires
+# authentication.
+;http-proxy-retry # retry on connection failures
+;http-proxy [proxy server] [proxy port #]
+
+# Wireless networks often produce a lot
+# of duplicate packets.  Set this flag
+# to silence duplicate packet warnings.
+;mute-replay-warnings
+
+# SSL/TLS parms.
+# See the server config file for more
+# description.  It's best to use
+# a separate .crt/.key file pair
+# for each client.  A single ca
+# file can be used for all clients.
+ca ca.crt
+cert client.crt
+key client.key
+
+# Verify server certificate by checking
+# that the certicate has the nsCertType
+# field set to "server".  This is an
+# important precaution to protect against
+# a potential attack discussed here:
+#  http://openvpn.net/howto.html#mitm
+#
+# To use this feature, you will need to generate
+# your server certificates with the nsCertType
+# field set to "server".  The build-key-server
+# script in the easy-rsa folder will do this.
+;ns-cert-type server
+
+# If a tls-auth key is used on the server
+# then every client must also have the key.
+;tls-auth ta.key 1
+
+# Select a cryptographic cipher.
+# If the cipher option is used on the server
+# then you must also specify it here.
+;cipher x
+
+# Enable compression on the VPN link.
+# Don't enable this unless it is also
+# enabled in the server config file.
+comp-lzo
+
+# Set log file verbosity.
+verb 3
+
+# Silence repeating messages
+;mute 20
+			]]>
+			</screen>
+		</example>
+	</section>
+	<section>
+		<title>Ethernet Bridging Example</title>
+		<procedure>
+			<title>server</title>
+			<step>
+				<screen>
+yum -y install bridge-utils
+				</screen>
+			</step>
+			<step>
+				<para>server.conf</para>
+				<screen>
+dev tap0
+server-bridge 192.168.3.5 255.255.255.0 192.168.3.200  192.168.3.250
+push "redirect-gateway local def1"
+push "dhcp-option DNS 208.67.222.222"
+push "dhcp-option DNS 208.67.220.220"
+				</screen>
+			</step>
+			<step>
+				<screen>
+cp /usr/share/doc/openvpn-2.1.1/sample-scripts/bridge-st* /etc/openvpn/
+chmod +x /etc/openvpn/bridge*
+				</screen>
+				<para>config bridge-start</para>
+				<screen>
+vim /etc/openvpn/bridge-start
+eth="eth0"
+eth_ip="192.168.3.5"
+eth_netmask="255.255.255.0"
+eth_broadcast="192.168.3.255"
+				</screen>
+			</step>
+			<step>
+				<para>start</para>
+				<screen>
+/etc/openvpn/bridge-start
+/etc/init.d/openvpn start
+				</screen>
+			</step>
+			<step>
+				<para>stop</para>
+				<screen>
+/etc/init.d/openvpn stop
+/etc/openvpn/bridge-stop
+				</screen>
+			</step>
+		</procedure>
+		<procedure>
+			<title>client</title>
+			<step>
+				<para>client.ovpn</para>
+				<screen>
+dev tap
+dev-node tap-bridge
+				</screen>
+			</step>
+			<step>
+				<para>网上邻居右键，选择属性，TAP-Win32 Adapter V8 重命名为 tap-bridge</para>
+				<para>vista windows7 操作系统注意：</para>
+				<screen>
+OpenVPN GUI 右键“以管理员身份运行”
+
+client.ovpn 中加入
+route-method exe
+route-delay 2
+				</screen>
+			</step>
+		</procedure>
+	</section>
+	<section>
+		<title>IDC Example</title>
+		<screen>
+		Internet
+			|
+			V
+		ethernet 0 : 120.132.x.x
+	Cisco PIX Firewall	NAT(120.132.x.x TO 172.16.1.2)
+		ethernet 1 : 172.16.1.254
+			|
+			V
+Cisco Catalyst 3750 Switch
+		g0/0/1 : 172.16.1.1
+			|
+			V
+	eth0 : 172.16.1.2
+	OpenVPN Server
+		</screen>
+		<para>VPN 拨通后不能正常访问172.16.1.0</para>
+		<para>/etc/openvpn/server.conf</para>
+		<screen>
+push "redirect-gateway def1 bypass-dhcp"
+		</screen>
+		<screen>
+$ sudo iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE
+		</screen>
+	</section>
+</section>
+	<section>
+		<title>OpenVPN安全</title>
+		<para>OpenVPN 一旦拨通，即可访问LAN内所有资源。很多时候我们并不希望所有的电脑都被访问。有两种方法：</para>
+		<para>通过 push 是用户无法访问某些网段</para>
+		<para>通过iptables限制访问规则</para>
+		<screen>
+# Generated by iptables-save v1.4.7 on Tue May 14 17:54:27 2013
+*nat
+:PREROUTING ACCEPT [223:25375]
+:POSTROUTING ACCEPT [14:949]
+:OUTPUT ACCEPT [14:949]
+-A POSTROUTING -s 10.8.0.0/24 -o br0 -j MASQUERADE
+COMMIT
+# Completed on Tue May 14 17:54:27 2013
+# Generated by iptables-save v1.4.7 on Tue May 14 17:54:27 2013
+*mangle
+:PREROUTING ACCEPT [11437:6020321]
+:INPUT ACCEPT [3297:437320]
+:FORWARD ACCEPT [8084:5579781]
+:OUTPUT ACCEPT [5861:5797640]
+:POSTROUTING ACCEPT [13949:11377549]
+-A POSTROUTING -o virbr0 -p udp -m udp --dport 68 -j CHECKSUM --checksum-fill
+COMMIT
+# Completed on Tue May 14 17:54:27 2013
+# Generated by iptables-save v1.4.7 on Tue May 14 17:54:27 2013
+*filter
+:INPUT ACCEPT [300:38586]
+:FORWARD ACCEPT [736:520323]
+:OUTPUT ACCEPT [503:536634]
+-A FORWARD -d 192.168.2.10/32 -i tun0 -p tcp --dport 80 -j ACCEPT
+-A FORWARD -d 192.168.2.11/32 -i tun0 -p tcp --dport 80 -j ACCEPT
+-A FORWARD -d 192.168.2.12/32 -i tun0 -p tcp --dport 80 -j ACCEPT
+-A FORWARD -d 192.168.2.13/32 -i tun0 -p tcp --dport 80 -j ACCEPT
+-A FORWARD -d 192.168.2.14/32 -i tun0 -p tcp --dport 80 -j ACCEPT
+-A FORWARD -d 192.168.0.0/16 -i tun0 -j DROP
+COMMIT
+# Completed on Tue May 14 17:54:27 2013
+		</screen>
+		<para>查询生效规则</para>
+		<screen>
+# iptables -L -v
+Chain INPUT (policy ACCEPT 226 packets, 17012 bytes)
+ pkts bytes target     prot opt in     out     source               destination
+
+Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination
+    0     0 ACCEPT     tcp  --  tun0   any     anywhere             192.168.2.10        tcp dpt:http
+    0     0 ACCEPT     tcp  --  tun0   any     anywhere             192.168.2.11        tcp dpt:http
+    0     0 ACCEPT     tcp  --  tun0   any     anywhere             192.168.2.12        tcp dpt:http
+    0     0 ACCEPT     tcp  --  tun0   any     anywhere             192.168.2.13        tcp dpt:http
+    0     0 ACCEPT     tcp  --  tun0   any     anywhere             192.168.2.14        tcp dpt:http
+    0     0 DROP       all  --  tun0   any     anywhere             192.168.0.0/16
+
+Chain OUTPUT (policy ACCEPT 170 packets, 28112 bytes)
+ pkts bytes target     prot opt in     out     source               destination
+		</screen>
+	</section>
+</section>

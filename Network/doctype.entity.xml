@@ -5,12 +5,7 @@
 	<!ENTITY chapter.network.bind 			SYSTEM "chapter.network.bind.xml">
 	<!ENTITY chapter.network.dnsmasq.xml	SYSTEM "chapter.network.dnsmasq.xml">
 	<!ENTITY chapter.network.router 		SYSTEM "chapter.network.router.xml">
-	<!ENTITY chapter.network.vpn 			SYSTEM "chapter.network.vpn.xml">
-	<!ENTITY chapter.network.vpn.openvpn	SYSTEM "chapter.network.vpn.openvpn.xml">
-	<!ENTITY chapter.network.vpn.pptpd 		SYSTEM "chapter.network.vpn.pptpd.xml">
-	<!ENTITY chapter.network.vpn.l2tp 		SYSTEM "chapter.network.vpn.l2tp.xml">
-	<!ENTITY chapter.network.vpn.ipsec-tools SYSTEM "chapter.network.vpn.ipsec-tools.xml">
-	<!ENTITY chapter.network.vpn.openswan 	SYSTEM "chapter.network.vpn.openswan.xml">
+	
 	<!ENTITY chapter.network.proxy 			SYSTEM "chapter.network.proxy.xml">
 	<!ENTITY chapter.network.proxy.squid 	SYSTEM "chapter.network.proxy.squid.xml">
 	<!ENTITY chapter.network.proxy.web 		SYSTEM "chapter.network.proxy.web.xml">
@@ -26,3 +21,10 @@
 	<!ENTITY chapter.security.firewall.iptables SYSTEM "chapter.security.firewall.iptables.xml">
 	<!ENTITY chapter.security.stunnel 		SYSTEM "chapter.security.stunnel.xml">
 	<!ENTITY chapter.security.openssh 		SYSTEM "chapter.security.openssh.xml">	
+
+	<!ENTITY chapter.vpn.xml 				SYSTEM "chapter.vpn.xml">
+	<!ENTITY chapter.vpn.openvpn.xml		SYSTEM "chapter.vpn.openvpn.xml">
+	<!ENTITY chapter.vpn.pptpd.xml 			SYSTEM "chapter.vpn.pptpd.xml">
+	<!ENTITY chapter.vpn.l2tp.xml 			SYSTEM "chapter.vpn.l2tp.xml">
+	<!ENTITY chapter.vpn.ipsec.xml			SYSTEM "chapter.vpn.ipsec.xml">
+	<!ENTITY chapter.vpn.openswan.xml	 	SYSTEM "chapter.vpn.openswan.xml">
