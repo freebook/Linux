@@ -148,6 +148,12 @@ server {
     #}
 }
 			</screen>
+			<para>绑定IP地址</para>
+			<screen>
+listen 80; 相当于0.0.0.0:80监听所有接口上的IP地址
+listen 192.168.0.1 80;
+listen 192.168.0.1:80;
+			</screen>
 			<para>绑定多个域名</para>
 			<screen>
 server_name  images.example.com img1.example.com img2.example.com;
