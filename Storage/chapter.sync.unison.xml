@@ -1,0 +1,49 @@
+<section id="unison">
+	<title>Unison File Synchronizer</title>
+	<para>If you are looking for a tool to sync your laptop with your workstation, you better have a look at Unison.</para>
+	<para>homepage: http://www.cis.upenn.edu/~bcpierce/unison/</para>
+	<para>installation</para>
+	<screen>
+$ sudo apt-get install unison	
+	</screen>
+	<!-- http://blog.chinaunix.net/u2/73914/showart.php?id=1098875 -->
+	<section>
+		<title>local</title>
+		<para>dir to dir</para>
+		<screen>
+unison dir1 dir2		
+		</screen>
+	</section>
+	<section>
+		<title>remote</title>
+		<para>ssh</para>
+		<screen>
+unison dir1 ssh://username@remotehostname(ip)//absolute/path/to/dir2		
+		</screen>
+		<para>socket</para>
+		<para>target host</para>
+		<screen>
+# unison -socket NNNN	
+		</screen>
+		<para>source host</para>
+		<screen>
+# unison dir1 socket://remotehost(ip):port//absolute/path/to/dir2			
+		</screen>
+	</section>
+	<section>
+		<title>config</title>
+		<para>create a config file under '.unison' directory.</para>
+		<screen>
+vim ~/.unison/config.prf
+
+root = /var/www
+root = ssh://netkiller@netkiller.8800.org//var/www
+force = /var/www
+ignore = Path templates_compiled
+ignore = Name tmp/*.pdf
+auto = true
+log = true
+logfile = /home/netkiller/.unison/netkiller.8800.org.log
+		</screen>
+	</section>
+</section>

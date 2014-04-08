@@ -1,0 +1,7 @@
+<chapter id="synchronize">
+	<title>File Synchronize</title>
+	&chapter.sync.rsync.xml;
+	&chapter.sync.unison.xml;
+	&chapter.sync.csync.xml;
+	&chapter.sync.synctool.xml;
+</chapter>

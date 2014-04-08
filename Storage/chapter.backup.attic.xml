@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="attic">
+	<title>Attic - 拥有重复数据删除技术的备份软件</title>
+	<para>Attic 是一个拥有重复数据删除技术的备份软件</para>
+	<section>
+		<title>安装 Attic</title>
+		<screen>
+$ pip install attic
+		</screen>
+	</section>
+	<section>
+		<title>快速开始</title>
+		<procedure>
+			<title>Attic 快速开始</title>
+			<step>
+				<para>初始化仓库</para>
+				<screen>
+$ attic init /somewhere/my-repository.attic
+				</screen>
+			</step>
+			<step>
+				<para>备份目录~/src 和 ~/Documents归档名称Monday</para>
+				<screen>
+$ attic create /somwhere/my-repository.attic::Monday ~/src ~/Documents
+				</screen>
+			</step>
+		    <step>
+				<para>一次类推下一份叫做Tuesday</para>
+				<screen>
+$ attic create --stats /somwhere/my-repository.attic::Tuesday ~/src ~/Documents
+				</screen>
+				<para>--stats 参数将显示备份过程的状态</para>
+		    </step>
+		    <step>
+				<para>列出库中的所有档案</para>
+				<screen>
+$ attic list /somewhere/my-repository.attic
+				</screen>
+		    </step>			
+			<step>
+				<para>列出周一归档文件的内容</para>
+				<screen>
+$ attic list /somewhere/my-repository.attic::Monday
+				</screen>
+			</step>
+			<step>
+				<para>通过手动删除周一存档恢复磁盘空间</para>
+				<screen>
+$ attic delete /somwhere/my-backup.attic::Monday
+				</screen>
+				<para>Attic is quiet by default. Add the -v or --verbose option to get progress reporting during command execution.</para>
+			</step>
+		</procedure>
+	</section>
+</section>
