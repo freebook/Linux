@@ -1,23 +1,23 @@
 <section id="rsync">
 	<title>rsync - fast remote file copy program (like rcp)</title>
 	<para>rsync is an open source utility that provides fast incremental file transfer. rsync is freely available under the GNU General Public License version 2 and is currently being maintained by Wayne Davison.</para>
-<section>
-	<title>安装Rsync与配置守护进程</title>
 	<section>
-		<title>install with source</title>
-	<procedure><title>rsync</title>
-		<step><para>安装rsync</para>
-			<para>在AS3 第二张CD上找到rsync-2.5.6-20.i386.rpm</para>
-			<screen>
+		<title>安装Rsync与配置守护进程</title>
+		<section>
+			<title>install with source</title>
+			<procedure><title>rsync</title>
+				<step><para>安装rsync</para>
+					<para>在AS3 第二张CD上找到rsync-2.5.6-20.i386.rpm</para>
+					<screen>
 [root@linuxas3 root]# cd /mnt
 [root@linuxas3 mnt]# mount cdrom
 [root@linuxas3 mnt]# cd cdrom/RedHat/RPMS
 [root@linuxas3 RPMS]# rpm -ivh rsync-2.5.6-20.i386.rpm
-			</screen>
-		</step>
-		<step><para>配置/etc/rsyncd.conf</para>
-			<para>在rh9,as3系统上rsync安装后,并没有创建rsyncd.conf文档，要自己创建rsyncd.conf文档</para>
-			<screen>
+					</screen>
+				</step>
+				<step><para>配置/etc/rsyncd.conf</para>
+					<para>在rh9,as3系统上rsync安装后,并没有创建rsyncd.conf文档，要自己创建rsyncd.conf文档</para>
+					<screen>
 [root@linuxas3 root]# vi /etc/rsyncd.conf
 
 uid=nobody
@@ -52,11 +52,11 @@ comment = backup postgresql database
 ignore errors
 read only = yes
 list = no
-			</screen>
-
-	  		<substeps>
-	    	<step><para>选项说明</para>
-		    	<screen>
+					</screen>
+		
+			  		<substeps>
+			    	<step><para>选项说明</para>
+				    	<screen>
 uid = nobody
 gid = nobody
 use chroot = no         # 不使用chroot
@@ -77,63 +77,63 @@ auth users = postfix  # 认证的用户名，如果没有这行，则表明是�
 [other]
 path = /path/to...
 comment = xxxxx
-		    	</screen>
-	    	</step>
-	    	<step><para>密码文件</para>
-	    		<para>在server端生成一个密码文件/etc/rsyncd.pwd</para>
-		    	<screen>
+				    	</screen>
+			    	</step>
+			    	<step><para>密码文件</para>
+			    		<para>在server端生成一个密码文件/etc/rsyncd.pwd</para>
+				    	<screen>
 [root@linuxas3 root]# echo postfix:xxx >>/etc/rsyncd.pwd
 [root@linuxas3 root]# echo netkiller:xxx >>/etc/rsyncd.pwd
 [root@linuxas3 root]# chmod 600 /etc/rsyncd.pwd
-		    	</screen>
-	    	</step>
-	    	<step><para>启动rsync daemon</para>
-		    	<screen>
+				    	</screen>
+			    	</step>
+			    	<step><para>启动rsync daemon</para>
+				    	<screen>
 [root@linuxas3 root]# rsync --daemon
-		    	</screen>
-	    	</step>
-	  		</substeps>
-		</step>
-		<step>
-			<para>添加到启动文件</para>
-			<screen>
+				    	</screen>
+			    	</step>
+			  		</substeps>
+				</step>
+				<step>
+					<para>添加到启动文件</para>
+					<screen>
 echo　"rsync　--daemon"　>>　/etc/rc.d/rc.local                                    [  OK  ]
-			</screen>
-			<para>cat /etc/rc.d/rc.local 确认一下</para>
-		</step>
-		<step><para>测试</para>
-			<screen>
+					</screen>
+					<para>cat /etc/rc.d/rc.local 确认一下</para>
+				</step>
+				<step><para>测试</para>
+					<screen>
 [root@linux docbook]#  rsync rsync://netkiller.8800.org/netkiller
 [root@linux tmp]# rsync rsync://netkiller@netkiller.8800.org/netkiller
 Password:
 
 [chen@linux temp]$  rsync -vzrtopg --progress --delete postfix@netkiller.8800.org::postfix /tmp
 Password:
-			</screen>
-		</step>
-	</procedure>
-	</section>
-	<section>
-		<title>install with aptitude</title>
-	<procedure>
-		<title>installation setp by setp</title>
-		<step>
-			<para>installation</para>
-			<screen>
+				</screen>
+			</step>
+		</procedure>
+		</section>
+		<section>
+			<title>install with aptitude</title>
+			<procedure>
+				<title>installation setp by setp</title>
+				<step>
+					<para>installation</para>
+					<screen>
 $ sudo apt-get install rsync
-			</screen>
-		</step>
-		<step>
-			<para>enable</para>
-			<screen>
+					</screen>
+				</step>
+				<step>
+					<para>enable</para>
+					<screen>
 $ sudo vim /etc/default/rsync
 
 RSYNC_ENABLE=true
-			</screen>
-		</step>
-		<step>
-			<para>config /etc/rsyncd.conf</para>
-			<screen>
+					</screen>
+				</step>
+				<step>
+					<para>config /etc/rsyncd.conf</para>
+					<screen>
 $ sudo vim /etc/rsyncd.conf
 
 uid=nobody
@@ -184,49 +184,49 @@ ignore errors
 read only = yes
 list = no
 auth users = neo,netkiller
-			</screen>
-		</step>
-		<step>
-			<para>/etc/rsyncd.secrets</para>
-			<screen>
+					</screen>
+				</step>
+				<step>
+					<para>/etc/rsyncd.secrets</para>
+					<screen>
 $ sudo vim  /etc/rsyncd.secrets
 
 neo:123456
 netkiller:123456
-			</screen>
-			<para></para>
-			<screen>
+					</screen>
+					<para></para>
+					<screen>
 $ sudo chmod 600 /etc/rsyncd.secrets
-			</screen>
-		</step>
-		<step>
-			<para>start</para>
-			<screen>
+					</screen>
+				</step>
+				<step>
+					<para>start</para>
+					<screen>
 $ sudo /etc/init.d/rsync start
-			</screen>
-		</step>
-		<step>
-			<para>test</para>
-			<screen>
+					</screen>
+				</step>
+				<step>
+					<para>test</para>
+					<screen>
 $ rsync -vzrtopg --progress --delete neo@localhost::neo /tmp/test1/
 $ rsync -vzrtopg --progress --delete localhost::music /tmp/test2/
-			</screen>
-		</step>
-		<step>
-			<para>firewall</para>
-			<screen>
+					</screen>
+				</step>
+				<step>
+					<para>firewall</para>
+					<screen>
 $ sudo ufw allow rsync
-			</screen>
-		</step>
-	</procedure>
-	</section>
-	<section id="rsync.xinetd">
-		<title>xinetd</title>
-		<screen>
+					</screen>
+				</step>
+			</procedure>
+		</section>
+		<section id="rsync.xinetd">
+			<title>xinetd</title>
+			<screen>
 yum install xinetd
-		</screen>
-		<para>配置 /etc/xinetd.d/rsync</para>
-		<screen>
+			</screen>
+			<para>配置 /etc/xinetd.d/rsync</para>
+			<screen>
 vim /etc/xinetd.d/rsync
 
 # default: off
@@ -243,15 +243,15 @@ service rsync
 	server_args     = --daemon
 	log_on_failure  += USERID
 }
-		</screen>
-		<para>disable	= yes 改为 disable	= no</para>
-		<para># vim /etc/rsyncd.conf</para>
-		<screen>
+			</screen>
+			<para>disable	= yes 改为 disable	= no</para>
+			<para># vim /etc/rsyncd.conf</para>
+			<screen>
 chkconfig xinetd on
 /etc/init.d/xinetd restart
-		</screen>
+			</screen>
+		</section>
 	</section>
-</section>
 	<section>
 		<title>rsyncd.conf</title>
 		<screen>
