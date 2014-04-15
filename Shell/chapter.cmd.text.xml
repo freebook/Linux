@@ -264,6 +264,31 @@ echo `< /dev/urandom tr -dc A-Z-a-z-0-9 | head -c 8`
 done
 		]]>
 		</screen>
+		<screen>
+		<![CDATA[
+# cat /dev/urandom | tr -cd [:alnum:] | fold -w30 | head -n 20
+AVqROzjF6ZATJGv2J6PzDHp3jLpKV4
+ONt68UFNDwgXpSnLBV7oRDX3VLRYsX
+EZTWCGvZc3mIEeuw9sxMtV8ZkzVRJv
+BhUiv0a7utsjZFLYpKGZrY5aDXcZL4
+5YfUl2hmDT1O9X61DRYg4wSp4lXoXX
+ykyPJxH47PzxnNGlujIUF98ZtB01H0
+QyP53mksQN8bCNNo1fSD3RtqhhEGfa
+u2RkT1M9GUQF4a6O18tG5WD97OOXze
+Whm5X7398Q8L9BONN8k2oLy9CL37JO
+TmGQz7WB6WnkjhyB4wrBHBJ3HMIRyf
+hww43yvddUDYUnbNOKjhv3sLhCA4YD
+uY6zQtBC6miwLUl3jkCVVA0Xu8ASgj
+jv58qu46VW7LvRIq4txNE8bG9NBlZl
+pzaMkydAiCHCF5H2oQVqMn4DTTYgNL
+yoN2A9LyrCwLfjP1ad9HMAwxExJL5i
+J27iy2L90m9dpcPLJ8tl46GGb9xqmQ
+6YwFCvuPHyyEwnctUTpqLFcvUafVZ2
+Nuq9XgIgRQGynjlVqGLMOpO0MkGpsn
+tChkRG7eoRuKVXgW7ccTGx45E54K3Y
+qPv48XqdGlOrdULCOGZ45kwJ1v5kVX		
+		]]>
+		</screen>
 	</section>
 	<section id="col">
 		<title>col - filter reverse line feeds from input</title>
