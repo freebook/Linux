@@ -117,4 +117,8 @@ test -x /usr/share/logwatch/scripts/logwatch.pl || exit 0
 		<title>logstash - open source log management</title>
 		<para><ulink url="http://logstash.net/" /></para>
 	</section>
+	<section id="octopussy">
+		<title>Octopussy</title>
+		<para>http://www.8pussy.org/</para>
+	</section>
 </chapter>
