@@ -26,14 +26,14 @@ events {
 client_body_buffer_size  1K;
 client_header_buffer_size 1k;
 client_max_body_size 1k;
-large_client_header_buffers 2 1k;		
+large_client_header_buffers 2 1k;
 		</screen>
 		<para>超时相关设置</para>
 		<screen>
 client_body_timeout   10;
 client_header_timeout 10;
 keepalive_timeout  	  65;
-send_timeout          10;		
+send_timeout          10;
 		</screen>
 		<section>
 			<title>X-Forwarded-For</title>
@@ -353,7 +353,7 @@ location / {
         }
 }
 			</screen>
-			
+
 			<example>
 				<title>nginx expires</title>
 				<screen>
@@ -390,7 +390,7 @@ location ~ \.(ico|pdf|flv|jp?g|png|gif|js|css|webp|swf)(\.gz)?(\?.*)?$ {
            ...
            proxy_cache_valid 200 2592000;
            ...
-}				
+}
 				</screen>
 				<para>s-maxage 作用于 Proxy</para>
 				<screen>
@@ -619,297 +619,8 @@ location /images/ {
 			</example>
 		</section>
 	</section>
-	<section id="proxy">
-		<title>Proxy</title>
-		<screen>
-# cat /etc/nginx/nginx.conf
 
-#user  nobody;
-worker_processes  4;
-
-#error_log  logs/error.log;
-#error_log  logs/error.log  notice;
-#error_log  logs/error.log  info;
-
-#pid        logs/nginx.pid;
-
-
-events {
-    worker_connections  40960;
-        use epoll;
-}
-
-
-http {
-    include       mime.types;
-    default_type  application/octet-stream;
-
-    #log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
-    #                  '$status $body_bytes_sent "$http_referer" '
-    #                  '"$http_user_agent" "$http_x_forwarded_for"';
-
-    #access_log  logs/access.log  main;
-
-    access_log  /dev/null;
-
-    sendfile        on;
-    #tcp_nopush     on;
-
-    #keepalive_timeout  0;
-    keepalive_timeout  65;
-
-    #gzip  on;
-
-upstream backend{
-#        server 172.16.0.6:80;
-        server 10.0.0.68:80;
-        server 10.0.0.69:80;
-}
-
-
-    server {
-        listen       80;
-        server_name  localhost;
-
-        #charset koi8-r;
-
-        #access_log  logs/host.access.log  main;
-
-#        location / {
-#            root   html;
-#            index  index.html index.htm;
-#        }
-
-    access_log  /dev/null;
-    error_log   /dev/null;
-
-
-    location / {
-#        proxy_pass $scheme://$host$request_uri;
-#        proxy_set_header Host $http_host;
-
-#        proxy_buffers 256 4k;
-#        proxy_max_temp_file_size 0;
-
-#        proxy_connect_timeout 30;
-
-#        proxy_cache_valid 200 302 10m;
-#        proxy_cache_valid 301 1h;
-#        proxy_cache_valid any 1m;
-
-
-
-         proxy_pass      http://backend;
-
-         proxy_redirect          off;
-         proxy_set_header        Host $host;
-#         proxy_set_header        X-Real-IP $remote_addr;
-#         proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
-         client_max_body_size    10m;
-         client_body_buffer_size 128k;
-         proxy_connect_timeout   30;
-         proxy_send_timeout      30;
-         proxy_read_timeout      30;
-         proxy_buffer_size       4k;
-         proxy_buffers           256 4k;
-         proxy_busy_buffers_size 64k;
-         proxy_temp_file_write_size 64k;
-        tcp_nodelay on;
-    }
-
-
-        #error_page  404              /404.html;
-
-        # redirect server error pages to the static page /50x.html
-        #
-        error_page   500 502 503 504  /50x.html;
-        location = /50x.html {
-            root   html;
-        }
-    }
-
-}
-		</screen>
-		<section>
-			<title>request_filename + proxy_pass</title>
-			<para>如果文件不存在，那么去指定的节点上寻找</para>
-			<screen>
-   location / {
-        root  /www;
-        proxy_intercept_errors  on;
-        if (!-f $request_filename) {
-          proxy_pass http://172.16.1.1;
-          break;
-        }
-    }
-	location / {
-        root  /www/images;
-        proxy_intercept_errors  on;
-        if (!-f $request_filename) {
-          proxy_pass http://172.16.1.2;
-          break;
-        }
-    }
-			</screen>
-		</section>
-		<section id="proxy_cache">
-			<title>proxy_cache</title>
-			<screen>
-http {
-  proxy_cache_path  /var/www/cache levels=1:2 keys_zone=my-cache:8m max_size=1000m inactive=600m;
-  proxy_temp_path /var/www/cache/tmp;
-
-
-  server {
-    location / {
-      proxy_pass http://example.net;
-      proxy_cache mycache;
-      proxy_cache_valid  200 302  60m;
-      proxy_cache_valid  404      1m;
-    }
-  }
-}
-			</screen>
-			<screen>
-location / {
-  proxy_pass http://localhost;
-  proxy_set_header   Host             $host;
-  proxy_set_header   X-Real-IP        $remote_addr;
-  proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
-  proxy_ignore_headers Set-Cookie;
-  proxy_ignore_headers Cache-Control;
-  proxy_cache_bypass        $http_secret_header;
-  add_header X-Cache-Status $upstream_cache_status;
-}
-			</screen>
-			<screen>
-server {
-          listen       80;
-          server_name  example.org;
-          root   /var/www;
-          index  index.html index.php;
-
-	location ~* .+.(ico|jpg|gif|jpeg|css|js|flv|png|swf)$ {
-           	expires max;
-	}
-
-	location / {
-		proxy_pass       http://backend;
-		proxy_set_header  X-Real-IP  $remote_addr;
-		proxy_set_header Host $http_host;
-		proxy_cache cache;
-		proxy_cache_key $host$request_uri;
-		proxy_cache_valid 200 304 12h;
-		proxy_cache_valid 302 301 12h;
-		proxy_cache_valid any 1m;
-		proxy_ignore_headers Cache-Control Expires;
-		proxy_pass_header Set-Cookie;
-	}
-
-}
-			</screen>
-		</section>
-
-		<section id="proxy.expires">
-			<title>expires</title>
-			<screen>
-location / {
-    root /var/www;
-    proxy_set_header  X-Real-IP  $remote_addr;
-    proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header Host $http_host;
-    proxy_redirect false;
-
-    if ($request_uri ~* "\.(ico|css|js|gif|jpe?g|png)\?[0-9]+$") {
-        expires max;
-        break;
-    }
-    if (-f $request_filename) {
-        break;
-    }
-    if (-f $request_filename/index.html) {
-        rewrite (.*) $1/index.html break;
-    }
-    if (-f $request_filename.html) {
-        rewrite (.*) $1.html break;
-    }
-
-    proxy_pass http://backend;
-}
-			</screen>
-		</section>
-		<section id="request_uri+proxy_pass">
-			<title>$request_uri 与  proxy_pass 联合使用</title>
-			<screen>
-server {
-    listen       80;
-    server_name  info.example.com;
-
-    #charset koi8-r;
-    access_log  /var/log/nginx/info.example.com.access.log  main;
-
-    location / {
-        root   /www/example.com/info.example.com;
-        index  index.html index.htm;
-
-	rewrite ^/$  http://www.example.com/;
-
-	valid_referers none blocked *.example.com;
-	if ($invalid_referer) {
-		#rewrite ^(.*)$  http://www.example.com/cn/$1;
-		return 403;
-	}
-
-        proxy_intercept_errors  on;
-#	    proxy_set_header  X-Real-IP  $remote_addr;
-#            proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-#            proxy_set_header  Host            $host;
-#
-#            proxy_cache one;
-#            proxy_cache_valid  200 302 304 10m;
-#            proxy_cache_valid  301 1h;
-#            proxy_cache_valid  any 1m;
-
-        if ( $request_uri ~ "^/public/datas/(sge|cgse|futures|fx_price|gold_price|stock|bonds)\.xml$") {
-                proxy_pass http://211.176.212.212$request_uri;
-		break;
-        }
-
-        if (!-f $request_filename) {
-
-          proxy_pass http://infoadmin.example.com;
-          #proxy_pass http://backend;
-          break;
-        }
-    }
-
-    location ~ ^/index\.php$ {
-	return 403;
-    }
-    location ~ ^/(config|include|crontab|/systemmanage)/ {
-	deny all;
-	break;
-    }
-    #error_page  404              /404.html;
-
-    # redirect server error pages to the static page /50x.html
-    #
-    error_page   500 502 503 504  /50x.html;
-    location = /50x.html {
-        root   /usr/share/nginx/html;
-    }
-
-}
-			</screen>
-		</section>
-		<section id="xsendfile">
-			<title>X-Sendfile</title>
-			<para>http://wiki.nginx.org/NginxXSendfile</para>
-			<screen>
-
-			</screen>
-		</section>
-	</section>
+	&chapter.nginx.proxy.xml;
 
 	<section id="limit_zone">
 		<title>limit_zone</title>

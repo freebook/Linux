@@ -12,6 +12,7 @@
 <!ENTITY chapter.nginx.xml			SYSTEM "chapter.nginx.xml">
 <!ENTITY chapter.nginx.fastcgi.xml	SYSTEM "chapter.nginx.fastcgi.xml">
 <!ENTITY chapter.nginx.conf.xml		SYSTEM "chapter.nginx.conf.xml">
+<!ENTITY chapter.nginx.proxy.xml	SYSTEM "chapter.nginx.proxy.xml">
 <!ENTITY chapter.nginx.var.xml 		SYSTEM "chapter.nginx.var.xml">
 <!ENTITY chapter.nginx.faq.xml		SYSTEM "chapter.nginx.faq.xml">
 
