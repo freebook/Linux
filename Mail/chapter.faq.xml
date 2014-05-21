@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="mail.service">
+<chapter id="index"><?dbhtml dir="spam" ?>
 	<title>邮件被拒收处理方法</title>
 
 	<section id="netease">
@@ -65,7 +65,7 @@
 	</section>
 </chapter>
  -->
-<chapter id="faq">
+<chapter id="index"><?dbhtml dir="faq" ?>
 	<title>邮件错误代码</title>
 	<para>This is the first chapter in my book.</para>
 	<procedure>

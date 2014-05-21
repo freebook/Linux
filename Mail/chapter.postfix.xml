@@ -7,19 +7,37 @@
  -->
 <chapter id="index"><?dbhtml dir="postfix" ?>
 	<title>postfix - High-performance mail transport agent</title>
-	<para><ulink url="/archives/public_html/book/postfix/index.html">Postfix Solution</ulink></para>
+	<para><ulink url="http://www.postfix.org/">Postfix 主页</ulink></para>
 	<section id="install">
 		<title>install</title>
-		<screen>
+		<section id="ubuntu">
+			<title>Ubuntu</title>
+			<screen>
 $ sudo apt-get install postfix
-		</screen>
-	</section>
-	<section id="configure">
-		<title>configure</title>
-		<screen>
+			</screen>
+			<para>configure</para>
+			<screen>
 $ sudo dpkg-reconfigure postfix-config
-		</screen>
+			</screen>
+		</section>
+		<section id="centos">
+			<title>CentOS</title>
+			<screen>
+# yum install -y postfix			
+			</screen>
+			<screen>
+myhostname = mail.example.com
+mydomain = example.com
+myorigin = $mydomain
+inet_interfaces = all
+mydestination = $myhostname, localhost.$mydomain, localhost, $mydomain
+#mynetworks = 192.168.0.0/24, 127.0.0.0/8
+#relay_domains =
+home_mailbox = Maildir/			
+			</screen>
+		</section>
 	</section>
+	
 	<section id="rspamd">
 		<title>Rspamd</title>
 		<para>Rspamd是一个反垃圾邮件系统，因为使用事件模型和正则表达式优化，其设计工作速度比SpamAssassin还 要快。目前推出的功能： regexp规则过滤的不同部分的信息;一些内置的功能分析的信息;模糊哈希支持; SURBL滤波器;电子邮件和性质表支持;控制界面进行远程管理和统计信息收集，一个Perl和卢阿插件系统;统计支持（定向结构刨花板/簸扬） ;兼容SpamAssassin ;和一个客户端程序的电子邮件扫描。类似的规则， rspamd约10倍SpamAssassin 。</para>

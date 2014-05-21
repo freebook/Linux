@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 	<!ENTITY chapter.mail.xml 			SYSTEM "chapter.mail.xml">
-	<!ENTITY chapter.mail.client.xml 	SYSTEM "chapter.mail.client.xml">
-	<!ENTITY chapter.mail.exim4.xml 	SYSTEM "chapter.mail.exim4.xml">
-	<!ENTITY chapter.mail.postfix.xml 	SYSTEM "chapter.mail.postfix.xml">
+	<!ENTITY chapter.client.xml 		SYSTEM "chapter.client.xml">
+	<!ENTITY chapter.exim4.xml 			SYSTEM "chapter.exim4.xml">
+	<!ENTITY chapter.postfix.xml 		SYSTEM "chapter.postfix.xml">
+	<!ENTITY chapter.devel.xml 			SYSTEM "chapter.devel.xml">
 	<!ENTITY chapter.fax.xml 			SYSTEM "chapter.fax.xml">
 	<!ENTITY chapter.faq.xml 			SYSTEM "chapter.faq.xml">

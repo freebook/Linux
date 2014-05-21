@@ -1,138 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 	
-	&chapter.mail.client.xml;
-	&chapter.mail.exim4.xml;	
-	&chapter.mail.postfix.xml;
+	&chapter.client.xml;
+	&chapter.exim4.xml;	
+	&chapter.postfix.xml;
+	&chapter.devel.xml;
 
-<chapter id="mail.format">
-	<title>邮件原文</title>
-	<section id="format.subject">
-		<title>Subject Unicode</title>
-		<para>=?encode?B?Subject?=</para>
-		<para>B = BASE64</para>
-		<example>
-			<title>Subject Unicode</title>
-			<para>=?UTF-8?B?U3ViamVjdAo?=</para>
-		</example>
-	</section>
-	<section id="format.to">
-		<title>TO/CC/BCC</title>
-		<screen>
-		<![CDATA[
-To: Neo Chen <neo.chen@example.com>
-Cc: =?UTF-8?B?U3ViamVjdAo?= <sky.lv@example.com>
-Bcc: xinying.wen@example.com
-		]]>
-		</screen>
-	</section>
-	<section id="format.content">
-		<title>正文</title>
-		<screen>
-		<![CDATA[
-# cat mail.sh
-#!/bin/bash
-subject=$(echo "测试邮件"|base64)
-mail=`cat /tmp/mail.txt | base64`
-/usr/sbin/sendmail -t <<EOF
-From: system@example.com
-To: chao.zhang@example.com
-Cc: sky.lv@example.com
-Bcc: xinying.wen@example.com
-Subject: =?utf-8?B?$subject?=
-Content-Language: zh-cn
-Content-type:txt/plain;charset=UTF-8
-Content-Transfer-Encoding: base64
-
-$mail
-
-EOF
-		]]>
-		</screen>
-	</section>
-</chapter>
+<!-- 
 <chapter id="mail.tools">
 	<title>Tools</title>
-	<section id="pop.sniffer">
-		<title>POP Sniffer</title>
-		<para></para>
-		<screen>
-		<![CDATA[
-#!/usr/bin/python3
-# Author: neo chan
-# Homepage: http://netkiller.8800.org
-
-import socketserver,sys
-import threading
-
-class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
-
-	def setup(self):
-		print(self.client_address[0], 'connected!')
-		self.request.send(b'+OK Welcome to coremail Mail Pop3 Server \r\n')
-
-	def handle(self):
-    	# self.request is the TCP socket connected to the client
-		while True:
-			self.data = self.request.recv(1024).strip()
-			if self.data == b'QUIT':
-				return
-			if self.data == b'AUTH':
-				self.request.send(b'-ERR Not support ntlm auth method\r\n')
-			print("%s wrote: " % self.client_address[0])
-			print (self.data)
-			# just send back the same data, but upper-cased
-			# self.request.send(self.data.upper())
-			self.request.send(b'+OK 0 message(s) [0 byte(s)]\r\n')
-
-	def finish(self):
-		print( self.client_address[0], 'disconnected!')
-		self.request.send(b'Goodbye! \r\n')
-
-class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
-	pass
-
-if __name__ == "__main__":
-	HOST, PORT = "172.16.0.1", 110
-
-	# Create the server, binding to localhost on port 110
-	# server = socketserver.TCPServer((HOST, PORT), MyTCPHandler)
-	# server.serve_forever()
-
-	# Activate the server; this will keep running until you
-	# interrupt the program with Ctrl-C
-	try:
-		server = ThreadedTCPServer((HOST, PORT), ThreadedTCPRequestHandler)
-		# Start a thread with the server -- that thread will then start one
-		# more thread for each request
-		server_thread = threading.Thread(target=server.serve_forever)
-		# Exit the server thread when the main thread terminates
-		# server_thread.setDaemon(True)
-		server_thread.start()
-	except KeyboardInterrupt:
-		sys.exit(0)
-		]]>
-		</screen>
-	</section>
-	<section id="php.mail">
-		<title>PHP mail()</title>
-		<screen>
-		<![CDATA[
-# cat mail.php
-<?php
-
-$to = "neo.chen@example.com";
-$subject = "My subject";
-$txt = "Hello world!";
-$headers = "From: webmaster@example.com" . "\r\n";
-//. "CC: somebodyelse@example.com";
-
-mail($to,$subject,$txt,$headers);
-?>
-
-		]]>
-		</screen>
-	</section>
 </chapter>
+ -->
 
 	&chapter.fax.xml;
 	&chapter.faq.xml;
