@@ -175,6 +175,27 @@ ForwardAgent yes
 				</screen>
 			</section>
 		</section>
+		<section>
+			<title>~/.ssh/config</title>
+			<para>格式</para>
+			<screen>
+Host    别名
+    HostName        主机名
+    Port            端口
+    User            用户名
+    IdentityFile    密钥文件的路径			
+			</screen>
+			<para>指定主机175.46.28.88的默认端口2022</para>
+			<screen>
+cat ~/.ssh/config
+Host 175.46.28.88
+    Port 2022
+			</screen>
+			<para>~/.ssh/config 文件的权限必须是600</para>
+			<screen>
+chmod 600 ~/.ssh/config			
+			</screen>
+		</section>
 	</section>
 
 	<section id="tunnel">
