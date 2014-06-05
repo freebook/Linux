@@ -151,7 +151,6 @@ gzip ${log_dir}/${date_dir}/error.log &
 		</section>
 	</section>
 
-	&chapter.nginx.fastcgi.xml;
 	&chapter.nginx.conf.xml;
 	&chapter.nginx.faq.xml;
 

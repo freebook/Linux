@@ -99,7 +99,7 @@ client_max_body_size 8m;
 
 	<section id="http.server">
 		<title>server</title>
-		<section id="http.server">
+		<section id="http.server.example">
 			<title>单域名虚拟主机</title>
 			<screen>
 # cat /etc/nginx/conf.d/images.conf
@@ -169,6 +169,9 @@ server_name ~^(.+)\.example\.com$;
 server_name ~^(www\.)?(.+)$;
 			</screen>
 		</section>
+		
+		&chapter.nginx.conf.fastcgi.xml;
+		
 		<section id="http.server.ssl">
 			<title>ssl 虚拟主机</title>
 			<screen>

@@ -374,4 +374,21 @@ fastcgi.server = (
 	<section id="fastcgi.ruby">
 		<title>Ruby</title>
 	</section>
+	<section>
+		<title>UNIX domain sockets</title>
+		<para>php-fpm.conf</para>
+		<screen>
+listen = /var/run/fastcgi.socket
+		</screen>
+		<para>nginx 配置</para>
+		<screen>
+    location ~ /index.php/ {
+        root           /www/example.com/api.example.com/htdocs;
+        fastcgi_pass   unix:/var/run/fastcgi.socket;
+        fastcgi_index  index.php;
+        fastcgi_param  SCRIPT_FILENAME  /www/example.com/api.example.com/htdocs$fastcgi_script_name;
+        include        fastcgi_params;
+    }		
+		</screen>
+	</section>
 </section>
