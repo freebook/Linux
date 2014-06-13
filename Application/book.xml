@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE subject SYSTEM "/usr/share/xml/docbook/schema/dtd/5.0/docbook.dtd"
+	[
+	<!ENTITY homepage "http://netkiller.sourceforge.net/">
+	<!ENTITY mirror "http://netkiller.github.com/">
+	<!ENTITY Neo "http://netkiller.sf.net/">
+	<!ENTITY BG7NYT "&Neo;">
+	<!ENTITY Netkiller "<emphasis><trademark>Netkiller</trademark></emphasis>">
+
+	<!ENTITY book.info.author.xml		SYSTEM "../common/book.info.author.xml">
+	<!ENTITY book.info.legalnotice.xml	SYSTEM "../common/book.info.legalnotice.xml">
+	<!ENTITY book.info.abstract.xml		SYSTEM "../common/book.info.abstract.xml">
+	<!ENTITY book.preface.xml			SYSTEM "../common/book.preface.xml">
+	<!ENTITY preface.about.me.xml       SYSTEM "../common/about.me.xml">
+	<!ENTITY book.dedication.xml       	SYSTEM "../common/book.dedication.xml">
+
+	<!ENTITY part.software.xml			SYSTEM "part.software.xml">
+	<!ENTITY chapter.download.xml 		SYSTEM "chapter.download.xml">
+	<!ENTITY chapter.compress.xml 		SYSTEM "chapter.compress.xml">
+	<!ENTITY chapter.development.xml 	SYSTEM "chapter.development.xml">
+	<!ENTITY chapter.shop.xml   		SYSTEM "chapter.shop.xml">
+	<!ENTITY chapter.project.xml		SYSTEM "chapter.project.xml">
+	<!ENTITY chapter.graphics.xml 	 	SYSTEM "chapter.graphics.xml">
+
+]>
+
+<book xml:base="http://netkiller.sourceforge.net/oss/" xmlns="http://docbook.org/ns/docbook" xml:lang="zh-cn">
+	<info>
+		<title>Netkiller Opensource Software 手札</title>
+		<subtitle>常用开发软件</subtitle>
+
+		&book.info.author.xml;
+
+		<copyright>
+			<year>2013</year>
+			<holder>Copyright netkiller</holder>
+		</copyright>
+		&book.info.legalnotice.xml;
+		&book.info.abstract.xml;
+	</info>
+
+	&book.dedication.xml;
+	&book.preface.xml;
+
+	&chapter.development.xml;
+	&chapter.project.xml;
+	&chapter.shop.xml;
+	&chapter.graphics.xml;
+
+</book>
+

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="shop">
+	<title>Shopping</title>
+	<section id="opencart">
+		<title>Opencart</title>
+		<screen>
+wget http://opencart.googlecode.com/files/opencart_v1.5.1.2.zip
+unzip opencart_v1.5.1.2.zip
+mv upload store
+chown nobody.nobody /opt/lampp/htdocs/store/system/cache/ /opt/lampp/htdocs/store/system/logs/ /opt/lampp/htdocs/store/image/ /opt/lampp/htdocs/store/image/cache/ /opt/lampp/htdocs/store/image/data/ /opt/lampp/htdocs/store/download/
+chown nobody.nobody /opt/lampp/htdocs/store/config.php /opt/lampp/htdocs/store/admin/config.php
+		</screen>
+		<para>mysql</para>
+		<screen>
+CREATE DATABASE opencart DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+GRANT ALL PRIVILEGES ON opencart.* TO 'opencart'@'localhost' IDENTIFIED BY 'TxmSBIpooGhDXDb' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+		</screen>
+	</section>
+</chapter>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="project">
+	<title>Project 项目管理软件</title>
+	<section id="redmine">
+		<title>Redmine</title>
+		<para>http://www.redmine.org/</para>
+		<para><ulink url="http://bitnami.org/stack/redmine">redmine 一键安装包</ulink></para>
+	</section>
+	<section id="dotproject">
+		<title>dotProject</title>
+		<para>http://www.dotproject.net/</para>
+	</section>
+	<section id="openproj">
+		<title>OpenProj</title>
+		<para>http://openproj.org/</para>
+	</section>
+	<section id="twiki">
+		<title>Twiki</title>
+	</section>
+	<section id="projectforge">
+		<title>ProjectForge</title>
+		<para>http://www.projectforge.org/</para>
+	</section>
+	<section>
+		<title>持续构建工具</title>
+		<para>http://phpundercontrol.org/</para>
+	</section>
+</chapter>

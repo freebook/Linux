@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter>
+	<title>System Software</title>
+<section>
+	<title>KeePassX</title>
+	<section>
+		<title>kpcli - command line interface to KeePassX password manager databases</title>
+		<screen>
+$ sudo apt-get install kpcli
+		</screen>
+	</section>
+</section>
+</chapter>

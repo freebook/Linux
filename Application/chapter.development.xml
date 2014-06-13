@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="development">
+	<title>软件开发常用软件</title>
+	<section id="phpmyfaq">
+		<title>phpMyFAQ</title>
+		<para>http://www.phpmyfaq.de/</para>
+	</section>
+	<section id="WebIssues">
+		<title>WebIssues</title>
+		<para></para>
+		<para>
+			<ulink url="http://webissues.mimec.org/">http://webissues.mimec.org/</ulink>
+		</para>
+	</section>
+</chapter>
