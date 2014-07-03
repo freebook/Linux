@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	<section id="proxy">
-		<title>Proxy</title>
-		<screen>
+<section id="proxy">
+	<title>Proxy</title>
+	<screen>
 # cat /etc/nginx/nginx.conf
 
 #user  nobody;
@@ -109,29 +109,28 @@ upstream backend{
     }
 
 }
-		</screen>
-		<section>
-			<title>rewrite + proxy_pass</title>
-			<para>需求如下</para>
-			<screen>
-			<![CDATA[
+	</screen>
+	<section>
+		<title>rewrite + proxy_pass</title>
+		<para>需求如下</para>
+		<screen>
+		<![CDATA[
 http://www.example.com/images/logo.jpg	=> http://images.example.com/logo.jpg
-			]]>
-			</screen>
-			<para>如果直接 proxy_pass http://images.example.com; 的后果是http://images.example.com/images/logo.jpg，我们需要去掉images目录，这里使用rewrite /images/(.+)$ /$1 break;实现</para>
-			<screen>
-
+		]]>
+		</screen>
+		<para>如果直接 proxy_pass http://images.example.com; 的后果是http://images.example.com/images/logo.jpg，我们需要去掉images目录，这里使用rewrite /images/(.+)$ /$1 break;实现</para>
+		<screen>
     location ^~ /images/ {
                 rewrite /images/(.+)$ /$1 break;
                 proxy_pass http://images.example.com;
                 break;
     }
-			</screen>
-		</section>
-		<section>
-			<title>request_filename + proxy_pass</title>
-			<para>如果文件不存在，那么去指定的节点上寻找</para>
-			<screen>
+		</screen>
+	</section>
+	<section>
+		<title>request_filename + proxy_pass</title>
+		<para>如果文件不存在，那么去指定的节点上寻找</para>
+		<screen>
    location / {
         root  /www;
         proxy_intercept_errors  on;
@@ -148,11 +147,11 @@ http://www.example.com/images/logo.jpg	=> http://images.example.com/logo.jpg
           break;
         }
     }
-			</screen>
-		</section>
-		<section id="proxy_cache">
-			<title>proxy_cache</title>
-			<screen>
+		</screen>
+	</section>
+	<section id="proxy_cache">
+		<title>proxy_cache</title>
+		<screen>
 http {
   proxy_cache_path  /var/www/cache levels=1:2 keys_zone=my-cache:8m max_size=1000m inactive=600m;
   proxy_temp_path /var/www/cache/tmp;
@@ -167,8 +166,8 @@ http {
     }
   }
 }
-			</screen>
-			<screen>
+		</screen>
+		<screen>
 location / {
   proxy_pass http://localhost;
   proxy_set_header   Host             $host;
@@ -179,8 +178,8 @@ location / {
   proxy_cache_bypass        $http_secret_header;
   add_header X-Cache-Status $upstream_cache_status;
 }
-			</screen>
-			<screen>
+		</screen>
+		<screen>
 server {
           listen       80;
           server_name  example.org;
@@ -205,12 +204,12 @@ server {
 	}
 
 }
-			</screen>
-		</section>
+		</screen>
+	</section>
 
-		<section id="proxy.expires">
-			<title>expires</title>
-			<screen>
+	<section id="proxy.expires">
+		<title>expires</title>
+		<screen>
 location / {
     root /var/www;
     proxy_set_header  X-Real-IP  $remote_addr;
@@ -234,11 +233,11 @@ location / {
 
     proxy_pass http://backend;
 }
-			</screen>
-		</section>
-		<section id="request_uri+proxy_pass">
-			<title>$request_uri 与  proxy_pass 联合使用</title>
-			<screen>
+		</screen>
+	</section>
+	<section id="request_uri+proxy_pass">
+		<title>$request_uri 与  proxy_pass 联合使用</title>
+		<screen>
 server {
     listen       80;
     server_name  info.example.com;
@@ -298,13 +297,58 @@ server {
     }
 
 }
-			</screen>
-		</section>
-		<section id="xsendfile">
-			<title>X-Sendfile</title>
-			<para>http://wiki.nginx.org/NginxXSendfile</para>
+		</screen>
+	</section>
+	<section id="xsendfile">
+		<title>X-Sendfile</title>
+		<para>http://wiki.nginx.org/NginxXSendfile</para>
+	</section>
+	<section>
+		<title>example</title>
+		<section>
+			<title></title>
 			<screen>
+127.0.0.1 		api.example.com
+172.16.0.10 	api1.example.com
+172.16.0.11 	api2.example.com
+			</screen>			
+			<screen>
+upstream api.example.com {
+    least_conn;
+    server api1.example.com;
+    server api2.example.com;
+}
 
+server {
+    listen       80;
+    server_name  api.example.com;
+
+    charset utf-8;
+    access_log  /var/log/nginx/api.example.com.access.log;
+
+    location / {
+		proxy_pass        http://api.example.com;
+		proxy_set_header X-Real-IP  $remote_addr;
+		#proxy_set_header Host $host;
+		proxy_set_header Host api.example.com;
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+    # proxy the PHP scripts to Apache listening on 127.0.0.1:80
+    #
+    #location ~ \.php$ {
+    #    proxy_pass   http://127.0.0.1;
+    #}
+}
 			</screen>
 		</section>
 	</section>
+</section>
