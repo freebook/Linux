@@ -5,8 +5,8 @@
 	<title>Exim4</title>
 </part>
 -->	
-<chapter id="index"><?dbhtml dir="exim4" ?>
-	<title>exim4 - meta-package to ease Exim MTA (v4) installation</title>
+<chapter id="index"><?dbhtml dir="exim" ?>
+	<title>exim - meta-package to ease Exim MTA (v4) installation</title>
 	<section id="install">
 		<title>install</title>
 		<section>
