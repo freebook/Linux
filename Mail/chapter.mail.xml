@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 	
 	&chapter.client.xml;
-	&chapter.exim4.xml;	
+	&chapter.exim.xml;	
 	&chapter.postfix.xml;
 	&chapter.devel.xml;
 

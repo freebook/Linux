@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.mail.exim4.xml 457 2012-08-24 11:38:17Z netkiller $ -->
+<!-- 
+<part id="mail.server.exim4">
+	<title>Exim4</title>
+</part>
+-->	
+<chapter id="index"><?dbhtml dir="exim4" ?>
+	<title>exim4 - meta-package to ease Exim MTA (v4) installation</title>
+	<section id="install">
+		<title>install</title>
+		<section>
+			<title>ubuntu/debian</title>
+			<screen>
+$ sudo apt-get install exim4
+			</screen>
+			<section>
+				<title>configure</title>
+				<screen>
+$ sudo dpkg-reconfigure exim4-config
+				</screen>
+			</section>
+		</section>
+		<section>
+			<title>CentOS/Redhat</title>
+			<screen>
+# yum install exim
+# chkconfig exim on
+# cp /etc/exim/exim.conf{,.original}
+
+			</screen>
+			<!-- system-switch-mail -->
+			<para>切换默认MTA</para>
+			<screen>
+# alternatives --config mta
+
+There are 2 programs which provide 'mta'.
+
+  Selection    Command
+-----------------------------------------------
+*  1           /usr/sbin/sendmail.postfix
+ + 2           /usr/sbin/sendmail.exim
+
+Enter to keep the current selection[+], or type selection number: 
+			</screen>
+		</section>
+	</section>
+	<section id="exim">
+		<title>exim 命令</title>
+		<section>
+			<title>刷新邮件队列</title>		
+			<screen>
+exim -qff ; tail -f /var/log/exim/main.log				
+			</screen>
+		</section>
+	</section>
+	<section id="main.conf">
+		<title>配置exim</title>
+		<section>
+			<title>/etc/aliases 别名配置</title>
+			<para>发往root的邮件会重定向到me@example.com</para>
+			<screen>
+vim /etc/aliases
+root:		me@example.com
+			</screen>
+		</section>
+	</section>
+	<section id="faq">
+		<title>FAQ</title>
+		<section>
+			<title>Mailing to remote domains not supported</title>
+			<para></para>
+			<screen>
+$ sudo vim /etc/exim4/update-exim4.conf.conf
+
+#dc_eximconfig_configtype='local'
+dc_eximconfig_configtype='internet'
+
+			</screen>
+		</section>
+	</section>
+</chapter>
