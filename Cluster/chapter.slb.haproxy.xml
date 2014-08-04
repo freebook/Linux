@@ -247,7 +247,7 @@ server xxxxx xxx.xxx.xxx.xxx:xxx check port 80 inter 1500 rise 3 fall 3 weight 1
 	</section>
 	<section id="example">
 		<title>Example 配置实例</title>
-		<section>
+		<section id="example.http">
 			<title>HTTP 配置实例</title>
 			<screen>
 			<![CDATA[
@@ -515,6 +515,74 @@ listen  MYSQL_Master *:3306
         server  mysql2  102.101.5.26:3306 check port 3306 inter 3s rise 2 fall 3 backup
 				</screen>
 			</example>
+		</section>
+		<section id="example.https">
+			<title>HTTPS SSL证书卸载配置实例</title>
+			<para>生成自签名证书的步骤, 如果你有购买的证书，此处略过</para>
+			<screen>
+$ sudo mkdir /etc/ssl/example.com
+$ sudo openssl genrsa -out /etc/ssl/example.com/example.com.key 1024
+$ sudo openssl req -new -key /etc/ssl/example.com/example.com.key -out /etc/ssl/example.com/example.com.csr
+> Country Name (2 letter code) [AU]:CN
+> State or Province Name (full name) [Some-State]:Guangdong
+> Locality Name (eg, city) []:Shenzhen
+> Organization Name (eg, company) [Internet Widgits Pty Ltd]:example
+> Organizational Unit Name (eg, section) []:
+> Common Name (e.g. server FQDN or YOUR name) []:*.example.com
+> Email Address []:
+> Please enter the following 'extra' attributes to be sent with your certificate request
+> A challenge password []:
+> An optional company name []:
+$ sudo openssl x509 -req -days 365 -in /etc/ssl/example.com/example.com.csr -signkey /etc/ssl/example.com/example.com.key -out /etc/ssl/example.com/example.com.crt
+
+$ sudo cat /etc/ssl/example.com/example.com.crt /etc/ssl/example.com/example.com.key | sudo tee /etc/ssl/example.com/example.com.pem			
+			</screen>
+			<para>/etc/haproxy/haproxy.cfg</para>
+			<screen>
+frontend localhost
+    bind *:80
+    bind *:443 ssl crt /etc/ssl/example.com/example.com.pem
+    mode http
+    default_backend nodes
+    
+backend nodes
+    mode http
+    balance roundrobin
+    option forwardfor
+    option httpchk HEAD / HTTP/1.1\r\nHost:www.example.com
+    server web01 172.16.0.1:80 check
+    server web02 172.16.0.2:80 check
+    server web03 172.16.0.3:80 check
+    http-request set-header X-Forwarded-Port %[dst_port]
+    http-request add-header X-Forwarded-Proto https if { ssl_fc }    			
+			</screen>
+			<para>HTTP强行跳转倒HTTP的配置方法</para>
+			<screen>
+frontend localhost
+    bind *:80
+    bind *:443 ssl crt /etc/ssl/example.com/example.com.pem
+    redirect scheme https if !{ ssl_fc }
+    mode http
+    default_backend nodes			
+			</screen>
+		</section>
+		<section>
+			<title>使用TCP模式实现SSL穿透</title>
+			<screen>
+frontend localhost
+    bind *:80
+    bind *:443
+    option tcplog
+    mode tcp
+    default_backend nodes
+    
+backend nodes
+    mode tcp
+    balance roundrobin
+    option ssl-hello-chk
+    server web01 172.16.0.3:443 check
+    server web02 172.16.0.4:443 check    
+			</screen>
 		</section>
 	</section>
 </chapter>
