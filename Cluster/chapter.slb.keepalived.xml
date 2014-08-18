@@ -175,4 +175,86 @@ genhash -s 172.16.0.1 -p 80 -u /
 genhash -s 172.16.0.1 -p 80 -u /
 		</screen>	
 	</section>
+	<section id="keepalived.haproxy">
+		<title>HAProxy and Keepalived (Virtual IP)</title>
+		<screen>
+# yum install -y keepalived
+# chkconfig keepalived on 
+		
+# echo "net.ipv4.ip_nonlocal_bind = 1" >> /etc/sysctl.conf
+# sysctl -p		
+		</screen>
+		<example>
+			<title>/etc/keepalived/keepalived.conf</title>
+			<para>Master</para>
+			<screen>
+vrrp_script chk_haproxy {
+   script "killall -0 haproxy"   # verify the pid existance
+   interval 2                    # check every 2 seconds
+   weight 2                      # add 2 points of prio if OK
+}
+ 
+vrrp_instance VI_1 {
+   interface eth0                # interface to monitor
+   state MASTER
+   virtual_router_id 51          # Assign one ID for this route
+   priority 101                  # 101 on master, 100 on backup
+   virtual_ipaddress {
+       192.168.10.100            # the virtual IP
+   }
+   track_script {
+       chk_haproxy
+   }
+}
+			</screen>
+			<para>Slave</para>
+			<screen>
+vrrp_script chk_haproxy {
+   script "killall -0 haproxy"   # verify the pid existance
+   interval 2                    # check every 2 seconds
+   weight 2                      # add 2 points of prio if OK
+}
+ 
+vrrp_instance VI_1 {
+   interface eth0                # interface to monitor
+   state MASTER
+   virtual_router_id 51          # Assign one ID for this route
+   priority 100                  # 101 on master, 100 on backup
+   virtual_ipaddress {
+       192.168.10.100            # the virtual IP
+   }
+   track_script {
+       chk_haproxy
+   }
+}			
+			</screen>
+		</example>
+		<para>启动keepalived</para>
+		<screen>
+/etc/init.d/keepalived start
+		</screen>
+		<para>检查IP地址与主从状态</para>
+		<para>SLB1 IP:</para>
+		<screen>
+$ ip a | grep -e inet.*eth0
+ inet 192.168.10.101/24 brd 192.168.10.255 scope global eth0
+ inet 192.168.10.100/32 scope global eth0
+LB1 Keepalived state:
+
+$ cat /var/log/messages | grep VRRP_Instance
+Apr 19 15:47:25 lb1 Keepalived_vrrp[6146]: VRRP_Instance(VI_1) Transition to MASTER STATE
+Apr 19 15:47:25 lb1 Keepalived_vrrp[6146]: VRRP_Instance(VI_1) Entering MASTER STATE
+		</screen>
+		<para>SLB2 IP:</para>
+		<screen>
+$ ip a | grep -e inet.*eth0
+ inet 192.168.10.102/24 brd 192.168.10.255 scope global eth0
+LB2 Keepalived state:
+
+$ cat /var/log/messages | grep VRRP_Instance
+Apr 19 15:47:25 lb2 Keepalived_vrrp[6146]: VRRP_Instance(VI_1) Transition to MASTER STATE
+Apr 19 15:47:25 lb2 Keepalived_vrrp[6146]: VRRP_Instance(VI_1) Received higher prio advert
+Apr 19 15:47:25 lb2 Keepalived_vrrp[6146]: VRRP_Instance(VI_1) Entering BACKUP STATE
+		</screen>
+	</section>
 </chapter>
