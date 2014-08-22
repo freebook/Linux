@@ -524,8 +524,41 @@ if ($host ~ '(.*)\.static\.example\.com' ) {
 }
 			</screen>
 		</section>
+		<section id="try_files">
+			<title>try_files</title>
+			<screen>
+server {
+    listen       80;
+    server_name  www.example.com example.com;
 
+    location / {
+        try_files $uri $uri/ /index.php?/$request_uri;
+    }
 
+    location /example {
+        alias /www/example/;
+        index index.php index.html;
+    }
+
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+    location ~ \.php$ {
+        root           html;
+        fastcgi_pass   127.0.0.1:9000;
+        fastcgi_index  index.php;
+        fastcgi_param  SCRIPT_FILENAME  /www/example$fastcgi_script_name;
+        include        fastcgi_params;
+    }
+
+    location ~ /\.ht {
+        deny  all;
+    }
+}			
+			</screen>
+		</section>
 		<section id="cache">
 			<title>Cache</title>
 			<screen>
