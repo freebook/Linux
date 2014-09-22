@@ -120,7 +120,7 @@ Server: Neo App Srv 1.0
       <Host name="www.example.com"  appBase="webapps"
             unpackWARs="true" autoDeploy="true"
             xmlValidation="false" xmlNamespaceAware="false">
-                        <Context path="" docBase="/www/example/www" debug="0" reloadable="false"/>
+                        <Context path="" docBase="/www/example.com/www.example.comm" debug="0" reloadable="false"/>
       </Host>
       <Host name="news.example.com"  appBase="webapps"
             unpackWARs="true" autoDeploy="true"
@@ -129,6 +129,9 @@ Server: Neo App Srv 1.0
       </Host>
 			]]>
 			</screen>
+			<note>
+				<para>Tomcat 8 取消了 xmlValidation="false" xmlNamespaceAware="false" 两个配置项。</para>
+			</note>			
 			<para>建议配置方式</para>
 			<screen>
 			<![CDATA[
