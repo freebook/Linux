@@ -13,8 +13,6 @@
 
 	<section id="system.log">
 		<title>log</title>
-
-
 		<section id="logwatch">
 			<title>logwatch</title>
 			<subtitle>logwatch - log analyser with nice output written in Perl</subtitle>
@@ -121,4 +119,5 @@ test -x /usr/share/logwatch/scripts/logwatch.pl || exit 0
 		<title>Octopussy</title>
 		<para>http://www.8pussy.org/</para>
 	</section>
+	&chapter.log.flume.xml;
 </chapter>
