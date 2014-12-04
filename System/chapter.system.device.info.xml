@@ -660,6 +660,9 @@ neo-presario-c700-notebook-pc
        configuration: broadcast=yes driver=b43 driverversion=3.16.0-25-generic firmware=666.2 link=no multicast=yes wireless=IEEE 802.11bg		
 		</screen>
 	</section>
+	<section id="hwinfo">
+		<title>hwinfo - Hardware Information</title>
+	</section>
 	<section id="dmidecode">
 		<title>dmidecode - DMI table decoder</title>
 		<command>dmidecode</command>
@@ -1106,8 +1109,56 @@ Device Status:     0x0003
 		]]>
 		</screen>
 	</section>
-	<section id="device.scsi">
-		<title>SCSI</title>
+	<section id="lsscsi">
+		<title>lsscsi - list SCSI devices (or hosts) and their attributes</title>
+		<screen>
+# yum install lsscsi 
+		</screen>
+		<para>lsscsi</para>
+		<screen>
+# lsscsi 
+[1:0:0:0]    disk    ATA      WDC WD10EZEX-00R 80.0  /dev/sda 
+[2:0:0:0]    disk    ATA      WDC WD10EZEX-00R 80.0  /dev/sdb 
+[5:0:0:0]    cd/dvd  PIONEER  DVD-ROM DVD-231  1.02  /dev/sr0
+
+# lsscsi -L
+[1:0:0:0]    disk    ATA      WDC WD10EZEX-00R 80.0  /dev/sda 
+  device_blocked=0
+  iocounterbits=32
+  iodone_cnt=0x4cdcf62
+  ioerr_cnt=0x3
+  iorequest_cnt=0x4d27c32
+  queue_depth=31
+  queue_type=simple
+  scsi_level=6
+  state=running
+  timeout=30
+  type=0
+[2:0:0:0]    disk    ATA      WDC WD10EZEX-00R 80.0  /dev/sdb 
+  device_blocked=0
+  iocounterbits=32
+  iodone_cnt=0x4ac8a9c
+  ioerr_cnt=0x3
+  iorequest_cnt=0x4b11222
+  queue_depth=31
+  queue_type=simple
+  scsi_level=6
+  state=running
+  timeout=30
+  type=0
+[5:0:0:0]    cd/dvd  PIONEER  DVD-ROM DVD-231  1.02  /dev/sr0 
+  device_blocked=0
+  iocounterbits=32
+  iodone_cnt=0x1a
+  ioerr_cnt=0x0
+  iorequest_cnt=0x44
+  queue_depth=1
+  queue_type=none
+  scsi_level=6
+  state=running
+  timeout=30
+  type=5		
+		</screen>
 		<screen>
 # cat /proc/scsi/scsi
 Attached devices:
@@ -1118,6 +1169,7 @@ Host: scsi0 Channel: 02 Id: 01 Lun: 00
   Vendor: DELL     Model: PERC H700        Rev: 2.10
   Type:   Direct-Access                    ANSI SCSI revision: 05
 		</screen>
+		
 	</section>
 	<section id="device.hba">
 		<title>HBA</title>
@@ -1166,6 +1218,40 @@ qla2xxx 0000:04:00.0: LIP reset occurred (f700).
 qla2xxx 0000:04:00.1: LIP reset occurred (f700).
 qla2xxx 0000:04:00.0: LOOP UP detected (8 Gbps).
 qla2xxx 0000:04:00.1: LOOP UP detected (8 Gbps).
+		</screen>
+	</section>
+	<section id="lsblk">
+		<title>lsblk - list block devices</title>
+		<screen>
+$ lsblk
+NAME   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
+sda      8:0    0 149.1G  0 disk 
+├─sda1   8:1    0    54G  0 part /home
+├─sda2   8:2    0     1K  0 part 
+├─sda5   8:5    0     2G  0 part [SWAP]
+└─sda6   8:6    0  93.1G  0 part /srv
+sr0     11:0    1  1024M  0 rom  		
+		</screen>
+		<screen>
+# lsblk 
+NAME        MAJ:MIN RM   SIZE RO TYPE  MOUNTPOINT
+sdb           8:16   0 931.5G  0 disk  
+?..md126       9:126  0 931.5G  0 raid1 
+  ?..md126p1 259:0    0   500M  0 md    /boot
+  ?..md126p2 259:1    0  48.8G  0 md    /
+  ?..md126p3 259:2    0  14.7G  0 md    [SWAP]
+  ?..md126p4 259:3    0     1K  0 md    
+  ?..md126p5 259:4    0 390.6G  0 md    /www
+  ?..md126p6 259:5    0 476.9G  0 md    /opt
+sda           8:0    0 931.5G  0 disk  
+?..md126       9:126  0 931.5G  0 raid1 
+  ?..md126p1 259:0    0   500M  0 md    /boot
+  ?..md126p2 259:1    0  48.8G  0 md    /
+  ?..md126p3 259:2    0  14.7G  0 md    [SWAP]
+  ?..md126p4 259:3    0     1K  0 md    
+  ?..md126p5 259:4    0 390.6G  0 md    /www
+  ?..md126p6 259:5    0 476.9G  0 md    /opt
+sr0          11:0    1  1024M  0 rom   
 		</screen>
 	</section>
 	<section id="kudzu">
