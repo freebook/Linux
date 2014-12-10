@@ -11,7 +11,7 @@
 			<title>OpenSSI</title>
 		</section>
 	</section>
-	<section>
+	<section id="parallel">
 		<title>Parallel Computing</title>
 		<section>
 			<title>EnFusion</title>

@@ -67,11 +67,11 @@ netkiller@shenzhen:~$
 
 <chapter id="client">
 	<title>SIP/H.323 客户端</title>
-	<section>
+	<section id="linphone">
 		<title>linphone</title>
 		<para>http://www.linphone.org</para>
 	</section>
-	<section>
+	<section id="yate.client">
 		<title>Yate Client</title>
 		<para>http://yateclient.yate.ro/</para>
 	</section>

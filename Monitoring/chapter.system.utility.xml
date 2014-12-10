@@ -716,7 +716,7 @@ R (  1s):       0 reqs (   0.0/sec)          0.0B (    0.0B/sec)       0.0B/req
 	</section>
 
 </section>
-	<section>
+	<section id="iptstate">
 		<title>iptstate - A top-like display of IP Tables state table entries</title>
 		<screen>
 # yum install iptstate -y

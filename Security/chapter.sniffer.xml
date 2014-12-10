@@ -818,10 +818,10 @@ $ find /usr/share/doc/cdpr/examples/
 	<section id="nc">
 		<title>nc - TCP/IP swiss army knife</title>
 	</section>
-	<section>
+	<section id="zenmap">
 		<title>Unicornscan，Zenmap，nast</title>
 	</section>
-	<section>
+	<section id="netstat-nat">
 		<title>netstat-nat - Show the natted connections on a linux iptable firewall</title>
 		<screen>
 neo@monitor:~$ sudo netstat-nat
