@@ -119,5 +119,9 @@ test -x /usr/share/logwatch/scripts/logwatch.pl || exit 0
 		<title>Octopussy</title>
 		<para>http://www.8pussy.org/</para>
 	</section>
+	<section id="eventlog-to-syslog">
+		<title>eventlog-to-syslog</title>
+		<para>https://code.google.com/p/eventlog-to-syslog/</para>
+	</section>
 	&chapter.log.flume.xml;
 </chapter>
