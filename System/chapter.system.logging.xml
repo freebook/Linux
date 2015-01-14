@@ -1,94 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="log">
 	<title>Logging</title>
-	<section id="syslog">
-		<title>syslog, klogctl - read and/or clear kernel message ring buffer; set console_loglevel</title>
-		<section id="etc.sysconfig.syslog">
-			<title>/etc/sysconfig/syslog</title>
-			<para>enables logging from remote machines</para>
+	<section id="rsyslog">
+	    <title>rsyslog</title>
+	    <para>www.rsyslog.com</para>
+	    <para>目前rsyslog已经成为Linux标配之日程序，默认会安装，如果没有安装请使用下面命令安装。</para>
+	    <screen>
+yum install rsyslog
+	    </screen>
+	    <section id="rsyslog.conf">
+			<title>rsyslog.conf</title>
 			<screen>
-# vim /etc/sysconfig/syslog
+$ cat /etc/rsyslog.conf 
+#  /etc/rsyslog.conf	Configuration file for rsyslog.
+#
+#			For more information see
+#			/usr/share/doc/rsyslog-doc/html/rsyslog_conf.html
+#
+#  Default logging rules can be found in /etc/rsyslog.d/50-default.conf
 
-#SYSLOGD_OPTIONS="-m 0"
-SYSLOGD_OPTIONS="-r -m 0"
-			</screen>
-			<screen>
-# /etc/init.d/syslog restart
-Shutting down kernel logger:                               [  OK  ]
-Shutting down system logger:                               [  OK  ]
-Starting system logger:                                    [  OK  ]
-Starting kernel logger:                                    [  OK  ]
-			</screen>
-		</section>
-		<section id="syslog.conf">
-			<title>/etc/syslog.conf</title>
-			<screen>
-*.*			@172.16.0.9
-			</screen>
-			<para>所有日志将被重定向到172.16.0.9</para>
-			<screen>
-[root@dev1 test]# service syslog restart
-Shutting down kernel logger:                               [  OK  ]
-Shutting down system logger:                               [  OK  ]
-Starting system logger:                                    [  OK  ]
-Starting kernel logger:                                    [  OK  ]
-[root@dev1 test]#
-			</screen>
-		</section>
-		<section id="logger">
-			<title>logger</title>
-			<para>日志的级别</para>
-			<screen>
-emerg 系统已经不可用，级别为紧急
-alert 警报，需要立即处理和解决
-crit 既将发生，得需要预防。事件就要发生
-warnig 警告
-err 错误信息，普通的错误信息
-notice 提醒信息，很重要的信息
-info 通知信息，属于一般信息
-debug 这是调试类信息
-			</screen>
-			<para></para>
-			<screen>
-#vi /etc/syslog.conf
 
-# Log anything (except mail) of level info or higher.
-# Don't log private authentication messages!
-*.info;mail.none;authpriv.none;cron.none;local1.none;local3.none /var/log/messages
+#################
+#### MODULES ####
+#################
 
-#my log
-local3.* /var/log/my.log
+$ModLoad imuxsock # provides support for local system logging
+$ModLoad imklog   # provides kernel logging support
+#$ModLoad immark  # provides --MARK-- message capability
+
+# provides UDP syslog reception
+#$ModLoad imudp
+#$UDPServerRun 514
+
+# provides TCP syslog reception
+#$ModLoad imtcp
+#$InputTCPServerRun 514
+
+# Enable non-kernel facility klog messages
+$KLogPermitNonKernelFacility on
+
+###########################
+#### GLOBAL DIRECTIVES ####
+###########################
+
+#
+# Use traditional timestamp format.
+# To enable high precision timestamps, comment out the following line.
+#
+$ActionFileDefaultTemplate RSYSLOG_TraditionalFileFormat
+
+# Filter duplicated messages
+$RepeatedMsgReduction on
+
+#
+# Set the default permissions for all log files.
+#
+$FileOwner syslog
+$FileGroup adm
+$FileCreateMode 0640
+$DirCreateMode 0755
+$Umask 0022
+$PrivDropToUser syslog
+$PrivDropToGroup syslog
+
+#
+# Where to place spool and state files
+#
+$WorkDirectory /var/spool/rsyslog
+
+#
+# Include all config files in /etc/rsyslog.d/
+#
+$IncludeConfig /etc/rsyslog.d/*.conf			
 			</screen>
-			<para></para>
-			<screen>
-# service syslog restart
-Shutting down kernel logger:                               [  OK  ]
-Shutting down system logger:                               [  OK  ]
-Starting system logger:                                    [  OK  ]
-Starting kernel logger:                                    [  OK  ]
-			</screen>
-			<para></para>
-			<screen>
-ping 192.168.0.1 | logger -it logger_test -p local3.notice
-			</screen>
-			<para></para>
-			<screen>
-# cat /var/log/my.log
-Jan 12 18:06:03 dev1 logger_test[10991]: PING 192.168.0.1 (192.168.0.1) 56(84) bytes of data.
-Jan 12 18:06:03 dev1 logger_test[10991]: 64 bytes from 192.168.0.1: icmp_seq=1 ttl=64 time=0.746 ms
-Jan 12 18:06:04 dev1 logger_test[10991]: 64 bytes from 192.168.0.1: icmp_seq=2 ttl=64 time=0.713 ms
-Jan 12 18:06:05 dev1 logger_test[10991]: 64 bytes from 192.168.0.1: icmp_seq=3 ttl=64 time=0.924 ms
-Jan 12 18:06:06 dev1 logger_test[10991]: 64 bytes from 192.168.0.1: icmp_seq=4 ttl=64 time=0.819 ms
-Jan 12 18:06:08 dev1 logger_test[10991]: 64 bytes from 192.168.0.1: icmp_seq=5 ttl=64 time=0.667 ms
-Jan 12 18:06:09 dev1 logger_test[10991]: 64 bytes from 192.168.0.1: icmp_seq=6 ttl=64 time=0.626 ms
-Jan 12 18:06:10 dev1 logger_test[10991]: 64 bytes from 192.168.0.1: icmp_seq=7 ttl=64 time=0.665 ms
-			</screen>
-		</section>
-		<section id="logger.udp">
-			<title>To Log Messages Over UDP Network</title>
-			<!-- http://www.cyberciti.biz/tips/linux-netconsole-log-management-tutorial.html -->
 		</section>
 	</section>
+
 	<section id="logrotate">
 		<title>logrotate - rotates, compresses, and mails system logs</title>
 		<para>logrotate 是linux系统自带的日志分割与压缩程序，通过crontab每日运行一次。</para>
@@ -225,17 +212,100 @@ $ cat /etc/logrotate.d/mysql-server
 			</section>
 		</section>
 	</section>
-	<section id="remote.log">
-		<title>remote syslog</title>
-		<section id="syslog-ng">
-		    <title>syslog-ng</title>
+	<section id="syslog-ng">
+	    <title>syslog-ng</title>
+	    <para>syslog-ng与rsyslog功能类似，但是没有成为主流。</para>
+	</section>	
+	<section id="syslog">
+		<title>syslog, klogctl - read and/or clear kernel message ring buffer; set console_loglevel</title>
+		<note>
+			<title>注意</title>
+			<para>很多2011年前很多Linux发行版使用syslog，但自2011之后，各种Linux发行版逐步向rsyslog迁移。rsyslog成为主流。</para>
+		</note>
+		<section id="etc.sysconfig.syslog">
+			<title>/etc/sysconfig/syslog</title>
+			<para>enables logging from remote machines</para>
+			<screen>
+# vim /etc/sysconfig/syslog
+
+#SYSLOGD_OPTIONS="-m 0"
+SYSLOGD_OPTIONS="-r -m 0"
+			</screen>
+			<screen>
+# /etc/init.d/syslog restart
+Shutting down kernel logger:                               [  OK  ]
+Shutting down system logger:                               [  OK  ]
+Starting system logger:                                    [  OK  ]
+Starting kernel logger:                                    [  OK  ]
+			</screen>
 		</section>
-		<section id="rsyslog">
-		    <title>rsyslog</title>
-		    <para>www.rsyslog.com</para>
-		    <screen>
-yum install rsyslog
-		    </screen>
+		<section id="syslog.conf">
+			<title>/etc/syslog.conf</title>
+			<screen>
+*.*			@172.16.0.9
+			</screen>
+			<para>所有日志将被重定向到172.16.0.9</para>
+			<screen>
+[root@dev1 test]# service syslog restart
+Shutting down kernel logger:                               [  OK  ]
+Shutting down system logger:                               [  OK  ]
+Starting system logger:                                    [  OK  ]
+Starting kernel logger:                                    [  OK  ]
+[root@dev1 test]#
+			</screen>
 		</section>
-	</section>
+		<section id="logger">
+			<title>logger</title>
+			<para>日志的级别</para>
+			<screen>
+emerg 系统已经不可用，级别为紧急
+alert 警报，需要立即处理和解决
+crit 既将发生，得需要预防。事件就要发生
+warnig 警告
+err 错误信息，普通的错误信息
+notice 提醒信息，很重要的信息
+info 通知信息，属于一般信息
+debug 这是调试类信息
+			</screen>
+			<para></para>
+			<screen>
+#vi /etc/syslog.conf
+
+# Log anything (except mail) of level info or higher.
+# Don't log private authentication messages!
+*.info;mail.none;authpriv.none;cron.none;local1.none;local3.none /var/log/messages
+
+#my log
+local3.* /var/log/my.log
+			</screen>
+			<para></para>
+			<screen>
+# service syslog restart
+Shutting down kernel logger:                               [  OK  ]
+Shutting down system logger:                               [  OK  ]
+Starting system logger:                                    [  OK  ]
+Starting kernel logger:                                    [  OK  ]
+			</screen>
+			<para></para>
+			<screen>
+ping 192.168.0.1 | logger -it logger_test -p local3.notice
+			</screen>
+			<para></para>
+			<screen>
+# cat /var/log/my.log
+Jan 12 18:06:03 dev1 logger_test[10991]: PING 192.168.0.1 (192.168.0.1) 56(84) bytes of data.
+Jan 12 18:06:03 dev1 logger_test[10991]: 64 bytes from 192.168.0.1: icmp_seq=1 ttl=64 time=0.746 ms
+Jan 12 18:06:04 dev1 logger_test[10991]: 64 bytes from 192.168.0.1: icmp_seq=2 ttl=64 time=0.713 ms
+Jan 12 18:06:05 dev1 logger_test[10991]: 64 bytes from 192.168.0.1: icmp_seq=3 ttl=64 time=0.924 ms
+Jan 12 18:06:06 dev1 logger_test[10991]: 64 bytes from 192.168.0.1: icmp_seq=4 ttl=64 time=0.819 ms
+Jan 12 18:06:08 dev1 logger_test[10991]: 64 bytes from 192.168.0.1: icmp_seq=5 ttl=64 time=0.667 ms
+Jan 12 18:06:09 dev1 logger_test[10991]: 64 bytes from 192.168.0.1: icmp_seq=6 ttl=64 time=0.626 ms
+Jan 12 18:06:10 dev1 logger_test[10991]: 64 bytes from 192.168.0.1: icmp_seq=7 ttl=64 time=0.665 ms
+			</screen>
+		</section>
+		<section id="logger.udp">
+			<title>To Log Messages Over UDP Network</title>
+			<!-- http://www.cyberciti.biz/tips/linux-netconsole-log-management-tutorial.html -->
+		</section>
+	</section>	
 </chapter>
