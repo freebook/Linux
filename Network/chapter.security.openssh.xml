@@ -389,5 +389,17 @@ $ cat .ssh/id_rsa.pub > .ssh/authorized_keys
 			</procedure>
 		</section>
 	</section>
-
+	<section id="ssh.faq">
+		<title>FAQ</title>
+		<section>
+			<title>Pseudo-terminal will not be allocated because stdin is not a terminal.</title>
+			<para>SSH 提示 Pseudo-terminal will not be allocated because stdin is not a terminal. 使用 -T 参数可能禁用输出</para>
+			<screen>
+			<![CDATA[
+ssh -T root@host < /path/to/shell/file
+cat file | ssh -T root@host  
+			]]>
+			</screen>
+		</section>
+	</section>
 </chapter>
