@@ -389,6 +389,92 @@ Number  Start   End     Size    File system     Name     Flags
 (parted)
 				</screen>
 			</example>
+			<example>
+				<title>创建扩展分区</title>
+				<para>查看可用空间</para>
+				<screen>
+(parted) print free
+Model: HP LOGICAL VOLUME (scsi)
+Disk /dev/sda: 1200GB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags: 
+
+Number  Start   End     Size    Type     File system     Flags
+        32.3kB  1049kB  1016kB           Free Space
+ 1      1049kB  525MB   524MB   primary  ext4            boot
+ 2      525MB   105GB   105GB   primary  ext4
+ 3      105GB   139GB   33.6GB  primary  linux-swap(v1)
+        139GB   1200GB  1061GB           Free Space
+				</screen>
+				<para>创建扩展分区</para>
+				<screen>
+(parted) mkpart                                                           
+Partition type?  primary/extended? extended                               
+Start? 139GB                                                              
+End? 1200GB                                                               
+(parted) p                                                                
+Model: HP LOGICAL VOLUME (scsi)
+Disk /dev/sda: 1200GB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags: 
+
+Number  Start   End     Size    Type      File system     Flags
+ 1      1049kB  525MB   524MB   primary   ext4            boot
+ 2      525MB   105GB   105GB   primary   ext4
+ 3      105GB   139GB   33.6GB  primary   linux-swap(v1)
+ 4      139GB   1200GB  1061GB  extended                  lba				
+				</screen>
+				<para>创建逻辑卷</para>
+				<screen>
+(parted) mkpart                                                           
+Partition type?  [logical]? logical                                       
+File system type?  [ext2]?                                                
+Start? 139GB                                                              
+End? 200GB                                                                
+(parted) mkpart logical                                                   
+File system type?  [ext2]?                                                
+Start? 200GB                                                              
+End? 1200GB                                                               
+(parted) p                                                                
+Model: HP LOGICAL VOLUME (scsi)
+Disk /dev/sda: 1200GB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags: 
+
+Number  Start   End     Size    Type      File system     Flags
+ 1      1049kB  525MB   524MB   primary   ext4            boot
+ 2      525MB   105GB   105GB   primary   ext4
+ 3      105GB   139GB   33.6GB  primary   linux-swap(v1)
+ 4      139GB   1200GB  1061GB  extended                  lba
+ 5      139GB   200GB   61.1GB  logical
+ 6      200GB   1200GB  1000GB  logical
+ 
+(parted) quit                                                             
+Information: You may need to update /etc/fstab.
+				</screen>
+				<para>查看分区</para>
+				<screen>
+# fdisk -l
+
+Disk /dev/sda: 1199.9 GB, 1199865640960 bytes, 2343487580 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk label type: dos
+Disk identifier: 0x000c7511
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1   *        2048     1026047      512000   83  Linux
+/dev/sda2         1026048   205826047   102400000   83  Linux
+/dev/sda3       205826048   271362047    32768000   82  Linux swap / Solaris
+/dev/sda4       271362048  2343487487  1036062720    f  W95 Ext'd (LBA)
+/dev/sda5       271364096   390625279    59630592   83  Linux
+/dev/sda6       390627328  2343487487   976430080   83  Linux				
+				</screen>
+			</example>
 		</section>
 		<section>
 			<title>删除分区</title>
@@ -429,6 +515,7 @@ Partition Table: msdos
 
 Number  Start  End  Size  Type  File system  Flags
 			</screen>
+			<para>删除扩展分区将自动删除逻辑卷</para>
 		</section>
 		<section id="parted.quit">
 			<title>退出</title>
