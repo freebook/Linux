@@ -41,7 +41,7 @@ $ sudo /etc/init.d/apache2 reload
 		<title>Monitor Client nrpe</title>
 		<screen>
 		<![CDATA[
-nagios-nrpe-server --------> nagios core (nagios-nrpe-plugin) 			
+nagios-nrpe-server --------> nagios core (nagios-nrpe-plugin)
 		]]>
 		</screen>
 		<para>nagios-nrpe-server 的功能是向服务器发送监控数据, 而服务器端通过nagios-nrpe-plugin接收监控数据。</para>
@@ -108,6 +108,21 @@ $ sudo htpasswd /etc/nagios3/htpasswd.users neo
 New password:
 Re-type new password:
 Adding password for user neo
+			</screen>
+			<para></para>
+			<screen>
+# grep default_user_name cgi.cfg
+#default_user_name=guest
+
+# grep authorized cgi.cfg
+authorized_for_system_information=nagiosadmin
+authorized_for_configuration_information=nagiosadmin
+authorized_for_system_commands=nagiosadmin
+authorized_for_all_services=nagiosadmin
+authorized_for_all_hosts=nagiosadmin
+authorized_for_all_service_commands=nagiosadmin
+authorized_for_all_host_commands=nagiosadmin
+#authorized_for_read_only=user1,user2
 			</screen>
 			<para></para>
 			<screen>
