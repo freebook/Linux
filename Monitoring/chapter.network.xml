@@ -5,7 +5,7 @@
 
 	&chapter.network.mrtg.xml;
 	&chapter.network.cacti.xml;
-	&chapter.network.nagios.xml;
+	&chapter.nagios.xml;
 	&chapter.network.munin.xml;
 	&chapter.network.zabbix.xml;
 	&chapter.network.cluster.xml;

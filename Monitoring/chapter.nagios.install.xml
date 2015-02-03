@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+	<title>Install</title>
+	<section id="nagios.core">
+		<title>Nagios core</title>
+		<para>Nagios 是一种开放源代码监视软件，它可以扫描主机、服务、网络方面存在的问题。Nagios 与其他类似的包之间的主要区别在于，Nagios 将所有的信息简化为“工作（working）”、“可疑的（questionable）”和“故障（failure）”状态，并且 Nagios 支持由插件组成的非常丰富的“生态系统”。这些特性使得用户能够进行有效安装，在此过程中无需过多地关心细节内容，只提供他们所需的信息即可。	</para>
+		<para>install</para>
+		<screen>
+$ sudo apt-get install nagios3 nagios-nrpe-plugin
+		</screen>
+		<para>add user nagiosadmin for nagios</para>
+		<screen>
+$ sudo htpasswd -c /etc/nagios2/htpasswd.users nagiosadmin
+New password:
+Re-type new password:
+Adding password for user nagiosadmin
+		</screen>
+		<para>Create a new nagcmd group for allowing external commands to be submitted through the web interface. Add both the nagios user and the apache user to the group. </para>
+		<screen>
+$ groupadd nagcmd
+$ sudo usermod -a -G nagcmd nagios
+$ sudo usermod -a -G nagcmd www-data
+$ cat /etc/group
+nagcmd:x:1003:nagios,www-data
+		</screen>
+<!--
+	<para>selinux</para>
+	<screen>
+chcon ‐R ‐t httpd_sys_content_t /usr/local/nagios/sbin/
+chcon ‐R ‐t httpd_sys_content_t /usr/local/nagios/share/
+	</screen>
+ -->
+		<para>reload apache</para>
+		<screen>
+$ sudo /etc/init.d/apache2 reload
+ * Reloading web server config apache2                    [ OK ]
+		</screen>
+	</section>
+
+	<section>
+		<title>Monitor Client nrpe</title>
+		<screen>
+		<![CDATA[
+nagios-nrpe-server --------> nagios core (nagios-nrpe-plugin) 			
+		]]>
+		</screen>
+		<para>nagios-nrpe-server 的功能是向服务器发送监控数据, 而服务器端通过nagios-nrpe-plugin接收监控数据。</para>
+		<screen>
+sudo apt-get install nagios-nrpe-server nagios-plugins
+		</screen>
+		<para>/etc/nagios/nrpe.cfg</para>
+		<para>/etc/nagios/nrpe_local.cfg</para>
+		<screen>
+$ sudo vim /etc/nagios/nrpe_local.cfg
+allowed_hosts=172.16.1.2
+
+command[check_users]=/usr/lib/nagios/plugins/check_users -w 5 -c 10
+command[check_load]=/usr/lib/nagios/plugins/check_load -w 15,10,5 -c 30,25,20
+command[check_zombie_procs]=/usr/lib/nagios/plugins/check_procs -w 5 -c 10 -s Z
+command[check_total_procs]=/usr/lib/nagios/plugins/check_procs -w 150 -c 200
+command[check_procs]=/usr/lib/nagios/plugins/check_procs -w 150 -c 200
+command[check_swap]=/usr/lib/nagios/plugins/check_swap -w 20% -c 10%
+command[check_all_disks]=/usr/lib/nagios/plugins/check_disk -w 20% -c 10% -e
+command[check_disk_root]=/usr/lib/nagios/plugins/check_disk -w 20% -c 10% -p /
+command[check_disk_home]=/usr/lib/nagios/plugins/check_disk -w 20% -c 10% -p /home
+command[check_sda_iostat]=/usr/lib/nagios/plugins/check_iostat -d sda -w 100 -c 200
+command[check_sdb_iostat]=/usr/lib/nagios/plugins/check_iostat -d sdb -w 100 -c 200
+# command[check_uri_user]=/usr/lib/nagios/plugins/check_http -I 127.0.0.1 -p 80 -u http://example.com/test/ok.php
+# command[check_mysql]=/usr/lib/nagios/plugins/check_mysql -H localhost -u root -ppassword test -P 3306
+		</screen>
+		<para>重启后生效</para>
+		<screen>
+/etc/init.d/nagios-nrpe-server restart
+		</screen>
+	</section>
+	<section>
+		<title>Monitoring Windows Machines</title>
+		<para>Nagios 可以监控windows服务器，需要安装下面软件。</para>
+		<para>NSClient++</para>
+		<para>http://sourceforge.net/projects/nscplus</para>
+	</section>
+		<section id="pnp4nagios">
+		<title>PNP4Nagios 图表插件</title>
+		<para>http://www.pnp4nagios.org/</para>
+	</section>
+</section>
+
+
+
+
+<section>
+		<title>配置 Nagios</title>
+		<screen>
+$ sudo vim /etc/nagios3/nagios.cfg
+
+cfg_dir=/etc/nagios3/hosts
+cfg_dir=/etc/nagios3/servers
+cfg_dir=/etc/nagios3/switches
+cfg_dir=/etc/nagios3/routers
+
+admin_email=nagios, neo.chen@example.com
+		</screen>
+		<section>
+			<title>authorized</title>
+			<para>add user neo for nagios</para>
+			<screen>
+$ sudo htpasswd /etc/nagios3/htpasswd.users neo
+New password:
+Re-type new password:
+Adding password for user neo
+			</screen>
+			<para></para>
+			<screen>
+
+$ sudo vim /etc/nagios3/cgi.cfg
+
+authorized_for_all_services=nagiosadmin,neo
+authorized_for_all_hosts=nagiosadmin,neo
+
+			</screen>
+		</section>
+		<section>
+			<title>contacts</title>
+			<screen>
+$ sudo vim /etc/nagios3/conf.d/contacts_nagios2.cfg
+
+###############################################################################
+# contacts.cfg
+###############################################################################
+
+define contact{
+        contact_name                    neo
+        alias                           Neo
+        service_notification_period     24x7
+        host_notification_period        24x7
+        service_notification_options    w,u,c,r
+        host_notification_options       d,r
+        service_notification_commands   notify-service-by-email
+        host_notification_commands      notify-host-by-email
+        email                           neo.chen@example.com
+        }
+
+###############################################################################
+###############################################################################
+#
+# CONTACT GROUPS
+#
+###############################################################################
+###############################################################################
+
+# We only have one contact in this simple configuration file, so there is
+# no need to create more than one contact group.
+
+define contactgroup{
+        contactgroup_name       admins
+        alias                   Nagios Administrators
+        members                 root, neo
+        }
+
+			</screen>
+			<para>当服务出现w—报警(warning),u—未知(unkown),c—严重(critical),r—从异常恢复到正常，在这四种情况下通知联系人</para>
+			<para>当主机出现d－当机(down),u—返回不可达(unreachable),r—从异常情况恢复正常,在这3种情况下通知联系人</para>
+			<para>确认 contact_groups 已经设置</para>
+			<screen>
+neo@monitor:/etc/nagios3$ grep admins conf.d/generic-host_nagios2.cfg
+                contact_groups                  admins
+neo@monitor:/etc/nagios3$ grep admins conf.d/generic-service_nagios2.cfg
+                contact_groups                  admins
+			</screen>
+		</section>
+		<section>
+			<title>hostgroups</title>
+			<screen>
+$ sudo vim /etc/nagios3/conf.d/hostgroups_nagios2.cfg
+
+define hostgroup {
+        hostgroup_name  mysql-servers
+                alias           MySQL Servers
+                members         *
+        }
+
+			</screen>
+		</section>
+		<section>
+			<title>generic-service</title>
+			<screen>
+$ cat /etc/nagios3/conf.d/generic-service_nagios2.cfg
+# generic service template definition
+define service{
+        name                            generic-service ; The 'name' of this service template
+        active_checks_enabled           1       ; Active service checks are enabled
+        passive_checks_enabled          1       ; Passive service checks are enabled/accepted
+        parallelize_check               1       ; Active service checks should be parallelized (disabling this can lead to major performance problems)
+        obsess_over_service             1       ; We should obsess over this service (if necessary)
+        check_freshness                 0       ; Default is to NOT check service 'freshness'
+        notifications_enabled           1       ; Service notifications are enabled
+        event_handler_enabled           1       ; Service event handler is enabled
+        flap_detection_enabled          1       ; Flap detection is enabled
+        failure_prediction_enabled      1       ; Failure prediction is enabled
+        process_perf_data               1       ; Process performance data
+        retain_status_information       1       ; Retain status information across program restarts
+        retain_nonstatus_information    1       ; Retain non-status information across program restarts
+                notification_interval           0               ; Only send notifications on status change by default.
+                is_volatile                     0
+                check_period                    24x7
+                normal_check_interval           5
+                retry_check_interval            1
+                max_check_attempts              4
+                notification_period             24x7
+                notification_options            w,u,c,r
+                contact_groups                  admins
+        register                        0       ; DONT REGISTER THIS DEFINITION - ITS NOT A REAL SERVICE, JUST A TEMPLATE!
+        }
+			</screen>
+
+			<itemizedlist>
+				<listitem><para>notification_interval 	报警发送间隔，单位分钟</para></listitem>
+				<listitem><para>normal_check_interval 	间隔时间</para></listitem>
+				<listitem><para>retry_check_interval	重试间隔时间</para></listitem>
+				<listitem><para>max_check_attempts 		检查次数，4次失败后报警</para></listitem>
+			</itemizedlist>
+		</section>
+		<section>
+			<title>SOUND OPTIONS</title>
+			<para>发出警报声</para>
+			<screen>
+			<![CDATA[
+$ sudo vim /etc/nagios3/cgi.cfg
+
+# SOUND OPTIONS
+# These options allow you to specify an optional audio file
+# that should be played in your browser window when there are
+# problems on the network.  The audio files are used only in
+# the status CGI.  Only the sound for the most critical problem
+# will be played.  Order of importance (higher to lower) is as
+# follows: unreachable hosts, down hosts, critical services,
+# warning services, and unknown services. If there are no
+# visible problems, the sound file optionally specified by
+# 'normal_sound' variable will be played.
+#
+#
+# <varname>=<sound_file>
+#
+# Note: All audio files must be placed in the /media subdirectory
+# under the HTML path (i.e. /usr/local/nagios/share/media/).
+
+host_unreachable_sound=hostdown.wav
+host_down_sound=hostdown.wav
+service_critical_sound=critical.wav
+service_warning_sound=warning.wav
+service_unknown_sound=warning.wav
+normal_sound=noproblem.wav
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>SMS 短信</title>
+			<screen>
+vim /etc/nagios3/commands.cfg
+
+# 'notify-host-by-sms' command definition
+define command{
+        command_name    notify-host-by-sms
+        command_line    /srv/sms/sms "Host: $HOSTNAME$\nState: $HOSTSTATE$\nAddress: $HOSTADDRESS$\nInfo: $HOSTOUTPUT$\n\nDate/Time: $LONGDATETIME$\n"
+        }
+
+# 'notify-service-by-sms' command definition
+define command{
+        command_name    notify-service-by-sms
+        command_line    /srv/sms/sms "Service: $SERVICEDESC$\nHost: $HOSTALIAS$\nAddress: $HOSTADDRESS$\nState: $SERVICESTATE$\n\nDate/Time: $LONGDATETIME$\n\nAdditional Info:\n\n$SERVICEOUTPUT$"
+        }
+			</screen>
+			<screen>
+sudo vim /etc/nagios3/conf.d/contacts_nagios2.cfg
+define contact{
+        contact_name                    neo
+        alias                           Neo
+        service_notification_period     24x7
+        host_notification_period        24x7
+        service_notification_options    w,u,c,r
+        host_notification_options       d,r
+        service_notification_commands   notify-service-by-email, notify-service-by-sms
+        host_notification_commands      notify-host-by-email, notify-host-by-sms
+        email                           neo.chen@example.com
+        }
+
+			</screen>
+		</section>
+</section>
