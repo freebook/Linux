@@ -56,7 +56,18 @@ define service{
 			</screen>
 		</section>
 		<section>
-			<title>hosts / service</title>
+			<title>host</title>
+			<screen>
+define service{
+    use                             local-service
+    host_name                       www.example.com
+    service_description             Host Alive
+    check_command                   check-host-alive
+    }
+			</screen>
+		</section>
+		<section>
+			<title>service</title>
 			<section>
 				<title>http</title>
 				<para>hosts</para>
@@ -133,9 +144,26 @@ define service{
 
 				</screen>
 			</section>
+			<section>
+				<title>check_tcp</title>
+				<screen>
+define service{
+    use                        generic-service     
+    host_name                  db.example.com
+    service_description        MySQL Master1 Port
+    check_command              check_tcp!3306
+    }
+				</screen>
+			</section>
 		</section>
 	</section>
 
 	&chapter.nagios.plugins.xml;
-
+	<section>
+		<title>FAQ</title>
+		<section>
+			<title>Macro Name</title>
+			<para>http://nagios.sourceforge.net/docs/3_0/macrolist.html</para>
+		</section>
+	</section>
 </section>

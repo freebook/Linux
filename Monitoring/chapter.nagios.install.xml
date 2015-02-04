@@ -276,13 +276,13 @@ vim /etc/nagios3/commands.cfg
 # 'notify-host-by-sms' command definition
 define command{
         command_name    notify-host-by-sms
-        command_line    /srv/sms/sms "Host: $HOSTNAME$\nState: $HOSTSTATE$\nAddress: $HOSTADDRESS$\nInfo: $HOSTOUTPUT$\n\nDate/Time: $LONGDATETIME$\n"
+        command_line    /srv/sms/sms $CONTACTPAGER$ "Host: $HOSTNAME$\nState: $HOSTSTATE$\nAddress: $HOSTADDRESS$\nInfo: $HOSTOUTPUT$\n\nDate/Time: $LONGDATETIME$\n"
         }
 
 # 'notify-service-by-sms' command definition
 define command{
         command_name    notify-service-by-sms
-        command_line    /srv/sms/sms "Service: $SERVICEDESC$\nHost: $HOSTALIAS$\nAddress: $HOSTADDRESS$\nState: $SERVICESTATE$\n\nDate/Time: $LONGDATETIME$\n\nAdditional Info:\n\n$SERVICEOUTPUT$"
+        command_line    /srv/sms/sms $CONTACTPAGER$ "Service: $SERVICEDESC$\nHost: $HOSTALIAS$\nAddress: $HOSTADDRESS$\nState: $SERVICESTATE$\n\nDate/Time: $LONGDATETIME$\n\nAdditional Info:\n\n$SERVICEOUTPUT$"
         }
 			</screen>
 			<screen>
@@ -297,6 +297,7 @@ define contact{
         service_notification_commands   notify-service-by-email, notify-service-by-sms
         host_notification_commands      notify-host-by-email, notify-host-by-sms
         email                           neo.chen@example.com
+        pager 							13113668899
         }
 
 			</screen>

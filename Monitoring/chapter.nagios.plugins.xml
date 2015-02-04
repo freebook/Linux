@@ -2,9 +2,53 @@
 <section id="nagios.plugins">
 	<title>Nagios Plugins</title>
 	<para>检查命令配置文件 /etc/nagios-plugins/config/</para>
-		<section id="nagios.plugins.http">
-			<title>http.cfg</title>
-			<screen>
+	<section id="nagios.plugins.ping">
+		<title>check_ping</title>
+		<para>nagios check_ping命令使用方法</para>
+		<screen>
+具体如下：
+-H    主机地址
+-w     WARNING 状态：   响应时间(毫秒)，丢包率 (%)   阀值
+-c     CRITICAL状态：    响应时间(毫秒)，丢包率 (%)   阀值
+-p     发送的包数           默认5个包
+-t     超时时间             默认10秒
+-4|-6                        使用ipv4|ipv6 地址     默认ipv4
+		</screen>
+		<para>实例：</para>
+		<screen>
+/usr/lib64/nagios/plugins/check_ping -H 74.125.71.106 -w 100.0,20% -c 200.0,50%
+		</screen>
+	</section>
+	<section id="check_procs">
+		<title>check_procs</title>
+		<screen>
+# /usr/lib64/nagios/plugins/check_procs 
+PROCS OK: 75 processes
+
+# /usr/lib64/nagios/plugins/check_procs -a mingetty
+PROCS OK: 6 processes with args 'mingetty'
+
+# /usr/lib64/nagios/plugins/check_procs -C crond
+PROCS OK: 1 process with command name 'crond'
+		</screen>
+	</section>
+	<section id="check_users">
+		<title>check_users</title>
+		<para>监控如果有用户登陆就发出警告</para>
+		<screen>
+# /usr/lib64/nagios/plugins/check_users -w 0 -c 5
+USERS WARNING - 1 users currently logged in |users=1;0;5;0		
+		</screen>
+		<para>监控用户上线5</para>
+		<screen>
+# /usr/lib64/nagios/plugins/check_users -w 5 -c 50
+USERS OK - 1 users currently logged in |users=1;5;50;0		
+		</screen>
+	</section>
+	<section id="nagios.plugins.http">
+		<title>check_http</title>
+		<para>命令定义</para>
+		<screen>
 define command{
         command_name    check_http_404
         command_line    /usr/lib/nagios/plugins/check_http -H '$HOSTADDRESS$' -I '$HOSTADDRESS$' -e '404'
@@ -19,39 +63,44 @@ define command{
         command_name    check_http_url
         command_line    /usr/lib/nagios/plugins/check_http -H '$HOSTADDRESS$' -I '$HOSTADDRESS$'  -u '$ARG1$'
         }
-			</screen>
-			<para>默认HTTP健康检查超时时间是10秒，如果你的网站需要更长的时间才能打开可以使用-t参数修改默认Timeout时间</para>
-			<screen>
+		</screen>
+		<para>默认HTTP健康检查超时时间是10秒，如果你的网站需要更长的时间才能打开可以使用-t参数修改默认Timeout时间</para>
+		<screen>
 # 'check_http' command definition
 define command{
         command_name    check_http
         command_line    /usr/lib/nagios/plugins/check_http -t 30 -H '$HOSTADDRESS$' -I '$HOSTADDRESS$'
         }
-			</screen>
-			<section>
-				<title>check_http</title>
-				<screen>
-neo@monitor:~$ /usr/lib/nagios/plugins/check_http -H www.example.com -I 172.16.0.8 -s "HTTs"
+		</screen>
+
+		<screen>
+# /srv/nagios/libexec/check_http -H www.163.com
+HTTP OK: HTTP/1.0 200 OK - 657627 bytes in 1.772 second response time |time=1.771681s;;;0.000000 size=657627B;;;0
+		
+$ /usr/lib/nagios/plugins/check_http -H www.example.com -I 172.16.0.8 -s "HTTs"
 HTTP CRITICAL: HTTP/1.1 404 Not Found - string not found - 336 bytes in 0.001 second response time |time=0.000733s;;;0.000000 size=336B;;;0
 
-neo@monitor:~$ /usr/lib/nagios/plugins/check_http -H www.example.com -I 172.16.0.8 -e '404'
+$ /usr/lib/nagios/plugins/check_http -H www.example.com -I 172.16.0.8 -e '404'
 HTTP OK: Status line output matched "404" - 336 bytes in 0.001 second response time |time=0.000715s;;;0.000000 size=336B;;;0
-				</screen>
-			</section>
-		</section>
-		<section id="nagios.plugins.mysql">
-			<title>mysql.cfg</title>
-			<para>/etc/nagios-plugins/config/mysql.cfg</para>
-			<screen>
+		</screen>
+	</section>
+	<section>
+		<title>check_redis</title>
+	</section>
+	<section id="nagios.plugins.mysql">
+		<title>check_mysql</title>
+		<para>命令参数</para>
+		<screen>
 check_mysql [-d database] [-H host] [-P port] [-s socket]
        [-u user] [-p password] [-S]
 
 
 /usr/lib64/nagios/plugins/check_mysql -d dbname -H 202.176.120.10 -P 3306 -u test -p password
 Uptime: 254264  Threads: 16  Questions: 535110791  Slow queries: 21  Opens: 110  Flush tables: 1  Open tables: 81  Queries per second avg: 2104.547
-			</screen>
-			<section id="check_mysql">
-				<title>check_mysql</title>
+		</screen>
+
+		<section id="check_mysql">
+			<title>check_mysql</title>
 				<screen>
 $ /usr/lib64/nagios/plugins/check_mysql --hostname=172.16.1.5 --port=3306 --username=monitor --password=monitor
 Uptime: 27001  Threads: 8  Questions: 25280156  Slow queries: 14941  Opens: 1389932  Flush tables: 3  Open tables: 128  Queries per second avg: 936.267
@@ -317,23 +366,6 @@ STAT reclaimed 135
 END]|time=0.000658s;;;0.000000;5.000000
 				</screen>
 			</section>
-		</section>
-		<section id="nagios.plugins.ping">
-			<title>check_ping</title>
-			<para>nagios check_ping命令使用方法</para>
-			<screen>
-具体如下：
--H    主机地址
--w     WARNING 状态：   响应时间(毫秒)，丢包率 (%)   阀值
--c     CRITICAL状态：    响应时间(毫秒)，丢包率 (%)   阀值
--p     发送的包数           默认5个包
--t     超时时间             默认10秒
--4|-6                        使用ipv4|ipv6 地址     默认ipv4
-			</screen>
-			<para>实例：</para>
-			<screen>
-/usr/lib64/nagios/plugins/check_ping -H 74.125.71.106 -w 100.0,20% -c 200.0,50%
-			</screen>
 		</section>
 		
 		<section>
