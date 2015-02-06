@@ -165,5 +165,9 @@ define service{
 			<title>Macro Name</title>
 			<para>http://nagios.sourceforge.net/docs/3_0/macrolist.html</para>
 		</section>
+		<section>
+			<title>插件开发手册</title>
+			<para>https://nagios-plugins.org/doc/guidelines.html#THRESHOLDFORMAT</para>
+		</section>
 	</section>
 </section>

@@ -84,9 +84,6 @@ $ /usr/lib/nagios/plugins/check_http -H www.example.com -I 172.16.0.8 -e '404'
 HTTP OK: Status line output matched "404" - 336 bytes in 0.001 second response time |time=0.000715s;;;0.000000 size=336B;;;0
 		</screen>
 	</section>
-	<section>
-		<title>check_redis</title>
-	</section>
 	<section id="nagios.plugins.mysql">
 		<title>check_mysql</title>
 		<para>命令参数</para>
@@ -311,10 +308,10 @@ define command{
 				</screen>
 			</section>
 		</section>
-		<section id="nagios.plugins.tcp_udp">
-			<title>tcp_udp.cfg</title>
+		<section id="nagios.plugins.check_tcp">
+			<title>check_tcp</title>
 			<section>
-				<title>check_tcp</title>
+				<title>端口检查</title>
 				<screen>
 $ /usr/lib/nagios/plugins/check_tcp -H 172.16.1.2 -p 80
 TCP OK - 0.000 second response time on port 80|time=0.000369s;;;0.000000;10.000000
@@ -366,9 +363,64 @@ STAT reclaimed 135
 END]|time=0.000658s;;;0.000000;5.000000
 				</screen>
 			</section>
+			<section>
+				<title>Redis</title>
+				<screen>
+# /usr/lib64/nagios/plugins/check_tcp -H 192.168.2.1 -p 6379 -t 5 -E -s 'info\r\n' -q 'quit\r\n' -e 'uptime_in_days' -M crit 
+TCP OK - 0.001 second response time on port 6379 [$1043
+redis_version:2.4.10
+redis_git_sha1:00000000
+redis_git_dirty:0
+arch_bits:64
+multiplexing_api:epoll
+gcc_version:4.4.6
+process_id:21331
+uptime_in_seconds:18152153
+uptime_in_days:210
+lru_clock:1801614
+used_cpu_sys:1579.41
+used_cpu_user:2279.26
+used_cpu_sys_children:54.32
+used_cpu_user_children:54.11
+connected_clients:2
+connected_slaves:1
+client_longest_output_list:0
+client_biggest_input_buf:0
+blocked_clients:0
+used_memory:1158016
+used_memory_human:1.10M
+used_memory_rss:1560576
+used_memory_peak:1289920
+used_memory_peak_human:1.23M
+mem_fragmentation_ratio:1.35
+mem_allocator:jemalloc-2.2.5
+loading:0
+aof_enabled:0
+changes_since_last_save:2
+bgsave_in_progress:0
+last_save_time:1423107828
+bgrewriteaof_in_progress:0
+total_connections_received:594376
+total_commands_processed:1350747
+expired_keys:12199
+evicted_keys:0
+keyspace_hits:511525
+keyspace_misses:124116
+pubsub_channels:0
+pubsub_patterns:0
+latest_fork_usec:361
+vm_enabled:0
+role:master
+slave0:192.168.6.1,58091,online
+db0:keys=1913,expires=7]|time=0.000815s;;;0.000000;5.000000		
+				</screen>
+			</section>
 		</section>
-		
-		<section>
+	<section id="check_log">
+		<title>check_log</title>
+		<para>官方的 check_log 有很多缺陷，不能监控大文件。它的监控原理是cat log to oldlog 然后通过diff比较</para>
+	</section>		
+		<section id="nrpe">
 			<title>Nagios nrpe plugins</title>
 			<para>nrpe 插件接收来自nagios-nrpe-server数据报告</para>
 			<screen>
@@ -418,10 +470,10 @@ define service {
 		</section>
 		
 				
-		<section>
-			<title>check_nt</title>
-			<para>Define windows services that should be monitored.</para>
-			<screen>
+	<section id="check_nt">
+		<title>check_nt</title>
+		<para>Define windows services that should be monitored.</para>
+		<screen>
 # Define a host for the Windows machine we'll be monitoring
 # Change the host_name, alias, and address to fit your situation
 
@@ -474,15 +526,15 @@ host_name               remote-windows-host
 service_description     Explorer
 check_command           check_nt!PROCSTATE!-d SHOWALL -l Explorer.exe
 }
-			</screen>
-			<para>Enable Password Protection</para>
-			<screen>
+		</screen>
+		<para>Enable Password Protection</para>
+		<screen>
 define command{
 command_name	check_nt
 command_line	$USER1$/check_nt -H $HOSTADDRESS$ -p 12489 -s My2Secure$Password -v $ARG1$ $ARG2$
 }
-			</screen>
-			
-		</section>
+		</screen>
+		
+	</section>
 		
 </section>
