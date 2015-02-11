@@ -4,7 +4,11 @@
 	<section id="gnokii">
 		<title>gnokii</title>
 		<para>http://www.gnokii.org</para>
-		<screen>
+		<section>
+			<title>安装</title>
+			<section>
+				<title>Ubuntu</title>
+				<screen>
 neo@monitor:~$ apt-cache search gnokii
 opensync-plugin-gnokii - Opensync gnokii plugin
 gnokii - Datasuite for mobile phone management
@@ -19,11 +23,33 @@ xgnokii - Datasuite for mobile phone management (X interface)
 
 
 neo@monitor:~$ sudo apt-get install gnokii-cli
-		</screen>
-		<screen>
-		<![CDATA[
+				</screen>
+			</section>
+			<section>
+				<title>CentOS</title>
+				<screen>
+# yum search gnokii
+
+gnokii-devel.x86_64 : Gnokii development files
+gnokii-smsd.x86_64 : Gnokii SMS daemon
+gnokii-smsd-mysql.x86_64 : MySQL support for Gnokii SMS daemon
+gnokii-smsd-pgsql.x86_64 : PostgreSQL support for Gnokii SMS daemon
+gnokii-smsd-sqlite.x86_64 : SQLite support for Gnokii SMS daemon
+gnokii.x86_64 : Linux/Unix tool suite for various mobile phones
+xgnokii.x86_64 : Graphical Linux/Unix tool suite for various mobile phones
+				</screen>
+				<para>安装</para>
+				<screen>
+# yum install -y gnokii
+				</screen>
+			</section>
+		</section>
+		<section>
+			<title>配置</title>
+			<screen>
+			<![CDATA[
 vim /etc/gnokiirc
-or 
+or
 vim ~/.gnokiirc
 
 [global]
@@ -33,20 +59,39 @@ initlength = default
 connection = serial
 serial_baudrate = 19200
 smsc_timeout = 10
-		]]>
-		</screen>
-		<screen>
-		<![CDATA[
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>发送测试短信</title>
+			<screen>
+			<![CDATA[
 $ echo "This is a test message" | gnokii --sendsms +13113668890
 
 $ gnokii --sendsms number <<EOF
 hi neo,
 This is a test message
 EOF
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>接收短信</title>
+			<screen>
+# gnokii --smsreader
+GNOKII Version 0.6.31
+Entered sms reader mode...
 
+SMS received from number: 8613113668890
+Got message 11: hi			
+			</screen>
+		</section>
+		<section>
+			<title>拨打电话</title>
+			<screen>
 $ gnokii --dialvoice number
-		]]>
-		</screen>
+			</screen>
+		</section>
 	</section>
 	<section id="sms.at">
 		<title>AT Commands</title>
@@ -55,7 +100,7 @@ AT
 AT+CSCA=+86
 AT+CMGF=1
 AT+CMGS="13122993040"
-Hello,This is the test of GSM module! Ctrl+z		
+Hello,This is the test of GSM module! Ctrl+z
 		</screen>
 	</section>
 </chapter>
