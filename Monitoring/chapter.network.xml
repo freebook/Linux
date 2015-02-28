@@ -273,4 +273,5 @@ subnet 172.16.0.0/12
 		<title>moloch</title>
 		<para><ulink url="https://github.com/aol/moloch" /></para>
 	</section>
+	&chapter.icinga.xml;
 </chapter>

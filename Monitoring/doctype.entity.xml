@@ -2,10 +2,10 @@
 <!ENTITY chapter.monitor.xml 			SYSTEM "chapter.monitor.xml">
 <!ENTITY chapter.monitor.sms.xml		SYSTEM "chapter.monitor.sms.xml">
 
-<!ENTITY chapter.mon.system.xml		 		SYSTEM "chapter.system.xml">
+<!ENTITY chapter.mon.system.xml		 	SYSTEM "chapter.system.xml">
 <!ENTITY chapter.system.utility.xml		SYSTEM "chapter.system.utility.xml">
 
-<!ENTITY chapter.mon.network.xml 			SYSTEM "chapter.network.xml">
+<!ENTITY chapter.mon.network.xml 		SYSTEM "chapter.network.xml">
 <!ENTITY chapter.network.mrtg.xml		SYSTEM "chapter.network.mrtg.xml">
 <!ENTITY chapter.network.cacti.xml 		SYSTEM "chapter.network.cacti.xml">
 <!ENTITY chapter.nagios.xml 			SYSTEM "chapter.nagios.xml">
@@ -19,6 +19,7 @@
 <!ENTITY chapter.network.observium.xml	SYSTEM "chapter.network.observium.xml">
 <!ENTITY chapter.network.opentsdb.xml	SYSTEM "chapter.network.opentsdb.xml">
 <!ENTITY chapter.network.graphite.xml	SYSTEM "chapter.network.graphite.xml">
+<!ENTITY chapter.icinga.xml				SYSTEM "chapter.icinga.xml">
 
 <!ENTITY chapter.ipmi.xml			 	SYSTEM "chapter.ipmi.xml">
 <!ENTITY chapter.network.netflow.xml 	SYSTEM "chapter.network.netflow.xml">
