@@ -7,7 +7,7 @@
 
 <!ENTITY chapter.mon.network.xml 		SYSTEM "chapter.network.xml">
 <!ENTITY chapter.network.mrtg.xml		SYSTEM "chapter.network.mrtg.xml">
-<!ENTITY chapter.network.cacti.xml 		SYSTEM "chapter.network.cacti.xml">
+<!ENTITY chapter.cacti.xml 				SYSTEM "chapter.cacti.xml">
 <!ENTITY chapter.nagios.xml 			SYSTEM "chapter.nagios.xml">
 <!ENTITY chapter.nagios.install.xml		SYSTEM "chapter.nagios.install.xml">
 <!ENTITY chapter.nagios.plugins.xml		SYSTEM "chapter.nagios.plugins.xml">

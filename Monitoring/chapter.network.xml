@@ -4,7 +4,7 @@
 	<title>Network Management Software &amp; Network Monitoring</title>
 
 	&chapter.network.mrtg.xml;
-	&chapter.network.cacti.xml;
+	&chapter.cacti.xml;
 	&chapter.nagios.xml;
 	&chapter.network.munin.xml;
 	&chapter.network.zabbix.xml;
