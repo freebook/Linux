@@ -277,6 +277,13 @@ $database_port = "3306";
 cd /usr/share/cacti/plugins
 		</screen>
 		<para>进入<![CDATA[Console -> Plugin Management]]>配置插件</para>
+		<section>
+			<title>Percona monitoring plugins</title>
+			<para>http://www.percona.com/software/percona-monitoring-plugins</para>
+			<screen>
+yum localinstall http://www.percona.com/downloads/percona-monitoring-plugins/1.1.4/percona-cacti-templates-1.1.4-1.noarch.rpm
+			</screen>
+		</section>
 	</section>
 	<section id="cacti.template">
 		<title>Template</title>
@@ -341,10 +348,10 @@ pm.status_path = /status
 			<para>Template: <ulink url="http://code.google.com/p/mysql-cacti-templates/">http://code.google.com/p/mysql-cacti-templates/</ulink></para>
 			<screen>
 $ cd /usr/local/src/
-$ wget http://mysql-cacti-templates.googlecode.com/files/better-cacti-templates-1.1.7.tar.gz
-$ tar zxvf better-cacti-templates-1.1.7.tar.gz
-$ cd better-cacti-templates-1.1.7/
-$ cp scripts/ss_get_mysql_stats.php /usr/share/cacti/site/scripts
+$ wget http://mysql-cacti-templates.googlecode.com/files/better-cacti-templates-1.1.8.tar.gz
+$ tar zxvf better-cacti-templates-1.1.8.tar.gz
+$ cd better-cacti-templates-1.1.8/
+$ cp scripts/ss_get_mysql_stats.php /usr/share/cacti/scripts/
 			</screen>
 			<para>default password</para>
 			<screen>
@@ -357,9 +364,10 @@ $mysql_pass = "s3cret";
 			]]>
 			</screen>
 			<para>Import Templates</para>
+			<para>倒入下面模板 templates/cacti_host_template_x_mysql_server_ht_0.8.6i-sver1.1.8.xml</para>
 			<screen>
 			<![CDATA[
-Import/Export -> Import Templates -> Import Template from Local File -> Save
+"Import/Export" -> "Import Templates" -> "Import Template from Local File" -> Import
 			]]>
 			</screen>
 			<para>设置模版</para>
@@ -397,6 +405,7 @@ Port
 -> Save
 			]]>
 			</screen>
+			
 		</section>
 	</section>
 </section>
