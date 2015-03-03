@@ -255,7 +255,7 @@ $database_port = "3306";
 		<para>configure cacti</para>
 		<para><ulink url="http://your-server/cacti/">http://your-server/cacti/</ulink></para>
 	</section>
-	<section>
+	<section id="cacti.web">
 		<title>Web 安装</title>
 		<para>登陆WEB界面<ulink url="http://your-server/cacti/">http://your-server/cacti/</ulink></para>
 		<graphic format="png" fileref="images/cacti/cacti-1.PNG" width="" srccredit="neo" />
@@ -269,7 +269,7 @@ $database_port = "3306";
 		<graphic format="png" fileref="images/cacti/cacti-5.PNG" width="" srccredit="neo" />
 		<para>登陆后会提示你修改密码</para>
 	</section>
-	<section>
+	<section id="cacti.plugin">
 		<title>Cacti plugins</title>
 		<para>http://docs.cacti.net/plugins</para>
 		<para>下载插件解压到下面目录</para>
@@ -278,34 +278,93 @@ cd /usr/share/cacti/plugins
 		</screen>
 		<para>进入<![CDATA[Console -> Plugin Management]]>配置插件</para>
 	</section>
-	<section>
+	<section id="cacti.template">
 		<title>Template</title>
-		<para>MySQL Template: <ulink url="http://code.google.com/p/mysql-cacti-templates/">http://code.google.com/p/mysql-cacti-templates/</ulink></para>
-		<screen>
+		<para>模板的导入步骤是首先点击"Choose File"按钮选择文件</para>
+		<graphic format="png" fileref="images/cacti/cacti-template-import.png" width="" srccredit="neo" />
+		<para>然后点击Import按钮</para>
+		<graphic format="png" fileref="images/cacti/cacti-template-import-finsh.png" width="" srccredit="neo" />
+		<para>确认导入事项，最后点击Import按钮。</para>
+		<para>完成倒入后，配置数据采集脚本，请继续阅读下面章节。</para>
+		<section>
+			<title>Nginx</title>
+			<screen>
+wget http://forums.cacti.net/download/file.php?id=12676			
+			</screen>
+			<para>http://forums.cacti.net/about26458.html</para>
+			<para>nginx 配置</para>
+			<screen>
+    location /nginx_status {
+        stub_status on;
+        access_log  off;
+        allow 22.82.21.12;
+        deny all;
+    }
+			</screen>
+		</section>
+		<section>
+			<title>php-fpm</title>
+			<screen>
+yum -y install perl-FCGI perl-FCGI-Client perl-LWP-Protocol-http10
+
+git clone https://github.com/oscm/Cacti.git
+cd Cacti
+cp Templates/php-fpm/get_php_fpm_status.pl /usr/share/cacti/scripts/
+chmod +x /usr/share/cacti/scripts/get_php_fpm_status.pl
+			</screen>
+			<para>配置连接协议</para>
+			<screen>
+# vim +/mode /usr/share/cacti/scripts/get_php_fpm_status.pl
+
+#my $mode = MODE_FCGI; 注释此行
+my $mode = MODE_HTTP; 添加此行
+			</screen>
+			<para>配置 php-fpm.conf 文件</para>
+			<screen>
+; Default Value: not set
+pm.status_path = /status			
+			</screen>
+			<para>配置nginx </para>
+			<screen>
+    location ~ ^/(status|ping)$ {
+        access_log off;
+        allow 22.82.21.12;
+        deny all;
+        fastcgi_pass 127.0.0.1:9000;
+        fastcgi_param SCRIPT_FILENAME $fastcgi_script_name;
+        include fastcgi_params;
+    }		
+			</screen>
+		</section>
+		<section>
+			<title>MySQL</title>
+			<para>Template: <ulink url="http://code.google.com/p/mysql-cacti-templates/">http://code.google.com/p/mysql-cacti-templates/</ulink></para>
+			<screen>
 $ cd /usr/local/src/
 $ wget http://mysql-cacti-templates.googlecode.com/files/better-cacti-templates-1.1.7.tar.gz
 $ tar zxvf better-cacti-templates-1.1.7.tar.gz
 $ cd better-cacti-templates-1.1.7/
 $ cp scripts/ss_get_mysql_stats.php /usr/share/cacti/site/scripts
-		</screen>
-		<para>default password</para>
-		<screen>
-		<![CDATA[
+			</screen>
+			<para>default password</para>
+			<screen>
+			<![CDATA[
 vim /usr/share/cacti/site/scripts/ss_get_mysql_stats.php.cnf
 <?php
 $mysql_user = "root";
 $mysql_pass = "s3cret";
 ?>		
-		]]>
-		</screen>
-		<para>Import Templates</para>
-		<screen>
-		<![CDATA[
+			]]>
+			</screen>
+			<para>Import Templates</para>
+			<screen>
+			<![CDATA[
 Import/Export -> Import Templates -> Import Template from Local File -> Save
-		]]>
-		</screen>
-		<para>设置模版</para>
-		<screen>
+			]]>
+			</screen>
+			<para>设置模版</para>
+			<screen>
+			<![CDATA[
 Templates -> 
 
 X MyISAM Indexes DT
@@ -336,7 +395,8 @@ Password	#单击复选框，并输入默认密码
 Port
 
 -> Save
-		
-		</screen>
+			]]>
+			</screen>
+		</section>
 	</section>
 </section>
