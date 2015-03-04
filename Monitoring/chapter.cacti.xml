@@ -405,7 +405,21 @@ Port
 -> Save
 			]]>
 			</screen>
-			
+		</section>
+		<section>
+			<title>Redis</title>
+			<screen>
+easy_install redis
+			</screen>
+			<para>https://github.com/oscm/Cacti.git</para>
+			<screen>
+cp redis-stats.py /usr/share/cacti/scripts/			
+			</screen>
+			<para>测试采集脚本</para>
+			<screen>
+# python redis-stats.py 172.18.52.163
+total_connections_received:578761 connected_clients:14 used_memory:870032 expires:47 keys:47 total_commands_processed:1814080			
+			</screen>
 		</section>
 	</section>
 </chapter>
