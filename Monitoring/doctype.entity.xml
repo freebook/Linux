@@ -2,15 +2,17 @@
 <!ENTITY chapter.monitor.xml 			SYSTEM "chapter.monitor.xml">
 <!ENTITY chapter.monitor.sms.xml		SYSTEM "chapter.monitor.sms.xml">
 
-<!ENTITY chapter.mon.system.xml		 	SYSTEM "chapter.system.xml">
 <!ENTITY chapter.system.utility.xml		SYSTEM "chapter.system.utility.xml">
+<!ENTITY chapter.system.io.xml			SYSTEM "chapter.system.io.xml">
+<!ENTITY chapter.network.software.xml	SYSTEM "chapter.network.software.xml">
 
-<!ENTITY chapter.mon.network.xml 		SYSTEM "chapter.network.xml">
-<!ENTITY chapter.network.mrtg.xml		SYSTEM "chapter.network.mrtg.xml">
+<!ENTITY chapter.snmp.xml		 		SYSTEM "chapter.snmp.xml">
+<!ENTITY chapter.mrtg.xml				SYSTEM "chapter.mrtg.xml">
 <!ENTITY chapter.cacti.xml 				SYSTEM "chapter.cacti.xml">
 <!ENTITY chapter.nagios.xml 			SYSTEM "chapter.nagios.xml">
 <!ENTITY chapter.nagios.install.xml		SYSTEM "chapter.nagios.install.xml">
 <!ENTITY chapter.nagios.plugins.xml		SYSTEM "chapter.nagios.plugins.xml">
+<!ENTITY chapter.bandwidth.xml	 		SYSTEM "chapter.bandwidth.xml">
 <!ENTITY chapter.network.munin.xml 		SYSTEM "chapter.network.munin.xml">
 <!ENTITY chapter.network.zabbix.xml 	SYSTEM "chapter.network.zabbix.xml">
 <!ENTITY chapter.network.cluster.xml 	SYSTEM "chapter.network.cluster.xml">
@@ -22,8 +24,7 @@
 <!ENTITY chapter.icinga.xml				SYSTEM "chapter.icinga.xml">
 
 <!ENTITY chapter.ipmi.xml			 	SYSTEM "chapter.ipmi.xml">
-<!ENTITY chapter.network.netflow.xml 	SYSTEM "chapter.network.netflow.xml">
-
+<!ENTITY chapter.netflow.xml 			SYSTEM "chapter.netflow.xml">
 <!ENTITY chapter.log.xml		 		SYSTEM "chapter.log.xml">
 <!ENTITY chapter.log.web.xml			SYSTEM "chapter.log.web.xml">
 <!ENTITY chapter.log.flume.xml			SYSTEM "chapter.log.flume.xml">

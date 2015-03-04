@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="nagios">
+<chapter id="index"><?dbhtml dir="nagios" ?>
 	<title>Nagios</title>
 	<para>homepage: http://www.nagios.org/</para>
 	&chapter.nagios.install.xml;
 	
-	<section id="nagios.config">
+	<section id="define">
 		<title>配置监控设备</title>
 		<section>
 			<title>routers</title>
@@ -159,7 +159,7 @@ define service{
 	</section>
 
 	&chapter.nagios.plugins.xml;
-	<section>
+	<section id="faq">
 		<title>FAQ</title>
 		<section>
 			<title>Macro Name</title>
@@ -170,4 +170,4 @@ define service{
 			<para>https://nagios-plugins.org/doc/guidelines.html#THRESHOLDFORMAT</para>
 		</section>
 	</section>
-</section>
+</chapter>

@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="system.io">
+    <title>Harddisk IO</title>
+	<section>
+		<title>input/output statistics</title>
+		<para></para>
+		<screen>
+$ sudo apt-get install sysstat
+		</screen>
+		<para>iostat</para>
+		<screen>
+$ iostat
+Linux 2.6.24-21-generic (netkiller)     Thursday, December 04, 2008
+
+avg-cpu:  %user   %nice %system %iowait  %steal   %idle
+           0.57    0.03    0.14    0.41    0.00   98.85
+
+Device:            tps   Blk_read/s   Blk_wrtn/s   Blk_read   Blk_wrtn
+sda               6.45       132.69        68.33     595116     306456
+sda1              0.00         0.00         0.00       1606         58
+sda2              0.00         0.00         0.00        820          0
+sda3              2.20         1.16        17.27    1502618   22448752
+		</screen>
+		<para>sudo iostat -x 2</para>
+		<screen>
+# iostat -x 1
+avg-cpu: %user %nice %sys %idle
+2.04 0.00 97.96 0.00
+Device: rrqm/s wrqm/s r/s w/s rsec/s wsec/s rkB/s wkB/s avgrq-sz avgqu-sz await svctm %util
+/dev/sda 0.00 633.67 3.06 102.31 24.49 5281.63 12.24 2640.82 288.89 73.67 113.89 27.22 50.00
+
+从输出我们看到w/s=102,wKB/s=2640.所以2640/102=23KB per I/O.
+
+因此对于连续I/O系统来说我们要关注系统读取大量数据的能力即KB per request.对于随机I/O系统我们注重IOPS值.
+		</screen>
+		<section>
+			<title>5 秒监控一次</title>
+			<screen>
+iostat -d 5
+			</screen>
+		</section>
+	</section>
+	<section id="iotop">
+	    <title>iotop - simple top-like I/O monitor</title>
+	    <screen>
+# yum install iotop
+	    </screen>
+	    <screen>
+$ sudo apt-get install iotop
+	    </screen>
+	</section>
+	<section id="ionice">
+		<title>ionice - set or get process I/O scheduling class and priority</title>
+	</section>
+</chapter>
+
+<chapter id="system.network">
+	<title>Network IO</title>
+	<section id="netstat">
+		<title>netstat</title>
+		<para>netstat 监控TCP状态</para>
+		<screen>
+#netstat -n | awk ‘/^tcp/ {++S[$NF]} END {for(a in S) print a, S[a]}’
+		</screen>
+		<screen>
+状态：		描述
+CLOSED：		无连接是活动的或正在进行
+LISTEN：		服务器在等待进入呼叫
+SYN_RECV：	一个连接请求已经到达，等待确认
+SYN_SENT：	应用已经开始，打开一个连接
+ESTABLISHED：正常数据传输状态
+FIN_WAIT1：	应用说它已经完成
+FIN_WAIT2：	另一边已同意释放
+ITMED_WAIT：等待所有分组死掉
+CLOSING：	两边同时尝试关闭
+TIME_WAIT：	另一边已初始化一个释放
+LAST_ACK：	等待所有分组死掉
+		</screen>
+	</section>
+	<section id="ss">
+		<title>ss</title>
+		<screen>
+# ss
+State      Recv-Q Send-Q      Local Address:Port          Peer Address:Port
+CLOSE-WAIT 1      0           192.168.3.124:19644       130.75.116.209:http
+CLOSE-WAIT 1      0           192.168.3.124:31289       170.224.194.69:https
+CLOSE-WAIT 1      0           192.168.3.124:64903         198.20.8.241:https
+CLOSE-WAIT 1      0           192.168.3.124:64902         198.20.8.241:https
+CLOSE-WAIT 1      0           192.168.3.124:27528      170.224.160.205:https
+CLOSE-WAIT 1      0           192.168.3.124:10152         198.20.8.241:https
+CLOSE-WAIT 1      0           192.168.3.124:18263       170.224.194.69:http
+CLOSE-WAIT 1      0           192.168.3.124:18262       170.224.194.69:http
+CLOSE-WAIT 1      0           192.168.3.124:27792         129.89.61.70:http
+CLOSE-WAIT 1      0           192.168.3.124:27595         129.89.61.70:http
+CLOSE-WAIT 1      0           192.168.3.124:28970         129.89.61.70:http
+CLOSE-WAIT 1      0           192.168.3.124:28158       130.75.116.210:http
+CLOSE-WAIT 1      0           192.168.3.124:26186       130.75.116.210:http
+CLOSE-WAIT 1      0           192.168.3.124:26185       130.75.116.210:http
+CLOSE-WAIT 1      0           192.168.3.124:42563         74.125.71.99:http
+CLOSE-WAIT 1      0           192.168.3.124:42564         74.125.71.99:http
+CLOSE-WAIT 1      0           192.168.3.124:63459       130.75.116.202:http
+CLOSE-WAIT 1      0           192.168.3.124:63458       130.75.116.202:http
+ESTAB      0      0           192.168.3.124:30829         192.168.3.17:3260
+ESTAB      0      0           192.168.3.124:13234         192.168.3.15:3260
+ESTAB      0      0        ::ffff:192.168.3.124:ssh        ::ffff:192.168.80.5:5                                                                                        2682
+ESTAB      0      1960     ::ffff:192.168.3.124:ssh        ::ffff:192.168.80.5:5                                                                                        2957
+
+
+$ ss
+State      Recv-Q Send-Q                Local Address:Port                    Peer Address:Port
+ESTAB      0      0                      192.168.80.1:38281                     64.4.61.72:1863
+ESTAB      0      0                      192.168.80.1:54504                  112.95.240.77:8000
+ESTAB      0      0                      192.168.80.1:14698                  74.125.71.125:5222
+ESTAB      0      0                      192.168.80.1:14697                  74.125.71.125:5222
+ESTAB      0      0                      192.168.80.1:54123                   64.12.28.171:https
+ESTAB      0      0                      192.168.80.1:4225                     64.4.61.171:1863
+ESTAB      0      0                      192.168.80.1:ssh                     192.168.80.5:51291
+ESTAB      0      0               ::ffff:192.168.80.1:microsoft-ds          ::ffff:192.168.80.5:51094
+ESTAB      0      0                      192.168.80.1:22074                  205.188.1.241:https
+ESTAB      0      0                      192.168.80.1:59340                    64.4.34.213:1863
+ESTAB      0      0                      192.168.80.1:9766                   91.189.89.114:https
+ESTAB      0      0                      192.168.80.1:3300                      64.4.44.78:1863
+
+		</screen>
+		<screen>
+
+		</screen>
+	</section>
+	<section id="iftop">
+	    <title>iftop - display bandwidth usage on an interface by host</title>
+    	<screen>
+# yum install -y iftop
+	    </screen>
+	</section>
+    <section id="iptraf">
+		<title>iptraf - Interactive Colorful IP LAN Monitor</title>
+		<screen>
+[root@development ~]# yum -y install iptraf
+		</screen>
+	</section>
+	<section id="nload">
+		<title>nload: Console application which monitors network traffic and bandwidth</title>
+		<para>CentOS</para>
+		<screen>
+# yum install nload -y
+		</screen>
+		<para>Ubuntu</para>
+		<screen>
+# sudo apt-get install nload
+		</screen>
+		<para>运行监控命令</para>
+
+		<screen>
+# nload
+		</screen>
+		<screen>
+Device eth0 [172.16.3.90] (1/5):
+=============================================================================
+Incoming:
+
+                                                     Curr: 10.00 kBit/s
+                                                     Avg: 103.95 kBit/s
+                                                     Min: 0.00 Bit/s
+             ||                                      Max: 3.23 MBit/s
+             ##                                      Ttl: 1090.93 GByte
+Outgoing:
+
+                                                     Curr: 12.84 kBit/s
+                                                     Avg: 15.29 kBit/s
+                                                     Min: 0.00 Bit/s
+                                                     Max: 206.63 kBit/s
+                                                     Ttl: 48.57 GByte
+		</screen>
+	</section>
+    <section id="bwm">
+		<title>bwm - Bandwidth Monitor</title>
+		<screen>
+Bandwidth Monitor 1.1.0
+
+       Iface        RX(KB/sec)   TX(KB/sec)   Total(KB/sec)
+
+          lo            8.366        8.366          16.732
+        eth0           24.120      100.005         124.125
+        eth1            0.000        0.000           0.000
+
+       Total           32.486      108.371         140.857
+
+Hit CTRL-C to end this madness.
+		</screen>
+	</section>
+</chapter>

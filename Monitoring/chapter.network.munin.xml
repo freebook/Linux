@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.network.munin.xml 359 2012-03-02 13:12:30Z netkiller $ -->
-<section id="munin">
+<chapter id="munin">
 	<title>Munin</title>
 	<ulink url="http://munin-monitoring.org/" />
 	<section>
@@ -80,4 +80,4 @@ env.ports 80
 			</screen>
 		</section>
 	</section>
-</section>
+</chapter>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="nagios.plugins">
+<section id="plugins">
 	<title>Nagios Plugins</title>
 	<para>检查命令配置文件 /etc/nagios-plugins/config/</para>
 	<section id="nagios.plugins.ping">

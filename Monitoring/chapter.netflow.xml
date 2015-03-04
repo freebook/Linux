@@ -18,7 +18,7 @@ flow-capture -z 6 -n 143 -e 8928 -V 5 -w /opt/netflow 0/0/2055
 			</screen>
 		</section>
 		<section>
-			<title></title>
+			<title>NetFlow into MySQL with flow-tools</title>
 			<subtitle>NetFlow into MySQL with flow-tools</subtitle>
 			<para>创建netflow数据库，创建flows表</para>
 			<screen>

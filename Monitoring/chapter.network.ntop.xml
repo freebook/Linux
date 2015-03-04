@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="network.ntop">
+<chapter id="network.ntop">
 	<title>Ntop</title>
 	<subtitle>ntop - display network usage in web browser</subtitle>
 	<section id="ntop.install">
@@ -108,4 +108,4 @@ start () {
 		</section>
 	</section>
 
-</section>
+</chapter>

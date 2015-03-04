@@ -1,8 +1,3 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	&chapter.mon.system.xml;
-	&chapter.mon.network.xml;
-	&chapter.monitor.sms.xml;
-	&chapter.ipmi.xml;
-	&chapter.network.netflow.xml;
-	&chapter.log.xml;
-	&chapter.jvm.xml;
+	&chapter.system.utility.xml;
+	&chapter.network.software.xml;

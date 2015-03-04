@@ -10,7 +10,6 @@
 	&chapter.network.innd;
 	&chapter.network.irc;
 	&chapter.network.jabber;
-	&chapter.network.snmp;
 	&chapter.network.proxy;
 	&chapter.security.firewall;
 	&chapter.security.stunnel;

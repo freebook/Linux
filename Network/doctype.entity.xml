@@ -14,7 +14,6 @@
 	<!ENTITY chapter.network.innd 			SYSTEM "chapter.network.innd.xml">
 	<!ENTITY chapter.network.irc 			SYSTEM "chapter.network.irc.xml">
 	<!ENTITY chapter.network.jabber 		SYSTEM "chapter.network.jabber.xml">
-	<!ENTITY chapter.network.snmp 			SYSTEM "chapter.network.snmp.xml">
 	<!ENTITY chapter.network.rinetd.xml		SYSTEM "chapter.network.rinetd.xml">
 
 	<!ENTITY chapter.security.firewall 	SYSTEM "chapter.security.firewall.xml">

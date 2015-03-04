@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="observium">
+<chapter id="observium">
 	<title>Observium</title>
 	<para>http://www.observium.org</para>
 	<section id="observium.installation">
@@ -157,4 +157,4 @@ $ sudo /etc/init.d/cron reload
 		]]>
 		</screen>
 	</section>
-</section>
+</chapter>
