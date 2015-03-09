@@ -16,4 +16,5 @@
 	&chapter.network.graphite.xml;
 	&chapter.icinga.xml;
 	&chapter.netflow.xml;
+	&chapter.varnish.xml;
 </part>

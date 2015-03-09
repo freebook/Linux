@@ -22,6 +22,7 @@
 <!ENTITY chapter.network.opentsdb.xml	SYSTEM "chapter.network.opentsdb.xml">
 <!ENTITY chapter.network.graphite.xml	SYSTEM "chapter.network.graphite.xml">
 <!ENTITY chapter.icinga.xml				SYSTEM "chapter.icinga.xml">
+<!ENTITY chapter.varnish.xml			SYSTEM "chapter.varnish.xml">
 
 <!ENTITY chapter.ipmi.xml			 	SYSTEM "chapter.ipmi.xml">
 <!ENTITY chapter.netflow.xml 			SYSTEM "chapter.netflow.xml">
