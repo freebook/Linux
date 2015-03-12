@@ -95,12 +95,27 @@ $ gnokii --dialvoice number
 	</section>
 	<section id="sms.at">
 		<title>AT Commands</title>
-		<screen>
+		<section>
+			<title>发送短信</title>
+			<para>AT+CSCA=+8613010888500 是设置短信中心号码，只需第一次使用</para>
+			<screen>
 AT
-AT+CSCA=+86
+AT+CSCA=+8613010888500
 AT+CMGF=1
 AT+CMGS="13122993040"
 Hello,This is the test of GSM module! Ctrl+z
-		</screen>
+			</screen>
+		</section>
+		<section>
+			<title>语音通话</title>
+			<screen>
+at+fclass=8
+at#vsps=0
+at+vgs=130
+at+vsp=1
+at+vls=7
+ATDT13113668890			
+			</screen>
+		</section>
 	</section>
 </chapter>
