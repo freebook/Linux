@@ -401,5 +401,14 @@ cat file | ssh -T root@host
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>去掉 passphrase</title>
+			<screen>
+1. 使用openssl命令去掉私钥的密码 openssl rsa -in ~/.ssh/id_rsa -out ~/.ssh/id_rsa_new
+2. 备份旧私钥mv ~/.ssh/id_rsa ~/.ssh/id_rsa.backup
+3. 使用新私钥mv ~/.ssh/id_rsa_new ~/.ssh/id_rsa
+4. 设置权限chomd 600 ~/.ssh/id_rsa
+			</screen>
+		</section>
 	</section>
 </chapter>
