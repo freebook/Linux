@@ -1,18 +1,19 @@
-<appendix>
+<appendix id="appendix">
 	<title>附录</title>
 	<section>
 		<title>参考文档</title>
 		<para>http://www.faqs.org/docs/Linux-HOWTO/Bash-Prog-Intro-HOWTO.html</para>
 		<para>http://xiaowang.net/bgb-cn/index.html</para>
 	</section>
-	<section>
-		<title>Ubuntu Server Edition</title>
-		<para><ulink url="http://www.ubuntu.com/">http://www.ubuntu.com/</ulink></para>
-		<para><ulink url="/en-us/technology/ubuntu.html">Netkiller Ubuntu Linux 手札</ulink></para>
+	<section id="cve">
+		<title>Red Hat 漏洞</title>
+		<para>下面链接是Red Hat公布的漏洞，你需要格外留意这些漏洞。</para>
+		<para><ulink url="https://access.redhat.com/security/cve/">Red Hat vulnerabilities by CVE name</ulink></para>
+		<para>不一定每个漏洞都威胁到你的安全，所以升级要试情况而定，每次升级都存在一定风险，尤其是对于你手工编译的软件。</para>
 	</section>
-	<section>
-		<title>CentOS - The Community ENTerprise Operating System</title>
-		<para><ulink url="http://www.centos.org/">http://www.centos.org/</ulink></para>
-		<para><ulink url="/en-us/technology/centos.html">Netkiller CentOS Linux 手札</ulink></para>
+	<section id="nvd">
+		<title>National Vulnerability Database (NVD)</title>
+		<para>美国国家漏洞数据库</para>
+		<para><ulink url="https://web.nvd.nist.gov/view/vuln/search-results">点击进入</ulink></para>
 	</section>
 </appendix>

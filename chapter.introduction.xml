@@ -3,22 +3,30 @@
 <chapter id="introduction">
 	<title>Introduction</title>
 	<section id="linux.distribution">
-		<title>Distribution Version</title>
-
-		<para>Debian/Ubuntu</para>
-		<para>http://www.ubuntu.com</para>
-
-		<para>Gentoo</para>
-		<para>http://www.gentoo.org/</para>
-
-		<para>Scientific Linux (SL)</para>
-		<para><ulink url="http://www.scientificlinux.org/">http://www.scientificlinux.org/</ulink></para>
-
-		<para>CentOS</para>
-		<para>http://www.centos.org/</para>
-
-		<para>Debian/Ubuntu适合做实验，快速安装定制，Gentoo适合DIY</para>
-		<para>如果是企业服务器还是建议使用CentOS，Scientific Linux</para>
+		<title>Linux 发行版本</title>	
+		<para>下面是我常用的Linux本版，Debian/Ubuntu适合做实验，快速安装定制，Gentoo适合DIY</para>
+		<para>如果是企业服务器还是建议使用CentOS，Scientific Linux， 所以CentOS是IDC装机量怎大的操作系统。</para>	
+		<section>
+			<title>Debian 衍生版本</title>
+			<para>Ubuntu Server Edition<ulink url="http://www.ubuntu.com/">http://www.ubuntu.com/</ulink></para>
+			<para><ulink url="/en-us/technology/ubuntu.html">Netkiller Ubuntu Linux 手札</ulink></para>
+		</section>
+		<section>
+			<title>Redhat 衍生版本</title>
+			<para>CentOS - The Community ENTerprise Operating System</para>
+			<para><ulink url="http://www.centos.org/">http://www.centos.org/</ulink></para>
+			
+			<para>Scientific Linux (SL)</para>
+			<para><ulink url="http://www.scientificlinux.org/">http://www.scientificlinux.org/</ulink></para>
+			
+			<para><ulink url="/en-us/technology/centos.html">Netkiller CentOS Linux 手札</ulink></para>
+		</section>
+		<section>
+			<title>FreeBSD 包风格的Linux 发行版</title>
+			<para>Gentoo</para>
+			<para>http://www.gentoo.org/</para>
+		</section>
+		
 		<section>
 			<title>Linux 下载排名</title>
 			<para><ulink url="http://distrowatch.com/">http://distrowatch.com/</ulink></para>
