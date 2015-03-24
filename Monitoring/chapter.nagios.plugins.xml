@@ -22,7 +22,7 @@
 	<section id="check_procs">
 		<title>check_procs</title>
 		<screen>
-# /usr/lib64/nagios/plugins/check_procs 
+# /usr/lib64/nagios/plugins/check_procs
 PROCS OK: 75 processes
 
 # /usr/lib64/nagios/plugins/check_procs -a mingetty
@@ -37,12 +37,12 @@ PROCS OK: 1 process with command name 'crond'
 		<para>监控如果有用户登陆就发出警告</para>
 		<screen>
 # /usr/lib64/nagios/plugins/check_users -w 0 -c 5
-USERS WARNING - 1 users currently logged in |users=1;0;5;0		
+USERS WARNING - 1 users currently logged in |users=1;0;5;0
 		</screen>
 		<para>监控用户上线5</para>
 		<screen>
 # /usr/lib64/nagios/plugins/check_users -w 5 -c 50
-USERS OK - 1 users currently logged in |users=1;5;50;0		
+USERS OK - 1 users currently logged in |users=1;5;50;0
 		</screen>
 	</section>
 	<section id="nagios.plugins.http">
@@ -76,7 +76,7 @@ define command{
 		<screen>
 # /srv/nagios/libexec/check_http -H www.163.com
 HTTP OK: HTTP/1.0 200 OK - 657627 bytes in 1.772 second response time |time=1.771681s;;;0.000000 size=657627B;;;0
-		
+
 $ /usr/lib/nagios/plugins/check_http -H www.example.com -I 172.16.0.8 -s "HTTs"
 HTTP CRITICAL: HTTP/1.1 404 Not Found - string not found - 336 bytes in 0.001 second response time |time=0.000733s;;;0.000000 size=336B;;;0
 
@@ -366,7 +366,7 @@ END]|time=0.000658s;;;0.000000;5.000000
 			<section>
 				<title>Redis</title>
 				<screen>
-# /usr/lib64/nagios/plugins/check_tcp -H 192.168.2.1 -p 6379 -t 5 -E -s 'info\r\n' -q 'quit\r\n' -e 'uptime_in_days' -M crit 
+# /usr/lib64/nagios/plugins/check_tcp -H 192.168.2.1 -p 6379 -t 5 -E -s 'info\r\n' -q 'quit\r\n' -e 'uptime_in_days' -M crit
 TCP OK - 0.001 second response time on port 6379 [$1043
 redis_version:2.4.10
 redis_git_sha1:00000000
@@ -412,14 +412,20 @@ latest_fork_usec:361
 vm_enabled:0
 role:master
 slave0:192.168.6.1,58091,online
-db0:keys=1913,expires=7]|time=0.000815s;;;0.000000;5.000000		
+db0:keys=1913,expires=7]|time=0.000815s;;;0.000000;5.000000
 				</screen>
 			</section>
 		</section>
 	<section id="check_log">
 		<title>check_log</title>
 		<para>官方的 check_log 有很多缺陷，不能监控大文件。它的监控原理是cat log to oldlog 然后通过diff比较</para>
-	</section>		
+	</section>
+	<section id="check_traffic">
+		<title>check_traffic</title>
+		<para>http://exchange.nagios.org/directory/Plugins/Network-Connections,-Stats-and-Bandwidth/check_traffic-2Esh/details</para>
+		<para><ulink url="https://github.com/cloved/check_traffic" /></para>
+		<para>网卡流量监测</para>
+	</section>
 		<section id="nrpe">
 			<title>Nagios nrpe plugins</title>
 			<para>nrpe 插件接收来自nagios-nrpe-server数据报告</para>
@@ -468,8 +474,8 @@ define service {
 
 			</screen>
 		</section>
-		
-				
+
+
 	<section id="check_nt">
 		<title>check_nt</title>
 		<para>Define windows services that should be monitored.</para>
@@ -534,7 +540,7 @@ command_name	check_nt
 command_line	$USER1$/check_nt -H $HOSTADDRESS$ -p 12489 -s My2Secure$Password -v $ARG1$ $ARG2$
 }
 		</screen>
-		
+
 	</section>
-		
+
 </section>
