@@ -475,7 +475,6 @@ define service {
 			</screen>
 		</section>
 
-
 	<section id="check_nt">
 		<title>check_nt</title>
 		<para>Define windows services that should be monitored.</para>
@@ -542,5 +541,10 @@ command_line	$USER1$/check_nt -H $HOSTADDRESS$ -p 12489 -s My2Secure$Password -v
 		</screen>
 
 	</section>
-
+	<section>
+		<title>nsca - Nagios Service Check Acceptor</title>
+		<screen>
+# yum install nsca
+		</screen>
+	</section>
 </section>
