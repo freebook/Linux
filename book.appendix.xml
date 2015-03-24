@@ -16,4 +16,8 @@
 		<para>美国国家漏洞数据库</para>
 		<para><ulink url="https://web.nvd.nist.gov/view/vuln/search-results">点击进入</ulink></para>
 	</section>
+	<section id="bugzilla">
+		<title>Red Hat Bug平台</title>
+		<para><ulink url="https://bugzilla.redhat.com/" /></para>
+	</section>
 </appendix>
