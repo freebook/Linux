@@ -1,16 +1,135 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<chapter id="jvm">
+<chapter id="index"><?dbhtml dir="jvm" ?>
 	<title>JVM</title>
 	<screen>
 jps:		http://java.sun.com/j2se/1.5.0/docs/tooldocs/share/jps.html
 jstat:		http://java.sun.com/j2se/1.5.0/docs/tooldocs/share/jstat.html
 jmap:		http://java.sun.com/j2se/1.5.0/docs/tooldocs/share/jmap.html
 	</screen>
-	<section id="jvm.jconsole">
+	<section id="jconsole">
 		<title>jconsole</title>
 		<para>jconsole:	http://java.sun.com/j2se/1.5.0/docs/guide/management/jconsole.html</para>
 	</section>
-	<section id="jvm.jhiccup">
+	<section id="jps">
+		<title>jps - Java Virtual Machine Process Status Tool</title>
+		<screen>
+# jps
+31362 Jps
+15888 Bootstrap
+		</screen>
+	</section>
+	<section id="jinfo">
+		<title>jinfo - Configuration Info</title>
+		<para>观察运行中的java程序的运行环境参数：参数包括Java System属性，各种.properties文件配置参数和JVM命令行参数</para>
+		<screen>
+# jinfo $(pgrep java)
+Attaching to process ID 15888, please wait...
+Debugger attached successfully.
+Server compiler detected.
+JVM version is 24.72-b04
+Java System Properties:
+
+java.vendor = Oracle Corporation
+sun.java.launcher = SUN_STANDARD
+catalina.base = /srv/apache-tomcat
+sun.management.compiler = HotSpot 64-Bit Tiered Compilers
+catalina.useNaming = true
+captcha.times = 5
+os.name = Linux
+
+...
+...
+
+java.vm.name = Java HotSpot(TM) 64-Bit Server VM
+cpool.maxIdleTime = 7200
+file.encoding = UTF-8
+java.specification.version = 1.7
+
+VM Flags:
+
+-Djava.util.logging.config.file=/srv/apache-tomcat/conf/logging.properties -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager -Xms512m -Xmx8192m -XX:PermSize=64M -XX:MaxPermSize=512m -Djava.endorsed.dirs=/srv/apache-tomcat/endorsed -Dcatalina.base=/srv/apache-tomcat -Dcatalina.home=/srv/apache-tomcat -Djava.io.tmpdir=/srv/apache-tomcat/temp
+		</screen>
+		<para>实例二</para>
+		<screen>
+# jinfo $(jps | grep Bootstrap | cut -d " " -f1)
+Attaching to process ID 15888, please wait...
+Debugger attached successfully.
+Server compiler detected.
+JVM version is 24.72-b04
+Java System Properties:
+
+java.vendor = Oracle Corporation
+sun.java.launcher = SUN_STANDARD
+catalina.base = /srv/apache-tomcat
+sun.management.compiler = HotSpot 64-Bit Tiered Compilers
+catalina.useNaming = true
+captcha.times = 5
+os.name = Linux		
+		</screen>
+	</section>
+	<section id="jstat">
+		<title>jstat - Java Virtual Machine Statistics Monitoring Tool</title>
+		<screen>
+# jstat -class 15888 1000 10
+Loaded  Bytes  Unloaded  Bytes     Time   
+ 17409 34782.5      231   339.0      13.21
+ 17409 34782.5      231   339.0      13.21
+ 17409 34782.5      231   339.0      13.21
+ 17409 34782.5      231   339.0      13.21
+ 17409 34782.5      231   339.0      13.21
+ 17409 34782.5      231   339.0      13.21		
+		</screen>
+		<screen>
+# jstat -gc 15888 1000 10
+ S0C    S1C    S0U    S1U      EC       EU        OC         OU       PC     PU    YGC     YGCT    FGC    FGCT     GCT   
+13824.0 13824.0 1204.1  0.0   2766848.0 2327059.3  349696.0   318073.6  229888.0 101912.6    288    4.895   2      1.055    5.949
+13824.0 13824.0 1204.1  0.0   2766848.0 2327059.3  349696.0   318073.6  229888.0 101912.6    288    4.895   2      1.055    5.949
+13824.0 13824.0 1204.1  0.0   2766848.0 2327059.3  349696.0   318073.6  229888.0 101912.6    288    4.895   2      1.055    5.949
+13824.0 13824.0 1204.1  0.0   2766848.0 2327059.3  349696.0   318073.6  229888.0 101912.6    288    4.895   2      1.055    5.949		
+		</screen>
+		<screen>
+# jstat -gcutil 15888
+  S0     S1     E      O      P     YGC     YGCT    FGC    FGCT     GCT   
+  8.71   0.00  84.12  90.96  44.33    288    4.895     2    1.055    5.949		
+		</screen>
+		<screen>
+# jstat -compiler 15888
+Compiled Failed Invalid   Time   FailedType FailedMethod
+    2987      0       0    59.55          0  		
+		</screen>
+		<screen>
+# jstat -gccapacity 15888
+ NGCMN    NGCMX     NGC     S0C   S1C       EC      OGCMN      OGCMX       OGC         OC      PGCMN    PGCMX     PGC       PC     YGC    FGC 
+175104.0 2796544.0 2794496.0 13824.0 13824.0 2766848.0   349696.0  5592064.0   349696.0   349696.0  65536.0 524288.0 229888.0 229888.0    288     2		
+		</screen>
+		<screen>
+# jstat -gcnew 15888
+ S0C    S1C    S0U    S1U   TT MTT  DSS      EC       EU     YGC     YGCT  
+13824.0 13824.0 1204.1    0.0  1  15 13824.0 2766848.0 2327429.8    288    4.895		
+		</screen>
+		<screen>
+# jstat -gcnewcapacity 15888
+  NGCMN      NGCMX       NGC      S0CMX     S0C     S1CMX     S1C       ECMX        EC      YGC   FGC 
+  175104.0  2796544.0  2794496.0 931840.0  13824.0 931840.0  13824.0  2795520.0  2766848.0   288     2		
+		</screen>
+		<screen>
+# jstat -gcold 15888
+   PC       PU        OC          OU       YGC    FGC    FGCT     GCT   
+229888.0 101912.6    349696.0    318073.6    288     2    1.055    5.949		
+		</screen>
+		<screen>
+# jstat -gcoldcapacity 15888
+   OGCMN       OGCMX        OGC         OC       YGC   FGC    FGCT     GCT   
+   349696.0   5592064.0    349696.0    349696.0   288     2    1.055    5.949		
+		</screen>
+		<para>每 1000 毫秒打印一次，一共打印 5 次，还可以加上 -h3 每三行显示一下标题。</para>
+		<screen>
+# jstat -printcompilation -h3 15888
+Compiled  Size  Type Method
+    2987     91    1 org/apache/catalina/connector/Request isAlpha
+		</screen>
+	</section>
+	<section id="jhiccup">
 		<title>jHiccup</title>
-	</section>	
+	</section>
 </chapter>

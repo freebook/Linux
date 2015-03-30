@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="zabbix">
+<chapter id="index"><?dbhtml dir="zabbix" ?>
 	<title>Zabbix</title>
-	<section>
+	<section id="install">
 		<title>Installing and Configuring Zabbix</title>
 		<screen>
 neo@monitor:~$ apt-cache search zabbix
@@ -42,13 +42,13 @@ EOF
 		]]>
 		</screen>
 	</section>
-	<section>
+	<section id="webui">
 		<title>web ui</title>
 		<para>http://localhost/zabbix/</para>
 		<para>user: admin</para>
 		<para>passwd: zabbix</para>
 	</section>
-	<section>
+	<section id="zabbix-agent">
 		<title>zabbix-agent</title>
 		<screen>
 # sudo apt-get install zabbix-agent

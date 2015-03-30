@@ -7,8 +7,8 @@
 	&chapter.cacti.xml;
 	&chapter.nagios.xml;
 	&chapter.bandwidth.xml;
-	&chapter.network.munin.xml;
-	&chapter.network.zabbix.xml;
+	&chapter.munin.xml;
+	&chapter.zabbix.xml;
 	&chapter.network.cluster.xml;
 	&chapter.network.ntop.xml;
 	&chapter.network.observium.xml;

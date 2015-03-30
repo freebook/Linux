@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.network.munin.xml 359 2012-03-02 13:12:30Z netkiller $ -->
-<chapter id="munin">
+<chapter id="index"><?dbhtml dir="munin" ?>
 	<title>Munin</title>
 	<ulink url="http://munin-monitoring.org/" />
-	<section>
+	<section id="server">
 		<title>Installation Monitor Server</title>
 		<screen>
 $ sudo apt-get install munin
@@ -31,7 +31,7 @@ neo@monitor:~$ sudo service munin-node restart
 		</screen>	
 	</section>
 	
-	<section>
+	<section id="node">
 		<title>Installation Node</title>
 		<screen>
 sudo apt-get install munin-node
@@ -41,13 +41,13 @@ vim /etc/munin/munin-node.conf
 allow ^172\.16\.1\.2$
 		</screen>
 	</section>
-	<section>
+	<section id="extra">
 		<title>Additional Plugins</title>
 		<screen>
 sudo apt-get install munin-plugins-extra
 		</screen>
 	</section>
-	<section>
+	<section id="plugins">
 		<title>plugins</title>
 		
 		<section>

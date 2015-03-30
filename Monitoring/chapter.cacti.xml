@@ -293,7 +293,7 @@ yum localinstall http://www.percona.com/downloads/percona-monitoring-plugins/1.1
 		<graphic format="png" fileref="images/cacti/cacti-template-import-finsh.png" width="" srccredit="neo" />
 		<para>确认导入事项，最后点击Import按钮。</para>
 		<para>完成倒入后，配置数据采集脚本，请继续阅读下面章节。</para>
-		<section>
+		<section id="nginx">
 			<title>Nginx</title>
 			<screen>
 wget http://forums.cacti.net/download/file.php?id=12676			
@@ -309,7 +309,7 @@ wget http://forums.cacti.net/download/file.php?id=12676
     }
 			</screen>
 		</section>
-		<section>
+		<section id="php-fpm">
 			<title>php-fpm</title>
 			<screen>
 yum -y install perl-FCGI perl-FCGI-Client perl-LWP-Protocol-http10
@@ -343,7 +343,7 @@ pm.status_path = /status
     }		
 			</screen>
 		</section>
-		<section>
+		<section id="mysql">
 			<title>MySQL</title>
 			<para>Template: <ulink url="http://code.google.com/p/mysql-cacti-templates/">http://code.google.com/p/mysql-cacti-templates/</ulink></para>
 			<screen>
@@ -406,7 +406,7 @@ Port
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="redis">
 			<title>Redis</title>
 			<screen>
 easy_install redis
@@ -420,6 +420,10 @@ cp redis-stats.py /usr/share/cacti/scripts/
 # python redis-stats.py 172.18.52.163
 total_connections_received:578761 connected_clients:14 used_memory:870032 expires:47 keys:47 total_commands_processed:1814080			
 			</screen>
+		</section>
+		<section id="jmx">
+			<title>Percona JMX Monitoring Template for Cacti</title>
+			<para>http://www.percona.com/doc/percona-monitoring-plugins/1.0/cacti/jmx-templates.html</para>
 		</section>
 	</section>
 </chapter>
