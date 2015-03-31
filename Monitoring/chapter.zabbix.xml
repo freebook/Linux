@@ -3,7 +3,9 @@
 	<title>Zabbix</title>
 	<section id="install">
 		<title>Installing and Configuring Zabbix</title>
-		<screen>
+		<section>
+			<title>Ubuntu</title>
+			<screen>
 neo@monitor:~$ apt-cache search zabbix
 zabbix-agent - network monitoring solution - agent
 zabbix-frontend-php - network monitoring solution - PHP front-end
@@ -11,27 +13,27 @@ zabbix-proxy-mysql - network monitoring solution - proxy (using MySQL)
 zabbix-proxy-pgsql - network monitoring solution - proxy (using PostgreSQL)
 zabbix-server-mysql - network monitoring solution - server (using MySQL)
 zabbix-server-pgsql - network monitoring solution - server (using PostgreSQL)
-		</screen>
-		<screen>
+			</screen>
+			<screen>
 GRANT ALL PRIVILEGES ON zabbix.* TO 'zabbix'@'localhost' IDENTIFIED BY 'chen' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
-		</screen>
-		<screen>
+			</screen>
+			<screen>
 sudo apt-get install zabbix-server-mysql zabbix-frontend-php
-		</screen>
-		<para>如果上述过程中遇到一些问题，可以手工安装数据库</para>
-		<screen>
-		<![CDATA[
+			</screen>
+			<para>如果上述过程中遇到一些问题，可以手工安装数据库</para>
+			<screen>
+			<![CDATA[
 $ sudo mysql -uroot -p -e"create database zabbix;"
 $ sudo mysql -uroot -p -e"grant all privileges on zabbix.* to zabbix@localhost identified by 'enter-password-here';"
 $ mysql -uzabbix -p zabbix < /usr/share/zabbix-server/mysql.sql
 $ mysql -uzabbix -p zabbix < /usr/share/zabbix-server/data.sql
 $ sudo dpkg-reconfigure zabbix-server-mysql
-		]]>
-		</screen>
-		
-		<screen>
-		<![CDATA[
+			]]>
+			</screen>
+			
+			<screen>
+			<![CDATA[
 cat >> /etc/services <<EOF
 
 zabbix-agent    10050/tcp                       #Zabbix Agent  
@@ -39,8 +41,34 @@ zabbix-agent    10050/udp                       #Zabbix Agent
 zabbix-trapper  10051/tcp                       #Zabbix Trapper  
 zabbix-trapper  10051/udp                       #Zabbix Trapper  
 EOF		
-		]]>
-		</screen>
+			]]>
+			</screen>			
+		</section>
+		<section>
+			<title>CentOS</title>
+			<screen>
+			<![CDATA[
+yum localinstall -y http://repo.zabbix.com/zabbix/2.4/rhel/7/x86_64/zabbix-release-2.4-1.el7.noarch.rpm
+
+yum install -y zabbix-server-mysql zabbix-web-mysql
+
+cd /usr/share/doc/zabbix-server-mysql-2.4.0/create/
+
+mysql -uzabbix -p zabbix < schema.sql
+mysql -uzabbix -p zabbix < images.sql
+mysql -uzabbix -p zabbix < data.sql
+
+cp /etc/zabbix/zabbix_server.conf{,.original}
+vim /etc/zabbix/zabbix_server.conf <<EOF > /dev/null 2>&1
+:%s/# DBPassword=/DBPassword=your_password/
+:wq
+EOF
+
+systemctl start zabbix-server
+systemctl restart httpd
+			]]>			
+			</screen>
+		</section>
 	</section>
 	<section id="webui">
 		<title>web ui</title>
