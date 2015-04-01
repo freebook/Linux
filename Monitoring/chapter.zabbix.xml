@@ -31,18 +31,18 @@ $ mysql -uzabbix -p zabbix < /usr/share/zabbix-server/data.sql
 $ sudo dpkg-reconfigure zabbix-server-mysql
 			]]>
 			</screen>
-			
+
 			<screen>
 			<![CDATA[
 cat >> /etc/services <<EOF
 
-zabbix-agent    10050/tcp                       #Zabbix Agent  
-zabbix-agent    10050/udp                       #Zabbix Agent  
-zabbix-trapper  10051/tcp                       #Zabbix Trapper  
-zabbix-trapper  10051/udp                       #Zabbix Trapper  
-EOF		
+zabbix-agent    10050/tcp                       #Zabbix Agent
+zabbix-agent    10050/udp                       #Zabbix Agent
+zabbix-trapper  10051/tcp                       #Zabbix Trapper
+zabbix-trapper  10051/udp                       #Zabbix Trapper
+EOF
 			]]>
-			</screen>			
+			</screen>
 		</section>
 		<section>
 			<title>CentOS</title>
@@ -66,7 +66,7 @@ EOF
 
 systemctl start zabbix-server
 systemctl restart httpd
-			]]>			
+			]]>
 			</screen>
 		</section>
 	</section>
@@ -75,6 +75,105 @@ systemctl restart httpd
 		<para>http://localhost/zabbix/</para>
 		<para>user: admin</para>
 		<para>passwd: zabbix</para>
+	</section>
+	<section id="zabbix-java-gateway">
+		<title>zabbix-java-gateway - Zabbix java gateway</title>
+		<screen>
+yum install -y zabbix-java-gateway
+		</screen>
+		<para>zabbix-java-gateway 包所含内容如下</para>
+		<screen>
+# rpm -ql zabbix-java-gateway
+/etc/zabbix/zabbix_java_gateway.conf
+/usr/lib/systemd/system/zabbix-java-gateway.service
+/usr/sbin/zabbix_java_gateway
+/usr/share/zabbix-java-gateway
+/usr/share/zabbix-java-gateway/bin
+/usr/share/zabbix-java-gateway/bin/zabbix-java-gateway-2.4.4.jar
+/usr/share/zabbix-java-gateway/lib
+/usr/share/zabbix-java-gateway/lib/android-json-4.3_r3.1.jar
+/usr/share/zabbix-java-gateway/lib/logback-classic-0.9.27.jar
+/usr/share/zabbix-java-gateway/lib/logback-console.xml
+/usr/share/zabbix-java-gateway/lib/logback-core-0.9.27.jar
+/usr/share/zabbix-java-gateway/lib/logback.xml
+/usr/share/zabbix-java-gateway/lib/slf4j-api-1.6.1.jar		
+		</screen>
+		<para>配置/etc/zabbix/zabbix_server.conf文件</para>
+		<screen>
+# vim /etc/zabbix/zabbix_server.conf
+### Option: JavaGateway
+#       IP address (or hostname) of Zabbix Java gateway.
+#       Only required if Java pollers are started.
+#
+# Mandatory: no
+# Default:
+JavaGateway=127.0.0.1
+
+### Option: JavaGatewayPort
+#       Port that Zabbix Java gateway listens on.
+#
+# Mandatory: no
+# Range: 1024-32767
+# Default:
+JavaGatewayPort=10052
+
+### Option: StartJavaPollers
+#       Number of pre-forked instances of Java pollers.
+#
+# Mandatory: no
+# Range: 0-1000
+# Default:
+StartJavaPollers=5		
+		</screen>
+		<para>配置 /etc/zabbix/zabbix_java_gateway.conf 文件</para>
+		<screen>
+# vim /etc/zabbix/zabbix_java_gateway.conf
+# This is a configuration file for Zabbix Java Gateway.
+# It is sourced by startup.sh and shutdown.sh scripts.
+
+### Option: zabbix.listenIP
+#	IP address to listen on.
+#
+# Mandatory: no
+# Default:
+LISTEN_IP="0.0.0.0"
+
+### Option: zabbix.listenPort
+#	Port to listen on.
+#
+# Mandatory: no
+# Range: 1024-32767
+# Default:
+LISTEN_PORT=10052
+
+### Option: zabbix.pidFile
+#	Name of PID file.
+#	If omitted, Zabbix Java Gateway is started as a console application.
+#
+# Mandatory: no
+# Default:
+# PID_FILE=
+
+PID_FILE="/var/run/zabbix/zabbix_java.pid"
+
+### Option: zabbix.startPollers
+#	Number of worker threads to start.
+#
+# Mandatory: no
+# Range: 1-1000
+# Default:
+START_POLLERS=5
+		</screen>
+		<para>启动 zabbix-java-gateway</para>
+		<screen>
+# systemctl enable zabbix-java-gateway.service
+ln -s '/usr/lib/systemd/system/zabbix-java-gateway.service' '/etc/systemd/system/multi-user.target.wants/zabbix-java-gateway.service'
+
+# systemctl start zabbix-java-gateway.service
+
+systemctl restart zabbix-server
+
+		</screen>
 	</section>
 	<section id="zabbix-agent">
 		<title>zabbix-agent</title>
