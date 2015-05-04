@@ -4,4 +4,6 @@
 	&chapter.boinc.xml;
 	&chapter.storm.xml;
 	&chapter.hpc.xml;
+	&chapter.spark.xml;
+	&chapter.tachyon.xml;
 </part>

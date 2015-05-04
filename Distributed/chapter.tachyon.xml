@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="tachyon" ?>
+	<title>Tachyon</title>
+	<para>Tachyon 是一个高容错的分布式文件系统，允许文件以内存的速度在集群框架中进行可靠的共享，类似Spark和 MapReduce。通过利用lineage信息，积极地使用内存，Tachyon的吞吐量要比HDFS高300多倍。Tachyon都是在内存中处理缓存文件，并且让不同的 Jobs/Queries以及框架都能内存的速度来访问缓存文件。</para>
+</chapter>
