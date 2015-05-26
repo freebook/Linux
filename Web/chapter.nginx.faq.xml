@@ -134,11 +134,21 @@ nginx: configuration file /etc/nginx/nginx.conf test failed
 		</screen>
 		<para>proxy_pass http://info.example.com/; 改为  proxy_pass http://info.example.com; 可以解决</para>
 	</section>
-	<section>
+	<section id="session">
 		<title>proxy_pass SESSION 丢失问题</title>
 		<para>如果用户Cookie信息没有经过 proxy_pass 传递给最终服务器，SESSION信息将丢失，解决方案</para>
 		<screen>
 proxy_set_header   Cookie $http_cookie;
 		</screen>
+	</section>
+	<section>
+		<title>[alert] 55785#0: *11449 socket() failed (24: Too many open files) while connecting to upstream</title>
+		<para>配置 worker_rlimit_nofile 参数即可</para>
+		<screen>
+user  nginx;
+worker_processes  8;
+worker_rlimit_nofile 65530;
+		</screen>
+		<para>配置 ulimit 也能达到同样效果，但我更喜欢 worker_rlimit_nofile 因为它仅仅作用于nginx,而不是全局配置。</para>
 	</section>
 </section>
