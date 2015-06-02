@@ -579,6 +579,17 @@ location /nginx_status {
 	deny all;
 }
 			</screen>
+			<para>php-fpm 状态</para>
+			<screen>
+    location ~ ^/(status|ping)$ {
+        access_log off;
+        allow 202.82.21.12;
+        deny all;
+        fastcgi_pass 127.0.0.1:9000;
+		fastcgi_param SCRIPT_FILENAME $fastcgi_script_name;
+        include fastcgi_params;
+    }			
+			</screen>
 		</section>
 
 		<section id="add_header">

@@ -173,8 +173,27 @@ pm.max_requests = 500
 			<screen>
 chkconfig --add php-fpm
 			</screen>
+			<section>
+				<title>php-fpm 状态</title>
+				<screen>
+    location /nginx_status {
+        stub_status on;
+        access_log   off;
+        allow 202.82.21.12;
+        deny all;
+    }
+    location ~ ^/(status|ping)$ {
+        access_log off;
+        allow 202.82.21.12;
+        deny all;
+        fastcgi_pass 127.0.0.1:9000;
+		fastcgi_param SCRIPT_FILENAME $fastcgi_script_name;
+        include fastcgi_params;
+    }		
+				</screen>
+			</section>
 		</section>
-		<section>
+		<section id="fastcgi_pass">
 			<title>fastcgi_pass</title>
 			<screen>
    location ~ ^(.+\.php)(.*)$
