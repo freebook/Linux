@@ -207,6 +207,15 @@ chkconfig --add php-fpm
 	include fastcgi_params;
     }			
 			</screen>
+			<para>Unix Socket</para>
+			<screen>
+location ~ .*\.(php|php5)?$  {
+	#fastcgi_pass  127.0.0.1:9000;
+	fastcgi_pass   unix:/dev/shm/php-fpm.sock;
+	fastcgi_index index.php;
+	include fastcgi.conf;
+}
+			</screen>
 		</section>
 	</section>
 </section>

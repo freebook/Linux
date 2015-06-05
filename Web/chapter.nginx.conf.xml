@@ -96,7 +96,7 @@ client_max_body_size 8m;
 			<para>ssi_value_length 默认值是 256，用于定义SSI参数的长度。</para>
 		</section>
 	</section>
-
+	
 	<section id="http.server">
 		<title>server</title>
 		<section id="http.server.example">
@@ -169,9 +169,7 @@ server_name ~^(.+)\.example\.com$;
 server_name ~^(www\.)?(.+)$;
 			</screen>
 		</section>
-		
-		&chapter.nginx.conf.fastcgi.xml;
-		
+
 		<section id="http.server.ssl">
 			<title>ssl 虚拟主机</title>
 			<screen>
@@ -556,7 +554,7 @@ server {
     location ~ /\.ht {
         deny  all;
     }
-}			
+}
 			</screen>
 		</section>
 		<section id="cache">
@@ -588,7 +586,7 @@ location /nginx_status {
         fastcgi_pass 127.0.0.1:9000;
 		fastcgi_param SCRIPT_FILENAME $fastcgi_script_name;
         include fastcgi_params;
-    }			
+    }
 			</screen>
 		</section>
 
@@ -667,6 +665,7 @@ location /images/ {
 		</section>
 	</section>
 
+	&chapter.nginx.conf.fastcgi.xml;
 	&chapter.nginx.proxy.xml;
 
 	<section id="limit_zone">
