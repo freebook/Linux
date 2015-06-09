@@ -29,6 +29,42 @@ RewriteCond % !^http://www.xxx.cn$      [NC]
 RewriteRule .*\.(jpg|jpeg|gif|png|bmp|rar|zip|exe)$ http://download.example.com/err.html [R,NC]
 		</screen>
 	</section>
+	<section id="htaccess">
+		<title>.htaccess</title>
+		<para>AllowOverride None 改为 AllowOverride All</para>
+		<screen>
+		<![CDATA[
+		
+<VirtualHost *:80>
+    ServerAdmin neo.chen@live.com
+    DocumentRoot "/www/example.com/www.example.com"
+    ServerName example.com
+    ServerAlias www.example.com
+    ErrorLog "logs/www.example.com-error_log"
+    CustomLog "logs/www.example.com-access_log" common
+
+    <Directory "/www/example.com/www.example.com">
+        Options Indexes FollowSymLinks
+        #AllowOverride None
+        AllowOverride All
+        Require all granted
+    </Directory>
+    <IfModule dir_module>
+        DirectoryIndex index.html index.php
+    </IfModule>
+    
+    # The following lines prevent .htaccess and .htpasswd files from being 
+    # viewed by Web clients. 
+    #
+    <Files ".ht*">
+        Require all granted
+    </Files>
+
+</VirtualHost>
+		
+		]]>
+		</screen>
+	</section>
 	<section id="error">
 		<title>Error Prompt</title>
 		<section>

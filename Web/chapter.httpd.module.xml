@@ -596,7 +596,7 @@ ErrorLog "|/usr/local/httpd/bin/rotatelogs /www/logs/www.example.com/error.%Y-%m
 			</screen>
 		</section>
 	</section>
-	<section>
+	<section id="alias">
 		<title>Alias / AliasMatch</title>
 		<screen>
 		<![CDATA[
@@ -1270,7 +1270,7 @@ deny from env=badguy
 allow from all
 		</screen>
 	</section>
-	<section>
+	<section id="mod_php5">
 		<title>PHP 程序安全问题 php_admin_value</title>
 		<para>php 安全</para>
 		<screen>
