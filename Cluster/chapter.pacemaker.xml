@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="pacemaker" ?>
+	<title>Pacemaker</title>
+	<para>Redhat 已经放弃 Piranha, Redhat 7 使用Pacemaker作为默认的机群管理工具</para>
+	<para>http://clusterlabs.org/</para>
+</chapter>
