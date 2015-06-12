@@ -374,7 +374,7 @@ location ~ .*\.(html|htm)$
 }
 				</screen>
 			</example>
-			<section>
+			<section id="add_header">
 				<title>通过 add_header / more_set_headers 设置缓存</title>
 				<para>add_header 实例</para>
 				<screen>
@@ -400,7 +400,7 @@ location ~ \.(ico|pdf|flv|jp?g|png|gif|js|css|webp|swf)(\.gz)?(\?.*)?$ {
 }
 				</screen>
 			</section>
-			<section>
+			<section id="request_uri">
 				<title>$request_uri</title>
 				<screen>
 if ($request_uri ~* "\.(ico|css|js|gif|jpe?g|png)\?[0-9]+$") {
@@ -413,6 +413,14 @@ if ($request_uri ~* "\.(ico|css|js|gif|jpe?g|png)\?[0-9]+$") {
 if ($request_uri ~ ^/detail/html/[0-9]+/[0-9]/[^0][0-9]+\.html ) {
     expires 1d;
 }
+				</screen>
+			</section>
+			<section id="request_filename">
+				<title>$request_filename</title>
+				<screen>
+if (-f $request_filename) {
+     expires 1d;         
+}				
 				</screen>
 			</section>
 		</section>
