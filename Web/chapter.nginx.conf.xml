@@ -400,6 +400,21 @@ location ~ \.(ico|pdf|flv|jp?g|png|gif|js|css|webp|swf)(\.gz)?(\?.*)?$ {
 }
 				</screen>
 			</section>
+			<section>
+				<title>$request_uri</title>
+				<screen>
+if ($request_uri ~* "\.(ico|css|js|gif|jpe?g|png)\?[0-9]+$") {
+    expires max;
+    break;
+}
+				</screen>
+				<para>下面例子是缓存 /detail/html/5/4/321035.html， 但排除 /detail/html/5/4/0.html</para>
+				<screen>
+if ($request_uri ~ ^/detail/html/[0-9]+/[0-9]/[^0][0-9]+\.html ) {
+    expires 1d;
+}
+				</screen>
+			</section>
 		</section>
 		<section id="access">
 			<title>access</title>
@@ -557,16 +572,7 @@ server {
 }
 			</screen>
 		</section>
-		<section id="cache">
-			<title>Cache</title>
-			<screen>
-			<![CDATA[
-add_header     Nginx-Cache     "HIT  from  www.example.com";
-or
-add_header     Nginx-Cache     "$upstream_cache_status  from  www.example.com";
-			]]>
-			</screen>
-		</section>
+
 		<section id="stub_status">
 			<title>stub_status</title>
 			<screen>
@@ -602,6 +608,16 @@ location /nginx_status {
         add_header    Cache-Control  max-age=86400;
       }
 			</screen>
+			<section id="cache">
+				<title>Cache</title>
+				<screen>
+				<![CDATA[
+add_header     Nginx-Cache     "HIT  from  www.example.com";
+or
+add_header     Nginx-Cache     "$upstream_cache_status  from  www.example.com";
+				]]>
+				</screen>
+			</section>			
 			<section>
 				<title>Access-Control-Allow</title>
 				<screen>
