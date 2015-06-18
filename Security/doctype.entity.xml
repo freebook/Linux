@@ -12,3 +12,4 @@
 <!ENTITY chapter.authentication.ldap.xml 		SYSTEM "chapter.authentication.ldap.xml">
 <!ENTITY chapter.authentication.kerberos.xml 	SYSTEM "chapter.authentication.kerberos.xml">
 <!ENTITY chapter.authentication.freeradius.xml 	SYSTEM "chapter.authentication.freeradius.xml">
+<!ENTITY chapter.network.haka.xml	SYSTEM "chapter.network.haka.xml">
