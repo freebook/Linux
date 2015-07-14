@@ -1,4 +1,5 @@
-<!-- <part id="index"><?dbhtml dir="monitor" ?>
-	<title>Monitoring</title> -->
+<part id="index"><?dbhtml dir="monitor" ?>
+	<title>Monitoring</title>
+	<subtitle>Network Management Software &amp; Network Monitoring</subtitle>
 	&chapter.monitor.xml;
-<!-- </part> -->
+</part>

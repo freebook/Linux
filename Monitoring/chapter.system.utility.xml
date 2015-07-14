@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.system.utility.xml 666 2013-08-21 10:06:25Z netkiller $ -->
+<!-- 
 <part id="system.utility">
 	<title>System Monitoring &amp; Utility</title>
 	<chapterinfo>
@@ -12,7 +13,7 @@
 			<keyword>nload</keyword>
 		</keywordset>
 	</chapterinfo>
-
+ -->
 <chapter id="system.user">
     <title>User</title>
 	<section id="sys.last">
@@ -632,5 +633,6 @@ Options:
 	&chapter.ipmi.xml;
 	&chapter.log.xml;
 	&chapter.jvm.xml;
-
+<!-- 
 </part>
+ -->

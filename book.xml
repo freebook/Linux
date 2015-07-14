@@ -80,6 +80,7 @@
 	
 	<!ENTITY % virtualization.doctype.entity.xml	SYSTEM "Virtualization/doctype.entity.xml">
 	%virtualization.doctype.entity.xml;	
+	<!ENTITY part.virtualization.xml				SYSTEM "part.virtualization.xml">
 	
 	<!ENTITY part.im 			SYSTEM "part.im.xml">
 	<!ENTITY chapter.gps 		SYSTEM "chapter.gps.xml">
