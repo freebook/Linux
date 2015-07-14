@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+<?xml-stylesheet type="text/xsl" href="http://www.altova.com/stylesheets/docbook/xhtml/docbook.xsl"?>
+-->
+<!DOCTYPE subject SYSTEM "/usr/share/xml/docbook/schema/dtd/5.0/docbook.dtd"
+	[
+	<!ENTITY homepage "http://netkiller.sf.net/">
+	<!ENTITY mirror "http://neo.zenw.org/">
+
+	<!ENTITY Neo "http://netkiller.sf.net/">
+	<!ENTITY BG7NYT "&Neo;">
+	<!ENTITY Netkiller "<emphasis><trademark>Netkiller</trademark></emphasis>">
+
+	<!ENTITY book.info.author.xml		SYSTEM "../common/book.info.author.xml">
+	<!ENTITY book.info.legalnotice.xml 	SYSTEM "../common/book.info.legalnotice.xml">
+	<!ENTITY book.info.abstract.xml 	SYSTEM "../common/book.info.abstract.xml">
+    <!ENTITY book.preface.xml           SYSTEM "../common/book.preface.xml">
+	<!ENTITY preface.about.me.xml       SYSTEM "../common/about.me.xml">
+	<!ENTITY book.dedication.xml       	SYSTEM "../common/book.dedication.xml">
+
+<!--
+	<!ENTITY book.preface 		SYSTEM "book.preface.xml">
+	<!ENTITY book.dedication 	SYSTEM "book.dedication.xml">
+	<!ENTITY book.appendix 		SYSTEM "book.appendix.xml">
+	<!ENTITY book.history 		SYSTEM "book.history.xml">
+-->
+	<!ENTITY % doctype.entity.xml 			SYSTEM "doctype.entity.xml">
+	%doctype.entity.xml;
+
+]>
+<book xml:base="http://netkiller.sf.com/book/linux/www"
+	xmlns="http://docbook.org/ns/docbook" xml:lang="zh-cn">
+	<info>
+		<title>Netkiller Virtualization 手札</title>
+		<subtitle>KVM, VirtualBox, Docker...</subtitle>
+
+		&book.info.author.xml;
+
+		<copyright>
+			<year>2015</year>
+			<holder>Netkiller(Neo Chan). All rights reserved.</holder>
+		</copyright>
+
+		<publisher>
+			<publishername>Neo</publishername>
+			<address><street></street></address>
+		</publisher>
+		<isbn>ISBN#</isbn>
+		<edition>2015-07-14</edition>
+		<pubdate>$Date$</pubdate>
+		<releaseinfo>2015-07-14</releaseinfo>
+
+		&book.info.legalnotice.xml;
+		&book.info.abstract.xml;
+
+		<keywordset>
+			<keyword>qmeu,kvm,xen,openvz</keyword>
+			<keyword>docker, coreos</keyword>
+			<keyword>apache,lighttpd,nginx,tomcat</keyword>
+			<keyword>awstatus, webalizer</keyword>
+		</keywordset>
+	</info>
+
+	&book.dedication.xml;
+<!--
+	&book.preface;
+ -->
+<!-- =========================================================================== -->
+	&book.preface.xml;
+	&chapter.virtualization.xml;
+<!-- =========================================================================== -->
+
+<!--
+	&book.appendix;
+	&book.history;
+-->
+</book>

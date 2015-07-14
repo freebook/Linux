@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<part id="index"><?dbhtml dir="virtualization" ?>
+	<title>Virtualization</title>
+	&chapter.virtualization.xml;
+</part>
