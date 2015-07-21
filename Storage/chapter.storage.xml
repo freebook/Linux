@@ -3,7 +3,7 @@
 	&chapter.transfer.ftp;
 	&chapter.synchronize.xml;
 	&chapter.storage.share.xml;
-	&chapter.storage.dfs.xml;
+	&chapter.dfs.xml;
 	&chapter.storage.inotify;
 	&chapter.storage.openfiler;
 	&chapter.backup.xml;

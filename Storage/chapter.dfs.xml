@@ -9,6 +9,7 @@
     &chapter.dfs.lustre.xml;
 	&chapter.dfs.mogilefs.xml;
 	&chapter.dfs.kfs.xml;
+	&chapter.dfs.ocfs.xml;
 
 <!--
 <section id="dfs.block">

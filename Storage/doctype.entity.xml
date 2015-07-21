@@ -12,7 +12,7 @@
 <!ENTITY chapter.storage.inotify 	    SYSTEM "chapter.storage.inotify.xml">
 <!ENTITY chapter.storage.share.xml	    SYSTEM "chapter.storage.share.xml">
 
-<!ENTITY chapter.storage.dfs.xml		SYSTEM "chapter.storage.dfs.xml">
+<!ENTITY chapter.dfs.xml				SYSTEM "chapter.dfs.xml">
 <!ENTITY chapter.dfs.drbd.xml	        SYSTEM "chapter.dfs.drbd.xml">
 <!ENTITY chapter.dfs.mogilefs.xml	    SYSTEM "chapter.dfs.mogilefs.xml">
 <!ENTITY chapter.dfs.lustre.xml		    SYSTEM "chapter.dfs.lustre.xml">
@@ -23,6 +23,7 @@
 <!ENTITY chapter.dfs.ceph.xml     	    SYSTEM "chapter.dfs.ceph.xml">
 <!ENTITY chapter.dfs.kfs.xml     	    SYSTEM "chapter.dfs.kfs.xml">
 <!ENTITY chapter.dfs.share.xml     	    SYSTEM "chapter.dfs.share.xml">
+<!ENTITY chapter.dfs.ocfs.xml     	    SYSTEM "chapter.dfs.ocfs.xml">
 
 <!ENTITY chapter.backup.xml		 	    SYSTEM "chapter.backup.xml">
 <!ENTITY chapter.backup.attic.xml 	    SYSTEM "chapter.backup.attic.xml">
