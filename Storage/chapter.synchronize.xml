@@ -1,4 +1,4 @@
-<chapter id="synchronize">
+<chapter id="index"><?dbhtml dir="synchronize" ?>
 	<title>File Synchronize</title>
 	&chapter.sync.rsync.xml;
 	&chapter.sync.unison.xml;

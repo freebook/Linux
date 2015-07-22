@@ -1,4 +1,4 @@
-<chapter id="backup">
+<chapter id="index"><?dbhtml dir="backup" ?>
 	<title>Backup / Restore</title>
 <section>
 	<title>备份策略</title>

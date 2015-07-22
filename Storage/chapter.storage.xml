@@ -2,8 +2,9 @@
 	&chapter.lvm.xml;
 	&chapter.transfer.ftp;
 	&chapter.synchronize.xml;
-	&chapter.storage.share.xml;
+	&chapter.share.xml;
 	&chapter.dfs.xml;
+	&chapter.dfs.disk.xml;
 	&chapter.storage.inotify;
-	&chapter.storage.openfiler;
+	&chapter.nas.xml;
 	&chapter.backup.xml;

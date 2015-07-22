@@ -99,3 +99,6 @@ anongid=xxx             指定NFS服务器/etc/passwd文件中匿名用户的GID
 		</section>
 	</section>
 </section>
+<section id="pnfs">
+	<title>Parallel NFS(pNFS)</title>
+</section>

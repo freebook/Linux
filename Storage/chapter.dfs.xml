@@ -1,4 +1,4 @@
-<chapter id="distributed-filesystem">
+<chapter id="index"><?dbhtml dir="dfs" ?>
 	<title>Distributed File Systems</title>
 	&chapter.dfs.drbd.xml;
 	&chapter.dfs.ndb.xml;
@@ -9,7 +9,6 @@
     &chapter.dfs.lustre.xml;
 	&chapter.dfs.mogilefs.xml;
 	&chapter.dfs.kfs.xml;
-	&chapter.dfs.ocfs.xml;
 
 <!--
 <section id="dfs.block">
@@ -30,7 +29,5 @@
 		<title>OpenAFS</title>
 		<para>http://www.openafs.org/</para>
 	</section>
-
-	&chapter.dfs.share.xml;
 
 </chapter>

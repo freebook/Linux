@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- http://www.ibm.com/developerworks/cn/linux/l-ubuntu-inotify/ -->
-<chapter id="inotify">
+<chapter id="index"><?dbhtml dir="inotify" ?>
 	<title>inotify</title>
 	<command>$ ls -ld /proc/sys/fs/inotify/*</command>
 	<section id="inotify-tools">

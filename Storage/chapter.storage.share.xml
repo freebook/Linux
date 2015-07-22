@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<chapter id="share">
-	<title>File Share</title>
-	&chapter.storage.nfs.xml;
-	&chapter.storage.samba;
-</chapter>

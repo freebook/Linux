@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<chapter id="networkstorage">
-	<title>Network Storage</title>
 <section id="openfiler">
 	<title>Network Storage - Openfiler</title>
 	<para>Openfiler is a powerful, intuitive browser-based network storage software distribution. Openfiler delivers file-based Network Attached Storage and block-based Storage Area Networking in a single framework.</para>
@@ -449,12 +447,3 @@ Device Type Number Start cyl End cyl Blocks Size Type Delete
 		</procedure>
 	</section>
 </section>
-<section id="openmediavault">
-	<title>OpenMediaVault</title>
-	<para><ulink url="http://www.openmediavault.org/" /></para>
-</section>
-<section id="freenas">
-	<title>FreeNAS</title>
-	<para>http://www.freenas.org/</para>
-</section>
-</chapter>

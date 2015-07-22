@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.transfer.ftp.xml 558 2013-04-10 02:23:00Z netkiller $ -->
-<chapter id="transfer">
+<chapter id="index"><?dbhtml dir="transfer" ?>
 	<title>文件传输</title>
 <section id="copy">
 	<title>跨服务器文件传输</title>

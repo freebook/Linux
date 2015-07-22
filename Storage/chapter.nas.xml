@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="nas" ?>
+	<title>Network Attached Storage(NAS 网络附加存储)</title>
+	&chapter.nas.openfiler.xml;
+	&chapter.nas.freenas.xml;
+</chapter>

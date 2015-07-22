@@ -3,14 +3,13 @@
 <!ENTITY chapter.storage.xml			SYSTEM "chapter.storage.xml">
 <!ENTITY chapter.transfer.ftp 		    SYSTEM "chapter.transfer.ftp.xml">
 
+<!ENTITY chapter.share.xml			    SYSTEM "chapter.share.xml">
+<!ENTITY chapter.share.nfs.xml	    	SYSTEM "chapter.share.nfs.xml">
+<!ENTITY chapter.share.samba 		    SYSTEM "chapter.share.samba.xml">
 
-<!ENTITY chapter.storage.nfs.xml	    SYSTEM "chapter.storage.nfs.xml">
-<!ENTITY chapter.storage.samba 		    SYSTEM "chapter.storage.samba.xml">
-<!ENTITY chapter.storage.openfiler 	    SYSTEM "chapter.storage.openfiler.xml">
-<!ENTITY chapter.storage.freenas.xml    SYSTEM "chapter.storage.freenas.xml">
-<!ENTITY chapter.storage.unison 	    SYSTEM "chapter.storage.unison.xml">
-<!ENTITY chapter.storage.inotify 	    SYSTEM "chapter.storage.inotify.xml">
-<!ENTITY chapter.storage.share.xml	    SYSTEM "chapter.storage.share.xml">
+<!ENTITY chapter.nas.xml		    	SYSTEM "chapter.nas.xml">
+<!ENTITY chapter.nas.openfiler.xml 	    SYSTEM "chapter.nas.openfiler.xml">
+<!ENTITY chapter.nas.freenas.xml    	SYSTEM "chapter.nas.freenas.xml">
 
 <!ENTITY chapter.dfs.xml				SYSTEM "chapter.dfs.xml">
 <!ENTITY chapter.dfs.drbd.xml	        SYSTEM "chapter.dfs.drbd.xml">
@@ -22,8 +21,9 @@
 <!ENTITY chapter.dfs.ndb.xml     	    SYSTEM "chapter.dfs.ndb.xml">
 <!ENTITY chapter.dfs.ceph.xml     	    SYSTEM "chapter.dfs.ceph.xml">
 <!ENTITY chapter.dfs.kfs.xml     	    SYSTEM "chapter.dfs.kfs.xml">
-<!ENTITY chapter.dfs.share.xml     	    SYSTEM "chapter.dfs.share.xml">
+<!ENTITY chapter.dfs.disk.xml     	    SYSTEM "chapter.dfs.disk.xml">
 <!ENTITY chapter.dfs.ocfs.xml     	    SYSTEM "chapter.dfs.ocfs.xml">
+<!ENTITY chapter.dfs.gfs2.xml	 	    SYSTEM "chapter.dfs.gfs2.xml">
 
 <!ENTITY chapter.backup.xml		 	    SYSTEM "chapter.backup.xml">
 <!ENTITY chapter.backup.attic.xml 	    SYSTEM "chapter.backup.attic.xml">
@@ -33,3 +33,5 @@
 <!ENTITY chapter.sync.unison.xml 	    SYSTEM "chapter.sync.unison.xml">
 <!ENTITY chapter.sync.csync.xml 	    SYSTEM "chapter.sync.csync.xml">
 <!ENTITY chapter.sync.synctool.xml	 	SYSTEM "chapter.sync.synctool.xml">
+
+<!ENTITY chapter.storage.inotify 	    SYSTEM "chapter.storage.inotify.xml">

@@ -13,6 +13,10 @@ sudo mount /dev/sdb1 /mnt/mount1
 			<screen>
 mount -o iocharset=utf8 /dev/sda5 /mnt/usb
 			</screen>
+			<para>禁止文件与目录的访问时间</para>
+			<screen>
+mount -o noatime,nodiratime /dev/drbd0  /mnt
+			</screen>
 		</section>
 		<section>
 			<title>Umount</title>
