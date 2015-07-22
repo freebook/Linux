@@ -5,6 +5,6 @@
 	&chapter.share.xml;
 	&chapter.dfs.xml;
 	&chapter.dfs.disk.xml;
-	&chapter.storage.inotify;
 	&chapter.nas.xml;
 	&chapter.backup.xml;
+	&chapter.storage.inotify;
