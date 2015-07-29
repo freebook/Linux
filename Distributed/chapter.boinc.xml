@@ -69,6 +69,27 @@ netkiller@shenzhen:~/BOINC$ cp account_* /var/lib/boinc-client/
 netkiller@shenzhen:~/BOINC$ /etc/init.d/boinc-client restart
 		</screen>
 	</section>
+	<section>
+		<title>CentOS 安装</title>
+		<screen>
+yum install boinc-client
+
+chkconfig boinc-client on
+
+		</screen>
+		<para>Xwindows 管理界面</para>
+		<screen>
+yum install boinc-manager
+		</screen>
+		<para>添加计算项目</para>
+		<screen>
+cd /var/lib/boinc
+boinc --attach_project http://einstein.phys.uwm.edu/ f9d5ee6d433a6949599f91dd7d9ceb8e	
+
+chown boinc:boinc -R *
+service boinc-client start	
+		</screen>
+	</section>
 	<section id="boinccmd">
 		<title>boinccmd</title>
 		<screen>
@@ -128,6 +149,7 @@ $ ./boinc --attach_project http://boinc.iaik.tugraz.at/sha1_coll_search/ 0017d38
 $ ./boinc --attach_project http://lhcathome.cern.ch/lhcathome/ 132e3b1b159af3c36c98056f9197dd8a
 $ ./boinc --attach_project http://boinc.bakerlab.org/rosetta/ 6ed4722aa62a9df5dd341e0b3b77d812
 			</screen>
+			<para>通过 boinccmd 添加项目</para>
                         <screen>
 ./boinccmd --project_attach http://einstein.phys.uwm.edu/ f9d5ee6d433a6949599f91dd7d9ceb8e
 ./boinccmd --project_attach http://boinc.bakerlab.org/rosetta/ 6ed4722aa62a9df5dd341e0b3b77d812

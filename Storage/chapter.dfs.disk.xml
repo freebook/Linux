@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="sharedisk" ?>
-	<title>Shared disk cluster file system</title>
+	<title>Shared Storage</title>
+	<subtitle> cluster file system </subtitle>
 	&chapter.dfs.ocfs.xml;
 	<section id="gfs2">
 		<title>GFS2</title>
