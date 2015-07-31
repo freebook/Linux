@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="loop">
+	<title>Loops for, while and until</title>
+	<section id="for">
+		<title>for</title>
+		<programlisting>
+		<![CDATA[
+#!/bin/bash
+for i in 1 2 3 4 5
+do
+   echo "Welcome $i times"
+done
+
+for i in $( ls ); do
+    echo item: $i
+done
+
+for i in `seq 1 10`;
+do
+    echo $i
+done
+
+for i in {1..5}
+do
+   echo "Welcome $i times"
+done
+
+for (( c=1; c<=5; c++ ))
+do
+	echo "Welcome $c times..."
+done
+
+for ((i=1; $i<=9;i++)); do echo $i; done
+		]]>
+		</programlisting>
+		<programlisting>
+for i in {0..10..2}
+do
+    echo "Welcome $i times"
+done
+
+for i in $(seq 1 2 20)
+do
+   echo "Welcome $i times"
+done
+		</programlisting>
+		<para>单行实例</para>
+		<programlisting>
+for ip in {1..10};do echo $ip; done
+
+for i in `seq 1 10`;do echo $i;done
+
+for ip in {81..92}; do ssh root@172.16.3.$ip date; done
+
+for n in  {23..32} {49,50} {81..92}; do mkdir /tmp/$n; echo $n; done
+		</programlisting>
+		<para>infinite loops</para>
+		<programlisting>
+		<![CDATA[
+#!/bin/bash
+for (( ; ; ))
+do
+   echo "infinite loops [ hit CTRL+C to stop]"
+done
+
+
+		]]>
+		</programlisting>
+		<para>find file</para>
+		<programlisting>
+#!/bin/bash
+for file in /etc/*
+do
+	if [ "${file}" == "/etc/resolv.conf" ]
+	then
+		countNameservers=$(grep -c nameserver /etc/resolv.conf)
+		echo "Total  ${countNameservers} nameservers defined in ${file}"
+		break
+	fi
+done
+		</programlisting>
+		<para>backup file</para>
+		<programlisting>
+#!/bin/bash
+FILES="$@"
+for f in $FILES
+do
+        # if .bak backup file exists, read next file
+	if [ -f ${f}.bak ]
+	then
+		echo "Skiping $f file..."
+		continue  # read next file and skip cp command
+	fi
+        # we are hear means no backup file exists, just use cp command to copy file
+	/bin/cp $f $f.bak
+done
+		</programlisting>
+		<screen>
+for n in  {23..32} {49,50} {81..92}; do mkdir /tmp/$n; echo $n; done
+		</screen>
+	</section>
+	<section id="while">
+		<title>while</title>
+		<programlisting>
+		<![CDATA[
+#!/bin/bash
+COUNTER=0
+while [  $COUNTER -lt 10 ]; do
+    echo The counter is $COUNTER
+    let COUNTER=COUNTER+1
+done
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+while read name age
+do
+	echo $name $age
+done << EOF
+neo 30
+jam 31
+john 29
+EOF
+
+
+while read name age
+do
+	[[ $age -gt 30 ]] && echo $name
+done << EOF
+neo 30
+jam 31
+john 29
+EOF
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+$ cat mount.sh
+#!/bin/sh
+while read LINE
+do
+
+	s=`echo $LINE|awk '{print $1}'`
+	d=`echo $LINE|awk '{print $2}'`
+
+	umount -f $d
+	mount -t nfs4 $s $d
+
+done < mount.conf
+
+$ cat mount.conf
+172.16.0.1:/	/www/logs/1
+172.16.0.2:/	/www/logs/2
+172.16.0.3:/	/www/logs/3
+172.16.0.4:/	/www/logs/4
+172.16.0.5:/	/www/logs/5
+		]]>
+		</programlisting>
+	</section>
+	<section id="until">
+		<title>until</title>
+		<programlisting>
+		<![CDATA[
+#!/bin/bash
+COUNTER=20
+until [  $COUNTER -lt 10 ]; do
+    echo COUNTER $COUNTER
+    let COUNTER-=1
+done
+		]]>
+		</programlisting>
+	</section>
+</section>

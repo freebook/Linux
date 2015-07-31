@@ -2,9 +2,13 @@
 	<!ENTITY chapter.shell.xml					SYSTEM "chapter.shell.xml">
 	<!ENTITY chapter.bash.xml					SYSTEM "chapter.bash.xml">
 	<!ENTITY chapter.bash.prompt.xml			SYSTEM "chapter.bash.prompt.xml">
-	<!ENTITY chapter.zsh.xml	 				SYSTEM "chapter.zsh.xml">
-	<!ENTITY chapter.shell.tui.xml 				SYSTEM "chapter.shell.tui.xml">
-	<!ENTITY chapter.shell.example.xml	 		SYSTEM "chapter.shell.example.xml">
+	<!ENTITY chapter.bash.variable.xml	 		SYSTEM "chapter.bash.variable.xml">
+	<!ENTITY chapter.bash.conditions.xml		SYSTEM "chapter.bash.conditions.xml">
+	<!ENTITY chapter.bash.loop.xml				SYSTEM "chapter.bash.loop.xml">
+	
+	<!ENTITY chapter.bash.example.xml	 		SYSTEM "chapter.bash.example.xml">
+	<!ENTITY chapter.zsh.xml	 				SYSTEM "chapter.zsh.xml">	
+	
 
 	<!ENTITY chapter.command.xml				SYSTEM "chapter.command.xml">
 	<!ENTITY chapter.cmd.sys.xml				SYSTEM "chapter.cmd.sys.xml">
@@ -27,6 +31,7 @@
 	<!ENTITY chapter.utility.tui.xml	 		SYSTEM "chapter.utility.tui.xml">
 	<!ENTITY chapter.klish.xml			 		SYSTEM "chapter.klish.xml">
 	<!ENTITY chapter.utility.expect.xml		 	SYSTEM "chapter.utility.expect.xml">
+	<!ENTITY chapter.tui.xml 					SYSTEM "chapter.tui.xml">
 
 	<!ENTITY chapter.miscellaneous.xml	 		SYSTEM "chapter.miscellaneous.xml">
 

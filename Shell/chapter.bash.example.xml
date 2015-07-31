@@ -1,69 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.shell.example.xml 376 2012-03-21 03:35:46Z netkiller $ -->
-<chapter id="example">
+<section id="example">
 	<title>Example</title>
-   <section id="shell.variable">
-    	<title>变量处理</title>
-    	<para>如果 logfile 值已经存在侧不会覆盖</para>
-    	<screen>
-$ logfile=/var/log/test.log
 
-$ echo $logfile
-/var/log/test.log
-
-$ logfile=${logfile:-/tmp/test.log}
-
-$ echo $logfile
-/var/log/test.log
-    	</screen>
-    	<para>如果变量为空才能设置</para>
-    	<screen>
-$ unset logfile
-$ logfile=${logfile:-/tmp/test.log}
-$ echo $logfile
-/tmp/test.log    	
-    	</screen>
-    	<section>
-    		<title>变量销毁</title>
-    		<screen>
-$ unset logfile
-    		</screen>
-    	</section>
-    </section>
-   <section id="shell.string">
-    	<title>字符串</title>
-    	<para>计算字符串长度</para>
-    	<screen>
-echo ${#PATH}
-    	</screen>
-    </section>   
-    <section>
-    	<title>case 高级用法</title>
-    	<para>匹配 Yes,YES,YeS,yES,yEs ...</para>
-    	<screen>
-    	<![CDATA[
-read -p "Do you want to continue [Y/n]?" BOOLEAN
-
-case $BOOLEAN in
-    [yY][eE][sS])
-        echo 'Thanks' $BOOLEAN
-        ;;
-    [yY]|[nN])
-        echo 'Thanks' $BOOLEAN
-        ;;
-    'T'|'F')
-        echo 'Thanks' $BOOLEAN
-        ;;
-    [Tt]ure|[Ff]alse)
-        echo 'Thanks' $BOOLEAN
-        ;;
-    *)
-        exit 1
-        ;;
-esac    	
-	]]>
-    	</screen>
-    </section>
+	<!-- <section>
+    	<title></title>
+    </section> -->
+    
 	<section>
 		<title>有趣的Shell</title>
 		<para>运行后会不停的fork新的进程，直到你的资源消耗尽。</para>
@@ -215,4 +158,4 @@ used=53.9682% free=46.0318%
 $ find 2009 -type f -name access.log -exec cat {} >> access.log \;
 		</screen>
 	</section>
-</chapter>
+</section>

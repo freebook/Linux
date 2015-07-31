@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="conditions">
+	<title>conditions if and case</title>
+	<table>
+	   <title>文件目录表达式</title>
+	   <tgroup cols="2">
+	     <thead>
+	       <row>
+	          <entry>Primary</entry>
+	          <entry>意义</entry>
+	       </row>
+	     </thead>
+	    <tbody>
+	       <row>
+	          <entry>[ -a FILE ]</entry>
+	          <entry>如果 FILE 存在则为真。</entry>
+	       </row>
+	       <row>
+	          <entry>[ -b FILE ] 	</entry>
+	          <entry>如果 FILE 存在且是一个块特殊文件则为真。</entry>
+	       </row>
+	       <row>
+	          <entry>[ -c FILE ] 	</entry>
+	          <entry>如果 FILE 存在且是一个字特殊文件则为真。</entry>
+	       </row>
+	       <row>
+	          <entry>[ -d FILE ] 	</entry>
+	          <entry>如果 FILE 存在且是一个目录则为真。</entry>
+	       </row>
+	       <row>
+	          <entry>[ -e FILE ] 	</entry>
+	          <entry>如果 FILE 存在则为真。</entry>
+	       </row>
+	       <row>
+	          <entry>[ -f FILE ] 	</entry>
+	          <entry>如果 FILE 存在且是一个普通文件则为真。</entry>
+	       </row>
+	       <row>
+	          <entry>[ -g FILE ] 	</entry>
+	          <entry>如果 FILE 存在且已经设置了SGID则为真。</entry>
+	       </row>
+	       <row>
+	          <entry>[ -h FILE ] 	</entry>
+	          <entry>如果 FILE 存在且是一个符号连接则为真。</entry>
+	       </row>
+	       <row>
+	          <entry>[ -k FILE ] 	</entry>
+	          <entry>如果 FILE 存在且已经设置了粘制位则为真。</entry>
+	       </row>
+	       <row>
+	          <entry>[ -p FILE ] 	</entry>
+	          <entry>如果 FILE 存在且是一个名字管道(F如果O)则为真。</entry>
+	       </row>
+	       <row>
+	          <entry>[ -r FILE ] 	</entry>
+	          <entry>如果 FILE 存在且是可读的则为真。</entry>
+	       </row>
+	       <row>
+	          <entry>[ -s FILE ] 	</entry>
+	          <entry>如果 FILE 存在且大小不为0则为真。</entry>
+	       </row>
+	       <row>
+	          <entry>[ -t FD ] 	</entry>
+	          <entry>如果文件描述符 FD 打开且指向一个终端则为真。</entry>
+	       </row>
+	       <row>
+	          <entry>[ -u FILE ] 	</entry>
+	          <entry>如果 FILE 存在且设置了SUID (set user ID)则为真。</entry>
+	       </row>
+	       <row>
+	          <entry>[ -w FILE ] 	</entry>
+	          <entry>如果 FILE 如果 FILE 存在且是可写的则为真。</entry>
+	       </row>
+	       <row>
+	          <entry>[ -x FILE ] 	</entry>
+	          <entry>如果 FILE 存在且是可执行的则为真。</entry>
+	       </row>
+	       <row>
+	          <entry>[ -O FILE ] 	</entry>
+	          <entry>如果 FILE 存在且属有效用户ID则为真。</entry>
+	       </row>
+	       <row>
+	          <entry>[ -G FILE ] 	</entry>
+	          <entry>如果 FILE 存在且属有效用户组则为真。</entry>
+	       </row>
+	       <row>
+	          <entry>[ -L FILE ] 	</entry>
+	          <entry>如果 FILE 存在且是一个符号连接则为真。</entry>
+	       </row>
+	       <row>
+	          <entry>[ -N FILE ] 	</entry>
+	          <entry>如果 FILE 存在 and has been mod如果ied since it was last read则为真。</entry>
+	       </row>
+	       <row>
+	          <entry>[ -S FILE ] 	</entry>
+	          <entry>如果 FILE 存在且是一个套</entry>
+	       </row>
+	       <row>
+	          <entry>[ FILE1 -nt FILE2 ]</entry>
+	          <entry>如果 FILE1 has been changed more recently than FILE2, or 如果 FILE1 exists and FILE2 does not则为真。</entry>
+	       </row>
+	       <row>
+	          <entry>[ FILE1 -ot FILE2 ]</entry>
+	          <entry>如果 FILE1 比 FILE2 要老, 或者 FILE2 存在且 FILE1 不存在则为真。</entry>
+	       </row>
+	       <row>
+	          <entry>[ FILE1 -ef FILE2 ]</entry>
+	          <entry>如果 FILE1 和 FILE2 指向相同的设备和节点号则为真。</entry>
+	       </row>
+
+	    </tbody>
+	   </tgroup>
+	</table>
+	<table>
+	   <title>字符串表达式</title>
+	   <tgroup cols="2">
+	     <thead>
+	       <row>
+	          <entry>Primary</entry>
+	          <entry>意义</entry>
+	       </row>
+	     </thead>
+	    <tbody>
+	       <row>
+	          <entry>[ -o OPTIONNAME ]</entry>
+	          <entry>如果 shell选项 “OPTIONNAME” 开启则为真。</entry>
+	       </row>
+	       <row>
+	          <entry>[ -z STRING ] 	</entry>
+	          <entry>“STRING” 的长度为零则为真。</entry>
+	       </row>
+	       <row>
+	          <entry>[ -n STRING ] or [ STRING ] 	</entry>
+	          <entry>“STRING” 的长度为非零 non-zero则为真。</entry>
+	       </row>
+	       <row>
+	          <entry>[ STRING1 == STRING2 ] 	</entry>
+	          <entry>如果2个字符串相同则为真。</entry>
+	       </row>
+	       <row>
+	          <entry>[ STRING1 != STRING2 ] 	</entry>
+	          <entry>如果字符串不相等则为真。</entry>
+	       </row>
+	       <row>
+	          <entry>[ STRING1 &lt; STRING2 ] 	</entry>
+	          <entry>如果 “STRING1” sorts before “STRING2” lexicographically in the current locale则为真。</entry>
+	       </row>
+	       <row>
+	          <entry>[ STRING1 &gt; STRING2 ] 	</entry>
+	          <entry>如果 “STRING1” sorts after “STRING2” lexicographically in the current locale则为真。</entry>
+	       </row>
+	       <row>
+	          <entry>[ ARG1 OP ARG2 ] 	</entry>
+	          <entry>“OP” 为 -eq, -ne, -lt, -le, -gt or -ge. </entry>
+	       </row>
+	       </tbody>
+	   </tgroup>
+	</table>
+
+	<orderedlist>
+		<title>Arithmetic relational operators</title>
+		<listitem><para><![CDATA[ -lt (<) ]]></para></listitem>
+		<listitem><para><![CDATA[ -gt (>) ]]></para></listitem>
+		<listitem><para><![CDATA[ -le (<=) ]]></para></listitem>
+		<listitem><para><![CDATA[ -ge (>=) ]]></para></listitem>
+		<listitem><para><![CDATA[ -eq (==) ]]></para></listitem>
+		<listitem><para><![CDATA[ -ne (!=) ]]></para></listitem>
+	</orderedlist>
+
+	<table>
+	   <title>组合表达式</title>
+	   <tgroup cols="2">
+	     <thead>
+	       <row>
+	          <entry>操作</entry>
+	          <entry>效果</entry>
+	       </row>
+	     </thead>
+	    <tbody>
+	       <row>
+	          <entry>[ ! EXPR ] 	</entry>
+	          <entry>如果 EXPR 是false则为真。</entry>
+	       </row>
+	       <row>
+	          <entry>[ ( EXPR ) ] 	</entry>
+	          <entry>返回 EXPR的值。这样可以用来忽略正常的操作符优先级。</entry>
+	       </row>
+	       <row>
+	          <entry>[ EXPR1 -a EXPR2 ] 	</entry>
+	          <entry>如果 EXPR1 and EXPR2 全真则为真。</entry>
+	       </row>
+	       <row>
+	          <entry>[ EXPR1 -o EXPR2 ] 	</entry>
+	          <entry>如果 EXPR1 或者 EXPR2 为真则为真。 		</entry>
+	       </row>
+	       </tbody>
+	   </tgroup>
+	</table>
+
+	<section id="if">
+		<title>if</title>
+		<example>
+			<title>Basic conditional example if .. then</title>
+			<programlisting>
+			<![CDATA[
+               #!/bin/bash
+               if [ "foo" = "foo" ]; then
+                  echo expression evaluated as true
+               fi
+			]]>
+			</programlisting>
+		</example>
+		<example>
+			<title>Conditionals with variables</title>
+			<programlisting>
+			<![CDATA[
+               #!/bin/bash
+               T1="foo"
+               T2="bar"
+               if [ "$T1" = "$T2" ]; then
+                   echo expression evaluated as true
+               else
+                   echo expression evaluated as false
+               fi
+			]]>
+			</programlisting>
+		</example>
+		<screen>
+		<![CDATA[
+(( $# != 1 )) && bool=0 || bool=${1}
+[[ -f /tmp/test ]] && echo "True" || echo "False"
+		]]>
+		</screen>
+	</section>
+	<section id="case">
+		<title>case</title>
+    	<para>case 高级用法, 匹配 Yes,YES,YeS,yES,yEs ...</para>
+    	<screen>
+    	<![CDATA[
+read -p "Do you want to continue [Y/n]?" BOOLEAN
+
+case $BOOLEAN in
+    [yY][eE][sS])
+        echo 'Thanks' $BOOLEAN
+        ;;
+    [yY]|[nN])
+        echo 'Thanks' $BOOLEAN
+        ;;
+    'T'|'F')
+        echo 'Thanks' $BOOLEAN
+        ;;
+    [Tt]ure|[Ff]alse)
+        echo 'Thanks' $BOOLEAN
+        ;;
+    *)
+        exit 1
+        ;;
+esac
+	]]>
+    	</screen>
+
+		<example>
+			<title>case</title>
+			<programlisting>
+case "$1" in
+        start)
+            start
+            ;;
+        stop)
+            stop
+            ;;
+        status)
+            status
+            ;;
+        restart)
+            stop
+            start
+            ;;
+        condrestart)
+            condrestart
+            ;;
+
+        *)
+            echo $"Usage: $0 {start|stop|restart|condrestart|status}"
+            exit 1
+esac
+			</programlisting>
+		</example>
+	</section>
+</section>

@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="variable">
+	<title>variable</title>
+<section id="expression">
+		<title>表达式</title>
+		<screen>
+!!：再次执行上一条命令
+
+!$：上一条命令的最后一个单词
+
+{a..b}：按照从a到b顺序的一个数字列表
+
+{a,b,c}：三个词a,b,c. 可以这样使用 touch /tmp/{a,b,c}
+
+{$1-$9}：执行shell脚本时的命令行参数
+
+$0：正在执行的命令名称
+
+$#：当前启动的命令中传入的参数个数
+
+$?：上一条命令的执行返回值。
+
+$$：该shell的进程号。
+
+$*：从$1开始，启动该shell脚本的所有参数。
+		</screen>
+		<screen>
+$ mkdir -p {a..z}
+$ ls
+a  b  c  d  e  f  g  h  i  j  k  l  m  n  o  p  q  r  s  t  u  v  w  x  y  z
+
+$ mkdir -p {a..z}{0..9}
+$ ls
+a0  b0  c0  d0  e0  f0  g0  h0  i0  j0  k0  l0  m0  n0  o0  p0  q0  r0  s0  t0  u0  v0  w0  x0  y0  z0
+a1  b1  c1  d1  e1  f1  g1  h1  i1  j1  k1  l1  m1  n1  o1  p1  q1  r1  s1  t1  u1  v1  w1  x1  y1  z1
+a2  b2  c2  d2  e2  f2  g2  h2  i2  j2  k2  l2  m2  n2  o2  p2  q2  r2  s2  t2  u2  v2  w2  x2  y2  z2
+a3  b3  c3  d3  e3  f3  g3  h3  i3  j3  k3  l3  m3  n3  o3  p3  q3  r3  s3  t3  u3  v3  w3  x3  y3  z3
+a4  b4  c4  d4  e4  f4  g4  h4  i4  j4  k4  l4  m4  n4  o4  p4  q4  r4  s4  t4  u4  v4  w4  x4  y4  z4
+a5  b5  c5  d5  e5  f5  g5  h5  i5  j5  k5  l5  m5  n5  o5  p5  q5  r5  s5  t5  u5  v5  w5  x5  y5  z5
+a6  b6  c6  d6  e6  f6  g6  h6  i6  j6  k6  l6  m6  n6  o6  p6  q6  r6  s6  t6  u6  v6  w6  x6  y6  z6
+a7  b7  c7  d7  e7  f7  g7  h7  i7  j7  k7  l7  m7  n7  o7  p7  q7  r7  s7  t7  u7  v7  w7  x7  y7  z7
+a8  b8  c8  d8  e8  f8  g8  h8  i8  j8  k8  l8  m8  n8  o8  p8  q8  r8  s8  t8  u8  v8  w8  x8  y8  z8
+a9  b9  c9  d9  e9  f9  g9  h9  i9  j9  k9  l9  m9  n9  o9  p9  q9  r9  s9  t9  u9  v9  w9  x9  y9  z9
+
+$ touch  {a..z}{0..9}/{a..z}{0..9}
+$ ls
+a0  b0  c0  d0  e0  f0  g0  h0  i0  j0  k0  l0  m0  n0  o0  p0  q0  r0  s0  t0  u0  v0  w0  x0  y0  z0
+a1  b1  c1  d1  e1  f1  g1  h1  i1  j1  k1  l1  m1  n1  o1  p1  q1  r1  s1  t1  u1  v1  w1  x1  y1  z1
+a2  b2  c2  d2  e2  f2  g2  h2  i2  j2  k2  l2  m2  n2  o2  p2  q2  r2  s2  t2  u2  v2  w2  x2  y2  z2
+a3  b3  c3  d3  e3  f3  g3  h3  i3  j3  k3  l3  m3  n3  o3  p3  q3  r3  s3  t3  u3  v3  w3  x3  y3  z3
+a4  b4  c4  d4  e4  f4  g4  h4  i4  j4  k4  l4  m4  n4  o4  p4  q4  r4  s4  t4  u4  v4  w4  x4  y4  z4
+a5  b5  c5  d5  e5  f5  g5  h5  i5  j5  k5  l5  m5  n5  o5  p5  q5  r5  s5  t5  u5  v5  w5  x5  y5  z5
+a6  b6  c6  d6  e6  f6  g6  h6  i6  j6  k6  l6  m6  n6  o6  p6  q6  r6  s6  t6  u6  v6  w6  x6  y6  z6
+a7  b7  c7  d7  e7  f7  g7  h7  i7  j7  k7  l7  m7  n7  o7  p7  q7  r7  s7  t7  u7  v7  w7  x7  y7  z7
+a8  b8  c8  d8  e8  f8  g8  h8  i8  j8  k8  l8  m8  n8  o8  p8  q8  r8  s8  t8  u8  v8  w8  x8  y8  z8
+a9  b9  c9  d9  e9  f9  g9  h9  i9  j9  k9  l9  m9  n9  o9  p9  q9  r9  s9  t9  u9  v9  w9  x9  y9  z9
+$ ls a0
+a0  b0  c0  d0  e0  f0  g0  h0  i0  j0  k0  l0  m0  n0  o0  p0  q0  r0  s0  t0  u0  v0  w0  x0  y0  z0
+a1  b1  c1  d1  e1  f1  g1  h1  i1  j1  k1  l1  m1  n1  o1  p1  q1  r1  s1  t1  u1  v1  w1  x1  y1  z1
+a2  b2  c2  d2  e2  f2  g2  h2  i2  j2  k2  l2  m2  n2  o2  p2  q2  r2  s2  t2  u2  v2  w2  x2  y2  z2
+a3  b3  c3  d3  e3  f3  g3  h3  i3  j3  k3  l3  m3  n3  o3  p3  q3  r3  s3  t3  u3  v3  w3  x3  y3  z3
+a4  b4  c4  d4  e4  f4  g4  h4  i4  j4  k4  l4  m4  n4  o4  p4  q4  r4  s4  t4  u4  v4  w4  x4  y4  z4
+a5  b5  c5  d5  e5  f5  g5  h5  i5  j5  k5  l5  m5  n5  o5  p5  q5  r5  s5  t5  u5  v5  w5  x5  y5  z5
+a6  b6  c6  d6  e6  f6  g6  h6  i6  j6  k6  l6  m6  n6  o6  p6  q6  r6  s6  t6  u6  v6  w6  x6  y6  z6
+a7  b7  c7  d7  e7  f7  g7  h7  i7  j7  k7  l7  m7  n7  o7  p7  q7  r7  s7  t7  u7  v7  w7  x7  y7  z7
+a8  b8  c8  d8  e8  f8  g8  h8  i8  j8  k8  l8  m8  n8  o8  p8  q8  r8  s8  t8  u8  v8  w8  x8  y8  z8
+a9  b9  c9  d9  e9  f9  g9  h9  i9  j9  k9  l9  m9  n9  o9  p9  q9  r9  s9  t9  u9  v9  w9  x9  y9  z9
+
+		</screen>
+
+	</section>
+		
+	<section id="environment">
+		<title>Internal Environment Variables</title>
+		<ulink url="http://tldp.org/LDP/abs/html/internalvariables.html" />
+	</section>
+	<section id="variable.set">
+		<title>set 设置变量</title>
+		<screen>
+		<![CDATA[
+$ set -- `echo aa bb cc`
+$ echo $1
+aa
+$ echo $2
+bb
+$ echo $3
+cc
+
+$ set -- aa bb cc
+		]]>
+		</screen>
+	</section>
+
+    <section>
+    		<title>unset 变量销毁</title>
+    		<screen>
+$ unset logfile
+    		</screen>
+    </section>
+	<section id="variable.default">
+   		<title>设置变量默认值</title>
+   		<para>如果 logfile 值已经存在侧不会覆盖</para>
+   		<screen>
+$ logfile=/var/log/test.log
+
+$ echo $logfile
+/var/log/test.log
+
+$ logfile=${logfile:-/tmp/test.log}
+
+$ echo $logfile
+/var/log/test.log
+    	</screen>
+    	<para>如果变量为空才能设置</para>
+    	<screen>
+$ unset logfile
+$ logfile=${logfile:-/tmp/test.log}
+$ echo $logfile
+/tmp/test.log
+    	</screen>
+    </section>
+
+	<section id="variable.export">
+		<title>export 设置全局变量</title>
+		<screen>
+export CATALINA_OUT=/www/logs/tomcat/catalina.out
+		</screen>
+		<para>unset 销毁变量</para>
+		<screen>
+unset CATALINA_OUT
+		</screen>
+	</section>
+	<section id="variable.declare">
+		<title>declare</title>
+		<screen>
+功能说明：声明 shell 变量。
+
+语　　法：declare [+/-][rxi][变量名称＝设置值] 或 declare -f
+
+补充说明：declare为shell指令，在第一种语法中可用来声明变量并设置变量的属性([rix]即为变量的属性），在第二种语法中可用来显示shell函数。若不加上任何参数，则会显示全部的shell变量与函数(与执行set指令的效果相同)。
+
+参　　数：
+　+/- 　"-"可用来指定变量的属性，"+"则是取消变量所设的属性。
+　-f 　仅显示函数。
+　r 　将变量设置为只读。
+　x 　指定的变量会成为环境变量，可供shell以外的程序来使用。
+　i 　[设置值]可以是数值，字符串或运算式。
+		</screen>
+	</section>
+	<section id="variable.system">
+		<title>系统变量</title>
+		<para>系统变量</para>
+		<screen>
+Shell常用的系统变量并不多，但却十分有用，特别是在做一些参数检测的时候。下面是Shell常用的系统变量
+表示方法	描述
+$n	 $1 表示第一个参数，$2 表示第二个参数 ...
+$#	 命令行参数的个数
+$0	 当前程序的名称
+$?	 前一个命令或函数的返回码
+$*	 以"参数1 参数2 ... " 形式保存所有参数
+$@	 以"参数1" "参数2" ... 形式保存所有参数
+$$	 本程序的(进程ID号)PID
+$!	 上一个命令的PID
+		</screen>
+		<screen>
+[root@cc tmp]# cat test.sh
+echo $#
+echo $@
+
+[root@cc tmp]# ./test.sh  helloworld
+1
+helloworld
+		</screen>
+		<screen>
+其中使用得比较多得是 $n $# $0 $? ,看看下面的例子：
+#!/bin/sh
+if [ $# -ne 2 ] ; then
+echo "Usage: $0 string file";
+exit 1;
+fi
+grep $1 $2 ;
+if [ $? -ne 0 ] ; then
+echo "Not Found \"$1\" in $2";
+exit 1;
+fi
+echo "Found \"$1\" in $2";
+上面的例子中使用了$0 $1 $2 $# $? 等变量
+
+下面运行的例子：
+
+./chapter2.2.sh usage chapter2.2.sh
+Not Found "usage" in chapter2.2.sh
+-bash-2.05b$ ./chapter2.2.sh Usage chapter2.2.sh
+echo "Usage: $0 string file";
+Found "Usage" in chapter2.2.sh
+		</screen>
+	</section>
+	<section id="variable.strings">
+		<title>Strings</title>
+		<section>
+			<title>##/#</title>
+			<screen>
+			<![CDATA[
+$ MYVAR=foodforthought.jpg
+$ echo ${MYVAR##*fo}
+rthought.jpg
+$ echo ${MYVAR#*fo}
+odforthought.jpg
+			]]>
+			</screen>
+			<para>一个简单的脚本例子</para>
+			<screen>
+			<![CDATA[
+mytar.sh
+
+#!/bin/bash
+
+if [ "${1##*.}" = "tar" ]
+then
+    echo This appears to be a tarball.
+else
+    echo At first glance, this does not appear to be a tarball.
+fi
+
+$ ./mytar.sh thisfile.tar
+This appears to be a tarball.
+$ ./mytar.sh thatfile.gz
+At first glance, this does not appear to be a tarball.
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>%%/%</title>
+			<screen>
+			<![CDATA[
+$ MYFOO="chickensoup.tar.gz"
+$ echo ${MYFOO%%.*}
+chickensoup
+$ echo ${MYFOO%.*}
+chickensoup.tar
+
+MYFOOD="chickensoup"
+$ echo ${MYFOOD%%soup}
+chicken
+			]]>
+			</screen>
+			<screen>
+$ test="aaa bbb ccc ddd"
+
+$ echo ${test% *}
+aaa bbb ccc
+
+$ echo ${test%% *}
+aaa
+
+			</screen>
+		</section>
+		<section>
+			<title>:n1:n2</title>
+			<para>：${varible:n1:n2}:截取变量varible从n1到n2之间的字符串。</para>
+			<screen>
+			<![CDATA[
+$ EXCLAIM=cowabunga
+
+$ echo ${EXCLAIM:0:3}
+cow
+
+$ echo ${EXCLAIM:3:7}
+abunga
+
+file=netkiller.rpm
+$echo ${file: -3}
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>#</title>
+			<para>：${varible:n1:n2}:截取变量varible从n1到n2之间的字符串。</para>
+		</section>
+		<section>
+			<title>example</title>
+			<screen>
+			<![CDATA[
+$cat name.sh
+#!/bin/bash
+while read line ; do
+	fistname=${line% *}
+	lastname=${line#* }
+	echo $fistname $lastname
+done <<EOF
+neo chen
+jam zheng
+EOF
+
+$ bash name.sh
+neo chen
+jam zheng
+
+			]]>
+			</screen>
+		</section>
+		<section id="string.len">
+    		<title>计算字符串长度</title>
+    		<para>计算字符串长度</para>
+    		<screen>
+echo ${#PATH}
+    		</screen>
+    	</section>
+	</section>
+	<section id="variable.array">
+		<title>Array</title>
+		<para>定义数组</para>
+		<screen>
+arr=(Hello World)
+
+arr[0]=Hello
+arr[1]=World
+		</screen>
+		<para>访问数组</para>
+		<screen>
+echo ${arr[0]} ${arr[1]}
+
+${arr[*]}         # All of the items in the array
+${!arr[*]}        # All of the indexes in the array
+${#arr[*]}        # Number of items in the array
+${#arr[0]}        # Length of item zero
+		</screen>
+
+		<screen>
+#!/bin/bash
+
+array=(one two three four [5]=five)
+
+echo "Array size: ${#array[*]}"
+
+echo "Array items:"
+for item in ${array[*]}
+do
+    printf "   %s\n" $item
+done
+
+echo "Array indexes:"
+for index in ${!array[*]}
+do
+    printf "   %d\n" $index
+done
+
+echo "Array items and indexes:"
+for index in ${!array[*]}
+do
+    printf "%4d: %s\n" $index ${array[$index]}
+done
+		</screen>
+
+		<screen>
+#!/bin/bash
+
+array=("first item" "second item" "third" "item")
+
+echo "Number of items in original array: ${#array[*]}"
+for ix in ${!array[*]}
+do
+    printf "   %s\n" "${array[$ix]}"
+done
+echo
+
+arr=(${array[*]})
+echo "After unquoted expansion: ${#arr[*]}"
+for ix in ${!arr[*]}
+do
+    printf "   %s\n" "${arr[$ix]}"
+done
+echo
+
+arr=("${array[*]}")
+echo "After * quoted expansion: ${#arr[*]}"
+for ix in ${!arr[*]}
+do
+    printf "   %s\n" "${arr[$ix]}"
+done
+echo
+
+arr=("${array[@]}")
+echo "After @ quoted expansion: ${#arr[*]}"
+for ix in ${!arr[*]}
+do
+    printf "   %s\n" "${arr[$ix]}"
+done
+		</screen>
+		<screen>
+array=({23..32} {49,50} {81..92})
+
+echo "Array size: ${#array[*]}"
+
+echo "Array items:"
+for item in ${array[*]}
+do
+    printf "   %s\n" $item
+done
+		</screen>
+	</section>
+	<section id="eval">
+		<title>eval</title>
+		<screen>
+$ i=5
+$ a_5=250
+$ eval echo $"a_$i"
+		</screen>
+		<screen>
+# neo="Neo Chen"
+# name=neo
+# eval "echo \$$name"
+
+Neo Chen
+		</screen>
+	</section>
+</section>
+

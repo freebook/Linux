@@ -1,4 +1,4 @@
-<chapter id="shell.terminal">
+<chapter id="index"><?dbhtml dir="terminal" ?>
 	<title>Shell Terminal</title>
 	<subtitle>dialog, whiptail, gdialog, kdialog and nautilus</subtitle>
 	<section id="resize">

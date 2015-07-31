@@ -16,752 +16,413 @@
 			</screen>
 		</section>
 	</section>
+
+
+<section id="introduction">
+	<title>Introduction</title>
+	<section id="commands.chsh">
+		<title>chsh - change login shell</title>
+		<screen>
+# chsh --list
+/bin/sh
+/bin/bash
+/sbin/nologin
+/bin/tcsh
+/bin/csh
+/bin/ksh
+
+# chsh --list-shells
+/bin/sh
+/bin/bash
+/sbin/nologin
+/bin/dash
+/bin/zsh
+		</screen>
+		<screen>
+$ chsh -s /bin/zsh
+or
+$ usermod -s /bin/zsh
+		</screen>
+		<para>show me current shell</para>
+		<screen>
+neo@netkiller:~$ echo $SHELL
+/bin/zsh
+
+neo@netkiller:~$ cat /etc/passwd|grep neo
+neo:x:1000:1000:Neo Chen,,,:/home/neo:/bin/zsh
+		</screen>
+	</section>
+	
+	<section id="test">
+		<title>test 命令</title>
+		<screen>
+test -x $HAPROXY || exit 0
+test -f "$CONFIG" || exit 0
+		</screen>
+	</section>
+	<section id="stdin-stdout-stderr">
+		<title>I/O 重定向</title>
+		<screen>
+		<![CDATA[
+cat <<End-of-message
+   8 -------------------------------------
+   9 This is line 1 of the message.
+  10 This is line 2 of the message.
+  11 This is line 3 of the message.
+  12 This is line 4 of the message.
+  13 This is the last line of the message.
+  14 -------------------------------------
+End-of-message
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+MYSQL=mysql
+MYSQLOPTS="-h $zs_host -u $zs_user -p$zs_pass $zs_db"
+
+$MYSQL $MYSQLOPTS <<SQL
+SELECT
+        category.cat_id AS  cat_id ,
+        category.cat_name AS  cat_name ,
+        category.cat_desc AS  cat_desc ,
+        category.parent_id AS  parent_id ,
+        category.sort_order AS  sort_order ,
+        category.measure_unit AS  measure_unit ,
+        category.style AS  style ,
+        category.is_show AS is_show ,
+        category.grade AS  grade
+FROM  category
+SQL
+		]]>
+		</screen>
+		<para><![CDATA[<<-LimitString]]>可以抑制输出时前边的tab(不是空格). 这可以增加一个脚本的可读性.</para>
+		<screen>
+		<![CDATA[
+cat <<-ENDOFMESSAGE
+	This is line 1 of the message.
+	This is line 2 of the message.
+	This is line 3 of the message.
+	This is line 4 of the message.
+	This is the last line of the message.
+ENDOFMESSAGE
+
+		]]>
+		</screen>
+		<para>关闭参数替换</para>
+		<screen>
+		<![CDATA[
+NAME="John Doe"
+RESPONDENT="the author of this fine script"
+
+cat <<'Endofmessage'
+
+Hello, there, $NAME.
+Greetings to you, $NAME, from $RESPONDENT.
+
+Endofmessage
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+NAME="John Doe"
+RESPONDENT="the author of this fine script"
+
+cat <<\Endofmessage
+
+Hello, there, $NAME.
+Greetings to you, $NAME, from $RESPONDENT.
+
+Endofmessage
+		]]>
+		</screen>
+		<section>
+			<title>error 重定向</title>
+			<screen>
+			<![CDATA[
+your_shell 2>&1
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>使用块记录日志</title>
+			<screen>
+			<![CDATA[
+{
+	...
+	...
+} > $LOGFILE 2>&1
+			]]>
+			</screen>
+		</section>
+		<section id="tee">
+			<title>tee - read from standard input and write to standard output and files</title>
+			<screen>
+echo 1 > /proc/sys/net/ipv4/ip_forward
+echo 1 | sudo tee /proc/sys/net/ipv4/ip_forward;
+			</screen>
+			<section id="nettee">
+				<title>nettee - a network "tee" program</title>
+				<screen>
+
+				</screen>
+			</section>
+		</section>
+		<section>
+			<title>创建文件</title>
+			<screen>
+			<![CDATA[
+cat << EOF > foo.sh
+   printf "%s was here" "$name"
+EOF
+
+cat >> foo.sh <<EOF
+   printf "%s was here" "$name"
+EOF
+			]]>
+			</screen>
+
+		</section>
+		<section>
+			<title>快速清空一个文件的内容</title>
+			<screen>
+$ > /www/access.log
+			</screen>
+		</section>
+	</section>
+	<section id="pipes">
+		<title>pipes (FIFOs)</title>
+		<para>create a pipes</para>
+		<screen>
+$ mkfifo /tmp/pipe
+$ mkfifo -m 0644 /tmp/pipe
+
+$ mknod /tmp/pipe p
+		</screen>
+		<para>let's see it</para>
+		<screen>
+$ ls -l /tmp/piple
+prw-r--r-- 1 neo neo 0 2009-03-13 14:40 /tmp/piple
+		</screen>
+		<para>remove a pipes</para>
+		<screen>
+rm /tmp/pipe
+		</screen>
+		<para>using it</para>
+		<para>standing by pipe</para>
+		<screen>
+$ cat /tmp/pipe
+		</screen>
+		<para>push string to pipe</para>
+		<screen>
+$ echo hello world > /tmp/pipe
+		</screen>
+		<para>fetch string from /tmp/pipe</para>
+		<screen>
+$ cat /tmp/piple
+hello world
+		</screen>
+	</section>
+	<section id="mktemp">
+		<title>mktemp - create a temporary file or directory 临时目录与文件</title>
+		<screen>
+# mktemp
+/tmp/tmp.p8p0v5YzPf
+
+# mktemp /tmp/test.XXX
+/tmp/test.d8J
+
+# mktemp /tmp/test.XXXXXX
+/tmp/test.cFebDX
+
+# mktemp /tmp/test.XXXXXXX
+/tmp/test.CnyLr7C
+		</screen>
+		<para>创建临时目录</para>
+		<screen>
+# mktemp -d
+/tmp/tmp.xg5gFj0w8D
+
+# mktemp -d --suffix=.tmp /tmp/test.XXXXX
+/tmp/test.TDpz8.tmp
+
+$ mktemp -d --suffix=.tmp -p /tmp deploy.XXXXXX
+/tmp/deploy.FwebCc.tmp
+		</screen>
+	</section>
+	<section id="history">
+		<title>History 命令历史记录</title>
+		<section>
+			<title>.bash_history</title>
+			<para>从安全角度考虑禁止记录history</para>
+			<screen>
+ln -s /dev/null .bash_history
+			</screen>
+			<section>
+				<title>格式定义</title>
+				<para>定制.bash_history格式</para>
+				<screen>
+export HISTSIZE=1000
+export HISTFILESIZE=2000
+export HISTTIMEFORMAT="%Y-%m-%d-%H:%M:%S "
+export HISTFILE="~/.bash_history"
+				</screen>
+
+				<para>看看实际效果</para>
+				<screen>
+$ history | head
+    1  2012-02-27-09:10:45 do-release-upgrade
+    2  2012-02-27-09:10:45 vim /etc/network/interfaces
+    3  2012-02-27-09:10:45 vi /etc/network/interfaces
+    4  2012-02-27-09:10:45 ping www.163.com
+				</screen>
+				<tip>
+					<para>CentOS 可以添加到 /etc/bashrc 这样可以对所有用户起作用</para>
+					<screen>
+echo 'export HISTTIMEFORMAT="%Y-%m-%d-%H:%M:%S "' >> /etc/bashrc
+					</screen>
+				</tip>
+			</section>
+			<section>
+				<title>设置忽略命令</title>
+				<para>HISTIGNORE 可以设置那些命令不记入history列表。</para>
+				<screen>
+HISTIGNORE="ls:ll:la:cd:exit:clear:logout"
+HISTTIMEFORMAT="[%Y-%m-%d - %H:%M:%S] "
+HISTFILE=~/.history
+HISTSIZE=50000
+SAVEHIST=50000
+				</screen>
+			</section>
+		</section>
+		<section>
+			<title>.mysql_history</title>
+			<screen>
+ln -s /dev/null .mysql_history
+			</screen>
+			<para>插入时间点，在~/.bashrc中加入下面命令</para>
+			<screen>
+$ tail ~/.bashrc
+echo `date` >> ~/.mysql_history
+			</screen>
+			<screen>
+$ tail ~/.mysql_history
+EXPLAIN SELECT * FROM stuff where id=3 \G
+EXPLAIN SELECT * FROM stuff where id='3' \G
+EXPLAIN SELECT * FROM stuff where id='2' \G
+Mon Feb 27 09:15:18 CST 2012
+EXPLAIN SELECT * FROM stuff where id='2' and created = '2012-02-01' \G
+EXPLAIN SELECT * FROM stuff where id='1' and created = '2012-02-01' \G
+EXPLAIN SELECT * FROM stuff where id='3' and created = '2012-02-01' \G
+EXPLAIN SELECT * FROM stuff where id='2' and created = '2012-02-01' \G
+EXPLAIN SELECT * FROM stuff where id='2' or created = '2012-02-01' \G
+EXPLAIN SELECT * FROM stuff where id='2' and created = '2012-02-01' \G
+Mon Feb 27 11:48:37 CST 2012
+			</screen>
+		</section>
+	</section>
+
+	<section id="hash">
+		<title>hash - hash database access method</title>
+		<para>hase 命令：用来显示和清除哈希表，执行命令的时候，系统将先查询哈希表。</para>
+		<para>当你输入命令，首先在hash表中寻找，如果不存在，才会利用$PATH环境变量指定的路径寻找命令，然后加以执行。同时也会将其放入到hash table 中，当下一次执行同样的命令时就不会再通过$PATH寻找。以此提高命令的执行效率。</para>
+
+		<para>显示哈希表中命令使用频率</para>
+		<screen>
+$ hash
+hits	command
+   6	/usr/bin/svn
+   1	/bin/chown
+   3	/bin/bash
+   4	/usr/bin/git
+  12	/usr/bin/php
+   1	/bin/rm
+   1	/bin/chmod
+   1	/usr/bin/nmap
+   5	/bin/cat
+  13	/usr/bin/vim
+   3	/usr/bin/sudo
+   4	/bin/sed
+   2	/bin/ps
+   2	/usr/bin/man
+  23	/bin/ls
+		</screen>
+		<para>显示哈希表</para>
+		<screen>
+$ hash -l
+builtin hash -p /usr/bin/svn svn
+builtin hash -p /bin/chown chown
+builtin hash -p /bin/bash bash
+builtin hash -p /usr/bin/git git
+builtin hash -p /usr/bin/php php
+builtin hash -p /bin/rm rm
+builtin hash -p /bin/chmod chmod
+builtin hash -p /usr/bin/nmap nmap
+builtin hash -p /bin/cat cat
+builtin hash -p /usr/bin/vim vim
+builtin hash -p /usr/bin/sudo sudo
+builtin hash -p /bin/sed sed
+builtin hash -p /bin/ps ps
+builtin hash -p /usr/bin/man man
+builtin hash -p /bin/ls ls
+		</screen>
+		<para>显示命令的完整路径</para>
+		<screen>
+$ hash -t git
+/usr/bin/git
+		</screen>
+		<para>向哈希表中增加内容</para>
+		<screen>
+		<![CDATA[
+$ hash -p /home/www/deployment/run run
+
+$ run
+Usage: /home/www/deployment/run [OPTION] <server-id> <directory/timepoint>
+
+OPTION:
+	development <domain> <host>
+	testing <domain> <host>
+	production <domain> <host>
+
+	branch {development|testing|production} <domain> <host> <branchname>
+	revert {development|testing|production} <domain> <host> <revision>
+	backup <domain> <host> <directory>
+	release <domain> <host> <tags> <message>
+
+	list
+	list <domain> <host>
+
+	clean {development|testing|production} <domain> <host>
+	log <project> <line>
+
+	conf list
+	cron show
+	cron setup
+	cron edit
+		]]>
+		</screen>
+		<para>命令等同于</para>
+		<screen>
+PATH=$PATH:$HOME/www/deployment
+
+export PATH
+		</screen>
+		<para>删除哈希表内容</para>
+		<screen>
+$ hash -r
+
+$ hash -l
+hash: hash table empty
+		</screen>
+	</section>
 	&chapter.bash.prompt.xml;
-	<section id="environment">
-		<title>Internal Environment Variables</title>
-		<ulink url="http://tldp.org/LDP/abs/html/internalvariables.html" />
-	</section>
-<section id="variable">
-	<title>variable</title>
-	<section id="variable.set">
-		<title>set</title>
-		<screen>
-		<![CDATA[
-$ set -- `echo aa bb cc`
-$ echo $1
-aa
-$ echo $2
-bb
-$ echo $3
-cc
-
-$ set -- aa bb cc
-		]]>
-		</screen>
-	</section>
-	<section id="export">
-		<title>export / unset</title>
-		<screen>
-export CATALINA_OUT=/www/logs/tomcat/catalina.out
-unset CATALINA_OUT
-		</screen>
-	</section>
-	<section id="variable.declare">
-		<title>declare</title>
-		<screen>
-功能说明：声明 shell 变量。
-
-语　　法：declare [+/-][rxi][变量名称＝设置值] 或 declare -f
-
-补充说明：declare为shell指令，在第一种语法中可用来声明变量并设置变量的属性([rix]即为变量的属性），在第二种语法中可用来显示shell函数。若不加上任何参数，则会显示全部的shell变量与函数(与执行set指令的效果相同)。
-
-参　　数：
-　+/- 　"-"可用来指定变量的属性，"+"则是取消变量所设的属性。
-　-f 　仅显示函数。
-　r 　将变量设置为只读。
-　x 　指定的变量会成为环境变量，可供shell以外的程序来使用。
-　i 　[设置值]可以是数值，字符串或运算式。
-		</screen>
-	</section>
-	<section>
-		<title>系统变量</title>
-		<para>系统变量</para>
-		<screen>
-Shell常用的系统变量并不多，但却十分有用，特别是在做一些参数检测的时候。下面是Shell常用的系统变量
-表示方法	描述
-$n	 $1 表示第一个参数，$2 表示第二个参数 ...
-$#	 命令行参数的个数
-$0	 当前程序的名称
-$?	 前一个命令或函数的返回码
-$*	 以"参数1 参数2 ... " 形式保存所有参数
-$@	 以"参数1" "参数2" ... 形式保存所有参数
-$$	 本程序的(进程ID号)PID
-$!	 上一个命令的PID
-		</screen>
-		<screen>
-[root@cc tmp]# cat test.sh
-echo $#
-echo $@
-
-[root@cc tmp]# ./test.sh  helloworld
-1
-helloworld
-		</screen>
-		<screen>
-其中使用得比较多得是 $n $# $0 $? ,看看下面的例子：
-#!/bin/sh
-if [ $# -ne 2 ] ; then
-echo "Usage: $0 string file";
-exit 1;
-fi
-grep $1 $2 ;
-if [ $? -ne 0 ] ; then
-echo "Not Found \"$1\" in $2";
-exit 1;
-fi
-echo "Found \"$1\" in $2";
-上面的例子中使用了$0 $1 $2 $# $? 等变量
-
-下面运行的例子：
-
-./chapter2.2.sh usage chapter2.2.sh
-Not Found "usage" in chapter2.2.sh
--bash-2.05b$ ./chapter2.2.sh Usage chapter2.2.sh
-echo "Usage: $0 string file";
-Found "Usage" in chapter2.2.sh
-		</screen>
-	</section>
-	<section id="strings">
-		<title>Strings</title>
-		<section>
-			<title>##/#</title>
-			<screen>
-			<![CDATA[
-$ MYVAR=foodforthought.jpg
-$ echo ${MYVAR##*fo}
-rthought.jpg
-$ echo ${MYVAR#*fo}
-odforthought.jpg
-			]]>
-			</screen>
-			<para>一个简单的脚本例子</para>
-			<screen>
-			<![CDATA[
-mytar.sh
-
-#!/bin/bash
-
-if [ "${1##*.}" = "tar" ]
-then
-    echo This appears to be a tarball.
-else
-    echo At first glance, this does not appear to be a tarball.
-fi
-
-$ ./mytar.sh thisfile.tar
-This appears to be a tarball.
-$ ./mytar.sh thatfile.gz
-At first glance, this does not appear to be a tarball.
-			]]>
-			</screen>
-		</section>
-		<section>
-			<title>%%/%</title>
-			<screen>
-			<![CDATA[
-$ MYFOO="chickensoup.tar.gz"
-$ echo ${MYFOO%%.*}
-chickensoup
-$ echo ${MYFOO%.*}
-chickensoup.tar
-
-MYFOOD="chickensoup"
-$ echo ${MYFOOD%%soup}
-chicken
-			]]>
-			</screen>
-			<screen>
-$ test="aaa bbb ccc ddd"
-
-$ echo ${test% *}
-aaa bbb ccc
-
-$ echo ${test%% *}
-aaa
-
-			</screen>
-		</section>
-		<section>
-			<title>:n1:n2</title>
-			<para>：${varible:n1:n2}:截取变量varible从n1到n2之间的字符串。</para>
-			<screen>
-			<![CDATA[
-$ EXCLAIM=cowabunga
-
-$ echo ${EXCLAIM:0:3}
-cow
-
-$ echo ${EXCLAIM:3:7}
-abunga
-
-file=netkiller.rpm
-$echo ${file: -3}
-			]]>
-			</screen>
-		</section>
-		<section>
-			<title>#</title>
-			<para>：${varible:n1:n2}:截取变量varible从n1到n2之间的字符串。</para>
-		</section>
-		<section>
-			<title>example</title>
-			<screen>
-			<![CDATA[
-$cat name.sh
-#!/bin/bash
-while read line ; do
-	fistname=${line% *}
-	lastname=${line#* }
-	echo $fistname $lastname
-done <<EOF
-neo chen
-jam zheng
-EOF
-
-$ bash name.sh
-neo chen
-jam zheng
-
-			]]>
-			</screen>
-		</section>
-	</section>
-	<section id="array">
-		<title>Array</title>
-		<para>定义数组</para>
-		<screen>
-arr=(Hello World)
-
-arr[0]=Hello
-arr[1]=World
-		</screen>
-		<para>访问数组</para>
-		<screen>
-echo ${arr[0]} ${arr[1]}
-
-${arr[*]}         # All of the items in the array
-${!arr[*]}        # All of the indexes in the array
-${#arr[*]}        # Number of items in the array
-${#arr[0]}        # Length of item zero
-		</screen>
-
-		<screen>
-#!/bin/bash
-
-array=(one two three four [5]=five)
-
-echo "Array size: ${#array[*]}"
-
-echo "Array items:"
-for item in ${array[*]}
-do
-    printf "   %s\n" $item
-done
-
-echo "Array indexes:"
-for index in ${!array[*]}
-do
-    printf "   %d\n" $index
-done
-
-echo "Array items and indexes:"
-for index in ${!array[*]}
-do
-    printf "%4d: %s\n" $index ${array[$index]}
-done
-		</screen>
-
-		<screen>
-#!/bin/bash
-
-array=("first item" "second item" "third" "item")
-
-echo "Number of items in original array: ${#array[*]}"
-for ix in ${!array[*]}
-do
-    printf "   %s\n" "${array[$ix]}"
-done
-echo
-
-arr=(${array[*]})
-echo "After unquoted expansion: ${#arr[*]}"
-for ix in ${!arr[*]}
-do
-    printf "   %s\n" "${arr[$ix]}"
-done
-echo
-
-arr=("${array[*]}")
-echo "After * quoted expansion: ${#arr[*]}"
-for ix in ${!arr[*]}
-do
-    printf "   %s\n" "${arr[$ix]}"
-done
-echo
-
-arr=("${array[@]}")
-echo "After @ quoted expansion: ${#arr[*]}"
-for ix in ${!arr[*]}
-do
-    printf "   %s\n" "${arr[$ix]}"
-done
-		</screen>
-		<screen>
-array=({23..32} {49,50} {81..92})
-
-echo "Array size: ${#array[*]}"
-
-echo "Array items:"
-for item in ${array[*]}
-do
-    printf "   %s\n" $item
-done
-		</screen>
-	</section>
-	<section id="eval">
-		<title>eval</title>
-		<screen>
-$ i=5
-$ a_5=250
-$ eval echo $"a_$i"
-		</screen>
-		<screen>
-# neo="Neo Chen"
-# name=neo
-# eval "echo \$$name"
-
-Neo Chen
-		</screen>
-	</section>
 </section>
 
-<section id="conditions">
-	<title>conditions if and case</title>
-	<table>
-	   <title>文件目录表达式</title>
-	   <tgroup cols="2">
-	     <thead>
-	       <row>
-	          <entry>Primary</entry>
-	          <entry>意义</entry>
-	       </row>
-	     </thead>
-	    <tbody>
-	       <row>
-	          <entry>[ -a FILE ]</entry>
-	          <entry>如果 FILE 存在则为真。</entry>
-	       </row>
-	       <row>
-	          <entry>[ -b FILE ] 	</entry>
-	          <entry>如果 FILE 存在且是一个块特殊文件则为真。</entry>
-	       </row>
-	       <row>
-	          <entry>[ -c FILE ] 	</entry>
-	          <entry>如果 FILE 存在且是一个字特殊文件则为真。</entry>
-	       </row>
-	       <row>
-	          <entry>[ -d FILE ] 	</entry>
-	          <entry>如果 FILE 存在且是一个目录则为真。</entry>
-	       </row>
-	       <row>
-	          <entry>[ -e FILE ] 	</entry>
-	          <entry>如果 FILE 存在则为真。</entry>
-	       </row>
-	       <row>
-	          <entry>[ -f FILE ] 	</entry>
-	          <entry>如果 FILE 存在且是一个普通文件则为真。</entry>
-	       </row>
-	       <row>
-	          <entry>[ -g FILE ] 	</entry>
-	          <entry>如果 FILE 存在且已经设置了SGID则为真。</entry>
-	       </row>
-	       <row>
-	          <entry>[ -h FILE ] 	</entry>
-	          <entry>如果 FILE 存在且是一个符号连接则为真。</entry>
-	       </row>
-	       <row>
-	          <entry>[ -k FILE ] 	</entry>
-	          <entry>如果 FILE 存在且已经设置了粘制位则为真。</entry>
-	       </row>
-	       <row>
-	          <entry>[ -p FILE ] 	</entry>
-	          <entry>如果 FILE 存在且是一个名字管道(F如果O)则为真。</entry>
-	       </row>
-	       <row>
-	          <entry>[ -r FILE ] 	</entry>
-	          <entry>如果 FILE 存在且是可读的则为真。</entry>
-	       </row>
-	       <row>
-	          <entry>[ -s FILE ] 	</entry>
-	          <entry>如果 FILE 存在且大小不为0则为真。</entry>
-	       </row>
-	       <row>
-	          <entry>[ -t FD ] 	</entry>
-	          <entry>如果文件描述符 FD 打开且指向一个终端则为真。</entry>
-	       </row>
-	       <row>
-	          <entry>[ -u FILE ] 	</entry>
-	          <entry>如果 FILE 存在且设置了SUID (set user ID)则为真。</entry>
-	       </row>
-	       <row>
-	          <entry>[ -w FILE ] 	</entry>
-	          <entry>如果 FILE 如果 FILE 存在且是可写的则为真。</entry>
-	       </row>
-	       <row>
-	          <entry>[ -x FILE ] 	</entry>
-	          <entry>如果 FILE 存在且是可执行的则为真。</entry>
-	       </row>
-	       <row>
-	          <entry>[ -O FILE ] 	</entry>
-	          <entry>如果 FILE 存在且属有效用户ID则为真。</entry>
-	       </row>
-	       <row>
-	          <entry>[ -G FILE ] 	</entry>
-	          <entry>如果 FILE 存在且属有效用户组则为真。</entry>
-	       </row>
-	       <row>
-	          <entry>[ -L FILE ] 	</entry>
-	          <entry>如果 FILE 存在且是一个符号连接则为真。</entry>
-	       </row>
-	       <row>
-	          <entry>[ -N FILE ] 	</entry>
-	          <entry>如果 FILE 存在 and has been mod如果ied since it was last read则为真。</entry>
-	       </row>
-	       <row>
-	          <entry>[ -S FILE ] 	</entry>
-	          <entry>如果 FILE 存在且是一个套</entry>
-	       </row>
-	       <row>
-	          <entry>[ FILE1 -nt FILE2 ]</entry>
-	          <entry>如果 FILE1 has been changed more recently than FILE2, or 如果 FILE1 exists and FILE2 does not则为真。</entry>
-	       </row>
-	       <row>
-	          <entry>[ FILE1 -ot FILE2 ]</entry>
-	          <entry>如果 FILE1 比 FILE2 要老, 或者 FILE2 存在且 FILE1 不存在则为真。</entry>
-	       </row>
-	       <row>
-	          <entry>[ FILE1 -ef FILE2 ]</entry>
-	          <entry>如果 FILE1 和 FILE2 指向相同的设备和节点号则为真。</entry>
-	       </row>
-
-	    </tbody>
-	   </tgroup>
-	</table>
-	<table>
-	   <title>字符串表达式</title>
-	   <tgroup cols="2">
-	     <thead>
-	       <row>
-	          <entry>Primary</entry>
-	          <entry>意义</entry>
-	       </row>
-	     </thead>
-	    <tbody>
-	       <row>
-	          <entry>[ -o OPTIONNAME ]</entry>
-	          <entry>如果 shell选项 “OPTIONNAME” 开启则为真。</entry>
-	       </row>
-	       <row>
-	          <entry>[ -z STRING ] 	</entry>
-	          <entry>“STRING” 的长度为零则为真。</entry>
-	       </row>
-	       <row>
-	          <entry>[ -n STRING ] or [ STRING ] 	</entry>
-	          <entry>“STRING” 的长度为非零 non-zero则为真。</entry>
-	       </row>
-	       <row>
-	          <entry>[ STRING1 == STRING2 ] 	</entry>
-	          <entry>如果2个字符串相同则为真。</entry>
-	       </row>
-	       <row>
-	          <entry>[ STRING1 != STRING2 ] 	</entry>
-	          <entry>如果字符串不相等则为真。</entry>
-	       </row>
-	       <row>
-	          <entry>[ STRING1 &lt; STRING2 ] 	</entry>
-	          <entry>如果 “STRING1” sorts before “STRING2” lexicographically in the current locale则为真。</entry>
-	       </row>
-	       <row>
-	          <entry>[ STRING1 &gt; STRING2 ] 	</entry>
-	          <entry>如果 “STRING1” sorts after “STRING2” lexicographically in the current locale则为真。</entry>
-	       </row>
-	       <row>
-	          <entry>[ ARG1 OP ARG2 ] 	</entry>
-	          <entry>“OP” 为 -eq, -ne, -lt, -le, -gt or -ge. </entry>
-	       </row>
-	       </tbody>
-	   </tgroup>
-	</table>
-
-	<orderedlist>
-		<title>Arithmetic relational operators</title>
-		<listitem><para><![CDATA[ -lt (<) ]]></para></listitem>
-		<listitem><para><![CDATA[ -gt (>) ]]></para></listitem>
-		<listitem><para><![CDATA[ -le (<=) ]]></para></listitem>
-		<listitem><para><![CDATA[ -ge (>=) ]]></para></listitem>
-		<listitem><para><![CDATA[ -eq (==) ]]></para></listitem>
-		<listitem><para><![CDATA[ -ne (!=) ]]></para></listitem>
-	</orderedlist>
-
-	<table>
-	   <title>组合表达式</title>
-	   <tgroup cols="2">
-	     <thead>
-	       <row>
-	          <entry>操作</entry>
-	          <entry>效果</entry>
-	       </row>
-	     </thead>
-	    <tbody>
-	       <row>
-	          <entry>[ ! EXPR ] 	</entry>
-	          <entry>如果 EXPR 是false则为真。</entry>
-	       </row>
-	       <row>
-	          <entry>[ ( EXPR ) ] 	</entry>
-	          <entry>返回 EXPR的值。这样可以用来忽略正常的操作符优先级。</entry>
-	       </row>
-	       <row>
-	          <entry>[ EXPR1 -a EXPR2 ] 	</entry>
-	          <entry>如果 EXPR1 and EXPR2 全真则为真。</entry>
-	       </row>
-	       <row>
-	          <entry>[ EXPR1 -o EXPR2 ] 	</entry>
-	          <entry>如果 EXPR1 或者 EXPR2 为真则为真。 		</entry>
-	       </row>
-	       </tbody>
-	   </tgroup>
-	</table>
-
-	<section id="if">
-		<title>if</title>
-		<example>
-			<title>Basic conditional example if .. then</title>
-			<programlisting>
-			<![CDATA[
-               #!/bin/bash
-               if [ "foo" = "foo" ]; then
-                  echo expression evaluated as true
-               fi
-			]]>
-			</programlisting>
-		</example>
-		<example>
-			<title>Conditionals with variables</title>
-			<programlisting>
-			<![CDATA[
-               #!/bin/bash
-               T1="foo"
-               T2="bar"
-               if [ "$T1" = "$T2" ]; then
-                   echo expression evaluated as true
-               else
-                   echo expression evaluated as false
-               fi
-			]]>
-			</programlisting>
-		</example>
-		<screen>
-		<![CDATA[
-(( $# != 1 )) && bool=0 || bool=${1}
-[[ -f /tmp/test ]] && echo "True" || echo "False"
-		]]>
-		</screen>
-	</section>
-	<section>
-		<title>case</title>
-		<example>
-			<title>case</title>
-			<programlisting>
-case "$1" in
-        start)
-            start
-            ;;
-        stop)
-            stop
-            ;;
-        status)
-            status
-            ;;
-        restart)
-            stop
-            start
-            ;;
-        condrestart)
-            condrestart
-            ;;
-
-        *)
-            echo $"Usage: $0 {start|stop|restart|condrestart|status}"
-            exit 1
-esac
-			</programlisting>
-		</example>
-	</section>
-</section>
-
-<section id="loop">
-	<title>Loops for, while and until</title>
-	<section id="for">
-		<title>for</title>
-		<programlisting>
-		<![CDATA[
-#!/bin/bash
-for i in 1 2 3 4 5
-do
-   echo "Welcome $i times"
-done
-
-for i in $( ls ); do
-    echo item: $i
-done
-
-for i in `seq 1 10`;
-do
-    echo $i
-done
-
-for i in {1..5}
-do
-   echo "Welcome $i times"
-done
-
-for (( c=1; c<=5; c++ ))
-do
-	echo "Welcome $c times..."
-done
-
-for ((i=1; $i<=9;i++)); do echo $i; done
-		]]>
-		</programlisting>
-		<programlisting>
-for i in {0..10..2}
-do
-    echo "Welcome $i times"
-done
-
-for i in $(seq 1 2 20)
-do
-   echo "Welcome $i times"
-done
-		</programlisting>
-		<para>单行实例</para>
-		<programlisting>
-for ip in {1..10};do echo $ip; done
-
-for i in `seq 1 10`;do echo $i;done
-
-for ip in {81..92}; do ssh root@172.16.3.$ip date; done
-
-for n in  {23..32} {49,50} {81..92}; do mkdir /tmp/$n; echo $n; done
-		</programlisting>
-		<para>infinite loops</para>
-		<programlisting>
-		<![CDATA[
-#!/bin/bash
-for (( ; ; ))
-do
-   echo "infinite loops [ hit CTRL+C to stop]"
-done
+	&chapter.bash.variable.xml;
+	&chapter.bash.conditions.xml;
+	&chapter.bash.loop.xml;
 
 
-		]]>
-		</programlisting>
-		<para>find file</para>
-		<programlisting>
-#!/bin/bash
-for file in /etc/*
-do
-	if [ "${file}" == "/etc/resolv.conf" ]
-	then
-		countNameservers=$(grep -c nameserver /etc/resolv.conf)
-		echo "Total  ${countNameservers} nameservers defined in ${file}"
-		break
-	fi
-done
-		</programlisting>
-		<para>backup file</para>
-		<programlisting>
-#!/bin/bash
-FILES="$@"
-for f in $FILES
-do
-        # if .bak backup file exists, read next file
-	if [ -f ${f}.bak ]
-	then
-		echo "Skiping $f file..."
-		continue  # read next file and skip cp command
-	fi
-        # we are hear means no backup file exists, just use cp command to copy file
-	/bin/cp $f $f.bak
-done
-		</programlisting>
-		<screen>
-for n in  {23..32} {49,50} {81..92}; do mkdir /tmp/$n; echo $n; done
-		</screen>
-	</section>
-	<section id="while">
-		<title>while</title>
-		<programlisting>
-		<![CDATA[
-#!/bin/bash
-COUNTER=0
-while [  $COUNTER -lt 10 ]; do
-    echo The counter is $COUNTER
-    let COUNTER=COUNTER+1
-done
-		]]>
-		</programlisting>
-		<programlisting>
-		<![CDATA[
-while read name age
-do
-	echo $name $age
-done << EOF
-neo 30
-jam 31
-john 29
-EOF
-
-
-while read name age
-do
-	[[ $age -gt 30 ]] && echo $name
-done << EOF
-neo 30
-jam 31
-john 29
-EOF
-		]]>
-		</programlisting>
-		<programlisting>
-		<![CDATA[
-$ cat mount.sh
-#!/bin/sh
-while read LINE
-do
-
-	s=`echo $LINE|awk '{print $1}'`
-	d=`echo $LINE|awk '{print $2}'`
-
-	umount -f $d
-	mount -t nfs4 $s $d
-
-done < mount.conf
-
-$ cat mount.conf
-172.16.0.1:/	/www/logs/1
-172.16.0.2:/	/www/logs/2
-172.16.0.3:/	/www/logs/3
-172.16.0.4:/	/www/logs/4
-172.16.0.5:/	/www/logs/5
-		]]>
-		</programlisting>
-	</section>
-	<section id="until">
-		<title>until</title>
-		<programlisting>
-		<![CDATA[
-#!/bin/bash
-COUNTER=20
-until [  $COUNTER -lt 10 ]; do
-    echo COUNTER $COUNTER
-    let COUNTER-=1
-done
-		]]>
-		</programlisting>
-	</section>
-</section>
 <section id="functions">
 	<title>Functions</title>
 	<example>
@@ -860,17 +521,20 @@ $ echo $named
 		</example>
 		<screen>
 		<![CDATA[
-READ_TIMEOUT=60  
-read -t "$READ_TIMEOUT" input  
-   
-# if you do not want quotes, then escape it  
-input=$(sed "s/[;\`\"\$\' ]//g" <<< $input)  
-   
-# For reading number, then you can escape other characters  
-input=$(sed 's/[^0-9]*//g' <<< $input)  	
-		]]>	
+READ_TIMEOUT=60
+read -t "$READ_TIMEOUT" input
+
+# if you do not want quotes, then escape it
+input=$(sed "s/[;\`\"\$\' ]//g" <<< $input)
+
+# For reading number, then you can escape other characters
+input=$(sed 's/[^0-9]*//g' <<< $input)
+		]]>
 		</screen>
 	</section>
 </section>
+
+	&chapter.bash.example.xml;
+
 </chapter>
 
