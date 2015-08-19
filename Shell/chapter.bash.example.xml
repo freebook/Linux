@@ -2,11 +2,6 @@
 <!-- $Id: chapter.shell.example.xml 376 2012-03-21 03:35:46Z netkiller $ -->
 <section id="example">
 	<title>Example</title>
-
-	<!-- <section>
-    	<title></title>
-    </section> -->
-    
 	<section>
 		<title>有趣的Shell</title>
 		<para>运行后会不停的fork新的进程，直到你的资源消耗尽。</para>
