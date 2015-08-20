@@ -1,4 +1,4 @@
-<chapter id="system.process">
+<chapter id="index"><?dbhtml dir="process" ?>
 	<title>Process</title>
 	<section id="top">
 		<title>top - display Linux tasks</title>

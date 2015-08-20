@@ -1,4 +1,4 @@
-<chapter id="harddisk">
+<chapter id="index"><?dbhtml dir="harddisk" ?>
 	<title>Harddisk</title>
 	<para>主分区最多4个</para>
 	<para>逻辑分区:</para>
@@ -638,7 +638,7 @@ $ sudo rmmod loop des cryptoloop
 
 </chapter>
 
-<chapter id="removable.storage">
+<chapter id="index"><?dbhtml dir="removable" ?>
 	<title>Removable Storage</title>
 	<para>eject - eject removable media</para>
 	<screen>

@@ -1,54 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="system.infomation">
-	<title>System Infomation</title>
-	<section id="system.cpu">
-		<title>Cpu Bit</title>
-		<screen>
-neo@netkiller:~$ uname -a
-Linux netkiller 2.6.28-15-server #52-Ubuntu SMP Wed Sep 9 11:34:09 UTC 2009 x86_64 GNU/Linux
-
-neo@netkiller:~$ getconf LONG_BIT
-64
-		</screen>
-	</section>
-</chapter>
-<chapter id="system.shutdown">
-	<title>shutdown</title>
-	<screen>
-shutdown -h now
-shutdown -h 10:00 	10点关机
-shutdown -h +10  	10mins后关机
-shutdown -r now   	reboot at once
-shutdown -r +30 	'System will reboot in 30mins'
-shutdown -k 		'System will reboot'		
-	</screen>
-</chapter>	
-<chapter id="system.profile">
-	<title>Profile</title>
-	<section>
-		<title>shell</title>
-		<screen>
-$ chsh /bin/bash		
-		</screen>
-	</section>
-</chapter>
-
 <!-- =========================================================================== -->	
-	&chapter.introduction;
+	&chapter.introduction.xml;
 	&chapter.kernel.xml;
 <!-- =========================================================================== -->
 	&chapter.system.package;	
-	&chapter.system.device.info.xml;
+	&chapter.device.xml;
 	&chapter.system.locale;
 	&chapter.system.console;
-	&chapter.system.harddisk;
-	&chapter.system.filesystem.xml;
-	&chapter.system.network.xml;
+	&chapter.harddisk.xml;
+	&chapter.filesystem.xml;
+	&chapter.network.xml;
 	&chapter.system.logging.xml;
 	&chapter.system.service;
 <!-- =========================================================================== -->
-	&chapter.system.process;
-	&chapter.system.permission;	
+	&chapter.process.xml;
+	&chapter.permission.xml;	
 <!-- =========================================================================== -->
 	&chapter.etc.xml;
 <!-- =========================================================================== -->

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.system.filesystem.xml 500 2012-12-04 09:01:55Z netkiller $ -->
-<chapter id="filesystem">
+<chapter id="index"><?dbhtml dir="filesystem" ?>
 	<title>File System</title>
 	<section id="mount">
 		<title>Mount partition</title>

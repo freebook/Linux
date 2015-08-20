@@ -1,5 +1,5 @@
-<chapter id="authentication">
-	<title>Authentication</title>
+<chapter id="index"><?dbhtml dir="permission" ?>
+	<title>Permission</title>
 	<section id="adduser">
 		<title>User</title>
 		<section>
@@ -144,9 +144,6 @@ mysql:x:501:
 			</screen>
 		</section>
 	</section>	
-</chapter>
-<chapter id="permission">
-	<title>Permission</title>
 	<section id="umask">
 		<title>umask</title>
 		<screen>

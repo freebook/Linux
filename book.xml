@@ -27,7 +27,6 @@
 	<!ENTITY book.history 		SYSTEM "book.history.xml">
 
 	<!ENTITY chapter.install 		SYSTEM "chapter.install.xml">
-	<!ENTITY chapter.introduction 	SYSTEM "chapter.introduction.xml">
 	<!ENTITY chapter.faq.xml	 	SYSTEM "chapter.faq.xml">
 
 	<!ENTITY % system.doctype.entity.xml SYSTEM "System/doctype.entity.xml">
@@ -168,7 +167,7 @@ a2p,acyclic,addftinfo,addpart,afmtodit,animate,anytopnm,apg,apgbfm,apport-bug,ap
 	&book.dedication;
 	&book.preface;
 <!-- =========================================================================== -->
-	&chapter.introduction;
+
 <!-- =========================================================================== -->
 	&part.system.xml;
 <!-- =========================================================================== -->
