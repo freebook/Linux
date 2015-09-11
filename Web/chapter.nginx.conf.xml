@@ -456,6 +456,25 @@ location ~ .*\.(sqlite|sq3)$ {
     deny all;
 }
 			</screen>
+			<para>IP 地址</para>
+			<screen>
+location / {
+	deny  192.168.0.1;
+	allow 192.168.1.0/24;
+	allow 10.1.1.0/16;
+	allow 2001:0db8::/32;
+	deny  all;
+}			
+			</screen>
+			<para>限制IP访问*.php文件</para>
+			<screen>    
+location ~ ^/private/.*\.php$
+{
+    allow   222.222.22.35;
+    allow   192.168.1.0/249;
+    deny    all;
+}			
+			</screen>
 		</section>
 		<section id="auth_basic">
 			<title>auth_basic</title>
