@@ -155,12 +155,16 @@ $ ncftpput -R -u netkiller -p password netkiller.hikz.com /home/netkiller/www ~/
 	</section>
 	<section id="vsftpd">
 		<title>vsftpd - The Very Secure FTP Daemon</title>
-		<screen>
+		<section>
+			<title>安装 vsftpd</title>
+			<section>
+				<title>Ubuntu 环境安装</title>
+				<screen>
 $ sudo apt-get install vsftpd
-		</screen>
-		<para>test</para>
-		<screen>
-		<![CDATA[
+				</screen>
+				<para>test</para>
+				<screen>
+				<![CDATA[
 [08:25:37 jobs:0] $ ncftp ftp://127.0.0.1
 NcFTP 3.2.1 (Jul 29, 2007) by Mike Gleason (http://www.NcFTP.com/contact/).
 Connecting to 127.0.0.1...
@@ -170,10 +174,10 @@ Login successful.
 Logged in to 127.0.0.1.
 Current remote directory is /.
 ncftp / >
-		]]>
-		</screen>
-		<para>enable local user</para>
-		<screen>
+				]]>
+				</screen>
+				<para>enable local user</para>
+				<screen>
 $ sudo vim /etc/vsftpd.conf
 
 # Uncomment this to allow local users to log in.
@@ -181,10 +185,10 @@ local_enable=YES
 chroot_local_user=YES
 
 $ sudo /etc/init.d/vsftpd reload
-		</screen>
-		<para>testing for local user</para>
-		<screen>
-		<![CDATA[
+				</screen>
+				<para>testing for local user</para>
+				<screen>
+				<![CDATA[
 $ ncftp ftp://neo@127.0.0.1/
 NcFTP 3.2.1 (Jul 29, 2007) by Mike Gleason (http://www.NcFTP.com/contact/).
 Connecting to 127.0.0.1...
@@ -200,8 +204,43 @@ Login successful.
 Logged in to 127.0.0.1.
 Current remote directory is /home/neo.
 ncftp /home/neo >
-		]]>
-		</screen>
+				]]>
+				</screen>				
+			</section>
+			<section>
+				<title>CentOS 7 环境安装</title>
+				<screen>
+				<![CDATA[
+yum install -y vsftpd
+
+systemctl enable vsftpd
+
+cp /etc/vsftpd/vsftpd.conf{,.original}
+
+sed -i 's/anonymous_enable=YES/anonymous_enable=NO/' /etc/vsftpd/vsftpd.conf
+sed -i 's/#chroot_local_user=YES/chroot_local_user=YES/' /etc/vsftpd/vsftpd.conf
+sed -i 's/listen=NO/listen=YES/' /etc/vsftpd/vsftpd.conf
+sed -i 's/listen_ipv6=YES/listen_ipv6=NO/' /etc/vsftpd/vsftpd.conf
+
+echo "allow_writeable_chroot=YES" >> /etc/vsftpd/vsftpd.conf
+
+systemctl start vsftpd
+				]]>
+				</screen>
+				<para>firewalld 防火墙</para>
+				<screen>
+# firewall-cmd --permanent --add-port=21/tcp				
+				</screen>
+				<para>iptables</para>
+				<screen>
+sed -i 's/IPTABLES_MODULES=""/IPTABLES_MODULES="ip_conntrack_ftp"/' /etc/sysconfig/iptables-config
+
+# vim /etc/sysconfig/iptables
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 20 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 21 -j ACCEPT
+				</screen>
+			</section>
+		</section>
 		<section>
 			<title>ftp 帐号的shell权限</title>
 			<para>我们不想让FTP用户通过shell登录系统, 可以将用户的Shell改为/sbin/nologin</para>
@@ -349,7 +388,17 @@ ncftp ftp://www:chen@172.16.0.1
 				</screen>
 			</section>
 		</section>
-
+		<section>
+			<title>FAT</title>
+			<section>
+				<title>vsftpd: refusing to run with writable root inside chroot()</title>
+				<para>添加 allow_writeable_chroot=YES 项到 /etc/vsftpd/vsftpd.conf 配置文件</para>
+				<screen>
+echo "allow_writeable_chroot=YES" >> /etc/vsftpd/vsftpd.conf
+				</screen>
+				<screen>重启 vsftpd </screen>
+			</section>
+		</section>
 	</section>
 	<section id="proftpd">
 		<title>ProFTPD + MySQL / OpenLDAP 用户认证</title>
