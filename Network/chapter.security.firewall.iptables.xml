@@ -189,6 +189,28 @@ Chain OUTPUT (policy ACCEPT)
 target     prot opt source               destination
 
 		</screen>
+		<para>显示行号</para>
+		<screen>
+# iptables --list -nv --line-number 
+Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
+num   pkts bytes target     prot opt in     out     source               destination         
+1      139 15916 ACCEPT     all  --  *      *       0.0.0.0/0            0.0.0.0/0            state RELATED,ESTABLISHED
+2        1    92 ACCEPT     icmp --  *      *       0.0.0.0/0            0.0.0.0/0           
+3        0     0 ACCEPT     all  --  lo     *       0.0.0.0/0            0.0.0.0/0           
+4        1    40 ACCEPT     tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            state NEW tcp dpt:22
+5        0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            state NEW tcp dpt:80
+6        0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            state NEW tcp dpt:25
+7        0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            state NEW tcp dpt:20
+8        2   104 ACCEPT     tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            state NEW tcp dpt:21
+9        1    40 REJECT     all  --  *      *       0.0.0.0/0            0.0.0.0/0            reject-with icmp-host-prohibited
+
+Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
+num   pkts bytes target     prot opt in     out     source               destination         
+1        0     0 REJECT     all  --  *      *       0.0.0.0/0            0.0.0.0/0            reject-with icmp-host-prohibited
+
+Chain OUTPUT (policy ACCEPT 137 packets, 24640 bytes)
+num   pkts bytes target     prot opt in     out     source               destination		
+		</screen>
 		<section>
 			<title>CentOS/Redhat TUI 工具</title>
 			<para>If iptables is not running, you can enable it by running:</para>
