@@ -3,24 +3,55 @@
 	<title>Samba</title>
 	<section>
 		<title>install</title>
-		<para>环境 ubuntu 8.10</para>
-		<screen>
+		<section>
+			<title>Ubuntu</title>
+			<para>环境 ubuntu 8.10</para>
+			<screen>
 $ sudo apt-get install samba
-		</screen>
-		<para>查看Samba 服务器的端口</para>
-		<screen>
+			</screen>
+			<para>查看Samba 服务器的端口</para>
+			<screen>
 neo@shenzhen:~$ sudo netstat -tlnp |grep smb
 tcp        0      0 0.0.0.0:139             0.0.0.0:*               LISTEN     4480/smbd
 tcp        0      0 0.0.0.0:445             0.0.0.0:*               LISTEN     4480/smbd
 neo@shenzhen:~$
-		</screen>
-		<para>防火墙</para>
-		<screen>
-neo@shenzhen:~$ iptables -L
-		</screen>
-		<para>iptables -L</para>
+			</screen>
+		</section>
+		<section>
+			<title>CentOS</title>
+			<screen>
+yum install -y samba
+
+cp /etc/samba/smb.conf{,.original}
+
+systemctl enable smb
+systemctl start smb
+			</screen>
+		</section>
+		<section>
+			<title>firewall</title>
+			<para>防火墙</para>
+			<screen>
+firewall-cmd --permanent --add-port=137/tcp
+firewall-cmd --permanent --add-port=138/tcp
+firewall-cmd --permanent --add-port=139/tcp
+firewall-cmd --permanent --add-port=445/tcp
+firewall-cmd --permanent --add-port=901/tcp
+
+firewall-cmd --reload
+			</screen>
+			<para>iptables -L</para>
+		</section>
+		<section>
+			<title>SELinux Configuration</title>
+			<screen>
+setsebool -P samba_enable_home_dirs on
+chcon -t samba_share_t /home/samba
+			</screen>
+			<para>/home/samba 改为你共享的目录</para>
+		</section>
 	</section>
-	<section>
+	<section id="smb.conf">
 		<title>smb.conf</title>
 		<para>security = share|user 共享|用户模式</para>
 		<screen>
@@ -38,109 +69,88 @@ bind interfaces only = true
 			</screen>
 		</section>
 	</section>
-	<section>
-		<title>by Example</title>
-		<para>Backup the /etc/samba/smb.conf file: </para>
+	
+	<section id="testparm">
+		<title>testparm - check an smb.conf configuration file for internal correctness</title>
 		<screen>
-sudo cp /etc/samba/smb.conf /etc/samba/smb.conf.original
-		</screen>
-		<section>
-			<title>share</title>
-			<para>security = share</para>
-			<screen>
-			<![CDATA[
-[tmp]
-   comment = test
-   writable = yes
-   locking = yes
-   path = /tmp
-   public = yes
+# testparm
+Load smb config files from /etc/samba/smb.conf
+rlimit_max: increasing rlimit_max (1024) to minimum Windows limit (16384)
+Processing section "[homes]"
+Processing section "[printers]"
+Loaded services file OK.
+Server role: ROLE_STANDALONE
+Press enter to see a dump of your service definitions
 
-[neo]
-   comment = neo
-   writable = yes
-   locking = yes
-   path = /home/neo/
-   public = yes
+[global]
+	workgroup = MYGROUP
+	server string = Samba Server Version %v
+	log file = /var/log/samba/log.%m
+	max log size = 50
+	idmap config * : backend = tdb
+	cups options = raw
 
-[htdocs]
-   comment = neo
-   writable = yes
-   locking = yes
-   path = /opt/lampp/htdocs
-   public = yes
+[homes]
+	comment = Home Directories
+	read only = No
+	browseable = No
 
-			]]>
-			</screen>
-		</section>
-		<section>
-			<title>user</title>
-			<screen>
-sudo cp /etc/samba/smb.conf /etc/samba/smb.conf.original
-			</screen>
-			<screen>
-security = user
-			</screen>
-			<para>add user</para>
-			<screen>
-sudo useradd -s /bin/true neo
-sudo smbpasswd -L -a neo
-			</screen>
-			<para>enable</para>
-			<screen>
-sudo smbpasswd -L -e neo
-			</screen>
-			<para>del user</para>
-			<screen>
-sudo smbpasswd -L -x neo
-			</screen>
-		</section>
-
-	<section>
-		<title>test</title>
-		<para>测试配置文件是否正确</para>
-		<screen>
-$ testparm
-		</screen>
-		<para>查看共享目录</para>
-		<screen>
-$ smbclient -L localhost -N
-
-Domain=[WORKGROUP] OS=[Unix] Server=[Samba 3.3.2]
-
-        Sharename       Type      Comment
-        ---------       ----      -------
-        print$          Disk      Printer Drivers
-        developer       Disk      Development
-        IPC$            IPC       IPC Service (ubuntu server (Samba, Ubuntu))
-Domain=[WORKGROUP] OS=[Unix] Server=[Samba 3.3.2]
-
-        Server               Comment
-        ---------            -------
-        PRINTSERVER
-        UBUNTU               ubuntu server (Samba, Ubuntu)
-
-        Workgroup            Master
-        ---------            -------
-        WORKGROUP            PRINTSERVER
-
-		</screen>
-		<para>Windows 访问测试</para>
-		<screen>
-C:\>net view \\192.168.3.40
-在 \\192.168.3.40 的共享资源
-
-ubuntu server (Samba, Ubuntu)
-
-共享名     类型  使用为  注释
-
-----------------------------------------------------------
-developer  Disk  Development
-命令运行完毕，但发生一个或多个错误。
+[printers]
+	comment = All Printers
+	path = /var/spool/samba
+	printable = Yes
+	print ok = Yes
+	browseable = No
+		
 		</screen>
 	</section>
+	<section id="smbstatus">
+		<title>smbstatus - report on current Samba connections</title>
+		<screen>
+# smbstatus 
+
+Samba version 4.1.12
+PID     Username      Group         Machine                        
+-------------------------------------------------------------------
+
+Service      pid     machine       Connected at
+-------------------------------------------------------
+
+No locked files
+		</screen>
+		<para>链接共享目录后再次查看</para>
+		<screen>
+# smbstatus 
+
+Samba version 4.1.12
+PID     Username      Group         Machine                        
+-------------------------------------------------------------------
+12507     www           www           192.168.4.69 (ipv4:192.168.4.69:65102)
+
+Service      pid     machine       Connected at
+-------------------------------------------------------
+www          12507   192.168.4.69  Wed Sep 23 01:34:44 2015
+IPC$         12507   192.168.4.69  Wed Sep 23 01:34:43 2015
+
+Locked files:
+Pid          Uid        DenyMode   Access      R/W        Oplock           SharePath   Name   Time
+--------------------------------------------------------------------------------------------------
+12507        80         DENY_NONE  0x100081    RDONLY     NONE             /www   SOA   Wed Sep 23 02:01:22 2015
+12507        80         DENY_NONE  0x100081    RDONLY     NONE             /www   SOA/queue   Wed Sep 23 02:01:22 2015
+12507        80         DENY_NONE  0x100081    RDONLY     NONE             /www   .   Wed Sep 23 01:37:53 2015
+12507        80         DENY_NONE  0x100081    RDONLY     NONE             /www   .   Wed Sep 23 01:58:22 2015
+		</screen>
 	</section>
-	<section>
+	<section id="smbpasswd">
+		<title>smbpasswd - change a user's SMB password</title>
+		<screen>
+# smbpasswd -a www
+New SMB password:
+Retype new SMB password:
+Added user www.
+		</screen>
+	</section>
+	<section id="nmblookup">
 		<title>nmblookup - NetBIOS over TCP/IP client used to lookup NetBIOS names</title>
 		<screen>
 		<![CDATA[
@@ -157,7 +167,7 @@ Looking up status of 172.16.0.5
         ]]>
 		</screen>
 	</section>
-	<section>
+	<section id="smbfs">
 		<title>smbfs/smbmount/smbumount</title>
 		<screen>
 sudo apt-get install smbfs
@@ -181,7 +191,7 @@ $ mount -t smbfs -o username=jwhittal \\\\172.16.1.3\\c$ /mnt/thumb
 $ mount -t cifs //192.168.0.2/ /mnt/
 		</screen>
 	</section>
-	<section>
+	<section id="smbclient">
 		<title>smbclient - ftp-like client to access SMB/CIFS resources on servers</title>
 		<screen>
 $ sudo apt-get install smbclient
@@ -280,10 +290,116 @@ smb: \> quit
 			</screen>
 		</section>
 	</section>
-	<section>
+	<section id="smbtar">
 		<title>smbtar - shell script for backing up SMB/CIFS shares directly to UNIX tape drives</title>
 	</section>
-	<section>
+	
+
+	<section id="example">
+		<title>by Example</title>
+		<para>Backup the /etc/samba/smb.conf file: </para>
+		<screen>
+sudo cp /etc/samba/smb.conf /etc/samba/smb.conf.original
+		</screen>
+		<section>
+			<title>share</title>
+			<para>security = share</para>
+			<screen>
+			<![CDATA[
+[tmp]
+   comment = test
+   writable = yes
+   locking = yes
+   path = /tmp
+   public = yes
+
+[neo]
+   comment = neo
+   writable = yes
+   locking = yes
+   path = /home/neo/
+   public = yes
+
+[htdocs]
+   comment = neo
+   writable = yes
+   locking = yes
+   path = /opt/lampp/htdocs
+   public = yes
+
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>user</title>
+			<screen>
+sudo cp /etc/samba/smb.conf /etc/samba/smb.conf.original
+			</screen>
+			<screen>
+security = user
+			</screen>
+			<para>add user</para>
+			<screen>
+sudo useradd -s /bin/true neo
+sudo smbpasswd -L -a neo
+			</screen>
+			<para>enable</para>
+			<screen>
+sudo smbpasswd -L -e neo
+			</screen>
+			<para>del user</para>
+			<screen>
+sudo smbpasswd -L -x neo
+			</screen>
+		</section>
+
+		<section>
+			<title>test</title>
+			<para>测试配置文件是否正确</para>
+			<screen>
+$ testparm
+			</screen>
+			<para>查看共享目录</para>
+			<screen>
+$ smbclient -L localhost -N
+
+Domain=[WORKGROUP] OS=[Unix] Server=[Samba 3.3.2]
+
+        Sharename       Type      Comment
+        ---------       ----      -------
+        print$          Disk      Printer Drivers
+        developer       Disk      Development
+        IPC$            IPC       IPC Service (ubuntu server (Samba, Ubuntu))
+Domain=[WORKGROUP] OS=[Unix] Server=[Samba 3.3.2]
+
+        Server               Comment
+        ---------            -------
+        PRINTSERVER
+        UBUNTU               ubuntu server (Samba, Ubuntu)
+
+        Workgroup            Master
+        ---------            -------
+        WORKGROUP            PRINTSERVER
+
+			</screen>
+			<para>Windows 访问测试</para>
+			<screen>
+C:\>net view \\192.168.3.40
+在 \\192.168.3.40 的共享资源
+
+ubuntu server (Samba, Ubuntu)
+
+共享名     类型  使用为  注释
+
+----------------------------------------------------------
+developer  Disk  Development
+命令运行完毕，但发生一个或多个错误。
+			</screen>
+		</section>
+	</section>	
+	
+	
+	<section id="faq">
 		<title>FAQ</title>
 		<section>
 			<title>smbd/service.c:make_connection_snum(1013)</title>
