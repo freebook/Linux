@@ -42,4 +42,34 @@ home_mailbox = Maildir/
 		<title>Rspamd</title>
 		<para>Rspamd是一个反垃圾邮件系统，因为使用事件模型和正则表达式优化，其设计工作速度比SpamAssassin还 要快。目前推出的功能： regexp规则过滤的不同部分的信息;一些内置的功能分析的信息;模糊哈希支持; SURBL滤波器;电子邮件和性质表支持;控制界面进行远程管理和统计信息收集，一个Perl和卢阿插件系统;统计支持（定向结构刨花板/簸扬） ;兼容SpamAssassin ;和一个客户端程序的电子邮件扫描。类似的规则， rspamd约10倍SpamAssassin 。</para>
 	</section>
+	<section id="faq">
+		<title>FAQ</title>
+		<section>
+			<title>SMTP ERROR: RCPT TO command failed: 501 5.1.3 Bad recipient address syntax</title>
+			<para>客户端反馈</para>
+			<screen>
+			<![CDATA[
+SMTP ERROR: RCPT TO command failed: 501 5.1.3 Bad recipient address syntax
+2015-09-23 08:06:12	SMTP Error: The following recipients failed: root@example.com: Bad recipient address syntax
+<strong>SMTP Error: The following recipients failed: root@example.com: Bad recipient address syntax			
+			]]>
+			</screen>
+			<para>/var/log/maillog</para>
+			<screen>
+			<![CDATA[
+Sep 23 16:12:00 smtp1 postfix/smtpd[982]: NOQUEUE: reject: RCPT from unknown[202.130.101.34]: 554 5.7.1 <netkiller@msn.com>: Relay access denied; from=<root@mail.example.com> to=<netkiller@msn.com> proto=ESMTP helo=<localhost.localdomain>
+			]]>			
+			</screen>
+			<para>问题原因是 mynetworks 配置项没有放行客户端</para>
+			<screen>
+[root@netkiller.github.io ~]# postconf | grep permit_mynetworks
+smtpd_recipient_restrictions = permit_mynetworks, reject_unauth_destination			
+			</screen>
+			<para>设置mynetworks配置项，允许IP使用SMTP发送邮件</para>
+			<screen>
+[root@netkiller.github.io ~]# postconf -n | grep mynetworks
+mynetworks = 202.130.101.34
+			</screen>
+		</section>
+	</section>
 </chapter>
