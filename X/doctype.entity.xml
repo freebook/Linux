@@ -8,3 +8,4 @@
 	<!ENTITY chapter.office.xml				SYSTEM "chapter.office.xml">
 	<!ENTITY chapter.font.xml				SYSTEM "chapter.font.xml">
 	<!ENTITY chapter.x.unity.xml			SYSTEM "chapter.x.unity.xml">
+	<!ENTITY chapter.vnc.xml				SYSTEM "chapter.vnc.xml">
