@@ -89,6 +89,51 @@ location ~ \.php$ {
 			</qandaentry>
 		</qandaset>
 	</section>
+	
+	<section>
+		<title>413 Request Entity Too Large</title>
+		<qandaset>
+			<qandaentry>
+				<question>
+					<para>413 Request Entity Too Large</para>
+					<para>error.log 提示：</para>
+					<para>client intended to send too large body</para>
+				</question>
+				<answer>
+					<para>client_max_body_size 8m;</para>
+					<para>修改 /etc/nginx/nginx.conf 文件。</para>
+					<screen>
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  /var/log/nginx/access.log  main;
+
+    sendfile        on;
+    #tcp_nopush     on;
+
+    keepalive_timeout  65;
+
+    server_tokens off;
+    gzip  on;
+    gzip_min_length 1k;
+    gzip_types text/plain text/html text/css application/javascript text/javascript application/x-javascript text/xml application/xml application/xml+rss application/json;
+    gzip_vary on;
+
+    client_max_body_size 8m;
+
+    include /etc/nginx/conf.d/*.conf;
+}
+					</screen>
+				</answer>
+			</qandaentry>
+		</qandaset>
+	</section>	
+	
 	<section>
 		<title>nginx: [emerg] "proxy_pass" cannot have URI part in location given by regular expression</title>
 		<qandaset>
