@@ -42,6 +42,46 @@ home_mailbox = Maildir/
 		<title>Rspamd</title>
 		<para>Rspamd是一个反垃圾邮件系统，因为使用事件模型和正则表达式优化，其设计工作速度比SpamAssassin还 要快。目前推出的功能： regexp规则过滤的不同部分的信息;一些内置的功能分析的信息;模糊哈希支持; SURBL滤波器;电子邮件和性质表支持;控制界面进行远程管理和统计信息收集，一个Perl和卢阿插件系统;统计支持（定向结构刨花板/簸扬） ;兼容SpamAssassin ;和一个客户端程序的电子邮件扫描。类似的规则， rspamd约10倍SpamAssassin 。</para>
 	</section>
+	<section id="maillog">
+		<title>/var/log/maillog</title>
+		<para>邮件正常发送时的日志</para>
+		<screen>
+		<![CDATA[
+# grep '7905611F797'  maillog
+Nov  2 16:07:58 smtp2.example.com postfix/pickup[7377]: 7905611F797: uid=0 from=<root>
+Nov  2 16:07:58 smtp2.example.com postfix/cleanup[7683]: 7905611F797: message-id=<20151102080758.GA7677@smtp2.example.com>
+Nov  2 16:07:58 smtp2.example.com postfix/qmgr[21697]: 7905611F797: from=<root@mail2.example.com>, size=461, nrcpt=1 (queue active)
+Nov  2 16:08:08 smtp2.example.com postfix/smtp[7674]: 7905611F797: to=<skyline.chen@icloud.com>, relay=mx3.mail.icloud.com[17.172.34.64]:25, delay=10, delays=0.04/0/6.2/4.1, dsn=2.5.0, status=sent (250 2.5.0 Ok.)
+Nov  2 16:08:08 smtp2.example.com postfix/qmgr[21697]: 7905611F797: removed
+		]]>
+		</screen>
+		<para>被封IP地址</para>
+		<screen>
+		<![CDATA[
+Nov  2 15:24:25 smtp2.example.com postfix/smtpd[6940]: 6D21E11F76A: client=unknown[172.18.52.137]
+Nov  2 15:24:25 smtp2.example.com postfix/cleanup[6945]: 6D21E11F76A: message-id=<17f164cf2441ad60eb2ce794db4959bf@localhost.localdomain>
+Nov  2 15:24:25 smtp2.example.com postfix/qmgr[21697]: 6D21E11F76A: from=<cs@example.com>, size=15050, nrcpt=1 (queue active)
+Nov  2 15:24:25 smtp2.example.com postfix/smtp[6922]: 6D21E11F76A: lost connection with mx3.QQ.com[103.7.30.40] while performing the HELO handshake
+Nov  2 15:24:30 smtp2.example.com postfix/smtp[6922]: 6D21E11F76A: to=<1141096962@qq.com>, relay=mx2.QQ.com[184.105.206.86]:25, delay=5.2, delays=0.01/0/4.9/0.35, dsn=5.0.0, status=bounced (host mx2.QQ.com[184.105.206.86] said: 550 Connection frequency limited. http://service.mail.qq.com/cgi-bin/help?subtype=1&&id=20022&&no=1000722 (in reply to MAIL FROM command))
+Nov  2 15:24:30 smtp2.example.com postfix/bounce[6946]: 6D21E11F76A: sender non-delivery notification: A76A511F777
+Nov  2 15:24:30 smtp2.example.com postfix/qmgr[21697]: 6D21E11F76A: removed
+		]]>
+		</screen>
+		<para>虚假地址，产生 Connection timed out</para>
+		<screen>
+		<![CDATA[
+Nov  2 16:32:21 smtp2.example.com postfix/smtp[7732]: 1DCD811F940: to=<1608014274@qqq.com>, relay=none, delay=368099, delays=368069/0.05/30/0, dsn=4.4.1, status=deferred (connect to qqq.com[60.190.249.48]:25: Connection timed out)		
+		]]>
+		</screen>
+		<section>
+			<title>日志统计</title>
+			<para>计算每分钟发送数量</para>
+			<screen>
+# grep 'to='  maillog | grep '15:25:' | wc -l
+592
+			</screen>
+		</section>
+	</section>
 	<section id="faq">
 		<title>FAQ</title>
 		<section>
