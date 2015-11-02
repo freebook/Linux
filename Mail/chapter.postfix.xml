@@ -57,6 +57,16 @@ Nov  2 16:08:08 smtp2.example.com postfix/qmgr[21697]: 7905611F797: removed
 		</screen>
 		<para>被封IP地址</para>
 		<screen>
+		<![CDATA[		
+Nov  2 15:25:57 smtp2.example.com postfix/cleanup[6993]: C17AC11F78C: message-id=<20151102072557.C17AC11F78C@mail2.example.com>
+Nov  2 15:25:57 smtp2.example.com postfix/bounce[6992]: 0E6FE11F777: sender non-delivery notification: C17AC11F78C
+Nov  2 15:25:57 smtp2.example.com postfix/qmgr[21697]: C17AC11F78C: from=<>, size=17147, nrcpt=1 (queue active)
+Nov  2 15:25:58 smtp2.example.com postfix/smtp[6928]: C17AC11F78C: to=<cs@example.com>, relay=mx.qiye.163.com[123.125.50.217]:25, delay=0.96, delays=0/0/0.53/0.42, dsn=5.0.0, status=bounced (host mx.qiye.163.com[123.125.50.217] said: 554 DT:SPM mx6, Q9OowEC5hUgGEDdWRyf1AQ--.1S2 1446449158 http://mail.163.com/help/help_spam_16.htm?ip=202.82.201.90&hostid=mx6&time=1446449158 (in reply to end of DATA command))
+Nov  2 15:25:58 smtp2.example.com postfix/qmgr[21697]: C17AC11F78C: removed
+		]]>
+		</screen>
+		<para>发送密度过高</para>
+		<screen>
 		<![CDATA[
 Nov  2 15:24:25 smtp2.example.com postfix/smtpd[6940]: 6D21E11F76A: client=unknown[172.18.52.137]
 Nov  2 15:24:25 smtp2.example.com postfix/cleanup[6945]: 6D21E11F76A: message-id=<17f164cf2441ad60eb2ce794db4959bf@localhost.localdomain>
