@@ -249,7 +249,107 @@ mkdir $CATALINA_HOME/neo
 		</screen>
 	</section>
 </section>
+<section id="ssi">
+	<title>SSI</title>
+	<para>编辑 context.xml 文件，增加 privileged="true 属性</para>
+	<screen>
+	<![CDATA[
+# vim /srv/apache-tomcat/conf/context.xml
 
+<Context privileged="true">
+
+    <!-- Default set of monitored resources -->
+    <WatchedResource>WEB-INF/web.xml</WatchedResource>
+
+    <!-- Uncomment this to disable session persistence across Tomcat restarts -->
+    <!--
+    <Manager pathname="" />
+    -->
+
+    <!-- Uncomment this to enable Comet connection tacking (provides events
+         on session expiration as well as webapp lifecycle) -->
+    <!--
+    <Valve className="org.apache.catalina.valves.CometConnectionManagerValve" />
+    -->
+
+</Context>
+	]]>
+	</screen>
+	<para>编辑 web.xml 文件，取消下面的注释</para>
+	<screen>
+	<![CDATA[
+# vim /srv/apache-tomcat/conf/web.xml	
+	
+    <servlet>
+        <servlet-name>ssi</servlet-name>
+        <servlet-class>
+          org.apache.catalina.ssi.SSIServlet
+        </servlet-class>
+        <init-param>
+          <param-name>buffered</param-name>
+          <param-value>1</param-value>
+        </init-param>
+        <init-param>
+          <param-name>debug</param-name>
+          <param-value>0</param-value>
+        </init-param>
+        <init-param>
+          <param-name>expires</param-name>
+          <param-value>666</param-value>
+        </init-param>
+        <init-param>
+          <param-name>isVirtualWebappRelative</param-name>
+          <param-value>false</param-value>
+        </init-param>
+        <load-on-startup>4</load-on-startup>
+    </servlet>
+	]]>
+	</screen>
+	<para>配置需要SSI处理的文件</para>
+	<screen>
+	<![CDATA[
+# vim  /srv/apache-tomcat/webapps/ROOT/WEB-INF/web.xml
+
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+                      http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+  version="3.0"
+  metadata-complete="true">
+
+  <display-name>Welcome to Tomcat</display-name>
+  <description>
+     Welcome to Tomcat
+  </description>
+
+
+	<servlet-mapping>  
+        <servlet-name>ssi</servlet-name>  
+        <url-pattern>*.shtml</url-pattern>  
+        <url-pattern>*.html</url-pattern>  
+	</servlet-mapping>  
+
+
+</web-app>
+	]]>
+	</screen>
+	<para>重新启动Tomcat</para>
+	<para>创建测试文件</para>
+	<screen>
+	<![CDATA[
+# vim webapps/ROOT/index.html
+
+<!--#echo var="DATE_LOCAL" -->
+	]]>
+	</screen>
+	<para>验证测试结果</para>
+	<screen>
+	<![CDATA[
+# curl http://224.25.22.70:8080/
+Tuesday, 03-Nov-2015 09:32:30 HKT
+	]]>
+	</screen>
+</section>
 <section id="script">
 	<title>Init.d Script</title>
 	<section>
