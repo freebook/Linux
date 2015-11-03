@@ -112,70 +112,7 @@ Connection: close
 Server: Neo App Srv 1.0
 			</screen>
 		</section>
-		<section>
-			<title>vhost</title>
-			<para>传统配置方式</para>
-			<screen>
-			<![CDATA[
-      <Host name="www.example.com"  appBase="webapps"
-            unpackWARs="true" autoDeploy="true"
-            xmlValidation="false" xmlNamespaceAware="false">
-                        <Context path="" docBase="/www/example.com/www.example.comm" debug="0" reloadable="false"/>
-      </Host>
-      <Host name="news.example.com"  appBase="webapps"
-            unpackWARs="true" autoDeploy="true"
-            xmlValidation="false" xmlNamespaceAware="false">
-                        <Context path="" docBase="/www/example/news" debug="0" reloadable="false"/>
-      </Host>
-			]]>
-			</screen>
-			<note>
-				<para>Tomcat 8 取消了 xmlValidation="false" xmlNamespaceAware="false" 两个配置项。</para>
-			</note>			
-			<para>建议配置方式</para>
-			<screen>
-			<![CDATA[
-vim server.xml
 
-<Engine name="Catalina" defaultHost="neo">
-    <Host name="neo"    appBase="neoapps"/>
-    <Host name="other" appBase="otherapps"/>
-</Engine>
-			]]>
-			</screen>
-			<para>Configuring Your Contexts</para>
-			<screen>
-			<![CDATA[
-mkdir $CATALINA_HOME/conf/Catalina/neo
-
-cp $CATALINA_HOME/conf/Catalina/localhost/manager.xml $CATALINA_HOME/conf/Catalina/neo/ROOT.xml
-
-or
-
-cp $CATALINA_HOME/conf/Catalina/localhost/manager.xml $CATALINA_HOME/conf/Catalina/neo
-			]]>
-			</screen>
-			<para>Webapps Directory</para>
-			<screen>
-			<![CDATA[
-mkdir $CATALINA_HOME/neo
-			]]>
-			</screen>
-		</section>
-		<section id="access_log">
-			<title>access_log</title>
-			<screen>
-			<![CDATA[
-<Host name="localhost" ...>
-  ...
-  <Valve className="org.apache.catalina.valves.AccessLogValve"
-         prefix="localhost_access_log." suffix=".txt"
-         pattern="common"/>
-  ...
-</Host>
-			]]>
-			</screen>
-		</section>
 	</section>
 
 	<section>
@@ -249,11 +186,135 @@ mkdir $CATALINA_HOME/neo
 		</screen>
 	</section>
 </section>
-<section id="ssi">
-	<title>SSI</title>
-	<para>编辑 context.xml 文件，增加 privileged="true 属性</para>
-	<screen>
-	<![CDATA[
+
+	<section id="vhost">
+		<title>虚拟主机配置</title>
+		<note>
+			<para>Tomcat 8 取消了 xmlValidation="false" xmlNamespaceAware="false" 两个配置项。</para>
+		</note>
+		<section>
+			<title>方案一</title>
+			<para>将配置写入server.xml文件</para>
+			<screen>
+			<![CDATA[
+      <Host name="www.example.com"  appBase="webapps"
+            unpackWARs="true" autoDeploy="true"
+            xmlValidation="false" xmlNamespaceAware="false">
+            <Context path="" docBase="/www/example.com/www.example.comm" debug="0" reloadable="false"/>
+      </Host>
+      <Host name="news.example.com"  appBase="webapps"
+            unpackWARs="true" autoDeploy="true"
+            xmlValidation="false" xmlNamespaceAware="false">
+            <Context path="" docBase="/www/example/news.example.com" debug="0" reloadable="false"/>
+      </Host>
+			]]>
+			</screen>			
+		</section>
+		<section>
+			<title>方案二</title>	
+			<para>在 $CATALINA_HOME/conf/Catalina/ 下创建配置文件</para>
+			<screen>
+			<![CDATA[
+vim server.xml
+
+<Engine name="Catalina" defaultHost="neo">
+    <Host name="neo"    appBase="webapps"/>
+    <Host name="other" appBase="webapps"/>
+</Engine>
+			]]>
+			</screen>
+			
+			<para>Webapps Directory</para>
+			<screen>
+			<![CDATA[
+mkdir $CATALINA_HOME/conf/Catalina/neo
+			]]>
+			</screen>
+			
+			<para>Configuring Your Contexts</para>
+			<screen>
+			<![CDATA[
+mkdir $CATALINA_HOME/conf/Catalina/neo
+
+cp $CATALINA_HOME/conf/Catalina/localhost/manager.xml $CATALINA_HOME/conf/Catalina/neo/ROOT.xml
+
+or
+
+cp $CATALINA_HOME/conf/Catalina/localhost/manager.xml $CATALINA_HOME/conf/Catalina/neo
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Alias 别名</title>
+			<para>别名的功能是为虚拟主机绑定多个域名</para>
+			<screen>
+			<![CDATA[
+<Host name="www.example.com" debug="9" appBase="webapps"
+                              unpackWARs="false" autoDeploy="false"
+                               xmlValidation="false" xmlNamespaceAware="false">
+	<Alias>www.example.net</Alias>
+	<Alias>exmaple.com</Alias>
+	<Alias>224.25.22.70</Alias>
+</Host>
+
+			]]>
+			</screen>
+		</section>
+		
+		<section id="access_log">
+			<title>access_log</title>
+			<screen>
+			<![CDATA[
+<Host name="localhost" ...>
+  ...
+  <Valve className="org.apache.catalina.valves.AccessLogValve"
+         prefix="localhost_access_log." suffix=".txt"
+         pattern="common"/>
+  ...
+</Host>
+			]]>
+			</screen>
+		</section>		
+
+		<section id="context">
+			<title>Context 配置</title>
+			<screen>
+			<![CDATA[
+	<Host appBase="webapps" autoDeploy="true" name="localhost" unpackWARs="true">
+		<Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs" pattern="%h %l %u %t &quot;%r&quot; %s %b" prefix="localhost_access_log" suffix=".txt"/>
+		<Context docBase="Struts" path="/Struts" reloadable="true" source="org.eclipse.jst.jee.server:Struts"/>
+	</Host>
+			]]>
+			</screen>
+			<para>docBase如果是绝对路径就会忽略appBase="webapps"的设置。</para>
+			<screen>
+			<![CDATA[
+<Context path="" docBase="/www/example.com/www.example.com/WebContent"  reloadable="false">
+			]]>
+			</screen>
+			<para>appBase + docBase 方案</para>
+			<screen>
+			<![CDATA[
+<Host name="localhost"  appBase="/www/example.com" unpackWARs="true" autoDeploy="true">
+	<Alias>www.example.com</Alias>
+
+	<Context path="" docBase="www.example.com"  reloadable="false"></Context>
+
+</Host>			
+			]]>
+			</screen>
+			
+		</section>
+		
+	</section>
+
+
+
+	<section id="ssi">
+		<title>SSI</title>
+		<para>编辑 context.xml 文件，增加 privileged="true 属性</para>
+		<screen>
+		<![CDATA[
 # vim /srv/apache-tomcat/conf/context.xml
 
 <Context privileged="true">
@@ -273,11 +334,11 @@ mkdir $CATALINA_HOME/neo
     -->
 
 </Context>
-	]]>
-	</screen>
-	<para>编辑 web.xml 文件，取消下面的注释</para>
-	<screen>
-	<![CDATA[
+		]]>
+		</screen>
+		<para>编辑 web.xml 文件，取消下面的注释</para>
+		<screen>
+		<![CDATA[
 # vim /srv/apache-tomcat/conf/web.xml	
 	
     <servlet>
@@ -303,11 +364,11 @@ mkdir $CATALINA_HOME/neo
         </init-param>
         <load-on-startup>4</load-on-startup>
     </servlet>
-	]]>
-	</screen>
-	<para>配置需要SSI处理的文件</para>
-	<screen>
-	<![CDATA[
+		]]>
+		</screen>
+		<para>配置需要SSI处理的文件</para>
+		<screen>
+		<![CDATA[
 # vim  /srv/apache-tomcat/webapps/ROOT/WEB-INF/web.xml
 
 <web-app xmlns="http://java.sun.com/xml/ns/javaee"
@@ -331,25 +392,26 @@ mkdir $CATALINA_HOME/neo
 
 
 </web-app>
-	]]>
-	</screen>
-	<para>重新启动Tomcat</para>
-	<para>创建测试文件</para>
-	<screen>
-	<![CDATA[
+		]]>
+		</screen>
+		<para>重新启动Tomcat</para>
+		<para>创建测试文件</para>
+		<screen>
+		<![CDATA[
 # vim webapps/ROOT/index.html
 
 <!--#echo var="DATE_LOCAL" -->
-	]]>
-	</screen>
-	<para>验证测试结果</para>
-	<screen>
-	<![CDATA[
+		]]>
+		</screen>
+		<para>验证测试结果</para>
+		<screen>
+		<![CDATA[
 # curl http://224.25.22.70:8080/
 Tuesday, 03-Nov-2015 09:32:30 HKT
-	]]>
-	</screen>
-</section>
+		]]>
+		</screen>
+	</section>
+
 <section id="script">
 	<title>Init.d Script</title>
 	<section>
