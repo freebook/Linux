@@ -305,10 +305,31 @@ cp $CATALINA_HOME/conf/Catalina/localhost/manager.xml $CATALINA_HOME/conf/Catali
 			</screen>
 			
 		</section>
-		
+		<section>
+			<title>主机绑定IP地址</title>
+			<screen>
+			<![CDATA[
+    <Host name="223.225.22.72"  appBase="/www/netkiller.cn" unpackWARs="true" autoDeploy="true">
+		<Alias>www.netkiller.cn</Alias>
+        <Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs"
+               prefix="www.netkiller.cn_access_log." suffix=".log"
+               pattern="%h %l %u %t &quot;%r&quot; %s %b" />
+		<Logger className="org.apache.catalina.logger.FileLogger" 
+                 directory="logs"  prefix="web_log." suffix=".txt"  timestamp="true"/>
+        <Context path="" docBase="www.netkiller.cn"  reloadable="true"></Context>
+        
+	</Host>
+	<Host name="223.225.22.73"  appBase="/www/netkiller.cn" unpackWARs="true" autoDeploy="true">
+		<Alias>admin.netkiller.cn</Alias>
+		<Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs"
+	               prefix="admin.netkiller.cn_access_log." suffix=".log"
+        	       pattern="%h %l %u %t &quot;%r&quot; %s %b" />
+		<Context path="" docBase="admin.netkiller.cn"  reloadable="true" />
+	</Host>
+			]]>
+			</screen>
+		</section>
 	</section>
-
-
 
 	<section id="ssi">
 		<title>SSI</title>
