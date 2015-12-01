@@ -110,7 +110,7 @@ upstream backend{
 
 }
 	</screen>
-	<section>
+	<section id="rewrite">
 		<title>rewrite + proxy_pass</title>
 		<para>需求如下</para>
 		<screen>
@@ -127,7 +127,7 @@ http://www.example.com/images/logo.jpg	=> http://images.example.com/logo.jpg
     }
 		</screen>
 	</section>
-	<section>
+	<section id="request_filename">
 		<title>request_filename + proxy_pass</title>
 		<para>如果文件不存在，那么去指定的节点上寻找</para>
 		<screen>
@@ -147,6 +147,101 @@ http://www.example.com/images/logo.jpg	=> http://images.example.com/logo.jpg
           break;
         }
     }
+		</screen>
+	</section>
+
+	<section id="request_uri+proxy_pass">
+		<title>$request_uri 与  proxy_pass 联合使用</title>
+		<screen>
+server {
+    listen       80;
+    server_name  info.example.com;
+
+    #charset koi8-r;
+    access_log  /var/log/nginx/info.example.com.access.log  main;
+
+    location / {
+        root   /www/example.com/info.example.com;
+        index  index.html index.htm;
+
+	rewrite ^/$  http://www.example.com/;
+
+	valid_referers none blocked *.example.com;
+	if ($invalid_referer) {
+		#rewrite ^(.*)$  http://www.example.com/cn/$1;
+		return 403;
+	}
+
+        proxy_intercept_errors  on;
+#	    proxy_set_header  X-Real-IP  $remote_addr;
+#            proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+#            proxy_set_header  Host            $host;
+#
+#            proxy_cache one;
+#            proxy_cache_valid  200 302 304 10m;
+#            proxy_cache_valid  301 1h;
+#            proxy_cache_valid  any 1m;
+
+        if ( $request_uri ~ "^/public/datas/(sge|cgse|futures|fx_price|gold_price|stock|bonds)\.xml$") {
+                proxy_pass http://211.176.212.212$request_uri;
+		break;
+        }
+
+        if (!-f $request_filename) {
+
+          proxy_pass http://infoadmin.example.com;
+          #proxy_pass http://backend;
+          break;
+        }
+    }
+
+    location ~ ^/index\.php$ {
+	return 403;
+    }
+    location ~ ^/(config|include|crontab|/systemmanage)/ {
+	deny all;
+	break;
+    }
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+}
+		</screen>
+	</section>
+	<section id="host">
+		<title>Host</title>
+		<para>Proxy 通过IP地址访问目的主机，如果目的主机是虚拟主机，你就需要告诉目的主机是那个域名。</para>
+		<para>proxy_set_header   Host www.example.com;</para>
+		<para>proxy_set_header   Host $server_name;</para>
+		<screen>
+server {
+    listen       80;
+    server_name  www.example.com;
+
+    charset utf-8;
+    access_log  /var/log/nginx/www.example.com.access.log  main;
+    
+    proxy_set_header   Host $server_name;
+    
+    location / {
+        proxy_pass http://154.21.16.57;
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+}
 		</screen>
 	</section>
 	<section id="proxy_cache">
@@ -234,86 +329,23 @@ location / {
     proxy_pass http://backend;
 }
 		</screen>
-	</section>
-	<section id="request_uri+proxy_pass">
-		<title>$request_uri 与  proxy_pass 联合使用</title>
-		<screen>
-server {
-    listen       80;
-    server_name  info.example.com;
-
-    #charset koi8-r;
-    access_log  /var/log/nginx/info.example.com.access.log  main;
-
-    location / {
-        root   /www/example.com/info.example.com;
-        index  index.html index.htm;
-
-	rewrite ^/$  http://www.example.com/;
-
-	valid_referers none blocked *.example.com;
-	if ($invalid_referer) {
-		#rewrite ^(.*)$  http://www.example.com/cn/$1;
-		return 403;
-	}
-
-        proxy_intercept_errors  on;
-#	    proxy_set_header  X-Real-IP  $remote_addr;
-#            proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-#            proxy_set_header  Host            $host;
-#
-#            proxy_cache one;
-#            proxy_cache_valid  200 302 304 10m;
-#            proxy_cache_valid  301 1h;
-#            proxy_cache_valid  any 1m;
-
-        if ( $request_uri ~ "^/public/datas/(sge|cgse|futures|fx_price|gold_price|stock|bonds)\.xml$") {
-                proxy_pass http://211.176.212.212$request_uri;
-		break;
-        }
-
-        if (!-f $request_filename) {
-
-          proxy_pass http://infoadmin.example.com;
-          #proxy_pass http://backend;
-          break;
-        }
-    }
-
-    location ~ ^/index\.php$ {
-	return 403;
-    }
-    location ~ ^/(config|include|crontab|/systemmanage)/ {
-	deny all;
-	break;
-    }
-    #error_page  404              /404.html;
-
-    # redirect server error pages to the static page /50x.html
-    #
-    error_page   500 502 503 504  /50x.html;
-    location = /50x.html {
-        root   /usr/share/nginx/html;
-    }
-
-}
-		</screen>
-	</section>
+	</section>	
+	
 	<section id="xsendfile">
 		<title>X-Sendfile</title>
 		<para>http://wiki.nginx.org/NginxXSendfile</para>
 	</section>
-	<section>
+	<section id="proxy_http_version">
 		<title>proxy_http_version</title>
 		<para>proxy_http_version 1.0 | 1.1;</para>
 	</section>
-	<section>
+	<section id="proxy_set_header">
 		<title>proxy_set_header</title>
 		<screen>
 proxy_set_header User-Agent "Mozilla/5.0 (compatible; MSIE 10.6; Windows NT 6.1; Trident/5.0; InfoPath.2; SLCC1; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729; .NET CLR 2.0.50727) 3gpp-gba UNTRUSTED/1.0";
 		</screen>
 	</section>
-	<section>
+	<section id="example">
 		<title>example</title>
 		<section>
 			<title></title>
