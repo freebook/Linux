@@ -34,6 +34,11 @@ find  \( -iname '*.jpg' -o -iname '*.png' -o -iname '*.gif'  \)
 
 find /www/images -type f \( -iname '*.js' -o -iname '*.css' -o -iname '*.html' \) | xargs tar -czf ~/images.tgz
 		</screen>
+		<para>使用通配符</para>
+		<screen>
+find . -name "*.jsp" -delete
+find . -name "*.xml" -delete		
+		</screen>
 	</section>
 	<section id="find.regex">
 		<title>regex</title>
