@@ -715,6 +715,27 @@ location /images/ {
 	&chapter.nginx.conf.fastcgi.xml;
 	&chapter.nginx.proxy.xml;
 
+	<section id="ngx_http_flv_module">
+		<title>ngx_http_flv_module</title>
+		<screen>
+location ~ \.flv$ {
+    flv;
+}
+		</screen>
+	</section>
+
+	<section id="ngx_http_mp4_module">
+		<title>ngx_http_mp4_module</title>
+		<screen>
+location /video/ {
+    mp4;
+    mp4_buffer_size       1m;
+    mp4_max_buffer_size   5m;
+    mp4_limit_rate        on;
+    mp4_limit_rate_after  30s;
+}
+		</screen>
+	</section>
 	<section id="limit_zone">
 		<title>limit_zone</title>
 		<screen>
