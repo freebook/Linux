@@ -103,6 +103,29 @@ client_max_body_size 8m;
 	
 	<section id="http.server">
 		<title>server</title>
+		<section>
+			<title>listen</title>
+			<para>绑定IP地址</para>
+			<screen>
+listen 80; 相当于0.0.0.0:80监听所有接口上的IP地址
+listen 192.168.0.1 80;
+listen 192.168.0.1:80;
+			</screen>	
+			<para>配置默认主机 default_server</para>		
+			<screen>
+server {
+    listen       80;
+    server_name  acc.example.net;
+    ...
+}
+
+server {
+    listen       80  default_server;
+    server_name  www.example.org;
+    ...
+}
+			</screen>
+		</section>
 		<section id="http.server.example">
 			<title>单域名虚拟主机</title>
 			<screen>
@@ -152,12 +175,7 @@ server {
     #}
 }
 			</screen>
-			<para>绑定IP地址</para>
-			<screen>
-listen 80; 相当于0.0.0.0:80监听所有接口上的IP地址
-listen 192.168.0.1 80;
-listen 192.168.0.1:80;
-			</screen>
+						
 			<para>绑定多个域名</para>
 			<screen>
 server_name  images.example.com img1.example.com img2.example.com;
