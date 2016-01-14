@@ -33,11 +33,82 @@ inet_interfaces = all
 mydestination = $myhostname, localhost.$mydomain, localhost, $mydomain
 #mynetworks = 192.168.0.0/24, 127.0.0.0/8
 #relay_domains =
-home_mailbox = Maildir/			
+home_mailbox = Maildir/
 			</screen>
 		</section>
 	</section>
-	
+<!-- 	<section id="config">
+		<title>配置 postfix</title>
+		<section>
+			<title>SMTP相关配置</title>
+			<para>防止伪造发件人邮件</para>
+			<screen>
+			</screen>
+		</section>
+	</section> -->
+	<section id="transport_maps">
+		<title>转发配置</title>
+		<para>修改配置文件</para>
+		<screen>
+vim /etc/postfix/main.cf
+
+inet_interfaces = all
+
+mydestination = 
+
+mydomain = example.com
+
+myhostname = mail.example.com
+
+mynetworks = 0.0.0.0/0
+
+mynetworks_style = subnet
+
+smtpd_reject_unlisted_recipient = no
+
+transport_maps = hash:/etc/postfix/transport
+		</screen>
+		<para>转发配置，设置域名和地址的关系：</para>
+		<screen>
+vim transport：
+
+your.com relay: [10.10.0.1]		
+		</screen>
+		<para>生成相应的db文件</para>
+		<screen>
+postmap transport		
+		</screen>
+		<para>例如当收件人为users@your.com时，postfix会将邮件转发到指定的服务器</para>
+	</section>
+	<section id="smtpd_recipient_restrictions">
+		<title>拒收垃圾邮件</title>
+		
+		<para>编辑/etc/postfix/main.cf文件,在文件中添加下面一行文字，你可以把它插入到文件末尾。</para>
+		<screen>
+sudo vim /etc/postfix/main.cf
+
+smtpd_recipient_restrictions = check_sender_access hash:/etc/postfix/check_sender_access		
+		</screen>
+		<para>然后在/etc/postfix/目录下创建一个check_sender_access文件，内容如下</para>
+		<screen>
+example.com            REJECT
+your.com              OK
+
+.example.com            REJECT
+.your.com              OK
+
+user@example.com      REJECT
+		</screen>
+		<para>将域名的特定邮箱地址添加到黑名单,也可以将某个二级域名添加到黑名单或白名单，只要在域名前面加上一个小数点就行了。邮箱与域名后面输入OK表示将这个域名添加到白名单，域名后面添加REJECT表示将这个域名添加到黑名单。</para>
+		<para>使用postmap命令创建/etc/postfix/sender_checks.db数据库文件</para>
+		<screen>
+postmap /etc/postfix/check_sender_access
+		</screen>
+		<para>最后重新加载Postfix配置文件</para> 
+		<screen>
+sudo /etc/init.d/postfix reload		
+		</screen>
+	</section>
 	<section id="rspamd">
 		<title>Rspamd</title>
 		<para>Rspamd是一个反垃圾邮件系统，因为使用事件模型和正则表达式优化，其设计工作速度比SpamAssassin还 要快。目前推出的功能： regexp规则过滤的不同部分的信息;一些内置的功能分析的信息;模糊哈希支持; SURBL滤波器;电子邮件和性质表支持;控制界面进行远程管理和统计信息收集，一个Perl和卢阿插件系统;统计支持（定向结构刨花板/簸扬） ;兼容SpamAssassin ;和一个客户端程序的电子邮件扫描。类似的规则， rspamd约10倍SpamAssassin 。</para>
@@ -84,13 +155,24 @@ Nov  2 16:32:21 smtp2.example.com postfix/smtp[7732]: 1DCD811F940: to=<160801427
 		]]>
 		</screen>
 		<section>
-			<title>日志统计</title>
+			<title>计算每分钟发送数量日志统计</title>
 			<para>计算每分钟发送数量</para>
 			<screen>
 # grep 'to='  maillog | grep '15:25:' | wc -l
 592
 			</screen>
 		</section>
+		
+		<section>
+			<title>虚假地址统计</title>
+			<para>计算每分钟发送数量</para>
+			<screen>
+			<![CDATA[
+# egrep -o "to=<(.*)>, .* Connection timed out" maillog | sed -e "s/to=<\(.*\)>.*/\1/"
+			]]>
+			</screen>
+		</section>
+		
 	</section>
 	<section id="faq">
 		<title>FAQ</title>
