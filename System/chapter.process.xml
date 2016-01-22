@@ -749,7 +749,7 @@ sshd(3158)─┬─sshd(9409)───bash(9411)
 	</section>
 	<section id="pid">
 		<title>pid</title>
-		<section>
+		<section id="pgrep">
 			<title>pgrep, pkill - look up or signal processes based on name and other attributes</title>
 			<para>pgrep</para>
 			<screen>
@@ -774,7 +774,7 @@ root     pts/6    172.16.0.1       15:47    0.00s  0.03s  0.00s w
 [root@development ~]# pkill -kill -t pts/3
 			</screen>
 		</section>
-		<section>
+		<section id="pidof">
 			<title>pidof -- find the process ID of a running program.</title>
 			<screen>
 # pidof httpd
