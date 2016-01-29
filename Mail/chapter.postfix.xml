@@ -37,15 +37,7 @@ home_mailbox = Maildir/
 			</screen>
 		</section>
 	</section>
-<!-- 	<section id="config">
-		<title>配置 postfix</title>
-		<section>
-			<title>SMTP相关配置</title>
-			<para>防止伪造发件人邮件</para>
-			<screen>
-			</screen>
-		</section>
-	</section> -->
+ 	
 	<section id="transport_maps">
 		<title>转发配置</title>
 		<para>修改配置文件</para>
@@ -174,6 +166,88 @@ Nov  2 16:32:21 smtp2.example.com postfix/smtp[7732]: 1DCD811F940: to=<160801427
 		</section>
 		
 	</section>
+	
+	<section id="postmulti">
+		<title>postmulti - Postfix multi-instance manager</title>
+		<section>
+			<title>绑定IP地址</title>
+			<para>将所有IP地址绑定到服务器上</para>
+			<screen>
+cd /etc/sysconfig/network-scripts
+
+vim ifcfg-enp2s0
+			</screen>
+			<screen>
+# cat ifcfg-enp2s0  
+TYPE="Ethernet"
+BOOTPROTO="none"
+DEFROUTE="yes"
+IPV4_FAILURE_FATAL="no"
+IPV6INIT="yes"
+IPV6_AUTOCONF="yes"
+IPV6_DEFROUTE="yes"
+IPV6_FAILURE_FATAL="no"
+NAME="enp2s0"
+UUID="c27c6ef8-ab82-4019-af0a-9f3a70b2d230"
+DEVICE="enp2s0"
+ONBOOT="yes"
+DNS1="8.8.8.8"
+IPADDR="192.168.0.1"
+...
+...
+IPADDR247="192.168.0.250"
+PREFIX="26"
+PERFIX0="24"
+GATEWAY="192.168.0.254"
+IPV6_PEERDNS="yes"
+IPV6_PEERROUTES="yes"
+IPV6_PRIVACY="no"
+			</screen>
+			<para>IP范围 192.168.0.1-192.168.0.250，接口是enp2s0，enp2s0:1 ~ enp2s0:250 </para>
+		</section>
+		<section>
+			<title></title>
+			<para>初始化postfix 多实例</para>
+			<screen>
+postmulti -e init			
+			</screen>
+			<para>创建postfix实例</para>
+			<screen>
+postmulti -I postfix-1 -G mta -e create
+...
+...
+postmulti -I postfix-250 -G mta -e create			
+			</screen>
+			<para>启用postfix 实例</para>
+			<screen>
+postmulti -i postfix-1 -e enable
+...
+...
+postmulti -i postfix-250 -e enable
+			</screen>
+			<para>配置postfix实例</para>
+			<screen>
+postmulti -i postfix-1 -x postconf -e "master_service_disable =" "authorized_submit_users = root" "minimal_backoff_time= 30d" "maximal_backoff_time = 300d" "mynetworks = 127.0.0.0/8,192.168.0.0/24" "inet_interfaces = \$myhostname" "mailbox_size_limit = 0" "message_size_limit = 0" "myhostname =  mail.example.com" "myorigin =  mail.example.com" "mydomain =  example.com" "smtp_bind_address =  192.168.0.1"
+...
+...
+postmulti -i postfix-250 -x postconf -e "master_service_disable =" "authorized_submit_users = root" "minimal_backoff_time= 30d" "maximal_backoff_time = 300d" "mynetworks = 127.0.0.0/8,192.168.0.0/24" "inet_interfaces = \$myhostname" "mailbox_size_limit = 0" "message_size_limit = 0" "myhostname =  mail.example.com" "myorigin =  mail.example.com" "mydomain =  example.com" "smtp_bind_address =  192.168.0.250"
+			</screen>
+		</section>
+		<section>
+			<title>配置 iptables 让SMTPD发送邮件时依次轮询外发IP地址，这样就不会被封锁。</title>
+			<screen>
+iptables -t nat -I POSTROUTING -m state --state NEW -p tcp --dport 25 -o eth0 -m statistic --mode nth --every 250 -j SNAT --to-source 192.168.0.1
+...
+...
+iptables -t nat -I POSTROUTING -m state --state NEW -p tcp --dport 25 -o eth0 -m statistic --mode nth --every 250 -j SNAT --to-source 192.168.0.250
+			</screen>
+			<para>注意，不要使用下面的方式配置iptables，经过测试这种192.168.0.1-192.168.0.250方式，不会轮换IP地址。</para>
+			<screen>
+iptables -t nat -I POSTROUTING -m state --state NEW -p tcp --dport 25 -o eth0 -m statistic --mode nth --every 250 -j SNAT --to-source 192.168.0.1-192.168.0.250
+			</screen>
+		</section>
+	</section>
+	
 	<section id="faq">
 		<title>FAQ</title>
 		<section>
