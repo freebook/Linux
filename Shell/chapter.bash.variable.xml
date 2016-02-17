@@ -91,7 +91,7 @@ $ set -- aa bb cc
 		</screen>
 	</section>
 
-    <section>
+    <section id="unset">
     		<title>unset 变量销毁</title>
     		<screen>
 $ unset logfile
@@ -195,8 +195,26 @@ echo "Usage: $0 string file";
 Found "Usage" in chapter2.2.sh
 		</screen>
 	</section>
+	<section id="variable.number">
+		<title>Numerical 数值运算</title>
+		<para>数值运算表达式</para>
+		<screen>
+$((EXPR))		
+		</screen>
+		<para></para>
+		<screen>
+echo $((1+1))
+echo $((5*5))
+		</screen>
+		<screen>
+num=$(awk "BEGIN {print $num1+$num2; exit}")
+num=$(python -c "print $num1+$num2")
+num=$(perl -e "print $num1+$num2")
+num=$(echo $num1 + $num2 | bc) 		
+		</screen>
+	</section>
 	<section id="variable.strings">
-		<title>Strings</title>
+		<title>Strings 字符串操作</title>
 		<section>
 			<title>##/#</title>
 			<screen>
@@ -306,9 +324,26 @@ jam zheng
 echo ${#PATH}
     		</screen>
     	</section>
+    	<section>
+    		<title>字符串查找替换</title>
+    		<screen>
+# str="1 2 3 4";echo ${str// /}
+1234
+
+# str="1 2 3 4";echo ${str// /,}
+1,2,3,4
+	
+# str="1 2 3 4";echo ${str// /+}
+1+2+3+4
+
+# str="neo netkiller";echo ${str//neo/hello}
+hello netkiller
+    		</screen>
+    	</section>
+    	
 	</section>
 	<section id="variable.array">
-		<title>Array</title>
+		<title>Array 数组</title>
 		<para>定义数组</para>
 		<screen>
 arr=(Hello World)
@@ -403,6 +438,48 @@ do
     printf "   %s\n" $item
 done
 		</screen>
+		<section>
+			<title>拆分字符串并转换为数组</title>
+			<subtitle>Split string into an array in Bash</subtitle>
+			<para>字符串</para>
+			<screen>
+QUEUES="example|sss"			
+			</screen>
+			<para>类似列表的数据结构</para>
+			<screen>
+for caption in $(echo $QUEUES | tr '|' ' '); do 
+        echo $caption
+done			
+			</screen>
+			<para>拆分为数组形式</para>
+			<screen>
+captions=($(echo $QUEUES | tr '|' ' '))
+
+for element in "${captions[@]}"
+do
+    echo "$element"
+done
+
+for key in ${!captions[@]}; do
+    echo ${key} ${captions[${key}]}
+done
+			</screen>
+		</section>
+		<section>
+			<title>数组转为字符串</title>
+			<screen>
+ids=(1 2 3 4);echo ${ids[*]// /|}
+ids=(1 2 3 4); lst=$( IFS='|'; echo "${ids[*]}" ); echo $lst
+
+array=(1 2 3 4); echo ${array[*]// /|}
+array=(1 2 3 4);string="${ids[@]}";echo ${string// /|}
+array=(1 2 3 4);string="${ids[@]}";echo ${string// /,}
+
+
+IFS='|';echo "${[*]// /|}";
+			</screen>
+		</section>
+		
 	</section>
 	<section id="eval">
 		<title>eval</title>
