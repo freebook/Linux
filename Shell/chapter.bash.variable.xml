@@ -325,7 +325,12 @@ ${!arr[*]}        # All of the indexes in the array
 ${#arr[*]}        # Number of items in the array
 ${#arr[0]}        # Length of item zero
 		</screen>
-
+		<para>追加操作</para>
+		<screen>
+ARRAY=()
+ARRAY+=('foo')
+ARRAY+=('bar')
+		</screen>
 		<screen>
 #!/bin/bash
 
