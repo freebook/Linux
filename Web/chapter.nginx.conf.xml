@@ -733,6 +733,27 @@ location /images/ {
 	&chapter.nginx.conf.fastcgi.xml;
 	&chapter.nginx.proxy.xml;
 
+	<section id="return">
+		<title>return</title>
+		<para>301 跳转</para>
+		<screen>
+server {
+    listen       80;
+    server_name  m.example.com;
+
+    location / {
+        return 301 $scheme://www.example.com$request_uri; 
+    }
+}
+
+server {
+    listen 80;
+    listen 443 ssl;
+    server_name www.old-name.com;
+    return 301 $scheme://www.new-name.com$request_uri;
+}		
+		</screen>
+	</section>
 	<section id="ngx_http_flv_module">
 		<title>ngx_http_flv_module</title>
 		<screen>
