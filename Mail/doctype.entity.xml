@@ -3,6 +3,7 @@
 	<!ENTITY chapter.client.xml 		SYSTEM "chapter.client.xml">
 	<!ENTITY chapter.exim.xml 			SYSTEM "chapter.exim.xml">
 	<!ENTITY chapter.postfix.xml 		SYSTEM "chapter.postfix.xml">
+	<!ENTITY chapter.spam.xml 			SYSTEM "chapter.spam.xml">
 	<!ENTITY chapter.devel.xml 			SYSTEM "chapter.devel.xml">
 	<!ENTITY chapter.fax.xml 			SYSTEM "chapter.fax.xml">
 	<!ENTITY chapter.faq.xml 			SYSTEM "chapter.faq.xml">

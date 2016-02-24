@@ -4,7 +4,7 @@
 	&chapter.exim.xml;	
 	&chapter.postfix.xml;
 	&chapter.devel.xml;
-
+	&chapter.spam.xml;
 <!-- 
 <chapter id="mail.tools">
 	<title>Tools</title>
