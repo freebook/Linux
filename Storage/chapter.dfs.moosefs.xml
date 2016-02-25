@@ -294,3 +294,7 @@ umount /mnt/mfs
 		</screen>
 	</section>
 </section>
+<section id="lizardfs">
+	<title>LizardFS</title>
+	<para>LizardFS 是 MooseFS 的一个衍生版本 <ulink url="https://lizardfs.com/" /></para>
+</section>
