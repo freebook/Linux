@@ -2,63 +2,24 @@
 <!-- $Id: chapter.system.filesystem.xml 500 2012-12-04 09:01:55Z netkiller $ -->
 <chapter id="index"><?dbhtml dir="filesystem" ?>
 	<title>File System</title>
-	<section id="mount">
-		<title>Mount partition</title>
-		<section>
-			<title>Mount</title>
-			<screen>
-sudo mount /dev/sdb1 /mnt/mount1
-			</screen>
-			<para>支持UTF-8</para>
-			<screen>
-mount -o iocharset=utf8 /dev/sda5 /mnt/usb
-			</screen>
-			<para>禁止文件与目录的访问时间</para>
-			<screen>
-mount -o noatime,nodiratime /dev/drbd0  /mnt
-			</screen>
-		</section>
-		<section>
-			<title>Umount</title>
-			<para>umount - unmount file systems</para>
-			<screen>
-sudo umount /mnt/mount1
-			</screen>
-		</section>
-		<section>
-			<title>bind directory</title>
-			<para></para>
-			<screen>
-mount --bind /foo /home/neo/foo
-			</screen>
-			<para>挂载目录将不能被删除，但目录下文件可以删除</para>
-			<screen>
-# rm -rf /home/neo/foo
-rm: cannot remove directory '/home/neo/foo': Device or resource busy
-			</screen>
-			<para>/etc/fstab</para>
-			<screen>
-/foo /home/neo/foo    none    bind    0 0
-			</screen>
-		</section>
-		<section id="etc.fstab">
-			<title>/etc/fstab</title>
-			<screen>
-			<![CDATA[
+	<section id="etc.fstab">
+		<title>/etc/fstab</title>
+		<screen>
+		<![CDATA[
 # <file system> <mount point>   <type>  <options>       <dump>  <pass>
-			]]>
-			</screen>
-			<para>mount point</para>
-			<screen>
+		]]>
+		</screen>
+		<para>mount point</para>
+		<screen>
 该字段描述希望的文件系统加载的目录，对于swap设备，该字段为none
-			</screen>
-			<para>file system</para>
-			<screen>
+		</screen>
+		<para>file system</para>
+		<screen>
 例如/dev/cdrom或/dev/sdb,除了使用设备名，你可以使用设备的UUID或设备的卷标签，例如，LABAL=root 或 UUID=7f91104e-8187-4ccf-8215-6e2e641f32e3
-			</screen>
-			<para>type</para>
-			<para>定义了该设备上的文件系统,系统可用文件系统</para>
-			<screen>
+		</screen>
+		<para>type</para>
+		<para>定义了该设备上的文件系统,系统可用文件系统</para>
+		<screen>
 $ cat /proc/filesystems
 nodev   sysfs
 nodev   rootfs
@@ -102,9 +63,9 @@ nodev   nfs4
         btrfs
         iso9660
 
-			</screen>
-			<para>options</para>
-			<screen>
+		</screen>
+		<para>options</para>
+		<screen>
 选项　　　　　　　　　　　　　　含义
 defaults  使用默认设置。	等于rw,suid,dev,exec,auto,nouser,async，
 
@@ -125,25 +86,89 @@ noauto　　不再使用mount -a命令（例如系统启动时）加载该文件
 
 noatime/nodiratime	禁止更新访问时间
 
-			</screen>
-			<para>dump</para>
-			<screen>
+		</screen>
+		<para>dump</para>
+		<screen>
 dump　-　该选项被"dump"命令使用来检查一个文件系统应该以多快频率进行转储，若不需要转储就设置该字段为0
-			</screen>
-			<para>pass</para>
-			<screen>
+		</screen>
+		<para>pass</para>
+		<screen>
 该字段被fsck命令用来决定在启动时需要被扫描的文件系统的顺序，根文件系统"/"对应该字段的值应该为1，其他文件系统应该为2。若该文件系统无需在启动时扫描则设置该字段为0
-			</screen>
-			<para>noatime/nodiratime</para>
-			<screen>
+		</screen>
+		<para>noatime/nodiratime</para>
+		<screen>
 /dev/sda2 /data ext3 defaults 0 2
 /dev/sda2 /data ext3 defaults,noatime,nodiratime 0 2
-			</screen>
-			<screen>
+		</screen>
+		<screen>
 mount -o remount /data
 mount -o noatime -o nodiratime -o remount /data
+		</screen>
+		<section>
+			<title>/etc/fstab 例子</title>
+			<para>/etc/fstab btrfs 实例</para>
+			<screen>
+			<![CDATA[
+neo@netkiller:~$ cat /etc/fstab 
+# /etc/fstab: static file system information.
+#
+# Use 'blkid' to print the universally unique identifier for a
+# device; this may be used with UUID= as a more robust way to name devices
+# that works even if disks are added and removed. See fstab(5).
+#
+# <file system> <mount point>   <type>  <options>       <dump>  <pass>
+# / was on /dev/sda1 during installation
+UUID=d103e33f-7f9f-4911-918e-32eae42e229c /               btrfs   defaults,subvol=@ 0       1
+# /home was on /dev/sda1 during installation
+UUID=d103e33f-7f9f-4911-918e-32eae42e229c /home           btrfs   defaults,subvol=@home 0       2
+# /opt was on /dev/sda6 during installation
+UUID=63d0b776-3bbd-490f-8284-f148b255185e /opt            btrfs   noatime,nodiratime,noexec 0       2
+# swap was on /dev/sda5 during installation
+UUID=ff8945bf-fa45-49e5-b3d2-bb833bc6dc9c none            swap    sw              0       0
+			]]>
 			</screen>
 		</section>
+	</section>
+	<section id="mount">
+		<title>Mount partition</title>
+		<section>
+			<title>Mount</title>
+			<screen>
+sudo mount /dev/sdb1 /mnt/mount1
+			</screen>
+			<para>支持UTF-8</para>
+			<screen>
+mount -o iocharset=utf8 /dev/sda5 /mnt/usb
+			</screen>
+			<para>禁止文件与目录的访问时间</para>
+			<screen>
+mount -o noatime,nodiratime /dev/drbd0  /mnt
+			</screen>
+		</section>
+		<section>
+			<title>Umount</title>
+			<para>umount - unmount file systems</para>
+			<screen>
+sudo umount /mnt/mount1
+			</screen>
+		</section>
+		<section>
+			<title>bind directory</title>
+			<para></para>
+			<screen>
+mount --bind /foo /home/neo/foo
+			</screen>
+			<para>挂载目录将不能被删除，但目录下文件可以删除</para>
+			<screen>
+# rm -rf /home/neo/foo
+rm: cannot remove directory '/home/neo/foo': Device or resource busy
+			</screen>
+			<para>/etc/fstab</para>
+			<screen>
+/foo /home/neo/foo    none    bind    0 0
+			</screen>
+		</section>
+		
 	</section>
 <section id="ramfs">
 	<title>RAM FS</title>
