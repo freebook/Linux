@@ -2,7 +2,7 @@
 <!-- $Id: chapter.cmd.curl.xml 517 2013-01-29 10:08:31Z netkiller $ -->
 <section id="curl">
 	<title>CURL - transfer a URL</title>
-	<section id="curl.w">
+	<section id="url">
 		<title>基本用法</title>
 		<screen>
 curl http://www.google.com/
@@ -41,7 +41,15 @@ curl -x 127.0.0.1:80 your.exmaple.com/index.php
 		</screen>
 	</section>
 	<section id="curl.w">
-		<title>http status</title>
+		<title>输出格式定义</title>
+		<screen>
+计时器				描述
+time_connect		建立到服务器的 TCP 连接所用的时间
+time_starttransfer	在发出请求之后,Web 服务器返回数据的第一个字节所用的时间
+time_total			完成请求所用的时间
+time_namelookup		DNS解析时间,从请求开始到DNS解析完毕所用时间(记得关掉 Linux 的 nscd 的服务测试)
+speed_download		下载速度，单位-字节每秒。
+		</screen>
 		<screen>
 curl -s -I http://netkiller.sourceforge.net/ | grep HTTP | awk '{print $2" "$3}'
 curl -o /dev/null -s -w %{http_code} http://netkiller.sourceforge.net/
@@ -52,6 +60,9 @@ curl -o /dev/null -s -w %{time_connect}:%{time_starttransfer}:%{time_total} http
 		<para>测试页面所花费的时间</para>
 		<screen>
 date ; curl  -s  -w 'Connect: %{time_connect} TTFB: %{time_starttransfer} Total time: %{time_total} \n'  -H "Host: www.example.com" http://172.16.0.1/webapp/test.jsp ; date ;
+		</screen>
+		<screen>
+curl -o /dev/null -s -w %{time_connect}, %{time_starttransfer}, %{time_total}, %{time_namelookup}, %{speed_download} http://www.netkiller.cn
 		</screen>
 	</section>
 	<section id="curl.a">
@@ -216,13 +227,13 @@ curl -H HOST:www.example.com -I http://172.16.1.10/product/374218.html
 			</screen>
 		</section>
 	</section>
-	<section>
+	<section id="curl-config">
 		<title>curl-config</title>
 		<screen>
 curl-config --features
 		</screen>
 	</section>
-	<section>
+	<section id="curl.faq">
 		<title>FAQ</title>
 		<para>Error in TLS handshake, trying SSLv3...</para>
 		<para>解决方案</para>
