@@ -11,7 +11,7 @@ server {
     server_name  www.example.com;
 
     charset utf-8;
-    access_log  /var/log/nginx/www.cf139.com.access.log;
+    access_log  /var/log/nginx/www.example.com.access.log;
 
     location / {
 	    proxy_pass http://127.0.0.1:8080;
@@ -34,11 +34,11 @@ server {
     }
 	
     location ~ \.(html|js|css|jpg|png|gif|swf)$ {
-        root /www/cf88.com/www.cf88.com;
+        root /www/example.com/www.example.com;
         expires 1d;
     } 
     location ~ \.(ico|fla|flv|mp3|mp4|wma|wmv|exe)$ {
-        root /www/cf88.com/www.cf88.com;
+        root /www/example.com/www.example.com;
         expires 7d;
     }
     location ~ \.flv {

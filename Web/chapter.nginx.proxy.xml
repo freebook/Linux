@@ -110,7 +110,7 @@ upstream backend{
 
 }
 	</screen>
-	<section id="rewrite">
+	<section id="proxy.rewrite">
 		<title>rewrite + proxy_pass</title>
 		<para>需求如下</para>
 		<screen>
@@ -127,7 +127,7 @@ http://www.example.com/images/logo.jpg	=> http://images.example.com/logo.jpg
     }
 		</screen>
 	</section>
-	<section id="request_filename">
+	<section id="proxy.request_filename">
 		<title>request_filename + proxy_pass</title>
 		<para>如果文件不存在，那么去指定的节点上寻找</para>
 		<screen>
@@ -150,7 +150,7 @@ http://www.example.com/images/logo.jpg	=> http://images.example.com/logo.jpg
 		</screen>
 	</section>
 
-	<section id="request_uri">
+	<section id="proxy.request_uri">
 		<title>$request_uri 与  proxy_pass 联合使用</title>
 		<screen>
 server {
@@ -214,7 +214,7 @@ server {
 }
 		</screen>
 	</section>
-	<section id="try_files">
+	<section id="proxy.try_files">
 		<title>try_files 与 proxy_pass 共用</title>
 		<para>需求，在web目录下索引静态，如果不存在便进入proxy处理，通常proxy后面是tomcat等应用服务器。</para>
 		<para>我们可以使用 try_files 与 proxy_pass 实现我们的需求</para>
@@ -282,7 +282,7 @@ server {
 
 		</screen>
 	</section>
-	<section id="host">
+	<section id="proxy.host">
 		<title>Host</title>
 		<para>Proxy 通过IP地址访问目的主机，如果目的主机是虚拟主机，你就需要告诉目的主机是那个域名。</para>
 		<para>proxy_set_header   Host www.example.com;</para>
@@ -312,7 +312,7 @@ server {
 }
 		</screen>
 	</section>
-	<section id="proxy_cache">
+	<section id="proxy.proxy_cache">
 		<title>proxy_cache</title>
 		<screen>
 http {
@@ -399,7 +399,7 @@ location / {
 		</screen>
 	</section>	
 	
-	<section id="xsendfile">
+	<section id="proxy.xsendfile">
 		<title>X-Sendfile</title>
 		<para>http://wiki.nginx.org/NginxXSendfile</para>
 	</section>
@@ -413,7 +413,7 @@ location / {
 proxy_set_header User-Agent "Mozilla/5.0 (compatible; MSIE 10.6; Windows NT 6.1; Trident/5.0; InfoPath.2; SLCC1; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729; .NET CLR 2.0.50727) 3gpp-gba UNTRUSTED/1.0";
 		</screen>
 	</section>
-	<section id="example">
+	<section id="proxy.example">
 		<title>example</title>
 		<section>
 			<title></title>
