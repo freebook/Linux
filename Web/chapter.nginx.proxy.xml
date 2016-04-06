@@ -150,7 +150,7 @@ http://www.example.com/images/logo.jpg	=> http://images.example.com/logo.jpg
 		</screen>
 	</section>
 
-	<section id="request_uri+proxy_pass">
+	<section id="request_uri">
 		<title>$request_uri 与  proxy_pass 联合使用</title>
 		<screen>
 server {
@@ -212,6 +212,74 @@ server {
     }
 
 }
+		</screen>
+	</section>
+	<section id="try_files">
+		<title>try_files 与 proxy_pass 共用</title>
+		<para>需求，在web目录下索引静态，如果不存在便进入proxy处理，通常proxy后面是tomcat等应用服务器。</para>
+		<para>我们可以使用 try_files 与 proxy_pass 实现我们的需求</para>
+		<screen>
+server {
+    listen       80;
+    server_name  m.netkiller.cn;
+
+    charset utf-8;
+    access_log  /var/log/nginx/m.netkiller.cn.access.log;
+
+    location / {
+		root /www/example.com/m.example.com;
+		try_files $uri $uri/ @proxy;
+    }
+
+    location @proxy {
+		proxy_pass http://127.0.0.1:8000;
+        proxy_set_header    Host    $host;
+        proxy_set_header    X-Real-IP   $remote_addr;
+        proxy_set_header    X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+    # deny access to .htaccess files, if Apache's document root
+    # concurs with nginx's one
+    #
+    #location ~ /\.ht {
+    #    deny  all;
+    #}
+
+    location ~ ^/WEB-INF/ {
+        deny  all;
+    }
+	
+    location ~ \.(html|js|css|jpg|png|gif|swf)$ {
+        root /www/example.com/m.example.com;
+        expires 1d;
+    } 
+    location ~ \.(ico|fla|flv|mp3|mp4|wma|wmv|exe)$ {
+        root /www/example.com/m.example.com;
+        expires 7d;
+    }
+    location ~ \.flv {
+        flv;
+    }
+
+    location ~ \.mp4$ {
+        mp4;
+    }
+
+    location /module {
+        root /www/example.com/m.example.com;
+    }	
+
+}
+
 		</screen>
 	</section>
 	<section id="host">
