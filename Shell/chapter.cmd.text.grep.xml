@@ -262,9 +262,47 @@ UUID=4d3468de-a2ac-451c-b693-3bdca8832096 swap                    swap    defaul
 			</screen>
 
 		</section>
+		<section>
+			<title>-P, --perl-regexp Perl正则表达式</title>
+			<para>Interpret PATTERN as a Perl regular expression.  This is highly experimental and grep -P may warn of unimplemented features.</para>
+			<screen>
+[neo@netkiller nginx]$ grep -Po '\w+\.js' www.netkiller.cn.access.log
+index.js
+min.js
+min.js
+mCustomScrollbar.js
+min.js
+ajax_gd.js
+ajax.js
+validation.js
+AC_RunActiveContent.js
+WdatePicker.js
+cookie.js
+msg_modal.js
+all.js
+common.js
+commonjs.js
+swfobject.js
+dateutil.js
+form.js
+live800.js
+lang.js
+cycle2.js
+min.js
+carousel.js
+tabify.js
+image.js
+min.js
+ctrl.js
+packed.js
+min.js
+common.js
+			</screen>
+		</section>
 	</section>
-	<section>
-		<title>^M</title>
+	<section id="fgrep">
+		<title>fgrep</title>
+		<para>^M 处理</para>
 		<screen>
 fgrep -rl `echo -ne '\r'` .
 
