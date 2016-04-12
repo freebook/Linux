@@ -282,6 +282,89 @@ server {
 
 		</screen>
 	</section>
+	
+	<section id="proxy.ssi">
+		<title>Proxy 与 SSI</title>
+		<para>背景：nginx + tomcat 模式，nginx 开启 SSI , Tomcat 动态页面中输出 SSI 标签</para>
+		<screen>
+		<![CDATA[
+# cat  /etc/nginx/conf.d/www.netkiller.cn.conf
+server {
+    listen       80;
+    server_name  www.netkiller.cn;
+
+    charset utf-8;
+    access_log  /var/log/nginx/www.netkiller.cn.access.log;
+
+    location / {
+        #index  index.html index.htm;
+		proxy_pass http://127.0.0.1:8080;
+        proxy_set_header    Host    $host;
+        proxy_set_header    X-Real-IP   $remote_addr;
+        proxy_set_header    X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+}		
+		]]>
+		</screen>
+		<para>test.jsp 文件</para>
+		<screen>
+		<![CDATA[
+<%@ page language="java" import="java.util.*,java.text.SimpleDateFormat" pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+	<title>show time</title>
+</head>
+<body>
+<%
+
+	Date date=new Date();
+    SimpleDateFormat ss=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    String lgtime=ss.format(date);
+%>
+	<center>
+	<h1><%=lgtime%></h1>
+	</center>
+
+	<!--# set var="test" value="Hello netkiller!" -->
+	<!--# echo var="test" -->
+
+</body>	
+</html>
+		]]>
+		</screen>
+		<para>测试并查看源码，你会看到SSI标签</para>
+		<screen>
+		<![CDATA[
+	<!--# set var="test" value="Hello netkiller!" -->
+	<!--# echo var="test" -->		
+		]]>
+		</screen>
+		<para>解决方案</para>
+		<screen>
+		<![CDATA[
+    location / {
+        ssi on;
+        proxy_set_header Accept-Encoding "";
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header    Host    $host;
+        proxy_set_header    X-Real-IP   $remote_addr;
+        proxy_set_header    X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+		]]>
+		</screen>
+		<para>再次测试，你将看不到SSI标签，只能看到文本输出Hello netkiller!</para>
+	</section>
+	
 	<section id="proxy.host">
 		<title>Host</title>
 		<para>Proxy 通过IP地址访问目的主机，如果目的主机是虚拟主机，你就需要告诉目的主机是那个域名。</para>
