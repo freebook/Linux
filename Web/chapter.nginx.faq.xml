@@ -2,7 +2,7 @@
 <!-- $Id: chapter.nginx.faq.xml 654 2013-07-30 07:30:20Z netkiller $ -->
 <section id="faq">
 	<title>FAQ</title>
-	<section>
+	<section id="405">
 		<title>405 Not Allowed?</title>
 		<qandaset>
 			<qandaentry>
@@ -65,7 +65,7 @@ server {
 			</qandaentry>
 		</qandaset>
 	</section>
-	<section>
+	<section id="502">
 		<title>502 Bad Gateway?</title>
 		<qandaset>
 			<qandaentry>
@@ -90,7 +90,7 @@ location ~ \.php$ {
 		</qandaset>
 	</section>
 	
-	<section>
+	<section id="413">
 		<title>413 Request Entity Too Large</title>
 		<qandaset>
 			<qandaentry>
@@ -134,7 +134,7 @@ http {
 		</qandaset>
 	</section>	
 	
-	<section>
+	<section id="proxy_pass.regular">
 		<title>nginx: [emerg] "proxy_pass" cannot have URI part in location given by regular expression</title>
 		<qandaset>
 			<qandaentry>
@@ -186,7 +186,7 @@ nginx: configuration file /etc/nginx/nginx.conf test failed
 proxy_set_header   Cookie $http_cookie;
 		</screen>
 	</section>
-	<section>
+	<section id="faq.worker_rlimit_nofile">
 		<title>[alert] 55785#0: *11449 socket() failed (24: Too many open files) while connecting to upstream</title>
 		<para>配置 worker_rlimit_nofile 参数即可</para>
 		<screen>
@@ -195,5 +195,18 @@ worker_processes  8;
 worker_rlimit_nofile 65530;
 		</screen>
 		<para>配置 ulimit 也能达到同样效果，但我更喜欢 worker_rlimit_nofile 因为它仅仅作用于nginx,而不是全局配置。</para>
+	</section>
+	<section id="faq.server_name">
+		<title>server_name 与 SSI 注意事项</title>
+		<screen>
+server_name www.example.com www.example.net www.example.org;
+		</screen>
+		<para>下来SSI标签无论你使用那个域名访问，输出永远是server_name的第一域名www.example.com</para>
+		<screen>
+		<![CDATA[
+<!--#echo var="SERVER_NAME"-->
+		]]>
+		</screen>
+		<para>需要通过SERVER_NAME判定展示不同结果时需要注意。</para>
 	</section>
 </section>
