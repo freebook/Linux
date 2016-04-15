@@ -35,7 +35,7 @@ client_header_timeout 10;
 keepalive_timeout  	  65;
 send_timeout          10;
 		</screen>
-		<section>
+		<section id="x-forwarded-for">
 			<title>X-Forwarded-For</title>
 			<screen>
 real_ip_header X-Forwarded-For;
@@ -298,6 +298,22 @@ server {
         break;
     }
 			</screen>
+			<para>引用document_root之外的资源</para>
+			<screen>
+    location / {
+		root /www/example.com/m.example.com;
+		try_files $uri $uri/ @proxy;
+    }
+    location ^~ /module/ {
+        root /www/example.com/www.example.com;
+    }
+    
+    # 下面的写法是错误的，通过error_log 我们可以看到被定为到/www/example.com/m.example.com/module
+	location /module/ {
+    	root /www/example.com/www.example.com;
+	}
+			</screen>
+			
 		</section>
 		<section id="expires">
 			<title>expires</title>
