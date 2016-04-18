@@ -17,11 +17,12 @@
 <section id="dfs.mapping">
     <title>Mapping</title>
 </section>
-<section id="dfs.polymeric">
-    <title>Polymeric</title>
-</section>
--->
 
+-->
+	<section id="dfs.BeeGFS">
+		<title>BeeGFS - The Parallel Cluster File System</title>
+		<para>http://www.beegfs.com/</para>
+	</section>
 	<section id="coda">
 		<title>Coda</title>
 	</section>
