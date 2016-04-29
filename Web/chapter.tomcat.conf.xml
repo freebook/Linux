@@ -229,6 +229,7 @@ http://www.netkiller.cn/product
 		<note>
 			<para>Tomcat 8 取消了 xmlValidation="false" xmlNamespaceAware="false" 两个配置项。</para>
 		</note>
+		<para>appBase 是防止 war 文件的扫描目录。</para>
 		<section>
 			<title>方案一</title>
 			<para>将配置写入server.xml文件</para>
