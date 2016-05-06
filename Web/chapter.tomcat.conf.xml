@@ -282,7 +282,7 @@ cp $CATALINA_HOME/conf/Catalina/localhost/manager.xml $CATALINA_HOME/conf/Catali
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="alias">
 			<title>Alias 别名</title>
 			<para>别名的功能是为虚拟主机绑定多个域名</para>
 			<screen>
@@ -310,6 +310,15 @@ cp $CATALINA_HOME/conf/Catalina/localhost/manager.xml $CATALINA_HOME/conf/Catali
          pattern="common"/>
   ...
 </Host>
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+	<Valve className"org.apache.catalina.valves.AccessLogValve"
+		directory="logs/access"
+		prefix="www.netkiller.cn.access"
+		suffix=".log"
+		pattern="%{X-Forwarded-FOR}i %a %v %U %t %m %s  %{User-Agent}i" resolveHosts="false"/>
 			]]>
 			</screen>
 		</section>		
@@ -341,7 +350,7 @@ cp $CATALINA_HOME/conf/Catalina/localhost/manager.xml $CATALINA_HOME/conf/Catali
 </Host>			
 			]]>
 			</screen>
-		</section>
+		</section id="name">
 		<section>
 			<title>主机绑定IP地址</title>
 			<screen>
