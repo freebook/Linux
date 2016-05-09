@@ -881,7 +881,7 @@ EXAMPLES
 		<title>/proc 目录与进程的关系</title>
 		<para>每个进程会对应一个/proc下的一个目录: /proc/进程ID</para>
 		<screen>
-# ls /proc/
+[root@www.netkiller.cn ~]# ls /proc/
 1     122   1449  18    1891  1942  20    2306  2507  36    44   63   75  96           ioports       schedstat
 10    123   1450  180   19    1943  2015  2308  2509  37    45   631  76  97           ipmi          scsi
 100   124   1451  1802  190   1944  2016  2327  2519  38    46   632  77  976          irq           self
@@ -906,5 +906,22 @@ EXAMPLES
 117   1447  177   1887  1940  1986  2293  2505  34    438   61   73   94  interrupts   partitions
 12    1448  1786  189   1941  2     23    2506  35    439   62   74   95  iomem        sched_debug
 		</screen>
+		<section>
+			<title>/proc/*/fd/ 进程所打开的文件</title>
+			<para>查看进程所打开的文件</para>
+			<screen>
+[root@www.netkiller.cn ~]# ps ax | grep rsyslogd
+ 2076 ?        Sl     0:00 /sbin/rsyslogd -i /var/run/syslogd.pid -c 5
+12774 pts/0    S+     0:00 grep rsyslogd
+
+[root@www.netkiller.cn ~]# ls -l /proc/2076/fd
+total 0
+lrwx------ 1 root root 64 May  9 18:02 0 -> socket:[13103]
+l-wx------ 1 root root 64 May  9 18:02 1 -> /var/log/messages
+l-wx------ 1 root root 64 May  9 18:02 2 -> /var/log/cron
+lr-x------ 1 root root 64 May  9 18:02 3 -> /proc/kmsg
+l-wx------ 1 root root 64 May  9 18:02 4 -> /var/log/secure
+			</screen>
+		</section>
 	</section>
 </chapter>
