@@ -350,8 +350,8 @@ cp $CATALINA_HOME/conf/Catalina/localhost/manager.xml $CATALINA_HOME/conf/Catali
 </Host>			
 			]]>
 			</screen>
-		</section id="name">
-		<section>
+		</section>
+		<section id="name">
 			<title>主机绑定IP地址</title>
 			<screen>
 			<![CDATA[
