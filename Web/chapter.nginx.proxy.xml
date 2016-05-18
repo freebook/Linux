@@ -499,7 +499,7 @@ proxy_set_header User-Agent "Mozilla/5.0 (compatible; MSIE 10.6; Windows NT 6.1;
 	<section id="proxy.example">
 		<title>example</title>
 		<section>
-			<title></title>
+			<title>upstream 实例</title>
 			<screen>
 127.0.0.1 		api.example.com
 172.16.0.10 	api1.example.com
@@ -543,5 +543,73 @@ server {
 }
 			</screen>
 		</section>
+		<section>
+			<title>Tomcat 实例</title>
+			<screen>
+server {
+    listen       80;
+    server_name  m.netkiller.cn;
+
+    charset utf-8;
+    access_log  /var/log/nginx/m.netkiller.cn.access.log;
+
+    location / {
+		root /www/example.com/m.example.com;
+		rewrite ^(.*)\;jsessionid=(.*)$ $1 break;
+		try_files $uri $uri/ @proxy;
+    }
+
+    location @proxy {
+		proxy_pass http://127.0.0.1:8000;
+        proxy_set_header    Host    $host;
+        proxy_set_header    X-Real-IP   $remote_addr;
+        proxy_set_header    X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+    # deny access to .htaccess files, if Apache's document root
+    # concurs with nginx's one
+    #
+    #location ~ /\.ht {
+    #    deny  all;
+    #}
+
+    location ~ ^/WEB-INF/ {
+        deny  all;
+    }
+	
+    location ~ \.(html|js|css|jpg|png|gif|swf)$ {
+        root /www/example.com/m.example.com;
+        expires 1d;
+    } 
+    location ~ \.(ico|fla|flv|mp3|mp4|wma|wmv|exe)$ {
+        root /www/example.com/m.example.com;
+        expires 7d;
+    }
+    location ~ \.flv {
+        flv;
+    }
+
+    location ~ \.mp4$ {
+        mp4;
+    }
+
+    location /module {
+        root /www/example.com/m.example.com;
+    }	
+
+}
+			</screen>
+			<para>上面的jsessionid处理方式</para>
+		</section>
+		
 	</section>
 </section>

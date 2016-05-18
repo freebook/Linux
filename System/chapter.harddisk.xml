@@ -159,7 +159,7 @@ Units = cylinders of 16065 * 512 = 8225280 bytes
 /dev/sda3            3850        7740    31254457+  83  Linux
 		</screen>
 	</section>
-	<!-- $ dd bs=1 seek=2TB if=/dev/null of=test -->
+
 	<section id="dd.clone">
 		<title>Clone partition</title>
 		<para>/dev/sda 克隆到 /dev/sdb</para>
