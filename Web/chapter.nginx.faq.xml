@@ -209,4 +209,54 @@ server_name www.example.com www.example.net www.example.org;
 		</screen>
 		<para>需要通过SERVER_NAME判定展示不同结果时需要注意。</para>
 	</section>
+	<section>
+		<title>location 跨 document_root 引用，引用 document_root 之外的资源</title>
+		<para>下面的例子是 Document root 是 /www/netkiller.com/m.netkiller.com， 我们需要 /www/netkiller.com/www.netkiller.com 中的资源。</para>
+		<screen>
+		<![CDATA[
+server {
+    listen       80;
+    server_name  m.netkiller.com;
+
+    charset utf-8;
+    access_log  /var/log/nginx/m.netkiller.com.access.log;
+    error_log  /var/log/nginx/m.netkiller.com.error.log;
+
+    location / {
+		root /www/netkiller.com/m.netkiller.com;
+		index.html
+    }
+
+    location /module {
+        root /www/netkiller.com/www.netkiller.com;
+    }	
+
+}
+
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+server {
+    listen       80;
+    server_name  m.netkiller.com;
+
+    charset utf-8;
+    access_log  /var/log/nginx/m.netkiller.com.access.log;
+    error_log  /var/log/nginx/m.netkiller.com.error.log;
+
+    location / {
+		root /www/netkiller.com/m.netkiller.com;
+		index.html
+    }
+
+    location ^~ /module/ {
+        root /www/netkiller.com/www.netkiller.com;
+    }	
+
+}
+		]]>
+		</screen>
+		<para>上面的例子location /module 是指 /www/netkiller.com/www.netkiller.com + /module，如果  /www/netkiller.com/www.netkiller.com 目录下面没有 module 目录是出现404， error.log显示 "/www/netkiller.cn/www.netkiller.cn/module/index.html" failed (2: No such file or directory)</para>
+	</section>
 </section>
