@@ -6,4 +6,5 @@
 	&chapter.hpc.xml;
 	&chapter.spark.xml;
 	&chapter.tachyon.xml;
+	&chapter.zookeeper.xml;
 </part>

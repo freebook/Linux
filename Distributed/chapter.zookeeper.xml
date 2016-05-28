@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="zookeeper">
+	<title>Apache ZooKeeper</title>
+	<para>https://zookeeper.apache.org/</para>
+	<section id="setup">
+		<title>安装配置</title>
+		<para>安装 Apache ZooKeeper</para>
+		<section>
+			<title>单节点安装</title>
+			<screen>
+			<![CDATA[
+cd /usr/local/src
+wget http://ftp.cuhk.edu.hk/pub/packages/apache.org/zookeeper/stable/zookeeper-3.4.8.tar.gz
+tar zxf zookeeper-3.4.8.tar.gz 
+mkdir /var/lib/zookeeper
+
+
+cat >> zookeeper-3.4.8/conf/zoo.cfg <<EOF
+# The number of milliseconds of each tick
+tickTime=2000
+# The number of ticks that the initial 
+# synchronization phase can take
+initLimit=10
+# The number of ticks that can pass between 
+# sending a request and getting an acknowledgement
+syncLimit=5
+# the directory where the snapshot is stored.
+# do not use /tmp for storage, /tmp here is just 
+# example sakes.
+dataDir=/var/lib/zookeeper
+# the port at which the clients will connect
+clientPort=2181
+# the maximum number of client connections.
+# increase this if you need to handle more clients
+#maxClientCnxns=60
+#
+# Be sure to read the maintenance section of the 
+# administrator guide before turning on autopurge.
+#
+# http://zookeeper.apache.org/doc/current/zookeeperAdmin.html#sc_maintenance
+#
+# The number of snapshots to retain in dataDir
+#autopurge.snapRetainCount=3
+# Purge task interval in hours
+# Set to "0" to disable auto purge feature
+#autopurge.purgeInterval=1
+
+EOF
+
+zookeeper-3.4.8 /srv/
+			]]>
+			</screen>
+			<para>启动ZooKeeper</para>
+			<screen>
+			<![CDATA[
+[root@localhost srv]# /srv/zookeeper-3.4.8/bin/zkServer.sh start
+ZooKeeper JMX enabled by default
+Using config: /srv/zookeeper-3.4.8/bin/../conf/zoo.cfg
+Starting zookeeper ... STARTED
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>多节点安装</title>
+			<screen>
+			<![CDATA[
+tickTime=2000
+dataDir=/var/lib/zookeeper
+clientPort=2181
+initLimit=5
+syncLimit=2
+server.1=zoo1:2888:3888
+server.2=zoo2:2888:3888
+server.3=zoo3:2888:3888
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section id="cli">
+		<title>管理 ZooKeeper</title>
+		<para>链接 ZooKeeper</para>
+		<para>bin/zkCli.sh -server 127.0.0.1:2181</para>
+		<screen>
+		<![CDATA[
+[root@localhost zookeeper-3.4.8]# bin/zkCli.sh -server 127.0.0.1:2181
+Connecting to 127.0.0.1:2181
+2016-05-27 22:19:10,785 [myid:] - INFO  [main:Environment@100] - Client environment:zookeeper.version=3.4.8--1, built on 02/06/2016 03:18 GMT
+2016-05-27 22:19:10,788 [myid:] - INFO  [main:Environment@100] - Client environment:host.name=localhost
+2016-05-27 22:19:10,788 [myid:] - INFO  [main:Environment@100] - Client environment:java.version=1.6.0_45
+2016-05-27 22:19:10,789 [myid:] - INFO  [main:Environment@100] - Client environment:java.vendor=Sun Microsystems Inc.
+2016-05-27 22:19:10,789 [myid:] - INFO  [main:Environment@100] - Client environment:java.home=/srv/jdk1.6.0_45/jre
+2016-05-27 22:19:10,789 [myid:] - INFO  [main:Environment@100] - Client environment:java.class.path=/srv/zookeeper-3.4.8/bin/../build/classes:/srv/zookeeper-3.4.8/bin/../build/lib/*.jar:/srv/zookeeper-3.4.8/bin/../lib/slf4j-log4j12-1.6.1.jar:/srv/zookeeper-3.4.8/bin/../lib/slf4j-api-1.6.1.jar:/srv/zookeeper-3.4.8/bin/../lib/netty-3.7.0.Final.jar:/srv/zookeeper-3.4.8/bin/../lib/log4j-1.2.16.jar:/srv/zookeeper-3.4.8/bin/../lib/jline-0.9.94.jar:/srv/zookeeper-3.4.8/bin/../zookeeper-3.4.8.jar:/srv/zookeeper-3.4.8/bin/../src/java/lib/*.jar:/srv/zookeeper-3.4.8/bin/../conf:/srv/java/lib:/srv/java/jre/lib:/lib:
+2016-05-27 22:19:10,789 [myid:] - INFO  [main:Environment@100] - Client environment:java.library.path=/srv/jdk1.6.0_45/jre/lib/amd64/server:/srv/jdk1.6.0_45/jre/lib/amd64:/srv/jdk1.6.0_45/jre/../lib/amd64:/usr/java/packages/lib/amd64:/usr/lib64:/lib64:/lib:/usr/lib
+2016-05-27 22:19:10,790 [myid:] - INFO  [main:Environment@100] - Client environment:java.io.tmpdir=/tmp
+2016-05-27 22:19:10,790 [myid:] - INFO  [main:Environment@100] - Client environment:java.compiler=<NA>
+2016-05-27 22:19:10,790 [myid:] - INFO  [main:Environment@100] - Client environment:os.name=Linux
+2016-05-27 22:19:10,790 [myid:] - INFO  [main:Environment@100] - Client environment:os.arch=amd64
+2016-05-27 22:19:10,790 [myid:] - INFO  [main:Environment@100] - Client environment:os.version=3.10.0-327.10.1.el7.x86_64
+2016-05-27 22:19:10,790 [myid:] - INFO  [main:Environment@100] - Client environment:user.name=root
+2016-05-27 22:19:10,790 [myid:] - INFO  [main:Environment@100] - Client environment:user.home=/root
+2016-05-27 22:19:10,790 [myid:] - INFO  [main:Environment@100] - Client environment:user.dir=/srv/zookeeper-3.4.8
+2016-05-27 22:19:10,791 [myid:] - INFO  [main:ZooKeeper@438] - Initiating client connection, connectString=127.0.0.1:2181 sessionTimeout=30000 watcher=org.apache.zookeeper.ZooKeeperMain$MyWatcher@6d8dfef8
+Welcome to ZooKeeper!
+2016-05-27 22:19:10,844 [myid:] - INFO  [main-SendThread(127.0.0.1:2181):ClientCnxn$SendThread@1032] - Opening socket connection to server 127.0.0.1/127.0.0.1:2181. Will not attempt to authenticate using SASL (java.lang.SecurityException: Unable to locate a login configuration)
+JLine support is enabled
+2016-05-27 22:19:10,848 [myid:] - INFO  [main-SendThread(127.0.0.1:2181):ClientCnxn$SendThread@876] - Socket connection established to 127.0.0.1/127.0.0.1:2181, initiating session
+[zk: 127.0.0.1:2181(CONNECTING) 0] 2016-05-27 22:19:10,894 [myid:] - INFO  [main-SendThread(127.0.0.1:2181):ClientCnxn$SendThread@1299] - Session establishment complete on server 127.0.0.1/127.0.0.1:2181, sessionid = 0x154f526d8300000, negotiated timeout = 30000
+
+WATCHER::
+
+WatchedEvent state:SyncConnected type:None path:null
+		]]>
+		</screen>
+		<section>
+			<title>help</title>
+			<screen>
+			<![CDATA[
+[zk: 127.0.0.1:2181(CONNECTED) 0] help
+ZooKeeper -server host:port cmd args
+	connect host:port
+	get path [watch]
+	ls path [watch]
+	set path data [version]
+	rmr path
+	delquota [-n|-b] path
+	quit 
+	printwatches on|off
+	create [-s] [-e] path data acl
+	stat path [watch]
+	close 
+	ls2 path [watch]
+	history 
+	listquota path
+	setAcl path acl
+	getAcl path
+	sync path
+	redo cmdno
+	addauth scheme auth
+	delete path [version]
+	setquota -n|-b val path			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>ls</title>
+			<screen>
+			<![CDATA[
+[zk: 127.0.0.1:2181(CONNECTED) 1] ls /
+[zookeeper]			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>create</title>
+			<screen>
+			<![CDATA[
+[zk: 127.0.0.1:2181(CONNECTED) 4] create /product product       
+Created /product
+
+[zk: 127.0.0.1:2181(CONNECTED) 6] ls /       
+[product, zookeeper]	
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>get</title>
+			<screen>
+			<![CDATA[
+[zk: 127.0.0.1:2181(CONNECTED) 7] get /
+
+cZxid = 0x0
+ctime = Wed Dec 31 19:00:00 EST 1969
+mZxid = 0x0
+mtime = Wed Dec 31 19:00:00 EST 1969
+pZxid = 0x4
+cversion = 0
+dataVersion = 0
+aclVersion = 0
+ephemeralOwner = 0x0
+dataLength = 0
+numChildren = 2
+
+[zk: 127.0.0.1:2181(CONNECTED) 8] get /product
+product
+cZxid = 0x4
+ctime = Fri May 27 22:27:55 EDT 2016
+mZxid = 0x4
+mtime = Fri May 27 22:27:55 EDT 2016
+pZxid = 0x4
+cversion = 0
+dataVersion = 0
+aclVersion = 0
+ephemeralOwner = 0x0
+dataLength = 7
+numChildren = 0
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>set</title>
+			<screen>
+			<![CDATA[
+[zk: 127.0.0.1:2181(CONNECTED) 9] set /product nickname=netkiller
+cZxid = 0x4
+ctime = Fri May 27 22:27:55 EDT 2016
+mZxid = 0x5
+mtime = Fri May 27 22:37:28 EDT 2016
+pZxid = 0x4
+cversion = 0
+dataVersion = 1
+aclVersion = 0
+ephemeralOwner = 0x0
+dataLength = 18
+numChildren = 0
+
+[zk: 127.0.0.1:2181(CONNECTED) 10] get /product                   
+nickname=netkiller
+cZxid = 0x4
+ctime = Fri May 27 22:27:55 EDT 2016
+mZxid = 0x5
+mtime = Fri May 27 22:37:28 EDT 2016
+pZxid = 0x4
+cversion = 0
+dataVersion = 1
+aclVersion = 0
+ephemeralOwner = 0x0
+dataLength = 18
+numChildren = 0
+			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>delete</title>
+			<screen>
+			<![CDATA[
+[zk: 127.0.0.1:2181(CONNECTED) 11] delete /product
+[zk: 127.0.0.1:2181(CONNECTED) 12] ls /
+[zookeeper]
+			]]>
+			</screen>
+		</section>
+	</section>
+</chapter>

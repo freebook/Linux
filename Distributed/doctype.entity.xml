@@ -5,3 +5,4 @@
 <!ENTITY chapter.hpc.xml		    SYSTEM "chapter.hpc.xml">
 <!ENTITY chapter.spark.xml		    SYSTEM "chapter.spark.xml">
 <!ENTITY chapter.tachyon.xml		SYSTEM "chapter.tachyon.xml">
+<!ENTITY chapter.zookeeper.xml		SYSTEM "chapter.zookeeper.xml">
