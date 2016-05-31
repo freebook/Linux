@@ -276,5 +276,60 @@ location / {
     index index.html index.php;
 }
 		</screen>
+		<screen>
+		<![CDATA[
+if ($remote_addr ~ "^(172.16|192.168)" && $http_user_agent ~* "spider") {
+    return 403;
+}
+
+set $flag 0;
+if ($remote_addr ~ "^(172.16|192.168)") {
+    set $flag "1";
+}
+if ($http_user_agent ~* "spider") {
+    set $flag "1";
+}
+if ($flag = "1") {
+    return 403;
+}
+		]]>
+		</screen>
+		
+		<screen>
+		<![CDATA[
+if ($request_method = POST ) {
+	return 405;
+}
+if ($args ~ post=140){
+	rewrite ^ http://example.com/ permanent;
+}		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+location /only-one-if {
+    set $true 1;
+
+    if ($true) {
+        add_header X-First 1;
+    }
+
+    if ($true) {
+        add_header X-Second 2;
+    }
+
+    return 204;
+}		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+		]]>
+		</screen>
+
 	</section>
 </section>

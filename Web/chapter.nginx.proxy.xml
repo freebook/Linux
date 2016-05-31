@@ -110,6 +110,86 @@ upstream backend{
 
 }
 	</screen>
+	<section id="proxy.proxy_cache">
+		<title>proxy_cache</title>
+		<para>/etc/nginx/conf.d/</para>
+		<screen>
+proxy_cache_path /www/cache keys_zone=www:128m;
+server {
+	
+	location / {
+      proxy_pass http://example.net;
+      proxy_cache www;
+      proxy_cache_key $uri;
+      proxy_cache_valid  200 302  60m;
+      proxy_cache_valid  404      1m;
+    }
+}
+		</screen>
+		<para>proxy_cache_valid 配置HTTP状态码与缓存时间</para>
+		<screen>
+proxy_cache_valid any 1m; 任何内容缓存一分钟
+
+proxy_cache_valid  200 302  60m; 状态200，302页面缓存 60分钟
+
+proxy_cache_valid  404      1m;	 状态404页面缓存1分钟	
+		</screen>
+		<screen>
+http {
+  proxy_cache_path  /var/www/cache levels=1:2 keys_zone=my-cache:8m max_size=1000m inactive=600m;
+  proxy_temp_path /var/www/cache/tmp;
+
+
+  server {
+    location / {
+      proxy_pass http://example.net;
+      proxy_cache mycache;
+      proxy_cache_valid  200 302  60m;
+      proxy_cache_valid  404      1m;
+    }
+  }
+}
+		</screen>
+		<screen>
+location / {
+  proxy_pass http://localhost;
+  proxy_set_header   Host             $host;
+  proxy_set_header   X-Real-IP        $remote_addr;
+  proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
+  proxy_ignore_headers Set-Cookie;
+  proxy_ignore_headers Cache-Control;
+  proxy_cache_bypass        $http_secret_header;
+  add_header X-Cache-Status $upstream_cache_status;
+}
+		</screen>
+		<screen>
+server {
+          listen       80;
+          server_name  example.org;
+          root   /var/www;
+          index  index.html index.php;
+
+	location ~* .+.(ico|jpg|gif|jpeg|css|js|flv|png|swf)$ {
+           	expires max;
+	}
+
+	location / {
+		proxy_pass       http://backend;
+		proxy_set_header  X-Real-IP  $remote_addr;
+		proxy_set_header Host $http_host;
+		proxy_cache cache;
+		proxy_cache_key $host$request_uri;
+		proxy_cache_valid 200 304 12h;
+		proxy_cache_valid 302 301 12h;
+		proxy_cache_valid any 1m;
+		proxy_ignore_headers Cache-Control Expires;
+		proxy_pass_header Set-Cookie;
+	}
+
+}
+		</screen>
+		
+	</section>
 	<section id="proxy.rewrite">
 		<title>rewrite + proxy_pass</title>
 		<para>需求如下</para>
@@ -395,63 +475,7 @@ server {
 }
 		</screen>
 	</section>
-	<section id="proxy.proxy_cache">
-		<title>proxy_cache</title>
-		<screen>
-http {
-  proxy_cache_path  /var/www/cache levels=1:2 keys_zone=my-cache:8m max_size=1000m inactive=600m;
-  proxy_temp_path /var/www/cache/tmp;
-
-
-  server {
-    location / {
-      proxy_pass http://example.net;
-      proxy_cache mycache;
-      proxy_cache_valid  200 302  60m;
-      proxy_cache_valid  404      1m;
-    }
-  }
-}
-		</screen>
-		<screen>
-location / {
-  proxy_pass http://localhost;
-  proxy_set_header   Host             $host;
-  proxy_set_header   X-Real-IP        $remote_addr;
-  proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
-  proxy_ignore_headers Set-Cookie;
-  proxy_ignore_headers Cache-Control;
-  proxy_cache_bypass        $http_secret_header;
-  add_header X-Cache-Status $upstream_cache_status;
-}
-		</screen>
-		<screen>
-server {
-          listen       80;
-          server_name  example.org;
-          root   /var/www;
-          index  index.html index.php;
-
-	location ~* .+.(ico|jpg|gif|jpeg|css|js|flv|png|swf)$ {
-           	expires max;
-	}
-
-	location / {
-		proxy_pass       http://backend;
-		proxy_set_header  X-Real-IP  $remote_addr;
-		proxy_set_header Host $http_host;
-		proxy_cache cache;
-		proxy_cache_key $host$request_uri;
-		proxy_cache_valid 200 304 12h;
-		proxy_cache_valid 302 301 12h;
-		proxy_cache_valid any 1m;
-		proxy_ignore_headers Cache-Control Expires;
-		proxy_pass_header Set-Cookie;
-	}
-
-}
-		</screen>
-	</section>
+	
 
 	<section id="proxy.expires">
 		<title>expires</title>
