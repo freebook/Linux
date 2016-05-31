@@ -236,14 +236,14 @@ $ curl 192.168.0.1/134
 192
 		</screen>
 	</section>
-	<section>
+	<section id="set">
 		<title>自定义变量</title>
 		<screen>
 if ( $host ~* (.*)\.(.*)\.(.*)) {
 	set $subdomain $1;
 }
 location / {
-    root  html/$subdomain;
+    root  /www/$subdomain;
     index index.html index.php;
 }
 		</screen>
@@ -254,6 +254,25 @@ if ( $host ~* (\b(?!www\b)\w+)\.\w+\.\w+ ) {
 
 location / {
     root /www/public_html$subdomain;
+    index index.html index.php;
+}
+		</screen>
+	</section>
+	<section id="if">
+		<title>if 条件判断</title>
+		<para>判断相等</para>
+		<screen>
+if ($query_string = "") {
+   	set $args "";
+}
+		</screen>
+		<para>正则匹配</para>
+		<screen>
+if ( $host ~* (.*)\.(.*)\.(.*)) {
+	set $subdomain $1;
+}
+location / {
+    root /var/www/$subdomain;
     index index.html index.php;
 }
 		</screen>

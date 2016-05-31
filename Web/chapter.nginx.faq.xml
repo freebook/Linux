@@ -209,7 +209,7 @@ server_name www.example.com www.example.net www.example.org;
 		</screen>
 		<para>需要通过SERVER_NAME判定展示不同结果时需要注意。</para>
 	</section>
-	<section>
+	<section id="faq.location">
 		<title>location 跨 document_root 引用，引用 document_root 之外的资源</title>
 		<para>下面的例子是 Document root 是 /www/netkiller.com/m.netkiller.com， 我们需要 /www/netkiller.com/www.netkiller.com 中的资源。</para>
 		<screen>
