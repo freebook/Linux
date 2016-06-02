@@ -660,4 +660,11 @@ sys	0m12.490s
 			</screen>
 		</section>
 	</section>
+	<section>
+		<title>磁盘占用100%删除文件后不是放的解决方法</title>
+		<para>首先查看delete状态的进程，然后kill进程，或者重启</para>
+		<screen>
+lsof | grep delete
+		</screen>
+	</section>
 </chapter>
