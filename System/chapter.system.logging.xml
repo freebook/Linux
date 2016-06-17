@@ -78,16 +78,47 @@ $IncludeConfig /etc/rsyslog.d/*.conf
 
 	<section id="logrotate">
 		<title>logrotate - rotates, compresses, and mails system logs</title>
-		<para>logrotate 是linux系统自带的日志分割与压缩程序，通过crontab每日运行一次。</para>
 		<screen>
+logrotate 的配置文件是 /etc/logrotate.conf。主要参数如下表：
+
+参数 					功能
+compress 				通过gzip 压缩转储以后的日志
+nocompress 				不需要压缩时，用这个参数
+copytruncate			用于还在打开中的日志文件，把当前日志备份并截断
+nocopytruncate 			备份日志文件但是不截断
+create mode owner group 转储文件，使用指定的文件模式创建新的日志文件
+nocreate 				不建立新的日志文件
+delaycompress 和 compress 一起使用时，转储的日志文件到下一次转储时才压缩
+nodelaycompress 		覆盖 delaycompress 选项，转储同时压缩。
+errors address			专储时的错误信息发送到指定的Email 地址
+ifempty 				即使是空文件也转储，这个是 logrotate 的缺省选项。
+notifempty 				如果是空文件的话，不转储
+mail address 			把转储的日志文件发送到指定的E-mail 地址
+nomail 					转储时不发送日志文件
+olddir directory 		转储后的日志文件放入指定的目录，必须和当前日志文件在同一个文件系统
+noolddir 				转储后的日志文件和当前日志文件放在同一个目录下
+prerotate/endscript 	在转储以前需要执行的命令，这两个关键字必须单独成行
+postrotate/endscript 	在转储以后需要执行的命令，这两个关键字必须单独成行
+daily 					指定转储周期为每天
+weekly 					指定转储周期为每周
+monthly 				指定转储周期为每月
+rotate count 			指定日志文件删除之前转储的次数，0 指没有备份，5 指保留5 个备份
+tabootext [+] list 		让logrotate 不转储指定扩展名的文件，缺省的扩展名是：.rpm-orig, .rpmsave, v, 和 ~ 
+size size 				当日志文件到达指定的大小时才转储，Size 可以指定 bytes (缺省)以及KB (sizek)或者MB (sizem).
+		
+		</screen>
+		<para>logrotate 是linux系统自带的日志分割与压缩程序，通过crontab每日运行一次。</para>
+
+		<section id="logrotate.conf">
+			<title>/etc/logrotate.conf</title>
+			<screen>
 $ cat /etc/cron.daily/logrotate
 #!/bin/sh
 
 test -x /usr/sbin/logrotate || exit 0
 /usr/sbin/logrotate /etc/logrotate.conf
-		</screen>
-		<section id="logrotate.conf">
-			<title>/etc/logrotate.conf</title>
+			</screen>
+					
 			<screen>
 $ cat /etc/logrotate.conf
 # see "man logrotate" for details
@@ -127,7 +158,44 @@ include /etc/logrotate.d
 		<section id="logrotate.d">
 			<title>/etc/logrotate.d/</title>
 			<section>
-				<title>apache2</title>
+				<title>日志配置</title>
+				<para>配置多个日志每行写一个条，是用绝对路径</para>
+				<screen>
+				<![CDATA[
+/var/log/cron
+/var/log/maillog
+/var/log/messages
+/var/log/secure
+/var/log/spooler
+{
+    missingok
+    sharedscripts
+    postrotate
+	/bin/kill -HUP `cat /var/run/syslogd.pid 2> /dev/null` 2> /dev/null || true
+    endscript
+}
+				
+				]]>
+				</screen>
+				<para>通配符匹配</para>
+				<para>例如 /var/log/nginx/*.log 匹配所有 nginx 日志</para>
+				<screen>
+				<![CDATA[
+/var/log/nginx/*.log {
+        daily
+        missingok
+        rotate 52
+        compress
+        delaycompress
+        notifempty
+        create 640 nginx adm
+        sharedscripts
+        postrotate
+                [ -f /var/run/nginx.pid ] && kill -USR1 `cat /var/run/nginx.pid`
+        endscript
+}
+				]]>
+				</screen>
 				<screen>
 				<![CDATA[
 $ cat /etc/logrotate.d/apache2
@@ -148,21 +216,9 @@ $ cat /etc/logrotate.d/apache2
 }
 				]]>
 				</screen>
-				<screen>
-				<![CDATA[
-/var/log/httpd/*log {
-    missingok
-    notifempty
-    sharedscripts
-    postrotate
-        /sbin/service httpd reload > /dev/null 2>/dev/null || true
-    endscript
-}
-				]]>
-				</screen>
 			</section>
 			<section>
-				<title>mysql</title>
+				<title>create 创建日志文件，指定用于与访问权限</title>
 				<screen>
 				<![CDATA[
 $ cat /etc/logrotate.d/mysql-server
@@ -197,7 +253,21 @@ $ cat /etc/logrotate.d/mysql-server
 				</screen>
 			</section>
 			<section>
-				<title>cacti</title>
+				<title>postrotate</title>
+				<para>日志切割后运行脚本，通常用于通知父进程，日志已经改变。</para>
+				<screen>
+				<![CDATA[
+/var/log/httpd/*log {
+    missingok
+    notifempty
+    sharedscripts
+    postrotate
+        /sbin/service httpd reload > /dev/null 2>/dev/null || true
+    endscript
+}
+				]]>
+				</screen>
+				
 				<screen>
 /var/log/cacti/*.log {
         weekly

@@ -103,7 +103,7 @@ client_max_body_size 8m;
 	
 	<section id="http.server">
 		<title>server</title>
-		<section>
+		<section id="listen">
 			<title>listen</title>
 			<para>绑定IP地址</para>
 			<screen>
@@ -237,6 +237,33 @@ $ openssl s_client -connect www.example.com:443
 
 		<section id="http.server.subdomain">
 			<title>泛解析主机</title>
+			<screen>
+			<![CDATA[
+server {
+    listen       80;
+    server_name  example.org  www.example.org;
+    ...
+}
+
+server {
+    listen       80;
+    server_name  *.example.org;
+    ...
+}
+
+server {
+    listen       80;
+    server_name  mail.*;
+    ...
+}
+
+server {
+    listen       80;
+    server_name  ~^(?<user>.+)\.example\.net$;
+    ...
+}			
+			]]>
+			</screen>
 			<screen>
 server {
 	listen       80;

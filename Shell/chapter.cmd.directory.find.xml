@@ -100,6 +100,15 @@ find -exec ls -l {} \; | grep '2011-01-18'
 		<screen>
 find . -name "*.html" -type f -exec sed -i "s/aaa/bbb/" {} \;		
 		</screen>
+		<para>查找文件中含有openWindow字符串的文件</para>
+		<screen>
+# find -type f -name "*.js" -exec grep -H -A2 openWindow {} \;
+
+./javascript/commonjs.js:function openWindow(url){
+./javascript/commonjs.js-	window.open(url + "?rand=" + getRandom(), 'gamebinary');
+./javascript/commonjs.js-}
+
+		</screen>
 	</section>
 	<section id="xargs">
 		<title>xargs</title>
