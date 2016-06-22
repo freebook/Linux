@@ -10,7 +10,219 @@
 			<keyword>shorewall</keyword>
 		</keywordset>
 	</chapterinfo>
+	<section id="sysctl">
+		<title>TCP/IP 相关内核配置项</title>
+		<para></para>
+		<bridgehead renderas="sect3">checking status</bridgehead>
+		<screen>
+$ sysctl net.ipv4.ip_forward
+net.ipv4.ip_forward = 0
+		</screen>
+		<para>or just checking out the value in the /proc system</para>
+		<screen>
+$ cat /proc/sys/net/ipv4/ip_forward
+0
+		</screen>
+	
+		<bridgehead renderas="sect3">enable</bridgehead>
+		<screen>
+sysctl -w net.ipv4.ip_forward=1
+		</screen>
+		<para>or</para>
+		<screen>
+		<![CDATA[
+#redhat
+echo 1 > /proc/sys/net/ipv4/ip_forward
+#debian/ubuntu
+echo 1 | sudo tee /proc/sys/net/ipv4/ip_forward;
+		]]>
+		</screen>
+		<bridgehead renderas="sect3">disable</bridgehead>
+		<screen>
+sysctl -w net.ipv4.ip_forward=0
+		</screen>
+		<para>or</para>
+		<screen>
+		<![CDATA[
+echo 0 > /proc/sys/net/ipv4/ip_forward
+		]]>
+		</screen>
+		<para>without rebooting the system</para>
+		<section>
+			<title>net.ipv4.ip_forward</title>
+			<table>
+				<title>net.ipv4.ip_forward</title>
+				<tgroup cols="3">
+				<thead>
+					<row>
+						<entry>user</entry>
+						<entry>route</entry>
+						<entry>wan</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>192.168.0.2</entry>
+						<entry>eth0:192.168.0.1 eth1:172.16.0.1</entry>
+						<entry>172.16.0.254</entry>
+					</row>
+				</tbody>
+				</tgroup>
+			</table>
+			<screen>
+			<![CDATA[
+$ sysctl net.ipv4.ip_forward
+net.ipv4.ip_forward = 0
+			]]>
+			</screen>
+			<para>try out ping host from 192.168.0.2 to 192.168.0.1 , 172.16.0.1 and 172.16.0.254</para>
+			<para>you can access 192.168.0.1 , 172.16.0.1, but 172.16.0.254 time out</para>
+			<para>sysctl -w net.ipv4.ip_forward=1</para>
+			<para>try again ping 172.16.0.254</para>
+		</section>
+		<section>
+			<title>net.ipv4.icmp_echo_ignore_all</title>
+			<para>如果希望屏蔽别人 ping 你的主机，则加入以下代码：</para>
+			<screen>
+# Disable ping requests
+net.ipv4.icmp_echo_ignore_all = 1
+			</screen>
+		</section>
+	</section>
+	
 	&chapter.security.firewall.iptables;
+
+	<section id="ulogd">
+		<title>ulogd - The Netfilter Userspace Logging Daemon</title>
+		<para>ulogd homepage: http://www.gnumonks.org/projects/</para>
+		<procedure>
+			<step>
+				<para>Installation</para>
+				<para>$ sudo apt-get install ulogd</para>
+				<para>$ sudo apt-get install ulogd-mysql</para>
+			</step>
+			<step>
+				<para>Configure LOGEMU</para>
+				<screen>
+plugin="/usr/lib/ulogd/ulogd_LOGEMU.so"
+				</screen>
+			</step>
+			<step>
+				<para>Configure MYSQL</para>
+				<para>$ sudo vim /etc/ulogd.conf</para>
+				<screen>
+plugin="/usr/lib/ulogd/ulogd_MYSQL.so"
+[MYSQL]
+table="ulog"
+pass="ulog"
+user="ulog"
+db="ulogd"
+host="localhost"
+				</screen>
+				<para>create database</para>
+				<screen>
+				<![CDATA[
+neo@master:~$ mysql -u root -p -A mysql
+Enter password:
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 9
+Server version: 5.0.51a-3ubuntu5.1-log (Ubuntu)
+
+Type 'help;' or '\h' for help. Type '\c' to clear the buffer.
+
+mysql> create database ulogd;
+Query OK, 1 row affected (0.07 sec)
+
+mysql> grant all privileges on ulogd.* to ulog@localhost identified by 'ulog';
+Query OK, 0 rows affected (0.09 sec)
+
+mysql> flush privileges;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> source /usr/share/doc/ulogd-mysql/mysql.table
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> exit;
+Bye
+neo@master:~$
+				]]>
+				</screen>
+			</step>
+			<step>
+				<para>Iptables</para>
+				<para></para>
+				<screen>
+iptables -A INPUT -p tcp --dport 80 -j ULOG
+iptables -A FORWARD -j ULOG
+				</screen>
+			</step>
+			<step>
+				<para>Starting</para>
+				<para>$ sudo /etc/init.d/ulogd start</para>
+			</step>
+			<step>
+				<para>testing</para>
+				<para>logemu</para>
+				<screen>
+neo@master:~$ tail -f /var/log/ulog/syslogemu.log
+Oct 20 12:54:07 master IN=eth0 OUT= MAC=00:0c:29:b0:6b:d0:00:50:56:c0:00:08:08:00  SRC=192.168.245.1 DST=192.168.245.129 LEN=40 TOS=00 PREC=0x00 TTL=128 ID=30048 DF PROTO=TCP SPT=2080 DPT=80 SEQ=1732529774 ACK=1543952440 WINDOW=64608 ACK URGP=0
+Oct 20 12:54:22 master IN=eth0 OUT= MAC=00:0c:29:b0:6b:d0:00:50:56:c0:00:08:08:00  SRC=192.168.245.1 DST=192.168.245.129 LEN=40 TOS=00 PREC=0x00 TTL=128 ID=30294 DF PROTO=TCP SPT=2080 DPT=80 SEQ=1732529774 ACK=1543952441 WINDOW=64608 ACK URGP=0
+Oct 20 12:54:32 master IN=eth0 OUT= MAC=00:0c:29:b0:6b:d0:00:50:56:c0:00:08:08:00  SRC=192.168.245.1 DST=192.168.245.129 LEN=40 TOS=00 PREC=0x00 TTL=128 ID=30481 DF PROTO=TCP SPT=2080 DPT=80 SEQ=1732529774 ACK=1543952441 WINDOW=64608 ACK FIN URGP=0
+Oct 20 12:55:27 master IN=eth0 OUT= MAC=00:0c:29:b0:6b:d0:00:50:56:c0:00:08:08:00  SRC=192.168.245.1 DST=192.168.245.129 LEN=48 TOS=00 PREC=0x00 TTL=128 ID=31444 DF PROTO=TCP SPT=2087 DPT=80 SEQ=866215326 ACK=0 WINDOW=65535 SYN URGP=0
+				</screen>
+				<para>mysql</para>
+				<screen>
+				<![CDATA[
+mysql> select count(*) from ulog;
++----------+
+| count(*) |
++----------+
+|        8 |
++----------+
+1 row in set (0.03 sec)
+
+mysql> select id, raw_mac from ulog;
++----+--------------------------------------------+
+| id | raw_mac                                    |
++----+--------------------------------------------+
+|  1 | 00:0c:29:b0:6b:d0:00:50:56:c0:00:08:08:00  |
+|  2 | 00:0c:29:b0:6b:d0:00:50:56:c0:00:08:08:00  |
+|  3 | 00:0c:29:b0:6b:d0:00:50:56:c0:00:08:08:00  |
+|  4 | 00:0c:29:b0:6b:d0:00:50:56:c0:00:08:08:00  |
+|  5 | 00:0c:29:b0:6b:d0:00:50:56:c0:00:08:08:00  |
+|  6 | 00:0c:29:b0:6b:d0:00:50:56:c0:00:08:08:00  |
+|  7 | 00:0c:29:b0:6b:d0:00:50:56:c0:00:08:08:00  |
+|  8 | 00:0c:29:b0:6b:d0:00:50:56:c0:00:08:08:00  |
+|  9 | 00:0c:29:b0:6b:d0:00:50:56:c0:00:08:08:00  |
++----+--------------------------------------------+
+9 rows in set (0.00 sec)
+				]]>
+				</screen>
+			</step>
+		</procedure>
+		<literallayout>
+共有四个参数可供使用：
+1.--ulog-nlgroup
+iptables -A INPUT -p TCP --dport 22 -j ULOG --ulog-nlgroup 2
+指定向哪个netlink组发送包，比如-- ulog-nlgroup 2。一共有32个netlink组，它们被简单地编号位1-32。默认值是1。
+
+2.--ulog-prefix
+iptables -A INPUT -p TCP --dport 22 -j ULOG --ulog-prefix "SSH connection attempt: "
+指定记录信息的前缀，以便于区分不同的信息。使用方法和 LOG的prefix一样，只是长度可以达到32个字符。
+
+3.--ulog-cprange
+iptables -A INPUT -p TCP --dport 22 -j ULOG --ulog-cprange 100
+指定每个包要向“ULOG在用户空间的代理”发送的字节数，如--ulog-cprange 100，
+表示把整个包的前100个字节拷贝到用户空间记录下来，其中包含了这个包头，还有一些包的引导数据。默认值是0，表示拷贝整个包，不管它有多大。
+
+4.--ulog-qthreshold
+iptables -A INPUT -p TCP --dport 22 -j ULOG --ulog-qthreshold 10
+告诉ULOG在向用户空间发送数据以供记录之前，要在内核里收集的包的数量，如--ulog-qthreshold 10。
+这表示先在内核里积聚10个包，再把它们发送到用户空间里，它们会被看作同一个netlink的信息，只是由好几部分组成罢了。
+默认值是1，这是为了向后兼容，因为以前的版本不能处理分段的信息
+		</literallayout>
+	</section>	
+	
 	<section id="ufw">
 		<title>ufw - program for managing a netfilter firewall</title>
 		<procedure>
