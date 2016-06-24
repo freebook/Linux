@@ -36,6 +36,22 @@ mydestination = $myhostname, localhost.$mydomain, localhost, $mydomain
 home_mailbox = Maildir/
 			</screen>
 		</section>
+		<section>
+			<title>OSCM 通过配置管理脚本安装</title>
+			<screen>
+Postfix Install
+
+# Centos Init
+curl -s https://raw.githubusercontent.com/oscm/shell/master/os/centos7.sh | bash
+curl -s https://raw.githubusercontent.com/oscm/shell/master/os/selinux.sh | bash
+curl -s https://raw.githubusercontent.com/oscm/shell/master/os/iptables/iptables.sh | bash
+curl -s https://raw.githubusercontent.com/oscm/shell/master/os/ntpd/ntp.sh | bash
+curl -s https://raw.githubusercontent.com/oscm/shell/master/os/ssh/sshd_config.sh | bash
+
+# Install Postfix
+curl -s https://raw.githubusercontent.com/oscm/shell/master/mail/postfix/postfix.sh | bash
+			</screen>
+		</section>
 	</section>
  	
 	<section id="transport_maps">
@@ -206,7 +222,7 @@ IPV6_PRIVACY="no"
 			<para>IP范围 192.168.0.1-192.168.0.250，接口是enp2s0，enp2s0:1 ~ enp2s0:250 </para>
 		</section>
 		<section>
-			<title></title>
+			<title>postfix 多实例配置</title>
 			<para>初始化postfix 多实例</para>
 			<screen>
 postmulti -e init			
@@ -243,7 +259,7 @@ iptables -t nat -I POSTROUTING -m state --state NEW -p tcp --dport 25 -o eth0 -m
 			</screen>
 			<para>注意，不要使用下面的方式配置iptables，经过测试这种192.168.0.1-192.168.0.250方式，不会轮换IP地址。</para>
 			<screen>
-iptables -t nat -I POSTROUTING -m state --state NEW -p tcp --dport 25 -o eth0 -m statistic --mode nth --every 250 -j SNAT --to-source 192.168.0.1-192.168.0.250
+iptables -t nat -I POSTROUTING -o enp2s0f0 -p tcp -m state --state NEW -m tcp -m statistic --mode nth --every 5 --packet 0 -j SNAT --to-source 192.168.0.1-192.168.0.250
 			</screen>
 		</section>
 	</section>
