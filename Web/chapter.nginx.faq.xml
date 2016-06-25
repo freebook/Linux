@@ -133,27 +133,51 @@ http {
 			</qandaentry>
 		</qandaset>
 	</section>	
-	
-	<section id="proxy_pass.regular">
-		<title>nginx: [emerg] "proxy_pass" cannot have URI part in location given by regular expression</title>
+	<section id="502">
+		<title>502 Bad Gateway?</title>
 		<qandaset>
 			<qandaentry>
 				<question>
-					<para>nginx: [emerg] "proxy_pass" cannot have URI part in location given by regular expression, or inside named location, or inside "if" statement, or inside "limit_except" block in /etc/nginx/conf.d/info.mydomain.com.conf:112?</para>
-					<para>nginx: configuration file /etc/nginx/nginx.conf test failed</para>
+					<para>502 Bad Gateway</para>
+					<para>error.log 提示：</para>
+					<para>upstream sent too big header while reading response header from upstream?</para>
 				</question>
 				<answer>
-					<para>使用$request_uri变量可以解决上述问题.</para>
+					<para>修改fastcgi配置</para>
 					<screen>
-       if ( $request_uri ~ "^/\w+\.xml$") {
-            proxy_pass http://www.mydomain.com/xml$request_uri;
-			break;
-       }
+location ~ \.php$ {
 
-       if ( $request_uri ~ "^/public/datas/\w+\.xml$") {
-            proxy_pass http://www.mydomain.com/$request_uri;
-			break;
-       }
+	fastcgi_buffers 8 16k;
+	fastcgi_buffer_size 32k;
+	。。。
+	。。。
+}
+					</screen>
+				</answer>
+			</qandaentry>
+		</qandaset>
+	</section>
+	<section id="499">
+		<title>499 Client Closed Request</title>
+		<qandaset>
+			<qandaentry>
+				<question>
+					<para>Nginx access.log 日志显示</para>
+					<para>111.85.11.15 - - [25/Jun/2016:19:20:35 +0800] "GET /xxx/xxx/xxx.jsp HTTP/1.1" 499 88 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.130 Safari/537.36 JianKongBao Monitor 1.1"</para>
+				</question>
+				<answer>
+					<para>配置 proxy_ignore_client_abort  on;</para>
+					<screen>
+    location / {
+
+		ssi on;
+		proxy_set_header Accept-Encoding "";
+		proxy_pass http://127.0.0.1:8080;
+        proxy_set_header    Host    $host;
+        proxy_set_header    X-Real-IP   $remote_addr;
+        proxy_set_header    X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_ignore_client_abort  on;
+    }
 					</screen>
 				</answer>
 			</qandaentry>
