@@ -261,6 +261,27 @@ iptables -t nat -I POSTROUTING -m state --state NEW -p tcp --dport 25 -o eth0 -m
 			<screen>
 iptables -t nat -I POSTROUTING -o enp2s0f0 -p tcp -m state --state NEW -m tcp -m statistic --mode nth --every 5 --packet 0 -j SNAT --to-source 192.168.0.1-192.168.0.250
 			</screen>
+			<para>测试 iptables使用 curl每次请求你将看到一个全新的IP地址。</para>
+			<screen>
+[root@www.netkiller.cn ~]# curl http://ip.cn
+当前 IP：173.254.223.57 来自：美国 QuadraNet
+[root@www.netkiller.cn ~]# curl http://ip.cn
+当前 IP：173.254.223.54 来自：美国 QuadraNet
+[root@www.netkiller.cn ~]# curl http://ip.cn
+当前 IP：107.167.40.137 来自：美国 
+[root@www.netkiller.cn ~]# curl http://ip.cn
+当前 IP：173.254.223.55 来自：美国 QuadraNet
+[root@www.netkiller.cn ~]# curl http://ip.cn
+当前 IP：107.167.40.134 来自：美国 
+[root@www.netkiller.cn ~]# curl http://ip.cn
+当前 IP：173.254.223.56 来自：美国 QuadraNet
+[root@www.netkiller.cn ~]# curl http://ip.cn
+当前 IP：173.254.223.54 来自：美国 QuadraNet
+[root@www.netkiller.cn ~]# curl http://ip.cn
+当前 IP：107.167.40.132 来自：美国 
+[root@www.netkiller.cn ~]# curl http://ip.cn
+当前 IP：173.254.223.53 来自：美国 QuadraNet
+			</screen>
 		</section>
 	</section>
 	
