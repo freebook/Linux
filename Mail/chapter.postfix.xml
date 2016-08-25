@@ -117,6 +117,132 @@ postmap /etc/postfix/check_sender_access
 sudo /etc/init.d/postfix reload		
 		</screen>
 	</section>
+	<section id="dkim">
+		<title>dkim</title>
+		<para>DKIM(DomainKeys Identified Mail) 是一种电子邮件的验证技术，使用密码学的基础提供了签名与验证的功能。DKIM 能增加你邮件的信任度。</para>
+		<para>安装 OpenDKIM 环境是CentOS 7</para>
+		<screen>
+yum install -y opendkim
+		</screen>
+		<para>查看配置文件</para>
+		<screen>
+[root@mail.netkiller.cn ~]# cat /etc/opendkim.conf | egrep -v "^#|^$"
+PidFile	/var/run/opendkim/opendkim.pid
+Mode	v
+Syslog	yes
+SyslogSuccess	yes
+LogWhy	yes
+UserID	opendkim:opendkim
+Socket	inet:8891@localhost
+Umask	002
+SendReports	yes
+SoftwareHeader	yes
+Canonicalization	relaxed/relaxed
+Selector	default
+MinimumKeyBits	1024
+KeyFile	/etc/opendkim/keys/default.private
+OversignHeaders	From
+		</screen>
+		<para>生成公钥和私钥example.com 替换成你的域名</para>
+		<screen>
+mkdir /etc/opendkim/keys/example.com
+opendkim-genkey -D /etc/opendkim/keys/example.com/ -d example.com -s default
+chown -R opendkim: /etc/opendkim/keys/example.com
+ln -s /etc/opendkim/keys/example.com/default.private /etc/opendkim/keys/default.private
+		</screen>
+		<para>将你域名example.com添加到/etc/opendkim/KeyTable格式如下：</para>
+		<screen>
+default._domainkey.example.com example.com:default:/etc/opendkim/keys/example.com/default.private
+		</screen>
+		<para>接下来修改 /etc/opendkim/SigningTable 并添加如下记录</para>
+		<screen>
+*@example.com default._domainkey.example.com
+		</screen>
+		<para>添加信任主机到/etc/opendkim/TrustedHosts，通常是 example.com / mail.example.com</para>
+		<screen>
+example.com
+mail.example.com	
+		</screen>
+		<para>至此 opendkim 已经配置完毕。</para>
+		<para>现在需要配置域名TXT记录解析，开打文件 /etc/opendkim/keys/example.com/default.txt 参照下面配置</para>
+		<screen>
+cat /etc/opendkim/keys/example.com/default.txt 
+default._domainkey	IN	TXT	( "v=DKIM1; k=rsa; "
+	  "p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC5anjIUkTgJT8DSBL2tiydi6DZLIMnPnveFBcyKshwIuGeRzIN2PwQW5F/bvQWdatPLGuw0w5mKXtATJtarbWXy89BgjcJgAGrPSr8GdzsNH0RXRqTy1A21BQyGER3Mx2Fbr6J62reTG2i7jY0w3/cxzuFIGlSn/RP/KrlMze4zQIDAQAB" )  ; ----- DKIM key default for example.com		
+		</screen>
+		<para>接下来配置postfix把OpenDKIM整合到Postfix修改/etc/postfix/main.cf</para>
+		<screen>
+smtpd_milters           = inet:127.0.0.1:8891
+non_smtpd_milters       = $smtpd_milters
+milter_default_action   = accept
+milter_protocol         = 2
+		</screen>
+		<para>启动 opendkim，重启 postfix</para>
+		<screen>
+systemctl enable opendkim.service
+systemctl start opendkim.service		
+systemctl restart postfix.service
+		</screen>
+		<para>检查opendkim状态与端口</para>		
+		<screen>
+# systemctl status opendkim.service
+● opendkim.service - DomainKeys Identified Mail (DKIM) Milter
+   Loaded: loaded (/usr/lib/systemd/system/opendkim.service; enabled; vendor preset: disabled)
+   Active: active (running) since Thu 2016-08-25 02:07:42 EDT; 6s ago
+     Docs: man:opendkim(8)
+           man:opendkim.conf(5)
+           man:opendkim-genkey(8)
+           man:opendkim-genzone(8)
+           man:opendkim-testadsp(8)
+           man:opendkim-testkey
+           http://www.opendkim.org/docs.html
+  Process: 12577 ExecStart=/usr/sbin/opendkim $OPTIONS (code=exited, status=0/SUCCESS)
+ Main PID: 12578 (opendkim)
+   CGroup: /system.slice/opendkim.service
+           └─12578 /usr/sbin/opendkim -x /etc/opendkim.conf -P /var/run/opendkim/opendkim.pid
+
+Aug 25 02:07:42 localhost.localdomain systemd[1]: Starting DomainKeys Identified Mail (DKIM) Milter...
+Aug 25 02:07:42 localhost.localdomain systemd[1]: Started DomainKeys Identified Mail (DKIM) Milter.
+Aug 25 02:07:42 localhost.localdomain opendkim[12578]: OpenDKIM Filter v2.10.3 starting (args: -x /etc/opendkim.conf -P /var/run/opendkim/opendkim.pid)
+
+
+# ss -lnt | grep 8891
+LISTEN     0      128    127.0.0.1:8891                     *:*		
+		</screen>
+		<para>如果无法启动请查看启动日志</para>
+		<screen>
+# grep opendkim  /var/log/messages
+Aug 25 01:24:57 localhost yum[10052]: Installed: libopendkim-2.10.3-7.el7.x86_64
+Aug 25 01:25:00 localhost yum[10052]: Installed: opendkim-2.10.3-7.el7.x86_64
+Aug 25 01:55:08 localhost opendkim: /etc/opendkim/keys/default.private: open(): No such file or directory
+Aug 25 01:55:08 localhost opendkim: opendkim: /etc/opendkim.conf: /etc/opendkim/keys/default.private: open(): No such file or directory
+Aug 25 01:55:08 localhost systemd: opendkim.service: control process exited, code=exited status=78
+Aug 25 01:55:08 localhost systemd: Unit opendkim.service entered failed state.
+Aug 25 01:55:08 localhost systemd: opendkim.service failed.
+Aug 25 01:56:10 localhost opendkim: /etc/opendkim/keys/default.private: open(): No such file or directory
+Aug 25 01:56:10 localhost opendkim: opendkim: /etc/opendkim.conf: /etc/opendkim/keys/default.private: open(): No such file or directory
+Aug 25 01:56:10 localhost systemd: opendkim.service: control process exited, code=exited status=78
+Aug 25 01:56:10 localhost systemd: Unit opendkim.service entered failed state.
+Aug 25 01:56:10 localhost systemd: opendkim.service failed.		
+		</screen>
+		<section>
+			<title>增加域名</title>
+			<para>创建证书</para>
+			<screen>
+mkdir /etc/opendkim/keys/mydomain.com
+opendkim-genkey -D /etc/opendkim/keys/mydomain.com/ -r -d mydomain.com
+chown -R opendkim: /etc/opendkim/keys/mydomain.com
+			</screen>
+			<para>配置 KeyTable</para>
+			<screen>
+default._domainkey.mydomain.com mydomain.com:default:/etc/opendkim/keys/mydomain.com/default.private
+			</screen>
+			<para>配置 SigningTable</para>
+			<screen>
+*@mydomain.com default._domainkey.mydomain.com			
+			</screen>
+		</section>
+	</section>
 	<section id="rspamd">
 		<title>Rspamd</title>
 		<para>Rspamd是一个反垃圾邮件系统，因为使用事件模型和正则表达式优化，其设计工作速度比SpamAssassin还 要快。目前推出的功能： regexp规则过滤的不同部分的信息;一些内置的功能分析的信息;模糊哈希支持; SURBL滤波器;电子邮件和性质表支持;控制界面进行远程管理和统计信息收集，一个Perl和卢阿插件系统;统计支持（定向结构刨花板/簸扬） ;兼容SpamAssassin ;和一个客户端程序的电子邮件扫描。类似的规则， rspamd约10倍SpamAssassin 。</para>
