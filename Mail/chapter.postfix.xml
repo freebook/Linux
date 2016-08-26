@@ -53,11 +53,20 @@ curl -s https://raw.githubusercontent.com/oscm/shell/master/mail/postfix/postfix
 			</screen>
 		</section>
 	</section>
- 	
-	<section id="transport_maps">
-		<title>转发配置</title>
-		<para>修改配置文件</para>
-		<screen>
+ 	<section>
+ 		<title>配置 Postfix</title>
+ 		<section>
+ 			<title>postconf - Postfix configuration utility</title>
+ 			<para>Postfix 提供了postconf配置工具,配置Postfix有两种方法，第一种方法是使用文本编辑工具修改 main.cf和master.cf两个配置文件，第二种方法就是使用postconf命令</para>
+ 			<para>修改配置项</para>
+ 			<screen>
+postconf -e "myhostname=mail.netkiller.cn"
+ 			</screen>
+ 		</section>
+		<section id="transport_maps">
+			<title>转发配置</title>
+			<para>修改配置文件</para>
+			<screen>
 vim /etc/postfix/main.cf
 
 inet_interfaces = all
@@ -75,30 +84,30 @@ mynetworks_style = subnet
 smtpd_reject_unlisted_recipient = no
 
 transport_maps = hash:/etc/postfix/transport
-		</screen>
-		<para>转发配置，设置域名和地址的关系：</para>
-		<screen>
+			</screen>
+			<para>转发配置，设置域名和地址的关系：</para>
+			<screen>
 vim transport：
 
 your.com relay: [10.10.0.1]		
-		</screen>
-		<para>生成相应的db文件</para>
-		<screen>
+			</screen>
+			<para>生成相应的db文件</para>
+			<screen>
 postmap transport		
-		</screen>
-		<para>例如当收件人为users@your.com时，postfix会将邮件转发到指定的服务器</para>
-	</section>
-	<section id="smtpd_recipient_restrictions">
-		<title>拒收垃圾邮件</title>
-		
-		<para>编辑/etc/postfix/main.cf文件,在文件中添加下面一行文字，你可以把它插入到文件末尾。</para>
-		<screen>
+			</screen>
+			<para>例如当收件人为users@your.com时，postfix会将邮件转发到指定的服务器</para>
+		</section>
+		<section id="smtpd_recipient_restrictions">
+			<title>拒收垃圾邮件</title>
+			
+			<para>编辑/etc/postfix/main.cf文件,在文件中添加下面一行文字，你可以把它插入到文件末尾。</para>
+			<screen>
 sudo vim /etc/postfix/main.cf
 
 smtpd_recipient_restrictions = check_sender_access hash:/etc/postfix/check_sender_access		
-		</screen>
-		<para>然后在/etc/postfix/目录下创建一个check_sender_access文件，内容如下</para>
-		<screen>
+			</screen>
+			<para>然后在/etc/postfix/目录下创建一个check_sender_access文件，内容如下</para>
+			<screen>
 example.com            REJECT
 your.com              OK
 
@@ -106,16 +115,17 @@ your.com              OK
 .your.com              OK
 
 user@example.com      REJECT
-		</screen>
-		<para>将域名的特定邮箱地址添加到黑名单,也可以将某个二级域名添加到黑名单或白名单，只要在域名前面加上一个小数点就行了。邮箱与域名后面输入OK表示将这个域名添加到白名单，域名后面添加REJECT表示将这个域名添加到黑名单。</para>
-		<para>使用postmap命令创建/etc/postfix/sender_checks.db数据库文件</para>
-		<screen>
+			</screen>
+			<para>将域名的特定邮箱地址添加到黑名单,也可以将某个二级域名添加到黑名单或白名单，只要在域名前面加上一个小数点就行了。邮箱与域名后面输入OK表示将这个域名添加到白名单，域名后面添加REJECT表示将这个域名添加到黑名单。</para>
+			<para>使用postmap命令创建/etc/postfix/sender_checks.db数据库文件</para>
+			<screen>
 postmap /etc/postfix/check_sender_access
-		</screen>
-		<para>最后重新加载Postfix配置文件</para> 
-		<screen>
+			</screen>
+			<para>最后重新加载Postfix配置文件</para> 
+			<screen>
 sudo /etc/init.d/postfix reload		
-		</screen>
+			</screen>
+		</section>
 	</section>
 	<section id="dkim">
 		<title>dkim</title>
@@ -126,9 +136,9 @@ yum install -y opendkim
 		</screen>
 		<para>查看配置文件</para>
 		<screen>
-[root@mail.netkiller.cn ~]# cat /etc/opendkim.conf | egrep -v "^#|^$"
+[root@mail.netkiller.cn ~]# egrep -v "^#|^$"  /etc/opendkim.conf
 PidFile	/var/run/opendkim/opendkim.pid
-Mode	v
+Mode	sv
 Syslog	yes
 SyslogSuccess	yes
 LogWhy	yes
@@ -141,6 +151,9 @@ Canonicalization	relaxed/relaxed
 Selector	default
 MinimumKeyBits	1024
 KeyFile	/etc/opendkim/keys/default.private
+KeyTable	/etc/opendkim/KeyTable
+SigningTable	refile:/etc/opendkim/SigningTable
+InternalHosts	refile:/etc/opendkim/TrustedHosts
 OversignHeaders	From
 		</screen>
 		<para>生成公钥和私钥example.com 替换成你的域名</para>
@@ -209,22 +222,6 @@ Aug 25 02:07:42 localhost.localdomain opendkim[12578]: OpenDKIM Filter v2.10.3 s
 # ss -lnt | grep 8891
 LISTEN     0      128    127.0.0.1:8891                     *:*		
 		</screen>
-		<para>如果无法启动请查看启动日志</para>
-		<screen>
-# grep opendkim  /var/log/messages
-Aug 25 01:24:57 localhost yum[10052]: Installed: libopendkim-2.10.3-7.el7.x86_64
-Aug 25 01:25:00 localhost yum[10052]: Installed: opendkim-2.10.3-7.el7.x86_64
-Aug 25 01:55:08 localhost opendkim: /etc/opendkim/keys/default.private: open(): No such file or directory
-Aug 25 01:55:08 localhost opendkim: opendkim: /etc/opendkim.conf: /etc/opendkim/keys/default.private: open(): No such file or directory
-Aug 25 01:55:08 localhost systemd: opendkim.service: control process exited, code=exited status=78
-Aug 25 01:55:08 localhost systemd: Unit opendkim.service entered failed state.
-Aug 25 01:55:08 localhost systemd: opendkim.service failed.
-Aug 25 01:56:10 localhost opendkim: /etc/opendkim/keys/default.private: open(): No such file or directory
-Aug 25 01:56:10 localhost opendkim: opendkim: /etc/opendkim.conf: /etc/opendkim/keys/default.private: open(): No such file or directory
-Aug 25 01:56:10 localhost systemd: opendkim.service: control process exited, code=exited status=78
-Aug 25 01:56:10 localhost systemd: Unit opendkim.service entered failed state.
-Aug 25 01:56:10 localhost systemd: opendkim.service failed.		
-		</screen>
 		<section>
 			<title>增加域名</title>
 			<para>创建证书</para>
@@ -240,6 +237,67 @@ default._domainkey.mydomain.com mydomain.com:default:/etc/opendkim/keys/mydomain
 			<para>配置 SigningTable</para>
 			<screen>
 *@mydomain.com default._domainkey.mydomain.com			
+			</screen>
+		</section>
+		<section>
+			<title>测试</title>
+			<para>/var/log/maillog</para>
+			<screen>
+			<![CDATA[
+Aug 26 03:02:03 localhost postfix/smtpd[5837]: connect from unknown[155.133.82.144]
+Aug 26 03:02:03 localhost opendkim[5762]: configuration reloaded from /etc/opendkim.conf
+Aug 26 03:02:04 localhost postfix/smtpd[5837]: lost connection after AUTH from unknown[155.133.82.144]
+Aug 26 03:02:04 localhost postfix/smtpd[5837]: disconnect from unknown[155.133.82.144]
+Aug 26 03:02:09 localhost postfix/smtpd[5837]: connect from unknown[202.130.101.34]
+Aug 26 03:02:10 localhost postfix/smtpd[5837]: 27EEC802C1C5: client=unknown[202.130.101.34]
+Aug 26 03:02:10 localhost postfix/cleanup[5843]: 27EEC802C1C5: message-id=<1770496307.0.1472194929612@Server>
+Aug 26 03:02:10 localhost opendkim[5762]: 27EEC802C1C5: DKIM-Signature field added (s=default, d=cf139.com)
+Aug 26 03:02:10 localhost postfix/qmgr[4605]: 27EEC802C1C5: from=<neo@netkiller.cn>, size=531, nrcpt=1 (queue active)
+Aug 26 03:02:10 localhost postfix/smtpd[5837]: disconnect from unknown[202.130.101.34]
+Aug 26 03:02:10 localhost postfix/smtp[5844]: connect to gmail-smtp-in.l.google.com[2607:f8b0:400e:c03::1b]:25: Network is unreachable
+Aug 26 03:02:11 localhost postfix/smtp[5844]: 27EEC802C1C5: to=<netkiller@msn.com>, relay=gmail-smtp-in.l.google.com[74.125.25.26]:25, delay=1.6, delays=0.58/0.01/0.48/0.49, dsn=2.0.0, status=sent (250 2.0.0 OK 1472194931 om6si19759602pac.41 - gsmtp)
+Aug 26 03:02:11 localhost postfix/qmgr[4605]: 27EEC802C1C5: removed			
+			]]>
+			</screen>
+			<para>查看原件原文，如果正常会显示DKIM-Filter和DKIM-Signature两项</para>
+			<screen>
+			<![CDATA[
+Delivered-To: netkiller@msn.com
+Received: by 10.28.169.3 with SMTP id s3csp180808wme;
+        Fri, 26 Aug 2016 00:02:11 -0700 (PDT)
+X-Received: by 10.66.10.234 with SMTP id l10mr3141577pab.69.1472194931522;
+        Fri, 26 Aug 2016 00:02:11 -0700 (PDT)
+Return-Path: <neo@netkiller.cn>
+Received: from mail.cf139.com ([104.243.134.186])
+        by mx.google.com with ESMTP id om6si19759602pac.41.2016.08.26.00.02.11
+        for <netkiller@msn.com>;
+        Fri, 26 Aug 2016 00:02:11 -0700 (PDT)
+Received-SPF: pass (google.com: domain of neo@netkiller.cn designates 104.243.134.186 as permitted sender) client-ip=104.243.134.186;
+Authentication-Results: mx.google.com;
+       dkim=temperror (no key for signature) header.i=@cf139.com;
+       spf=pass (google.com: domain of neo@netkiller.cn designates 104.243.134.186 as permitted sender) smtp.mailfrom=neo@netkiller.cn
+Received: from Server (unknown [202.130.101.34])
+	by mail.cf139.com (Postfix) with ESMTP id 27EEC802C1C5
+	for <netkiller@msn.com>; Fri, 26 Aug 2016 03:02:09 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.cf139.com 27EEC802C1C5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cf139.com;
+	s=default; t=1472194930;
+	bh=aTYsMuMwFaanDPkTLEncpu/hxKsNsCaozbJRmQJ6aho=;
+	h=Date:From:To:Subject:From;
+	b=qPYy2TPDv+zxHQ2gqGOwVsgRm42E3p6WvSxdXgUaLtkY6LH6657cdEa96HYJLVqHC
+	 EygkTz+3n7WePhGH9jAJrb/PBrGIK1XVCREz4ayfUxc3QUwFSQ9o+5ULkExxdhyRUu
+	 4TiCbkcUMbYI3YXJqGiU0OBCyTq655trOaWBby+k=
+Date: Fri, 26 Aug 2016 15:02:09 +0800 (CST)
+From: neo@netkiller.cn
+To: netkiller@msn.com
+Message-ID: <1770496307.0.1472194929612@Server>
+Subject: =?UTF-8?B?5Li76aKY77ya566A5Y2V6YKu5Lu2?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+
+5rWL6K+V6YKu5Lu25YaF5a65			
+			]]>
 			</screen>
 		</section>
 	</section>
@@ -432,12 +490,83 @@ Sep 23 16:12:00 smtp1 postfix/smtpd[982]: NOQUEUE: reject: RCPT from unknown[202
 			<para>问题原因是 mynetworks 配置项没有放行客户端</para>
 			<screen>
 [root@netkiller.github.io ~]# postconf | grep permit_mynetworks
-smtpd_recipient_restrictions = permit_mynetworks, reject_unauth_destination			
+smtpd_recipient_restrictions = permit_mynetworks, reject_unauth_destination
 			</screen>
 			<para>设置mynetworks配置项，允许IP使用SMTP发送邮件</para>
 			<screen>
 [root@netkiller.github.io ~]# postconf -n | grep mynetworks
 mynetworks = 202.130.101.34
+			</screen>
+		</section>
+		<section>
+			<title>opendkim[12578]: 4CC5C802C382: no signature data</title>
+			<screen>
+			<![CDATA[
+Aug 26 02:46:52 localhost postfix/smtpd[5441]: connect from unknown[202.130.101.34]
+Aug 26 02:46:53 localhost postfix/smtpd[5441]: 4CC5C802C382: client=unknown[202.130.101.34]
+Aug 26 02:46:53 localhost postfix/cleanup[5445]: 4CC5C802C382: message-id=<860176544.0.1472194012792@Server>
+Aug 26 02:46:53 localhost opendkim[12578]: 4CC5C802C382: [202.130.101.34] [202.130.101.34] not internal
+Aug 26 02:46:53 localhost opendkim[12578]: 4CC5C802C382: not authenticated
+Aug 26 02:46:53 localhost opendkim[12578]: 4CC5C802C382: no signature data
+Aug 26 02:46:53 localhost postfix/qmgr[4605]: 4CC5C802C382: from=<neo@netkiller.cn>, size=530, nrcpt=1 (queue active)
+Aug 26 02:46:53 localhost postfix/smtpd[5441]: disconnect from unknown[202.130.101.34]
+Aug 26 02:46:54 localhost postfix/smtp[5446]: connect to gmail-smtp-in.l.google.com[2607:f8b0:400e:c00::1b]:25: Network is unreachable
+Aug 26 02:46:54 localhost postfix/smtp[5446]: 4CC5C802C382: to=<netkiller@msn.com>, relay=gmail-smtp-in.l.google.com[74.125.25.27]:25, delay=1.3, delays=0.57/0.01/0.41/0.27, dsn=2.0.0, status=sent (250 2.0.0 OK 1472194014 m185si19680934pfc.265 - gsmtp)
+Aug 26 02:46:54 localhost postfix/qmgr[4605]: 4CC5C802C382: removed
+			]]>			
+			</screen>
+			<para>解决方案</para>
+			<screen>
+[root@localhost ~]# egrep -v "^#|^$"  /etc/opendkim.conf
+PidFile	/var/run/opendkim/opendkim.pid
+Mode	sv
+Syslog	yes
+SyslogSuccess	yes
+LogWhy	yes
+UserID	opendkim:opendkim
+Socket	inet:8891@localhost
+Umask	002
+SendReports	yes
+SoftwareHeader	yes
+Canonicalization	relaxed/relaxed
+Selector	default
+MinimumKeyBits	1024
+KeyFile	/etc/opendkim/keys/default.private
+KeyTable	/etc/opendkim/KeyTable
+SigningTable	refile:/etc/opendkim/SigningTable
+InternalHosts	refile:/etc/opendkim/TrustedHosts
+OversignHeaders	From
+			</screen>
+			<para>注意下面几项配置</para>
+			<screen>
+Mode	sv (这里默认是v便是校验邮件但不签名，s表示签名邮件)
+KeyFile	/etc/opendkim/keys/default.private
+KeyTable	/etc/opendkim/KeyTable
+SigningTable	refile:/etc/opendkim/SigningTable
+InternalHosts	refile:/etc/opendkim/TrustedHosts			
+			</screen>
+		</section>
+		<section>
+			<title>/etc/opendkim/keys/default.private: open(): No such file or directory</title>
+			<para>如果无法启动请查看启动日志</para>
+			<screen>
+# grep opendkim  /var/log/messages
+Aug 25 01:24:57 localhost yum[10052]: Installed: libopendkim-2.10.3-7.el7.x86_64
+Aug 25 01:25:00 localhost yum[10052]: Installed: opendkim-2.10.3-7.el7.x86_64
+Aug 25 01:55:08 localhost opendkim: /etc/opendkim/keys/default.private: open(): No such file or directory
+Aug 25 01:55:08 localhost opendkim: opendkim: /etc/opendkim.conf: /etc/opendkim/keys/default.private: open(): No such file or directory
+Aug 25 01:55:08 localhost systemd: opendkim.service: control process exited, code=exited status=78
+Aug 25 01:55:08 localhost systemd: Unit opendkim.service entered failed state.
+Aug 25 01:55:08 localhost systemd: opendkim.service failed.
+Aug 25 01:56:10 localhost opendkim: /etc/opendkim/keys/default.private: open(): No such file or directory
+Aug 25 01:56:10 localhost opendkim: opendkim: /etc/opendkim.conf: /etc/opendkim/keys/default.private: open(): No such file or directory
+Aug 25 01:56:10 localhost systemd: opendkim.service: control process exited, code=exited status=78
+Aug 25 01:56:10 localhost systemd: Unit opendkim.service entered failed state.
+Aug 25 01:56:10 localhost systemd: opendkim.service failed.		
+			</screen>
+			<para>修改配置文件，指向你的密钥文件</para>
+			<screen>
+KeyFile	/etc/opendkim/keys/default.private			
 			</screen>
 		</section>
 	</section>
