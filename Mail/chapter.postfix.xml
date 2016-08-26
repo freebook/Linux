@@ -513,6 +513,17 @@ systemctl reload postfix
 			</screen>
 		</section>
 		<section>
+			<title>opendkim[5762]: 3012A802C1DD: [49.213.11.18] [49.213.11.18] not internal</title>
+			<para>发送电子邮件并进行DKIM签名的前提是你邮件客户端的IP地址在 TrustedHosts 列表中</para>
+			<screen>
+Aug 26 03:52:36 localhost opendkim[5762]: 3012A802C1DD: [49.213.11.18] [49.213.11.18] not internal
+Aug 26 03:52:36 localhost opendkim[5762]: 3012A802C1DD: not authenticated
+Aug 26 03:52:36 localhost opendkim[5762]: 3012A802C1DD: no signature data			
+			</screen>
+			<para>解决方法</para>
+			<para>添加 not internal IP地址到 /etc/opendkim/TrustedHosts 文件中，然后reload opendkim 进程。</para>
+		</section>
+		<section>
 			<title>opendkim[12578]: 4CC5C802C382: no signature data</title>
 			<screen>
 			<![CDATA[
