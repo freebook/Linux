@@ -53,7 +53,7 @@ curl -s https://raw.githubusercontent.com/oscm/shell/master/mail/postfix/postfix
 			</screen>
 		</section>
 	</section>
- 	<section>
+ 	<section id="postconf">
  		<title>配置 Postfix</title>
  		<section>
  			<title>postconf - Postfix configuration utility</title>
@@ -176,6 +176,7 @@ default._domainkey.example.com example.com:default:/etc/opendkim/keys/example.co
 example.com
 mail.example.com	
 		</screen>
+		<para>注意：TrustedHosts 是发送邮件机器的IP，不是邮件服务器的IP，例如你的WEB服务器连接到邮件服务器发送电子邮件，那么TrustedHosts 就是你的WEB服务器IP地址。</para>
 		<para>至此 opendkim 已经配置完毕。</para>
 		<para>现在需要配置域名TXT记录解析，开打文件 /etc/opendkim/keys/example.com/default.txt 参照下面配置</para>
 		<screen>
@@ -496,6 +497,19 @@ smtpd_recipient_restrictions = permit_mynetworks, reject_unauth_destination
 			<screen>
 [root@netkiller.github.io ~]# postconf -n | grep mynetworks
 mynetworks = 202.130.101.34
+			</screen>
+		</section>
+		<section>
+			<title>connect to gmail-smtp-in.l.google.com[2607:f8b0:400e:c00::1a]:25: Network is unreachable</title>
+			<para>问题分析，上面2607:f8b0:400e:c00::1a是IPv6地址，在google默认是ipv6，但大陆机房几乎不支持ipv6.</para>
+			<screen>
+Aug 26 03:19:52 localhost postfix/smtp[6468]: connect to gmail-smtp-in.l.google.com[2607:f8b0:400e:c00::1a]:25: Network is unreachable
+Aug 26 03:19:53 localhost postfix/smtpd[6151]: connect from unknown[175.43.242.13]
+			</screen>
+			<para>解决方法禁用ipv6</para>
+			<screen>
+postconf -e "inet_protocols = ipv4"
+systemctl reload postfix
 			</screen>
 		</section>
 		<section>
