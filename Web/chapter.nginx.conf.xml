@@ -829,6 +829,36 @@ Connection: keep-alive
 			</screen>
 		</section>
 	</section>
+	<section id="upstream">
+		<title>upstream 负载均衡</title>
+		<screen>
+http {
+    upstream myapp1 {
+        server srv1.example.com;
+        server srv2.example.com;
+        server srv3.example.com;
+    }
+
+    server {
+        listen 80;
+
+        location / {
+            proxy_pass http://myapp1;
+        }
+    }
+}		
+		</screen>
+		<section>
+			<title>weight 权重配置</title>
+			<screen>
+    upstream myapp1 {
+        server srv1.example.com weight=3;
+        server srv2.example.com;
+        server srv3.example.com;
+    }			
+			</screen>
+		</section>
+	</section>
 	&chapter.nginx.conf.fastcgi.xml;
 	&chapter.nginx.proxy.xml;
 
