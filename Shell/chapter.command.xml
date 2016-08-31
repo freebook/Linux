@@ -10,6 +10,9 @@
 	&chapter.cmd.datetime.xml;
 	&chapter.cmd.numeric.xml;
 	&chapter.cmd.text.xml;
+	&chapter.cmd.text.grep.xml;
+	&chapter.cmd.text.sort.xml;
+	&chapter.cmd.table.xml;
 
 <section id="log">
 	<title>Logging</title>

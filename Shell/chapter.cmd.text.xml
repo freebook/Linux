@@ -330,32 +330,6 @@ bapOip?Ibreawov2
 head -c 17 | tail -c 1
 		</screen>
 	</section>
-	&chapter.cmd.text.grep.xml;
-	&chapter.cmd.text.sort.xml;
-	<section id="table">
-		<title>行列转换,表格操作</title>
-		<section>
-			<title>column - columnate lists</title>
-			<screen>
-$ (printf "PERM LINKS OWNER GROUP SIZE MONTH DAY HH:MM/YEAR NAME\n" ; ls -l | sed 1d) | column -t
-
-$ cat /etc/passwd |tr ':' ' ' | column -t
-
-$ cat /etc/passwd |tr ':' ' ' | column -t | colrm  20 20
-			</screen>
-		</section>
-		<section>
-			<title>paste - merge lines of files</title>
-			<screen>
-# vim test
-aaaaa   bbbbb   ccccc   ddddd
-1111    2222    3333    444
-
-# paste -s test
-aaaaa   bbbbb   ccccc   ddddd   1111    2222    3333    444
-			</screen>
-		</section>
-	</section>
 	<section id="rev">
 		<title>反转字符串或文件内容</title>
 		<subtitle>rev - reverse lines of a file or files</subtitle>

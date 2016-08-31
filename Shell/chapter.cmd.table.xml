@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="table">
+	<title>表格操作/行列转换</title>
+	<section>
+		<title>column - columnate lists</title>
+		<para>列格式化</para>
+		<para>下面举一个例子 ，mount 执行结果 </para>
+		<screen>
+[www@netkiller www.netkiller.cn]$ mount
+sysfs on /sys type sysfs (rw,nosuid,nodev,noexec,relatime)
+proc on /proc type proc (rw,nosuid,nodev,noexec,relatime)
+devtmpfs on /dev type devtmpfs (rw,nosuid,size=1931400k,nr_inodes=482850,mode=755)
+securityfs on /sys/kernel/security type securityfs (rw,nosuid,nodev,noexec,relatime)
+tmpfs on /dev/shm type tmpfs (rw,nosuid,nodev)
+devpts on /dev/pts type devpts (rw,nosuid,noexec,relatime,gid=5,mode=620,ptmxmode=000)
+tmpfs on /run type tmpfs (rw,nosuid,nodev,mode=755)
+tmpfs on /sys/fs/cgroup type tmpfs (ro,nosuid,nodev,noexec,mode=755)
+cgroup on /sys/fs/cgroup/systemd type cgroup (rw,nosuid,nodev,noexec,relatime,xattr,release_agent=/usr/lib/systemd/systemd-cgroups-agent,name=systemd)
+pstore on /sys/fs/pstore type pstore (rw,nosuid,nodev,noexec,relatime)
+cgroup on /sys/fs/cgroup/perf_event type cgroup (rw,nosuid,nodev,noexec,relatime,perf_event)
+cgroup on /sys/fs/cgroup/cpu,cpuacct type cgroup (rw,nosuid,nodev,noexec,relatime,cpuacct,cpu)
+cgroup on /sys/fs/cgroup/devices type cgroup (rw,nosuid,nodev,noexec,relatime,devices)
+cgroup on /sys/fs/cgroup/net_cls type cgroup (rw,nosuid,nodev,noexec,relatime,net_cls)
+cgroup on /sys/fs/cgroup/blkio type cgroup (rw,nosuid,nodev,noexec,relatime,blkio)
+cgroup on /sys/fs/cgroup/hugetlb type cgroup (rw,nosuid,nodev,noexec,relatime,hugetlb)
+cgroup on /sys/fs/cgroup/freezer type cgroup (rw,nosuid,nodev,noexec,relatime,freezer)
+cgroup on /sys/fs/cgroup/memory type cgroup (rw,nosuid,nodev,noexec,relatime,memory)
+cgroup on /sys/fs/cgroup/cpuset type cgroup (rw,nosuid,nodev,noexec,relatime,cpuset)
+configfs on /sys/kernel/config type configfs (rw,relatime)
+/dev/xvda1 on / type ext4 (rw,relatime,nobarrier,data=ordered)
+systemd-1 on /proc/sys/fs/binfmt_misc type autofs (rw,relatime,fd=33,pgrp=1,timeout=300,minproto=5,maxproto=5,direct)
+mqueue on /dev/mqueue type mqueue (rw,relatime)
+debugfs on /sys/kernel/debug type debugfs (rw,relatime)
+hugetlbfs on /dev/hugepages type hugetlbfs (rw,relatime)
+/dev/xvdb1 on /opt type btrfs (rw,relatime,ssd,space_cache)
+binfmt_misc on /proc/sys/fs/binfmt_misc type binfmt_misc (rw,relatime)
+none on /proc/xen type xenfs (rw,relatime)
+tmpfs on /run/user/0 type tmpfs (rw,nosuid,nodev,relatime,size=361892k,mode=700)
+/dev/xvdb1 on /var/ftp type btrfs (rw,relatime,ssd,space_cache)
+		</screen>
+		<para>使用 column 格式化后</para>
+		<screen>
+[www@netkiller www.netkiller.cn]$ mount | column -t 
+sysfs        on  /sys                        type  sysfs        (rw,nosuid,nodev,noexec,relatime)
+proc         on  /proc                       type  proc         (rw,nosuid,nodev,noexec,relatime)
+devtmpfs     on  /dev                        type  devtmpfs     (rw,nosuid,size=1931400k,nr_inodes=482850,mode=755)
+securityfs   on  /sys/kernel/security        type  securityfs   (rw,nosuid,nodev,noexec,relatime)
+tmpfs        on  /dev/shm                    type  tmpfs        (rw,nosuid,nodev)
+devpts       on  /dev/pts                    type  devpts       (rw,nosuid,noexec,relatime,gid=5,mode=620,ptmxmode=000)
+tmpfs        on  /run                        type  tmpfs        (rw,nosuid,nodev,mode=755)
+tmpfs        on  /sys/fs/cgroup              type  tmpfs        (ro,nosuid,nodev,noexec,mode=755)
+cgroup       on  /sys/fs/cgroup/systemd      type  cgroup       (rw,nosuid,nodev,noexec,relatime,xattr,release_agent=/usr/lib/systemd/systemd-cgroups-agent,name=systemd)
+pstore       on  /sys/fs/pstore              type  pstore       (rw,nosuid,nodev,noexec,relatime)
+cgroup       on  /sys/fs/cgroup/perf_event   type  cgroup       (rw,nosuid,nodev,noexec,relatime,perf_event)
+cgroup       on  /sys/fs/cgroup/cpu,cpuacct  type  cgroup       (rw,nosuid,nodev,noexec,relatime,cpuacct,cpu)
+cgroup       on  /sys/fs/cgroup/devices      type  cgroup       (rw,nosuid,nodev,noexec,relatime,devices)
+cgroup       on  /sys/fs/cgroup/net_cls      type  cgroup       (rw,nosuid,nodev,noexec,relatime,net_cls)
+cgroup       on  /sys/fs/cgroup/blkio        type  cgroup       (rw,nosuid,nodev,noexec,relatime,blkio)
+cgroup       on  /sys/fs/cgroup/hugetlb      type  cgroup       (rw,nosuid,nodev,noexec,relatime,hugetlb)
+cgroup       on  /sys/fs/cgroup/freezer      type  cgroup       (rw,nosuid,nodev,noexec,relatime,freezer)
+cgroup       on  /sys/fs/cgroup/memory       type  cgroup       (rw,nosuid,nodev,noexec,relatime,memory)
+cgroup       on  /sys/fs/cgroup/cpuset       type  cgroup       (rw,nosuid,nodev,noexec,relatime,cpuset)
+configfs     on  /sys/kernel/config          type  configfs     (rw,relatime)
+/dev/xvda1   on  /                           type  ext4         (rw,relatime,nobarrier,data=ordered)
+systemd-1    on  /proc/sys/fs/binfmt_misc    type  autofs       (rw,relatime,fd=33,pgrp=1,timeout=300,minproto=5,maxproto=5,direct)
+mqueue       on  /dev/mqueue                 type  mqueue       (rw,relatime)
+debugfs      on  /sys/kernel/debug           type  debugfs      (rw,relatime)
+hugetlbfs    on  /dev/hugepages              type  hugetlbfs    (rw,relatime)
+/dev/xvdb1   on  /opt                        type  btrfs        (rw,relatime,ssd,space_cache)
+binfmt_misc  on  /proc/sys/fs/binfmt_misc    type  binfmt_misc  (rw,relatime)
+none         on  /proc/xen                   type  xenfs        (rw,relatime)
+tmpfs        on  /run/user/0                 type  tmpfs        (rw,nosuid,nodev,relatime,size=361892k,mode=700)
+/dev/xvdb1   on  /var/ftp                    type  btrfs        (rw,relatime,ssd,space_cache)
+
+		</screen>
+		<screen>
+$ (printf "PERM LINKS OWNER GROUP SIZE MONTH DAY HH:MM/YEAR NAME\n" ; ls -l | sed 1d) | column -t
+
+$ cat /etc/passwd |tr ':' ' ' | column -t
+
+$ cat /etc/passwd |tr ':' ' ' | column -t | colrm  20 20
+		</screen>
+	</section>
+	<section>
+		<title>paste - merge lines of files</title>
+		<screen>
+# vim test
+aaaaa   bbbbb   ccccc   ddddd
+1111    2222    3333    444
+
+# paste -s test
+aaaaa   bbbbb   ccccc   ddddd   1111    2222    3333    444
+		</screen>
+	</section>
+</section>
