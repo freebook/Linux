@@ -1,6 +1,99 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="variable">
 	<title>variable</title>
+	<section id="system">
+		<title>系统变量</title>
+		<para>系统变量,Shell常用的系统变量并不多，但却十分有用，特别是在做一些参数检测的时候。下面是Shell常用的系统变量</para>
+		<screen>
+表示方法	描述
+$n	 $1 表示第一个参数，$2 表示第二个参数 ...
+$#	 命令行参数的个数
+$0	 当前程序的名称
+$?	 前一个命令或函数的返回码
+$*	 以"参数1 参数2 ... " 形式保存所有参数
+$@	 以"参数1" "参数2" ... 形式保存所有参数
+$$	 本程序的(进程ID号)PID
+$!	 上一个命令的PID
+		</screen>
+		<section>
+			<title>命令行参数传递</title>
+			<screen>
+[root@cc tmp]# cat test.sh
+echo $#
+echo $@
+
+[root@cc tmp]# ./test.sh  helloworld
+1
+helloworld
+			</screen>
+			<para>其中使用得比较多得是 $n $# $0 $? ,看看下面的例子：</para>
+			<screen>
+#!/bin/sh
+if [ $# -ne 2 ] ; then
+echo "Usage: $0 string file";
+exit 1;
+fi
+grep $1 $2 ;
+if [ $? -ne 0 ] ; then
+echo "Not Found \"$1\" in $2";
+exit 1;
+fi
+echo "Found \"$1\" in $2";
+上面的例子中使用了$0 $1 $2 $# $? 等变量
+
+下面运行的例子：
+
+./chapter2.2.sh usage chapter2.2.sh
+Not Found "usage" in chapter2.2.sh
+-bash-2.05b$ ./chapter2.2.sh Usage chapter2.2.sh
+echo "Usage: $0 string file";
+Found "Usage" in chapter2.2.sh
+			</screen>
+			<para>shift 移位</para>
+			<screen>
+			<![CDATA[
+$ cat test.sh 
+echo $@
+shift
+echo $@
+
+$ ./test.sh aaa bbb ccc ddd
+aaa bbb ccc ddd
+bbb ccc ddd
+
+
+
+
+$ cat test.sh 
+echo $@
+shift
+echo $@
+
+shift 2
+echo $@
+$ ./test.sh aaa bbb ccc ddd eee
+aaa bbb ccc ddd eee
+bbb ccc ddd eee
+ddd eee
+
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title></title>
+			<screen>
+			<![CDATA[
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title></title>
+			<screen>
+			<![CDATA[
+			]]>
+			</screen>
+		</section>
+	</section>
 <section id="expression">
 		<title>表达式</title>
 		<screen>
@@ -147,54 +240,7 @@ unset CATALINA_OUT
 　i 　[设置值]可以是数值，字符串或运算式。
 		</screen>
 	</section>
-	<section id="variable.system">
-		<title>系统变量</title>
-		<para>系统变量</para>
-		<screen>
-Shell常用的系统变量并不多，但却十分有用，特别是在做一些参数检测的时候。下面是Shell常用的系统变量
-表示方法	描述
-$n	 $1 表示第一个参数，$2 表示第二个参数 ...
-$#	 命令行参数的个数
-$0	 当前程序的名称
-$?	 前一个命令或函数的返回码
-$*	 以"参数1 参数2 ... " 形式保存所有参数
-$@	 以"参数1" "参数2" ... 形式保存所有参数
-$$	 本程序的(进程ID号)PID
-$!	 上一个命令的PID
-		</screen>
-		<screen>
-[root@cc tmp]# cat test.sh
-echo $#
-echo $@
-
-[root@cc tmp]# ./test.sh  helloworld
-1
-helloworld
-		</screen>
-		<screen>
-其中使用得比较多得是 $n $# $0 $? ,看看下面的例子：
-#!/bin/sh
-if [ $# -ne 2 ] ; then
-echo "Usage: $0 string file";
-exit 1;
-fi
-grep $1 $2 ;
-if [ $? -ne 0 ] ; then
-echo "Not Found \"$1\" in $2";
-exit 1;
-fi
-echo "Found \"$1\" in $2";
-上面的例子中使用了$0 $1 $2 $# $? 等变量
-
-下面运行的例子：
-
-./chapter2.2.sh usage chapter2.2.sh
-Not Found "usage" in chapter2.2.sh
--bash-2.05b$ ./chapter2.2.sh Usage chapter2.2.sh
-echo "Usage: $0 string file";
-Found "Usage" in chapter2.2.sh
-		</screen>
-	</section>
+	
 	<section id="variable.number">
 		<title>Numerical 数值运算</title>
 		<para>数值运算表达式</para>
