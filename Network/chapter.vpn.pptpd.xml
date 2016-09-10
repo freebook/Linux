@@ -109,17 +109,25 @@ $ sudo vim /etc/ppp/ip-up.local
 	</section>
 	<section id="pppd.client">
 		<title>Client 客户端</title>
-		<para>按照pptp客户端</para>
+		<para>安装pptp客户端</para>
 		<screen>
 yum install -y pptp pptp-setup
 		</screen>
-		<para></para>
-		<screen>
+		<section>
+			<title>创建账号</title>
+			<para>普通账号</para>
+			<screen>
 pptpsetup --create vpn --server vpn.netkiller.cn \
---username cf4 --password cf@Gold1234
-		</screen>
-		<para>查看vpn配置文件</para>
-		<screen>
+--username neo --password netkiller
+			</screen>
+			<para>加密账号</para>
+			<screen>
+pptpsetup --create vpn0 --server vpn.netkiller.cn \
+--username neo --password netkiller --encrypt
+			</screen>
+			
+			<para>查看vpn配置文件</para>
+			<screen>
 # cat /etc/ppp/peers/vpn 
 # written by pptpsetup
 pty "pptp vpn.netkiller.cn --nolaunchpppd"
@@ -130,23 +138,7 @@ nodeflate
 name cf4
 remotename vpn
 ipparam vpn
-		</screen>
-		<para>链接vpn</para>
-		<screen>
-pppd call vpn
-		</screen>
-		<para>查看日志</para>
-		<screen>
-# tail -f /var/log/messages | grep pppd
-Sep  9 19:09:19 iZ621r6pk9aZ pppd[21801]: pppd 2.4.5 started by root, uid 0
-Sep  9 19:09:19 iZ621r6pk9aZ pppd[21801]: Using interface ppp0
-		</screen>
-		<section>
-			<title>加密传输</title>
-			<screen>
-pptpsetup --create vpn0 --server vpn.netkiller.cn \
---username neo --password netkiller --encrypt
-			</screen>
+			</screen>	
 		</section>
 		<section>
 			<title>内核模块安装</title>
@@ -158,12 +150,45 @@ done
 			</screen>
 		</section>
 		<section>
-			<title>路由配置</title>
-			<para>添加路由</para>
+			<title>拨入VPN</title>
+			<para>链接vpn</para>
 			<screen>
-ip route add 192.168.200.0/24 dev ppp0  scope link			
+pppd call vpn
 			</screen>
+			<para>查看日志</para>
 			<screen>
+# tail -f /var/log/messages | grep pppd
+Sep  9 19:09:19 iZ621r6pk9aZ pppd[21801]: pppd 2.4.5 started by root, uid 0
+Sep  9 19:09:19 iZ621r6pk9aZ pppd[21801]: Using interface ppp0
+			</screen>
+		</section>
+		<section>
+			<title>路由配置</title>
+			<section>
+				<title>自动配置路由</title>
+				<para>创建文件/etc/ppp/ip-up.local，写入添加路由命令，然后赋予可执行权限。</para>
+				<screen>
+[neo@netkiller ppp]# cat /etc/ppp/ip-up.local 
+ip route add 192.168.0.0/24 dev ppp0  scope link
+
+[neo@netkiller ppp]# chmod +x /etc/ppp/ip-up.local 
+				</screen>
+				<para>创建文件 /etc/ppp/ip-down.local 写入删除路由命令，然后赋予可执行权限</para>
+				<screen>
+# cat /etc/ppp/ip-down.local
+ip route del 192.168.0.0/24 dev ppp0
+
+chmod +x /etc/ppp/ip-down.local
+				</screen>
+			</section>
+			<section>
+				<title>手工配置路由</title>
+				<para>添加路由</para>
+				<screen>
+ip route add 192.168.0.0/24 dev ppp0  scope link			
+				</screen>
+				<para>查看路由表</para>
+				<screen>
 [neo@netkiller ppp]# ip route 
 default via 47.19.19.27 dev eth1 
 1.2.2.2 dev ppp0  proto kernel  scope link  src 2.0.1.8 
@@ -175,16 +200,17 @@ default via 47.19.19.27 dev eth1
 169.254.0.0/16 dev eth0  scope link  metric 1002 
 169.254.0.0/16 dev eth1  scope link  metric 1003 
 172.16.0.0/12 via 10.47.47.247 dev eth0  
-192.168.200.0/24 dev ppp0  scope link			
-			</screen>
-			<para>删除路由</para>
-			<screen>
-ip route del 192.168.200.0/24 dev ppp0			
-			</screen>
-			<para>FreeBSD 等老系统</para>
-			<screen>
+192.168.0.0/24 dev ppp0  scope link			
+				</screen>
+				<para>删除路由</para>
+				<screen>
+ip route del 192.168.0.0/24 dev ppp0
+				</screen>
+				<para>FreeBSD 等老系统</para>
+				<screen>
 route add -net 192.168.0.0/24 dev ppp0
-			</screen>
+				</screen>
+			</section>
 		</section>
 	</section>
 	<section id="faq">
