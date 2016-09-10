@@ -722,7 +722,76 @@ location /images/ {
 			</example>
 		</section>
 	</section>
+	<section id="server.ssl">
+		<title>HTTPS 配置 SSL证书</title>
+		<para>创建证书</para>
+		<screen>
+		<![CDATA[
+mkdir /etc/nginx/ssl
+cd /etc/nginx/ssl
+openssl req -x509 -nodes -days 365 -newkey rsa:4096 -keyout /etc/nginx/ssl/api.netkiller.cn.key -out /etc/nginx/ssl/api.netkiller.cn.crt
 
+Generating a 4096 bit RSA private key
+..........++
+..............................................++
+writing new private key to '/etc/nginx/ssl/api.netkiller.cn.key'
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [XX]:CN
+State or Province Name (full name) []:Guangdong
+Locality Name (eg, city) [Default City]:Shenzhen
+Organization Name (eg, company) [Default Company Ltd]:CF
+Organizational Unit Name (eg, section) []:CF
+Common Name (eg, your name or your server's hostname) []:api.netkiller.cn
+Email Address []:netkiller@msn.com
+
+		]]>
+		</screen>
+		<para>注意: Common Name (eg, your name or your server's hostname) []:api.netkiller.cn 要跟你的 nginx server_name api.netkiller.cn 一样。</para>
+		<para>Nginx 配置</para>
+		<screen>
+upstream api.netkiller.cn {
+    #server api1.netkiller.cn:7000;
+    #server api2.netkiller.cn backup;
+}
+
+server {
+    listen 443 ssl spdy;
+    server_name api.netkiller.cn;
+
+    ssl_certificate /etc/nginx/ssl/api.netkiller.cn.crt;
+    ssl_certificate_key /etc/nginx/ssl/api.netkiller.cn.key;
+    ssl_session_cache shared:SSL:20m;
+    ssl_session_timeout 60m;
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+
+    charset utf-8;
+    access_log  /var/log/nginx/api.netkiller.cn.access.log;
+    error_log  /var/log/nginx/api.netkiller.cn.error.log;
+
+    location / {  
+        proxy_pass http://api.netkiller.cn;
+        proxy_http_version 1.1;
+        proxy_set_header    Host    $host;
+        proxy_set_header    X-Real-IP   $remote_addr;
+        proxy_set_header    X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_ignore_client_abort  on;
+    }
+
+    #location / {
+    #    proxy_pass      http://127.0.0.1:7000;
+    #}
+
+}
+		
+		</screen>
+	</section>
 	<section id="rewrite">
 		<title>rewrite</title>
 		<screen>

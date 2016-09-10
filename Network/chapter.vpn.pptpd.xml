@@ -2,52 +2,54 @@
 <!-- $Id: chapter.network.vpn.pptpd.xml 420 2012-05-29 11:42:48Z netkiller $ -->
 <section id="pptpd">
 	<title>pptpd</title>
-	<procedure>
-		<title>pptpd 安装步骤</title>
-		<step>
-			<para>install</para>
-			<para>Ubuntu</para>
-			<screen>
+	<section id="pptpd.server">
+		<title>Server 服务端</title>
+		<procedure>
+			<title>pptpd 安装步骤</title>
+			<step>
+				<para>install</para>
+				<para>Ubuntu</para>
+				<screen>
 $ sudo apt-get install pptpd
-			</screen>
-			<para>CentOS</para>
-			<screen>
+				</screen>
+				<para>CentOS</para>
+				<screen>
 # yum install pptp pptp-setup
-			</screen>
-		</step>
-		<step>
-			<para>$ sudo vim /etc/pptpd.conf</para>
-			<screen>
+				</screen>
+			</step>
+			<step>
+				<para>$ sudo vim /etc/pptpd.conf</para>
+				<screen>
 localip 172.16.0.1
 remoteip 172.16.0.50-100
-			</screen>
-		</step>
-		<step>
-			<para>$ sudo vim /etc/ppp/pptpd-options</para>
-			<screen>
+				</screen>
+			</step>
+			<step>
+				<para>$ sudo vim /etc/ppp/pptpd-options</para>
+				<screen>
 ms-dns 208.67.222.222
 ms-dns 208.67.220.220
-			</screen>
-		</step>
-		<step>
-			<para>$ sudo vim /etc/ppp/chap-secrets</para>
-			<screen>
+				</screen>
+			</step>
+			<step>
+				<para>$ sudo vim /etc/ppp/chap-secrets</para>
+				<screen>
 # Secrets for authentication using CHAP
 # client        server  secret                  IP addresses
 neo pptpd chen *
-			</screen>
-		</step>
-		<step>
-			<para>restart</para>
-			<screen>
+				</screen>
+			</step>
+			<step>
+				<para>restart</para>
+				<screen>
 sudo /etc/init.d/pptpd restart
 Restarting PPTP:
 Stopping PPTP: pptpd.
 Starting PPTP Daemon: pptpd.
-			</screen>
-		</step>
-		<step>
-			<screen>
+				</screen>
+			</step>
+			<step>
+				<screen>
 # ifconfig ppp0
 ppp0      Link encap:Point-to-Point Protocol
           inet addr:192.168.3.9  P-t-P:192.168.3.15  Mask:255.255.255.255
@@ -56,45 +58,45 @@ ppp0      Link encap:Point-to-Point Protocol
           TX packets:1008 errors:0 dropped:0 overruns:0 carrier:0
           collisions:0 txqueuelen:3
           RX bytes:342505 (334.4 KiB)  TX bytes:239324 (233.7 KiB)
-			</screen>
-		</step>
-		<step>
-			<para>$ sudo vim /etc/sysctl.conf</para>
-			<screen>
+				</screen>
+			</step>
+			<step>
+				<para>$ sudo vim /etc/sysctl.conf</para>
+				<screen>
 # Uncomment the next line to enable packet forwarding for IPv4
 net.ipv4.ip_forward=1
-			</screen>
-			<para>refresh status</para>
-			<screen>
+				</screen>
+				<para>refresh status</para>
+				<screen>
 $ sudo sysctl -p
 net.ipv4.ip_forward = 1
-			</screen>
-		</step>
-		<step>
-			<para>NAT</para>
-			<screen>
-			<![CDATA[
+				</screen>
+			</step>
+			<step>
+				<para>NAT</para>
+				<screen>
+				<![CDATA[
 $ sudo iptables -t nat -A POSTROUTING -s 172.16.0.0/24 -o eth0 -j MASQUERADE
 $ sudo iptables-save > /etc/iptables-rules
-			]]>
-			</screen>
-			<para>$ sudo vim /etc/network/interfaces</para>
-			<screen>
-				<![CDATA[
-pre-up iptables-restore < /etc/iptables-rules
 				]]>
-			</screen>
-		</step>
-		<step>
-			<para>firewall</para>
-			<screen>
+				</screen>
+				<para>$ sudo vim /etc/network/interfaces</para>
+				<screen>
+					<![CDATA[
+pre-up iptables-restore < /etc/iptables-rules
+					]]>
+				</screen>
+			</step>
+			<step>
+				<para>firewall</para>
+				<screen>
 $ sudo ufw allow 1723
 Rules updated
-			</screen>
-		</step>
-	</procedure>
-	<para>MTU</para>
-	<screen>
+				</screen>
+			</step>
+		</procedure>
+		<para>MTU</para>
+		<screen>
 $ sudo iptables -A FORWARD -s 10.100.0.0/24 -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1200
 
 还有一个最简单的修改mtu的办法：
@@ -103,10 +105,128 @@ $ sudo vim /etc/ppp/ip-up.local
 !/bin/bash
 
 /sbin/ifconfig $1 mtu 1496
-	</screen>
-	<section>
-		<title>FAQ</title>
-		<para>错误：800</para>
-		<para>运行 ipconfig /flushdns 后，再试</para>
+		</screen>
 	</section>
+	<section id="pppd.client">
+		<title>Client 客户端</title>
+		<para>按照pptp客户端</para>
+		<screen>
+yum install -y pptp pptp-setup
+		</screen>
+		<para></para>
+		<screen>
+pptpsetup --create vpn --server vpn.netkiller.cn \
+--username cf4 --password cf@Gold1234
+		</screen>
+		<para>查看vpn配置文件</para>
+		<screen>
+# cat /etc/ppp/peers/vpn 
+# written by pptpsetup
+pty "pptp vpn.netkiller.cn --nolaunchpppd"
+lock
+noauth
+nobsdcomp
+nodeflate
+name cf4
+remotename vpn
+ipparam vpn
+		</screen>
+		<para>链接vpn</para>
+		<screen>
+pppd call vpn
+		</screen>
+		<para>查看日志</para>
+		<screen>
+# tail -f /var/log/messages | grep pppd
+Sep  9 19:09:19 iZ621r6pk9aZ pppd[21801]: pppd 2.4.5 started by root, uid 0
+Sep  9 19:09:19 iZ621r6pk9aZ pppd[21801]: Using interface ppp0
+		</screen>
+		<section>
+			<title>加密传输</title>
+			<screen>
+pptpsetup --create vpn0 --server vpn.netkiller.cn \
+--username neo --password netkiller --encrypt
+			</screen>
+		</section>
+		<section>
+			<title>内核模块安装</title>
+			<screen>
+for module in nf_nat_pptp nf_conntrack_pptp nf_conntrack_proto_gre
+do
+    modprobe $module
+done
+			</screen>
+		</section>
+		<section>
+			<title>路由配置</title>
+			<para>添加路由</para>
+			<screen>
+ip route add 192.168.200.0/24 dev ppp0  scope link			
+			</screen>
+			<screen>
+[neo@netkiller ppp]# ip route 
+default via 47.19.19.27 dev eth1 
+1.2.2.2 dev ppp0  proto kernel  scope link  src 2.0.1.8 
+10.0.0.0/8 via 10.47.47.247 dev eth0 
+10.47.40.0/21 dev eth0  proto kernel  scope link  src 10.47.40.190 
+47.89.36.0/22 dev eth1  proto kernel  scope link  src 47.89.36.254 
+100.64.0.0/10 via 10.47.47.247 dev eth0 
+118.142.17.226 via 47.89.39.247 dev eth1  src 47.89.36.254 
+169.254.0.0/16 dev eth0  scope link  metric 1002 
+169.254.0.0/16 dev eth1  scope link  metric 1003 
+172.16.0.0/12 via 10.47.47.247 dev eth0  
+192.168.200.0/24 dev ppp0  scope link			
+			</screen>
+			<para>删除路由</para>
+			<screen>
+ip route del 192.168.200.0/24 dev ppp0			
+			</screen>
+			<para>FreeBSD 等老系统</para>
+			<screen>
+route add -net 192.168.0.0/24 dev ppp0
+			</screen>
+		</section>
+	</section>
+	<section id="faq">
+		<title>FAQ</title>
+		<section>
+			<title>800 错误</title>
+			<para>错误：800</para>
+			<para>运行 ipconfig /flushdns 后，再试</para>
+		</section>
+		<section>
+			<title>测试 PPTP 端口</title>
+			<screen>
+telnet vpn.netkiller.cn 1723			
+			</screen>
+		</section>
+		<section>
+			<title>debug</title>
+			<screen>
+			<![CDATA[
+# pppd call vpn debug dump logfd 2 updetach
+pppd options in effect:
+debug		# (from command line)
+updetach		# (from command line)
+logfd 2		# (from command line)
+dump		# (from command line)
+noauth		# (from /etc/ppp/peers/vpn)
+name cf4		# (from /etc/ppp/peers/vpn)
+remotename vpn		# (from /etc/ppp/peers/vpn)
+		# (from /etc/ppp/peers/vpn)
+pty pptp vpn.netkiller.cn --nolaunchpppd		# (from /etc/ppp/peers/vpn)
+ipparam vpn		# (from /etc/ppp/peers/vpn)
+nobsdcomp		# (from /etc/ppp/peers/vpn)
+nodeflate		# (from /etc/ppp/peers/vpn)
+using channel 4
+Using interface ppp0
+Connect: ppp0 <--> /dev/pts/6
+sent [LCP ConfReq id=0x1 <asyncmap 0x0> <magic 0xf6887c7c> <pcomp> <accomp>]
+sent [LCP ConfReq id=0x1 <asyncmap 0x0> <magic 0xf6887c7c> <pcomp> <accomp>]
+			]]>
+			</screen>
+			
+		</section>
+	</section>
+	
 </section>

@@ -749,6 +749,14 @@ tcpdump -i eth0 -s 0 -l -w - dst port 80 | strings
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>嗅探 Oracle 错误</title>
+			<screen>
+			<![CDATA[
+tcpdump -i eth1 tcp port 1521 -A -s1500 | awk '$1 ~ "ORA-" {i=1;split($1,t,"ORA-");while (i <= NF) {if (i == 1) {printf("%s","ORA-"t[2])}else {printf("%s ",$i)};i++}printf("\n")}'
+			]]>			
+			</screen>
+		</section>
 	</section>
 			<!--
 tcpdump - Detailed Network Traffic Analysis
