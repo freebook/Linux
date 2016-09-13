@@ -135,7 +135,7 @@ lock
 noauth
 nobsdcomp
 nodeflate
-name cf4
+name neo
 remotename vpn
 ipparam vpn
 			</screen>	
