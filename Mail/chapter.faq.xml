@@ -6,14 +6,6 @@
 	<para>
 		<userinput>telnet 127.0.0.1 119</userinput>
 	</para>
-
-	<section>
-		<title>访问Demo程序</title>
-		<para>
-			<graphic fileref="images/bg7nyt_jasperreports_demo.jpg" />
-		</para>
-
-	</section>
 </chapter>
  -->
 <chapter id="index"><?dbhtml dir="faq" ?>
@@ -410,6 +402,13 @@ IMAP 错误
 （或0x800ccc19） 安装了杀毒软件，并打开了“扫描收到的电子邮件”和“扫描发送的电子邮件”
 
 		]]>
+		</screen>
+	</section>
+	<section id="mailx">
+		<title>-bash: mail: command not found</title>
+		<para>CentOS 7 或者某些 云主机上没有安装 mail 命令，解决方法是：</para>
+		<screen>
+yum -y install mailx
 		</screen>
 	</section>
 </chapter>

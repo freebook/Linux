@@ -15,6 +15,25 @@
 </chapter>
 <chapter id="index"><?dbhtml dir="mua" ?>
 	<title>mail user agent (MUA)</title>
+	<section id="mail">
+		<title>mail</title>
+		<para>mail 默认使用 sendmail 命令发送邮件</para>
+		<screen>
+cat /etc/fstab | mail -s "Hello" netkiller@msn.com
+		</screen>
+		<para>通过SMTP发送邮件，创建 /etc/mail.rc 配置文件</para>
+		<screen>
+vim /etc/mail.rc 
+
+--- 增加如下内容 ---
+
+set from=yourname@your-domain.com
+set smtp=mail.your-domain.com
+set smtp-auth-user=yourname
+set smtp-auth-password=yourpasswd
+set smtp-auth=login
+		</screen>
+	</section>
 	<section id="mutt">
 		<title>mutt - text-based mailreader supporting MIME, GPG, PGP and threading</title>
 		<para>install</para>

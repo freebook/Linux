@@ -54,6 +54,12 @@ $ cat file.html | grep -o -E 'href="([^"#]+)"'
 $ cat sss.html | grep -o -E 'thunder://([^<]+)'
 			]]>
 			</screen>
+			<section>
+				<title>IP 地址</title>
+				<screen>
+# grep rhost /var/log/secure | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b"
+				</screen>
+			</section>
 		</section>
 		<section>
 			<title>递归操作</title>

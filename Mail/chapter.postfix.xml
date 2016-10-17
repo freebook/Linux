@@ -53,16 +53,8 @@ curl -s https://raw.githubusercontent.com/oscm/shell/master/mail/postfix/postfix
 			</screen>
 		</section>
 	</section>
- 	<section id="postconf">
+ 	<section id="conf">
  		<title>配置 Postfix</title>
- 		<section>
- 			<title>postconf - Postfix configuration utility</title>
- 			<para>Postfix 提供了postconf配置工具,配置Postfix有两种方法，第一种方法是使用文本编辑工具修改 main.cf和master.cf两个配置文件，第二种方法就是使用postconf命令</para>
- 			<para>修改配置项</para>
- 			<screen>
-postconf -e "myhostname=mail.netkiller.cn"
- 			</screen>
- 		</section>
 		<section id="transport_maps">
 			<title>转发配置</title>
 			<para>修改配置文件</para>
@@ -252,7 +244,7 @@ Aug 26 03:02:04 localhost postfix/smtpd[5837]: disconnect from unknown[155.133.8
 Aug 26 03:02:09 localhost postfix/smtpd[5837]: connect from unknown[202.130.101.34]
 Aug 26 03:02:10 localhost postfix/smtpd[5837]: 27EEC802C1C5: client=unknown[202.130.101.34]
 Aug 26 03:02:10 localhost postfix/cleanup[5843]: 27EEC802C1C5: message-id=<1770496307.0.1472194929612@Server>
-Aug 26 03:02:10 localhost opendkim[5762]: 27EEC802C1C5: DKIM-Signature field added (s=default, d=cf139.com)
+Aug 26 03:02:10 localhost opendkim[5762]: 27EEC802C1C5: DKIM-Signature field added (s=default, d=mydomain.com)
 Aug 26 03:02:10 localhost postfix/qmgr[4605]: 27EEC802C1C5: from=<neo@netkiller.cn>, size=531, nrcpt=1 (queue active)
 Aug 26 03:02:10 localhost postfix/smtpd[5837]: disconnect from unknown[202.130.101.34]
 Aug 26 03:02:10 localhost postfix/smtp[5844]: connect to gmail-smtp-in.l.google.com[2607:f8b0:400e:c03::1b]:25: Network is unreachable
@@ -269,19 +261,19 @@ Received: by 10.28.169.3 with SMTP id s3csp180808wme;
 X-Received: by 10.66.10.234 with SMTP id l10mr3141577pab.69.1472194931522;
         Fri, 26 Aug 2016 00:02:11 -0700 (PDT)
 Return-Path: <neo@netkiller.cn>
-Received: from mail.cf139.com ([104.243.134.186])
+Received: from mail.mydomain.com ([104.243.134.186])
         by mx.google.com with ESMTP id om6si19759602pac.41.2016.08.26.00.02.11
         for <netkiller@msn.com>;
         Fri, 26 Aug 2016 00:02:11 -0700 (PDT)
 Received-SPF: pass (google.com: domain of neo@netkiller.cn designates 104.243.134.186 as permitted sender) client-ip=104.243.134.186;
 Authentication-Results: mx.google.com;
-       dkim=temperror (no key for signature) header.i=@cf139.com;
+       dkim=temperror (no key for signature) header.i=@mydomain.com;
        spf=pass (google.com: domain of neo@netkiller.cn designates 104.243.134.186 as permitted sender) smtp.mailfrom=neo@netkiller.cn
 Received: from Server (unknown [202.130.101.34])
-	by mail.cf139.com (Postfix) with ESMTP id 27EEC802C1C5
+	by mail.mydomain.com (Postfix) with ESMTP id 27EEC802C1C5
 	for <netkiller@msn.com>; Fri, 26 Aug 2016 03:02:09 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.cf139.com 27EEC802C1C5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cf139.com;
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.mydomain.com 27EEC802C1C5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mydomain.com;
 	s=default; t=1472194930;
 	bh=aTYsMuMwFaanDPkTLEncpu/hxKsNsCaozbJRmQJ6aho=;
 	h=Date:From:To:Subject:From;
@@ -367,18 +359,29 @@ Nov  2 16:32:21 smtp2.example.com postfix/smtp[7732]: 1DCD811F940: to=<160801427
 		</section>
 		
 	</section>
+	<section id="cmd">
+		<title>Post 命令</title>
 	
-	<section id="postmulti">
-		<title>postmulti - Postfix multi-instance manager</title>
-		<section>
-			<title>绑定IP地址</title>
-			<para>将所有IP地址绑定到服务器上</para>
-			<screen>
+		<section id="postconf">
+ 			<title>postconf - Postfix configuration utility</title>
+ 			<para>Postfix 提供了postconf配置工具,配置Postfix有两种方法，第一种方法是使用文本编辑工具修改 main.cf和master.cf两个配置文件，第二种方法就是使用postconf命令</para>
+ 			<para>修改配置项</para>
+ 			<screen>
+postconf -e "myhostname=mail.netkiller.cn"
+			</screen>
+		</section>
+	
+		<section id="postmulti">
+			<title>postmulti - Postfix multi-instance manager</title>
+			<section>
+				<title>绑定IP地址</title>
+				<para>将所有IP地址绑定到服务器上</para>
+				<screen>
 cd /etc/sysconfig/network-scripts
 
 vim ifcfg-enp2s0
-			</screen>
-			<screen>
+				</screen>
+				<screen>
 # cat ifcfg-enp2s0  
 TYPE="Ethernet"
 BOOTPROTO="none"
@@ -403,51 +406,51 @@ GATEWAY="192.168.0.254"
 IPV6_PEERDNS="yes"
 IPV6_PEERROUTES="yes"
 IPV6_PRIVACY="no"
-			</screen>
-			<para>IP范围 192.168.0.1-192.168.0.250，接口是enp2s0，enp2s0:1 ~ enp2s0:250 </para>
-		</section>
-		<section>
-			<title>postfix 多实例配置</title>
-			<para>初始化postfix 多实例</para>
-			<screen>
+				</screen>
+				<para>IP范围 192.168.0.1-192.168.0.250，接口是enp2s0，enp2s0:1 ~ enp2s0:250 </para>
+			</section>
+			<section>
+				<title>postfix 多实例配置</title>
+				<para>初始化postfix 多实例</para>
+				<screen>
 postmulti -e init			
-			</screen>
-			<para>创建postfix实例</para>
-			<screen>
+				</screen>
+				<para>创建postfix实例</para>
+				<screen>
 postmulti -I postfix-1 -G mta -e create
 ...
 ...
 postmulti -I postfix-250 -G mta -e create			
-			</screen>
-			<para>启用postfix 实例</para>
-			<screen>
+				</screen>
+				<para>启用postfix 实例</para>
+				<screen>
 postmulti -i postfix-1 -e enable
 ...
 ...
 postmulti -i postfix-250 -e enable
-			</screen>
-			<para>配置postfix实例</para>
-			<screen>
+				</screen>
+				<para>配置postfix实例</para>
+				<screen>
 postmulti -i postfix-1 -x postconf -e "master_service_disable =" "authorized_submit_users = root" "minimal_backoff_time= 30d" "maximal_backoff_time = 300d" "mynetworks = 127.0.0.0/8,192.168.0.0/24" "inet_interfaces = \$myhostname" "mailbox_size_limit = 0" "message_size_limit = 0" "myhostname =  mail.example.com" "myorigin =  mail.example.com" "mydomain =  example.com" "smtp_bind_address =  192.168.0.1"
 ...
 ...
 postmulti -i postfix-250 -x postconf -e "master_service_disable =" "authorized_submit_users = root" "minimal_backoff_time= 30d" "maximal_backoff_time = 300d" "mynetworks = 127.0.0.0/8,192.168.0.0/24" "inet_interfaces = \$myhostname" "mailbox_size_limit = 0" "message_size_limit = 0" "myhostname =  mail.example.com" "myorigin =  mail.example.com" "mydomain =  example.com" "smtp_bind_address =  192.168.0.250"
-			</screen>
-		</section>
-		<section>
-			<title>配置 iptables 让SMTPD发送邮件时依次轮询外发IP地址，这样就不会被封锁。</title>
-			<screen>
+				</screen>
+			</section>
+			<section>
+				<title>配置 iptables 让SMTPD发送邮件时依次轮询外发IP地址，这样就不会被封锁。</title>
+				<screen>
 iptables -t nat -I POSTROUTING -m state --state NEW -p tcp --dport 25 -o eth0 -m statistic --mode nth --every 250 -j SNAT --to-source 192.168.0.1
 ...
 ...
 iptables -t nat -I POSTROUTING -m state --state NEW -p tcp --dport 25 -o eth0 -m statistic --mode nth --every 250 -j SNAT --to-source 192.168.0.250
-			</screen>
-			<para>注意，不要使用下面的方式配置iptables，经过测试这种192.168.0.1-192.168.0.250方式，不会轮换IP地址。</para>
-			<screen>
+				</screen>
+				<para>注意，不要使用下面的方式配置iptables，经过测试这种192.168.0.1-192.168.0.250方式，不会轮换IP地址。</para>
+				<screen>
 iptables -t nat -I POSTROUTING -o enp2s0f0 -p tcp -m state --state NEW -m tcp -m statistic --mode nth --every 5 --packet 0 -j SNAT --to-source 192.168.0.1-192.168.0.250
-			</screen>
-			<para>测试 iptables使用 curl每次请求你将看到一个全新的IP地址。</para>
-			<screen>
+				</screen>
+				<para>测试 iptables使用 curl每次请求你将看到一个全新的IP地址。</para>
+				<screen>
 [root@www.netkiller.cn ~]# curl http://ip.cn
 当前 IP：173.254.223.57 来自：美国 QuadraNet
 [root@www.netkiller.cn ~]# curl http://ip.cn
@@ -466,10 +469,164 @@ iptables -t nat -I POSTROUTING -o enp2s0f0 -p tcp -m state --state NEW -m tcp -m
 当前 IP：107.167.40.132 来自：美国 
 [root@www.netkiller.cn ~]# curl http://ip.cn
 当前 IP：173.254.223.53 来自：美国 QuadraNet
+				</screen>
+				<para>使用netkiller-firewall 替代原来的iptables，传统的iptables规则不容易书写，也不容易阅读。</para>
+				<screen>
+# unzip firewall-master.zip
+# yum install -y python34
+# bash install.sh
+# /etc/init.d/firewall 
+Usage: /etc/init.d/firewall {start|stop|status|restart}
+				</screen>
+				<screen>
+				
+RULE=www
+改为
+RULE=smtp
+
+# cat /etc/init.d/firewall | grep RULE
+RULE=smtp
+
+
+# cat /etc/sysconfig/firewall
+LIBEXEC=/srv/firewall/libexec
+RULE=smtp
+				
+				</screen>
+				<para>编辑ACL规则</para>
+				<screen>
+				<![CDATA[
+# vim /srv/firewall/libexec/smtp.py
+
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+#  example.py
+#  
+#  Copyright 2013 neo <netkiller@msn.com>
+#  
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#  
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#  
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#  MA 02110-1301, USA.
+#  
+#  
+
+from firewall import * 
+
+######################################## 
+# Web Application
+######################################## 
+
+smtp = Firewall()
+smtp.flush()
+smtp.policy(smtp.INPUT,smtp.ACCEPT)
+smtp.policy(smtp.OUTPUT,smtp.ACCEPT)
+smtp.policy(smtp.FORWARD,smtp.ACCEPT)
+smtp.policy(smtp.POSTROUTING,smtp.ACCEPT)
+smtp.input().state(('RELATED','ESTABLISHED')).accept()
+smtp.input().protocol('icmp').accept()
+smtp.input().interface('-i','lo').accept()
+smtp.input().protocol('tcp').state('NEW').dport('22').accept()
+smtp.input().protocol('tcp').state('NEW').dport(('25','110')).accept()
+#smtp.input().protocol('tcp').dport(('3306','5432')).reject()
+smtp.input().reject('--reject-with icmp-host-prohibited')
+smtp.forward().reject('--reject-with icmp-host-prohibited')
+
+for ip in range(53,58):
+	smtp.postrouting().outbound('enp2s0').protocol('tcp').state('NEW').statistic('5').snat('--to-source 173.24.223.'+str(ip))
+for ip in range(130,191):
+	smtp.postrouting().outbound('enp2s0').protocol('tcp').state('NEW').statistic('5').snat('--to-source 107.17.40.'+str(ip))
+for ip in range(2,63):
+	smtp.postrouting().outbound('enp2s0').protocol('tcp').state('NEW').statistic('5').snat('--to-source 107.18.142.'+str(ip))
+for ip in range(130,191):
+	smtp.postrouting().outbound('enp2s0').protocol('tcp').state('NEW').statistic('5').snat('--to-source 146.71.38.'+str(ip))
+for ip in range(194,255):
+	smtp.postrouting().outbound('enp2s0').protocol('tcp').state('NEW').statistic('5').snat('--to-source 104.20.164.'+str(ip))
+
+
+def start():
+	smtp.start()
+def stop():
+	smtp.stop()
+def restart():
+	smtp.stop()
+	smtp.start()
+def show():
+	smtp.show()
+def status():
+	smtp.status()
+def main():
+	show()
+	return( 0 )
+
+if __name__ == '__main__':
+	main()
+				]]>
+				</screen>
+				<para>启动firewall</para>
+				<screen>
+systemctl enable firewall
+systemctl start firewall
+				</screen>
+				<para>CentOS 6.x 之前的版本请使用 /etc/init.d/firewall 脚本</para>
+			</section>
+		</section>
+	</section>
+	<section id="example">
+		<title>Example</title>
+		<section>
+			<title>站内电邮发送</title>
+			<para>背景，网站通常需要一个电子邮件服务器，用于认证邮件真实性，给用户发送通知，订阅邮件等等。</para>
+			<para>这个邮件系统只需要外发邮件，并不需要接收邮件，配置如下。</para>
+			<screen>
+			<![CDATA[
+[root@netkiller postfix]# postconf -n
+alias_database = hash:/etc/aliases
+alias_maps = hash:/etc/aliases
+command_directory = /usr/sbin
+config_directory = /etc/postfix
+daemon_directory = /usr/libexec/postfix
+data_directory = /var/lib/postfix
+debug_peer_level = 2
+debugger_command = PATH=/bin:/usr/bin:/usr/local/bin:/usr/X11R6/bin ddd $daemon_directory/$process_name $process_id & sleep 5
+home_mailbox = Maildir/
+html_directory = no
+inet_interfaces = all
+inet_protocols = ipv4
+mail_owner = postfix
+mailq_path = /usr/bin/mailq.postfix
+manpage_directory = /usr/share/man
+milter_default_action = accept
+milter_protocol = 2
+mydestination = $myhostname, localhost.$mydomain, localhost, $mydomain
+mydomain = netkiller.cn
+myhostname = mail.netkiller.cn
+mynetworks = 203.88.18.17, 202.130.11.34, 147.89.27.78, 219.90.13.18
+myorigin = $mydomain
+newaliases_path = /usr/bin/newaliases.postfix
+non_smtpd_milters = $smtpd_milters
+queue_directory = /var/spool/postfix
+readme_directory = /usr/share/doc/postfix-2.10.1/README_FILES
+sample_directory = /usr/share/doc/postfix-2.10.1/samples
+sendmail_path = /usr/sbin/sendmail.postfix
+setgid_group = postdrop
+smtpd_milters = inet:127.0.0.1:8891
+unknown_local_recipient_reject_code = 550
+			]]>
 			</screen>
 		</section>
 	</section>
-	
 	<section id="faq">
 		<title>FAQ</title>
 		<section>
