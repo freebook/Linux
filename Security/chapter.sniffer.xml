@@ -635,7 +635,96 @@ $ tcpdump -n -i eth0 icmp or arp
 		<para>使用wireshark分析输出文件，下面地址下载</para>
 		<para>http://www.wireshark.org/</para>
 	</section>
+	<section>
+		<title>src / dst</title>
+		<para>src 监控源</para>
+		<screen>
+# tcpdump -ni eth1 'tcp and src port 3000'
+		</screen>
+		<para>dst 监控目的地</para>
+		<screen>
+# tcpdump -ni eth1 'tcp and dst port smtp'		
+		</screen>
+		<para>演示 src 与 dst</para>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# tcpdump -ni eth1 'tcp and dst port 3000'
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on eth1, link-type EN10MB (Ethernet), capture size 65535 bytes
 
+
+09:08:11.763041 IP 219.90.123.138.28270 > 47.90.44.87.hbci: Flags [S], seq 2048018668, win 8192, options [mss 1400,nop,wscale 8,nop,nop,sackOK], length 0
+09:08:11.763383 IP 219.90.123.138.12047 > 47.90.44.87.hbci: Flags [S], seq 2468955264, win 8192, options [mss 1400,nop,wscale 8,nop,nop,sackOK], length 0
+09:08:11.763774 IP 219.90.123.138.27092 > 47.90.44.87.hbci: Flags [S], seq 3069483725, win 8192, options [mss 1400,nop,wscale 8,nop,nop,sackOK], length 0
+09:08:11.763855 IP 219.90.123.138.8602 > 47.90.44.87.hbci: Flags [S], seq 2460960642, win 8192, options [mss 1400,nop,wscale 8,nop,nop,sackOK], length 0
+09:08:11.764323 IP 219.90.123.138.10480 > 47.90.44.87.hbci: Flags [S], seq 1687488150, win 8192, options [mss 1400,nop,wscale 8,nop,nop,sackOK], length 0
+09:08:11.786487 IP 219.90.123.138.28270 > 47.90.44.87.hbci: Flags [.], ack 1705484229, win 257, length 0
+09:08:11.786535 IP 219.90.123.138.12047 > 47.90.44.87.hbci: Flags [.], ack 461089870, win 257, length 0
+09:08:11.786543 IP 219.90.123.138.27092 > 47.90.44.87.hbci: Flags [.], ack 2893320938, win 257, length 0
+09:08:11.788955 IP 219.90.123.138.28270 > 47.90.44.87.hbci: Flags [P.], seq 0:1025, ack 1, win 257, length 1025
+09:08:11.789671 IP 219.90.123.138.10480 > 47.90.44.87.hbci: Flags [.], ack 1815033342, win 257, length 0
+09:08:11.789692 IP 219.90.123.138.8602 > 47.90.44.87.hbci: Flags [.], ack 1519500600, win 257, length 0
+09:08:11.886937 IP 219.90.123.138.28270 > 47.90.44.87.hbci: Flags [.], ack 2415, win 257, length 0
+09:08:11.889665 IP 219.90.123.138.28270 > 47.90.44.87.hbci: Flags [.], ack 5215, win 257, length 0
+09:08:11.893673 IP 219.90.123.138.28270 > 47.90.44.87.hbci: Flags [.], ack 8015, win 257, length 0
+09:08:11.904151 IP 219.90.123.138.28270 > 47.90.44.87.hbci: Flags [.], ack 10815, win 257, length 0
+09:08:11.904707 IP 219.90.123.138.28270 > 47.90.44.87.hbci: Flags [.], ack 13615, win 257, length 0
+09:08:11.914796 IP 219.90.123.138.28270 > 47.90.44.87.hbci: Flags [.], ack 17815, win 257, length 0
+09:08:11.923904 IP 219.90.123.138.28270 > 47.90.44.87.hbci: Flags [.], ack 19215, win 257, length 0
+09:08:11.979687 IP 219.90.123.138.28270 > 47.90.44.87.hbci: Flags [.], ack 19880, win 254, length 0
+09:08:14.761388 IP 219.90.123.138.28461 > 47.90.44.87.hbci: Flags [S], seq 3215826970, win 8192, options [mss 1400,nop,wscale 8,nop,nop,sackOK], length 0
+09:08:14.782284 IP 219.90.123.138.28461 > 47.90.44.87.hbci: Flags [.], ack 1574781090, win 257, length 0
+^C
+21 packets captured
+22 packets received by filter
+0 packets dropped by kernel
+[root@netkiller ~]# tcpdump -ni eth1 'tcp and src port 3000'
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on eth1, link-type EN10MB (Ethernet), capture size 65535 bytes
+
+
+09:08:41.241996 IP 47.90.44.87.hbci > 219.90.123.138.28461: Flags [F.], seq 1574781090, ack 3215826972, win 115, length 0
+09:08:41.242395 IP 47.90.44.87.hbci > 219.90.123.138.24925: Flags [S.], seq 1277500664, ack 2163858186, win 14600, options [mss 1460,nop,nop,sackOK,nop,wscale 7], length 0
+09:08:41.242498 IP 47.90.44.87.hbci > 219.90.123.138.27571: Flags [S.], seq 1906857203, ack 3261786724, win 14600, options [mss 1460,nop,nop,sackOK,nop,wscale 7], length 0
+09:08:41.243081 IP 47.90.44.87.hbci > 219.90.123.138.27152: Flags [S.], seq 3451566690, ack 2095717279, win 14600, options [mss 1460,nop,nop,sackOK,nop,wscale 7], length 0
+09:08:41.243223 IP 47.90.44.87.hbci > 219.90.123.138.25265: Flags [S.], seq 943843868, ack 3740664697, win 14600, options [mss 1460,nop,nop,sackOK,nop,wscale 7], length 0
+09:08:41.243413 IP 47.90.44.87.hbci > 219.90.123.138.27145: Flags [S.], seq 1814275155, ack 3577858982, win 14600, options [mss 1460,nop,nop,sackOK,nop,wscale 7], length 0
+09:08:41.247070 IP 47.90.44.87.hbci > 219.90.123.138.28270: Flags [.], ack 2048020719, win 147, length 0
+09:08:41.436542 IP 47.90.44.87.hbci > 219.90.123.138.28270: Flags [P.], seq 0:1014, ack 1, win 147, length 1014
+09:08:41.436595 IP 47.90.44.87.hbci > 219.90.123.138.28270: Flags [.], seq 1014:3814, ack 1, win 147, length 2800
+09:08:41.436608 IP 47.90.44.87.hbci > 219.90.123.138.28270: Flags [.], seq 3814:6614, ack 1, win 147, length 2800
+09:08:41.436613 IP 47.90.44.87.hbci > 219.90.123.138.28270: Flags [.], seq 6614:9414, ack 1, win 147, length 2800
+09:08:41.436617 IP 47.90.44.87.hbci > 219.90.123.138.28270: Flags [.], seq 9414:12214, ack 1, win 147, length 2800
+09:08:41.436624 IP 47.90.44.87.hbci > 219.90.123.138.28270: Flags [.], seq 12214:13614, ack 1, win 147, length 1400
+09:08:41.458774 IP 47.90.44.87.hbci > 219.90.123.138.28270: Flags [.], seq 13614:16414, ack 1, win 147, length 2800
+09:08:41.461374 IP 47.90.44.87.hbci > 219.90.123.138.28270: Flags [.], seq 16414:19214, ack 1, win 147, length 2800
+09:08:41.461388 IP 47.90.44.87.hbci > 219.90.123.138.28270: Flags [P.], seq 19214:19879, ack 1, win 147, length 665
+09:08:41.485084 IP 47.90.44.87.hbci > 219.90.123.138.24925: Flags [.], ack 1011, win 130, length 0
+09:08:41.485958 IP 47.90.44.87.hbci > 219.90.123.138.27571: Flags [.], ack 999, win 130, length 0
+09:08:41.486888 IP 47.90.44.87.hbci > 219.90.123.138.27152: Flags [.], ack 998, win 130, length 0
+09:08:41.487791 IP 47.90.44.87.hbci > 219.90.123.138.25265: Flags [.], ack 1005, win 130, length 0
+09:08:41.488224 IP 47.90.44.87.hbci > 219.90.123.138.27571: Flags [P.], seq 1:139, ack 999, win 130, length 138
+09:08:41.488291 IP 47.90.44.87.hbci > 219.90.123.138.27145: Flags [.], ack 983, win 130, length 0
+09:08:41.489100 IP 47.90.44.87.hbci > 219.90.123.138.24925: Flags [P.], seq 1:139, ack 1011, win 130, length 138
+09:08:41.491998 IP 47.90.44.87.hbci > 219.90.123.138.27152: Flags [P.], seq 1:139, ack 998, win 130, length 138
+09:08:41.492653 IP 47.90.44.87.hbci > 219.90.123.138.28270: Flags [.], seq 12214:13614, ack 1, win 147, length 1400
+09:08:41.494013 IP 47.90.44.87.hbci > 219.90.123.138.25265: Flags [P.], seq 1:139, ack 1005, win 130, length 138
+09:08:41.499825 IP 47.90.44.87.hbci > 219.90.123.138.27145: Flags [P.], seq 1:139, ack 983, win 130, length 138
+09:08:41.514427 IP 47.90.44.87.hbci > 219.90.123.138.27571: Flags [P.], seq 139:277, ack 1980, win 146, length 138
+09:08:41.688727 IP 47.90.44.87.hbci > 219.90.123.138.27145: Flags [P.], seq 139:277, ack 2005, win 146, length 138
+09:08:41.689548 IP 47.90.44.87.hbci > 219.90.123.138.27571: Flags [P.], seq 277:415, ack 2998, win 162, length 138
+09:08:41.824277 IP 47.90.44.87.hbci > 219.90.123.138.27571: Flags [P.], seq 415:651, ack 3932, win 178, length 236
+09:08:41.824391 IP 47.90.44.87.hbci > 219.90.123.138.27571: Flags [.], seq 651:3451, ack 3932, win 178, length 2800
+09:08:41.824427 IP 47.90.44.87.hbci > 219.90.123.138.27571: Flags [.], seq 3451:6251, ack 3932, win 178, length 2800
+09:08:41.824451 IP 47.90.44.87.hbci > 219.90.123.138.27571: Flags [.], seq 6251:7651, ack 3932, win 178, length 1400
+09:08:41.846233 IP 47.90.44.87.hbci > 219.90.123.138.27571: Flags [P.], seq 7651:8537, ack 3932, win 178, length 886
+^C
+35 packets captured
+36 packets received by filter
+0 packets dropped by kernel
+		]]>
+		</screen>
+	</section>
 	<section id="tcpdump.save">
 		<title>保存结果</title>
 		<screen>
