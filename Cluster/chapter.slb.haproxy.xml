@@ -584,5 +584,17 @@ backend nodes
     server web02 172.16.0.4:443 check    
 			</screen>
 		</section>
+		<section id="smtp">
+			<title>SMTP</title>
+			<screen>
+listen smtp
+	bind *:25
+	mode tcp
+	balance leastconn
+	option smtpchk
+	server smtp1 173.254.223.53:25 check
+	server smtp2 45.33.242.42:25 check
+			</screen>
+		</section>
 	</section>
 </chapter>
