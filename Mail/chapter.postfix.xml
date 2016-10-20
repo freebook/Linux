@@ -370,7 +370,30 @@ Nov  2 16:32:21 smtp2.example.com postfix/smtp[7732]: 1DCD811F940: to=<160801427
 postconf -e "myhostname=mail.netkiller.cn"
 			</screen>
 		</section>
-	
+		<section id="postsuper">
+			<title>postsuper</title>
+			<para>删除队列中待发邮件</para>
+			<screen>
+# mailq
+-Queue ID- --Size-- ----Arrival Time---- -Sender/Recipient-------
+CB71F8022974     3038 Wed Oct 19 01:57:03  MAILER-DAEMON
+(connect to example.com[2606:2800:220:1:248:1893:25c8:1946]:25: Network is unreachable)
+                                         root@example.com
+
+-- 3 Kbytes in 1 Request.
+
+# postsuper -d CB71F8022974 deferred
+postsuper: CB71F8022974: removed
+postsuper: Deleted: 1 message
+
+# mailq
+Mail queue is empty
+			</screen>
+			<para>删除队列中所有待发邮件</para>
+			<screen>
+postsuper -d ALL deferred
+			</screen>
+		</section>
 		<section id="postmulti">
 			<title>postmulti - Postfix multi-instance manager</title>
 			<section>
