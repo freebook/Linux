@@ -912,8 +912,59 @@ $ find /usr/share/doc/cdpr/examples/
 		<para>这个功能可以实现后自动绘制网络拓扑，分析收集的数据，然后通过Graphviz绘制网络拓扑图。</para>
 	</section>
 
-	<section id="nc">
-		<title>nc - TCP/IP swiss army knife</title>
+	<section id="ncat">
+		<title>ncat - Concatenate and redirect sockets</title>
+		<subtitle>nc - TCP/IP swiss army knife</subtitle>
+		<para>按照 ncat</para>
+		<screen>
+# yum search nc | grep nmap
+nmap-ncat.x86_64 : Nmap's Netcat replacement
+
+yum install nmap-ncat
+		</screen>
+
+		<section>
+			<title>TCP 数据传输</title>
+			<para>Server</para>
+			<screen>
+nc -l 8080 > test.txt
+			</screen>
+			<para>Client</para>
+			<screen>
+cat /etc/hosts | nc your_server 8080
+			</screen>
+		</section>
+		
+		<section>
+			<title>UDP 数据传输</title>
+			<para>Server 端</para>
+			<screen>
+nc -4 -u -l 9000
+			</screen>
+			<para>Client 端</para>
+			<screen>
+cat /etc/passwd | nc -4 -u 47.90.1.240 9000
+			</screen>
+		</section>
+		<section>
+			<title>始终保持服务器开启</title>
+			<para>-k, --keep-open            Accept multiple connections in listen mode</para>
+			<screen>
+# nc -l 8087 -k
+			</screen>
+			<para>这是你可以持续想服务器端发送数据</para>
+		</section>
+		<section>
+			<title>传输视频流</title>
+			<para>服务端，这里我们从一个视频文件中读入并重定向输出到netcat客户端</para>
+			<screen>
+$cat video.avi | nc -l 3000
+			</screen>
+			<para>客户端，从socket中读入数据并通过管道传递给 mplayer播放该视频。</para>
+			<screen>
+$nc 172.16.0.10 3000 | mplayer -vo x11 -cache 3000 -			
+			</screen>
+		</section>
 	</section>
 	<section id="zenmap">
 		<title>Unicornscan，Zenmap，nast</title>
