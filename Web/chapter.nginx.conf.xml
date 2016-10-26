@@ -566,6 +566,7 @@ htpasswd -c -d htpasswd user_name
 		</section>
 		<section id="autoindex">
 			<title>autoindex</title>
+			<para>开启目录浏览</para>
 			<screen>
 # vim /etc/nginx/sites-enabled/default
 
