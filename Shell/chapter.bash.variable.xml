@@ -527,6 +527,22 @@ IFS='|';echo "${[*]// /|}";
 		</section>
 		
 	</section>
+	<section>
+		<title>read 赋值多个变量</title>
+		<screen>
+		<![CDATA[
+[net@netkiller tmp]# cat test.sh 
+read ipaddr port <<< $(echo www.netkiller.cn 80)
+
+echo $ipaddr
+echo $port
+
+[net@netkiller tmp]# bash test.sh 
+www.netkiller.cn
+80
+		]]>
+		</screen>
+	</section>
 	<section id="eval">
 		<title>eval</title>
 		<screen>

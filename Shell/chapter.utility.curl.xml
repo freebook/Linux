@@ -26,6 +26,13 @@ curl  -F "upload=@card.txt;type=text/plain"  "http://www.example.com/upload.php"
 curl -o /dev/null --connect-timeout 30 -m 30 -s -w %{http_code} http://www.google.com/
 		</screen>
 	</section>
+	<section id="curl.max-time">
+		<title>max-time</title>
+		<para>-m, --max-time SECONDS  Maximum time allowed for the transfer</para>
+		<screen>
+curl -o /dev/null --max-time 10 http://www.netkiller.cn/
+		</screen>
+	</section>
 	<section id="curl.compressed">
 		<title>compressed</title>
 		<subtitle>--compressed    Request compressed response (using deflate or gzip)</subtitle>
@@ -51,10 +58,6 @@ time_namelookup		DNS解析时间,从请求开始到DNS解析完毕所用时间(�
 speed_download		下载速度，单位-字节每秒。
 		</screen>
 		<screen>
-curl -s -I http://netkiller.sourceforge.net/ | grep HTTP | awk '{print $2" "$3}'
-curl -o /dev/null -s -w %{http_code} http://netkiller.sourceforge.net/
-		</screen>
-		<screen>
 curl -o /dev/null -s -w %{time_connect}:%{time_starttransfer}:%{time_total} http://www.example.net
 		</screen>
 		<para>测试页面所花费的时间</para>
@@ -63,6 +66,13 @@ date ; curl  -s  -w 'Connect: %{time_connect} TTFB: %{time_starttransfer} Total 
 		</screen>
 		<screen>
 curl -o /dev/null -s -w %{time_connect}, %{time_starttransfer}, %{time_total}, %{time_namelookup}, %{speed_download} http://www.netkiller.cn
+		</screen>
+		<para>返回HTTP状态码</para>
+		<screen>
+curl -s -I http://netkiller.sourceforge.net/ | grep HTTP | awk '{print $2" "$3}'
+curl -o /dev/null -s -w %{http_code} http://netkiller.sourceforge.net/
+
+curl --connect-timeout 5 --max-time 60 --output /dev/null -s -w %{response_code} http://www.netkiller.cn/
 		</screen>
 	</section>
 	<section id="curl.a">
@@ -108,14 +118,12 @@ curl -v -o /dev/null -e "http://www.example.com" http://www.your.com/
 	</section>
 
 	<section id="curl.o">
-		<title><![CDATA[-o/--output <file>]]></title>
+		<title><![CDATA[-o, --output FILE   Write output to <file> instead of stdout]]></title>
 		<screen>
 curl -o /dev/null http://www.example.com
 curl -o index.html http://www.example.com
 		</screen>
 	</section>
-
-
 	<section id="curl.header">
 		<title>-H/--header &lt;line&gt; Custom header to pass to server (H)</title>
 		<section>
