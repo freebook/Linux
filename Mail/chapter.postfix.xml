@@ -118,6 +118,32 @@ postmap /etc/postfix/check_sender_access
 sudo /etc/init.d/postfix reload		
 			</screen>
 		</section>
+		<section>
+			<title>收件箱配置</title>
+			<para>Postfix 提供三种收件箱，第一种是Mailbox,第二种是Maildir, 第三种是Unix风格的收件想/var/spool/mail</para>
+			<para>如你有POP/IMAP服务请使用Mailbox 或者 Maildir。否则仅仅是在 unix上阅读纯文本邮件可以使用/var/spool/mail</para>
+			<section>
+				<title>Mailbox 配置</title>
+				<screen>
+home_mailbox = Mailbox
+				</screen>
+			</section>
+			<section>
+				<title>Maildir 配置</title>
+				<screen>
+home_mailbox = Maildir/
+				</screen>
+			</section>
+			<section>
+				<title>传统Unix风格邮箱配置</title>
+				<screen>
+mail_spool_directory = /var/mail
+				</screen>
+				<screen>
+mail_spool_directory = /var/spool/mail
+				</screen>
+			</section>
+		</section>
 	</section>
 	<section id="dkim">
 		<title>dkim</title>
