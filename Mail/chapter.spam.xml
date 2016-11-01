@@ -154,6 +154,7 @@ _netblocks.google.com.	3599	IN	TXT	"v=spf1 ip4:64.18.0.0/20 ip4:64.233.160.0/19 
 			<command></command>
 			<screen>
 			</screen>
+			<para>申请“他域互通” http://openmail.qq.com/</para>
 		</section>
 		<section id="21cn">
 			<title>21CN</title>

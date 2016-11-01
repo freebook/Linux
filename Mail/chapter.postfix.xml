@@ -118,7 +118,7 @@ postmap /etc/postfix/check_sender_access
 sudo /etc/init.d/postfix reload		
 			</screen>
 		</section>
-		<section>
+		<section id="mailbox">
 			<title>收件箱配置</title>
 			<para>Postfix 提供三种收件箱，第一种是Mailbox,第二种是Maildir, 第三种是Unix风格的收件想/var/spool/mail</para>
 			<para>如你有POP/IMAP服务请使用Mailbox 或者 Maildir。否则仅仅是在 unix上阅读纯文本邮件可以使用/var/spool/mail</para>
@@ -143,6 +143,36 @@ mail_spool_directory = /var/mail
 mail_spool_directory = /var/spool/mail
 				</screen>
 			</section>
+		</section>
+		<section>
+			<title>邮件投递</title>
+			<para>邮件投递是指从你的Postfix服务器将邮件投到目的地邮件服务器，即 SMTP对SMTP，而非用户到的SMTP配置。</para>
+			<para>配置主要涉及邮件投递频率，如果过高，会被退回也可能被封锁一段时间。</para>
+			<screen>
+* initial_destination_concurrency：到目标主机的初始化并发连接数。
+* default_destination_concurrency_limit：初始化连接后对同一目标主机的最大并发连接数目。
+* local_destination_concurrency_limit：控制对同一本地收件人的最大同时投递的邮件数目。
+			</screen>
+			<para>默认值可以通过 $ postconf | grep local_destination_concurrency_limit 命令查看</para>
+			<screen>
+initial_destination_concurrency = 5
+default_destination_concurrency_limit = 20
+local_destination_concurrency_limit = 2
+			</screen>
+		</section>
+		<section>
+			<title>队列配置</title>
+			<para>queue_run_delay 配置间隔多长时间重新发送一次deferred队列的邮件</para>
+			<screen>
+# postconf | grep queue_run_delay
+queue_run_delay = 300s
+
+			</screen>
+			<para>deferred邮件队列中的生存时间</para>
+			<screen>
+# postconf | grep maximal_queue_lifetime
+maximal_queue_lifetime = 5d
+			</screen>
 		</section>
 	</section>
 	<section id="dkim">
@@ -674,6 +704,16 @@ smtpd_milters = inet:127.0.0.1:8891
 unknown_local_recipient_reject_code = 550
 			]]>
 			</screen>
+		</section>
+		<section>
+			<title>EDM 服务器</title>
+			<para>EDM服务器建议配置</para>
+			<screen>
+postconf -e "default_destination_concurrency_limit=5"
+postconf -e "queue_run_delay = 12h"
+postconf -e "maximal_queue_lifetime = 1d"
+			</screen>
+			<para>首先投递目的主机不能并发太多，发送失败的邮件一天只需要重发一次就可以，隔天是吧队列直接抛弃无需保留。</para>
 		</section>
 	</section>
 	<section id="faq">
