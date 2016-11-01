@@ -722,6 +722,15 @@ listening on eth1, link-type EN10MB (Ethernet), capture size 65535 bytes
 35 packets captured
 36 packets received by filter
 0 packets dropped by kernel
+
+
+# tcpdump -ni any 'tcp and dst host 184.105.206.82 and port 25'
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on any, link-type LINUX_SLL (Linux cooked), capture size 65535 bytes
+05:46:31.833762 IP 107.178.142.42.49771 > 184.105.206.82.smtp: Flags [.], ack 231639512, win 229, options [nop,nop,TS val 2464661680 ecr 1677502875], length 0
+05:46:31.833826 IP 107.178.142.42.49771 > 184.105.206.82.smtp: Flags [P.], seq 0:21, ack 1, win 229, options [nop,nop,TS val 2464661680 ecr 1677502875], length 21
+05:46:32.515302 IP 107.178.142.42.49771 > 184.105.206.82.smtp: Flags [P.], seq 21:52, ack 62, win 229, options [nop,nop,TS val 2464662361 ecr 1677503046], length 31
+05:46:32.886948 IP 107.178.142.42.49771 > 184.105.206.82.smtp: Flags [P.], seq 52:80, ack 70, win 229, options [nop,nop,TS val 2464662733 ecr 1677503139], length 28
 		]]>
 		</screen>
 	</section>
@@ -794,16 +803,29 @@ tcpdump: listening on eth0, link-type EN10MB (Ethernet), capture size 1500 bytes
 		</screen>
 		<para><link linkend="cdpr">cdpr - Cisco Discovery Protocol Reporter</link></para>
 	</section>
-
-	<section>
+	<section id="Flags">
+		<title>Flags</title>
+		<para>每一行中间都有这个包所携带的标志：</para>
+		<screen>
+Flags [*](
+S=SYN   发起连接标志
+P=PUSH  传送数据标志
+F=FIN    关闭连接标志
+ack     表示确认包
+RST= RESET  异常关闭连接
+.      表示没有任何标志
+)		
+		</screen>
+	</section>
+	<section id="example">
 		<title>案例</title>
-		<section>
+		<section id="icmp">
 			<title>监控80端口与icmp,arp</title>
 			<screen>
 $ tcpdump -n -i eth0 port 80 or icmp or arp
 			</screen>
 		</section>
-		<section>
+		<section id="mysql">
 			<title>monitor mysql tcp package</title>
 			<screen>
 			<![CDATA[
@@ -829,7 +851,7 @@ tcpdump -i eth0 -s 0 -l -w - dst port 80 | strings
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="syn">
 			<title>显示SYN、FIN和ACK-only包</title>
 			<para>显示所有进出80端口IPv4 HTTP包，也就是只打印包含数据的包。例如：SYN、FIN包和ACK-only包输入：</para>
 			<screen>
@@ -838,12 +860,71 @@ tcpdump -i eth0 -s 0 -l -w - dst port 80 | strings
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="oracle">
 			<title>嗅探 Oracle 错误</title>
 			<screen>
 			<![CDATA[
 tcpdump -i eth1 tcp port 1521 -A -s1500 | awk '$1 ~ "ORA-" {i=1;split($1,t,"ORA-");while (i <= NF) {if (i == 1) {printf("%s","ORA-"t[2])}else {printf("%s ",$i)};i++}printf("\n")}'
 			]]>			
+			</screen>
+		</section>
+		<section id="smtp">
+			<title>smtp</title>
+			<screen>
+			<![CDATA[
+# tcpdump -nni any  -x -X port 25 | more
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on any, link-type LINUX_SLL (Linux cooked), capture size 65535 bytes
+05:55:43.133217 IP 184.105.206.85.25 > 59.153.146.101.42756: Flags [P.], seq 3205055214:3205055222, ack 3276605059, win 16022, options [nop,nop,TS val 2899843510 ecr 1568241053], length 8
+	0x0000:  4500 003c c773 4000 3b06 238b b869 ce55  E..<.s@.;.#..i.U
+	0x0010:  3b99 9265 0019 a704 bf09 42ee c34d 0683  ;..e......B..M..
+	0x0020:  8018 3e96 1803 0000 0101 080a acd8 19b6  ..>.............
+	0x0030:  5d79 759d 3235 3020 4f6b 0d0a 0000 0000  ]yu.250.Ok......
+	0x0040:  0000 0000 0000 0000 0000 0000            ............
+05:55:43.133247 IP 59.153.146.101.42756 > 184.105.206.85.25: Flags [.], ack 8, win 115, options [nop,nop,TS val 1568241323 ecr 2899843510], length 0
+	0x0000:  4500 0034 0478 4000 4006 e18e 3b99 9265  E..4.x@.@...;..e
+	0x0010:  b869 ce55 a704 0019 c34d 0683 bf09 42f6  .i.U.....M....B.
+	0x0020:  8010 0073 54e4 0000 0101 080a 5d79 76ab  ...sT.......]yv.
+	0x0030:  acd8 19b6 0000 0000 0000 0000 0000 0000  ................
+	0x0040:  0000 0000                                ....
+05:55:43.133321 IP 59.153.146.101.42756 > 184.105.206.85.25: Flags [P.], seq 1:32, ack 8, win 115, options [nop,nop,TS val 1568241323 ecr 2899843510], length 31
+	0x0000:  4500 0053 0479 4000 4006 e16e 3b99 9265  E..S.y@.@..n;..e
+	0x0010:  b869 ce55 a704 0019 c34d 0683 bf09 42f6  .i.U.....M....B.
+	0x0020:  8018 0073 5503 0000 0101 080a 5d79 76ab  ...sU.......]yv.
+	0x0030:  acd8 19b6 4d41 494c 2046 524f 4d3a 3c6e  ....MAIL.FROM:<n
+	0x0040:  6f72 6570 6c79 4063 6631 3339 2e63 6f6d  oreply@139.com
+	0x0050:  3e0d 0a00 0000 0000 0000 0000 0000 0000  >...............
+	0x0060:  0000 00                                  ...
+05:55:43.142280 IP 184.105.206.85.25 > 59.153.146.101.42756: Flags [.], ack 32, win 16022, options [nop,nop,TS val 2899843513 ecr 1568241323], length 0
+	0x0000:  4500 0034 c774 4000 3b06 2392 b869 ce55  E..4.t@.;.#..i.U
+	0x0010:  3b99 9265 0019 a704 bf09 42f6 c34d 06a2  ;..e......B..M..
+	0x0020:  8010 3e96 d5a5 0000 0101 080a acd8 19b9  ..>.............
+	0x0030:  5d79 76ab 0000 0000 0000 0000 0000 0000  ]yv.............
+	0x0040:  0000 0000                                ....
+05:55:43.270436 IP 203.205.160.43.25 > 202.88.38.95.39594: Flags [.], ack 1271517256, win 159, options [nop,nop,TS val 1663885325 ecr 1568241310], length 0
+	0x0000:  4500 0034 18e5 4000 3806 cd2e cbcd a02b  E..4..@.8......+
+	0x0010:  ca58 265f 0019 9aaa 800c c423 4bc9 d048  .X&_.......#K..H
+	0x0020:  8010 009f 0716 0000 0101 080a 632c e00d  ............c,..
+	0x0030:  5d79 769e 0000 0000 0000 0000 0000 0000  ]yv.............
+	0x0040:  0000 0000                                ....
+			]]>
+			</screen>
+			<para>嗅探用户密码</para>
+			<screen>
+			<![CDATA[
+# tcpdump -i any port http or port smtp or port imap or port pop3 -l -A | egrep -i 'pass=|pwd=|log=|login=|user=|username=|pw=|passw=|passwd=|password=|pass:|user:|userna me:|password:|login:|pass |user '
+
+# tcpdump port http or port ftp or port smtp or port imap or port pop3 -l -A | egrep -i 'pass=|pwd=|log=|login=|user=|username=|pw=|passw=|passwd=|password=|pass:|user:|username:|password:|login:|pass |user ' --color=auto --line-buffered -B20
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+# tcpdump -A -q -i any port 25 | grep "RCPT TO:"
+# tcpdump -l -s0 -w - tcp dst port 25 | strings | grep -i 'MAIL FROM\|RCPT TO'			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[]]>
 			</screen>
 		</section>
 	</section>
