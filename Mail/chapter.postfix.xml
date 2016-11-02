@@ -474,6 +474,24 @@ Mail queue is empty
 postsuper -d ALL deferred
 			</screen>
 		</section>
+		<section>
+			<title>postqueue - Postfix queue control</title>
+			<section>
+				<title>列出队列</title>
+				<para>列出队列,等效 mailq</para>
+				<screen>
+# postqueue -p
+				</screen>
+			</section>
+			<section>
+				<title>刷新队列</title>
+				<para>-f     Flush the queue: attempt to deliver all queued mail.</para>
+				<screen>
+postqueue -f
+				</screen>
+			</section>
+			
+		</section>
 		<section id="postmulti">
 			<title>postmulti - Postfix multi-instance manager</title>
 			<section>
