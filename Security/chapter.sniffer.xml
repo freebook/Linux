@@ -843,7 +843,7 @@ while(<>) { chomp; next if /^[^ ]+[ ]*$/;
 			]]>
 			</screen>
 		</section>
-		<section id="tcpdump.http">
+		<section id="http">
 			<title>HTTP 包</title>
 			<screen>
 			<![CDATA[
@@ -1044,6 +1044,86 @@ $cat video.avi | nc -l 3000
 			<para>客户端，从socket中读入数据并通过管道传递给 mplayer播放该视频。</para>
 			<screen>
 $nc 172.16.0.10 3000 | mplayer -vo x11 -cache 3000 -			
+			</screen>
+		</section>
+	</section>
+	<section id="ngrep">
+		<title>ngrep - Network layer grep tool</title>
+		<para>安装</para>
+		<screen>
+yum install -y ngrep		
+		</screen>
+		<para>帮助信息</para>
+		<screen>
+		<![CDATA[
+# ngrep -help
+usage: ngrep <-hNXViwqpevxlDtTRM> <-IO pcap_dump> <-n num> <-d dev> <-A num>
+             <-s snaplen> <-S limitlen> <-W normal|byline|single|none> <-c cols>
+             <-P char> <-F file> <match expression> <bpf filter>
+   -h  is help/usage
+   -V  is version information
+   -q  is be quiet (don't print packet reception hash marks)
+   -e  is show empty packets
+   -i  is ignore case
+   -v  is invert match
+   -R  is don't do privilege revocation logic
+   -x  is print in alternate hexdump format
+   -X  is interpret match expression as hexadecimal
+   -w  is word-regex (expression must match as a word)
+   -p  is don't go into promiscuous mode
+   -l  is make stdout line buffered
+   -D  is replay pcap_dumps with their recorded time intervals
+   -t  is print timestamp every time a packet is matched
+   -T  is print delta timestamp every time a packet is matched
+         specify twice for delta from first match
+   -M  is don't do multi-line match (do single-line match instead)
+   -I  is read packet stream from pcap format file pcap_dump
+   -O  is dump matched packets in pcap format to pcap_dump
+   -n  is look at only num packets
+   -A  is dump num packets after a match
+   -s  is set the bpf caplen
+   -S  is set the limitlen on matched packets
+   -W  is set the dump format (normal, byline, single, none)
+   -c  is force the column width to the specified size
+   -P  is set the non-printable display char to what is specified
+   -F  is read the bpf filter from the specified file
+   -N  is show sub protocol number
+   -d  is use specified device instead of the pcap default
+		]]>
+		</screen>
+		<section>
+			<title>匹配关键字</title>
+			<subtitle>-q  is be quiet (don't print packet reception hash marks)</subtitle>
+			<screen>
+# ngrep -q GET -d eth1 port 80
+# ngrep -q POST -d eth1 port 80
+# ngrep -q /news/111.html -d eth1 port 80
+# ngrep -q User-Agent -d eth1 port 80
+# ngrep -q Safari -d eth1 port 80
+			</screen>
+			<para></para>
+			<screen>
+# ngrep -q HELO -d enp2s0 port 25mp
+interface: enp2s0 (173.254.223.0/255.255.255.192)
+filter: ( port 25 ) and (ip or ip6)
+match: HELO
+
+T 47.90.44.87:39023 -> 173.254.223.53:25 [AP]
+  HELO localhost..                                                                                                                                                                                                                       
+
+T 47.90.44.87:39024 -> 173.254.223.53:25 [AP]
+  HELO localhost..                                                                                                                                                                                                                       
+
+T 47.90.44.87:39025 -> 173.254.223.53:25 [AP]
+  HELO localhost..
+			</screen>
+		</section>
+		<section>
+			<title>指定网络接口</title>
+			<para>-d  is use specified device instead of the pcap default</para>
+			<screen>
+# ngrep -d eth0
+# ngrep -d enp2s0
 			</screen>
 		</section>
 	</section>
