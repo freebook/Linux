@@ -13,6 +13,7 @@
 	&chapter.cmd.text.grep.xml;
 	&chapter.cmd.text.sort.xml;
 	&chapter.cmd.table.xml;
+	&chapter.cmd.io.xml;
 
 <section id="log">
 	<title>Logging</title>

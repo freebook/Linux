@@ -25,6 +25,7 @@
 	<!ENTITY chapter.cmd.text.awk.xml			SYSTEM "chapter.cmd.text.awk.xml">
 	<!ENTITY chapter.cmd.text.sed.xml			SYSTEM "chapter.cmd.text.sed.xml">
 	<!ENTITY chapter.cmd.table.xml				SYSTEM "chapter.cmd.table.xml">
+	<!ENTITY chapter.cmd.io.xml					SYSTEM "chapter.cmd.io.xml">
 
 	<!ENTITY chapter.utility.xml		 		SYSTEM "chapter.utility.xml">
 	<!ENTITY chapter.utility.curl.xml		 	SYSTEM "chapter.utility.curl.xml">

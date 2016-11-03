@@ -1,0 +1,169 @@
+<section id="io">
+	<title>standard input/output</title>
+	<section>
+		<title>xargs - build and execute command lines from standard input</title>
+		<para>xargs命令用法</para>
+		<section>
+			<title>格式化</title>
+			<para>xargs用作替换工具，读取输入数据重新格式化后输出。</para>
+			<screen>
+			<![CDATA[
+定义一个测试文件，内有多行文本数据：
+
+cat >> test.txt <<EOF
+
+a b c d e f g
+h i j k l m n
+o p q
+r s t
+u v w x y z
+
+EOF
+
+# cat test.txt 
+
+a b c d e f g
+h i j k l m n
+o p q
+r s t
+u v w x y z
+
+
+多行输入一行输出：
+
+# cat test.txt | xargs
+a b c d e f g h i j k l m n o p q r s t u v w x y z
+
+等效
+# cat test.txt | tr "\n" " "
+a b c d e f g h i j k l m n o p q r s t u v w x y z
+
+-n选项多行输出：
+
+# cat test.txt | xargs -n3
+a b c
+d e f
+g h i
+j k l
+m n o
+p q r
+s t u
+v w x
+y z
+# cat test.txt | xargs -n4
+a b c d
+e f g h
+i j k l
+m n o p
+q r s t
+u v w x
+y z
+# cat test.txt | xargs -n5
+a b c d e
+f g h i j
+k l m n o
+p q r s t
+u v w x y
+z
+
+
+-d选项可以自定义一个定界符：
+
+# echo "name|age|sex|birthday" | xargs -d"|"
+name age sex birthday
+
+结合-n选项使用：
+
+# echo "name=Neo|age=30|sex=T|birthday=1980" | xargs -d"|" -n1
+name=Neo
+age=30
+sex=T
+birthday=1980			
+			]]>
+			</screen>
+		</section>
+		<section id="input">
+			<title>standard input</title>
+			<screen>
+			<![CDATA[
+# xargs < test.txt 
+a b c d e f g h i j k l m n o p q r s t u v w x y z		
+		
+# cat /etc/passwd | cut -d : -f1 > users
+# xargs -n1 < users echo "Your name is"
+Your name is root
+Your name is bin
+Your name is daemon
+Your name is adm
+Your name is lp
+Your name is sync
+Your name is shutdown
+Your name is halt
+Your name is mail
+Your name is operator
+Your name is games
+Your name is ftp
+Your name is nobody
+Your name is dbus
+Your name is polkitd
+Your name is avahi
+Your name is avahi-autoipd
+Your name is postfix
+Your name is sshd
+Your name is neo
+Your name is ntp
+Your name is opendkim
+Your name is netkiller
+Your name is tcpdump		
+			]]>
+			</screen>
+		</section>		
+		<section>
+			<title>-I 替换操作</title>
+			<screen>
+复制所有图片文件到 /data/images 目录下：
+
+ls *.jpg | xargs -n1 -I cp {} /data/images
+			</screen>		
+			<screen>
+			<![CDATA[
+读取stdin，将格式化后的参数传递给命令xargs的一个选项-I，使用-I指定一个替换字符串{}，这个字符串在xargs扩展时会被替换掉，当-I与xargs结合使用，每一个参数命令都会被执行一次：
+
+# echo "name=Neo|age=30|sex=T|birthday=1980" | xargs -d"|" -n1 | xargs -I {} echo "select * from tab where {} "
+select * from tab where name=Neo 
+select * from tab where age=30 
+select * from tab where sex=T 
+select * from tab where birthday=1980 
+
+# xargs -I user echo "Hello user" <users 
+Hello root
+Hello bin
+Hello daemon
+Hello adm
+Hello lp
+Hello sync
+Hello shutdown
+Hello halt
+Hello mail
+Hello operator
+Hello games
+Hello ftp
+Hello nobody
+Hello dbus
+Hello polkitd
+Hello avahi
+Hello avahi-autoipd
+Hello postfix
+Hello sshd
+Hello netkiller
+Hello neo
+Hello tss
+Hello ntp
+Hello opendkim
+Hello noreply
+Hello tcpdump
+			]]>
+			</screen>
+		</section>		
+	</section>
+</section>
