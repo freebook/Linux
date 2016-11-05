@@ -412,7 +412,9 @@ ARRAY=()
 ARRAY+=('foo')
 ARRAY+=('bar')
 		</screen>
-		<screen>
+		<section>
+			<title>for 与 array</title>
+			<screen>
 #!/bin/bash
 
 array=(one two three four [5]=five)
@@ -436,9 +438,9 @@ for index in ${!array[*]}
 do
     printf "%4d: %s\n" $index ${array[$index]}
 done
-		</screen>
-
-		<screen>
+			</screen>
+	
+			<screen>
 #!/bin/bash
 
 array=("first item" "second item" "third" "item")
@@ -472,8 +474,8 @@ for ix in ${!arr[*]}
 do
     printf "   %s\n" "${arr[$ix]}"
 done
-		</screen>
-		<screen>
+			</screen>
+			<screen>
 array=({23..32} {49,50} {81..92})
 
 echo "Array size: ${#array[*]}"
@@ -483,7 +485,52 @@ for item in ${array[*]}
 do
     printf "   %s\n" $item
 done
-		</screen>
+			</screen>
+		</section>
+		<section>
+			<title>while 与 array</title>
+			<para>while 与 array</para>
+			<screen>
+			<![CDATA[
+		
+declare -a array=('1:one' '2:two' '3:three');
+len=${#array[@]}
+i=0
+while [ $i -lt $len ]; do
+    echo "${array[$i]}"
+    let i++
+done
+			]]>
+		</section>
+		<section>
+			<title>array 与 read</title>
+			<para>array 与 read</para>
+			<screen>
+			<![CDATA[
+declare -a array=('1:one' '2:two' '3:three');
+
+while read -e item ; do
+    echo "$item \n"
+done <<< ${array[@]}	
+
+mapfile CONFIG <<END
+192.168.0.1 80
+192.168.0.1 8080
+192.168.0.2 8000
+192.168.0.2 80
+192.168.0.1 88
+END
+
+printf %s "${CONFIG[@]}"
+
+for line in "${CONFIG[@]}"
+do
+	read ipaddr port <<< $(echo ${line})
+	echo "$ipaddr : $port"
+done
+			]]>
+			</screen>
+		</section>
 		<section>
 			<title>拆分字符串并转换为数组</title>
 			<subtitle>Split string into an array in Bash</subtitle>
@@ -527,7 +574,7 @@ IFS='|';echo "${[*]// /|}";
 		</section>
 		
 	</section>
-	<section>
+	<section id="read">
 		<title>read 赋值多个变量</title>
 		<screen>
 		<![CDATA[

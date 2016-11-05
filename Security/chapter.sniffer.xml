@@ -22,7 +22,22 @@ PORT     STATE SERVICE
 445/tcp  open  microsoft-ds
 3306/tcp open  mysql
 	</screen>
-	<section>
+	<section id="port">
+		<title>端口扫描</title>
+		<screen>
+# nmap -Pn 192.168.4.13
+
+Starting Nmap 6.40 ( http://nmap.org ) at 2016-11-04 15:41 CST
+Nmap scan report for gts2apidemo.cfddealer88.com (192.168.4.13)
+Host is up (0.0051s latency).
+Not shown: 999 filtered ports
+PORT     STATE SERVICE
+8008/tcp open  http
+
+Nmap done: 1 IP address (1 host up) scanned in 7.50 seconds
+		</screen>
+	</section>
+	<section id="host">
 		<title>HOST DISCOVERY</title>
 		<section>
 			<title>-sP: Ping Scan - go no further than determining if host is online</title>
@@ -83,8 +98,7 @@ nmap -sP -PI -PT -oN ipandmaclist.txt 192.168.80.0/24
 			</screen>
 		</section>
 	</section>
-
-	<section>
+	<section id="udp">
 		<title>SCAN TECHNIQUES</title>
 		<section>
 			<title>-sU: UDP Scan 扫描</title>
