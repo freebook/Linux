@@ -454,7 +454,20 @@ iptables -m string -h
 		</section>
 		<section id="connlimit">
 			<title>connlimit</title>
-			<para>限制多少IP链接你的服务器</para>
+			<screen>
+限制同一IP同时最多100个http连接
+iptables -I INPUT -p tcp --syn --dport 80 -m connlimit --connlimit-above 100 -j REJECT
+
+只允许每组C类IP同时100个http连接
+iptables -p tcp --syn --dport 80 -m connlimit --connlimit-above 100 --connlimit-mask 24 -j REJECT
+
+只允许每个IP同时5个80端口转发,超过的丢弃
+iptables -I FORWARD -p tcp --syn --dport 80 -m connlimit --connlimit-above 5 -j DROP
+
+限制某IP最多同时100个http连接
+iptables -A INPUT -s xxx.xxx.xxx.xxx -p tcp --syn --dport 80 -m connlimit --connlimit-above 100 -j REJECT		
+			</screen>
+			<para>限制多少IP链接你的服务器</para>			
 			<screen>
 # allow 2 telnet connections per client host
 iptables -p tcp --syn --dport 23 -m connlimit --connlimit-above 2 -j REJECT
@@ -527,6 +540,14 @@ COMMIT
 COMMIT
 				</screen>
 			</example>
+		</section>
+		<section id="recent">
+			<title>recent</title>
+			<para>限制每IP在一定的时间(比如60秒)内允许新建立最多100个http连接数</para>
+			<screen>
+iptables -A INPUT -p tcp --dport 80 -m recent --name BAD_HTTP_ACCESS --update --seconds 60 --hitcount 100 -j REJECT
+iptables -A INPUT -p tcp --dport 80 -m recent --name BAD_HTTP_ACCESS --set -j ACCEPT				
+			</screen>
 		</section>
 		<section id="limit">
 			<title>limit</title>
