@@ -340,22 +340,7 @@ iptables -t filter -A INPUT -s 192.168.1.1,2.2.2.2,10.10.10.10 -j ACCEPT
  iptables -A INPUT -p tcp --dport 6881:6890 -j ACCEPT
 		</screen>
 	</section>
-	<section id="state">
-		<title>IPTables and Connection Tracking</title>
-		<literallayout>
-NEW — A packet requesting a new connection, such as an HTTP request.
-
-ESTABLISHED — A packet that is part of an existing connection.
-
-RELATED — A packet that is requesting a new connection but is part of an existing connection. For example, FTP uses port 21 to establish a connection, but data is transferred on a different port (typically port 20).
-
-INVALID — A packet that is not part of any connections in the connection tracking table.
-		</literallayout>
-		<screen>
-iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-		</screen>
-	</section>
+	
 	
 
 
@@ -435,6 +420,29 @@ iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j DNAT --to-destination
 	</section>
 	<section id="module">
 		<title>Module(模块)</title>
+		<section id="state">
+			<title>IPTables and Connection Tracking</title>
+			<literallayout>
+NEW — A packet requesting a new connection, such as an HTTP request.
+
+ESTABLISHED — A packet that is part of an existing connection.
+
+RELATED — A packet that is requesting a new connection but is part of an existing connection. For example, FTP uses port 21 to establish a connection, but data is transferred on a different port (typically port 20).
+
+INVALID — A packet that is not part of any connections in the connection tracking table.
+			</literallayout>
+			<para>放行已经启动的服务</para>
+			<screen>
+-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+			</screen>
+			<screen>
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+			</screen>
+			<para>禁止新的端口listen，在防火墙启动后，不在允许启动任何新的端口。</para>
+			<screen>
+-A INPUT -m state --state INVALID,NEW -j DROP		
+			</screen>
+		</section>
 		<section id="string">
 			<title>string</title>
 			<screen>
