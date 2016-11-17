@@ -53,4 +53,100 @@ server {
 			</screen>
 		</example>
 	</section>
+	<section>
+		<title>拦截index.html</title>
+		<para>背景：网站推广审核需要隐藏或不现实首页，其他页面正常</para>
+		<para>需求：要求访问首页事显示指定页面</para>
+		<screen>
+server {
+    listen       80;
+    server_name any.netkiller.cn;
+
+    charset utf-8;
+    access_log  /var/log/nginx/any.netkiller.cn.access.log;
+    error_log  /var/log/nginx/any.netkiller.cn.error.log;
+
+    location /index.html {
+	ssi on;
+	proxy_set_header Accept-Encoding "";
+        proxy_pass http://172.16.0.1/www/temp.html;
+        proxy_set_header Host www.netkiller.cn;
+
+    }
+
+    location / {
+		ssi on;
+		rewrite ^/$ /zt/hy/temp.html; 
+		proxy_set_header Accept-Encoding "";
+		proxy_pass http://127.0.0.1:8080;
+        proxy_set_header    Host    $host;
+        proxy_set_header    X-Real-IP   $remote_addr;
+        proxy_set_header    X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+
+    error_page  404              /error/404.html;
+    error_page  403              /error/403.html;
+    error_page  502              /error/502.html;
+    error_page  500 502 503 504  /error/500.html;
+
+    location ~ ^/WEB-INF/ {
+        deny  all;
+    }
+	
+    location ~ \.(html|js|css|jpg|png|gif|swf)$ {
+        root /www/netkiller.cn/www.netkiller.cn;
+        expires 1d;
+    } 
+    location ~ \.(ico|fla|flv|mp3|mp4|wma|wmv|exe)$ {
+        root /www/netkiller.cn/www.netkiller.cn;
+        flv;
+        mp4;
+        expires 7d;
+    }
+    location /zt {
+		root /www/netkiller.cn/www.netkiller.cn;
+		rewrite ^(.*)\;jsessionid=(.*)$ $1 break;
+		expires 1d;
+    }
+    location ^~ /zt/other/ {
+		ssi on;
+        proxy_set_header Accept-Encoding "";
+        proxy_pass http://172.16.0.1/www/;
+        proxy_set_header Host www.netkiller.cn;
+		proxy_cache www;
+		proxy_cache_valid  200 302  1m;
+    }
+
+    location /module {
+        root /www/netkiller.cn/www.netkiller.cn;
+    }
+
+    location ^~ /images/CF_a48/ {
+        ssi on;
+        proxy_set_header Accept-Encoding "";
+        proxy_pass http://172.16.0.1/www/images/CF_a48/;
+        proxy_set_header Host www.netkiller.cn;
+        proxy_cache www;
+        proxy_cache_valid  200 302  1m;
+    }
+    location ^~ /js/ {
+        ssi on;
+        proxy_set_header Accept-Encoding "";
+        proxy_pass http://172.16.0.1/www/js/;
+        proxy_set_header Host www.netkiller.cn;
+        proxy_cache www;
+        proxy_cache_valid  200 302  1m;
+    }
+    location ^~ /CF_a48css.css {
+        ssi on;
+        proxy_set_header Accept-Encoding "";
+        proxy_pass http://172.16.0.1/www/CF_a48css.css;
+        proxy_set_header Host www.netkiller.cn;
+        proxy_cache www;
+        proxy_cache_valid  200 302  1m;
+    }
+
+}
+		</screen>
+	</section>
 </section>

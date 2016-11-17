@@ -234,7 +234,17 @@ Testing nginx configuration: nginx.
 $ openssl s_client -connect www.example.com:443
 			</screen>
 		</section>
+		<section id="http2">
+			<title>HTTP2</title>
+			<screen>
+server {
+    listen 443 ssl http2;
 
+    ssl_certificate server.crt;
+    ssl_certificate_key server.key;
+}			
+			</screen>
+		</section>
 		<section id="http.server.subdomain">
 			<title>泛解析主机</title>
 			<screen>
@@ -930,8 +940,6 @@ http {
 		</section>
 	</section>
 	&chapter.nginx.conf.fastcgi.xml;
-	&chapter.nginx.proxy.xml;
-
 	<section id="return">
 		<title>return</title>
 		<para>301 跳转</para>
@@ -951,38 +959,6 @@ server {
     server_name www.old-name.com;
     return 301 $scheme://www.new-name.com$request_uri;
 }		
-		</screen>
-	</section>
-	<section id="ngx_http_flv_module">
-		<title>ngx_http_flv_module</title>
-		<screen>
-location ~ \.flv$ {
-    flv;
-}
-		</screen>
-	</section>
-
-	<section id="ngx_http_mp4_module">
-		<title>ngx_http_mp4_module</title>
-		<screen>
-location /video/ {
-    mp4;
-    mp4_buffer_size       1m;
-    mp4_max_buffer_size   5m;
-    mp4_limit_rate        on;
-    mp4_limit_rate_after  30s;
-}
-		</screen>
-	</section>
-	<section id="limit_zone">
-		<title>limit_zone</title>
-		<screen>
-limit_zone   one  $binary_remote_addr  10m;
-
-server {
-	location /download/ {
-	limit_conn   one  1;
-}
 		</screen>
 	</section>
 

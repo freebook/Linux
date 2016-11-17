@@ -166,6 +166,7 @@ gzip ${log_dir}/${date_dir}/error.log &
 	</section>
 
 	&chapter.nginx.conf.xml;
+	&chapter.nginx.module.xml;
 	&chapter.nginx.example.xml;
 	&chapter.nginx.faq.xml;
 

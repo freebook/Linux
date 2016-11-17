@@ -15,6 +15,7 @@
 <!ENTITY chapter.nginx.proxy.xml	SYSTEM "chapter.nginx.proxy.xml">
 <!ENTITY chapter.nginx.var.xml 		SYSTEM "chapter.nginx.var.xml">
 <!ENTITY chapter.nginx.example.xml	SYSTEM "chapter.nginx.example.xml">
+<!ENTITY chapter.nginx.module.xml	SYSTEM "chapter.nginx.module.xml">
 <!ENTITY chapter.nginx.faq.xml		SYSTEM "chapter.nginx.faq.xml">
 
 <!ENTITY chapter.web.src 			SYSTEM "chapter.web.src.xml">
