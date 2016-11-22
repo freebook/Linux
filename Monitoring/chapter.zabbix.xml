@@ -45,7 +45,7 @@ EOF
 			</screen>
 		</section>
 		<section>
-			<title>CentOS</title>
+			<title>CentOS Zabbix 2.4</title>
 			<screen>
 			<![CDATA[
 yum localinstall -y http://repo.zabbix.com/zabbix/2.4/rhel/7/x86_64/zabbix-release-2.4-1.el7.noarch.rpm
@@ -69,6 +69,47 @@ systemctl restart httpd
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>Zabbix 3.x CentOS 7</title>
+			<para>安装脚本</para>
+			<screen>
+			<![CDATA[
+#!/bin/bash
+##################################################
+# Author: Neo <netkiller@msn.com>
+# Website http://netkiller.github.io
+##################################################
+yum localinstall -y http://repo.zabbix.com/zabbix/3.2/rhel/7/x86_64/zabbix-release-3.2-1.el7.noarch.rpm
+
+yum install -y zabbix-server-mysql zabbix-web-mysql
+
+# CREATE DATABASE `zabbix` /*!40100 COLLATE 'utf8_general_ci' */
+
+zcat /usr/share/doc/zabbix-server-mysql-3.2.1/create.sql.gz | mysql -uzabbix -p zabbix
+
+cp /etc/zabbix/zabbix_server.conf{,.original}
+vim /etc/zabbix/zabbix_server.conf <<EOF > /dev/null 2>&1
+:%s/# DBPassword=/DBPassword=your_password/
+:wq
+EOF
+
+systemctl enable httpd
+systemctl enable zabbix-server
+
+systemctl start zabbix-server
+systemctl restart httpd
+			]]>
+			</screen>
+			<para>配置php.ini文件 date.timezone = Asia/Hong_Kong</para>
+			<para><graphic  format="png" fileref="../images/zabbix/zabbix-1.png" srccredit="neo" width=""/> 下一步</para>	
+			<para><graphic  format="png" fileref="../images/zabbix/zabbix-2.png" srccredit="neo" width=""/> 检查PHP模块与配置，如果未提示错误信息点击下一步按钮</para>
+			<para><graphic  format="png" fileref="../images/zabbix/zabbix-3.png" srccredit="neo" width=""/> 填写数据主机名，用户与密码，然后下一步</para>
+			<para><graphic  format="png" fileref="../images/zabbix/zabbix-4.png" srccredit="neo" width=""/> Zabbix Server 直接点击下一步</para>
+			<para><graphic  format="png" fileref="../images/zabbix/zabbix-5.png" srccredit="neo" width=""/> 确认填写信息，如果不正确可以返回重新填写，确认安装点击下一步</para>
+			<para><graphic  format="png" fileref="../images/zabbix/zabbix-6.png" srccredit="neo" width=""/> 完成安装</para>
+			<para><graphic  format="png" fileref="../images/zabbix/login.png" srccredit="neo" width=""/> 登陆Zabbix 默认用户名admin 密码 zabbix ，请务必登陆后修改密码</para>
+		</section>
+		
 	</section>
 	<section id="webui">
 		<title>web ui</title>
@@ -177,25 +218,125 @@ systemctl restart zabbix-server
 	</section>
 	<section id="zabbix-agent">
 		<title>zabbix-agent</title>
-		<screen>
+		<section>
+			<title>Ubuntu</title>
+			<screen>
 # sudo apt-get install zabbix-agent
-
-		</screen>
-		<para>/etc/zabbix/zabbix_agent.conf</para>
-		<screen>
+			</screen>
+			<para>/etc/zabbix/zabbix_agent.conf</para>
+			<screen>
 #Server=localhost
 Server=your_server_ip_address
-		</screen>
-		<para></para>
-		<screen>
+			</screen>
+			<para></para>
+			<screen>
 # vim /etc/services
 
 zabbix-agent    10050/tcp                       #Zabbix Agent
 zabbix-agent    10050/udp                       #Zabbix Agent
-		</screen>
-		<para></para>
-		<screen>
+			</screen>
+			<para></para>
+			<screen>
 # sudo /etc/init.d/zabbix-agent restart
-		</screen>
+			</screen>
+		</section>
+		<section>
+			<title>CentOS 7</title>
+			<screen>
+yum localinstall -y http://repo.zabbix.com/zabbix/3.2/rhel/7/x86_64/zabbix-release-3.2-1.el7.noarch.rpm
+
+yum install -y zabbix-agent
+
+cp /etc/zabbix/zabbix_agentd.conf{,.original}
+
+sed -i "s/# SourceIP=/SourceIP=zabbix_server_ip/" /etc/zabbix/zabbix_agentd.conf
+sed -i "s/Server=127.0.0.1/Server=zabbix_server_ip/" /etc/zabbix/zabbix_agentd.conf
+sed -i "s/ServerActive=127.0.0.1/ServerActive=zabbix_server_ip/" /etc/zabbix/zabbix_agentd.conf
+sed -i "s/Hostname=Zabbix server/Hostname=Alpha Testing/" /etc/zabbix/zabbix_agentd.conf
+
+systemctl enable zabbix-agent.service
+systemctl start zabbix-agent.service
+
+iptable -A INPUT -s zabbix_server_ip -p tcp -m state --state NEW -m tcp --dport 10050 -j ACCEPT
+			</screen>
+			<example>
+				<title>zabbix-agent 配置实例</title>
+				<screen>
+# grep -v "^#" /etc/zabbix/zabbix_agentd.conf | grep -v "^$"
+PidFile=/var/run/zabbix/zabbix_agentd.pid
+LogFile=/var/log/zabbix/zabbix_agentd.log
+LogFileSize=0
+SourceIP=147.90.4.87
+Server=147.90.4.87
+ServerActive=147.90.4.87
+Hostname=Alpha Testing
+Include=/etc/zabbix/zabbix_agentd.d/*.conf			
+				</screen>
+			</example>
+			<para>配置完成</para>
+		</section>
+		<section>
+			<title>Nginx status 监控</title>
+			<para>nginx status 监控扩展包 <ulink url="https://github.com/oscm/zabbix/tree/master/nginx" /></para>
+			<para>从 localhost 收集 nginx 状态信息</para>
+			<screen>
+			<![CDATA[
+server {
+    listen       80;
+    server_name  localhost;
+
+    location /status {
+        stub_status on;
+        access_log off;
+        allow 127.0.0.1;
+        deny all;
+    }
+}
+			]]>
+			</screen>
+			<para>配置 zabbix_agentd</para>
+			<para>创建配置文件 /etc/zabbix/zabbix_agentd.d/userparameter_nginx.conf 内容如下：</para>
+			<screen>
+			<![CDATA[
+UserParameter=nginx.status[*],/srv/zabbix/libexec/nginx.sh $1
+			]]>
+			</screen>
+			<para>安装数据采集脚本，请使用 nginx.sh </para>
+			<screen>
+			<![CDATA[
+mkdir -p /srv/zabbix/libexec
+vim /srv/zabbix/libexec/nginx.sh
+
+chmod +x /srv/zabbix/libexec/nginx.sh
+
+# /srv/zabbix/libexec/nginx.sh
+Usage /srv/zabbix/libexec/nginx.sh {check|active|accepts|handled|requests|reading|writing|waiting}
+# /srv/zabbix/libexec/nginx.sh accepts
+82
+
+# systemctl restart zabbix-agent.service
+			]]>
+			</screen>
+			<para>使用 zabbix-get 工具从 Zabbix Server 链接 Zabbix Agent 测试是否正常工作</para>
+			<screen>
+			<![CDATA[
+Test Agent
+
+# yum install -y zabbix-get
+
+# zabbix_get -s <agent_ip_address> -k 'nginx.status[accepts]'
+109
+			]]>
+			</screen>
+			<para>最后进入Zabbix Web界面导入模板 zbx_export_templates.xml</para>
+			<screen>
+			<![CDATA[
+Import file: choice xml file
+click "import" button
+
+Imported successfully 表示成功导入
+			]]>
+			</screen>
+		</section>
 	</section>
 </chapter>
