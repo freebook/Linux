@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 	&chapter.system.utility.xml;
 	&chapter.snmp.xml;
-	&chapter.mrtg.xml;
+	&chapter.zabbix.xml;
 	&chapter.cacti.xml;
 	&chapter.nagios.xml;
+	&chapter.mrtg.xml;
 	&chapter.bandwidth.xml;
 	&chapter.munin.xml;
-	&chapter.zabbix.xml;
 	&chapter.network.cluster.xml;
 	&chapter.network.ntop.xml;
 	&chapter.network.observium.xml;

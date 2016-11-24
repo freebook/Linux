@@ -116,6 +116,59 @@ systemctl restart httpd
 		<para>http://localhost/zabbix/</para>
 		<para>user: admin</para>
 		<para>passwd: zabbix</para>
+		<section>
+			<title>警告脚本</title>
+			<para>下面实现一个通过短信网关发送短信的警告脚本</para>
+			<para>首先查询 AlertScriptsPath，这是放置脚本的路径</para>
+			<screen>
+# grep AlertScriptsPath /etc/zabbix/zabbix_server.conf | grep -v ^#
+AlertScriptsPath=/usr/lib/zabbix/alertscripts
+			
+			</screen>
+			<para>创建脚本文件/usr/lib/zabbix/alertscripts/sms.sh</para>
+			<screen>
+			<![CDATA[
+
+vim /usr/lib/zabbix/alertscripts/sms.sh
+
+#!/bin/bash
+########################################
+# Author:      	Neo Chen <netkiller@msn.com>
+# Website:     	http://www.netkiller.cn/
+# Description: 	zabbix alert script
+# Notes:		https://github.com/oscm/zabbix
+# Date:        	2016-11-24
+########################################
+TIMEOUT=10
+MOBILE=$1
+MSG="$2 - $3"
+########################################
+LOGFILE="/tmp/sms.log"
+:>"$LOGFILE"
+exec 1>"$LOGFILE"
+exec 2>&1
+
+CURL="curl -s --connect-timeout ${TIMEOUT}"
+URL="http://xxx.xxx.xxx.xxx/sms.php?to=${MOBILE}&msg=${MSG}"
+
+set -x
+${CURL} "${URL}"
+			]]>
+			</screen>
+			<para>测试</para>
+			<screen>
+# chmod +x /usr/lib/zabbix/alertscripts/sms.sh
+# /usr/lib/zabbix/alertscripts/sms.sh 13013668890 Test Helloworld  
+			</screen>
+			<para>进入 WEB UI 配置媒体类型，Administration/Media types/Create media type</para>
+			<para><graphic format="png" fileref="../images/zabbix/administration/media_types.png" srccredit="neo" width=""/></para>
+			<para>向脚本传递三个参数</para>
+			<screen>
+{ALERT.SENDTO}
+{ALERT.SUBJECT}
+{ALERT.MESSAGE}
+			</screen>
+		</section>
 	</section>
 	<section id="zabbix-java-gateway">
 		<title>zabbix-java-gateway - Zabbix java gateway</title>
@@ -275,7 +328,7 @@ Include=/etc/zabbix/zabbix_agentd.d/*.conf
 			</example>
 			<para>配置完成</para>
 		</section>
-		<section>
+		<section id="nginx">
 			<title>Nginx status 监控</title>
 			<para>nginx status 监控扩展包 <ulink url="https://github.com/oscm/zabbix/tree/master/nginx" /></para>
 			<para>从 localhost 收集 nginx 状态信息</para>
@@ -298,6 +351,16 @@ server {
 			<para>创建配置文件 /etc/zabbix/zabbix_agentd.d/userparameter_nginx.conf 内容如下：</para>
 			<screen>
 			<![CDATA[
+############################################################
+# Redis - statistics
+#
+# Author: Neo Chen <netkiller@msn.com>
+# Website: http://www.netkiller.cn
+############################################################
+
+# Discovery
+
+# Return Redis statistics
 UserParameter=nginx.status[*],/srv/zabbix/libexec/nginx.sh $1
 			]]>
 			</screen>
@@ -337,6 +400,253 @@ click "import" button
 Imported successfully 表示成功导入
 			]]>
 			</screen>
+		</section>
+		<section id="redis">
+			<title>redis</title>
+			<para>创建代理配置文件</para>
+			<screen>
+			<![CDATA[
+cat > /etc/zabbix/zabbix_agentd.d/userparameter_redis.conf <<'EOF'
+############################################################
+# Redis - statistics
+#
+# Author: Neo Chen <netkiller@msn.com>
+# Website: http://www.netkiller.cn
+############################################################
+
+# Discovery
+
+# Return Redis statistics
+UserParameter=redis.status[*],redis-cli -h 127.0.0.1 -p 6379 info|grep $1|cut -d : -f2
+UserParameter=redis.proc,pidof redis-server | wc -l
+
+EOF
+ 			]]>
+			</screen>
+			<para>重启代理服务</para>
+			<screen>
+systemctl restart zabbix-agent.service
+			</screen>
+			<para>测试</para>
+			<screen>
+# zabbix_get -s www.netkiller.cn -k redis.status[redis_version]
+2.8.19
+			</screen>
+			<para>导入模板文件</para>
+		</section>
+		<section id="mongodb">
+			<title>MongoDB</title>
+			<section>
+				<title>创建 Mongo 监控用户</title>
+				<para>创建监控用户</para>
+				<screen>
+				<![CDATA[
+[root@netkiller www.netkiller.cn]# mongo -u admin -p D90YVqwmUATUeFSxfRo14  admin
+
+> use admin
+switched to db admin
+
+> db.createUser(
+   {
+     user: "monitor",
+     pwd: "chen",
+     roles: [ "clusterMonitor"]
+   }
+)
+
+Successfully added user: { "user" : "monitor", "roles" : [ "clusterMonitor" ] }
+
+> db.auth("monitor", "netkiller")
+1
+
+> exit
+bye
+				]]>
+				</screen>
+				<screen>
+				<![CDATA[
+# echo "db.stats();" | mongo -u monitor -p chen admin 
+MongoDB shell version: 2.6.12
+connecting to: test
+{
+	"db" : "test",
+	"collections" : 0,
+	"objects" : 0,
+	"avgObjSize" : 0,
+	"dataSize" : 0,
+	"storageSize" : 0,
+	"numExtents" : 0,
+	"indexes" : 0,
+	"indexSize" : 0,
+	"fileSize" : 0,
+	"dataFileVersion" : {
+		
+	},
+	"ok" : 1
+}
+bye
+
+[root@iZ62sreab5qZ www.cf88.com]# echo "db.serverStatus()" | mongo -u monitor -p chen admin | more
+MongoDB shell version: 2.6.12
+connecting to: admin
+{
+	"host" : "iZ62sreab5qZ",
+	"version" : "2.6.12",
+	"process" : "mongod",
+	"pid" : NumberLong(612),
+	"uptime" : 852982,
+	"uptimeMillis" : NumberLong(852982589),
+	"uptimeEstimate" : 845317,
+	"localTime" : ISODate("2016-11-23T07:02:42.899Z"),
+	"asserts" : {
+		"regular" : 0,
+		"warning" : 0,
+		"msg" : 0,
+		"user" : 26,
+		"rollovers" : 0
+	},
+	"backgroundFlushing" : {
+		"flushes" : 14216,
+		"total_ms" : 251465,
+		"average_ms" : 17.688871693866066,
+		"last_ms" : 7,
+		"last_finished" : ISODate("2016-11-23T07:02:23.283Z")
+	},
+	"connections" : {
+		"current" : 16,
+		"available" : 51184,
+		"totalCreated" : NumberLong(566)
+	},
+	"cursors" : {
+		"note" : "deprecated, use server status metrics",
+		"clientCursors_size" : 0,
+		"totalOpen" : 0,
+		"pinned" : 0,
+		"totalNoTimeout" : 0,
+		"timedOut" : 8
+	},
+	"dur" : {
+		"commits" : 30,
+		"journaledMB" : 0,
+		"writeToDataFilesMB" : 0,
+		"compression" : 0,
+		"commitsInWriteLock" : 0,
+		"earlyCommits" : 0,
+		"timeMs" : {
+			"dt" : 3068,
+			"prepLogBuffer" : 0,
+			"writeToJournal" : 0,
+			"writeToDataFiles" : 0,
+			"remapPrivateView" : 0
+		}
+	},
+--More--
+
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>Zabbix agentd 配置</title>
+				<screen>
+				<![CDATA[
+cat > /etc/zabbix/zabbix_agentd.d/userparameter_mongodb.conf <<'EOF'
+############################################################
+# MongoDB - statistics
+#
+# Author: Neo Chen <netkiller@msn.com>
+# Website: http://www.netkiller.cn
+############################################################
+
+# Discovery
+
+# Return Redis statistics
+UserParameter=mongodb.status[*],/srv/zabbix/libexec/mongodb.sh $1 $2 $3 $4 $5
+
+EOF
+				]]>
+				</screen>
+				<para>安装采集脚本，创建 /srv/zabbix/libexec/mongodb.sh 文件</para>
+				<screen>
+				<![CDATA[
+cat /srv/zabbix/libexec/mongodb.sh
+#!/bin/bash
+##################################################
+# AUTHOR: Neo <netkiller@msn.com>
+# WEBSITE: http://www.netkiller.cn
+# Description：zabbix mongodb monitor
+# Note：Zabbix 3.2
+# DateTime: 2016-11-23
+##################################################
+HOST=localhost
+PORT=27017
+USER=monitor
+PASS=chen
+
+index=$(echo $@ | tr " " ".")
+
+status=$(echo "db.serverStatus().${index}" |mongo -u ${USER} -p ${PASS} admin --port ${PORT}|sed -n '3p')
+ 
+#check if the output contains "NumberLong"
+if [[ "$status" =~ "NumberLong"   ]];then
+	echo $status|sed -n 's/NumberLong(//p'|sed -n 's/)//p'
+else 
+	echo $status
+fi
+
+				
+# chmod +x /srv/zabbix/libexec/mongodb.sh
+
+# /srv/zabbix/libexec/mongodb.sh version
+2.6.12
+
+# systemctl restart zabbix-agent.service
+				]]>
+				</screen>	
+			</section>
+			<section>
+				<title>Zabbix server 测试</title>
+				<screen>
+				<![CDATA[
+[root@netkiller ~]# zabbix_get -s www.netkiller.cn -k mongodb.status[ok]
+1
+[root@netkiller ~]# zabbix_get -s www.netkiller.cn -k mongodb.status[version]
+2.6.12
+				]]>
+				</screen>
+				<para>测试成功后导入模板</para>
+				<para>监控内容如下</para>
+				<screen>
+链接数监控(当前连接数和可用连接数)
+mongodb current mongodb.status[connections,current] 
+mongodb available mongodb.status[connections,available] 
+
+流量监控(每秒请求数,出站流量,入站流量)
+mongodb mongodb.status[network,numRequests]
+mongodb mongodb.status[network,bytesOut]
+mongodb mongodb.status[network,bytesIn]
+
+命令统计(查询，更新，插入，删除......)
+mongodb query/s mongodb.status[opcounters,query]
+mongodb update/s mongodb.status[opcounters,update]
+mongodb insert/s mongodb.status[opcounters,insert]
+mongodb getmore/s mongodb.status[opcounters,getmore]
+mongodb delete/s mongodb.status[opcounters,delete]
+mongodb command/s mongodb.status[opcounters,command]
+
+内存监控
+mongodb mem virtual mongodb.status[mem,virtual]
+mongodb mem resident mongodb.status[mem,resident]
+mongodb mem mapped mongodb.status[mem,mapped]
+mongodb mem mappedWithJournal mongodb.status[mem,mappedWithJournal]
+
+复制监控
+mongodb repl mongodb.status[repl,ismaster]
+
+锁监控
+# zabbix_get -s www.chuangfu24.net -k mongodb.status[locks,admin,timeAcquiringMicros,r]
+				</screen>
+			</section>
+			
 		</section>
 	</section>
 </chapter>

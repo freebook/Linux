@@ -3,20 +3,35 @@
 	<title>OpenNTPD</title>
 	<para><ulink url="http://www.pool.ntp.org/"></ulink></para>
 	<section id="ntpd.install">
-		<title>install</title>
-		<para>ubuntu</para>
-		<screen>
+		<title>install</title>		
+		<section>
+			<title>ntpdate</title>
+			<screen>
+# yum install ntpdate
+# systemctl enable ntpdate
+# systemctl start ntpdate
+			</screen>
+		</section>
+		<section>
+			<title>NTPD</title>
+			<para>ubuntu</para>
+			<screen>
 sudo apt-get install openntpd
-		</screen>
-		<para>centos / redhat</para>
-		<screen>
+			</screen>
+			<para>centos / redhat</para>
+			<screen>
 yum install ntp -y
-		</screen>
+			</screen>			
+		</section>
 	</section>
 	<section id="ntpd.ntpdate">
 		<title>ntpdate</title>
 		<screen>
 # ntpdate 172.16.3.51
+		</screen>
+		<para>或使用</para>	
+		<screen>
+# /usr/libexec/ntpdate-wrapper		
 		</screen>
 	</section>
 	<section id="ntpd.conf">
@@ -65,5 +80,61 @@ restrict 192.168.1.0 mask 255.255.255.0 nomodify notrap
 			</screen>
 		</section>
 	</section>
-
+	<section>
+		<title>ntpstat - show network time synchronisation status</title>
+		<screen>
+# ntpstat
+Unable to talk to NTP daemon. Is it running?		
+		</screen>
+	</section>
+	<section>
+		<title>ntpq - standard NTP query program</title>
+		<screen>
+[root@netkiller nginx]# ntpq -p
+     remote           refid      st t when poll reach   delay   offset  jitter
+==============================================================================
+ LOCAL(0)        .LOCL.          10 l  17d   64    0    0.000    0.000   0.000
+#time5.aliyun.co 10.137.38.86     2 u  709 1024  177   48.647    4.163  17.751
++120.25.115.19   10.137.38.86     2 u 1907 1024  376   11.631   -0.173   0.366
+-120.25.115.20   10.137.38.86     2 u  324 1024  377   11.701   -0.316   0.299
+-time4.aliyun.co 10.137.38.86     2 u 1726 1024  376   12.342   -0.919   0.293
++time6.aliyun.co 10.137.38.86     2 u  629 1024   67   44.500    0.076  10.601
+-10.143.33.49    10.137.38.86     2 u  547 1024  377   26.710   -1.764   0.403
+-10.143.33.50    10.137.38.86     2 u  654 1024  377   27.091    2.432   0.241
+-10.143.33.51    10.137.38.86     2 u  923 1024  377   27.375    1.779   0.337
+*10.143.0.44     10.137.38.86     2 u  723 1024  377   28.356    0.080   0.338
++10.143.0.45     10.137.38.86     2 u  479 1024  377   28.081    0.188   0.345
+-10.143.0.46     10.137.38.86     2 u  986 1024  377   27.809   -0.777   1.672
+ 100.100.5.1     .INIT.          16 u    - 1024    0    0.000    0.000   0.000
+ 100.100.5.2     .INIT.          16 u    - 1024    0    0.000    0.000   0.000
+ 100.100.5.3     .INIT.          16 u    - 1024    0    0.000    0.000   0.000
+ 100.100.3.1     .INIT.          16 u    - 1024    0    0.000    0.000   0.000
+ 100.100.3.2     .INIT.          16 u    - 1024    0    0.000    0.000   0.000
+ 100.100.3.3     .INIT.          16 u    - 1024    0    0.000    0.000   0.000
+		</screen>
+		<para>-n 禁止DNS解析</para>
+		<screen>
+[root@iZ621r6pk9aZ nginx]# ntpq -n -p
+     remote           refid      st t when poll reach   delay   offset  jitter
+==============================================================================
+ 127.127.1.0     .LOCL.          10 l  17d   64    0    0.000    0.000   0.000
+#182.92.12.11    10.137.38.86     2 u  757 1024  177   48.647    4.163  17.751
++120.25.115.19   10.137.38.86     2 u 1955 1024  376   11.631   -0.173   0.366
+-120.25.115.20   10.137.38.86     2 u  372 1024  377   11.701   -0.316   0.299
+-120.25.108.11   10.137.38.86     2 u 1774 1024  376   12.342   -0.919   0.293
++115.28.122.198  10.137.38.86     2 u  677 1024   67   44.500    0.076  10.601
+-10.143.33.49    10.137.38.86     2 u  595 1024  377   26.710   -1.764   0.403
+-10.143.33.50    10.137.38.86     2 u  702 1024  377   27.091    2.432   0.241
+-10.143.33.51    10.137.38.86     2 u  971 1024  377   27.375    1.779   0.337
+*10.143.0.44     10.137.38.86     2 u  771 1024  377   28.356    0.080   0.338
++10.143.0.45     10.137.38.86     2 u  527 1024  377   28.081    0.188   0.345
+-10.143.0.46     10.137.38.86     2 u 1034 1024  377   27.809   -0.777   1.672
+ 100.100.5.1     .INIT.          16 u    - 1024    0    0.000    0.000   0.000
+ 100.100.5.2     .INIT.          16 u    - 1024    0    0.000    0.000   0.000
+ 100.100.5.3     .INIT.          16 u    - 1024    0    0.000    0.000   0.000
+ 100.100.3.1     .INIT.          16 u    - 1024    0    0.000    0.000   0.000
+ 100.100.3.2     .INIT.          16 u    - 1024    0    0.000    0.000   0.000
+ 100.100.3.3     .INIT.          16 u    - 1024    0    0.000    0.000   0.000		
+		</screen>
+	</section>
 </chapter>
