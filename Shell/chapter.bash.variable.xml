@@ -501,6 +501,7 @@ while [ $i -lt $len ]; do
     let i++
 done
 			]]>
+			</screen>
 		</section>
 		<section>
 			<title>array 与 read</title>

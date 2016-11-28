@@ -752,6 +752,11 @@ fi
 UserParameter=php-fpm.status[*],/srv/zabbix/libexec/php-fpm.xml.sh $1
 				]]>
 				</screen>
+				<para>从zabbix server 运行下面命令测试是否可以正确获得数据</para>
+				<screen>
+# zabbix_get -s node.netkiller.cn -k 'php-fpm.status[listen-queue-len]'	
+128			
+				</screen>
 			</section>
 			<section>
 				<title>php-fpm 监控参数</title>
