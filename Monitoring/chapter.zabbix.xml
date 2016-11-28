@@ -976,5 +976,38 @@ last request memory:  262144
 				</screen>
 			</section>
 		</section>
+		<section id="elasticsearch">
+			<title>Elasticsearch</title>
+			<para>获取最新模板以及脚本请访问 https://github.com/oscm/zabbix/tree/master/elasticsearch</para>
+			<para>首先导入模板 https://github.com/oscm/zabbix/blob/master/elasticsearch/zbx_export_templates.xml</para>
+			<section>
+				<title>安装采集脚本</title>
+				<para>一步步运行下面脚本即可</para>
+				<screen>
+				<![CDATA[
+# yum install -y python34
+# wget https://raw.githubusercontent.com/oscm/zabbix/master/elasticsearch/elasticsearch -P /srv/zabbix/libexec
+# chmod +x /srv/zabbix/libexec/elasticsearch
+# /srv/zabbix/libexec/elasticsearch indices _all.total.flush.total_time_in_millis
+25557
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>配置Zabbix代理</title>
+				<para>运行脚本安装代理配置文件</para>
+				<screen>
+				<![CDATA[
+# wget https://raw.githubusercontent.com/oscm/zabbix/master/elasticsearch/userparameter_elasticsearch.conf -P /etc/zabbix/zabbix_agentd.d/
+# systemctl restart zabbix-agent
+				]]>
+				</screen>
+				<para>测试Zabbix Agent 工作是否正常</para>
+				<screen>
+# zabbix_get -s 10.47.33.14 -k 'elasticsearch.status[indices,_all.total.flush.total_time_in_millis]'
+25557
+				</screen>
+			</section>
+		</section>
 	</section>
 </chapter>
