@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="mrtg">
-	<title>Mrtg</title>
-	<screen>
+<chapter id="index"><?dbhtml dir="mrtg" ?>
+	<title>MRTG</title>
+	<section id="ubuntu">
+		<title>Ubuntu 安装</title>
+		<screen>
 $ sudo apt-get install mrtg
 $ sudo mkdir /etc/mrtg/
 $ sudo sh -c 'cfgmaker --global "HtmlDir: /var/www/mrtg" \
@@ -14,13 +16,124 @@ public@172.16.0.254 > /etc/mrtg/firewall.cfg'
 
 $ sudo mkdir -p /var/www/mrtg
 $ sudo indexmaker --output=/var/www/mrtg/firewall.html /etc/mrtg/firewall.cfg
-	</screen>
-	<example>
-		<title>mrtg</title>
-		<programlisting>
+		</screen>
+		<example>
+			<title>mrtg</title>
+			<programlisting>
+			<![CDATA[
+	
+			]]>
+			</programlisting>
+		</example>
+	</section>
+	<section id="centos">
+		<title>CentOS 安装</title>
+		<screen>
+# yum install mrtg
+		</screen>
+		<para>start</para>
+		<screen>
+# env LANG=C /usr/bin/mrtg /etc/mrtg/mrtg.cfg	
+		</screen>
+		<para>/etc/mrtg/mrtg.cfg</para>
+		<screen>
 		<![CDATA[
+HtmlDir: /var/www/mrtg
+ImageDir: /var/www/mrtg
+LogDir: /var/lib/mrtg
+ThreshDir: /var/lib/mrtg
+#Target[r1]: 2:public@myrouter.somplace.edu
+#MaxBytes[r1]: 1250000
+#Title[r1]: Traffic Analysis
+#PageTop[r1]: <H1>Stats for our Ethernet</H1>
 
+Target[dell_3548_switch]: ifInOctets.1&ifOutOctets.1:public@172.16.0.252
+MaxBytes[dell_3548_switch]: 1250000
+Title[dell_3548_switch]: Traffic Analysis
+PageTop[dell_3548_switch]: <H1>Stats for our Ethernet</H1>
 		]]>
-		</programlisting>
-	</example>
-</section>
+		</screen>
+		<para>create mrtg.cfg</para>
+		<screen>
+cp /etc/mrtg/mrtg.cfg /etc/mrtg/mrtg.cfg.old
+	
+cfgmaker --global "HtmlDir: /var/www/mrtg" \
+--global "ImageDir: /var/www/mrtg" \
+--global "LogDir: /var/lib/mrtg" \
+--global "ThreshDir: /var/lib/mrtg" \
+--global "Options[_]: growright,bits"  \
+--ifref=name --ifdesc=descr  --show-op-down \
+public@172.16.0.252 > /etc/mrtg/mrtg.cfg	
+		</screen>
+		<para>index.html</para>
+		<screen>
+# indexmaker --output=/var/www/mrtg/index.html /etc/mrtg/mrtg.cfg	
+		</screen>
+	</section>
+	<section id="cfg">
+		<title>监控多个设备</title>
+		<screen>
+cfgmaker --global "HtmlDir: /var/www/mrtg" \
+--global "ImageDir: /var/www/mrtg" \
+--global "LogDir: /var/lib/mrtg" \
+--global "ThreshDir: /var/lib/mrtg" \
+--global "Options[_]: growright,bits"  \
+--ifref=name --ifdesc=descr \
+--subdirs=Dell6224 \
+public@172.16.0.251 \
+--ifref=name --ifdesc=descr \
+--subdirs=Dell3548 \
+public@172.16.0.252 \
+--ifref=name --ifdesc=descr \
+--subdirs=H3CS3600 \
+public@172.16.0.253 > /etc/mrtg/mrtg.cfg
+
+indexmaker --output=/var/www/mrtg/index.html /etc/mrtg/mrtg.cfg
+		</screen>
+	</section>
+	<section id="batch">
+		<title>批量生成监控配置文件</title>
+		<screen>
+		<![CDATA[
+for host in 253 252 251 250 249
+do 
+
+cfgmaker --global "HtmlDir: /var/www/mrtg" \
+--global "ImageDir: /var/www/mrtg" \
+--global "LogDir: /var/lib/mrtg" \
+--global "ThreshDir: /var/lib/mrtg" \
+--global "Options[_]: growright,bits"  \
+\
+--ifref=name --ifdesc=descr \
+--subdirs=Cisco-Switch-2960G-$host \
+public@172.16.0.$host \
+\
+> /etc/mrtg/switch-2960-$host.cfg
+
+indexmaker --output=/var/www/mrtg/switch-2960-$host.html /etc/mrtg/switch-2960-$host.cfg
+
+done
+		]]>
+		</screen>
+	</section>	
+	<section id="size">
+		<title>图片尺寸</title>
+		<para>Xsize / Ysize</para>
+		<screen>
+		<![CDATA[
+cfgmaker --global "HtmlDir: /var/www/mrtg" \
+--global "ImageDir: /var/www/mrtg" \
+--global "LogDir: /var/lib/mrtg" \
+--global "ThreshDir: /var/lib/mrtg" \
+--global "Options[_]: growright,bits"  \
+--global "Xsize[_]: 600" \
+--global "Ysize[_]: 200" \
+\
+--ifref=name --ifdesc=descr \
+--subdirs=Juniper-Firewall \
+public@172.16.0.1 \
+> /etc/mrtg/firewall.cfg
+		]]>
+		</screen>
+	</section>
+</chapter>

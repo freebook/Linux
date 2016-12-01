@@ -2,6 +2,11 @@
 <!-- $Id: chapter.system.device.info.xml 428 2012-06-16 11:12:06Z netkiller $ -->
 <chapter id="index"><?dbhtml dir="device" ?>
 	<title>Device information</title>
+	<chapterinfo>
+		<keywordset>
+			<keyword>lscpu, chcpu</keyword>
+		</keywordset>
+	</chapterinfo>
 	<section id="dmesg">
 		<title>dmesg - print or control the kernel ring buffer</title>
 		<command>dmesg</command>
@@ -247,6 +252,7 @@ If Selective self-test is pending on power-up, resume after 0 minute delay.
 		]]>		
 		</screen>
 	</section>
+	&chapter.device.cpu.xml;
 	<section id="lspci">
 		<title>lspci - list all PCI devices</title>
 		<screen>

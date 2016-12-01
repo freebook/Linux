@@ -52,6 +52,18 @@ $ sudo apt-get install iotop
 	<section id="ionice">
 		<title>ionice - set or get process I/O scheduling class and priority</title>
 	</section>
+	<section id="smartd">
+		<title>smartd - SMART Disk Monitoring Daemon</title>
+		<para>配置表示smartd以静默状态工作，当SMART中报告PASSED的时候不理睬一旦出现Failure，立刻用邮件通知用户指定的邮箱</para>
+		<screen>
+vi /etc/smartd.conf
+/dev/sdb -H -m neo@domain.com
+		</screen>
+		<para>修改配置后重启服务：</para>
+		<screen>
+/etc/init.d/smartd start
+		</screen>
+	</section>	
 </chapter>
 
 <chapter id="system.network">

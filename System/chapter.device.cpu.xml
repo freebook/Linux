@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<section id="device.cpu">
+		<title>CPU 资源管理</title>
+		<section>
+			<title>lscpu - display information about the CPU architecture</title>
+			<para>查看CPU信息</para>
+			<screen>
+# lscpu
+Architecture:          x86_64
+CPU op-mode(s):        32-bit, 64-bit
+Byte Order:            Little Endian
+CPU(s):                1
+On-line CPU(s) list:   0
+Thread(s) per core:    1
+Core(s) per socket:    1
+Socket(s):             1
+NUMA node(s):          1
+Vendor ID:             GenuineIntel
+CPU family:            6
+Model:                 13
+Stepping:              3
+CPU MHz:               2400.084
+BogoMIPS:              4800.16
+Hypervisor vendor:     KVM
+Virtualization type:   full
+L1d cache:             32K
+L1i cache:             32K
+L2 cache:              4096K
+NUMA node0 CPU(s):     0
+			</screen>
+		</section>
+		<section>
+			<title>chcpu - configure CPUs</title>
+			<para>禁用谋个CPU(含超线程)</para>
+			<screen>
+# chcpu -d 3
+CPU 3 disabled
+
+# lscpu -c --extended
+CPU NODE SOCKET CORE L1d:L1i:L2:L3 ONLINE
+3   -    -      -    :::           no
+
+# lscpu -b --extended
+CPU NODE SOCKET CORE L1d:L1i:L2:L3 ONLINE
+0   0    0      0    0:0:0:0       yes
+1   0    0      1    1:1:1:0       yes
+2   0    0      2    2:2:2:0       yes
+4   0    1      3    3:3:3:1       yes
+5   0    1      4    4:4:4:1       yes
+6   0    1      5    5:5:5:1       yes
+7   0    1      6    6:6:6:1       yes
+
+# lscpu --all --extended
+CPU NODE SOCKET CORE L1d:L1i:L2:L3 ONLINE
+0   0    0      0    0:0:0:0       yes
+1   0    0      1    1:1:1:0       yes
+2   0    0      2    2:2:2:0       yes
+3   -    -      -    :::           no
+4   0    1      3    3:3:3:1       yes
+5   0    1      4    4:4:4:1       yes
+6   0    1      5    5:5:5:1       yes
+7   0    1      6    6:6:6:1       yes
+
+# chcpu -d 3
+CPU 3 is already disabled
+
+# chcpu -d 1
+CPU 1 disabled
+
+# chcpu -d 3
+CPU 3 disabled
+
+# chcpu -d 5
+CPU 5 disabled
+
+# chcpu -d 7
+CPU 7 disabled
+
+# lscpu --all --extended
+CPU NODE SOCKET CORE L1d:L1i:L2:L3 ONLINE
+0   0    0      0    0:0:0:0       yes
+1   -    -      -    :::           no
+2   0    0      1    1:1:1:0       yes
+3   -    -      -    :::           no
+4   0    1      2    2:2:2:1       yes
+5   -    -      -    :::           no
+6   0    1      3    3:3:3:1       yes
+7   -    -      -    :::           no
+			</screen>
+			<para>启用谋个CPU</para>
+			<screen>
+# chcpu -e 3
+CPU 3 enabled
+
+# lscpu --all --extended
+CPU NODE SOCKET CORE L1d:L1i:L2:L3 ONLINE
+0   0    0      0    0:0:0:0       yes
+1   0    0      1    1:1:1:0       yes
+2   0    0      2    2:2:2:0       yes
+3   0    0      3    3:3:3:0       yes
+4   0    1      4    4:4:4:1       yes
+5   0    1      5    5:5:5:1       yes
+6   0    1      6    6:6:6:1       yes
+7   0    1      7    7:7:7:1       yes
+			</screen>
+			<para>0 号 CPU不允许禁用</para>
+			<screen>
+# lscpu --all --extended
+CPU NODE SOCKET CORE L1d:L1i:L2:L3 ONLINE
+0   0    0      0    0:0:0:0       yes
+1   -    -      -    :::           no
+2   -    -      -    :::           no
+3   -    -      -    :::           no
+4   -    -      -    :::           no
+5   -    -      -    :::           no
+6   -    -      -    :::           no
+7   -    -      -    :::           no
+
+# chcpu -d 0
+CPU 0 is not hot pluggable
+			</screen>
+			<para>1号处于启用状态，0号仍然不能禁用</para>
+			<screen>
+# lscpu --all --extended
+CPU NODE SOCKET CORE L1d:L1i:L2:L3 ONLINE
+0   0    0      0    0:0:0:0       yes
+1   0    0      1    1:1:1:0       yes
+2   -    -      -    :::           no
+3   -    -      -    :::           no
+4   -    -      -    :::           no
+5   -    -      -    :::           no
+6   -    -      -    :::           no
+7   -    -      -    :::           no
+
+# chcpu -d 0
+CPU 0 is not hot pluggable
+			</screen>
+		</section>
+	</section>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="install">
+<section id="ubuntu">
 	<title>Install</title>
 	<section id="nagios.core">
 		<title>Nagios core</title>
@@ -84,6 +84,57 @@ command[check_sdb_iostat]=/usr/lib/nagios/plugins/check_iostat -d sdb -w 100 -c 
 		<para>http://www.pnp4nagios.org/</para>
 	</section>
 </section>
+
+	<section id="centos">
+		<title>nagios</title>
+		<para>Install Nagios &amp; Plugins</para>
+		<screen>
+[root@database ~]# yum -y install nagios nagios-plugins-all nagios-plugins-nrpe
+		</screen>
+		<para>Create the default Nagios web access user &amp; set a password</para>
+		<screen>
+# htpasswd -c /etc/nagios/passwd nagiosadmin
+		</screen>
+		<para>Verify default config files</para>
+		<screen>
+nagios -v /etc/nagios/nagios.cfg		
+		</screen>
+		<para>Start Nagios</para>
+		<screen>
+Start Nagios
+		</screen>
+		<para>Configure it to start on boot</para>
+		<screen>
+chkconfig --levels 345 nagios on
+		</screen>
+		<para>http://localhost/nagios/</para>
+	</section>
+
+	<section id="nagios.nrpe">
+		<title>nrpe node</title>
+		<screen>
+# yum install nrpe nagios-plugins-all
+
+allowed_hosts=172.16.1.2
+
+command[check_users]=/usr/lib64/nagios/plugins/check_users -w 5 -c 10
+command[check_load]=/usr/lib64/nagios/plugins/check_load -w 15,10,5 -c 30,25,20
+command[check_hda1]=/usr/lib64/nagios/plugins/check_disk -w 20% -c 10% -p /dev/hda1
+command[check_zombie_procs]=/usr/lib64/nagios/plugins/check_procs -w 5 -c 10 -s Z
+command[check_total_procs]=/usr/lib64/nagios/plugins/check_procs -w 150 -c 200
+command[check_http]=/usr/lib64/nagios/plugins/check_http -I 127.0.0.1 -p 80 -u http://www.example.com/index.html
+command[check_swap]=/usr/lib64/nagios/plugins/check_swap -w 20% -c 10%
+command[check_all_disks]=/usr/lib64/nagios/plugins/check_disk -w 20% -c 10% -e
+
+# chkconfig nrpe on
+# service nrpe start
+		</screen>
+		<para>其实没有必要安装所有的监控插件</para>
+		<screen>
+yum install nrpe -y
+yum install nagios-plugins-disk  nagios-plugins-load nagios-plugins-ping nagios-plugins-procs nagios-plugins-swap nagios-plugins-users -y		
+		</screen>
+	</section>
 
 <section id="config">
 		<title>配置 Nagios</title>
@@ -299,4 +350,58 @@ define contact{
 
 			</screen>
 		</section>
+		
+		<section id="nrpe">
+			<title>nrpe plugins</title>
+			<screen>
+neo@monitor:/etc/nagios3/hosts$ sudo cat www.example.com.cfg
+
+define host{
+        use             generic-host            ; Inherit default values from a template
+        host_name       www.example.com             ; The name we're giving to this host
+        alias           Some Remote Host        ; A longer name associated with the host
+        address         172.16.1.10              ; IP address of the host
+        hostgroups      http-servers                    ; Host groups this host is associated with
+        }
+
+# NRPE disk check.
+define service {
+        use                             generic-service
+        host_name                       www.example.com
+        service_description             nrpe-disk
+        check_command                   check_nrpe_1arg!check_all_disks!172.16.1.10
+}
+define service {
+        use                             generic-service
+        host_name                       www.example.com
+        service_description             nrpe-users
+        check_command                   check_nrpe_1arg!check_users!172.16.1.10
+}
+define service {
+        use                             generic-service
+        host_name                       www.example.com
+        service_description             nrpe-swap
+        check_command                   check_nrpe_1arg!check_swap!172.16.1.10
+}
+define service {
+        use                             generic-service
+        host_name                       www.example.com
+        service_description             nrpe-procs
+        check_command                   check_nrpe_1arg!check_total_procs!172.16.1.10
+}
+define service {
+        use                             generic-service
+        host_name                       www.example.com
+        service_description             nrpe-load
+        check_command                   check_nrpe_1arg!check_load!172.16.1.10
+}
+define service {
+        use                             generic-service
+        host_name                       www.example.com
+        service_description             nrpe-zombie_procs
+        check_command                   check_nrpe_1arg!check_zombie_procs!172.16.1.10
+}
+
+			</screen>			
+		</section>		
 </section>

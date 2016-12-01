@@ -1,5 +1,5 @@
-<chapter id="system.service">
-	<title>Service</title>
+<section id="service.debian">
+	<title>Debian/Ubuntu</title>
 	<section id="update-rc.d">
 		<title>update-rc.d - install and remove System-V style init script links</title>
 		<para>for example:</para>
@@ -178,4 +178,4 @@ $sudo runsvdir /etc/service &
 			</screen>
 		</section>
 	</section>
-</chapter>
+</section>

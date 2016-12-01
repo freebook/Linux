@@ -184,7 +184,6 @@ yum install -y vim-enhanced
 	</section>
 </chapter>
 	&chapter.system.utilities.xml;
-	&chapter.kickstart.xml;
 	&chapter.system.package.xml;
 
 <chapter id="locale">

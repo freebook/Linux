@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="plugins">
 	<title>Nagios Plugins</title>
-	<para>检查命令配置文件 /etc/nagios-plugins/config/</para>
+	<para>检查命令配置文件 /etc/nagios-plugins/config/</para>	
 	<section id="nagios.plugins.ping">
 		<title>check_ping</title>
 		<para>nagios check_ping命令使用方法</para>
@@ -548,7 +548,7 @@ command_line	$USER1$/check_nt -H $HOSTADDRESS$ -p 12489 -s My2Secure$Password -v
 		</screen>
 	</section>
 	<section>
-		<title></title>
+		<title>jmx</title>
 		<subtitle>nagios plugin to check jmx</subtitle>
 		<para>https://code.google.com/p/jmxquery/</para>
 		<screen>
@@ -606,4 +606,7 @@ JMX CRITICAL - org:type=Spring,name=BackgroundService
 			</screen>
 		</example>
 	</section>
+	<!-- <section id="nagios.plugins">
+		<title>plugins</title>
+	</section> -->
 </section>

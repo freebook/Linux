@@ -2,6 +2,10 @@
 <!-- $Id: chapter.network.munin.xml 359 2012-03-02 13:12:30Z netkiller $ -->
 <chapter id="index"><?dbhtml dir="munin" ?>
 	<title>Munin</title>
+	<para>http://munin-monitoring.org/</para>
+	
+	<section id="ubuntu">
+	<title>Ubuntu</title>
 	<ulink url="http://munin-monitoring.org/" />
 	<section id="server">
 		<title>Installation Monitor Server</title>
@@ -80,4 +84,140 @@ env.ports 80
 			</screen>
 		</section>
 	</section>
+</section>
+	<section>
+		<title>CentOS</title>
+		<screen>
+# rpm -Uvh http://download.fedora.redhat.com/pub/epel/5/x86_64/epel-release-5-4.noarch.rpm	
+# yum install munin -y	
+# yum install munin-node -y
+# yum install munin-java-plugins -y
+# yum install unbound-munin -y
+# service munin-node start
+# chkconfig munin-node on
+		</screen>
+		<para>test</para>
+		<screen>
+# telnet localhost 4949
+Trying 127.0.0.1...
+Connected to localhost.localdomain (127.0.0.1).
+Escape character is '^]'.
+# munin node at datacenter.example.com
+list
+cpu df df_inode entropy forks fw_packets http_loadtime if_err_eth0 if_eth0 interrupts iostat iostat_ios irqstats load memory munin_stats netstat open_files open_inodes proc_pri processes sendmail_mailqueue sendmail_mailstats sendmail_mailtraffic swap threads uptime users vmstat yum
+		</screen>
+		<para>http://localhost/munin/</para>
+	</section>
+	<section id="munin.auth">
+		<title>用户认证</title>
+		<screen>
+$ sudo vim /etc/apache2/conf.d/munin.conf
+			
+        AuthUserFile /etc/munin/munin-htpasswd
+        AuthName "Munin"
+        AuthType Basic
+        require valid-user
+			
+		</screen>
+	</section>	
+	<section id="munin.plugins">
+		<title>munin-node and plugins</title>
+		<para>config: /etc/munin/munin-node.conf</para>
+		<para>plugins: /usr/share/munin/plugins/</para>
+		<section>
+			<title>munin-node.conf</title>
+			<screen>
+allow ^127\.0\.0\.1$
+allow ^192\.168\.3\.5$
+			</screen>
+		</section>
+		<section>
+			<title>mysql plugin</title>
+			<para>mysql</para>
+			<screen>
+# ln -s /usr/share/munin/plugins/mysql_* /etc/munin/plugins		
+			</screen>
+			<screen>
+# vim /etc/munin/plugin-conf.d/munin-node
+env.mysqlopts -uneo -pchen
+
+# or
+
+env.mysqlopts -h 172.16.1.17 -u monitor -ppassword
+
+# service munin-node start
+			</screen>
+			<para>验证安装，telnet localhost 4949 之后，执行 fetch mysql_queries</para>
+		<!--
+user root # 使用此插件的系统用户
+env.mysqladmin /usr/local/mysql/bin/mysqladmin   # mysqladmin命令的完整路径
+env.mysqlopts -uroot -pfnm_2008_fnm  # mysql的用户名密码		
+		 -->
+		</section>
+		<section>
+			<title>apache plugin</title>
+			<para>apache</para>
+			<screen>
+# ln -s /usr/share/munin/plugins/apache_* /etc/munin/plugins		
+			</screen>
+			<screen>
+			<![CDATA[
+# vim /etc/httpd/conf/httpd.conf
+ExtendedStatus On
+<Location /server-status>
+    SetHandler server-status
+    Order deny,allow
+    Deny from all
+    Allow from .example.com
+	Allow from localhost    
+</Location>
+			]]>
+			</screen>
+			<screen>
+# /etc/init.d/httpd restart
+# service munin-node restart
+			</screen>
+			<para>验证安装,telnet localhost 4949 之后，执行 fetch apache_processes</para>
+		</section>
+		<section>
+			<title>memcached plugin</title>
+			<para>memcached plugin要求符号链接名字的格式是: memcached_connections_[IP Address]_[Port], IP与Port是在符号链接名字中配置的</para>
+			<screen>
+ln -s /usr/share/munin/plugins/memcached_bytes_ /etc/munin/plugins/memcached_bytes_127_0_0_1_11211
+ln -s /usr/share/munin/plugins/memcached_connections_ /etc/munin/plugins/memcached_connections_127_0_0_1_11211
+ln -s /usr/share/munin/plugins/memcached_hits_ /etc/munin/plugins/memcached_hits_127_0_0_1_11211
+ln -s /usr/share/munin/plugins/memcached_items_ /etc/munin/plugins/memcached_items_127_0_0_1_11211
+ln -s /usr/share/munin/plugins/memcached_requests_ /etc/munin/plugins/memcached_requests_127_0_0_1_11211
+ln -s /usr/share/munin/plugins/memcached_traffic_ /etc/munin/plugins/memcached_traffic_127_0_0_1_11211
+			</screen>
+			<para>验证安装，telnet localhost 4949 之后，执行 fetch memcached_requests_127_0_0_1_11211</para>
+		</section>
+	</section>
+	<section id="munin.conf">
+		<title>munin.conf</title>
+		<screen>
+# vim /etc/munin/munin.conf
+# a simple host tree
+[localhost]
+    address 127.0.0.1
+    use_node_name yes
+[database]
+    address 192.168.3.40
+    use_node_name yes
+		</screen>
+	</section>
+	<section id="munin.node">
+		<title>munin-node</title>
+		<screen>
+# yum install munin-node -y
+# chkconfig munin-node on
+# service munin-node start
+		</screen>
+		<section>
+			<title>munin-node.conf</title>
+vim /etc/munin/munin-node.conf
+allow ^127\.16\.1\.2$			
+		</section>
+	</section>
+
 </chapter>

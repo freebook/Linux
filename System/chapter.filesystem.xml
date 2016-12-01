@@ -170,6 +170,395 @@ rm: cannot remove directory '/home/neo/foo': Device or resource busy
 		</section>
 		
 	</section>
+	
+	<section id="ext4">
+		<title>EXT4</title>
+		<section>
+			<title>install</title>
+			<screen>
+# yum install e4fsprogs
+			</screen>
+		</section>
+		<section>
+			<title>format</title>
+			<screen>
+# mkfs.ext4 /dev/sda2
+			</screen>
+		</section>
+		<section>
+			<title>label</title>
+			<screen>
+# e4label /dev/sda2 /www
+
+# mkdir /www
+
+# cat /etc/fstab |grep ext4
+LABEL=/www              /www                    ext4    defaults        1 2
+			</screen>
+		</section>
+		<section>
+			<title>mount/umount</title>
+			<screen>
+# mount /www
+# umount /www
+			</screen>
+		</section>
+		<section>
+			<title>LVM 卷</title>
+			<screen>
+# mkfs.ext4 /dev/VolGroup00/LogVol02
+
+[root@images ~]# cat /etc/fstab
+/dev/VolGroup00/LogVol00 /                       ext3    defaults        1 1
+/dev/VolGroup00/LogVol02 /images                 ext4    defaults        1 2
+LABEL=/boot             /boot                   ext3    defaults        1 2
+tmpfs                   /dev/shm                tmpfs   defaults        0 0
+devpts                  /dev/pts                devpts  gid=5,mode=620  0 0
+sysfs                   /sys                    sysfs   defaults        0 0
+proc                    /proc                   proc    defaults        0 0
+/dev/VolGroup00/LogVol01 swap                    swap    defaults        0 0
+
+# mount -a
+			</screen>
+		</section>
+	</section>
+	<section id="lvm">
+		<title>LVM</title>
+		<para>请参考《Netkiller Storage 手札》·LVM相关章节</para>
+	</section>
+	&chapter.fs.btrfs.xml;
+	<section id="zfs">
+		<title>zfs</title>
+		<screen>
+# yum info zfs-fuse
+
+Loaded plugins: fastestmirror
+Loading mirror speeds from cached hostfile
+ * addons: mirrors.163.com
+ * base: mirrors.163.com
+ * epel: mirror01.idc.hinet.net
+ * extras: mirrors.163.com
+ * updates: mirrors.163.com
+Available Packages
+Name       : zfs-fuse
+Arch       : x86_64
+Version    : 0.6.9_beta3
+Release    : 0.el5
+Size       : 1.5 M
+Repo       : epel
+Summary    : ZFS ported to Linux FUSE
+URL        : http://zfs-fuse.net/
+License    : CDDL
+Description: ZFS is an advanced modern general-purpose filesystem from Sun
+           : Microsystems, originally designed for Solaris/OpenSolaris.
+           :
+           : This project is a port of ZFS to the FUSE framework for the Linux
+           : operating system.
+           :
+           : Project home page is at http://zfs-fuse.net/
+		</screen>
+	</section>
+	
+
+	<section id="iscsi">
+		<title>iSCSI</title>
+		<para>iSCSI 需要与GFS配合使用，其他文件系统不能实现数据同步。</para>
+		<procedure>
+			<title>iSCSI Example</title>
+			<step>
+				<para>install.</para>
+				<screen>
+# yum install iscsi-initiator-utils -y
+# rpm -ql iscsi-initiator-utils
+# rpm -q --scripts iscsi-initiator-utils
+postinstall scriptlet (using /bin/sh):
+/sbin/ldconfig
+
+if [ ! -f /etc/iscsi/initiatorname.iscsi ]; then
+        echo "InitiatorName=`/sbin/iscsi-iname`" > /etc/iscsi/initiatorname.iscsi
+fi
+/sbin/chkconfig --add iscsid
+/sbin/chkconfig --add iscsi
+preuninstall scriptlet (using /bin/sh):
+if [ "$1" = "0" ]; then
+    /sbin/chkconfig --del iscsi
+    /sbin/chkconfig --del iscsid
+fi
+postuninstall scriptlet (using /bin/sh):
+/sbin/ldconfig
+				</screen>
+			</step>
+			<step>
+				<para>config</para>
+				<screen>
+# cat /etc/iscsi/initiatorname.iscsi
+InitiatorName=iqn.1994-05.com.redhat:9b2024102698
+				</screen>
+			</step>
+			<step>
+				<para>starting service.</para>
+				<screen>
+# chkconfig iscsi on
+# chkconfig iscsid on
+
+# service iscsi start
+iscsid is stopped
+Starting iSCSI daemon:                                     [  OK  ]
+                                                           [  OK  ]
+Setting up iSCSI targets: iscsiadm: No records found!
+                                                           [  OK  ]
+# service iscsi status
+iscsid (pid  17501) is running...
+# service iscsid status
+iscsid (pid  17501) is running...
+
+				</screen>
+			</step>
+
+			<step>
+				<para>discovery targets.</para>
+				<screen>
+# iscsiadm -m discovery -t sendtargets -p 172.16.0.30:3260
+172.16.0.30:3260,1 iqn.2010-09.com.openfiler:tsn.c7a241688f35
+				</screen>
+				<para>or</para>
+				<screen>
+iscsiadm --mode discovery --type sendtargets --portal 172.16.0.30:3260
+
+iscsiadm -m discovery -t st -p 172.16.0.30:3260
+
+				</screen>
+			</step>
+			<step>
+				<para>login / logout</para>
+				<screen>
+# iscsiadm -m node --loginall=all
+Logging in to [iface: default, target: iqn.2010-09.com.openfiler:tsn.c7a241688f35, portal: 172.16.0.30,3260]
+Login to [iface: default, target: iqn.2010-09.com.openfiler:tsn.c7a241688f35, portal: 172.16.0.30,3260]: successful
+				</screen>
+				<para>or</para>
+				<screen>
+iscsiadm --mode node --targetname iqn.2010-09.com.openfiler:tsn.c7a241688f35 --portal 192.168.0.10:3260 --login
+				</screen>
+				<para>logout</para>
+				<screen>
+# iscsiadm -m node --logoutall=all
+				</screen>
+			</step>
+			<step>
+				<para>分区设置</para>
+				<screen>
+fdisk -l
+fdisk /dev/sdb #依次选p n 1 w
+mkfs.ext4 /dev/sdb1
+
+挂载
+mkdir /iscsi
+mount /dev/sdb1 /iscsi
+
+设自动挂载
+vi /etc/fstab
+/dev/sdb1 /iscsi ext3 _netdev 0 0
+				</screen>
+			</step>
+		</procedure>
+		<para>auth</para>
+		<screen>
+# cp /etc/iscsi/iscsid.conf /etc/iscsi/iscsid.conf.old
+# vim /etc/iscsi/iscsid.conf
+
+		</screen>
+		<para>show node</para>
+		<screen>
+]# iscsiadm -m node
+172.16.0.30:3260,1 iqn.2006-01.com.openfiler:tsn.0b232d1cc3ee
+172.16.0.30:3260,1 iqn.2010-09.com.openfiler:tsn.c7a241688f35
+
+		</screen>
+		<para>delete node</para>
+		<screen>
+iscsiadm -m node -o delete -T iqn.2006-01.com.openfiler:tsn.0b232d1cc3ee
+		</screen>
+		<section>
+			<title>GFS</title>
+			<screen>
+[root@dev2 ~]# /etc/init.d/iscsi start
+iscsid is stopped
+Starting iSCSI daemon:                                     [  OK  ]
+                                                           [  OK  ]
+Setting up iSCSI targets: iscsiadm: No records found!
+                                                           [  OK  ]
+[root@dev2 ~]# iscsiadm -m discovery -t st -p 192.168.3.194
+192.168.3.194:3260,1 iqn.2007-09.jp.ne.peach.istgt:disk0
+[root@dev2 ~]# iscsiadm -m node -l
+Logging in to [iface: default, target: iqn.2007-09.jp.ne.peach.istgt:disk0, portal: 192.168.3.194,3260]
+Login to [iface: default, target: iqn.2007-09.jp.ne.peach.istgt:disk0, portal: 192.168.3.194,3260]: successful
+			</screen>
+
+			<screen>
+# fdisk -l
+
+Disk /dev/sda: 250.0 GB, 250000000000 bytes
+255 heads, 63 sectors/track, 30394 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1   *           1          13      104391   83  Linux
+/dev/sda2              14       30394   244035382+  8e  Linux LVM
+
+Disk /dev/sdb: 499.5 GB, 499558383616 bytes
+255 heads, 63 sectors/track, 60734 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+
+Disk /dev/sdb doesn't contain a valid partition table
+
+
+
+
+
+fdisk /dev/sdb
+
+
+# fdisk -l /dev/sdb
+
+Disk /dev/sdb: 499.5 GB, 499558383616 bytes
+255 heads, 63 sectors/track, 60734 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdb1               1       60734   487845823+   5  Extended
+/dev/sdb5               1       60734   487845792   83  Linux
+
+
+# mkfs.gfs2 -p lock_dlm -t edb_ha:gfs1 -j 3 /dev/sdb5
+This will destroy any data on /dev/sdb5.
+
+Are you sure you want to proceed? [y/n] y
+
+Device:                    /dev/sdb5
+Blocksize:                 4096
+Device Size                465.25 GB (121961448 blocks)
+Filesystem Size:           465.25 GB (121961446 blocks)
+Journals:                  3
+Resource Groups:           1861
+Locking Protocol:          "lock_dlm"
+Lock Table:                "edb_ha:gfs1"
+UUID:                      A75C4963-85A2-A28B-4099-07FD7E3379D6
+			</screen>
+		</section>
+	</section>
+	<section id="gfs">
+		<title>GFS - Cluster Storage</title>
+		<para><ulink url="http://docs.redhat.com/docs/en-US/Red_Hat_Enterprise_Linux/6/html/Global_File_System_2/index.html" /></para>
+		<screen>
+yum groupinstall "Cluster Storage"
+# egrep 'GFS2|DLM' /boot/config-2.6.32-*
+/boot/config-2.6.32-131.2.1.el6.x86_64:CONFIG_GFS2_FS=m
+/boot/config-2.6.32-131.2.1.el6.x86_64:CONFIG_GFS2_FS_LOCKING_DLM=y
+/boot/config-2.6.32-131.2.1.el6.x86_64:CONFIG_DLM=m
+/boot/config-2.6.32-131.2.1.el6.x86_64:CONFIG_DLM_DEBUG=y
+/boot/config-2.6.32-71.el6.x86_64:CONFIG_GFS2_FS=m
+/boot/config-2.6.32-71.el6.x86_64:CONFIG_GFS2_FS_LOCKING_DLM=y
+/boot/config-2.6.32-71.el6.x86_64:CONFIG_DLM=m
+/boot/config-2.6.32-71.el6.x86_64:CONFIG_DLM_DEBUG=y
+		</screen>
+		<screen>
+pvcreate /dev/sdb3
+vgcreate vg01 /dev/sdb3
+lvcreate -L 500G -n lvol0 vg01
+mkfs.gfs2 -p lock_dlm -t alpha:mydata1 -j 8 /dev/vg01/lvol0
+		</screen>
+
+		<screen>
+# pvcreate /dev/sdb3
+  Physical volume "/dev/sdb3" successfully created
+# vgcreate vg01 /dev/sdb3
+  Volume group "vg01" successfully created
+# lvcreate -L 500G -n lvol0 vg01
+  Logical volume "lvol0" created
+
+
+# mkfs.gfs2 -p lock_dlm -t alpha:mydata1 -j 8 /dev/vg01/lvol0
+This will destroy any data on /dev/vg01/lvol0.
+It appears to contain: symbolic link to `../dm-6'
+
+Are you sure you want to proceed? [y/n] y
+
+Device:                    /dev/vg01/lvol0
+Blocksize:                 4096
+Device Size                500.00 GB (131072000 blocks)
+Filesystem Size:           500.00 GB (131071998 blocks)
+Journals:                  8
+Resource Groups:           2000
+Locking Protocol:          "lock_dlm"
+Lock Table:                "alpha:mydata1"
+UUID:                      4FC256A0-00BD-2087-15DF-8EA4366481AA
+		</screen>
+		<screen>
+# mkdir /mnt/gfs2
+# mount -t gfs2 -o noatime /dev/mapper/vg01-lvol0 /mnt/gfs2
+gfs_controld join connect error: Connection refused
+error mounting lockproto lock_dlm
+		</screen>
+	</section>
+	<section id="glusterfs">
+		<title>glusterfs</title>
+		<screen>
+# rpm -Uvh http://download.fedora.redhat.com/pub/epel/6/x86_64/epel-release-6-5.noarch.rpm
+# yum install glusterfs glusterfs-fuse glusterfs-rdma glusterfs-server glusterfs-vim
+
+# gzip /etc/glusterfs/*
+		</screen>
+		<screen>
+# chkconfig glusterd off
+# chkconfig glusterfsd on
+
+# service glusterd stop
+# service glusterfsd start
+
+or
+
+/etc/init.d/glusterd start
+/etc/init.d/glusterfsd start
+		</screen>
+
+		<screen>
+		<![CDATA[
+mkdir -p /home/export
+
+cat >> /etc/hosts <<EOF
+192.168.80.107  gluster1
+192.168.80.33   gluster2
+192.168.80.1    gluster3
+EOF
+
+# glusterfs-volgen --name store1 --raid 1 gluster1:/home/export gluster2:/home/export
+Generating server volfiles.. for server gluster2 as '/root/gluster2-store1-export.vol'
+Generating server volfiles.. for server gluster1 as '/root/gluster1-store1-export.vol'
+Generating client volfiles.. '/root/store1-tcp.vol'
+
+cp ./store1-tcp.vol /etc/glusterfs/glusterfs.vol
+scp gluster1-store1-export.vol root@gluster1:/etc/glusterfs/glusterfsd.vol
+scp gluster2-store1-export.vol root@gluster2:/etc/glusterfs/glusterfsd.vol
+
+ssh root@gluster1 service glusterfsd restart
+ssh root@gluster2 service glusterfsd restart
+
+# mkdir -p /mnt/glusterfs
+# glusterfs /mnt/glusterfs/
+or
+# glusterfs -l /tmp/glusterfs.log -f /etc/glusterfs/glusterfs.vol /mnt/glusterfs/
+        ]]>
+		</screen>
+		<para>Umount</para>
+		<screen>
+        <![CDATA[
+umount /mnt/glusterfs
+        ]]>
+		</screen>
+		<para>注意：请使用umount 卸载，不要kill glusterfs进程</para>
+	</section>	
+	
 <section id="ramfs">
 	<title>RAM FS</title>
 	<screen>
@@ -660,7 +1049,7 @@ sys	0m12.490s
 			</screen>
 		</section>
 	</section>
-	<section>
+	<section id="faq">
 		<title>磁盘占用100%删除文件后不是放的解决方法</title>
 		<para>首先查看delete状态的进程，然后kill进程，或者重启</para>
 		<screen>

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!ENTITY chapter.virtualization.xml		SYSTEM "chapter.virtualization.xml">
+<!ENTITY chapter.xen.xml				SYSTEM "chapter.xen.xml">
+<!ENTITY chapter.kvm.xml				SYSTEM "chapter.kvm.xml">
 <!ENTITY chapter.vagrant.xml			SYSTEM "chapter.vagrant.xml">
 <!ENTITY chapter.docker.xml					SYSTEM "chapter.docker.xml">
 <!ENTITY chapter.docker.dockerfile.xml		SYSTEM "chapter.docker.dockerfile.xml">

@@ -3,7 +3,8 @@
 	&chapter.introduction.xml;
 	&chapter.kernel.xml;
 <!-- =========================================================================== -->
-	&chapter.system.package;	
+	&chapter.package.xml;
+	&chapter.package.yum.xml;	
 	&chapter.device.xml;
 	&chapter.system.locale;
 	&chapter.system.console;
@@ -11,10 +12,11 @@
 	&chapter.filesystem.xml;
 	&chapter.network.xml;
 	&chapter.system.logging.xml;
-	&chapter.system.service;
+	&chapter.service.xml;
 <!-- =========================================================================== -->
 	&chapter.process.xml;
 	&chapter.permission.xml;	
 <!-- =========================================================================== -->
 	&chapter.etc.xml;
+	&chapter.kickstart.xml;
 <!-- =========================================================================== -->
