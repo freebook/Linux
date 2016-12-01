@@ -1009,5 +1009,46 @@ last request memory:  262144
 				</screen>
 			</section>
 		</section>
+		<section id="postfix">
+			<title>Postfix</title>
+			<para>获取最新模板以及脚本请访问 https://github.com/oscm/zabbix/tree/master/postfix</para>
+			<para>首先导入模板 https://github.com/oscm/zabbix/blob/master/postfix/zbx_export_templates.xml</para>
+			<section>
+				<title>安装采集脚本</title>
+				<para>一步步运行下面脚本即可</para>
+				<screen>
+				<![CDATA[
+# chmod +r /var/log/maillog
+# mkdir -p /srv/zabbix/libexec
+# yum install -y logcheck
+# wget https://raw.githubusercontent.com/oscm/zabbix/master/postfix/postfix -P /srv/zabbix/libexec
+# chmod +x /srv/zabbix/libexec/postfix
+				]]>
+				</screen>
+				<para>测试脚本</para>
+				<screen>
+# /srv/zabbix/libexec/postfix queue active
+1418				
+				</screen>
+			</section>
+			<section>
+				<title></title>
+				<screen>
+# wget https://raw.githubusercontent.com/oscm/zabbix/master/postfix/userparameter_postfix.conf -P /etc/zabbix/zabbix_agentd.d/
+# systemctl restart zabbix-agent				
+				</screen>
+				<screen>
+[root@netkiller ~]# zabbix_get -s 173.24.22.53 -k 'agent.ping'
+1
+[root@netkiller ~]# zabbix_get -s 173.24.22.53 -k 'postfix[queue,active]'
+1140
+[root@netkiller ~]# zabbix_get -s 173.24.22.53 -k 'postfix[queue,deferred]'
+149 
+[root@netkiller ~]# zabbix_get -s 173.24.22.53 -k 'postfix[log,sent]'
+10931
+				
+				</screen>
+			</section>
+		</section>
 	</section>
 </chapter>

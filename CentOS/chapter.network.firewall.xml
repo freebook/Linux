@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="firewall">
+	<title>Firewall</title>
+	<section>
+		<title>firewalld</title>
+		<screen>
+# systemctl start firewalld
+# systemctl stop firewalld
+# systemctl enable firewalld
+# systemctl disable firewalld
+		</screen>
+		<section>
+			<title>firewall-cmd</title>
+			<screen>
+# firewall-cmd --state
+# firewall-cmd --list-all
+# firewall-cmd --list-interfaces
+# firewall-cmd --get-service
+# firewall-cmd --query-service service_name
+# firewall-cmd --add-port=8080/tcp
+			</screen>
+			<para>开放服务 --permanent 表示永久生效</para>
+			<screen>
+# firewall-cmd --add-service=http
+# firewall-cmd --permanent --add-service=http
+# systemctl restart firewalld			
+			</screen>
+		</section>
+	</section>
+	<section id="iptables">
+		<title>如果你不习惯使用firewalld想用回Iptables</title>
+		<para>安装iptables</para>
+		<screen>
+# yum install iptables-services
+
+# vim /etc/sysconfig/iptables
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A INPUT -p icmp -j ACCEPT
+-A INPUT -i lo -j ACCEPT
+-A INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
+-A INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT
+-A INPUT -j REJECT --reject-with icmp-host-prohibited
+-A FORWARD -j REJECT --reject-with icmp-host-prohibited
+COMMIT
+		</screen>
+		<para>默认firewall作为防火墙的设置</para>
+		<screen>
+#禁止firewall开机启动
+
+# systemctl disable firewalld.service
+
+#设置防火墙开机启动
+
+# systemctl enable iptables.service 
+
+#停止firewall 
+
+# systemctl stop firewalld.service 
+
+#重启防火墙使配置生效
+
+# systemctl restart iptables.service		
+		
+# chkconfig --level 345 iptables on
+# service iptables start
+		</screen>
+		<para>Saving and Restoring IPTables Rules</para>
+		<screen>
+# service iptables save
+		</screen>
+		<para>Firewall Policies</para>
+		<screen>
+
+		</screen>
+	</section>
+</chapter>

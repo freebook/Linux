@@ -1,0 +1,343 @@
+<part id="index"><?dbhtml dir="virtualization" ?>
+	<title>Virtualization</title>
+<chapter id="xen">
+	<title>Xen</title>
+	<section id="xen.ins">
+		<title>install</title>
+		<para></para>
+		<screen>
+[root@development ~]# xm list
+Name                                      ID Mem(MiB) VCPUs State   Time(s)
+Domain-0                                   0     1735     2 r-----   1194.1
+		</screen>
+		<para>create a virtual harddisk</para>
+		<screen>
+[root@development ~]# mkdir /srv/vm/
+[root@development ~]# dd if=/dev/zero of=/srv/vm/centos.img bs=1M count=4096
+4096+0 records in
+4096+0 records out
+4294967296 bytes (4.3 GB) copied, 49.2547 seconds, 87.2 MB/s
+		</screen>
+		<para>ubuntu</para>
+		<screen>
+[root@development ~]# virt-install -n centos -r 256 -f /srv/vm/centos.img --nographics -l ftp://192.168.3.9/pub/
+		</screen>
+		<!-- [root@development ~]# mount -o loop /home/neo/ubuntu-9.10-server-amd64.iso /mnt/ -->
+	</section>
+	<section id="xen.mgr">
+		<title>Manager</title>
+		<para>list</para>
+		<screen>
+[root@development ~]# xm list
+Name                                      ID Mem(MiB) VCPUs State   Time(s)
+Domain-0                                   0     1726     2 r-----   5686.6
+centos                                     6      127     1 -b----     74.3
+		</screen>
+		<para>start</para>
+		<screen>
+[root@development ~]# virsh  start centos
+Domain centos started
+		</screen>
+		<para>reboot</para>
+		<screen>
+[root@development ~]# xm reboot centos
+		</screen>
+		<para>shutdown</para>
+		<screen>
+[root@development ~]# xm shutdown centos
+		</screen>
+		<para>console</para>
+		<screen>
+[root@development ~]# xm console centos
+		</screen>
+		<para>config</para>
+		<screen>
+[root@development ~]# cat /etc/xen/centos
+name = "centos"
+uuid = "a6a3f200-bcbb-cdbd-c06e-9e71f739310f"
+maxmem = 128
+memory = 128
+vcpus = 1
+bootloader = "/usr/bin/pygrub"
+on_poweroff = "destroy"
+on_reboot = "restart"
+on_crash = "restart"
+disk = [ "tap:aio:/srv/vm/centos.img,xvda,w" ]
+vif = [ "mac=00:16:36:5d:41:d0,bridge=xenbr0,script=vif-bridge" ]
+		</screen>
+		<para>Automatically starting domains</para>
+		<screen>
+[root@development ~]# mv /etc/xen/centos /etc/xen/auto
+		</screen>
+	</section>
+</chapter>
+
+	&chapter.virtualization.kvm.xml;
+
+<chapter id="openvz">
+	<title>OpenVZ</title>
+	<chapterinfo>
+		<keywordset>
+			<keyword>openvz,vz,vzctl,vzquota,vzyum,vztmpl,vzpkgcache,vzsplit,vzcfgvalidate,vzctl</keyword>
+		</keywordset>
+	</chapterinfo>
+	<section id="openvz.install">
+		<title>安装OpenVZ</title>
+		<procedure>
+			<title>OpenVZ 安装步骤</title>
+			<step>
+				<para>获得OpenVZ yum安装源</para>
+				<screen>
+# cd /etc/yum.repos.d
+# wget http://download.openvz.org/openvz.repo
+# rpm --import  http://download.openvz.org/RPM-GPG-Key-OpenVZ
+				</screen>
+			</step>
+			<step>
+				<para>安装OpenVZ核心以及头文件</para>
+				<screen>
+# yum install ovzkernel[-flavor]
+				</screen>
+			</step>
+			<step>
+				<para>修改启动所使用的内核为OpenVZ内核，使OpenVZ内核为默认启动内核</para>
+				<screen>
+# vim /etc/grub.conf
+				</screen>
+				<para>将类似下面的内容</para>
+				<screen>
+title Fedora Core (2.6.8-022stab029.1)
+       root (hd0,0)
+       kernel /vmlinuz-2.6.8-022stab029.1 ro root=/dev/sda5 quiet rhgb vga=0x31B
+       initrd /initrd-2.6.8-022stab029.1.img
+				</screen>
+				<para>修改为类似这样</para>
+				<screen>
+title OpenVZ (2.6.8-022stab029.1)
+        root (hd0,0)
+        kernel /vmlinuz-2.6.8-022stab029.1 ro root=/dev/sda5
+        initrd /initrd-2.6.8-022stab029.1.img
+				</screen>
+				<para>或直接在里面寻找类似开头为</para>
+				<screen>
+title CentOS (2.6.18-194.3.1.el5.028stab069.6)
+
+				</screen>
+				<para>的项目，并且把default改为他的下标，下标从0开始</para>
+			</step>
+			<step>
+				<para>修改LINUX网络配置文件</para>
+				<screen>
+/etc/sysctl.conf
+# On Hardware Node we generally need
+# packet forwarding enabled and proxy arp disabled
+net.ipv4.ip_forward = 1 #修改
+
+net.ipv6.conf.default.forwarding = 1 #添加
+net.ipv6.conf.all.forwarding = 1 #添加
+net.ipv4.conf.default.proxy_arp = 0 #添加
+
+# Enables source route verification
+net.ipv4.conf.all.rp_filter = 1 #修改
+
+# Enables the magic-sysrq key
+kernel.sysrq = 1 #修改
+
+# We do not want all our interfaces to send redirects
+net.ipv4.conf.default.send_redirects = 1 #添加
+net.ipv4.conf.all.send_redirects = 0 #添加
+				</screen>
+			</step>
+			<step>
+				<para>关闭SELinux</para>
+				<screen>
+# lokkit --selinux=disabled
+				</screen>
+				<screen>
+SELINUX=disabled
+				</screen>
+			</step>
+			<step>
+				<para>重启LINUX</para>
+				<screen>
+# reboot
+				</screen>
+			</step>
+			<step>
+				<para>安装OpenVZ管理工具</para>
+				<screen>
+# yum install vzctl
+# yum install vzquota
+# yum install vzyum
+				</screen>
+				<para>用到什么工具就安装什么工具，具体可以使用# yum search vz*搜索一下</para>
+			</step>
+			<step>
+				<para>启动OpenVZ服务</para>
+				<screen>
+# /sbin/service vz start
+				</screen>
+			</step>
+		</procedure>
+	</section>
+	<section id="openvz.tmpl">
+		<title>使用OpenVZ &amp; 建立VPS</title>
+		<para>由于VZ是半虚拟化的，所以VZ和VM不同的是VZ需要系统模板，而不是VM那样只需要一个ISO文件就可以安装</para>
+		<section>
+			<title>安装操作系统模板</title>
+			<procedure>
+				<step>
+					<para>搜索系统模板</para>
+					<screen>
+# yum search vztmpl
+					</screen>
+				</step>
+				<step>
+					<para>在搜索出来的结果中选用你想安装的操作系统</para>
+					<screen>
+# yum install vztmpl-centos-4 -y
+					</screen>
+				</step>
+				<step>
+					<para>为操作系统模板建立缓存</para>
+					<para>在我装的最小化CENTOS中，此步要下载很多包，需要很长时间完成</para>
+					<screen>
+# vzpkgcache
+					</screen>
+					<para>该命令将建立centos-4-i386-minimal.tar.gz和centos-4-i386-default.tar.gz文件 或</para>
+					<screen>
+# vzpkgcache centos-4-i386-minimal
+					</screen>
+					<para>建立 centos-4-i386-minimal.tar.gz</para>
+					<screen>
+# vzpkgcache centos-4-i386-default
+					</screen>
+					<para>建立 centos-4-i386-default.tar.gz</para>
+					<para>出现Cache file centos-4-i386-default.tar.gz [120M] created.表示创建成功</para>
+					<note>
+						<title>注意：本次步骤可能会出现如下错误</title>
+						<screen>
+cp: cannot stat `/etc/sysconfig/vz-scripts//ve-vps.basic.conf-sample': No such file or directory
+ERROR: Can't copy VPS config
+						</screen>
+						<para>解决方法：进入/etc/sysconfig/vz-scripts/目录，将ve.basic.conf-sample 拷贝一份重命名为ve-vps.basic.conf-sample</para>
+						<para>查看系统中已经存在的操作系统缓存</para>
+						<screen>
+# vzpkgls
+						</screen>
+					</note>
+				</step>
+			</procedure>
+		</section>
+		<section>
+			<title>创建OpenVZ操作系统节点（VPS）</title>
+			<procedure>
+				<step>
+					<para>准备配置文件</para>
+					<para>平分主机系统资源（当然，如果你对配置文件的修改很熟悉也可以自己定制）</para>
+					<screen>
+cd /etc/sysconfig/vz-scripts/
+vzsplit -n 3 -f vps.zenw.org
+					</screen>
+					<para>这样，系统资源就被平均分成了3分，并且产生了一个配置文件示例</para>
+				</step>
+				<step>
+					<para>验证配置文件有效性</para>
+					<screen>
+vzcfgvalidate ve-vps.zenw.org.conf-sample
+					</screen>
+				</step>
+				<step>
+					<para>创建VPS节点</para>
+					<screen>
+vzctl create 100 --ostemplate centos-4-i386-minimal --config vps.zenw.org
+					</screen>
+					<para>其中100是该节点的编号，可以自己定义</para>
+				</step>
+				<step>
+					<para>配置该VPS</para>
+					<screen>
+设置VPS的hostname
+vzctl set 100 --hostname zenw.org --save
+设置VPS的ip
+vzctl set 100 --ipadd 192.168.xxx.xxx --save
+设置VPS的管理员帐号和密码
+vzctl set 100 --userpasswd root:xxxxxxxxx
+设置VPS的DNS服务器
+vzctl set 100 --nameserver 8.8.8.8 --save
+设置VPS自启动
+vzctl set 100 --onboot yes --save
+启动VPS节点
+vzctl start 100
+执行VPS内部的命令（这里是开启VPS的ssh服务）
+vzctl exec 100 service sshd start
+加入VPS节点
+vzctl enter 100
+停止VPS节点
+vzctl stop 100
+					</screen>
+				</step>
+			</procedure>
+		</section>
+	</section>
+	<section id="openvz.config">
+		<title>设置VPS参数</title>
+		<procedure>
+			<step>
+				<para>修改VPS节点的配置文件</para>
+				<screen>
+vim /etc/sysconfig/vz-scripts/100.conf
+在文件中添加或修改 DISK_QUOTA=no
+
+重启VPS节点
+vzctl restart 100
+查看当前磁盘大小
+vzctl exec 100 df
+设置磁盘大小
+vzctl set 100 --diskinodes 75000000:79000000 --save
+vzctl set 100 --quotatime 600 --save
+查看修改后的磁盘大小
+vzctl exec 100 df
+vzctl exec 100 stat -f /
+
+
+vzctl set 100 --quotaugidlimit 100 --save
+vzctl restart 100
+
+vzctl exec 100 rpm -q quota
+
+vzyum 100 install quota
+
+vzquota stat 100 -t
+				</screen>
+			</step>
+			<step>
+				<para>为VPS节点安装yum工具或其他工具</para>
+				<screen>
+				<![CDATA[
+vzyum 100 install <软件名称>
+vzyum 100 install yum
+				]]>
+				</screen>
+			</step>
+		</procedure>
+		<para>另外,如果vzctl enter进入节点时出现错误，或无法ssh节点，需要运行以下命令： vzctl exec 112 "cd /dev; /sbin/MAKEDEV pty; /sbin/MAKEDEV tty; /sbin/MAKEDEV generic"</para>
+	</section>
+</chapter>
+<chapter id="vm.ui">
+	<title>虚拟机界面</title>
+
+	<section id="openstack">
+		<title>OpenStack</title>
+	</section>
+	<section id="cloudstack">
+		<title>CloudStack</title>
+	</section>
+	<section id="opennode">
+		<title>OpenNode</title>
+	</section>
+	<section id="opennebula">
+		<title>OpenNEbula</title>
+	</section>
+</chapter>
+</part>

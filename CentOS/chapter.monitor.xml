@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<part id="index"><?dbhtml dir="monitor" ?>
+	<title>Monitor</title>
+<chapter id="munin">
+	<title>Munin</title>
+	<para>http://munin-monitoring.org/</para>
+	<screen>
+# rpm -Uvh http://download.fedora.redhat.com/pub/epel/5/x86_64/epel-release-5-4.noarch.rpm	
+# yum install munin -y	
+# yum install munin-node -y
+# yum install munin-java-plugins -y
+# yum install unbound-munin -y
+# service munin-node start
+# chkconfig munin-node on
+	</screen>
+	<para>test</para>
+	<screen>
+# telnet localhost 4949
+Trying 127.0.0.1...
+Connected to localhost.localdomain (127.0.0.1).
+Escape character is '^]'.
+# munin node at datacenter.example.com
+list
+cpu df df_inode entropy forks fw_packets http_loadtime if_err_eth0 if_eth0 interrupts iostat iostat_ios irqstats load memory munin_stats netstat open_files open_inodes proc_pri processes sendmail_mailqueue sendmail_mailstats sendmail_mailtraffic swap threads uptime users vmstat yum
+	</screen>
+	<para>http://localhost/munin/</para>
+	<section id="munin.auth">
+		<title>用户认证</title>
+		<screen>
+$ sudo vim /etc/apache2/conf.d/munin.conf
+			
+        AuthUserFile /etc/munin/munin-htpasswd
+        AuthName "Munin"
+        AuthType Basic
+        require valid-user
+			
+		</screen>
+	</section>	
+	<section id="munin.plugins">
+		<title>munin-node and plugins</title>
+		<para>config: /etc/munin/munin-node.conf</para>
+		<para>plugins: /usr/share/munin/plugins/</para>
+		<section>
+			<title>munin-node.conf</title>
+			<screen>
+allow ^127\.0\.0\.1$
+allow ^192\.168\.3\.5$
+			</screen>
+		</section>
+		<section>
+			<title>mysql plugin</title>
+			<para>mysql</para>
+			<screen>
+# ln -s /usr/share/munin/plugins/mysql_* /etc/munin/plugins		
+			</screen>
+			<screen>
+# vim /etc/munin/plugin-conf.d/munin-node
+env.mysqlopts -uneo -pchen
+
+# or
+
+env.mysqlopts -h 172.16.1.17 -u monitor -ppassword
+
+# service munin-node start
+			</screen>
+			<para>验证安装，telnet localhost 4949 之后，执行 fetch mysql_queries</para>
+		<!--
+user root # 使用此插件的系统用户
+env.mysqladmin /usr/local/mysql/bin/mysqladmin   # mysqladmin命令的完整路径
+env.mysqlopts -uroot -pfnm_2008_fnm  # mysql的用户名密码		
+		 -->
+		</section>
+		<section>
+			<title>apache plugin</title>
+			<para>apache</para>
+			<screen>
+# ln -s /usr/share/munin/plugins/apache_* /etc/munin/plugins		
+			</screen>
+			<screen>
+			<![CDATA[
+# vim /etc/httpd/conf/httpd.conf
+ExtendedStatus On
+<Location /server-status>
+    SetHandler server-status
+    Order deny,allow
+    Deny from all
+    Allow from .example.com
+	Allow from localhost    
+</Location>
+			]]>
+			</screen>
+			<screen>
+# /etc/init.d/httpd restart
+# service munin-node restart
+			</screen>
+			<para>验证安装,telnet localhost 4949 之后，执行 fetch apache_processes</para>
+		</section>
+		<section>
+			<title>memcached plugin</title>
+			<para>memcached plugin要求符号链接名字的格式是: memcached_connections_[IP Address]_[Port], IP与Port是在符号链接名字中配置的</para>
+			<screen>
+ln -s /usr/share/munin/plugins/memcached_bytes_ /etc/munin/plugins/memcached_bytes_127_0_0_1_11211
+ln -s /usr/share/munin/plugins/memcached_connections_ /etc/munin/plugins/memcached_connections_127_0_0_1_11211
+ln -s /usr/share/munin/plugins/memcached_hits_ /etc/munin/plugins/memcached_hits_127_0_0_1_11211
+ln -s /usr/share/munin/plugins/memcached_items_ /etc/munin/plugins/memcached_items_127_0_0_1_11211
+ln -s /usr/share/munin/plugins/memcached_requests_ /etc/munin/plugins/memcached_requests_127_0_0_1_11211
+ln -s /usr/share/munin/plugins/memcached_traffic_ /etc/munin/plugins/memcached_traffic_127_0_0_1_11211
+			</screen>
+			<para>验证安装，telnet localhost 4949 之后，执行 fetch memcached_requests_127_0_0_1_11211</para>
+		</section>
+	</section>
+	<section id="munin.conf">
+		<title>munin.conf</title>
+		<screen>
+# vim /etc/munin/munin.conf
+# a simple host tree
+[localhost]
+    address 127.0.0.1
+    use_node_name yes
+[database]
+    address 192.168.3.40
+    use_node_name yes
+		</screen>
+	</section>
+	<section id="munin.node">
+		<title>munin-node</title>
+		<screen>
+# yum install munin-node -y
+# chkconfig munin-node on
+# service munin-node start
+		</screen>
+		<section>
+			<title>munin-node.conf</title>
+vim /etc/munin/munin-node.conf
+allow ^127\.16\.1\.2$			
+		</section>
+	</section>
+
+</chapter>
+
+<chapter id="mrtg">
+	<title>MRTG</title>
+	<screen>
+# yum install mrtg
+	</screen>
+	<para>start</para>
+	<screen>
+# env LANG=C /usr/bin/mrtg /etc/mrtg/mrtg.cfg	
+	</screen>
+	<para>/etc/mrtg/mrtg.cfg</para>
+	<screen>
+	<![CDATA[
+HtmlDir: /var/www/mrtg
+ImageDir: /var/www/mrtg
+LogDir: /var/lib/mrtg
+ThreshDir: /var/lib/mrtg
+#Target[r1]: 2:public@myrouter.somplace.edu
+#MaxBytes[r1]: 1250000
+#Title[r1]: Traffic Analysis
+#PageTop[r1]: <H1>Stats for our Ethernet</H1>
+
+Target[dell_3548_switch]: ifInOctets.1&ifOutOctets.1:public@172.16.0.252
+MaxBytes[dell_3548_switch]: 1250000
+Title[dell_3548_switch]: Traffic Analysis
+PageTop[dell_3548_switch]: <H1>Stats for our Ethernet</H1>
+	]]>
+	</screen>
+	<para>create mrtg.cfg</para>
+	<screen>
+cp /etc/mrtg/mrtg.cfg /etc/mrtg/mrtg.cfg.old
+	
+cfgmaker --global "HtmlDir: /var/www/mrtg" \
+--global "ImageDir: /var/www/mrtg" \
+--global "LogDir: /var/lib/mrtg" \
+--global "ThreshDir: /var/lib/mrtg" \
+--global "Options[_]: growright,bits"  \
+--ifref=name --ifdesc=descr  --show-op-down \
+public@172.16.0.252 > /etc/mrtg/mrtg.cfg	
+	</screen>
+	<para>index.html</para>
+	<screen>
+# indexmaker --output=/var/www/mrtg/index.html /etc/mrtg/mrtg.cfg	
+	</screen>
+	<section id="mrtg.cfg">
+		<title>监控多个设备</title>
+		<screen>
+cfgmaker --global "HtmlDir: /var/www/mrtg" \
+--global "ImageDir: /var/www/mrtg" \
+--global "LogDir: /var/lib/mrtg" \
+--global "ThreshDir: /var/lib/mrtg" \
+--global "Options[_]: growright,bits"  \
+--ifref=name --ifdesc=descr \
+--subdirs=Dell6224 \
+public@172.16.0.251 \
+--ifref=name --ifdesc=descr \
+--subdirs=Dell3548 \
+public@172.16.0.252 \
+--ifref=name --ifdesc=descr \
+--subdirs=H3CS3600 \
+public@172.16.0.253 > /etc/mrtg/mrtg.cfg
+
+indexmaker --output=/var/www/mrtg/index.html /etc/mrtg/mrtg.cfg
+		</screen>
+	</section>
+	<section id="mrtg.batch">
+		<title>批量生成监控配置文件</title>
+		<screen>
+		<![CDATA[
+for host in 253 252 251 250 249
+do 
+
+cfgmaker --global "HtmlDir: /var/www/mrtg" \
+--global "ImageDir: /var/www/mrtg" \
+--global "LogDir: /var/lib/mrtg" \
+--global "ThreshDir: /var/lib/mrtg" \
+--global "Options[_]: growright,bits"  \
+\
+--ifref=name --ifdesc=descr \
+--subdirs=Cisco-Switch-2960G-$host \
+public@172.16.0.$host \
+\
+> /etc/mrtg/switch-2960-$host.cfg
+
+indexmaker --output=/var/www/mrtg/switch-2960-$host.html /etc/mrtg/switch-2960-$host.cfg
+
+done
+		]]>
+		</screen>
+	</section>	
+	<section id="mrtg.size">
+		<title>图片尺寸</title>
+		<para>Xsize / Ysize</para>
+		<screen>
+		<![CDATA[
+cfgmaker --global "HtmlDir: /var/www/mrtg" \
+--global "ImageDir: /var/www/mrtg" \
+--global "LogDir: /var/lib/mrtg" \
+--global "ThreshDir: /var/lib/mrtg" \
+--global "Options[_]: growright,bits"  \
+--global "Xsize[_]: 600" \
+--global "Ysize[_]: 200" \
+\
+--ifref=name --ifdesc=descr \
+--subdirs=Juniper-Firewall \
+public@172.16.0.1 \
+> /etc/mrtg/firewall.cfg
+		]]>
+		</screen>
+	</section>
+	
+</chapter>
+<chapter id="smartd">
+	<title>smartd - SMART Disk Monitoring Daemon</title>
+	<para>配置表示smartd以静默状态工作，当SMART中报告PASSED的时候不理睬一旦出现Failure，立刻用邮件通知用户指定的邮箱</para>
+	<screen>
+vi /etc/smartd.conf
+/dev/sdb -H -m neo@domain.com
+	</screen>
+	<para>修改配置后重启服务：</para>
+	<screen>
+/etc/init.d/smartd start
+	</screen>
+</chapter>
+	
+<chapter id="snmpd">
+	<title>snmpd - daemon to respond to SNMP request packets.</title>
+	<screen>
+# yum -y install net-snmp net-snmp-utils	
+	</screen>
+	<para></para>
+	<screen>
+net-snmp-config --create-snmpv3-user -a PASSWORD MYUSERNAME
+snmpwalk -v 3 -a md5 -A PASSWORD -x des -X PASSWORD -u MYUSERNAME IP.ADD.RE.SS	
+snmpwalk -v 3 -a md5 -A PASSWORD -l authNoPriv -u MYUSERNAME IP.ADD.RE.SS
+	</screen>
+	
+</chapter>	
+	<chapter id="cacti">
+		<title>cacti</title>
+		<screen>
+yum install cacti
+		</screen>
+		<para>database</para>
+		<screen>
+		<![CDATA[
+mysqladmin -uroot -p create cacti
+echo "GRANT ALL ON cacti.* TO cacti@localhost IDENTIFIED BY '1ba0128c';" | mysql -uroot -p
+echo "flush privileges;" | mysql -uroot -p		
+mysql -uroot -p cacti < /usr/share/doc/cacti-0.8.7e/cacti.sql
+		]]>
+		</screen>
+		<para>enable crontab</para>
+		<screen>
+		<![CDATA[
+# cat /etc/cron.d/cacti
+*/5 * * * *     cacti   /usr/bin/php /usr/share/cacti/poller.php > /dev/null 2>&1
+		]]>		
+		</screen>
+		<para>install cacti</para>
+		<para>http://localhost/cacti/install/</para>
+	</chapter>
+<chapter id="nagios">
+	<title>Nagios</title>
+	<section id="nagios.install">
+		<title>nagios</title>
+		<para>Install Nagios &amp; Plugins</para>
+		<screen>
+[root@database ~]# yum -y install nagios nagios-plugins-all nagios-plugins-nrpe
+		</screen>
+		<para>Create the default Nagios web access user &amp; set a password</para>
+		<screen>
+# htpasswd -c /etc/nagios/passwd nagiosadmin
+		</screen>
+		<para>Verify default config files</para>
+		<screen>
+nagios -v /etc/nagios/nagios.cfg		
+		</screen>
+		<para>Start Nagios</para>
+		<screen>
+Start Nagios
+		</screen>
+		<para>Configure it to start on boot</para>
+		<screen>
+chkconfig --levels 345 nagios on
+		</screen>
+		<para>http://localhost/nagios/</para>
+	</section>
+	
+	<section id="nagios.plugins">
+		<title>plugins</title>
+		<section>
+			<title>nrpe plugins</title>
+			<screen>
+neo@monitor:/etc/nagios3/hosts$ sudo cat www.example.com.cfg
+
+define host{
+        use             generic-host            ; Inherit default values from a template
+        host_name       www.example.com             ; The name we're giving to this host
+        alias           Some Remote Host        ; A longer name associated with the host
+        address         172.16.1.10              ; IP address of the host
+        hostgroups      http-servers                    ; Host groups this host is associated with
+        }
+
+# NRPE disk check.
+define service {
+        use                             generic-service
+        host_name                       www.example.com
+        service_description             nrpe-disk
+        check_command                   check_nrpe_1arg!check_all_disks!172.16.1.10
+}
+define service {
+        use                             generic-service
+        host_name                       www.example.com
+        service_description             nrpe-users
+        check_command                   check_nrpe_1arg!check_users!172.16.1.10
+}
+define service {
+        use                             generic-service
+        host_name                       www.example.com
+        service_description             nrpe-swap
+        check_command                   check_nrpe_1arg!check_swap!172.16.1.10
+}
+define service {
+        use                             generic-service
+        host_name                       www.example.com
+        service_description             nrpe-procs
+        check_command                   check_nrpe_1arg!check_total_procs!172.16.1.10
+}
+define service {
+        use                             generic-service
+        host_name                       www.example.com
+        service_description             nrpe-load
+        check_command                   check_nrpe_1arg!check_load!172.16.1.10
+}
+define service {
+        use                             generic-service
+        host_name                       www.example.com
+        service_description             nrpe-zombie_procs
+        check_command                   check_nrpe_1arg!check_zombie_procs!172.16.1.10
+}
+
+			</screen>			
+		</section>
+
+	</section>
+	
+	<section id="nagios.nrpe">
+		<title>nrpe node</title>
+		<screen>
+# yum install nrpe nagios-plugins-all
+
+allowed_hosts=172.16.1.2
+
+command[check_users]=/usr/lib64/nagios/plugins/check_users -w 5 -c 10
+command[check_load]=/usr/lib64/nagios/plugins/check_load -w 15,10,5 -c 30,25,20
+command[check_hda1]=/usr/lib64/nagios/plugins/check_disk -w 20% -c 10% -p /dev/hda1
+command[check_zombie_procs]=/usr/lib64/nagios/plugins/check_procs -w 5 -c 10 -s Z
+command[check_total_procs]=/usr/lib64/nagios/plugins/check_procs -w 150 -c 200
+command[check_http]=/usr/lib64/nagios/plugins/check_http -I 127.0.0.1 -p 80 -u http://www.example.com/index.html
+command[check_swap]=/usr/lib64/nagios/plugins/check_swap -w 20% -c 10%
+command[check_all_disks]=/usr/lib64/nagios/plugins/check_disk -w 20% -c 10% -e
+
+# chkconfig nrpe on
+# service nrpe start
+		</screen>
+		<para>其实没有必要安装所有的监控插件</para>
+		<screen>
+yum install nrpe -y
+yum install nagios-plugins-disk  nagios-plugins-load nagios-plugins-ping nagios-plugins-procs nagios-plugins-swap nagios-plugins-users -y		
+		</screen>
+	</section>
+</chapter>
+</part>

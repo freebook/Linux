@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.system.utility.xml 666 2013-08-21 10:06:25Z netkiller $ -->
-<!-- 
-<part id="system.utility">
+<part id="index"><?dbhtml dir="system" ?>
 	<title>System Monitoring &amp; Utility</title>
 	<chapterinfo>
 		<keywordset>
@@ -13,7 +12,7 @@
 			<keyword>nload</keyword>
 		</keywordset>
 	</chapterinfo>
- -->
+ 
 <chapter id="system.user">
     <title>User</title>
 	<section id="sys.last">
@@ -253,8 +252,12 @@ NET |  eth0    ----  |  pcki      23 |  pcko      14  |  si    2 Kbps  |  so    
 $ strace -f -F lighttpd
 		</screen>
 	</section>
-	<section id="sys.lsof">
-		<title>lsof - list open files</title>
+	
+</chapter>
+
+	<section id="lsof">
+		<title>文件监控</title>
+		<subtitle>lsof - list open files</subtitle>
 		<screen>
 $ sudo lsof -c lighttpd
 		</screen>
@@ -270,14 +273,20 @@ lsof filename
 COMMAND    PID USER   FD   TYPE DEVICE SIZE/OFF    NODE NAME
 seahorse- 4158  neo  cwd    DIR    8,2    53248 1310721 /tmp
 			</screen>
+			<para>递归子目录列出文件状态</para>
 			<screen>
 $ sudo lsof +D /srv/
 COMMAND  PID USER  FD   TYPE DEVICE SIZE/OFF    NODE NAME
 match   5227 root txt    REG  252,0  1351616 1966083 /srv/match
+
+[root@netkiller ~]# lsof +D /proc/1/
+COMMAND PID USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+systemd   1 root    9r   REG    0,3        0 8401 /proc/1/mountinfo
+
 			</screen>
 		</section>
 		<section>
-			<title></title>
+			<title>设备文件</title>
 			<screen>
 $ lsof /dev/tty1
 COMMAND   PID USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
@@ -305,9 +314,158 @@ httpd   4374 apache  mem    REG  252,1    10416 408095 /usr/lib64/httpd/modules/
 httpd   4374 apache  mem    REG  252,1    27312 408054 /usr/lib64/httpd/modules/mod_cgi.so
 httpd   4374 apache  mem    REG  252,1    22992 408061 /usr/lib64/httpd/modules/mod_disk_cache.so
 			</screen>
+			<para>列出被打开的文件信息,排除root用户</para>
+			<screen>
+[root@netkiller neo]# lsof -u ^root |more
+
+COMMAND     PID   TID          USER   FD      TYPE             DEVICE   SIZE/OFF      NODE NAME
+dbus-daem   448                dbus  cwd       DIR              253,1       4096         2 /
+dbus-daem   448                dbus  rtd       DIR              253,1       4096         2 /
+dbus-daem   448                dbus  txt       REG              253,1     441256    141406 /usr/bin/dbus-daemon;56822cb8 (deleted)
+dbus-daem   448                dbus  DEL       REG              253,1               146439 /usr/lib64/libnss_sss.so.2;56822cb8
+dbus-daem   448                dbus  DEL       REG              253,1               151203 /usr/lib64/libnss_files-2.17.so;56822cb8
+dbus-daem   448                dbus  DEL       REG              253,1               151199 /usr/lib64/libdl-2.17.so;56822cb8
+dbus-daem   448                dbus  DEL       REG              253,1               133002 /usr/lib64/liblzma.so.5.0.99;56822ac0
+dbus-daem   448                dbus  DEL       REG              253,1               133005 /usr/lib64/libpcre.so.1.2.0;56822ac0
+dbus-daem   448                dbus  DEL       REG              253,1               132825 /usr/lib64/libc-2.17.so;56822cb8
+dbus-daem   448                dbus  DEL       REG              253,1               151206 /usr/lib64/librt-2.17.so;56822cb8
+dbus-daem   448                dbus  DEL       REG              253,1               132851 /usr/lib64/libpthread-2.17.so;56822cb8
+dbus-daem   448                dbus  DEL       REG              253,1               133622 /usr/lib64/libcap-ng.so.0.0.0;56822cb8
+dbus-daem   448                dbus  mem       REG              253,1     118792    133084 /usr/lib64/libaudit.so.1.0.0
+dbus-daem   448                dbus  mem       REG              253,1     147120    133015 /usr/lib64/libselinux.so.1
+dbus-daem   448                dbus  mem       REG              253,1     173288    133153 /usr/lib64/libexpat.so.1.6.0
+dbus-daem   448                dbus  DEL       REG              253,1               132818 /usr/lib64/ld-2.17.so;56822cb8
+dbus-daem   448                dbus    0r      CHR                1,3        0t0      1028 /dev/null
+dbus-daem   448                dbus    1u     unix 0xffff880426d4c740        0t0     14381 socket
+dbus-daem   448                dbus    2u     unix 0xffff880426d4c740        0t0     14381 socket
+dbus-daem   448                dbus    3u     unix 0xffff880428cd7800        0t0     14082 /var/run/dbus/system_bus_socket
+dbus-daem   448                dbus    4u  a_inode                0,9          0      5639 [eventpoll]
+dbus-daem   448                dbus    5r  a_inode                0,9          0      5639 inotify
+dbus-daem   448                dbus    6u     sock                0,6        0t0     14179 protocol: NETLINK
+dbus-daem   448                dbus    7u     unix 0xffff880428cd1e00        0t0     14180 socket
+dbus-daem   448                dbus    8u     unix 0xffff880428cd5640        0t0     14181 socket
+dbus-daem   448                dbus    9u     unix 0xffff880037101e00        0t0   5347943 /var/run/dbus/system_bus_socket
+dbus-daem   448                dbus   10u     unix 0xffff8800292ae900        0t0 626418112 /var/run/dbus/system_bus_socket
+dbus-daem   448                dbus   11u     unix 0xffff880426f3cec0        0t0   5345962 socket
+dbus-daem   448                dbus   12u     unix 0xffff8801f8149e00        0t0 626420423 /var/run/dbus/system_bus_socket
+			</screen>
+			<para>组监控</para>
+			<screen>
+[root@netkiller neo]# lsof -g 0
+COMMAND     PID PGID USER   FD      TYPE DEVICE SIZE/OFF NODE NAME
+kthreadd      2    0 root  cwd       DIR  202,1     4096    2 /
+kthreadd      2    0 root  rtd       DIR  202,1     4096    2 /
+kthreadd      2    0 root  txt   unknown                      /proc/2/exe
+ksoftirqd     3    0 root  cwd       DIR  202,1     4096    2 /
+ksoftirqd     3    0 root  rtd       DIR  202,1     4096    2 /
+ksoftirqd     3    0 root  txt   unknown                      /proc/3/exe
+kworker/0     5    0 root  cwd       DIR  202,1     4096    2 /
+kworker/0     5    0 root  rtd       DIR  202,1     4096    2 /
+kworker/0     5    0 root  txt   unknown                      /proc/5/exe
+migration     7    0 root  cwd       DIR  202,1     4096    2 /
+migration     7    0 root  rtd       DIR  202,1     4096    2 /
+migration     7    0 root  txt   unknown                      /proc/7/exe
+			</screen>
+		</section>
+		
+		<section>
+			<title>监控进程</title>
+			<para>显示httpd进程现在打开的文件</para>
+			<screen>
+lsof -c httpd
+			</screen>
+			<para>-p 进程ID, 显示该进程打开了那些文件</para>
+			<screen>
+pgrep httpd
+lsof -p 1782
+			</screen>
+			<para>显示进程ID</para>
+			<screen>
+# lsof -t -u apache
+4374
+4375
+4376
+4377
+4378
+4379
+4380
+			</screen>
+			<para>监控多个进程ID</para>
+			<screen>
+[root@netkiller neo]# lsof -p 20535,26359,31462 | more
+COMMAND   PID    USER   FD   TYPE             DEVICE   SIZE/OFF      NODE NAME
+nginx   20535    root  cwd    DIR              253,1       4096         2 /
+nginx   20535    root  rtd    DIR              253,1       4096         2 /
+nginx   20535    root  txt    REG              253,1    1066704    142069 /usr/sbin/nginx
+nginx   20535    root  DEL    REG                0,4            686393039 /dev/zero
+nginx   20535    root  mem    REG              253,1      61928    162109 /usr/lib64/libnss_files-2.17.so
+nginx   20535    root  mem    REG              253,1     153192    151546 /usr/lib64/liblzma.so.5.0.99
+nginx   20535    root  mem    REG              253,1     147120    133015 /usr/lib64/libselinux.so.1
+nginx   20535    root  mem    REG              253,1     110808    162113 /usr/lib64/libresolv-2.17.so
+nginx   20535    root  mem    REG              253,1      15688    134676 /usr/lib64/libkeyutils.so.1.5
+nginx   20535    root  mem    REG              253,1      62720    158030 /usr/lib64/libkrb5support.so.0.1
+nginx   20535    root  mem    REG              253,1     202576    137049 /usr/lib64/libk5crypto.so.3.1
+nginx   20535    root  mem    REG              253,1      15840    133029 /usr/lib64/libcom_err.so.2.1
+nginx   20535    root  mem    REG              253,1     950496    137059 /usr/lib64/libkrb5.so.3.3
+nginx   20535    root  mem    REG              253,1     316528    151679 /usr/lib64/libgssapi_krb5.so.2.2
+nginx   20535    root  mem    REG              253,1      11376    151527 /usr/lib64/libfreebl3.so
+nginx   20535    root  mem    REG              253,1    2112384    132823 /usr/lib64/libc-2.17.so
+nginx   20535    root  mem    REG              253,1      90632    133017 /usr/lib64/libz.so.1.2.7
+nginx   20535    root  mem    REG              253,1    2016880    132882 /usr/lib64/libcrypto.so.1.0.1e
+nginx   20535    root  mem    REG              253,1     449904    137215 /usr/lib64/libssl.so.1.0.1e
+nginx   20535    root  mem    REG              253,1     398264    160788 /usr/lib64/libpcre.so.1.2.0
+nginx   20535    root  mem    REG              253,1      40816    151198 /usr/lib64/libcrypt-2.17.so
+nginx   20535    root  mem    REG              253,1     142304    132849 /usr/lib64/libpthread-2.17.so
+nginx   20535    root  mem    REG              253,1      19520    162101 /usr/lib64/libdl-2.17.so
+nginx   20535    root  mem    REG              253,1     164440    132816 /usr/lib64/ld-2.17.so
+nginx   20535    root  DEL    REG                0,4            686393042 /dev/zero
+nginx   20535    root    0u   CHR                1,3        0t0      1028 /dev/null
+nginx   20535    root    1u   CHR                1,3        0t0      1028 /dev/null
+			
+			</screen>
+			<para>排除1，4，显示2，3，5</para>
+			<screen>
+[root@netkiller neo]# lsof -p ^1,2,3,^4,5
+COMMAND   PID USER   FD      TYPE DEVICE SIZE/OFF NODE NAME
+kthreadd    2 root  cwd       DIR  253,1     4096    2 /
+kthreadd    2 root  rtd       DIR  253,1     4096    2 /
+kthreadd    2 root  txt   unknown                      /proc/2/exe
+ksoftirqd   3 root  cwd       DIR  253,1     4096    2 /
+ksoftirqd   3 root  rtd       DIR  253,1     4096    2 /
+ksoftirqd   3 root  txt   unknown                      /proc/3/exe
+kworker/0   5 root  cwd       DIR  253,1     4096    2 /
+kworker/0   5 root  rtd       DIR  253,1     4096    2 /
+kworker/0   5 root  txt   unknown                      /proc/5/exe
+			
+			</screen>
 		</section>
 		<section>
 			<title>监控网络</title>
+			<para>列出所有的网络连接</para>
+			<screen>
+[root@netkiller neo]# lsof -i
+COMMAND     PID          USER   FD   TYPE    DEVICE SIZE/OFF NODE NAME
+php-fpm    2274           www    0u  IPv4  96056019      0t0  TCP localhost:cslistener (LISTEN)
+php-fpm    2274           www    4u  IPv4 688391009      0t0  TCP localhost:43483->localhost:27017 (ESTABLISHED)
+python3    4384        zabbix    6u  IPv4 688769849      0t0  TCP iZ623qr3xctZ:zabbix-agent->10.26.6.18:50666 (ESTABLISHED)
+python3    4385        zabbix    6u  IPv4 688769848      0t0  TCP iZ623qr3xctZ:zabbix-agent->10.26.6.18:50668 (ESTABLISHED)
+redis-ser  5170         redis    4u  IPv4   5690059      0t0  TCP localhost:6379 (LISTEN)
+php-fpm    8277           www    0u  IPv4  96056019      0t0  TCP localhost:cslistener (LISTEN)
+php-fpm    8277           www    4u  IPv4 688149893      0t0  TCP localhost:60933->localhost:27017 (ESTABLISHED)
+php-fpm    8543           www    0u  IPv4  96056019      0t0  TCP localhost:cslistener (LISTEN)
+beam.smp   9703      rabbitmq    8u  IPv4 626401894      0t0  TCP *:25672 (LISTEN)
+beam.smp   9703      rabbitmq    9u  IPv4 626401896      0t0  TCP localhost:42821->localhost:epmd (ESTABLISHED)
+beam.smp   9703      rabbitmq   17u  IPv6 626403609      0t0  TCP *:amqp (LISTEN)
+beam.smp   9703      rabbitmq   18u  IPv4 626402643      0t0  TCP *:15672 (LISTEN)
+beam.smp   9703      rabbitmq   20u  IPv6 685257290      0t0  TCP localhost:amqp->localhost:57692 (ESTABLISHED)
+sshd      11227          root    3u  IPv4 626404210      0t0  TCP *:ssh (LISTEN)
+ntpd      11646           ntp   16u  IPv4 626409506      0t0  UDP *:ntp 
+ntpd      11646           ntp   17u  IPv6 626406239      0t0  UDP *:ntp 
+ntpd      11646           ntp   18u  IPv4 626406244      0t0  UDP localhost:ntp 
+ntpd      11646           ntp   19u  IPv4 626406245      0t0  UDP iZ623qr3xctZ:ntp 
+ntpd      11646           ntp   20u  IPv4 626406246      0t0  UDP iZ623qr3xctZ:ntp 
+			
+			</screen>
 			<para>什么程序运行在22端口上</para>
 			<screen>
 lsof -i :22
@@ -396,30 +554,42 @@ dnsmasq   3647   nobody    7u  IPv4    15680      0t0  UDP 192.168.122.1:domain
 			<screen>
 lsof -i tcp;
 			</screen>
-		</section>
-		<section>
-			<title>监控进程</title>
-			<para>显示httpd进程现在打开的文件</para>
+			<para>监控 udp 端口 123</para>
 			<screen>
-lsof -c httpd
+[root@netkiller neo]# lsof -i udp:123
+COMMAND   PID USER   FD   TYPE    DEVICE SIZE/OFF NODE NAME
+ntpd    11646  ntp   16u  IPv4 626409506      0t0  UDP *:ntp 
+ntpd    11646  ntp   17u  IPv6 626406239      0t0  UDP *:ntp 
+ntpd    11646  ntp   18u  IPv4 626406244      0t0  UDP localhost:ntp 
+ntpd    11646  ntp   19u  IPv4 626406245      0t0  UDP iZ623qr3xctZ:ntp 
+ntpd    11646  ntp   20u  IPv4 626406246      0t0  UDP iZ623qr3xctZ:ntp 			
 			</screen>
-			<para>-p 进程ID, 显示该进程打开了那些文件</para>
+			<para>列出nginx用户活跃的链接</para>
 			<screen>
-pgrep httpd
-lsof -p 1782
+[root@netkiller neo]# lsof  -a -u nginx -i
+COMMAND   PID  USER   FD   TYPE    DEVICE SIZE/OFF NODE NAME
+nginx   20536 nginx   19u  IPv4 686393040      0t0  TCP *:http (LISTEN)
+nginx   20536 nginx   20u  IPv4 686393041      0t0  TCP *:https (LISTEN)
+nginx   20536 nginx   42u  IPv4 688774445      0t0  TCP iZ623qr3xctZ:http->112.224.19.79:32751 (ESTABLISHED)
+nginx   20536 nginx   49u  IPv4 688774400      0t0  TCP iZ623qr3xctZ:http->117.156.4.113:58212 (ESTABLISHED)
+nginx   20536 nginx   52u  IPv4 688774494      0t0  TCP iZ623qr3xctZ:http->112.224.19.79:32753 (ESTABLISHED)
+nginx   20536 nginx   53u  IPv4 688774495      0t0  TCP iZ623qr3xctZ:http->112.224.19.79:32752 (ESTABLISHED)
+nginx   20536 nginx   54u  IPv4 688774555      0t0  TCP iZ623qr3xctZ:http->113.128.232.89:37529 (ESTABLISHED)
+nginx   20536 nginx   55u  IPv4 688774497      0t0  TCP iZ623qr3xctZ:http->112.224.19.79:32754 (ESTABLISHED)
+nginx   20536 nginx   56u  IPv4 688774556      0t0  TCP iZ623qr3xctZ:http->113.128.232.89:37530 (ESTABLISHED)
+nginx   20536 nginx   58u  IPv4 688774500      0t0  TCP iZ623qr3xctZ:http->112.224.19.79:32755 (ESTABLISHED)
+nginx   20536 nginx   60u  IPv4 688778242      0t0  TCP iZ623qr3xctZ:http->113.128.232.89:37532 (ESTABLISHED)
+nginx   20536 nginx   61u  IPv4 688774559      0t0  TCP iZ623qr3xctZ:http->113.128.232.89:37528 (ESTABLISHED)
+nginx   20536 nginx   64u  IPv4 688774562      0t0  TCP iZ623qr3xctZ:http->113.128.232.89:37531 (ESTABLISHED)
+nginx   20537 nginx   19u  IPv4 686393040      0t0  TCP *:http (LISTEN)
+nginx   20537 nginx   20u  IPv4 686393041      0t0  TCP *:https (LISTEN)
+nginx   20538 nginx   19u  IPv4 686393040      0t0  TCP *:http (LISTEN)
+nginx   20538 nginx   20u  IPv4 686393041      0t0  TCP *:https (LISTEN)
+nginx   20539 nginx   18u  IPv4 688777804      0t0  TCP iZ623qr3xctZ:http->39.187.213.246:49624 (ESTABLISHED)
+nginx   20539 nginx   19u  IPv4 686393040      0t0  TCP *:http (LISTEN)
+nginx   20539 nginx   20u  IPv4 686393041      0t0  TCP *:https (LISTEN)			
 			</screen>
-			<para>显示进程ID</para>
-			<screen>
-# lsof -t -u apache
-4374
-4375
-4376
-4377
-4378
-4379
-4380
-			</screen>
-		</section>
+		</section>		
 		<section>
 			<title>lsof 高级用法</title>
 			<para>组合参数</para>
@@ -447,7 +617,6 @@ bash    1394 root  255u   CHR  136,7      0t0      10 /dev/pts/7
 			</screen>
 		</section>
 	</section>
-</chapter>
 
 	&chapter.system.io.xml;
 
@@ -529,29 +698,6 @@ R (  1s):       0 reqs (   0.0/sec)          0.0B (    0.0B/sec)       0.0B/req
 	</section>
 
 </chapter>
-	<chapter id="iptstate">
-		<title>iptstate - A top-like display of IP Tables state table entries</title>
-		<screen>
-# yum install iptstate -y
-		</screen>
-		<screen>
-                           IPTState - IPTables State Top
-Version: 2.2.2        Sort: SrcIP           b: change sorting   h: help
-Source                        Destination                  Prt  State       TTL
-0.0.0.0                       224.0.0.1                    igmp               0:09:49
-192.168.2.1:45981             192.168.2.1:22               tcp  TIME_WAIT     0:01:33
-192.168.2.1:46009             192.168.2.1:22               tcp  TIME_WAIT     0:01:57
-192.168.2.1:45915             192.168.2.1:22               tcp  TIME_WAIT     0:00:58
-192.168.2.1:45975             192.168.2.1:22               tcp  TIME_WAIT     0:01:31
-192.168.2.1:54922             202.141.160.110:80           tcp  TIME_WAIT     0:00:57
-192.168.2.1:46000             192.168.2.1:22               tcp  TIME_WAIT     0:01:54
-192.168.2.1:45973             192.168.2.1:22               tcp  TIME_WAIT     0:01:31
-192.168.2.1:45855             192.168.2.1:22               tcp  TIME_WAIT     0:00:26
-192.168.2.1:45990             192.168.2.1:22               tcp  TIME_WAIT     0:01:36
-192.168.2.1:45822             192.168.2.1:22               tcp  TIME_WAIT     0:00:01
-192.168.2.1:45926             192.168.2.1:22               tcp  TIME_WAIT     0:01:01
-		</screen>
-	</chapter>
 	<chapter id="watchman">
 		<title>文件监控</title>
 		<para>https://github.com/facebook/watchman</para>
@@ -631,8 +777,6 @@ Options:
 
 	&chapter.monitor.sms.xml;
 	&chapter.ipmi.xml;
-	&chapter.log.xml;
 	&chapter.jvm.xml;
-<!-- 
+
 </part>
- -->

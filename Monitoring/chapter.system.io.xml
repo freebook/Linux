@@ -188,4 +188,27 @@ Bandwidth Monitor 1.1.0
 Hit CTRL-C to end this madness.
 		</screen>
 	</section>
+	<section id="iptstate">
+		<title>iptstate - A top-like display of IP Tables state table entries</title>
+		<screen>
+# yum install iptstate -y
+		</screen>
+		<screen>
+                           IPTState - IPTables State Top
+Version: 2.2.2        Sort: SrcIP           b: change sorting   h: help
+Source                        Destination                  Prt  State       TTL
+0.0.0.0                       224.0.0.1                    igmp               0:09:49
+192.168.2.1:45981             192.168.2.1:22               tcp  TIME_WAIT     0:01:33
+192.168.2.1:46009             192.168.2.1:22               tcp  TIME_WAIT     0:01:57
+192.168.2.1:45915             192.168.2.1:22               tcp  TIME_WAIT     0:00:58
+192.168.2.1:45975             192.168.2.1:22               tcp  TIME_WAIT     0:01:31
+192.168.2.1:54922             202.141.160.110:80           tcp  TIME_WAIT     0:00:57
+192.168.2.1:46000             192.168.2.1:22               tcp  TIME_WAIT     0:01:54
+192.168.2.1:45973             192.168.2.1:22               tcp  TIME_WAIT     0:01:31
+192.168.2.1:45855             192.168.2.1:22               tcp  TIME_WAIT     0:00:26
+192.168.2.1:45990             192.168.2.1:22               tcp  TIME_WAIT     0:01:36
+192.168.2.1:45822             192.168.2.1:22               tcp  TIME_WAIT     0:00:01
+192.168.2.1:45926             192.168.2.1:22               tcp  TIME_WAIT     0:01:01
+		</screen>
+	</section>
 </chapter>

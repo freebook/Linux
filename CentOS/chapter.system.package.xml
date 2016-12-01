@@ -1,0 +1,930 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.system.package.xml 605 2013-05-29 09:48:16Z netkiller $ -->
+<chapter id="index"><?dbhtml dir="package" ?>
+	<title>Package Manager</title>
+	<section id="mirror">
+		<title>Yum Resource &amp; Yum Mirror</title>
+		<screen>
+yum install yum-fastestmirror -y
+		</screen>
+		<section>
+			<title>Fedora resource</title>
+			<para>http://fedoraproject.org/wiki/EPEL</para>
+<!-- 			
+			<section>
+				<title>Fedora 5.3</title>
+				<para>5.3</para>
+				<screen>
+rpm -Uvh http://download.fedora.redhat.com/pub/epel/5/i386/epel-release-5-3.noarch.rpm
+rpm -Uvh http://download.fedora.redhat.com/pub/epel/5/x86_64/epel-release-5-3.noarch.rpm
+				</screen>
+			</section>
+ -->			
+			<section>
+				<title>Fedora 5.4</title>
+				<para>5.4</para>
+				<screen>
+rpm -Uvh http://dl.fedoraproject.org/pub/epel/5/i386/epel-release-5-4.noarch.rpm
+rpm -Uvh http://dl.fedoraproject.org/pub/epel/5/x86_64/epel-release-5-4.noarch.rpm
+				</screen>
+			</section>
+			<section>
+				<title>Fedora 6.x</title>
+				<para>6.x</para>
+				<screen>
+rpm -Uvh http://download.fedora.redhat.com/pub/epel/6/i386/epel-release-6-5.noarch.rpm
+rpm -Uvh http://download.fedora.redhat.com/pub/epel/6/x86_64/epel-release-6-5.noarch.rpm
+				</screen>
+				<para>上面的地址已经停用，新地址在：http://mirrors.fedoraproject.org/publiclist</para>
+				<screen>
+rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-7.noarch.rpm
+				</screen>
+				<para>epel-release-6-7.noarch.rpm 升级为 epel-release-6-8.noarch.rpm </para>
+				<screen>
+rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+				</screen>
+			</section>
+			<section>
+				<title>Fedora 7.x</title>
+				<para>http://ftp.cuhk.edu.hk/pub/linux/fedora-epel/7/x86_64/repoview/epel-release.html</para>
+				<screen>
+yum localinstall -y http://ftp.cuhk.edu.hk/pub/linux/fedora-epel/7/x86_64/e/epel-release-7-5.noarch.rpm
+				</screen>
+			</section>
+		</section>
+		<section>
+			<title>rpmforge-release</title>
+			<para>http://wiki.centos.org/AdditionalResources/Repositories/RPMForge</para>
+			<section>
+    			<title>CentOS 5.x</title>
+	    		<screen>
+http://packages.sw.be/rpmforge-release/rpmforge-release-0.5.2-2.el5.rf.i386.rpm
+http://packages.sw.be/rpmforge-release/rpmforge-release-0.5.2-2.el5.rf.x86_64.rpm
+	    		</screen>
+	    		<screen>
+# wget http://packages.sw.be/rpmforge-release/rpmforge-release-0.5.2-2.el5.rf.x86_64.rpm
+# rpm --import http://apt.sw.be/RPM-GPG-KEY.dag.txt
+# rpm -K rpmforge-release-0.5.2-2.el5.rf.*.rpm
+# rpm -i rpmforge-release-0.5.2-2.el5.rf.*.rpm
+    			</screen>
+            </section>
+			<section>
+    			<title>CentOS 6.x</title>
+    			<screen>
+i686 http://packages.sw.be/rpmforge-release/rpmforge-release-0.5.2-2.el6.rf.i686.rpm
+x86_64 http://packages.sw.be/rpmforge-release/rpmforge-release-0.5.2-2.el6.rf.x86_64.rpm
+
+
+rpm --import http://apt.sw.be/RPM-GPG-KEY.dag.txt
+rpm -K http://packages.sw.be/rpmforge-release/rpmforge-release-0.5.2-2.el6.rf.x86_64.rpm
+rpm -i http://packages.sw.be/rpmforge-release/rpmforge-release-0.5.2-2.el6.rf.x86_64.rpm
+    			</screen>
+    			<para>CentOS 6.5</para>
+    			<screen>
+http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.3-1.el6.rf.i686.rpm
+http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm
+    			</screen>
+    		</section>
+			<section>
+				<title>CentALT</title>
+				<para>http://centos.alt.ru</para>
+				<screen>
+http://centos.alt.ru/repository/centos/5/i386/centalt-release-5-3.noarch.rpm
+http://centos.alt.ru/repository/centos/5/x86_64/centalt-release-5-3.noarch.rpm
+				</screen>
+				<screen>
+http://centos.alt.ru/repository/centos/6/i386/centalt-release-6-1.noarch.rpm
+http://centos.alt.ru/repository/centos/6/x86_64/centalt-release-6-1.noarch.rpm
+				</screen>
+				<para>含 php-fpm 等包</para>
+				<screen>
+rpm -Uvh http://centos.alt.ru/repository/centos/6/x86_64/centalt-release-6-1.noarch.rpm
+				</screen>
+			</section>
+		</section>
+
+		<section id="atomic">
+			<title>atomic</title>
+			<screen>
+http://www6.atomicorp.com/channels/atomic/centos/5/x86_64/RPMS/atomic-release-1.0-14.el5.art.noarch.rpm
+			</screen>
+		</section>
+		<section id="famillecollet">
+			<title>famillecollet</title>
+			<screen>
+rpm --import http://rpms.famillecollet.com/RPM-GPG-KEY-remi
+rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+			</screen>
+		</section>
+		<section id="rpmfind">
+			<title>rpmfind.net</title>
+			<para>http://rpmfind.net</para>
+		</section>
+		<section id="pkgs">
+			<title>pkgs.org</title>
+			<para>http://pkgs.org/</para>
+		</section>
+		<section>
+			<title>China Resource</title>
+			<ulink url="http://mirrors.163.com/"> http://mirrors.163.com/ </ulink>
+			<ulink url="http://mirrors.sohu.com/"> http://mirrors.sohu.com/ </ulink>
+		</section>
+		<section>
+			<title>制作本地共享源</title>
+			<para>我使用Ubuntu + vsftpd为 Redhat 提供源</para>
+			<para>将光盘Mount到/mnt，或使用iso文件Mount 到 /mnt</para>
+			<screen>
+sudo mount /dev/cdrom /mnt/
+or
+sudo mount -o loop rhel-server-5.6-i386-dvd.iso /mnt
+			</screen>
+			<para>将整个光盘复制到ftp的anonymous目录或者http目录</para>
+			<screen>
+sudo rsync -auvP /mnt/* /srv/ftp/
+			</screen>
+			<para>一般完整DVD光盘复制，不需要做此步骤。如果你的RPM看来自非官方，需要运行createrepo</para>
+			<screen>
+cd /srv/ftp/
+sudo apt-get install createrepo
+sudo createrepo -g repodata/comps-rhel5-server-core.xml Server
+			</screen>
+			<para>FTP方式</para>
+			<screen>
+			<![CDATA[
+cat > /etc/yum.repos.d/rhel-source-dvd.repo <<EOF
+[rhel-source-dvd]
+name=Red Hat Enterprise Linux $releasever - Source
+baseurl=ftp://172.16.1.2/Server
+enabled=1
+gpgcheck=1
+gpgkey=ftp://172.16.1.2/RPM-GPG-KEY-redhat-release
+EOF
+			]]>
+			</screen>
+			<para>HTTP方式</para>
+			<screen>
+			<![CDATA[
+cat > /etc/yum.repos.d/rhel-source-dvd.repo <<EOF
+[rhel-source-dvd]
+name=Red Hat Enterprise Linux $releasever - Source
+baseurl=http://172.16.1.2/Server
+enabled=1
+gpgcheck=1
+gpgkey=http://172.16.1.2/RPM-GPG-KEY-redhat-release
+EOF
+			]]>
+			</screen>
+			<para>还可以使用本地文件或者光盘Mount目录</para>
+			<screen>
+			<![CDATA[
+cat > /etc/yum.repos.d/rhel-source-dvd.repo <<EOF
+[rhel-source-dvd]
+name=Red Hat Enterprise Linux $releasever - Source
+baseurl=file:///mnt/Server
+enabled=1
+gpgcheck=1
+gpgkey=file:///mnt/RPM-GPG-KEY-redhat-release
+EOF
+			]]>
+			</screen>
+			<screen>
+yum clean all
+yum list updates
+			</screen>
+		</section>
+	</section>
+	<section id="yum">
+		<title>yum - Yellowdog Updater Modified</title>
+		<section>
+			<title>install</title>
+			<screen>
+yum -y install package
+			</screen>
+			<para>reinstall</para>
+			<screen>
+yum -y reinstall package
+			</screen>
+		</section>
+		<section>
+			<title>localinstall</title>
+			<para>yum localinstall 可以代替 rpm -ivh 并且会自己安装依赖包</para>
+			<screen>
+# yum localinstall asymptote-2.08-1.fc12.i686.rpm
+			</screen>
+		</section>
+		<section>
+			<title>list</title>
+			<screen>
+			<![CDATA[
+yum list
+			]]>
+			</screen>
+			<para>列出已经安装的包</para>
+			<screen>
+			<![CDATA[
+yum list installed
+
+yum list installed | wc -l
+
+yum list installed ntp
+
+yum list installed mysql\*
+			]]>
+			</screen>
+			
+			<screen>
+yum list updates
+yum list extras
+			</screen>
+		</section>
+		<section>
+			<title>search</title>
+			<screen>
+yum search mysql
+			</screen>
+		</section>
+		<section>
+			<title>update / upgrade</title>
+			<para>check update</para>
+			<screen>
+			<![CDATA[
+[root@development ~]# yum check-update
+[root@development ~]# yum -y update
+			]]>
+			</screen>
+			<para>upgrade</para>
+			<screen>
+# yum upgrade
+			</screen>
+		</section>
+		<section>
+			<title>remove</title>
+			<para></para>
+			<screen>
+#yum remove httpd
+			</screen>
+			<!--
+#yum clean packages
+清除暂存中rpm头文件
+#yum clearn headers
+清除暂存中旧的rpm头文件
+#yum clean oldheaders
+清除暂存中旧的rpm头文件和包文件
+#yum clearn 或#yum clearn all
+注:相当于yum clean packages + yum clean oldheaders
+			 -->
+		</section>
+		<section id="installed">
+			<title>installed</title>
+			<screen>
+# yum list installed
+			</screen>
+		</section>
+		<section>
+			<title>group</title>
+			<section>
+				<title>grouplist</title>
+				<screen>
+[root@localhost ~]#  yum grouplist
+Loaded plugins: fastestmirror
+Setting up Group Process
+Loading mirror speeds from cached hostfile
+ * addons: mirrors.163.com
+ * base: mirrors.163.com
+ * extras: mirrors.163.com
+ * updates: mirrors.163.com
+Installed Groups:
+   Administration Tools
+   Development Libraries
+   Dialup Networking Support
+   Editors
+   Mail Server
+   Network Servers
+   Office/Productivity
+   Server Configuration Tools
+   System Tools
+   Text-based Internet
+   Web Server
+   Yum Utilities
+Available Groups:
+   Authoring and Publishing
+   Base
+   Beagle
+   Cluster Storage
+   Clustering
+   DNS Name Server
+   Development Tools
+   Emacs
+   Engineering and Scientific
+   FTP Server
+   FreeNX and NX
+   GNOME Desktop Environment
+   GNOME Software Development
+   Games and Entertainment
+   Graphical Internet
+   Graphics
+   Horde
+   Java
+   Java Development
+   KDE (K Desktop Environment)
+   KDE Software Development
+   KVM
+   Legacy Network Server
+   Legacy Software Development
+   Legacy Software Support
+   Mono
+   MySQL Database
+   News Server
+   OpenFabrics Enterprise Distribution
+   PostgreSQL Database
+   Printing Support
+   Ruby
+   Sound and Video
+   Tomboy
+   Virtualization
+   Windows File Server
+   X Software Development
+   X Window System
+   XFCE-4.4
+Done
+
+				</screen>
+			</section>
+			<section>
+				<title>groupinfo</title>
+				<screen>
+# yum groupinfo "Server Configuration Tools"
+Loaded plugins: fastestmirror
+Setting up Group Process
+Loading mirror speeds from cached hostfile
+ * addons: centos.ustc.edu.cn
+ * base: centos.ustc.edu.cn
+ * extras: centos.ustc.edu.cn
+ * updates: centos.ustc.edu.cn
+
+Group: Server Configuration Tools
+ Description: This group contains all of CentOS's custom server configuration tools.
+ Default Packages:
+   system-config-httpd
+   system-config-nfs
+   system-config-printer-gui
+   system-config-samba
+   system-config-securitylevel
+   system-config-services
+ Optional Packages:
+   system-config-bind
+   system-config-boot
+   system-switch-mail-gnome
+				</screen>
+			</section>
+			<section>
+				<title>groupinstall</title>
+				<screen>
+#yum groupinstall 'X Window System'  -y
+
+安装GNOME桌面环境
+#yum groupinstall  'GNOME Desktop Environment' -y
+
+安装KDE桌面环境
+#yum groupinstall 'KDE (K Desktop Environment)' -y
+				</screen>
+			</section>
+
+			<section>
+				<title>groupremove</title>
+				<screen>
+卸载GNOME桌面环境
+#yum groupremove "GNOME Desktop Environment"
+
+卸载KDE桌面环境
+#yum groupremove "KDE (K Desktop Environment)"
+				</screen>
+				<screen>
+yum groupremove "GNOME Desktop Environment" "Games and Entertainment" "Graphical Internet" "Graphics" "Office/Productivity" "Printing Support" "Sound and Video" "Web Server" "X Window System"
+				</screen>
+			</section>
+		</section>
+		<section>
+			<title>查看包的依赖关系</title>
+			<screen>
+# yum deplist libcurl
+			</screen>
+		</section>
+		<section>
+			<title>provides / whatprovides</title>
+			<para>查询pg_config命令在那一个包中</para>
+			<screen>
+# yum provides "*/pg_config"
+			</screen>
+			<screen>
+# yum provides "*/libpq-fe.h"
+			</screen>
+			<screen>
+# yum whatprovides mysql_config			
+			</screen>
+		</section>
+		<section>
+			<title>YUM 源管理</title>
+			<para>列出所有yum源</para>
+			<screen>
+# yum repolist all
+			</screen>
+			<para>查看启用YUM源</para>
+			<screen>
+# yum repolist enabled
+			</screen>
+			<para>查看禁用YUM源</para>
+			<screen>
+# yum repolist disabled
+			</screen>
+			<para>禁用YUM源</para>
+			<screen>
+# yum-config-manager --disable mysql-connectors-community
+			</screen>
+			<para>启用YUM源</para>
+			<screen>
+sudo yum-config-manager --enable mysql57-community-dmr
+			</screen>
+			<para>或者修改/etc/yum.repos.d/文件也能实现相同的作用  enabled=0 为禁用 enabled=1启用</para>
+		</section>
+	</section>
+	<section id="rpm">
+		<title>rpm - RPM Package Manager</title>
+		<section id="rpm.install">
+			<title>install/upgrade/remove</title>
+			<screen>
+1.安装一个包
+# rpm -ivh
+
+2.升级一个包
+# rpm -Uvh
+
+3.删除一个包
+# rpm -e
+			</screen>
+			<para>不检查依赖性关系</para>
+			<screen>
+rpm -ivh --nodeps
+			</screen>
+			<para>强制安装</para>
+			<screen>
+rpm -ivh --force --nodeps
+			</screen>
+			<section>
+				<title>--prefix</title>
+				<para>安装到指定目录</para>
+				<screen>
+rpm -ivh --prefix=/opt/usr your.rpm
+				</screen>
+				<para>同时修改多个路径：</para>
+				<screen>
+rpm xxx.rpm --relocate=/usr=/opt/usr --relocate=/etc=/usr/etc
+				</screen>
+			</section>
+		</section>
+		<section id="rpm.query">
+			<title>query</title>
+			<para>查询一个包是否被安装</para>
+			<screen>
+[root@database ~]# rpm -q mysql
+mysql-5.0.77-3.el5
+mysql-5.0.77-3.el5
+			</screen>
+			<para>安装的包的信息</para>
+			<screen>
+[root@database ~]# rpm -qi nginx
+Name        : nginx                        Relocations: (not relocatable)
+Version     : 0.6.39                            Vendor: Fedora Project
+Release     : 2.el5                         Build Date: Sat 05 Dec 2009 05:31:02 AM HKT
+Install Date: Mon 28 Dec 2009 02:36:36 PM HKT      Build Host: x86-6.fedora.phx.redhat.com
+Group       : System Environment/Daemons    Source RPM: nginx-0.6.39-2.el5.src.rpm
+Size        : 772477                           License: BSD
+Signature   : DSA/SHA1, Mon 07 Dec 2009 07:06:40 AM HKT, Key ID 119cc036217521f6
+Packager    : Fedora Project
+URL         : http://nginx.net/
+Summary     : Robust, small and high performance http and reverse proxy server
+Description :
+Nginx [engine x] is an HTTP(S) server, HTTP(S) reverse proxy and IMAP/POP3
+proxy server written by Igor Sysoev.
+
+One third party module, nginx-upstream-fair, has been added.
+			</screen>
+			<para>列出该包中有哪些文件</para>
+			<screen>
+[root@database ~]# rpm -ql cacti.noarch |more
+/etc/cacti
+/etc/cacti/db.php
+/etc/cron.d/cacti
+/etc/httpd/conf.d/cacti.conf
+/etc/logrotate.d/cacti
+/usr/share/cacti
+/usr/share/cacti/about.php
+/usr/share/cacti/auth_changepassword.php
+/usr/share/cacti/auth_login.php
+/usr/share/cacti/cdef.php
+/usr/share/cacti/cmd.php
+/usr/share/cacti/color.php
+/usr/share/cacti/data_input.php
+/usr/share/cacti/data_queries.php
+/usr/share/cacti/data_sources.php
+/usr/share/cacti/data_templates.php
+/usr/share/cacti/gprint_presets.php
+/usr/share/cacti/graph.php
+/usr/share/cacti/graph_image.php
+/usr/share/cacti/graph_settings.php
+/usr/share/cacti/graph_templates.php
+/usr/share/cacti/graph_templates_inputs.php
+/usr/share/cacti/graph_templates_items.php
+			</screen>
+			<para>列出一个文件属于哪一个RPM包</para>
+			<screen>
+[root@database ~]# rpm -qf /usr/bin/svn
+subversion-1.4.2-4.el5_3.1
+			</screen>
+			<screen>
+rpm -q --qf '%{NAME}-%{VERSION}-%{RELEASE} (%{ARCH})\n' \
+gcc
+gcc-c++
+
+rpm -qa --qf '%{NAME} %{VENDOR}\n'
+            </screen>
+			<para>列出所有被安装的RPM包</para>
+			<screen>
+[root@database ~]# rpm -qa |more
+pciutils-devel-2.2.3-7.el5
+rmt-0.4b41-4.el5
+bsh-manual-1.3.0-9jpp.1
+libgcc-4.1.2-46.el5
+libICE-1.0.1-2.1
+popt-1.10.2.3-18.el5
+libXau-1.0.1-3.1
+nspr-4.7.4-1.el5_3.1
+libjpeg-6b-37
+libogg-1.1.3-3.el5
+libXdmcp-1.0.1-2.1
+iproute-2.6.18-10.el5
+libraw1394-1.3.0-1.el5
+libbonobo-2.16.0-1.fc6
+libavc1394-0.5.3-1.fc6
+ttmkfdir-3.0.9-23.el5
+cdrecord-2.01-10.7.el5
+grep-2.5.1-55.el5
+dmidecode-2.9-1.el5
+nspr-4.7.4-1.el5_3.1
+ncurses-5.5-24.20060715
+libgcrypt-1.4.4-5.el5
+keyutils-libs-1.2-1.el5
+			</screen>
+			<section id="changelog">
+				<title>changelog 查看变更日志</title>
+				<para>查看变更日志</para>
+				<screen>
+rpm -q --changelog openssl-1.0.1e				
+				</screen>
+				<para>从变更日志中找出 CVE-2014-0160 漏洞的修复情况</para>
+				<screen>
+				<![CDATA[
+$ rpm -q --changelog openssl-1.0.1e | grep -B 1 CVE-2014-0160
+* Tue Apr 08 2014 Tomáš Mráz <tmraz@redhat.com> 1.0.1e-34
+- fix CVE-2014-0160 - information disclosure in TLS heartbeat extension
+				]]>
+				</screen>
+			</section>
+		</section>
+	</section>
+	<section id="rpmbuild">
+		<title>rpmbuild - Build RPM Package(s)</title>
+		<para>安装rpmbuild,我们将使用它来制作rpm包</para>
+		<screen>
+yum search rpm-build
+yum install -y rpm-build
+		</screen>
+		<para>Debian: sudo apt-get install rpm</para>
+		<para>rpm 工作空间，默认是/usr/src/redhat/</para>
+		<screen>
+		<![CDATA[
+mkdir -p ~/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
+
+echo "%_topdir /home/neo/rpmbuild" >> ~/.rpmmacros
+echo "%packager Test User <test@example.com>" >> ~/.rpmmacros
+cat ~/.rpmmacros
+
+touch ~/rpmbuild/SPECS/package-1.0.spec
+		]]>
+		</screen>
+		<para>准备好你的文件包</para>
+		<screen>
+tar zcvf %{name}-%{version}.tar.gz your_dir
+		</screen>
+		<para>编辑spec文件</para>
+		<screen>
+		<![CDATA[
+vim ~/rpmbuild/SPECS/package-1.0.spec
+
+Summary: My Test Package
+Name: test
+Version: 1.0
+Release: 1.0
+License: BSD
+# group you want your package in, mostly for GUI package browsers
+# some example groups used by vendors:
+# http://www.rpmfind.net/linux/RPM/Groups.html
+Group: Networking/Daemons
+# your name for example
+Packager: Neo Chen <openunix@163.com>
+#
+#Source: http://full.url.to.the/package/%{name}-%{version}.tar.gz
+Source: %{name}-%{version}.tar.gz
+# list all your patches here:
+#Patch:
+# list all packages required to build this package
+#BuildRequires:
+#Provides:
+# list all packages that conflict with this one:
+#BuildRoot: %{_tmppath}/%{name}-%{version}-build
+BuildRoot: %{_tmppath}/%{name}-%{version}
+
+####
+# full length description
+%description
+
+description
+
+#####
+# this prepares a fresh build directory in ~/build/BUILD, useful macros here
+# are:
+# %setup - cleans any previous builds and untargzips the source
+# %patch - applies patches
+# any other commands here are executed as standard sh commands
+%prep
+
+%setup
+#%patch
+
+
+#####
+# this tells rpmbuild how to build your package, rpmbuild runs it as a sh
+# script
+%build
+#make
+
+#####
+# all the steps necessary to install your package into $RPM_BUILD_ROOT
+# first step is to clear $RPM_BUILD_ROOT
+%install
+[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf $RPM_BUILD_ROOT
+cp -r ../* %{_tmppath}
+#install all files under RPM_BUILD_ROOT
+#make install DESTDIR=$RPM_BUILD_ROOT
+# now you can remove uneeded stuff
+#rm -f $RPM_BUILD_ROOT{_prefix}
+
+#####
+# NOTE: this section is optional
+# commands run just before the package is installed
+%pre
+#/usr/sbin/useradd -c "test user" -r -s /bin/false -u 666 -d / neo 2> /dev/null
+
+#####
+# NOTE: this section is optional
+# commands run before uninstalling the software
+%preun
+#/sbin/service test stop > /dev/null 2>&1
+#/sbin/chkconfig --del test
+
+#####
+# NOTE: this section is optional
+# commands run after installing the package
+%post
+#/sbin/chkconfig -add test
+#touch /var/log/test
+
+#####
+# NOTE: this section is optional
+# commands run after unistalling the package
+%postun
+#/sbin/service test stop
+#/usr/sbin/userdel test
+
+#####
+# list all the files that are part of the package. If a file is not in the
+# list rpmbuild won't put it in the package
+# see below on how to automate the process of creating this list.
+# some useful macros here:
+# %doc /path/to/filename - installs filename into /path/to/filename and marks
+# it as being documentation
+# %config /etc/config_file - similar for configuration files
+# %attr(mode, user, group) file - lets you specify file attributes applied
+# during installation, use - if you want to use defaults
+%files
+#/usr/bin/test
+#/usr/sbin/test
+# this will package the dir and all directories inside it
+#/example/of/a/dir
+/srv/neo
+# this will package only the 'dir' directory
+#%dir /example/of/a/dir
+
+
+#####
+# document changes between package releases
+%changelog
+
+		]]>
+		</screen>
+		<para>开始制作rpm文件</para>
+		<screen>
+rpmbuild -ba ~/rpmbuild/SPECS/package-1.0.spec
+		</screen>
+		<para>查看你的rpm文件包含文件列表</para>
+		<screen>
+rpm -qpl /usr/src/redhat/RPMS/x86_64/test-1.0-1.0.x86_64.rpm
+/srv
+/srv/bin
+/srv/bin/console
+/srv/bin/nodekeeper
+/srv/etc
+/srv/etc/commands.cfg
+/srv/etc/nodekeeper.cfg
+/srv/etc/protocol.cfg
+/srv/logs
+/srv/logs/nodekeeper.log
+/srv/run
+/srv/run/nodekeeper.pid
+		</screen>
+		<para>安装RPM</para>
+		<screen>
+# rpm -Uvh --nodeps /tmp/test-1.0-1.0.x86_64.rpm
+Preparing...                ########################################### [100%]
+   1:test                   ########################################### [100%]
+		</screen>
+		<para>也可以使用 yum 安装</para>
+		<screen>
+yum localinstall /tmp/test-1.0-1.0.x86_64.rpm
+		</screen>
+		<para>查看安装信息</para>
+		<screen>
+		<![CDATA[
+# rpm -qi test
+Name        : test                         Relocations: (not relocatable)
+Version     : 1.0                               Vendor: (none)
+Release     : 1.0                           Build Date: Wed 21 Sep 2011 05:50:54 PM CST
+Install Date: Wed 21 Sep 2011 05:46:50 PM CST      Build Host: dev3.example.com
+Group       : Networking/Daemons            Source RPM: test-1.0-1.0.src.rpm
+Size        : 20373                            License: BSD
+Signature   : (none)
+Packager    : Neo Chen <openunix@163.com>
+Summary     : My Test Package
+Description :
+
+description
+		]]>
+		</screen>
+		<para>是使用yum info 查看信息</para>
+		<screen>
+# yum info test
+Loaded plugins: fastestmirror
+Loading mirror speeds from cached hostfile
+ * base: mirrors.163.com
+ * extras: mirrors.163.com
+ * updates: mirrors.163.com
+Installed Packages
+Name       : test
+Arch       : x86_64
+Version    : 1.0
+Release    : 1.0
+Size       : 20 k
+Repo       : installed
+Summary    : My Test Package
+License    : BSD
+Description:
+           : description
+		</screen>
+		<section>
+			<title>RPM_directory_macros</title>
+			<para>http://fedoraproject.org/wiki/Packaging/RPMMacros#RPM_directory_macros</para>
+			<screen>
+			<![CDATA[
+%{_sysconfdir}        /etc
+
+%{_prefix}            /usr
+
+%{_exec_prefix}       %{_prefix}
+
+%{_bindir}            %{_exec_prefix}/bin
+
+%{_lib}               lib (lib64 on 64bit systems)
+
+%{_libdir}            %{_exec_prefix}/%{_lib}
+
+%{_libexecdir}        %{_exec_prefix}/libexec
+
+%{_sbindir}           %{_exec_prefix}/sbin
+
+%{_sharedstatedir}    /var/lib
+
+%{_datadir}           %{_prefix}/share
+
+%{_includedir}        %{_prefix}/include
+
+%{_oldincludedir}     /usr/include
+
+%{_infodir}           /usr/share/info
+
+%{_mandir}            /usr/share/man
+
+%{_localstatedir}     /var
+
+%{_initddir}          %{_sysconfdir}/rc.d/init.d
+
+Note: On releases older than Fedora 10 (and EPEL), %{_initddir} does not exist. Instead, you should use the deprecated%{_initrddir} macro.
+RPM directory macros
+%{_topdir}            %{getenv:HOME}/rpmbuild
+
+%{_builddir}          %{_topdir}/BUILD
+
+%{_rpmdir}            %{_topdir}/RPMS
+
+%{_sourcedir}         %{_topdir}/SOURCES
+
+%{_specdir}           %{_topdir}/SPECS
+
+%{_srcrpmdir}         %{_topdir}/SRPMS
+
+%{_buildrootdir}      %{_topdir}/BUILDROOT
+
+Note: On releases older than Fedora 10 (and EPEL), %{_buildrootdir} does not exist.
+Build flags macros
+%{_global_cflags}     -O2 -g -pipe
+
+%{_optflags}          %{__global_cflags} -m32 -march=i386 -mtune=pentium4 # if redhat-rpm-config is installed
+
+Other macros
+%{_var}               /var
+
+%{_tmppath}           %{_var}/tmp
+
+%{_usr}               /usr
+
+%{_usrsrc}            %{_usr}/src
+
+%{_docdir}            %{_datadir}/doc
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>--define 专递模板变量</title>
+			<para>spec 文件中定义宏默认值</para>
+			<screen>
+			<![CDATA[
+%define <variable> <value>
+			]]>
+			</screen>
+			<para>另一种是在外部传递变量值</para>
+			<screen>
+rpmbuild -ba SPECS/bacula.spec --define "build_su110 1" --define "build_mysql4 1"
+			</screen>
+			<para>注意：当两种同时使用时，外部--define无法替代%define 的定义。</para>
+		</section>
+		<section>
+			<title></title>
+			<para>查看GPG证书</para>
+			<screen>
+			<![CDATA[
+$ gpg --list-keys
+/home/neo/.gnupg/pubring.gpg
+----------------------------
+pub   1024R/63268A35 2013-09-11
+uid                  Neo Chen (netkiller) <netkiller@msn.com>
+sub   1024R/F4F946F9 2013-09-11
+			]]>
+			</screen>
+			<para>设置 _gpg_name 宏，与上面查看结果需一致</para>
+			<screen>
+			<![CDATA[
+cat << EOF >> ~/.rpmmacros
+%_signature gpg
+%_gpg_name Neo Chen (netkiller) <netkiller@msn.com>
+%_gpgpath ~/.gnupg
+%_gpgbin /usr/bin/gpg
+EOF
+			]]>
+			</screen>
+			<para>建立RPM</para>
+			<screen>
+rpmbuild --define "_topdir /path/to/macrodir" -bb --sign spec
+			</screen>
+			<para>如果你的证书有Passphrase，会提示你输入了密码。</para>
+			<screen>
+Enter pass phrase:
+Pass phrase is good.
+			</screen>
+		</section>
+		<section>
+			<title>FAQ</title>
+
+			<para>error: File /home/neo/rpmbuild/SOURCES/netkiller-docbook-1.0.1.tar.gz: No such file or directory</para>
+			<para>Source 定义的文件不存在，如果你需要忽略Source可以使用  %setup -T</para>
+		</section>
+	</section>
+</chapter>

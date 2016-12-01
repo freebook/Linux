@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="kickstart">
+	<title>kickstart</title>
+	<chapterinfo>
+		<abstract>
+		  <para>Kickstart 无人值守安装</para>
+		</abstract>
+		<keywordset>
+			<keyword>ISO</keyword>
+			<keyword>kickstart</keyword>
+			<keyword>ks</keyword>
+		</keywordset>
+	</chapterinfo>
+	<section id="kickstart.install">
+		<title>install kickstart</title>
+		<screen>
+# yum search kickstart
+Loaded plugins: refresh-packagekit
+========================================================================== Matched: kickstart ==========================================================================
+pykickstart.noarch : A python library for manipulating kickstart files
+system-config-kickstart.noarch : A graphical interface for making kickstart files
+sl-revisor-configs.noarch : Kickstart and config files for creating your own SL Spins
+
+# yum install system-config-kickstart
+		</screen>
+	</section>
+	<section id="kickstart.cfg">
+		<title>ks.cfg</title>
+		<screen>
+# cat ks.cfg
+#platform=x86, AMD64, or Intel EM64T
+#version=DEVEL
+# Firewall configuration
+firewall --disabled
+# Install OS instead of upgrade
+install
+# Use CDROM installation media
+cdrom
+# Root password
+rootpw --iscrypted $1$5T/3LoJq$0B3n9sC.NuuGslFqkWDSw/
+# Network information
+network  --bootproto=dhcp --device=eth0 --onboot=on
+# System authorization information
+auth  --useshadow  --passalgo=md5
+# Use graphical install
+graphical
+firstboot --disable
+# System keyboard
+keyboard us
+# System language
+lang en_US
+# SELinux configuration
+selinux --disabled
+# Installation logging level
+logging --level=info
+
+# System timezone
+timezone  Asia/Harbin
+# System bootloader configuration
+bootloader --location=mbr
+# Clear the Master Boot Record
+zerombr
+# Partition clearing information
+clearpart --all --initlabel
+# Disk partitioning information
+part /boot --fstype="ext4" --size=500
+part swap --fstype="swap" --size=32000
+part / --fstype="ext4" --size=50000
+part /opt --fstype="ext4" --grow --size=1
+		</screen>
+	</section>
+	<section id="kickstart.boot">
+		<title>boot 参数</title>
+		<screen>
+		<![CDATA[
+boot:
+
+linux ks=floppy
+linux ks=floppy:/<path>
+linux ks=hd:fd0:/ks.cfg
+
+linux ks=hd:<device>:/<file>
+linux ks=hd:sda3:/ks.cfg
+
+linux ks=nfs:<server:>/<path> ksdevice=eth1
+linux ks=nfs:<server>:/<path>
+
+linux ks=http://<server>/<path>
+
+linux ks=file:/<file>
+linux ks=cdrom:/<path>
+linux ks=cdrom:/ks.cfg
+
+USB:
+
+linux install ks=hd:sda:/anaconda-ks.cfg
+or
+linux install ks=hd:sda1:/anaconda-ks.cfg
+		]]>
+		</screen>
+	</section>
+</chapter>

@@ -648,13 +648,27 @@ $ sudo apt-get install goaccess
 # goaccess -f access.log
 		</screen>
 	</section>
-<!--
-		<section>
-			<title>install</title>
-		</section>
-		<section>
-			<title></title>
-
-		</section>
- -->
 </section>
+
+<section id="mail">
+	<title>Mail</title>
+	<section id="pflogsumm">
+		<title>pflogsumm.pl - Produce Postfix MTA logfile summary</title>
+		<screen>
+# yum install -y postfix-perl-scripts		
+		</screen>
+		<screen>
+pflogsumm `ls -rt /var/log/maillog*`
+pflogsumm -d today /var/log/maillog
+pflogsumm -d yesterday /var/log/maillog
+		</screen>
+		<para>发送统计报表到邮箱</para>
+		<screen>
+		<![CDATA[
+0 5 * * * pflogsumm -d yesterday /var/log/maillog 2>&1 | mail -s "Mail Report" postmaster@netkiller.cn
+		]]>	
+		</screen>
+	</section>	
+</section>
+
+

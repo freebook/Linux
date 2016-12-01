@@ -1,0 +1,169 @@
+	<!-- 
+[root@localhost ~]# cat /usr/local/lvs/lvs-dr-start 
+#!/bin/bash
+### Disable IP_Forward in Linux Kernel ###
+echo 0 > /proc/sys/net/ipv4/ip_forward
+
+### Enable ICMP Redirect (Linux Default)###
+echo 1 > /proc/sys/net/ipv4/conf/all/send_redirects
+echo 1 > /proc/sys/net/ipv4/conf/default/send_redirects
+echo 1 > /proc/sys/net/ipv4/conf/eth1/send_redirects
+
+### Add VIP Address and Route ###
+#/sbin/ifconfig eth1:0 172.16.1.100 broadcast 172.16.1.100 netmask 255.255.255.255 up
+#/sbin/route add -host 172.16.1.100 dev eth1:0
+
+### Add Real Server via Direct Route ###
+#/sbin/ipvsadm -C
+#/sbin/ipvsadm -A -t 172.16.1.100:80 -s wlc
+#/sbin/ipvsadm -a -t 172.16.1.100:80 -r 172.168.1.7:80 -g
+#/sbin/ipvsadm -a -t 172.16.1.100:80 -r 172.168.1.9:80 -g
+
+VIP1=172.16.1.100
+#VIP1=120.132.140.24
+RIP1=172.16.1.7
+RIP2=172.16.1.22
+/sbin/ifconfig eth1:0 $VIP1 broadcast $VIP1 netmask 255.255.255.255 up
+/sbin/route add -host $VIP1 dev eth1:0
+/sbin/ipvsadm -A -t $VIP1:80 -s wlc
+/sbin/ipvsadm -a -t $VIP1:80 -r $RIP1:80 -g
+/sbin/ipvsadm -a -t $VIP1:80 -r $RIP2:80 -g	
+	
+[root@localhost ~]# cat /usr/local/lvs/lvs-client-start	
+#!/bin/bash
+### Disable IP_Forward in Linux Kernel ###
+echo 0 > /proc/sys/net/ipv4/ip_forward
+
+### Disable ARP Reponse on This RealServer ###
+echo 1 > /proc/sys/net/ipv4/conf/lo/arp_ignore
+echo 2 > /proc/sys/net/ipv4/conf/lo/arp_announce
+echo 1 > /proc/sys/net/ipv4/conf/all/arp_ignore
+echo 2 > /proc/sys/net/ipv4/conf/all/arp_announce
+
+### Add VIP Address and Route ###
+#VIP1=172.16.1.100
+VIP1=120.132.144.6
+/sbin/ifconfig lo:0 $VIP1 broadcast $VIP1 netmask 255.255.255.255 up
+/sbin/route add -host $VIP1 dev lo:0
+
+#/sbin/ifconfig lo:0 172.16.1.100 broadcast 172.16.1.100 netmask 255.255.255.255 up
+#/sbin/route add -host 172.16.1.100 dev lo:0	
+
+
+
+[root@localhost ~]# cat /usr/local/lvs/lvs-nat-start
+#!/bin/bash
+### Enable IP_Forward in Linux Kernel ###
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+### Disable ICMP Redirect ###
+echo 0 > /proc/sys/net/ipv4/conf/all/send_redirects
+echo 0 > /proc/sys/net/ipv4/conf/default/send_redirects
+echo 0 > /proc/sys/net/ipv4/conf/eth0/send_redirects
+echo 0 > /proc/sys/net/ipv4/conf/eth1/send_redirects
+
+
+### Add VIP Address and Route ###
+#/sbin/ifconfig eth1:0 172.16.1.100 broadcast 172.16.1.100 netmask 255.255.255.255 up
+#/sbin/route add -host 172.16.1.100 dev eth1:0
+
+### Add Real Server via Direct Route ###
+#/sbin/ipvsadm -C
+#/sbin/ipvsadm -A -t 172.16.1.100:80 -s wlc
+#/sbin/ipvsadm -a -t 172.16.1.100:80 -r 172.168.1.7:80 -g
+#/sbin/ipvsadm -a -t 172.16.1.100:80 -r 172.168.1.9:80 -g
+
+### Add Real Server via NAT ###
+
+PIP1=120.132.144.6
+RIP1=172.16.1.21
+RIP2=172.16.1.22
+
+/sbin/ipvsadm -A -t $PIP1:80 -s wlc
+/sbin/ipvsadm -a -t $PIP1:80 -r $RIP1:80 -m
+/sbin/ipvsadm -a -t $PIP1:80 -r $RIP2:80 -m
+
+
+[root@localhost ~]# cat /usr/local/lvs/lvs-nat-start
+#!/bin/bash
+### Enable IP_Forward in Linux Kernel ###
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+### Disable ICMP Redirect ###
+echo 0 > /proc/sys/net/ipv4/conf/all/send_redirects
+echo 0 > /proc/sys/net/ipv4/conf/default/send_redirects
+echo 0 > /proc/sys/net/ipv4/conf/eth0/send_redirects
+echo 0 > /proc/sys/net/ipv4/conf/eth1/send_redirects
+
+
+### Add VIP Address and Route ###
+#/sbin/ifconfig eth1:0 172.16.1.100 broadcast 172.16.1.100 netmask 255.255.255.255 up
+#/sbin/route add -host 172.16.1.100 dev eth1:0
+
+### Add Real Server via Direct Route ###
+#/sbin/ipvsadm -C
+#/sbin/ipvsadm -A -t 172.16.1.100:80 -s wlc
+#/sbin/ipvsadm -a -t 172.16.1.100:80 -r 172.168.1.7:80 -g
+#/sbin/ipvsadm -a -t 172.16.1.100:80 -r 172.168.1.9:80 -g
+
+### Add Real Server via NAT ###
+
+PIP1=120.132.144.6
+RIP1=172.16.1.21
+RIP2=172.16.1.22
+
+/sbin/ipvsadm -A -t $PIP1:80 -s wlc
+/sbin/ipvsadm -a -t $PIP1:80 -r $RIP1:80 -m
+/sbin/ipvsadm -a -t $PIP1:80 -r $RIP2:80 -m
+
+
+[root@localhost ~]# cat /usr/local/firewall/firewall-start
+#!/bin/bash
+### Enable IP_Forward in Linux Kernel ###
+#echo 1 > /proc/sys/net/ipv4/ip_forward
+
+### Clean Filter Table's Polices ###
+/sbin/iptables -F 
+/sbin/iptables -X
+/sbin/iptables -Z
+
+### Set Filter Table Default Polices ###
+/sbin/iptables -P INPUT DROP
+/sbin/iptables -P OUTPUT ACCEPT
+/sbin/iptables -P FORWARD ACCEPT
+
+### Allow Lan Packets Coming ###
+/sbin/iptables -A INPUT -i lo -j ACCEPT
+/sbin/iptables -A INPUT -i eth1 -j ACCEPT
+
+### Allow Outside Access 80 Port ###
+/sbin/iptables -A INPUT -i eth0 -p tcp --dport 80 -j ACCEPT
+/sbin/iptables -A INPUT -i eth0 -p udp --dport 80 -j ACCEPT
+
+### Allow Outside Access SSH Service ###
+/sbin/iptables -A INPUT -i eth0 -p tcp --dport 22 -j ACCEPT
+/sbin/iptables -A INPUT -i eth0 -p udp --dport 22 -j ACCEPT
+
+### Not Allow Client Access From These Ports ###
+/sbin/iptables -A INPUT -i eth0 -p tcp --sport 1:1023 --dport 1:1023 -j DROP
+/sbin/iptables -A INPUT -i eth0 -p udp --sport 1:1023 --dport 1:1023 -j DROP
+ 
+/sbin/iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+/sbin/iptables -A INPUT -m state --state INVALID -j DROP
+
+### Allow Outside Ping ###
+/sbin/iptables -A INPUT -i eth0 -p icmp --icmp-type 8 -s any/0 -j ACCEPT
+
+### Deny NMap ###
+#/sbin/iptables -I INPUT -i eth0 -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
+#/sbin/iptables -I INPUT -i eth0 -p tcp --tcp-flags ALL FIN,URG,PSH -j DROP
+#/sbin/iptables -I INPUT -i eth0 -p tcp --tcp-flags ALL ALL -j DROP
+#/sbin/iptables -I INPUT -i eth0 -p tcp --tcp-flags ALL SYN,RST,ACK,FIN,URG -j DROP
+#/sbin/iptables -I INPUT -i eth0 -p tcp --tcp-flags ALL NONE -j DROP
+#/sbin/iptables -I INPUT -i eth0 -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
+#/sbin/iptables -I INPUT -i eth0 -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
+
+### Define fregment rule ####
+#/sbin/iptables -A INPUT -f -m limit --limit 100/s --limit-burst 100 -j ACCEPT
+#/sbin/iptables -A FORWARD -f -m limit --limit 100/s --limit-burst 100 -j ACCEPT
+	 -->

@@ -4,14 +4,15 @@
 	&chapter.zabbix.xml;
 	&chapter.cacti.xml;
 	&chapter.nagios.xml;
+	&chapter.log.xml;
 	&chapter.mrtg.xml;
 	&chapter.bandwidth.xml;
 	&chapter.munin.xml;
-	&chapter.network.cluster.xml;
 	&chapter.network.ntop.xml;
+	&chapter.netflow.xml;
+	&chapter.network.cluster.xml;
 	&chapter.network.observium.xml;
 	&chapter.network.opentsdb.xml;
 	&chapter.network.graphite.xml;
 	&chapter.icinga.xml;
-	&chapter.netflow.xml;
 	&chapter.varnish.xml;

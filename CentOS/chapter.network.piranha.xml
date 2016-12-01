@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="piranha" ?>
+	<title>Piranha - Cluster administation tools</title>
+	<chapterinfo>
+		<abstract>
+		  <para>Piranha 安装与配置</para>
+		</abstract>
+		<keywordset>
+			<keyword>Piranha</keyword>
+			<keyword>lvs</keyword>
+			<keyword>ipvsadmin</keyword>
+		</keywordset>
+	</chapterinfo>
+	<section id="install">
+		<title>install</title>
+		<para> Install piranha and ipvsadm packages on the LVS Routers</para>
+		<screen>
+yum -y install ipvsadm piranha
+		</screen>
+		<para>Turning on Packet Forwarding on the LVS Routers</para>
+		<screen>
+vi /etc/sysctl.conf
+
+net.ipv4.ip_forward = 1 把原来的0改成1
+使刚才的修改生效
+sysctl -p
+
+临时生效
+echo "1" >/proc/sys/net/ipv4/ip_forward
+		</screen>
+		<para>Configuring Services on the LVS Routers</para>
+		<screen>
+chkconfig pulse on
+chkconfig ipvsadm on
+chkconfig piranha-gui on
+		</screen>
+		<para>Setting a Password for the Piranha Configuration Tool</para>
+		<screen>
+# piranha-passwd
+		</screen>
+		<para>Starting the Piranha Configuration Tool Service</para>
+		<screen>
+# setenforce 0
+setenforce: SELinux is disabled
+# service ipvsadm start
+# service piranha-gui start
+		</screen>
+	</section>
+	<section id="configure">
+		<title>configure</title>
+		<para>http://your.domain.com:3636/</para>
+		<para>user: piranha </para>
+		<para>passwd: your piranha </para>
+		<para>/etc/sysconfig/ha/lvs.cf</para>
+	</section>
+	<section id="slb">
+		<title>real server</title>
+		<para>DR连接方式</para>
+		<screen>
+		<![CDATA[
+VIP=192.168.3.212
+ifconfig lo:0 $VIP netmask 255.255.255.255 broadcast $VIP
+/sbin/route add -host $VIP dev lo:0
+echo "1" >/proc/sys/net/ipv4/conf/lo/arp_ignore
+echo "2" >/proc/sys/net/ipv4/conf/lo/arp_announce
+echo "1" >/proc/sys/net/ipv4/conf/all/arp_ignore
+echo "2" >/proc/sys/net/ipv4/conf/all/arp_announce
+sysctl -p >/dev/null 2>&1
+        ]]>
+		</screen>
+		<para>Tunnel模式</para>
+		<screen>
+		<![CDATA[
+ifconfig tunl0 $VIP netmask 255.255.255.255 broadcast $VIP
+/sbin/route add -host $VIP dev tunl0
+echo "1" >/proc/sys/net/ipv4/conf/tunl0/arp_ignore
+echo "2" >/proc/sys/net/ipv4/conf/tunl0/arp_announce
+echo "1" >/proc/sys/net/ipv4/conf/all/arp_ignore
+echo "2" >/proc/sys/net/ipv4/conf/all/arp_announce
+sysctl -p >/dev/null 2>&1
+		]]>
+		</screen>
+	</section>
+
+	<section id="example">
+		<title>Example</title>
+		<section>
+			<title>Master</title>
+		<example>
+			<title>piranha master</title>
+			<screen>
+			<![CDATA[
+[root@lvs1 ~]# cat /etc/sysconfig/ha/lvs.cf
+serial_no = 31
+primary = 172.16.0.2
+primary_private = 172.16.2.2
+service = lvs
+backup_active = 1
+backup = 172.16.0.3
+backup_private = 172.16.2.3
+heartbeat = 1
+heartbeat_port = 539
+keepalive = 2
+deadtime = 6
+network = direct
+debug_level = NONE
+monitor_links = 0
+syncdaemon = 0
+virtual LVS-HTTP {
+     active = 1
+     address = 172.16.0.1 eth0:1
+     vip_nmask = 255.255.255.255
+     port = 80
+     send = "GET / HTTP/1.0\r\n\r\n"
+     expect = "HTTP"
+     use_regex = 0
+     load_monitor = none
+     scheduler = wlc
+     protocol = tcp
+     timeout = 6
+     reentry = 15
+     quiesce_server = 0
+     server Web1 {
+         address = 172.16.0.5
+         active = 1
+         port = 80
+         weight = 2
+     }
+     server Web2 {
+         address = 172.16.0.6
+         active = 1
+         port = 80
+         weight = 2
+     }
+     server Web3 {
+         address = 172.16.0.7
+         active = 1
+         port = 80
+         weight = 2
+     }
+     server Web4 {
+         address = 172.16.0.8
+         active = 0
+         port = 80
+         weight = 0
+     }
+}
+			]]>
+			</screen>
+		</example>
+		</section>
+		<section>
+			<title>Slave</title>
+		<example>
+			<title>piranha slave</title>
+			<screen>
+			<![CDATA[
+serial_no = 30
+primary = 172.16.0.2
+primary_private = 172.16.2.2
+service = lvs
+backup_active = 1
+backup = 172.16.0.3
+backup_private = 172.16.2.3
+heartbeat = 1
+heartbeat_port = 539
+keepalive = 2
+deadtime = 6
+network = direct
+debug_level = NONE
+monitor_links = 0
+syncdaemon = 0
+virtual LVS-HTTP {
+     active = 1
+     address = 172.16.0.1 eth0:1
+     vip_nmask = 255.255.255.255
+     port = 80
+     send = "GET / HTTP/1.0\r\n\r\n"
+     expect = "HTTP"
+     use_regex = 0
+     load_monitor = none
+     scheduler = wlc
+     protocol = tcp
+     timeout = 6
+     reentry = 15
+     quiesce_server = 0
+     server Web1 {
+         address = 172.16.0.5
+         active = 1
+         port = 80
+         weight = 2
+     }
+     server Web2 {
+         address = 172.16.0.6
+         active = 1
+         port = 80
+         weight = 2
+     }
+     server Web3 {
+         address = 172.16.0.7
+         active = 1
+         port = 80
+         weight = 2
+     }
+     server Web4 {
+         address = 172.16.0.8
+         active = 0
+         port = 80
+         weight = 3
+     }
+}
+			]]>
+			</screen>
+		</example>
+		</section>
+		<section>
+			<title>MySQL</title>
+			<screen>
+virtual SLB-MySQL {
+     active = 1
+     address = 172.16.1.50 eth0:2
+     vip_nmask = 255.255.255.255
+     port = 3306
+     persistent = 30
+     send = ""
+     expect = ""
+     use_regex = 0
+     load_monitor = none
+     scheduler = wlc
+     protocol = tcp
+     timeout = 5
+     reentry = 15
+     quiesce_server = 0
+     server MySQL1 {
+         address = 172.16.1.46
+         active = 1
+         port = 3306
+         weight = 1
+     }
+     server MySQL2 {
+         address = 172.16.1.47
+         active = 1
+         port = 3306
+         weight = 1
+     }
+     server MySQL3 {
+         address = 172.16.1.48
+         active = 1
+         port = 3306
+         weight = 1
+     }
+
+}
+			</screen>
+			<screen>
+# cat /srv/script/lvs-client-start
+
+#!/bin/bash
+### Disable IP_Forward in Linux Kernel ###
+echo 0 > /proc/sys/net/ipv4/ip_forward
+
+### Disable ARP Reponse on This RealServer ###
+echo 1 > /proc/sys/net/ipv4/conf/lo/arp_ignore
+echo 2 > /proc/sys/net/ipv4/conf/lo/arp_announce
+echo 1 > /proc/sys/net/ipv4/conf/all/arp_ignore
+echo 2 > /proc/sys/net/ipv4/conf/all/arp_announce
+
+### Add VIP Address and Route ###
+VIP=172.16.1.50
+
+/sbin/ifconfig lo:0 $VIP broadcast $VIP netmask 255.255.255.255 up
+/sbin/route add -host $VIP1 dev lo:0
+			</screen>
+			<para>我比较喜欢使用ip命令代替route命令</para>
+			<para>ip route add $VIP dev lo:0 src $VIP</para>
+		</section>
+	</section>
+</chapter>

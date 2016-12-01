@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="vsftpd">
+	<title>vsftpd - Very Secure FTP Daemon</title>
+	<screen>
+# yum install vsftpd	
+	</screen>
+	<para>chroot</para>
+	<screen>
+chroot_local_user=YES
+	</screen>
+</chapter>
+	<chapter id="samba">
+		<title>Samba</title>
+		<screen>
+[root@development ~]# yum -y install samba		
+		</screen>
+		<para>smbpasswd</para>
+		<screen>
+[root@development ~]# sudo smbpasswd -L -a neo		
+		</screen>
+		<para>smb.conf</para>
+		<screen>
+#============================ Share Definitions ==============================
+
+[homes]
+        comment = Home Directories
+        browseable = no
+        writable = yes
+        valid users = %S
+
+[developer]
+        comment = Developer Stuff
+        path = /var/www/html
+        public = yes
+        writable = yes
+        printable = no
+        write list = +apache
+		
+		</screen>
+	</chapter>

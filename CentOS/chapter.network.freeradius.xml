@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="freeradius">
+	<title>radiusd - Authentication, Authorization and Accounting server</title>
+	<para>http://freeradius.org/</para>
+	<section>
+		<title>安装 radiusd</title>
+		<procedure>
+			<title>安装步骤</title>
+			<step>
+				<para>yum 安装</para>
+				<screen>
+yum install -y freeradius
+				</screen>
+			</step>
+			<step>
+				<para>设置启动文件</para>
+				<screen>
+chkconfig radiusd on
+service radiusd start
+				</screen>
+			</step>
+			<step>
+				<para>配置 radiusd</para>
+				<screen>
+cp /etc/raddb/clients.conf{,.original}
+cp /etc/raddb/users{,.original}
+cp /etc/raddb/sites-enabled/default{,.original}
+				</screen>	
+				<screen>
+				<![CDATA[
+cat >> /etc/raddb/clients.conf <<EOF
+
+client 192.168.0.0/16 {
+       secret          = testing123
+       shortname       = freeradius.example.com
+}
+EOF				
+				]]>
+				</screen>			
+				<para>/etc/raddb/users</para>
+				<screen>
+guest Cleartext-Password := "test"
+				</screen>
+				<para>/etc/raddb/sites-enabled/default</para>	
+				<screen>
+				</screen>
+			</step>
+			<step>
+				<para>测试 radiusd</para>
+				<screen>
+$ radtest guest test 192.168.2.1 1812 testing123
+Sending Access-Request of id 223 to 192.168.2.1 port 1812
+	User-Name = "guest"
+	User-Password = "test"
+	NAS-IP-Address = 127.0.1.1
+	NAS-Port = 1812
+	Message-Authenticator = 0x00000000000000000000000000000000
+rad_recv: Access-Accept packet from host 192.168.2.1 port 1812, id=223, length=20
+				</screen>
+			</step>			
+		</procedure>
+	</section>
+	<section id="wifi">
+		<title>802.1</title>
+		<para></para>
+		<screen>
+		<![CDATA[
+		
+ 		]]>
+		</screen>
+		<para></para>
+		<procedure>
+			<title> </title>
+			<step>
+				<screen>
+
+				
+				</screen>
+			</step>
+			<step>
+				<screen>
+				</screen>
+			</step>
+			<step>
+				<screen>
+
+				</screen>
+			</step>			
+		</procedure>
+		<para></para>
+	</section>
+</chapter>

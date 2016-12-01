@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<appendix id="appendix">
+	<title>附录</title>
+	<section>
+		<title>Redhat Doc</title>
+		<para><ulink url="http://docs.redhat.com/docs/zh-CN/index.html">http://docs.redhat.com/docs/zh-CN/index.html</ulink></para>
+	</section>
+	<section>
+		<title>System reduce</title>
+		<para>采用最小化安装后仍有很多不必要的软件</para>
+		<screen>
+	[root@dev1 ~]# yum remove cups
+		</screen>
+	</section>	
+</appendix>

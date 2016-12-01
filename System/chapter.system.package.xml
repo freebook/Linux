@@ -143,6 +143,33 @@ sudo apt-get install apticron
 		<screen>
 EMAIL="root@example.com"
 		</screen>
+		<section>
+			<title>升级过程中链接中断怎么办?</title>
+			<screen>
+Ubuntu 16.04 升级到 16.10 过程中SSH中断
+
+我猜测do-release-upgrade 一定会有恢复方案，应该是screen. 经过查看果然是 screen
+
+开始尝试恢复screen 提示
+
+neo@netkiller:~$ screen -ls
+No Sockets found in /var/run/screen/S-neo.
+
+后来想到应该是root而不是当前用户，再次查看
+
+neo@netkiller:~$ sudo screen -ls
+[sudo] password for neo:
+There is a screen on:
+ 1955.ubuntu-release-upgrade-screen-window (11/25/2016 07:44:50 PM)       (Detached)
+1 Socket in /var/run/screen/S-root.
+
+的确如猜测一样，现在回复窗口吧。
+
+neo@netkiller:~$ sudo screen -r 1955
+
+继续			
+			</screen>
+		</section>
 	</section>
 	<section id="dpkg">
 		<title>dpkg</title>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="ntpd">
+	<title>Synchronizes system time using the Network Time Protocol (NTP)</title>
+	<para>http://www.ntp.org</para>
+	<section>
+		<title>ntpd - Network Time Protocol (NTP) daemon</title>
+		<procedure>
+			<title>ntp server</title>
+			<step>
+				<para></para>
+				<screen>
+# yum install ntp	
+				</screen>
+			</step>
+			<step>
+				<para>port</para>
+				<screen>
+[root@ntp ~]# netstat -unlnp |grep 123
+udp        0      0 192.168.5.5:123             0.0.0.0:*                               10810/ntpd
+udp        0      0 172.16.0.5:123              0.0.0.0:*                               10810/ntpd
+udp        0      0 192.168.3.5:123             0.0.0.0:*                               10810/ntpd
+udp        0      0 127.0.0.1:123               0.0.0.0:*                               10810/ntpd
+udp        0      0 0.0.0.0:123                 0.0.0.0:*                               10810/ntpd
+udp        0      0 ::1:123                     :::*                                    10810/ntpd
+udp        0      0 fe80::225:64ff:fe9a:123     :::*                                    10810/ntpd
+udp        0      0 :::123                      :::*                                    10810/ntpd
+
+[root@ntp ~]# lsof -i :123
+COMMAND   PID USER   FD   TYPE DEVICE SIZE NODE NAME
+ntpd    10810  ntp   16u  IPv4  35921       UDP *:ntp
+ntpd    10810  ntp   17u  IPv6  35922       UDP *:ntp
+ntpd    10810  ntp   18u  IPv6  35923       UDP [fe80::225:64ff:fe9a:d7e0]:ntp
+ntpd    10810  ntp   19u  IPv6  35924       UDP localhost6.localdomain6:ntp
+ntpd    10810  ntp   20u  IPv4  35925       UDP localhost.localdomain:ntp
+ntpd    10810  ntp   21u  IPv4  35926       UDP nis.example.com:ntp
+ntpd    10810  ntp   22u  IPv4  35927       UDP 172.16.0.5:ntp
+ntpd    10810  ntp   23u  IPv4  35928       UDP 192.168.5.5:ntp
+				</screen>
+			</step>
+			<step>
+				<para>status</para>
+				
+				<para>ntpstat</para>
+				<screen>
+[root@subversion ~]# ntpstat
+synchronised to local net at stratum 11
+   time correct to within 11 ms
+   polling server every 1024 s
+				</screen>	
+				<screen>
+[root@subversion ~]# ntptrace -n 127.0.0.1
+127.0.0.1: stratum 11, offset 0.000000, synch distance 0.010984
+				</screen>				
+				<screen>
+[root@subversion ~]# ntpq -p
+     remote           refid      st t when poll reach   delay   offset  jitter
+==============================================================================
+ 122.226.192.4   .INIT.          16 u    - 1024    0    0.000    0.000   0.000
+ 218.75.4.130    .INIT.          16 u    - 1024    0    0.000    0.000   0.000
+ www.chinaepg.ne .INIT.          16 u    - 1024    0    0.000    0.000   0.000
+*LOCAL(0)        .LOCL.          10 l   60   64  377    0.000    0.000   0.001
+				</screen>
+			</step>
+			<step>
+				<para>http://www.pool.ntp.org/</para>
+				<screen>
+vim /etc/ntp.conf
+server 2.cn.pool.ntp.org
+server 3.asia.pool.ntp.org
+server 2.asia.pool.ntp.org
+				</screen>
+			</step>
+			<step>
+				<para></para>
+				<screen>
+# chkconfig ntpd on
+# service ntpd start/stop/restart
+				</screen>
+			</step>			
+		</procedure>
+	</section>
+	<section id="ntp.client">
+		<title>ntp client</title>
+		<para>使用 ntpdate 临时更新时间</para>
+		<screen>
+		<![CDATA[
+[root@dev1 ~]# ntpdate 192.168.3.5 && hwclock -w
+ 9 Aug 12:38:22 ntpdate[2538]: step time server 192.168.3.5 offset 3543.674078 sec
+ 		]]>
+		</screen>
+		<para>另外一个命令<link linkend="rdate">rdate</link>同样可以达到ntpdate目的，rdate是系统默认安装。</para>
+		<procedure>
+			<title>ntp client</title>
+			<step>
+				<screen>
+# yum install ntp
+				
+				</screen>
+			</step>
+			<step>
+				<screen>
+# chkconfig ntpd on
+# service ntpd start				
+				</screen>
+			</step>
+			<step>
+				<screen>
+vim /etc/ntp.conf
+#server 0.centos.pool.ntp.org
+#server 1.centos.pool.ntp.org
+#server 2.centos.pool.ntp.org
+server 192.168.3.5
+
+				</screen>
+			</step>			
+		</procedure>
+		<para>ntpd 启动后，不能再使用ntpdate</para>
+	</section>
+</chapter>
