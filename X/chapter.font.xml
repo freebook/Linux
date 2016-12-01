@@ -1,4 +1,9 @@
-<chapter id="font">
-	<title>Font</title>
-
+<chapter id="fonts">
+	<title>Fonts 字体</title>
+	<screen>
+# yum install fonts-chinese.noarch
+	</screen>
+	<section id="font">
+		<title>Font</title>
+	</section>
 </chapter>

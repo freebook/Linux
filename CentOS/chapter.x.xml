@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <part id="x">
 	<title>X Windows</title>
-	<chapter id="fonts">
-		<title>Fonts 字体</title>
-		<screen>
-# yum install fonts-chinese.noarch
-		</screen>
-	</chapter>
+
 <chapter id="vnc">
 	<title>VNC</title>
 	<screen>

@@ -1,5 +1,13 @@
 <chapter id="locale">
-	<title>Locale</title>
+	<title>区域/语言/时间</title>
+	<screen>
+	</screen>
+	<para></para>
+	<screen>
+	</screen>
+
+<section id="ubuntu">
+	<title>Ubuntu</title>
 	<section id="system.clock">
 		<title>time zone</title>
 		<para>选择用户时区</para>
@@ -122,4 +130,115 @@ LANG="zh_CN.UTF-8"
 LANGUAGE="zh_CN:zh"
 		</screen>		
 	</section>
-</chapter>	
+</section>	
+
+
+<section id="centos">
+	<title>CentOS 区域设置</title>
+	<section id="time.zone">
+		<title>时区设置 CentOS 6</title>
+		<para>timeconfig</para>
+		<para>system-config-date</para>
+		<section>
+			<title>查看当前时区 /etc/sysconfig/clock</title>
+			<screen>
+[root@ntp ~]# cat /etc/sysconfig/clock
+ZONE="Asia/Harbin"
+UTC=true
+ARC=false
+			</screen>
+		</section>
+		<section id="tzselect">
+			<title>tzselect - select a timezone</title>
+			<screen>
+# tzselect
+Please identify a location so that time zone rules can be set correctly.
+Please select a continent or ocean.
+ 1) Africa
+ 2) Americas
+ 3) Antarctica
+ 4) Arctic Ocean
+ 5) Asia
+ 6) Atlantic Ocean
+ 7) Australia
+ 8) Europe
+ 9) Indian Ocean
+10) Pacific Ocean
+11) none - I want to specify the time zone using the Posix TZ format.
+#?
+			</screen>
+			<para>重新启动后生效</para>
+		</section>
+		<section>
+			<title>时区设置 CentOS 7</title>
+			<para>列出时区</para>
+			<screen>
+# timedatectl list-timezones
+			</screen>
+			<para>设置时区</para>
+			<screen>
+# timedatectl set-timezone Asia/Hong_Kong
+			</screen>
+			<para>查看时区</para>
+			<screen>
+# timedatectl
+			</screen>
+		</section>
+		<section>
+			<title>修改时区并立即生效</title>
+			<para>可用时区 /usr/share/zoneinfo</para>
+			<screen>
+[root@ntp ~]# ls /usr/share/zoneinfo
+Africa      Asia       Canada   Cuba   EST      Factory  GMT0       Hongkong  Iran         Japan      Mexico   Navajo   Poland      PRC      ROK        Universal  W-SU
+America     Atlantic   CET      EET    EST5EDT  GB       GMT-0      HST       iso3166.tab  Kwajalein  Mideast  NZ       Portugal    PST8PDT  Singapore  US         zone.tab
+Antarctica  Australia  Chile    Egypt  Etc      GB-Eire  GMT+0      Iceland   Israel       Libya      MST      NZ-CHAT  posix       right    Turkey     UTC        Zulu
+Arctic      Brazil     CST6CDT  Eire   Europe   GMT      Greenwich  Indian    Jamaica      MET        MST7MDT  Pacific  posixrules  ROC      UCT        WET
+			</screen>
+			<para>执行 hwclock 后会立即生效</para>
+			<screen>
+# cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+# hwclock
+			</screen>
+			<para>演示如下，你可以看到时区从 EDT 变为 CST</para>
+			<screen>
+# cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+# date
+Fri Jul  4 05:57:25 EDT 2014
+
+# hwclock
+Fri 04 Jul 2014 06:12:14 PM CST  -0.219192 seconds
+
+# date
+Fri Jul  4 18:12:17 CST 2014
+			</screen>
+		</section>
+	</section>
+	<section id="datatime">
+		<title>日期、时间</title>
+		<screen>
+# date -s "2008-7-19"
+# date -s 18:10
+		</screen>
+		<section id="rdate">
+			<title>rdate - get the time via the network</title>
+			<screen>
+# rdate time-a.nist.gov 查看
+# rdate -s time-a.nist.gov 设置
+			</screen>
+		</section>
+	</section>
+	<section id="language">
+		<title>语言</title>
+		<para><command>system-config-language</command></para>
+		<screen>
+vim /etc/sysconfig/i18n
+LANG="en_US.UTF-8"
+		</screen>
+		<para>查看语言</para>
+		<screen>
+locale -a
+		</screen>
+	</section>
+</section>
+
+</chapter>

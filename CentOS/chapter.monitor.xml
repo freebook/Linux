@@ -2,19 +2,7 @@
 <part id="index"><?dbhtml dir="monitor" ?>
 	<title>Monitor</title>
 	
-<chapter id="snmpd">
-	<title>snmpd - daemon to respond to SNMP request packets.</title>
-	<screen>
-# yum -y install net-snmp net-snmp-utils	
-	</screen>
-	<para></para>
-	<screen>
-net-snmp-config --create-snmpv3-user -a PASSWORD MYUSERNAME
-snmpwalk -v 3 -a md5 -A PASSWORD -x des -X PASSWORD -u MYUSERNAME IP.ADD.RE.SS	
-snmpwalk -v 3 -a md5 -A PASSWORD -l authNoPriv -u MYUSERNAME IP.ADD.RE.SS
-	</screen>
 	
-</chapter>	
 	<chapter id="cacti">
 		<title>cacti</title>
 		<screen>

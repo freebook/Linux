@@ -110,7 +110,6 @@ vncserver -kill :1
 		</screen>
 
 	</section>
-
 	<section id="TightVNC">
 		<title>TightVNC</title>
 		<para>http://www.tightvnc.com/</para>

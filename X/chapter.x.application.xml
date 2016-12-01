@@ -65,5 +65,11 @@ greenshot
 	<para>http://winswitch.org/</para>
 </section>
 
+	<section id="gparted">
+		<title>gparted</title>
+		<screen>
+yum install gparted
+		</screen>
+	</section>
 </chapter>
 

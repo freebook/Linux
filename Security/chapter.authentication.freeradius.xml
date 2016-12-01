@@ -1,6 +1,8 @@
 <section id="freeradius">
 	<title>FreeRADIUS (Remote Authentication Dial In User Service)</title>
+	<subtitle>radiusd - Authentication, Authorization and Accounting server</subtitle>
 	<para>I want to authorize Wi-Fi Protected Access with freeradius  for Wi-Fi Route.</para>
+	<para>http://freeradius.org/</para>
 	<itemizedlist>
 		<listitem><para>debian/ubuntu</para></listitem>
 		<listitem><para>FreeRADIUS</para></listitem>
@@ -61,14 +63,70 @@ client 172.16.0.0/24 {
        shortname       = freeradius.example.com
 }
 			</screen>
-		</section>
-		<section>
-			<title>CentOS</title>
-			<screen>
-# yum install freeradius freeradius-utils			
-			</screen>
-			<para>CentOS与Ubuntu安装包有所不同，配置文件在 /etc/raddb下面</para>
 		</section>		
+		<section>
+			<title>安装 radiusd</title>
+			<para>CentOS与Ubuntu安装包有所不同，配置文件在 /etc/raddb下面</para>
+			<procedure>
+				<title>安装步骤</title>
+				<step>
+					<para>yum 安装</para>
+					<screen>
+yum install -y freeradius
+					</screen>
+					<screen>
+# yum install freeradius freeradius-utils			
+					</screen>
+				</step>
+				<step>
+					<para>设置启动文件</para>
+					<screen>
+chkconfig radiusd on
+service radiusd start
+					</screen>
+				</step>
+				<step>
+					<para>配置 radiusd</para>
+					<screen>
+cp /etc/raddb/clients.conf{,.original}
+cp /etc/raddb/users{,.original}
+cp /etc/raddb/sites-enabled/default{,.original}
+					</screen>	
+					<screen>
+					<![CDATA[
+cat >> /etc/raddb/clients.conf <<EOF
+
+client 192.168.0.0/16 {
+       secret          = testing123
+       shortname       = freeradius.example.com
+}
+EOF				
+					]]>
+					</screen>			
+					<para>/etc/raddb/users</para>
+					<screen>
+guest Cleartext-Password := "test"
+					</screen>
+					<para>/etc/raddb/sites-enabled/default</para>	
+					<screen>
+					</screen>
+				</step>
+				<step>
+					<para>测试 radiusd</para>
+					<screen>
+$ radtest guest test 192.168.2.1 1812 testing123
+Sending Access-Request of id 223 to 192.168.2.1 port 1812
+	User-Name = "guest"
+	User-Password = "test"
+	NAS-IP-Address = 127.0.1.1
+	NAS-Port = 1812
+	Message-Authenticator = 0x00000000000000000000000000000000
+rad_recv: Access-Accept packet from host 192.168.2.1 port 1812, id=223, length=20
+					</screen>
+				</step>			
+			</procedure>
+		</section>
+			
 	</section>
 	<section id="freeradius.ldap">
 		<title>ldap</title>

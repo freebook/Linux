@@ -302,7 +302,16 @@ dba ALL = /bin/mount /u0[1-5], /bin/umount /u0[1-5]
 		<screen>
 Cmnd_Alias WEBMASTER = /srv/nginx/sbin/nginx, /srv/php/sbin/php-fpm, !/srv/mysql/bin/mysql
 www localhost = NETWORKING, SERVICES, DELEGATING, PROCESSES, WEBMASTER
-		</screen>		
+		</screen>
+	</section>
+	<section id="wheel">
+		<title>wheel 组</title>
+		<screen>
+## Allow root to run any commands anywhere
+root    ALL=(ALL)       ALL
+neo     ALL=(ALL)       ALL
+%wheel  ALL=(ALL)       ALL
+		</screen>
 	</section>	
 </section>
 <section id="system.permission.acl">

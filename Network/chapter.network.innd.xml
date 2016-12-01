@@ -1,36 +1,38 @@
 <chapter id="index"><?dbhtml dir="innd" ?>
 	<title>News Group (innd)</title>
 	<para>homepage: http://www.isc.org/inn.html</para>
-	<procedure><title>innd</title>
-		<step>
-			<para>debian 安装</para>
-			<screen>
+	<section>
+		<title>Ubuntu</title>
+		<procedure><title>innd</title>
+			<step>
+				<para>debian 安装</para>
+				<screen>
 sudo apt-get install inn2
-			</screen>
-		</step>
-		<step><para>配置</para>
-	  		<substeps>
-	    	<step><para>inn.conf</para>
-		    	<screen>
+				</screen>
+			</step>
+			<step><para>配置</para>
+		  		<substeps>
+		    	<step><para>inn.conf</para>
+			    	<screen>
 cd /etc/news/
 chown news.news inn.conf
 domain:                 example.org
 server:                 localhost
 fromhost:               news.example.org
 moderatormailer:        openunix@163.com
-		    	</screen>
-	    	</step>
-	    	<step><para>storage.conf</para>
-		    	<screen>
+			    	</screen>
+		    	</step>
+		    	<step><para>storage.conf</para>
+			    	<screen>
 vi storage.conf
 method tradspool {
         newsgroups: *
         class: 0
 }
-		    	</screen>
-	    	</step>
-	    	<step><para>readers.conf</para>
-		    	<screen>
+			    	</screen>
+		    	</step>
+		    	<step><para>readers.conf</para>
+			    	<screen>
 vi readers.conf
 auth "local" {
         hosts: "*"
@@ -41,21 +43,45 @@ access "local" {
         users: "*"
         newsgroups: "*"
 }
-		    	</screen>
-	    	</step>
-	  		</substeps>
-		</step>
-		<step><para>start</para>
-			<para>/etc/init.d/innd start</para>
-			<screen>
+			    	</screen>
+		    	</step>
+		  		</substeps>
+			</step>
+			<step><para>start</para>
+				<para>/etc/init.d/innd start</para>
+				<screen>
 service innd start
 Starting INND system:                                      [  OK  ]
-			</screen>
-			<para>sudo ufw allow nntp</para>
-		</step>
-	</procedure>
-	<ulink url="news://neo.example.org">news://news.example.org</ulink>
+				</screen>
+				<para>sudo ufw allow nntp</para>
+			</step>
+		</procedure>
+		<ulink url="news://neo.example.org">news://news.example.org</ulink>
+	</section>
+	<section id="centos">
+		<title>CentOS</title>
+		<screen>
+# yum -y install inn		
+		</screen>
+		<para>readers.conf</para>
+		<screen>
+# vim /etc/news/readers.conf		
+auth "localhost" {
+    hosts: "*"
+    default: "*"
+}
 
+access "localhost" {
+    users: "*"
+    newsgroups: "*,!junk,!control,!control.*"
+    access: RPA
+}		
+		</screen>
+		<para>create a group</para>
+		<screen>
+# /usr/lib/news/bin/ctlinnd newgroup test		
+		</screen>
+	</section>
 	<section id="authentication">
 		<title>User Authentication</title>
 		<procedure>

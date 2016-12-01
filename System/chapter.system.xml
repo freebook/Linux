@@ -2,6 +2,7 @@
 <!-- =========================================================================== -->	
 	&chapter.introduction.xml;
 	&chapter.kernel.xml;
+	&chapter.kernel.module.xml;
 <!-- =========================================================================== -->
 	&chapter.package.xml;
 	&chapter.package.yum.xml;	
