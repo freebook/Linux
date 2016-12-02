@@ -1,44 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="memcached">
 	<title>Memcache</title>
-	<section id="memcache.tar.gz">
-		<title>source code</title>
-		<para>libevent</para>
-		<screen>
-# yum install libevent libevent-devel -y
-		</screen>
-		<para>memcache</para>
-		<screen>
-		<![CDATA[
-# wget http://memcached.googlecode.com/files/memcached-1.4.5.tar.gz
-# tar zxf memcached-1.4.5.tar.gz
-# cd memcached-1.4.5
-# ./configure --prefix=/usr/local/memcached-1.4.5
-# make && make install
-		]]>
-		</screen>
-		<para>start</para>
-		<screen>
-# ln -s /usr/local/memcached-1.4.5 /usr/local/memcached
-# /usr/local/memcached/bin/memcached -d -m 128 -p 11211 -u nobody -l 172.16.0.1
-		</screen>
-	</section>
-	<section id="memcache.yum">
-		<title>yum install</title>
-		<screen>
-# yum install memcached
-# chkconfig memcached on
-# chkconfig --list memcached
 
-# cat /etc/sysconfig/memcached
-PORT="11211"
-USER="memcached"
-MAXCONN="1024"
-CACHESIZE="64"
-OPTIONS=""
 
-# /etc/init.d/memcached start
-Starting memcached:                                        [  OK  ]
-		</screen>
-	</section>
 </chapter>

@@ -55,6 +55,129 @@ yum install -y nginx
 chkconfig nginx on
 service nginx start
 			</screen>
+			
+			<section id="nginx.spawn-fcgi">
+				<title>spawn-fcgi script</title>
+				<screen>
+yum -y install spawn-fcgi
+				</screen>
+				<para>/etc/sysconfig/spawn-fcgi</para>
+				<para>移除SOCKET与OPTIONS注释, apache改为nginx</para>
+				<screen>
+# cat /etc/sysconfig/spawn-fcgi
+# You must set some working options before the "spawn-fcgi" service will work.
+# If SOCKET points to a file, then this file is cleaned up by the init script.
+#
+# See spawn-fcgi(1) for all possible options.
+#
+# Example :
+SOCKET=/var/run/php-fcgi.sock
+OPTIONS="-u apache -g apache -s $SOCKET -S -M 0600 -C 32 -F 1 -P /var/run/spawn-fcgi.pid -- /usr/bin/php-cgi"
+				</screen>
+
+				<screen>
+				<![CDATA[
+chkconfig spawn-fcgi on
+				]]>
+				</screen>
+				<para>starting spawn-fcgi</para>
+				<screen>
+/etc/init.d/spawn-fcgi start
+				</screen>
+				<para>check port</para>
+				<screen>
+# netstat -nl
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address               Foreign Address             State
+tcp        0      0 0.0.0.0:22                  0.0.0.0:*                   LISTEN
+tcp        0      0 :::22                       :::*                        LISTEN
+Active UNIX domain sockets (only servers)
+Proto RefCnt Flags       Type       State         I-Node Path
+unix  2      [ ACC ]     STREAM     LISTENING     25282  /var/run/php-fcgi.sock
+unix  2      [ ACC ]     STREAM     LISTENING     8227   @/com/ubuntu/upstart
+				</screen>
+				<screen>
+				<para>Unix domain socket</para>
+				<![CDATA[
+
+        location ~ \.php$ {
+            fastcgi_pass   unix:/var/run/php-fcgi.sock;
+            fastcgi_index  index.php;
+            fastcgi_param  SCRIPT_FILENAME  /var/www/nginx-default$fastcgi_script_name;
+            include        fastcgi_params;
+        }
+				]]>
+				</screen>
+				<para>TCP/IP</para>
+	
+				<screen>
+/usr/bin/spawn-fcgi -a 127.0.0.1 -p 9000 -u nginx -g nginx -d /www -C 32 -F 1 -P /var/run/spawn-fcgi.pid -f /usr/bin/php-cgi
+				</screen>
+				<para> </para>
+				<screen>
+				<![CDATA[
+        location ~ \.php$ {
+            fastcgi_pass   127.0.0.1:9000;
+            fastcgi_index  index.php;
+            fastcgi_param  SCRIPT_FILENAME  /var/www/nginx-default$fastcgi_script_name;
+            include        fastcgi_params;
+        }
+				]]>
+				</screen>
+				<screen>
+# netstat -tulpn | grep :9000
+tcp        0      0 127.0.0.1:9000              0.0.0.0:*                   LISTEN      26877/php-cgi
+				</screen>
+				<screen>
+chkconfig nginx on
+				</screen>
+				<para>check config</para>
+				<screen>
+nginx -t
+				</screen>
+			</section>
+			<section id="nginx.php-fpm">
+				<title>php-fpm</title>
+				<screen>
+rpm -Uvh http://download.fedora.redhat.com/pub/epel/6/x86_64/epel-release-6-5.noarch.rpm
+yum install nginx -y
+				</screen>
+				<para></para>
+				<screen>
+chkconfig nginx on
+				</screen>
+				<para>check config</para>
+				<screen>
+nginx -t
+				</screen>
+				<screen>
+yum -y install mysql mysql-server
+yum -y install php php-cgi php-mysql php-mbstring php-gd php-fastcgi
+yum -y install perl-DBI perl-DBD-MySQL
+				</screen>
+				<para>其他 php-fpm YUM源</para>
+				<screen>
+rpm --import http://rpms.famillecollet.com/RPM-GPG-KEY-remi
+rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+				</screen>
+				<screen>
+# rpm -Uvh http://centos.alt.ru/repository/centos/6/i386/centalt-release-6-1.noarch.rpm
+# yum update
+				</screen>
+			</section>
+			<section id="nginx.fastcgi.backend">
+				<title>fastcgi backend</title>
+				<screen>
+				<![CDATA[
+upstream backend  {
+  server   localhost:1234;
+}
+
+fastcgi_pass   backend;
+				]]>
+				</screen>
+			</section>			
+			
 		</section>
 		<section id="source">
 			<title>installing by source</title>

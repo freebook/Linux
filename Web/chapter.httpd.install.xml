@@ -138,22 +138,22 @@ index.html
 			<para><ulink url="http://xxx.xxx.xxx.xxx/~netkiller/">http://xxx.xxx.xxx.xxx/~netkiller/</ulink></para>
 		</section>
 
-	</section>
-	<section>
-		<title>PHP 5</title>
-		<command>$ sudo apt-get install php5</command>
-		<screen>
+	
+		<section>
+			<title>PHP 5</title>
+			<command>$ sudo apt-get install php5</command>
+			<screen>
 netkiller@Linux-server:~$ sudo apt-get install php5
-		</screen>
-		<para>pgsql模块</para>
-		<screen>
+			</screen>
+			<para>pgsql模块</para>
+			<screen>
 netkiller@Linux-server:~$ sudo apt-get install php5-pgsql
 
 netkiller@Linux-server:~$sudo cp /usr/lib/php5/20051025/pgsql.so /etc/php5/apache2/
-		</screen>
-		<para>php5-gd - GD module for php5</para>
-		<command>$ sudo apt-get install php5-gd</command>
-		<screen>
+			</screen>
+			<para>php5-gd - GD module for php5</para>
+			<command>$ sudo apt-get install php5-gd</command>
+			<screen>
 netkiller@Linux-server:~$ apt-cache search gd
 libgdbm3 - GNU dbm database routines (runtime version)
 libgd2-xpm - GD Graphics Library version 2
@@ -169,25 +169,179 @@ netkiller@Linux-server:~$ sudo apt-get install php5-gd
 
 netkiller@Linux-server:~$
 
-		</screen>
-	</section>
+			</screen>
+		</section>
 
-<section id="src">
-	<title>Compile and then install Apache</title>
-	<section>
-		<title>Apache 安装与配置</title>
-		<para>configure</para>
-		<para>--with-mpm=worker 进程,线程混合方式效率提高不少</para>
-		<para>--enable-modules='dir mime' 没有它就找不到index.*文件</para>
-		<para>--enable-rewrite=shared Rewrite用于表态化</para>
-		<para>--enable-expires=shared 禁止页面被 cache </para>
-		<para>--enable-authz_host=shared Order权限</para>
-		<para>--enable-setenvif=shared </para>
-		<para>--enable-log_config=shared 日志格式</para>
-		<para>--enable-speling=shared 允许自动修正拼错的URL</para>
-		<para>--enable-deflate=shared 压缩传送</para>
-		<para>--enable-mods-shared='cache file-cache disk-cache mem-cache proxy proxy-ajp proxy-balancer' 代理和缓存</para>
-		<screen>
+	</section>
+	
+	<section id="httpd">
+		<title>CentOS 6</title>
+		<section id="httpd.install">
+			<title>Install</title>
+			<para>Apache</para>
+			<screen>
+			<![CDATA[
+[root@development ~]# yum -y install httpd
+			]]>
+			</screen>
+			<para>PHP</para>
+			<screen>
+				<![CDATA[
+[root@development ~]# yum -y install php
+[root@development ~]# yum -y install php-mysql php-gd php-mbstring php-bcmath
+[neo@development ~]$ sudo yum -y install php-pecl-memcache
+				]]>
+			</screen>
+			<para>mysql</para>
+			<screen>
+				<![CDATA[
+[root@development ~]# yum -y install mysql-server
+				]]>
+			</screen>
+		</section>
+		<section id="httpd.uninstall">
+			<title>Uninstall</title>
+			<screen>
+# yum remove httpd
+			</screen>
+		</section>
+		<section id="httpd.conf">
+			<title>Configure</title>
+			<section>
+				<title>Apache</title>
+				<screen>
+				<![CDATA[
+	
+				]]>
+				</screen>
+				<section>
+					<title>VirtualHost</title>
+					<screen>
+					<![CDATA[
+[root@development ~]# vim /etc/httpd/conf.d/vhost.conf
+#
+# Use name-based virtual hosting.
+#
+NameVirtualHost *:80
+#
+# NOTE: NameVirtualHost cannot be used without a port specifier
+# (e.g. :80) if mod_ssl is being used, due to the nature of the
+# SSL protocol.
+#
+
+#
+# VirtualHost example:
+# Almost any Apache directive may go into a VirtualHost container.
+# The first VirtualHost section is used for requests without a known
+# server name.
+#
+<VirtualHost *:80>
+    ServerAdmin webmaster@dummy-host.example.com
+    DocumentRoot /www/docs/dummy-host.example.com
+    ServerName dummy-host.example.com
+    ErrorLog logs/dummy-host.example.com-error_log
+    CustomLog logs/dummy-host.example.com-access_log common
+</VirtualHost>
+					]]>
+					</screen>
+				</section>
+			</section>
+			<section>
+				<title>MySQL</title>
+				<para>reset mysql's password</para>
+				<screen>
+				<![CDATA[
+[root@development ~]# /usr/bin/mysqladmin -u root password 'new-password'
+[root@development ~]# /usr/bin/mysqladmin -u root -h development.domain.org password 'new-password'
+				]]>
+				</screen>
+				<para>Alternatively you can run:</para>
+				<screen>
+				<![CDATA[
+[root@development ~]# /usr/bin/mysql_secure_installation
+				]]>
+				</screen>
+			</section>
+		</section>
+		<section id="httpd.srv">
+			<title>Starting</title>
+			<para>levels</para>
+			<screen>
+			<![CDATA[
+[root@development ~]# chkconfig --list mysqld
+mysqld          0:off   1:off   2:off   3:off   4:off   5:off   6:off
+
+[root@development ~]# chkconfig --list httpd
+httpd           0:off   1:off   2:off   3:off   4:off   5:off   6:off
+
+
+[root@development ~]# chkconfig httpd on
+[root@development ~]# chkconfig --list httpd
+httpd           0:off   1:off   2:on    3:on    4:on    5:on    6:off
+
+[root@development ~]# chkconfig mysqld on
+[root@development ~]# chkconfig --list mysqld
+mysqld          0:off   1:off   2:on    3:on    4:on    5:on    6:off
+			]]>
+			</screen>
+			<para>Apache</para>
+			<screen>
+			<![CDATA[
+[root@development ~]# service httpd start
+			]]>
+			</screen>
+			<para>MySQL</para>
+			<screen>
+			<![CDATA[
+[root@development ~]# service mysqld start
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+[root@development ~]# netstat -nat | grep 80
+tcp        0      0 :::80                       :::*                        LISTEN
+
+[root@development ~]# netstat -nat | grep 3306
+tcp        0      0 0.0.0.0:3306                0.0.0.0:*                   LISTEN
+			]]>
+			</screen>
+		</section>
+	
+		<section id="httpd.faq">
+			<title>FAQ</title>
+			<section>
+				<title>compile php</title>
+				<screen>
+[root@development php-5.3.0]# yum install libxml2-devel
+[root@development php-5.3.0]# yum install curl-devel
+[root@development php-5.3.0]# yum install gd-devel
+[root@development php-5.3.0]# yum install libjpeg-devel
+[root@development php-5.3.0]# yum install libpng-devel
+[root@development php-5.3.0]# yum install openldap-devel
+[root@development php-5.3.0]# yum install mysql-devel
+[root@development php-5.3.0]# yum install net-snmp-devel
+				</screen>
+			</section>
+		</section>
+	</section>
+	
+	<section id="src">
+		<title>Compile and then install Apache</title>
+		<section>
+			<title>Apache 安装与配置</title>
+			<para>configure</para>
+			<para>--with-mpm=worker 进程,线程混合方式效率提高不少</para>
+			<para>--enable-modules='dir mime' 没有它就找不到index.*文件</para>
+			<para>--enable-rewrite=shared Rewrite用于表态化</para>
+			<para>--enable-expires=shared 禁止页面被 cache </para>
+			<para>--enable-authz_host=shared Order权限</para>
+			<para>--enable-setenvif=shared </para>
+			<para>--enable-log_config=shared 日志格式</para>
+			<para>--enable-speling=shared 允许自动修正拼错的URL</para>
+			<para>--enable-deflate=shared 压缩传送</para>
+			<para>--enable-mods-shared='cache file-cache disk-cache mem-cache proxy proxy-ajp proxy-balancer' 代理和缓存</para>
+			<para>用于Java</para>
+			<screen>
 tar zxvf httpd-2.2.4.tar.gz
 cd httpd-2.2.4
 ./configure --prefix=/usr/local/httpd-2.2.4 \
@@ -221,41 +375,72 @@ cd httpd-2.2.4
 --disable-negotiation \
 --disable-status \
 --disable-userdir
-		</screen>
-		<para>make; make install</para>
-		<para>启动</para>
-		<screen>
+			</screen>
+			<para>用于PHP</para>
+			<screen>
+[root@development httpd-2.2.14]# yum install zlib-devel.x86_64
+
+./configure --prefix=/usr/local/httpd-2.2.14 \
+--with-mpm=worker \
+--enable-so \
+--enable-mods-shared=all \
+--enable-static-support \
+--enable-static-htpasswd \
+--enable-static-htdigest \
+--enable-static-ab \
+--disable-include \
+--disable-actions \
+--disable-alias \
+--disable-asis \
+--disable-autoindex \
+--disable-auth_basic \
+--disable-authn_file \
+--disable-authn_default \
+--disable-authz_groupfile \
+--disable-authz_user \
+--disable-authz_default \
+--disable-cgi \
+--disable-cgid \
+--disable-env \
+--disable-negotiation \
+--disable-status \
+--disable-userdir
+			</screen>
+			
+			<para>make; make install</para>
+			<para>启动</para>
+			<screen>
 ln -s /usr/local/httpd-2.2.4/ /usr/local/apache
 
 /usr/local/httpd/bin/apachectl start
-		</screen>
-	</section>
-	<section>
-		<title>优化编译条件</title>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>优化编译条件</title>
+			<screen>
 # vim server/mpm/worker/worker.c
 
 # define DEFAULT_SERVER_LIMIT 256
 # define MAX_SERVER_LIMIT 20000
 # define DEFAULT_THREAD_LIMIT 512
 # define MAX_THREAD_LIMIT 20000
-		</screen>
-	</section>
-	<section>
-		<title>PHP</title>
-		<procedure><title>安装PHP</title>
-		<step>
-			<para>第一步</para>
-			<screen>
+			</screen>
+		</section>
+		<section>
+			<title>PHP</title>
+			<procedure><title>安装PHP</title>
+			<step>
+				<para>第一步</para>
+				<screen>
 cd /usr/local/src
 wget http://cn2.php.net/get/php-5.3.0.tar.bz2/from/cn.php.net/mirror
 tar jxvf php-5.3.0.tar.bz2
 cd php-5.3.0
-			</screen>
-		</step>
-		<step>
-			<para>第二步</para>
-			<screen>
+				</screen>
+			</step>
+			<step>
+				<para>第二步</para>
+				<screen>
 ./configure --prefix=/usr/local/php-5.3.0 \
 --with-config-file-path=/usr/local/php-5.3.0/etc \
 --with-apxs2=/usr/local/apache/bin/apxs \
@@ -274,11 +459,11 @@ cd php-5.3.0
 make
 make test
 make install
-			</screen>
-		  <substeps>
-		    <step>
-		      <para>建立符号连接</para>
-		      <screen>
+				</screen>
+			  <substeps>
+			    <step>
+			      <para>建立符号连接</para>
+			      <screen>
 ln -s /usr/local/php-5.3.0 /usr/local/php
 		      </screen>
 		    </step>
@@ -286,49 +471,48 @@ ln -s /usr/local/php-5.3.0 /usr/local/php
 		    	<para>php.ini</para>
 		    	<screen>
 cp php.ini-dist /usr/local/php/etc/php.ini
-		    	</screen>
-		    </step>
-		    <step>
-		    	<para>conf/httpd.conf</para>
-		    	<screen>
+			    	</screen>
+			    </step>
+			    <step>
+			    	<para>conf/httpd.conf</para>
+			    	<screen>
 AddType application/x-httpd-php .php .phtml
 AddType application/x-httpd-php-source .phps
-		    	</screen>
-		    	<para>reload apache</para>
-		    </step>
-		  </substeps>
-		</step>
-		<step>
-			<para>最后一步</para>
-			<para>phpinfo() 测试文件复杂到apache目录</para>
-			<example id="index.php">
-				<title>index.php</title>
-				<programlisting>
-				<![CDATA[
+			    	</screen>
+			    	<para>reload apache</para>
+			    </step>
+			  </substeps>
+			</step>
+			<step>
+				<para>最后一步</para>
+				<para>phpinfo() 测试文件复杂到apache目录</para>
+				<example id="index.php">
+					<title>index.php</title>
+					<programlisting>
+					<![CDATA[
 <?php phpinfo(); ?>
-				]]>
-				</programlisting>
-			</example>
-		</step>
-		</procedure>
-		<note>
-			<title>--with-snmp</title>
-		<para>redhat as4 启用 --with-snmp 需要安装下面包</para>
-		<screen>
+					]]>
+					</programlisting>
+				</example>
+			</step>
+			</procedure>
+			<note>
+				<title>--with-snmp</title>
+			<para>redhat as4 启用 --with-snmp 需要安装下面包</para>
+			<screen>
 rpm -i elfutils-libelf-devel-0.97.1-3.i386.rpm
 rpm -i elfutils-devel-0.97.1-3.i386.rpm
 rpm -i beecrypt-devel-3.1.0-6.i386.rpm
 rpm -i net-snmp-devel-5.1.2-11.EL4.7.i386.rpm
-		</screen>
-		</note>
-
-</section>
-<section>
-	<title>Automation Installing</title>
-	<example>
-		<title>autolamp.sh</title>
-		<screen>
-		<![CDATA[
+			</screen>
+			</note>
+		</section>
+		<section>
+			<title>Automation Installing</title>
+			<example>
+				<title>autolamp.sh</title>
+				<screen>
+				<![CDATA[
 #!/bin/bash
 HTTPD_SRC=httpd-2.2.15.tar.gz
 PHP_SRC=php-5.2.13.tar.gz
@@ -529,11 +713,11 @@ case "$1" in
 esac
 
 exit $RETVAL
-		]]>
-		</screen>
-	</example>
-</section>
-</section>
+				]]>
+				</screen>
+			</example>
+		</section>
+	</section>
 
 	<section id="xampp">
 		<title>XAMPP</title>

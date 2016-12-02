@@ -831,6 +831,201 @@ Starting virtual private network daemon: server(OK).
 		</procedure>
 		</section>
 	</section>
+	
+	<section id="centos">
+		<title>openvpn - secure IP tunnel daemon.</title>
+		<para>安装环境CentOS 6.x</para>
+		<procedure>
+			<title>OpenVPN Server</title>
+			<step>
+				<screen>
+# yum install openvpn easy-rsa
+				</screen>
+				<para>察看openvpn包中的文件</para>
+				<screen>
+# rpm -ql openvpn
+/etc/openvpn
+/etc/rc.d/init.d/openvpn
+/usr/lib64/openvpn
+/usr/lib64/openvpn/plugin
+/usr/lib64/openvpn/plugin/lib
+/usr/lib64/openvpn/plugin/lib/openvpn-auth-pam.so
+/usr/lib64/openvpn/plugin/lib/openvpn-down-root.so
+/usr/lib64/openvpn/plugins
+/usr/lib64/openvpn/plugins/openvpn-plugin-auth-pam.so
+/usr/lib64/openvpn/plugins/openvpn-plugin-down-root.so
+/usr/sbin/openvpn
+/usr/share/doc/openvpn-2.3.2
+/usr/share/doc/openvpn-2.3.2/AUTHORS
+/usr/share/doc/openvpn-2.3.2/COPYING
+/usr/share/doc/openvpn-2.3.2/COPYRIGHT.GPL
+/usr/share/doc/openvpn-2.3.2/INSTALL
+/usr/share/doc/openvpn-2.3.2/PORTS
+/usr/share/doc/openvpn-2.3.2/README
+/usr/share/doc/openvpn-2.3.2/README.auth-pam
+/usr/share/doc/openvpn-2.3.2/README.down-root
+/usr/share/doc/openvpn-2.3.2/contrib
+/usr/share/doc/openvpn-2.3.2/contrib/OCSP_check
+/usr/share/doc/openvpn-2.3.2/contrib/OCSP_check/OCSP_check.sh
+/usr/share/doc/openvpn-2.3.2/contrib/README
+/usr/share/doc/openvpn-2.3.2/contrib/multilevel-init.patch
+/usr/share/doc/openvpn-2.3.2/contrib/openvpn-fwmarkroute-1.00
+/usr/share/doc/openvpn-2.3.2/contrib/openvpn-fwmarkroute-1.00/README
+/usr/share/doc/openvpn-2.3.2/contrib/openvpn-fwmarkroute-1.00/fwmarkroute.down
+/usr/share/doc/openvpn-2.3.2/contrib/openvpn-fwmarkroute-1.00/fwmarkroute.up
+/usr/share/doc/openvpn-2.3.2/contrib/pull-resolv-conf
+/usr/share/doc/openvpn-2.3.2/contrib/pull-resolv-conf/client.down
+/usr/share/doc/openvpn-2.3.2/contrib/pull-resolv-conf/client.up
+/usr/share/doc/openvpn-2.3.2/sample
+/usr/share/doc/openvpn-2.3.2/sample/Makefile
+/usr/share/doc/openvpn-2.3.2/sample/Makefile.am
+/usr/share/doc/openvpn-2.3.2/sample/Makefile.in
+/usr/share/doc/openvpn-2.3.2/sample/sample-config-files
+/usr/share/doc/openvpn-2.3.2/sample/sample-config-files/README
+/usr/share/doc/openvpn-2.3.2/sample/sample-config-files/client.conf
+/usr/share/doc/openvpn-2.3.2/sample/sample-config-files/firewall.sh
+/usr/share/doc/openvpn-2.3.2/sample/sample-config-files/home.up
+/usr/share/doc/openvpn-2.3.2/sample/sample-config-files/loopback-client
+/usr/share/doc/openvpn-2.3.2/sample/sample-config-files/loopback-server
+/usr/share/doc/openvpn-2.3.2/sample/sample-config-files/office.up
+/usr/share/doc/openvpn-2.3.2/sample/sample-config-files/openvpn-shutdown.sh
+/usr/share/doc/openvpn-2.3.2/sample/sample-config-files/openvpn-startup.sh
+/usr/share/doc/openvpn-2.3.2/sample/sample-config-files/roadwarrior-client.conf
+/usr/share/doc/openvpn-2.3.2/sample/sample-config-files/roadwarrior-server.conf
+/usr/share/doc/openvpn-2.3.2/sample/sample-config-files/server.conf
+/usr/share/doc/openvpn-2.3.2/sample/sample-config-files/static-home.conf
+/usr/share/doc/openvpn-2.3.2/sample/sample-config-files/static-office.conf
+/usr/share/doc/openvpn-2.3.2/sample/sample-config-files/tls-home.conf
+/usr/share/doc/openvpn-2.3.2/sample/sample-config-files/tls-office.conf
+/usr/share/doc/openvpn-2.3.2/sample/sample-config-files/xinetd-client-config
+/usr/share/doc/openvpn-2.3.2/sample/sample-config-files/xinetd-server-config
+/usr/share/doc/openvpn-2.3.2/sample/sample-keys
+/usr/share/doc/openvpn-2.3.2/sample/sample-keys/README
+/usr/share/doc/openvpn-2.3.2/sample/sample-keys/ca.crt
+/usr/share/doc/openvpn-2.3.2/sample/sample-keys/ca.key
+/usr/share/doc/openvpn-2.3.2/sample/sample-keys/client.crt
+/usr/share/doc/openvpn-2.3.2/sample/sample-keys/client.key
+/usr/share/doc/openvpn-2.3.2/sample/sample-keys/dh1024.pem
+/usr/share/doc/openvpn-2.3.2/sample/sample-keys/pass.crt
+/usr/share/doc/openvpn-2.3.2/sample/sample-keys/pass.key
+/usr/share/doc/openvpn-2.3.2/sample/sample-keys/pkcs12.p12
+/usr/share/doc/openvpn-2.3.2/sample/sample-keys/server.crt
+/usr/share/doc/openvpn-2.3.2/sample/sample-keys/server.key
+/usr/share/doc/openvpn-2.3.2/sample/sample-plugins
+/usr/share/doc/openvpn-2.3.2/sample/sample-plugins/defer
+/usr/share/doc/openvpn-2.3.2/sample/sample-plugins/defer/README
+/usr/share/doc/openvpn-2.3.2/sample/sample-plugins/defer/build
+/usr/share/doc/openvpn-2.3.2/sample/sample-plugins/defer/simple.c
+/usr/share/doc/openvpn-2.3.2/sample/sample-plugins/defer/simple.def
+/usr/share/doc/openvpn-2.3.2/sample/sample-plugins/defer/winbuild
+/usr/share/doc/openvpn-2.3.2/sample/sample-plugins/log
+/usr/share/doc/openvpn-2.3.2/sample/sample-plugins/log/build
+/usr/share/doc/openvpn-2.3.2/sample/sample-plugins/log/log.c
+/usr/share/doc/openvpn-2.3.2/sample/sample-plugins/log/log_v3.c
+/usr/share/doc/openvpn-2.3.2/sample/sample-plugins/log/winbuild
+/usr/share/doc/openvpn-2.3.2/sample/sample-plugins/simple
+/usr/share/doc/openvpn-2.3.2/sample/sample-plugins/simple/README
+/usr/share/doc/openvpn-2.3.2/sample/sample-plugins/simple/build
+/usr/share/doc/openvpn-2.3.2/sample/sample-plugins/simple/simple.c
+/usr/share/doc/openvpn-2.3.2/sample/sample-plugins/simple/simple.def
+/usr/share/doc/openvpn-2.3.2/sample/sample-plugins/simple/winbuild
+/usr/share/doc/openvpn-2.3.2/sample/sample-scripts
+/usr/share/doc/openvpn-2.3.2/sample/sample-scripts/auth-pam.pl
+/usr/share/doc/openvpn-2.3.2/sample/sample-scripts/bridge-start
+/usr/share/doc/openvpn-2.3.2/sample/sample-scripts/bridge-stop
+/usr/share/doc/openvpn-2.3.2/sample/sample-scripts/ucn.pl
+/usr/share/doc/openvpn-2.3.2/sample/sample-scripts/verify-cn
+/usr/share/doc/openvpn-2.3.2/sample/sample-windows
+/usr/share/doc/openvpn-2.3.2/sample/sample-windows/sample.ovpn
+/usr/share/man/man8/openvpn.8.gz
+/usr/share/openvpn
+/var/run/openvpn
+
+# rpm -ql easy-rsa
+/usr/share/doc/easy-rsa-2.2.0
+/usr/share/doc/easy-rsa-2.2.0/COPYING
+/usr/share/doc/easy-rsa-2.2.0/COPYRIGHT.GPL
+/usr/share/doc/easy-rsa-2.2.0/doc
+/usr/share/doc/easy-rsa-2.2.0/doc/Makefile.am
+/usr/share/doc/easy-rsa-2.2.0/doc/README-1.0
+/usr/share/doc/easy-rsa-2.2.0/doc/README-2.0
+/usr/share/easy-rsa
+/usr/share/easy-rsa/2.0
+/usr/share/easy-rsa/2.0/build-ca
+/usr/share/easy-rsa/2.0/build-dh
+/usr/share/easy-rsa/2.0/build-inter
+/usr/share/easy-rsa/2.0/build-key
+/usr/share/easy-rsa/2.0/build-key-pass
+/usr/share/easy-rsa/2.0/build-key-pkcs12
+/usr/share/easy-rsa/2.0/build-key-server
+/usr/share/easy-rsa/2.0/build-req
+/usr/share/easy-rsa/2.0/build-req-pass
+/usr/share/easy-rsa/2.0/clean-all
+/usr/share/easy-rsa/2.0/inherit-inter
+/usr/share/easy-rsa/2.0/list-crl
+/usr/share/easy-rsa/2.0/openssl-0.9.6.cnf
+/usr/share/easy-rsa/2.0/openssl-0.9.8.cnf
+/usr/share/easy-rsa/2.0/openssl-1.0.0.cnf
+/usr/share/easy-rsa/2.0/pkitool
+/usr/share/easy-rsa/2.0/revoke-full
+/usr/share/easy-rsa/2.0/sign-req
+/usr/share/easy-rsa/2.0/vars
+/usr/share/easy-rsa/2.0/whichopensslcnf
+				</screen>
+			</step>
+			<step>
+				<screen>key</screen>
+				<screen>
+# cd /usr/share/openvpn/easy-rsa/2.0/
+
+vim vars
+export KEY_COUNTRY="CN"
+export KEY_PROVINCE="GD"
+export KEY_CITY="Shenzhen"
+export KEY_ORG="http://www.example.com"
+export KEY_EMAIL="neo.chen@example.com"
+
+# chmod +x *
+# cp openssl-1.0.0.cnf openssl.cnf
+
+# source ./vars
+./clean-all
+./build-ca
+./build-key-server server
+./build-dh
+./build-key neo
+
+# cp keys/ca.key keys/ca.crt keys/dh1024.pem keys/server.key keys/server.crt /etc/openvpn/
+				</screen>
+			</step>
+			<step>
+				<para>server.conf</para>
+				<screen>
+cp keys/ca.key keys/ca.crt keys/dh1024.pem keys/server.key keys/server.crt /etc/openvpn/
+vim /etc/openvpn/server.conf
+				</screen>
+			</step>
+			<step>
+				<para>启用IP转发</para>
+				<screen>
+# vim /etc/sysctl.conf
+# Controls IP packet forwarding
+net.ipv4.ip_forward = 1
+				</screen>
+				<para>net.ipv4.ip_forward = 1 使IP转发生效</para>
+				<screen>
+sysctl -w net.ipv4.ip_forward=1
+				</screen>
+			</step>
+			<step>
+				<screen>
+# /etc/init.d/openvpn start
+Starting openvpn:                                          [  OK  ]
+				</screen>
+			</step>
+		</procedure>
+	</section>
+	
 	<section id="openvpn.revoke">
 		<title>吊销(revoke)用户证书</title>
 		<screen>

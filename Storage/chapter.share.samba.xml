@@ -1,7 +1,7 @@
 <!-- $Id: chapter.storage.samba.xml 420 2012-05-29 11:42:48Z netkiller $ -->
 <section id="samba">
 	<title>Samba</title>
-	<section>
+	<section id="install">
 		<title>install</title>
 		<section>
 			<title>Ubuntu</title>
@@ -17,8 +17,39 @@ tcp        0      0 0.0.0.0:445             0.0.0.0:*               LISTEN     4
 neo@shenzhen:~$
 			</screen>
 		</section>
+		<section id="centos6">
+			<title>Samba</title>
+			<screen>
+# yum -y install samba
+# service smbd start
+			</screen>
+			<para>smbpasswd</para>
+			<screen>
+[root@development ~]# sudo smbpasswd -L -a neo		
+			</screen>
+			<para>smb.conf</para>
+			<screen>
+#============================ Share Definitions ==============================
+
+[homes]
+        comment = Home Directories
+        browseable = no
+        writable = yes
+        valid users = %S
+
+[developer]
+        comment = Developer Stuff
+        path = /var/www/html
+        public = yes
+        writable = yes
+        printable = no
+        write list = +apache
+		
+			</screen>
+		</section>
+	
 		<section>
-			<title>CentOS</title>
+			<title>CentOS 7</title>
 			<screen>
 yum install -y samba
 

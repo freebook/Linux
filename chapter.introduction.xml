@@ -32,67 +32,7 @@
 			<para><ulink url="http://distrowatch.com/">http://distrowatch.com/</ulink></para>
 		</section>		
 	</section>
-	<section id="lsb_release">
-		<title>Distribution information</title>
-		<para>To find your Ubuntu version: lsb_release -a</para>
-		<screen>
-		<![CDATA[
-[root@localhost ~]# lsb_release -a
-LSB Version:    :core-3.1-ia32:core-3.1-noarch:graphics-3.1-ia32:graphics-3.1-noarch
-Distributor ID: CentOS
-Description:    CentOS release 5.2 (Final)
-Release:        5.2
-Codename:       Final
 
-
-neo@netkiller:~$ lsb_release -a
-
-No LSB modules are available.
-Distributor ID: Ubuntu
-Description:    Ubuntu 8.04.1
-Release:        8.04
-Codename:       hardy
-		]]>
-		</screen>
-		<screen>
-$ head -n1 /etc/issue
-Ubuntu 10.04 LTS \n \l
-		</screen>
-	</section>
-	&chapter.install;
-	
-	<section id="system.infomation">
-		<title>System Infomation</title>
-		<section id="system.cpu">
-			<title>Cpu Bit</title>
-			<screen>
-neo@netkiller:~$ uname -a
-Linux netkiller 2.6.28-15-server #52-Ubuntu SMP Wed Sep 9 11:34:09 UTC 2009 x86_64 GNU/Linux
-
-neo@netkiller:~$ getconf LONG_BIT
-64
-			</screen>
-		</section>
-	</section>
-	<section id="system.shutdown">
-		<title>shutdown</title>
-		<screen>
-shutdown -h now
-shutdown -h 10:00 	10点关机
-shutdown -h +10  	10mins后关机
-shutdown -r now   	reboot at once
-shutdown -r +30 	'System will reboot in 30mins'
-shutdown -k 		'System will reboot'		
-		</screen>
-	</section>	
-	<section id="system.profile">
-		<title>Profile</title>
-		<section>
-			<title>shell</title>
-			<screen>
-$ chsh /bin/bash		
-			</screen>
-		</section>
-	</section>	
+	&chapter.install.xml;
 	
 </chapter>

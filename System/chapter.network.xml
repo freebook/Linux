@@ -2,48 +2,80 @@
 <!-- $Id: chapter.system.network.xml 515 2013-01-15 06:34:09Z netkiller $ -->
 <chapter id="index"><?dbhtml dir="network" ?>
 	<title>Networking</title>
-<section id="hostname">
-	<title>Hostname</title>
-	<section>
-		<title>/etc/hostname</title>
-		<screen>
+			
+	<section id="hosts">
+		<title>hosts</title>
+		<section>
+			<title>hostnamectl - Control the system hostname</title>
+			<screen>
+[root@localhost ~]# hostnamectl
+   Static hostname: localhost.localdomain
+         Icon name: computer-desktop
+           Chassis: desktop
+        Machine ID: 072e88a0fdd2447296554f3cd5129076
+           Boot ID: a978056f50544355abd723b328a89b6f
+  Operating System: CentOS Linux 7 (Core)
+       CPE OS Name: cpe:/o:centos:centos:7
+            Kernel: Linux 3.10.0-229.el7.x86_64
+      Architecture: x86_64
+			</screen>
+		</section>		
+		<section>
+			<title>/etc/hostname</title>
+			<screen>
 # cat /etc/hostname
 web1.example.com
-		</screen>
-	</section>
-	<section>
-		<title>/etc/host.conf</title>
-		<para>解析顺序配置文件</para>
+			</screen>
+		</section>		
 		<screen>
+		<![CDATA[
+# cat -n /etc/hosts
+     1  # Do not remove the following line, or various programs
+     2  # that require network functionality will fail.
+     3  127.0.0.1               development.domain.org development localhost.localdomain localhost
+     4  ::1             localhost6.localdomain6 localhost6
+
+		]]>
+		</screen>
+		<section>
+			<title>/etc/host.conf</title>
+			<para>解析顺序配置文件</para>
+			<screen>
 [root@development bin]# cat /etc/host.conf
 order hosts,bind
-		</screen>
-		<para>首先在/etc/hosts文件中寻找，如果不存在，再去DNS服务器中寻找</para>
-	</section>
-	<section>
-		<title>/etc/hosts</title>
-		<para>IP地址后面TAB符，然后写主机地址</para>
-		<screen>
+			</screen>
+			<para>首先在/etc/hosts文件中寻找，如果不存在，再去DNS服务器中寻找</para>
+		</section>
+		<section>
+			<title>/etc/hosts</title>
+			<para>IP地址后面TAB符，然后写主机地址</para>
+			<screen>
 127.0.0.1       localhost.localdomain localhost
 ::1             localhost6.localdomain6 localhost6
 192.168.1.10	development.example.com development
-		</screen>
-	</section>
-	<section>
-		<title>hosts.allow / hosts.deny</title>
-		<para>/etc/hosts.allow 和 /etc/hosts.deny</para>
-		<para>许可IP／禁止IP，相当于黑白名单</para>
-	</section>
-	<section>
-		<title>/etc/resolv.conf</title>
-		<screen>
-		<![CDATA[
+			</screen>
+		</section>
+		<section>
+			<title>hosts.allow / hosts.deny</title>
+			<para>/etc/hosts.allow 和 /etc/hosts.deny</para>
+			<para>许可IP／禁止IP，相当于黑白名单</para>
+		</section>
+		<section>
+			<title>/etc/resolv.conf</title>
+			<screen>
+			<![CDATA[
 search example.com
 nameserver 208.67.222.222
 nameserver 208.67.220.220
-		]]>
-		</screen>
-	</section>
+			]]>
+			</screen>
+		</section>
+
+	</section>			
+			
+<section id="hostname">
+	<title>Hostname</title>
+
 </section>
 	<section id="nic">
 		<title>Network adapter</title>
@@ -517,5 +549,164 @@ $ sudo iwconfig wlan1 essid Netkiller key 66535215
 			</screen>
 		</example>
 	</section>
+
+	<section id="sys.net.centos">
+		<title>CentOS 网络配置</title>
+		<command>system-config-network</command>
+		<screen>
+ifconfig eth0 192.168.0.10 netmask 255.255.255.0
+or
+ip addr add 192.168.0.10 dev eth0
+		</screen>
+		<para>ifcfg-eth0,ifcfg-eth1,ifcfg-eth2 ... ifcfg-eth(n)</para>
+		<screen>
+		<![CDATA[
+[root@development httpd]# cat /etc/sysconfig/network-scripts/ifcfg-eth0
+# Broadcom Corporation NetLink BCM5784M Gigabit Ethernet PCIe
+DEVICE=eth0
+BOOTPROTO=static
+BROADCAST=192.168.3.255
+HWADDR=00:25:64:A3:59:BF
+IPADDR=192.168.3.40
+IPV6INIT=yes
+IPV6_AUTOCONF=yes
+NETMASK=255.255.255.0
+NETWORK=192.168.3.0
+ONBOOT=yes
+		]]>
+		</screen>
+		<para>eth0:1</para>
+		<screen>
+		<![CDATA[
+[root@development httpd]# cp /etc/sysconfig/network-scripts/ifcfg-eth0 /etc/sysconfig/network-scripts/ifcfg-eth0:1
+[root@development httpd]# vi /etc/sysconfig/network-scripts/ifcfg-eth0:1
+# Broadcom Corporation NetLink BCM5784M Gigabit Ethernet PCIe
+DEVICE=eth0:1
+BOOTPROTO=static
+BROADCAST=192.168.3.255
+HWADDR=00:25:64:A3:59:BF
+IPADDR=192.168.3.41
+IPV6INIT=yes
+IPV6_AUTOCONF=yes
+NETMASK=255.255.255.0
+NETWORK=192.168.3.0
+ONBOOT=yes
+		]]>
+		</screen>
+		<para>reload network</para>
+		<screen>
+		<![CDATA[
+[root@development ~]# /etc/init.d/network reload
+Shutting down interface eth0:                              [  OK  ]
+Shutting down loopback interface:                          [  OK  ]
+Bringing up loopback interface:                            [  OK  ]
+Bringing up interface eth0:
+		]]>
+		</screen>
+	
+		<section id="gateway">
+			<title>Gateway</title>
+			<screen>
+			<![CDATA[
+[root@development ~]# cat /etc/sysconfig/network
+NETWORKING=yes
+NETWORKING_IPV6=yes
+HOSTNAME=development.domain.org
+GATEWAY=192.168.3.1
+			]]>
+			</screen>
+		</section>
 		
+		<section id="bonding">
+		    <title>bonding</title>
+		    <screen>
+		    <![CDATA[
+cat >> /etc/modprobe.d/bonding.conf <<EOF
+alias bond0 bonding
+options bond0 mode=balance-alb miimon=1000
+EOF
+
+cat > /etc/sysconfig/network-scripts/ifcfg-eth0 <<EOF
+DEVICE="eth0"
+ONBOOT="yes"
+BOOTPROTO="none"
+USERCTL="no"
+NM_CONTROLLED="no"
+EOF
+
+cat > /etc/sysconfig/network-scripts/ifcfg-eth1 <<EOF
+DEVICE="eth1"
+ONBOOT="yes"
+BOOTPROTO="none"
+USERCTL="no"
+NM_CONTROLLED="no"
+EOF
+
+cat > /etc/sysconfig/network-scripts/ifcfg-bond0 <<EOF
+DEVICE="bond0"
+ONBOOT="yes"
+BOOTPROTO="none"
+TYPE="Ethernet"
+IPADDR=172.16.0.5
+NETMASK=255.255.255.0
+NETWORK=172.16.0.0
+USERCTL="no"
+NM_CONTROLLED="no"
+EOF
+
+modprobe bonding mode=balance-alb miimon=1000
+ifconfig bond0 up
+ifconfig bond0 172.16.0.5 netmask 255.255.255.0 up
+ip route add default via 172.16.0.254 dev bond0
+ifenslave bond0 eth0
+ifenslave bond0 eth1
+
+cat >> /etc/rc.local <<EOF
+#-------------------------
+ifenslave bond0 eth0
+ifenslave bond0 eth1
+ip route add default via 172.16.0.254 dev bond0
+#-------------------------
+EOF
+
+more /proc/net/bonding/bond0
+			]]>
+		    </screen>
+		</section>
+	
+		<section id="brctl">
+			<title>brctl</title>
+			<para>Linux 系统4个物理网卡的名称则分别为eth0，eth1，eth2，eth3。我们将四个网口桥接到br0端口。</para>
+			<para>你可以这样理解 vlan 2, vlan ip 192.168.0.1，然后将4个接口划分到vlan2, 这时这4个接口可以通过vlan 2访问其他用户。我只是做了一个比喻，让你能够理解。</para>
+			<screen>
+	
+			</screen>
+			<screen>
+# brctl addbr br0
+
+# brctl addif br0 eth0
+# brctl addif br0 eth1
+# brctl addif br0 eth2
+# brctl addif br0 eth3
+
+# ifconfig eth0 0.0.0.0
+# ifconfig eth1 0.0.0.0
+# ifconfig eth2 0.0.0.0
+# ifconfig eth3 0.0.0.0
+
+# ifconfig br0 192.168.0.1
+			</screen>
+		</section>
+		
+		<section id="nmtui">
+			<title>nmtui</title>
+			<screen>
+# nmtui
+# nmtui edit eno16777736
+# nmtui connect eno16777736
+			</screen>
+		</section>
+		
+	</section>
+
 </chapter>

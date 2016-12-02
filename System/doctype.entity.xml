@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	<!ENTITY chapter.introduction.xml		SYSTEM "chapter.introduction.xml">
 	<!ENTITY chapter.kernel.xml				SYSTEM "chapter.kernel.xml">
 	<!ENTITY chapter.kernel.module.xml		SYSTEM "chapter.kernel.module.xml">
 	<!ENTITY chapter.system.xml	 			SYSTEM "chapter.system.xml">
-	<!ENTITY chapter.system.locale 			SYSTEM "chapter.system.locale.xml">
+	<!ENTITY chapter.system.utilities.xml	SYSTEM "chapter.system.utilities.xml">
+	<!ENTITY chapter.locale.xml				SYSTEM "chapter.locale.xml">
 	<!ENTITY chapter.package.xml 			SYSTEM "chapter.package.xml">
 	<!ENTITY chapter.package.yum.xml 		SYSTEM "chapter.package.yum.xml">
 	<!ENTITY chapter.device.xml 			SYSTEM "chapter.device.xml">
 	<!ENTITY chapter.device.cpu.xml			SYSTEM "chapter.device.cpu.xml">
-	<!ENTITY chapter.system.console 		SYSTEM "chapter.system.console.xml">
+	<!ENTITY chapter.console.xml			SYSTEM "chapter.console.xml">
 	<!ENTITY chapter.harddisk.xml	 		SYSTEM "chapter.harddisk.xml">
 	<!ENTITY chapter.filesystem.xml			SYSTEM "chapter.filesystem.xml">
 	<!ENTITY chapter.fs.btrfs.xml			SYSTEM "chapter.fs.btrfs.xml">
