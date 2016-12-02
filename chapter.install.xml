@@ -1,77 +1,6 @@
 <section id="install">
 	<title>Getting Started Guides</title>
-	<section id="install.partition">
-		<title>HDD Partition</title>
-		<para>partition</para>
-		<table>
-		   <title>Linux server partition</title>
-		   <tgroup cols="2">
-			 <thead>
-			   <row>
-				  <entry>volume</entry>
-				  <entry>size</entry>
-			   </row>
-			 </thead>
-			<tbody>
-			   	<row>
-				  <entry>/boot</entry>
-				  <entry>300M</entry>
-			   	</row>
-				<row>
-				  <entry>/</entry>
-				  <entry>30G</entry>
-			   	</row>
-				<row>
-				  <entry>/var</entry>
-				  <entry>50G</entry>
-			   	</row>
-			   	<row>
-				  <entry>/opt</entry>
-				  <entry>remainder</entry>
-				</row>
-			   	<row>
-				  <entry>swap</entry>
-				  <entry>memory * 2</entry>
-			   	</row>
-			</tbody>
-		   </tgroup>
-		</table>
-
-		<table>
-		   <title>Linux desktop partition</title>
-		   <tgroup cols="2">
-			 <thead>
-			   <row>
-				  <entry>volume</entry>
-				  <entry>size</entry>
-			   </row>
-			 </thead>
-			<tbody>
-			   	<row>
-				  <entry>/boot</entry>
-				  <entry>300M</entry>
-			   	</row>
-				<row>
-				  <entry>/</entry>
-				  <entry>30G</entry>
-			   	</row>
-				<row>
-				  <entry>/var</entry>
-				  <entry>50G</entry>
-			   	</row>
-			   	<row>
-				  <entry>/home</entry>
-				  <entry>remainder</entry>
-				</row>
-			   	<row>
-				  <entry>swap</entry>
-				  <entry>memory * 2</entry>
-			   	</row>
-			</tbody>
-		   </tgroup>
-		</table>
-
-	</section>
+	
 	
 <!-- 	<section id="linux.install">
 	<title>Linux Installation</title>
@@ -113,82 +42,82 @@
 	
 	<section id="install.scientific">
 		<title>Scientific Linux</title>
-		<para><graphic  format="png" fileref="../images/scientific/scientific-1.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/scientific/scientific-2.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/scientific/scientific-3.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/scientific/scientific-4.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/scientific/scientific-5.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/scientific/scientific-6.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/scientific/scientific-7.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/scientific/scientific-8.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/scientific/scientific-9.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/scientific/scientific-10.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/scientific/scientific-11.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/scientific/scientific-12.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/scientific/scientific-13.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/scientific/scientific-14.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/scientific/scientific-15.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/scientific/scientific-16.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/scientific/scientific-17.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/scientific/scientific-18.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/scientific/scientific-19.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/scientific/scientific-20.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/scientific/scientific-21.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/scientific/scientific-1.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/scientific/scientific-2.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/scientific/scientific-3.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/scientific/scientific-4.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/scientific/scientific-5.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/scientific/scientific-6.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/scientific/scientific-7.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/scientific/scientific-8.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/scientific/scientific-9.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/scientific/scientific-10.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/scientific/scientific-11.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/scientific/scientific-12.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/scientific/scientific-13.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/scientific/scientific-14.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/scientific/scientific-15.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/scientific/scientific-16.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/scientific/scientific-17.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/scientific/scientific-18.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/scientific/scientific-19.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/scientific/scientific-20.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/scientific/scientific-21.png" srccredit="neo" width=""/></para>
 	</section>
 	<section id="install.redhat">
 		<title>Redhat Linux</title>
-		<para><graphic  format="png" fileref="../images/redhat/Redhat-000010.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/redhat/Redhat-000011.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/redhat/Redhat-000012.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/redhat/Redhat-000013.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/redhat/Redhat-000014.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/redhat/Redhat-000015.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/redhat/Redhat-000016.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/redhat/Redhat-000017.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/redhat/Redhat-000018.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/redhat/Redhat-000019.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/redhat/Redhat-000020.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/redhat/Redhat-000021.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/redhat/Redhat-000022.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/redhat/Redhat-000023.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/redhat/Redhat-000024.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/redhat/Redhat-000025.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/redhat/Redhat-000026.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/redhat/Redhat-000027.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/redhat/Redhat-000028.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/redhat/Redhat-000029.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/redhat/Redhat-000030.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/redhat/Redhat-000031.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/redhat/Redhat-000032.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/redhat/Redhat-000033.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/redhat/Redhat-000010.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/redhat/Redhat-000011.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/redhat/Redhat-000012.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/redhat/Redhat-000013.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/redhat/Redhat-000014.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/redhat/Redhat-000015.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/redhat/Redhat-000016.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/redhat/Redhat-000017.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/redhat/Redhat-000018.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/redhat/Redhat-000019.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/redhat/Redhat-000020.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/redhat/Redhat-000021.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/redhat/Redhat-000022.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/redhat/Redhat-000023.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/redhat/Redhat-000024.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/redhat/Redhat-000025.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/redhat/Redhat-000026.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/redhat/Redhat-000027.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/redhat/Redhat-000028.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/redhat/Redhat-000029.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/redhat/Redhat-000030.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/redhat/Redhat-000031.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/redhat/Redhat-000032.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/redhat/Redhat-000033.png" srccredit="neo" width=""/></para>
 	</section>
 	<section id="install.centos">
 		<title>CentOS 6</title>
-		<para><graphic  format="png" fileref="../images/centos/CentOS-1.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/centos/CentOS-2.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/centos/CentOS-3.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/centos/CentOS-4.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/centos/CentOS-5.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/centos/CentOS-6.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/centos/CentOS-6-1.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/centos/CentOS-6-2.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/centos/CentOS-7.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/centos/CentOS-8.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/centos/CentOS-9.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/centos/CentOS-10.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/centos/CentOS-10-1.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/centos/CentOS-10-2.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/centos/CentOS-10-3.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/centos/CentOS-10-4.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/centos/CentOS-10-5.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/centos/CentOS-10-6.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/centos/CentOS-10-7.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/centos/CentOS-10-8.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/centos/CentOS-10-9.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/centos/CentOS-10-10.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/centos/CentOS-11.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/centos/CentOS-12.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="../images/centos/CentOS-13.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/centos/CentOS-1.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/centos/CentOS-2.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/centos/CentOS-3.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/centos/CentOS-4.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/centos/CentOS-5.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/centos/CentOS-6.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/centos/CentOS-6-1.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/centos/CentOS-6-2.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/centos/CentOS-7.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/centos/CentOS-8.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/centos/CentOS-9.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/centos/CentOS-10.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/centos/CentOS-10-1.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/centos/CentOS-10-2.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/centos/CentOS-10-3.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/centos/CentOS-10-4.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/centos/CentOS-10-5.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/centos/CentOS-10-6.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/centos/CentOS-10-7.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/centos/CentOS-10-8.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/centos/CentOS-10-9.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/centos/CentOS-10-10.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/centos/CentOS-11.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/centos/CentOS-12.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="images/centos/CentOS-13.png" srccredit="neo" width=""/></para>
 	</section>
 	<section id="5.x">
 		<title>5.x 减肥</title>
