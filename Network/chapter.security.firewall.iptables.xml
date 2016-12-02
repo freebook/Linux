@@ -339,10 +339,11 @@ iptables -t filter -A INPUT -s 192.168.1.1,2.2.2.2,10.10.10.10 -j ACCEPT
 # Accept tcp packets on destination ports 6881-6890
  iptables -A INPUT -p tcp --dport 6881:6890 -j ACCEPT
 		</screen>
+		<para>多端口</para>
+		<screen>
+-A INPUT -s 116.24.13.13/32 -p tcp -m tcp -m multiport --dports 21,20 -j ACCEPT
+		</screen>
 	</section>
-	
-	
-
 
 	<section id="nat">
 		<title>NAT</title>
