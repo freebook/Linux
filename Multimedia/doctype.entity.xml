@@ -32,8 +32,6 @@
 <!ENTITY chapter.gatekeeper.xml 	SYSTEM "VoIP/chapter.gatekeeper.xml">
 
 	<!--
-	<!ENTITY chapter.www.xml		 	SYSTEM "chapter.www.xml">
-	<!ENTITY chapter.database.xml	 	SYSTEM "chapter.database.xml">
 	<!ENTITY chapter.teamwork.xml	 	SYSTEM "chapter.teamwork.xml">
 	<!ENTITY chapter.vm.xml		 		SYSTEM "chapter.vm.xml">
 	<!ENTITY chapter.monitor.xml		SYSTEM "chapter.monitor.xml">
