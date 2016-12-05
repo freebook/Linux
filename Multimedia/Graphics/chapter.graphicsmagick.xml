@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="graphicsmagick" ?>
+	<title>GraphicsMagick</title>
+	<para>http://www.graphicsmagick.org/</para>
+	<section id="install">
+		<title>安装</title>
+		<section>
+			<title>CentOS 安装</title>
+			<screen>
+yum install GraphicsMagick		
+			</screen>
+		</section>
+		<section>
+			<title>编译安装</title>
+			<screen>
+			<![CDATA[
+tar zxf GraphicsMagick-1.3.12.tar.gz
+cd GraphicsMagick-1.3.12
+./configure --prefix=/srv/GraphicsMagick-1.3.12
+make && make install
+ln -s /srv/GraphicsMagick-1.3.12/ /srv/GraphicsMagick
+			]]>
+			</screen>			
+		</section>
+	</section>
+	<section id="mogrify">
+		<title>mogrify</title>
+		<para>格式转换</para>
+		<screen>
+/usr/bin/gm mogrify -format png *.jpg
+		</screen>
+	</section>
+</chapter>

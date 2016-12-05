@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../stylesheet/docbook-article.xsl"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V5.0//EN"
+	"/usr/share/xml/docbook/schema/dtd/5.0/docbook.dtd" [
+
+	<!ENTITY book.info.legalnotice.xml	SYSTEM "../common/book.info.legalnotice.xml">
+	<!ENTITY book.info.abstract.xml		SYSTEM "../common/book.info.abstract.xml">
+	<!ENTITY about.me.xml				SYSTEM "../common/about.me.xml">
+	<!ENTITY book.dedication.xml       	SYSTEM "../common/book.dedication.xml">
+	<!ENTITY book.appendix.xml			SYSTEM "book.appendix.xml">
+
+	<!ENTITY % doctype.entity.xml 			SYSTEM "doctype.entity.xml">
+	%doctype.entity.xml;
+
+]>
+<book xml:base="http://netkiller.sourceforge.net/multimedia/"
+	xmlns="http://docbook.org/ns/docbook" xml:lang="zh-cn">
+	<info>
+		<title>Netkiller Multimedia 手札</title>
+		<subtitle>Multimedia Studio</subtitle>
+		<authorgroup>
+		<author>
+			<firstname>netkiller</firstname>
+			<surname>Neo Chan</surname>
+			<address>
+				<phone>13113668890</phone>
+				<email>openunix(at)163(dot)com</email>
+			</address>
+			<affiliation>
+
+			</affiliation>
+		</author>
+
+		</authorgroup>
+
+		<edition>User's Guide version 1.0 for CentOS V5.5</edition>
+  		<pubdate>2009</pubdate>
+
+		<copyright>
+			<year>2009</year>
+			<year>-</year>
+			<year>2016</year>
+			<holder>Neo Chan</holder>
+		</copyright>
+		<releaseinfo>
+			<remark>2010-11-11</remark>
+		</releaseinfo>
+
+		&book.info.legalnotice.xml;
+		&book.info.abstract.xml;
+<!--
+		<abstract>
+			<title></title>
+			<para></para>
+		</abstract>
+-->
+	</info>
+
+	&book.dedication.xml;
+
+	<preface>
+		<title>About author</title>
+		<para></para>
+		&about.me.xml;
+	</preface>
+
+	&chapter.multimedia.xml;
+	&book.appendix.xml;
+
+</book>

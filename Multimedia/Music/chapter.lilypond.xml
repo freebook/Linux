@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="lilypond">
+	<title>LilyPond</title>
+	<para>http://lilypond.org/</para>
+	<screen>
+sudo apt-get install lilypond
+	</screen>
+	<section id="example">
+		<title>Example</title>
+		<section>
+			<title>PNG/PDF/PS</title>
+			<screen>
+			<![CDATA[
+\version "2.14.2"
+\relative c'' {
+  <<
+    \new Staff { \clef "treble" c4 }
+    \new Staff { \clef "bass" c,,4 }
+  >>
+}
+			]]>
+			</screen>
+			<screen>
+lilypond --png -o abc.png example.ly
+lilypond --pdf -o abc example.ly
+			</screen>
+		</section>
+		<section>
+			<title>Latex</title>
+			<screen>
+			<![CDATA[
+\documentclass{article}
+\begin{document}
+    An easy song to learn on the piano is Mary Had a Little Lamb:\\
+    \begin{lilypond}
+        \score { % start of musical score
+          <<
+            % beginning of musical staff. the \relative c' means that the
+            % notes are an octave higher than the default (ie: notes are
+            % notes are relative to middle c)
+            \new Staff \relative c' {
+                e4 d c d e e e2 d4 d d2 e4 g g2
+                e4 d c d e e e e d d e d c1
+            } % end of staff
+          >>
+        } % end of musical score
+    \end{lilypond}
+\end{document}
+			]]>
+			</screen>
+			<screen>
+lilypond-book --format=latex --lily-output-dir=lilyfiles mary.lytex
+latex mary.tex
+			</screen>
+			<screen>
+pdflatex --shell-escape your.tex
+			</screen>
+		</section>
+	</section>
+</chapter>

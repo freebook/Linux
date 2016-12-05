@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<part id="index"><?dbhtml dir="audio" ?>
+	<title>Audio</title>
+	<subtitle>Digital Audio Workstation</subtitle>
+	<para>http://revo-create.com/viewthread.php?tid=11731</para>
+	<para></para>
+	<orderedlist>
+		<title>混音系列</title>
+		<listitem><para>ardour</para></listitem>
+		<listitem><para>Pulseaudio</para></listitem>
+		<listitem><para></para></listitem>
+	</orderedlist>
+	<orderedlist>
+		<title>取样器</title>
+		<listitem><para>Qsynth</para></listitem>
+	</orderedlist>
+	&chapter.ardour.xml;
+	
+	&chapter.lmms.xml;
+	&chapter.qsynth.xml;
+	&chapter.rosegarden.xml;
+	&chapter.terminatorx.xml;
+	
+	&chapter.pulseaudio.xml;
+<chapter id="synthesizer">
+	<title>Synthesizer</title>
+	<orderedlist>
+		<title>合成器</title>
+		<listitem><para>ZynAddSubFX</para></listitem>
+	</orderedlist>	
+	&chapter.zynaddsubfx.xml;
+</chapter>
+<chapter id="drums">
+	<title>Drums</title>
+	&chapter.hydrogen.xml;
+</chapter>
+</part>

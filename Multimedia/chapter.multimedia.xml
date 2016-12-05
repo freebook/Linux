@@ -1,0 +1,6 @@
+	&part.audio.xml;
+	&part.video.xml;
+	&part.graphics.xml;
+	&part.music.xml;
+	&chapter.voip.xml;
+	&chapter.miscellaneous.xml;

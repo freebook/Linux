@@ -74,13 +74,13 @@ yum install -y compat-db libXp rpm-build elfutils elfutils-libs
 ./setup.sh
 		]]>
 		</screen>
-		<para><graphic  format="png" fileref="images/WebSphere/websphere-0.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/websphere-1.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/websphere-2.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/websphere-3.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/websphere-4.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/websphere-5.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/websphere-6.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/websphere-0.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/websphere-1.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/websphere-2.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/websphere-3.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/websphere-4.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/websphere-5.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/websphere-6.png" srccredit="neo" width=""/></para>
 		<para>安装依赖软件，后Back在Next一次</para>
 		<screen>
 		<![CDATA[
@@ -91,20 +91,20 @@ Preparing...                ########################################### [100%]
    2:compat-db              ########################################### [100%]
 		]]>
 		</screen>
-		<para><graphic  format="png" fileref="images/WebSphere/websphere-6-1.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/websphere-7.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/websphere-8.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/websphere-9.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/websphere-6-1.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/websphere-7.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/websphere-8.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/websphere-9.png" srccredit="neo" width=""/></para>
 		<para>忽略提示下一步</para>
-		<para><graphic  format="png" fileref="images/WebSphere/websphere-9-1.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/websphere-10.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/websphere-11.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/websphere-12.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/websphere-13.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/websphere-14.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/websphere-15.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/websphere-16.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/websphere-17.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/websphere-9-1.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/websphere-10.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/websphere-11.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/websphere-12.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/websphere-13.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/websphere-14.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/websphere-15.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/websphere-16.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/websphere-17.png" srccredit="neo" width=""/></para>
 	</section>
 	<section id="updi.was">
 		<title>UpdateInstaller (AppServer, Plugins, IBMIHS)</title>
@@ -117,13 +117,13 @@ Preparing...                ########################################### [100%]
 # cp *.pak /opt/IBM/WebSphere/UpdateInstaller/maintenance/
 		]]>
 		</screen>
-		<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-1.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-2.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-3.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-4.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-5.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-6.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-7.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-1.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-2.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-3.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-4.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-5.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-6.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-7.png" srccredit="neo" width=""/></para>
 		<section id="updi.was">
 			<title>WAS</title>
 			<para></para>
@@ -132,15 +132,15 @@ Preparing...                ########################################### [100%]
 /opt/IBM/WebSphere/UpdateInstaller/update.sh
 			]]>
 			</screen>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-was-1.png" srccredit="neo" width=""/></para>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-was-1.png" srccredit="neo" width=""/></para>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-was-1.png" srccredit="neo" width=""/></para>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-was-1.png" srccredit="neo" width=""/></para>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-was-1.png" srccredit="neo" width=""/></para>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-was-1.png" srccredit="neo" width=""/></para>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-was-1.png" srccredit="neo" width=""/></para>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-was-1.png" srccredit="neo" width=""/></para>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-was-1.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-was-1.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-was-1.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-was-1.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-was-1.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-was-1.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-was-1.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-was-1.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-was-1.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-was-1.png" srccredit="neo" width=""/></para>
 			<screen>
 # grep Finish /opt/IBM/WebSphere/AppServer/logs/update/install/updatelog.txt
 # /opt/IBM/WebSphere/AppServer/java/bin/java -version
@@ -160,13 +160,13 @@ JCL  - 20091202_01
 /opt/IBM/WebSphere/UpdateInstaller/update.sh
 			]]>
 			</screen>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-plugins-1.png" srccredit="neo" width=""/></para>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-plugins-2.png" srccredit="neo" width=""/></para>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-plugins-3.png" srccredit="neo" width=""/></para>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-plugins-4.png" srccredit="neo" width=""/></para>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-plugins-5.png" srccredit="neo" width=""/></para>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-plugins-6.png" srccredit="neo" width=""/></para>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-plugins-7.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-plugins-1.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-plugins-2.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-plugins-3.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-plugins-4.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-plugins-5.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-plugins-6.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-plugins-7.png" srccredit="neo" width=""/></para>
 		</section>
 		<section id="updi.ihs">
 			<title>IHS</title>
@@ -175,13 +175,13 @@ JCL  - 20091202_01
 /opt/IBM/WebSphere/UpdateInstaller/update.sh
 			]]>
 			</screen>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-ibmihs-1.png" srccredit="neo" width=""/></para>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-ibmihs-2.png" srccredit="neo" width=""/></para>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-ibmihs-3.png" srccredit="neo" width=""/></para>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-ibmihs-4.png" srccredit="neo" width=""/></para>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-ibmihs-5.png" srccredit="neo" width=""/></para>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-ibmihs-6.png" srccredit="neo" width=""/></para>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-ibmihs-7.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-ibmihs-1.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-ibmihs-2.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-ibmihs-3.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-ibmihs-4.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-ibmihs-5.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-ibmihs-6.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-ibmihs-7.png" srccredit="neo" width=""/></para>
 		</section>
 		<section>
 			<title>backup</title>
@@ -199,14 +199,14 @@ cp -i -r IBMIHS IBMIHS.pack
 # UpdateInstaller/install
 # cp 7.0.0-WS-WCServer-FP002.pak /opt/IBM/WebSphere/UpdateInstaller1/maintenance/
 			</screen>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-wc-1.png" srccredit="neo" width=""/></para>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-wc-2.png" srccredit="neo" width=""/></para>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-wc-3.png" srccredit="neo" width=""/></para>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-wc-4.png" srccredit="neo" width=""/></para>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-wc-5.png" srccredit="neo" width=""/></para>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-wc-6.png" srccredit="neo" width=""/></para>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-wc-7.png" srccredit="neo" width=""/></para>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-wc-8.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-wc-1.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-wc-2.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-wc-3.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-wc-4.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-wc-5.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-wc-6.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-wc-7.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-wc-8.png" srccredit="neo" width=""/></para>
 			<para></para>
 			<screen>
 			<![CDATA[
@@ -221,13 +221,13 @@ cp -i -r IBMIHS IBMIHS.pack
 # UpdateInstaller/install
 # cp 7.0.0-WS-WCServer-FP002.pak /opt/IBM/WebSphere/UpdateInstaller1/maintenance/
 			</screen>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-fep2-1.png" srccredit="neo" width=""/></para>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-fep2-2.png" srccredit="neo" width=""/></para>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-fep2-3.png" srccredit="neo" width=""/></para>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-fep2-4.png" srccredit="neo" width=""/></para>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-fep2-5.png" srccredit="neo" width=""/></para>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-fep2-6.png" srccredit="neo" width=""/></para>
-			<para><graphic  format="png" fileref="images/WebSphere/websphere-updi-fep2-7.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-fep2-1.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-fep2-2.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-fep2-3.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-fep2-4.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-fep2-5.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-fep2-6.png" srccredit="neo" width=""/></para>
+			<para><graphic  format="png" fileref="../images/WebSphere/websphere-updi-fep2-7.png" srccredit="neo" width=""/></para>
 			<para></para>
 			<screen>
 			<![CDATA[
@@ -244,17 +244,17 @@ su - wcuser
 ./config_client.sh -protocol SSL&
 		]]>
 		</screen>
-		<para><graphic  format="png" fileref="images/WebSphere/instance-1.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/instance-2.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/instance-3.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/instance-4.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/instance-5.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/instance-6.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/instance-7.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/instance-8.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/instance-9.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/instance-10.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/instance-11.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/instance-1.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/instance-2.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/instance-3.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/instance-4.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/instance-5.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/instance-6.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/instance-7.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/instance-8.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/instance-9.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/instance-10.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/instance-11.png" srccredit="neo" width=""/></para>
 		<para>备份操作</para>
 		<screen>
 		<![CDATA[
@@ -381,9 +381,9 @@ $ grep error /opt/IBM/WebSphere/AppServer/profiles/demo/logs/server1/startServer
 [root@wcs ~]# netstat -nlp | egrep "httpd|java" | egrep "0 192.168.3.198:|0 0.0.0.0:"
 		</screen>
 		<para>https://wcs.example.com:8002/adminconsole</para>
-		<para><graphic  format="png" fileref="images/WebSphere/adminconsole.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/adminconsole.png" srccredit="neo" width=""/></para>
 		<para>https://wcs.example.com:8004/orgadminconsole</para>
-		<para><graphic  format="png" fileref="images/WebSphere/orgadminconsole.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/orgadminconsole.png" srccredit="neo" width=""/></para>
 		<para>IBM Bug Oracle默认端口是50000，更改oralce端口密码1521</para>
 		<screen>
 # vim /opt/IBM/WebSphere/CommerceServer70/instances/demo/xml/demo.xml
@@ -522,17 +522,17 @@ https://wcs.example.com:9063/ibm/console/logon.jsp (configadmin)
 	<section id="store">
 		<title>Initialization store</title>
 		<para>ExtendedSites-FEP.sar</para>
-		<para><graphic  format="png" fileref="images/WebSphere/ExtendedSites-FEP-1.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/ExtendedSites-FEP-2.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/ExtendedSites-FEP-3.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/ExtendedSites-FEP-4.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/ExtendedSites-FEP-5.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/ExtendedSites-FEP-6.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/ExtendedSites-FEP-7.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/ExtendedSites-FEP-1.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/ExtendedSites-FEP-2.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/ExtendedSites-FEP-3.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/ExtendedSites-FEP-4.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/ExtendedSites-FEP-5.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/ExtendedSites-FEP-6.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/ExtendedSites-FEP-7.png" srccredit="neo" width=""/></para>
 		<para>MadisonsEnhancements.sar</para>
-		<para><graphic  format="png" fileref="images/WebSphere/MadisonsEnhancements-1.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/MadisonsEnhancements-2.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/MadisonsEnhancements-3.png" srccredit="neo" width=""/></para>
-		<para><graphic  format="png" fileref="images/WebSphere/MadisonsEnhancements-4.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/MadisonsEnhancements-1.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/MadisonsEnhancements-2.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/MadisonsEnhancements-3.png" srccredit="neo" width=""/></para>
+		<para><graphic  format="png" fileref="../images/WebSphere/MadisonsEnhancements-4.png" srccredit="neo" width=""/></para>
 	</section>
 </chapter>

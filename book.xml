@@ -75,8 +75,9 @@
 	%mail.doctype.entity.xml;
 	<!ENTITY part.mail.xml				 		SYSTEM "part.mail.xml">
 
-	<!ENTITY % voip.doctype.entity.xml 			SYSTEM "VoIP/doctype.entity.xml">
-	%voip.doctype.entity.xml;
+	<!ENTITY % multimedia.doctype.entity.xml 		SYSTEM "Multimedia/doctype.entity.xml">
+	%multimedia.doctype.entity.xml;
+	<!ENTITY part.multimedia.xml 					SYSTEM "part.multimedia.xml">
 	
 	<!ENTITY % virtualization.doctype.entity.xml	SYSTEM "Virtualization/doctype.entity.xml">
 	%virtualization.doctype.entity.xml;	
@@ -205,7 +206,7 @@ a2p,ab,aclocal,aclocal-1.11,addftinfo,addr2line,airdaemon,apropos,ar,as,attr,aul
 	&chapter.management.xml;
 	&part.virtualization.xml;
 <!-- =========================================================================== -->
-	&chapter.voip.xml;
+	&part.multimedia.xml;
 	&chapter.x.xml;
 <!-- =========================================================================== -->	
 	&chapter.ibm.websphere.xml;

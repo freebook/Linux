@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<article>
+	<articleinfo>
+		<title>吉他学习笔记</title>
+		<author>
+			<firstname>neo chen</firstname>
+			<surname>陈景峰</surname>
+			<affiliation>
+				<address>
+					<email>openunix@163(dot)com</email>
+				</address>
+			</affiliation>
+		</author>
+		<copyright>
+			<year>2010</year>
+			<holder>Copyright netkiller</holder>
+		</copyright>
+		<abstract>
+			<para>http://www.chordbook.com/</para>
+		</abstract>
+	</articleinfo>
+	<preface>
+		<title>Preface</title>
+		<para>http://ubuntustudio.org</para>
+	</preface>
+	<chapter>
+		<title>Guitar Pro 5.2</title>
+		<para>乐谱工具</para>
+		<para>Python:</para>
+		<para><ulink url="http://www.python.org/">http://www.python.org/</ulink></para>
+		<para>运行:</para>
+		
+		<para><ulink url="http://ireport.sourceforge.net/">http://ireport.sourceforge.net/</ulink></para>
+			<para><ulink url="http://jakarta.apache.org/">http://jakarta.apache.org/</ulink></para>
+		
+	</chapter>
+
+	<chapter>
+		<title>Telnet Debug</title>
+		<para>使用telnet简单调试新闻组</para>
+		<para><userinput>telnet 127.0.0.1 119</userinput></para>
+		<section>
+			<title>部署</title>
+			<para>开始菜单->运行:(输入) cmd 点运行按钮</para>
+			<command>
+			C:\Documents and Settings\neo.chen> cd C:\jasperreports-1.1.1-project\jasperreports-1.1.1\demo\samples\webapp
+			C:\jasperreports-1.1.1-project\jasperreports-1.1.1\demo\samples\webapp>ant war
+			</command>
+			<screen>
+
+			</screen>
+			<para>将jasper-webapp.war文件复制到tomcat\webapps目录下</para>
+		</section>
+		<section>
+			<title>访问Demo程序</title>
+			<para><ulink url="http://127.0.0.1:8080/jasper-webapp/">http://127.0.0.1:8080/jasper-webapp/</ulink></para>
+			<para><graphic fileref="images/bg7nyt_jasperreports_demo.jpg" /></para>
+			<procedure><title>setp by setp</title>
+				<step>
+					<para>compile</para>
+					<para>点击compile导航按钮</para>
+					<table frame="all">
+						<title>compile</title>
+						<tgroup cols="3">
+						<tbody>
+							<row>
+								<entry>JSP Example</entry>
+								<entry>execute</entry>
+								<entry>source</entry>
+							</row>
+							<row>
+								<entry>Servlet Example</entry>
+								<entry>execute</entry>
+								<entry>source</entry>
+							</row>
+						</tbody>
+						</tgroup>
+					</table> 
+				</step>
+				<step>
+					<para>分别点击上面的两个 execute 连接,提示:</para>
+					<para>The XML report design was successfully compiled. </para>
+					<para>关闭两个窗口</para>
+				</step>
+				<step>
+					<para>PDF output / HTML output</para>
+					<table frame="all">
+						<title>compile</title>
+						<tgroup cols="3">
+						<tbody>
+							<row>
+								<entry>JSP Example</entry>
+								<entry>execute</entry>
+								<entry>source</entry>
+							</row>
+							<row>
+								<entry>Servlet Example</entry>
+								<entry>execute</entry>
+								<entry>source</entry>
+							</row>
+						</tbody>
+						</tgroup>
+					</table> 
+					<para>分别点击上面的两个 execute 连接,同时显示下面报表:</para>
+					<graphic fileref="images/bg7nyt_pdf_report.jpg" />
+				</step>
+			</procedure>
+		</section>
+	</chapter>
+	
+	<chapter>
+		<title>My first chapter</title>
+		<para>This is the first chapter in my book.</para>
+		<sect1>
+			<title>My first section</title>
+			<para>This is the first section in my book.</para>
+		</sect1>
+		<sect1>
+			<title>my second section</title>
+			<para> this is the second section in my book.</para>
+		</sect1>
+	</chapter>
+	<chapter>
+		<title>My first chapter</title>
+		<para>This is the first chapter in my book.</para>
+		<sect1>
+			<title>My first section</title>
+			<para>This is the first section in my book.</para>
+		</sect1>
+		<sect1>
+			<title>my second section</title>
+			<para> this is the second section in my book.</para>
+		</sect1>
+	</chapter>
+	
+
+</article>

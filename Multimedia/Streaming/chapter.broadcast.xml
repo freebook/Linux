@@ -1,0 +1,157 @@
+<chapter id="index"><?dbhtml dir="streaming" ?>
+	<title>broadcast streaming</title>
+	<section id="gnump3d">
+		<title>gnump3d - A streaming server for MP3 and OGG files</title>
+		<procedure>
+			<title></title>
+			<step>
+				<para>installation</para>
+				<screen>
+$ sudo apt-get install gnump3d				
+				</screen>
+			</step>
+			<step>
+				<para>configure</para>
+				<screen>
+$ sudo vim /etc/gnump3d/gnump3d.conf
+
+ root = /var/music
+				</screen>
+			</step>
+			<step>
+				<para>copy some mp3 file to directory /var/music</para>
+			</step>
+			<step>
+				<para>testing</para>
+				<para>http://127.0.0.1:8888/</para>
+			</step>
+		</procedure>
+	</section>	
+	<section id="icecast2">
+		<title>icecast2 - Ogg Vorbis and MP3 streaming media server</title>
+		<para>http://www.icecast.org/</para>
+		<section>
+			<title></title>
+			<procedure>
+				<title></title>
+				<step>
+					<para>installation</para>
+					<screen>
+$ sudo apt-get install icecast2
+					</screen>
+				</step>
+				<step>
+					<para>configure</para>
+					<para>/etc/default/icecast2</para>
+					<screen>
+$ sudo vim /etc/default/icecast2
+ #ENABLE=false
+ ENABLE=true					
+					</screen>
+					<para>/etc/icecast2/icecast.xml</para>
+					<screen>
+					<![CDATA[
+      <authentication>
+          <!-- Sources log in with username 'source' -->
+          <source-password>your-password</source-password>
+          <!-- Relays log in username 'relay' -->
+          <relay-password>your-password</relay-password>
+ 
+          <!-- Admin logs in with the username given below -->
+          <admin-user>admin</admin-user>
+          <admin-password>your-password</admin-password>
+      </authentication>
+					]]>
+					</screen>
+				</step>
+				<step>
+					<para>starting</para>
+					<screen>
+$ sudo /etc/init.d/icecast2 start
+					</screen>
+				</step>
+				<step>
+					<para>testing</para>
+					<para> http://localhost:8000/ </para>
+				</step>
+			</procedure>
+		</section>
+		<section>
+			<title>installation from source</title>
+<procedure><title>配置步骤</title>
+			<step>
+				<para>安装lib库</para>
+				<screen>
+netkiller@Linux-server:~/icecast-2.3.1$ sudo apt-get install libxslt1.1
+netkiller@Linux-server:~/icecast-2.3.1$ sudo apt-get install libxslt1-dev
+netkiller@Linux-server:~/icecast-2.3.1$ sudo apt-get install libshout3
+netkiller@Linux-server:~/icecast-2.3.1$ sudo apt-get install libshout3-dev
+				</screen>
+       		</step>
+			<step>
+				<para>$ sudo ./configure --prefix=/usr/local/icecast</para>
+				<para>make;make install</para>
+				<screen>
+netkiller@Linux-server:~/icecast-2.3.1$ ./configure --prefix=/usr/local/icecast
+netkiller@Linux-server:~/icecast-2.3.1$ make
+netkiller@Linux-server:~/icecast-2.3.1$ sudo make install
+netkiller@Linux-server:~/icecast-2.3.1$ cd /usr/local/icecast/
+netkiller@Linux-server:/usr/local/icecast$ ls
+bin  etc  share
+				</screen>
+				<para>创建icecast2用户</para>
+				<para>修改所有者</para>
+				<screen>
+netkiller@Linux-server:/usr/local/icecast$ cd ..
+netkiller@Linux-server:/usr/local$ adduser icecast2
+netkiller@Linux-server:/usr/local$ sudo chown icecast2.icecast2 -R icecast/
+				</screen>
+			</step>
+			<step>
+				<para>运行icecast</para>
+				<screen>
+netkiller@Linux-server:/usr/local$ su icecast2
+netkiller@Linux-server:/usr/local$ /usr/local/icecast/bin/icecast -b -c /usr/local/icecast/etc/icecast.xml
+				</screen>
+			</step>
+			<step>
+				<para>配置icecast</para>
+				<para>管理员/密码</para>
+				<para>admin-user: 管理员用户名</para>
+				<para>admin-password: 管理员密码</para>
+				<screen>
+icecast2@Linux-server:/usr/local/icecast$ vi etc/icecast.xml
+<![CDATA[
+
+    <authentication>
+        <!-- Sources log in with username 'source' -->
+        <source-password>hackme</source-password>
+        <!-- Relays log in username 'relay' -->
+        <relay-password>hackme</relay-password>
+
+        <!-- Admin logs in with the username given below -->
+        <admin-user>admin</admin-user>
+        <admin-password>chen</admin-password>
+    </authentication>
+
+]]>
+				</screen>
+			</step>
+			<step>
+				<para>测试 http://netkiller.8800.org:8000/ </para>
+			</step>
+		</procedure>
+
+		</section>
+
+	</section>
+
+	<section id="shoutcast">
+		<title>shoutcast</title>
+		<para>shoutcast...</para>
+	</section>
+	<section id="peercast">
+		<title>PeerCast</title>
+		<para>homepage: http://www.peercast.org/</para>
+	</section>
+</chapter>

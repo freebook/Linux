@@ -234,17 +234,7 @@ Testing nginx configuration: nginx.
 $ openssl s_client -connect www.example.com:443
 			</screen>
 		</section>
-		<section id="http2">
-			<title>HTTP2</title>
-			<screen>
-server {
-    listen 443 ssl http2;
-
-    ssl_certificate server.crt;
-    ssl_certificate_key server.key;
-}			
-			</screen>
-		</section>
+		
 		<section id="http.server.subdomain">
 			<title>泛解析主机</title>
 			<screen>
@@ -734,7 +724,7 @@ location /images/ {
 		</section>
 	</section>
 	<section id="server.ssl">
-		<title>HTTPS 配置 SSL证书</title>
+		<title>HTTP2  配置 SSL证书</title>
 		<para>创建证书</para>
 		<screen>
 		<![CDATA[
@@ -765,8 +755,10 @@ Email Address []:netkiller@msn.com
 		]]>
 		</screen>
 		<para>注意: Common Name (eg, your name or your server's hostname) []:api.netkiller.cn 要跟你的 nginx server_name api.netkiller.cn 一样。</para>
-		<para>Nginx 配置</para>
-		<screen>
+		<section id="spdy">
+			<title>spdy</title>
+			<para>Nginx 配置 spdy</para>
+			<screen>
 upstream api.netkiller.cn {
     #server api1.netkiller.cn:7000;
     #server api2.netkiller.cn backup;
@@ -800,8 +792,20 @@ server {
     #}
 
 }
-		
-		</screen>
+			</screen>
+			<para>spdy 是google提出，现在已经归入 http2 标准</para>
+		</section>
+		<section id="http2">
+			<title>HTTP2</title>
+			<screen>
+server {
+    listen 443 ssl http2;
+
+    ssl_certificate server.crt;
+    ssl_certificate_key server.key;
+}			
+			</screen>
+		</section>
 	</section>
 	<section id="rewrite">
 		<title>rewrite</title>

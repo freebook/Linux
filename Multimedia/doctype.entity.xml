@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!ENTITY chapter.multimedia.xml		SYSTEM "chapter.multimedia.xml">
+<!ENTITY part.audio.xml	 			SYSTEM "Audio/part.audio.xml">
+<!ENTITY chapter.ardour.xml		 	SYSTEM "Audio/chapter.ardour.xml">
+<!ENTITY chapter.rosegarden.xml	 	SYSTEM "Audio/chapter.rosegarden.xml">
+<!ENTITY chapter.zynaddsubfx.xml	SYSTEM "Audio/chapter.zynaddsubfx.xml">
+<!ENTITY chapter.hydrogen.xml		SYSTEM "Audio/chapter.hydrogen.xml">
+<!ENTITY chapter.lmms.xml			SYSTEM "Audio/chapter.lmms.xml">
+<!ENTITY chapter.qsynth.xml			SYSTEM "Audio/chapter.qsynth.xml">
+<!ENTITY chapter.terminatorx.xml	SYSTEM "Audio/chapter.terminatorx.xml">
+<!ENTITY chapter.pulseaudio.xml	 	SYSTEM "Audio/chapter.pulseaudio.xml">
+
+<!ENTITY part.video.xml	 			SYSTEM "Video/part.video.xml">
+
+<!ENTITY part.graphics.xml			SYSTEM "Graphics/part.graphics.xml">
+<!ENTITY chapter.imagemagick.xml 	SYSTEM "Graphics/chapter.imagemagick.xml">
+<!ENTITY chapter.graphicsmagick.xml SYSTEM "Graphics/chapter.graphicsmagick.xml">
+<!ENTITY chapter.photivo.xml		SYSTEM "Graphics/chapter.photivo.xml">
+
+<!ENTITY part.music.xml				SYSTEM "Music/part.music.xml">
+<!ENTITY chapter.lilypond.xml 		SYSTEM "Music/chapter.lilypond.xml">
+<!ENTITY chapter.musescore.xml 		SYSTEM "Music/chapter.musescore.xml">
+
+<!ENTITY chapter.broadcast.xml 		SYSTEM "Streaming/chapter.broadcast.xml">
+
+<!ENTITY chapter.miscellaneous.xml	SYSTEM "chapter.miscellaneous.xml">
+
+<!ENTITY chapter.voip.xml 			SYSTEM "VoIP/chapter.voip.xml">
+<!ENTITY chapter.opensips.xml 		SYSTEM "VoIP/chapter.opensips.xml">
+<!ENTITY chapter.gatekeeper.xml 	SYSTEM "VoIP/chapter.gatekeeper.xml">
+
+	<!--
+
+	<!ENTITY chapter.network.vsftpd.xml	SYSTEM "chapter.network.vsftpd.xml">
+	<!ENTITY chapter.www.xml		 	SYSTEM "chapter.www.xml">
+	<!ENTITY chapter.database.xml	 	SYSTEM "chapter.database.xml">
+	<!ENTITY chapter.teamwork.xml	 	SYSTEM "chapter.teamwork.xml">
+	<!ENTITY chapter.vm.xml		 		SYSTEM "chapter.vm.xml">
+	<!ENTITY chapter.monitor.xml		SYSTEM "chapter.monitor.xml">
+	-->

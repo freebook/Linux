@@ -7,6 +7,10 @@
 		<para>下面是我常用的Linux本版，Debian/Ubuntu适合做实验，快速安装定制，Gentoo适合DIY</para>
 		<para>如果是企业服务器还是建议使用CentOS，Scientific Linux， 所以CentOS是IDC装机量怎大的操作系统。</para>	
 		<section>
+			<title>Linux 下载排名</title>
+			<para><ulink url="http://distrowatch.com/">http://distrowatch.com/</ulink></para>
+		</section>		
+		<section>
 			<title>Debian 衍生版本</title>
 			<para>Ubuntu Server Edition<ulink url="http://www.ubuntu.com/">http://www.ubuntu.com/</ulink></para>
 			<para><ulink url="/en-us/technology/ubuntu.html">Netkiller Ubuntu Linux 手札</ulink></para>
@@ -27,11 +31,43 @@
 			<para>http://www.gentoo.org/</para>
 		</section>
 		
-		<section>
-			<title>Linux 下载排名</title>
-			<para><ulink url="http://distrowatch.com/">http://distrowatch.com/</ulink></para>
-		</section>		
+	
 	</section>
+
+	<chapter id="linux">
+		<title>Linux 专用领域发行版</title>
+		<para>这些Linux都是为了特别用途而优化过的，例如处理音频，视频等等</para>
+		<section id="ubuntustudio">
+			<title>ubuntustudio</title>
+			<screen>
+$ apt-cache search ubuntustudio
+plymouth-theme-ubuntustudio - Ubuntu Studio Plymouth theme
+ubiquity-slideshow-ubuntustudio - Ubiquity slideshow for Ubuntu Studio
+ubuntustudio-audio - Transitional Package for the Audio Seed
+ubuntustudio-audio-plugins - Ubuntu Studio audio plugins Package
+ubuntustudio-controls - Ubuntu Studio Controls is a small app that changes A/V settings.
+ubuntustudio-default-settings - default settings for the Ubuntu Studio desktop
+ubuntustudio-desktop - Ubuntu Studio Desktop Package
+ubuntustudio-font-meta - Ubuntu Studio fonts Package
+ubuntustudio-generation - Ubuntu Studio Audio Generation Package
+ubuntustudio-graphics - Ubuntu Studio graphics Package
+ubuntustudio-icon-theme - Ubuntu Studio Icon Theme
+ubuntustudio-lightdm-theme - UbuntuStudio LightDM theme
+ubuntustudio-live-settings - configuration for the Ubuntu Studio live-dvd
+ubuntustudio-look - Ubuntu Studio look
+ubuntustudio-menu - Menu for Ubuntu Studio
+ubuntustudio-recording - Ubuntu Studio Audio Recording Package
+ubuntustudio-screensaver - Ubuntu Studio screensaver
+ubuntustudio-sounds - Ubuntu Studio's GNOME audio theme
+ubuntustudio-video - Ubuntu Studio video Package
+ubuntustudio-wallpapers - Ubuntu Studio - Wallpapers
+			</screen>
+		</section>
+		<section id="avlinux">
+			<title>AV Linux</title>
+			<para>http://www.bandshed.net/AVLinux.html</para>
+		</section>
+	</chapter>
 
 	<section id="install.partition">
 		<title>HDD Partition</title>

@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!ENTITY chapter.voip.xml 		SYSTEM "chapter.voip.xml">
-<!ENTITY chapter.opensips.xml 	SYSTEM "chapter.opensips.xml">
-<!ENTITY chapter.gatekeeper.xml 	SYSTEM "chapter.gatekeeper.xml">
