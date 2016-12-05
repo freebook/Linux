@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="index"><?dbhtml dir="imagemagick" ?>
+<section id="index"><?dbhtml dir="imagemagick" ?>
 	<title>ImageMagick</title>
 	<para>homepage: http://www.imagemagick.org/</para>
 	<section id="install">
@@ -60,5 +60,5 @@ output-13.png   output-1.png   output-26.png  output-32.png  output-39.png  outp
 			</screen>
 		</section>
 	</section>
-</chapter>
+</section>
 <!-- gimp -->

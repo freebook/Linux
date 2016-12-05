@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="lilypond">
+<section id="lilypond">
 	<title>LilyPond</title>
 	<para>http://lilypond.org/</para>
 	<screen>
@@ -57,4 +57,4 @@ pdflatex --shell-escape your.tex
 			</screen>
 		</section>
 	</section>
-</chapter>
+</section>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="audio.pulseaudio">
+<section id="pulseaudio">
 	<title>Pulseaudio</title>
 	<para>http://pulseaudio.org/</para>
-</chapter>
+</section>

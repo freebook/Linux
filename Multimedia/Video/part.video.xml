@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<part id="index"><?dbhtml dir="video" ?>
+<chapter id="index"><?dbhtml dir="video" ?>
 	<title>Video</title>
 	<para><ulink url="http://openvideoalliance.org/wiki/index.php?title=List_of_Open_Source_Video_Software">List of Open Source Video Software</ulink></para>
-<chapter id="OpenShot">
+<section id="OpenShot">
 	<title>OpenShot</title>
 	<para><ulink url="http://www.openshot.org">http://www.openshot.org</ulink></para>
-</chapter>
-<chapter id="cinelerra">
+</section>
+<section id="cinelerra">
 	<title>cinelerra-cv</title>
 	<para><ulink url="http://cinelerra.org/">http://cinelerra.org/</ulink></para>
-</chapter>
+</section>
 
-<chapter id="ffmpeg">
+<section id="ffmpeg">
 	<title>FFmpeg</title>
 	<para><ulink url="http://ffmpeg.org/">http://ffmpeg.org/</ulink></para>
 	<para>Converting video and audio has never been so easy.</para>
 	<screen>
 $ ffmpeg -i input.mp4 output.avi	
 	</screen>
-</chapter>
+</section>
 
-</part>
+</chapter>

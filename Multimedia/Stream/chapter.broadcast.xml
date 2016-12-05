@@ -1,4 +1,4 @@
-<chapter id="index"><?dbhtml dir="streaming" ?>
+<section id="index"><?dbhtml dir="stream" ?>
 	<title>broadcast streaming</title>
 	<section id="gnump3d">
 		<title>gnump3d - A streaming server for MP3 and OGG files</title>
@@ -154,4 +154,4 @@ icecast2@Linux-server:/usr/local/icecast$ vi etc/icecast.xml
 		<title>PeerCast</title>
 		<para>homepage: http://www.peercast.org/</para>
 	</section>
-</chapter>
+</section>

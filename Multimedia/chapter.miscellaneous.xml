@@ -1,49 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<part id="miscellaneous">
+<chapter id="miscellaneous">
 	<title>Multimedia Miscellaneous</title>
 	
-	<chapter id="multimedia">
-	<title>Multimedia Streaming</title>
-	&chapter.broadcast.xml;
-<section id="convert">
-	<title>To convert multimedia format</title>
-	<section id="mencoder">
-		<title>To convert .rm files to .mp3</title>
-		<para>Command line utility mencoder can convert .rm files to .mp3</para>
-		<screen>
+<section id="format">
+	<title>Multimedia format</title>
+
+	<section id="convert">
+		<title>To convert multimedia format</title>
+		<section id="mencoder">
+			<title>To convert .rm files to .mp3</title>
+			<para>Command line utility mencoder can convert .rm files to .mp3</para>
+			<screen>
 mencoder input_file.rm -ovc frameno -oac mp3lame -of rawaudio -lameopts cbr:br=128 -o output_file.mp3
-		</screen>
-	</section>
-	<section id="lame">
-		<title>wav to mp3</title>
-		<para></para>
-		<screen>
+			</screen>
+		</section>
+		<section id="lame">
+			<title>wav to mp3</title>
+			<para></para>
+			<screen>
 lame -h -b 128 audiodump.wav myconvertedfile.mp3
-		</screen>
-	</section>
-	<section id="mencoder">
-		<title>encode to Macromedia Flash format</title>
-		<screen>
+			</screen>
+		</section>
+		<section id="mencoder">
+			<title>encode to Macromedia Flash format</title>
+			<screen>
 mencoder input.avi -o output.flv -of lavf \
     -oac mp3lame -lameopts abr:br=56 -srate 22050 -ovc lavc \
     -lavcopts vcodec=flv:vbitrate=500:mbd=2:mv0:trell:v4mv:cbp:last_pred=3
-		</screen>
-	</section>
-	<section id="mplayer">
-		<title>rm to wav</title>
-		<screen>
+			</screen>
+		</section>
+		<section id="mplayer">
+			<title>rm to wav</title>
+			<screen>
 $ mplayer -cache 10 -ao pcm -aofile stream.wav  rtsp://XXXX/stream.rm
 $ lame stream.wav
 
 $ mplayer test.rm -ao pcm:file=audiofile.wav -vc dummy -vo null
 $ lame -h -b 128 audiofile.wav audiofile.mp3
 $ rm audiofile.wav
-		</screen>
+			</screen>
+		</section>
 	</section>
 </section>
-</chapter>
 	
-<chapter id="light">
+<section id="light">
 	<title>Light (光)</title>
 	<para></para>
 	<section>
@@ -95,8 +95,8 @@ S－受照面积(㎡)
 
 		</screen>
 	</section>
-</chapter>
-<chapter id="photosize">
+</section>
+<section id="photosize">
 	<title>照片尺寸</title>
 	<screen>
     <![CDATA[
@@ -380,5 +380,5 @@ R的意思是长方型(英文是Rectangle),都以最短边耒算.
 8寸照片的规格是6*8（15.2*20.3cm）比例是4：3的，扩印大多数数码照片是正好不用剪裁的。
     ]]>
 	</screen>
+</section>
 </chapter>
-</part>

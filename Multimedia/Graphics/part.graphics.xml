@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<part id="index"><?dbhtml dir="graphics" ?>
+<chapter id="index"><?dbhtml dir="graphics" ?>
 	<title>Graphics</title>
 	&chapter.imagemagick.xml;
 	&chapter.graphicsmagick.xml;
 	&chapter.photivo.xml;
-<chapter id="exiftool">
+<section id="exiftool">
 	<title>How to add metadata to digital pictures from the command line</title>
 	<para>exiftool </para>
+</section>
 </chapter>
-</part>

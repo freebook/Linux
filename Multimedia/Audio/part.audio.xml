@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<part id="index"><?dbhtml dir="audio" ?>
+<chapter id="index"><?dbhtml dir="audio" ?>
 	<title>Audio</title>
 	<subtitle>Digital Audio Workstation</subtitle>
 	<para>http://revo-create.com/viewthread.php?tid=11731</para>
@@ -22,16 +22,16 @@
 	&chapter.terminatorx.xml;
 	
 	&chapter.pulseaudio.xml;
-<chapter id="synthesizer">
+<section id="synthesizer">
 	<title>Synthesizer</title>
 	<orderedlist>
 		<title>合成器</title>
 		<listitem><para>ZynAddSubFX</para></listitem>
 	</orderedlist>	
 	&chapter.zynaddsubfx.xml;
-</chapter>
-<chapter id="drums">
+</section>
+<section id="drums">
 	<title>Drums</title>
 	&chapter.hydrogen.xml;
+</section>
 </chapter>
-</part>

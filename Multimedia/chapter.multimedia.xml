@@ -1,6 +1,11 @@
+<part id="index"><?dbhtml dir="multimedia" ?>
+	<title>Multimedia</title>
 	&part.audio.xml;
 	&part.video.xml;
 	&part.graphics.xml;
 	&part.music.xml;
-	&chapter.voip.xml;
+	&part.stream.xml;
 	&chapter.miscellaneous.xml;
+</part>
+	&chapter.voip.xml;
+	

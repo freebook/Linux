@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="index"><?dbhtml dir="graphicsmagick" ?>
+<section id="index"><?dbhtml dir="graphicsmagick" ?>
 	<title>GraphicsMagick</title>
 	<para>http://www.graphicsmagick.org/</para>
 	<section id="install">
@@ -30,4 +30,4 @@ ln -s /srv/GraphicsMagick-1.3.12/ /srv/GraphicsMagick
 /usr/bin/gm mogrify -format png *.jpg
 		</screen>
 	</section>
-</chapter>
+</section>
