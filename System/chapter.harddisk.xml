@@ -179,25 +179,6 @@ $ dd if=/root/disk.mbr of=/dev/sda bs=512 count=1
 $ dd if=/dev/fd0 of=floppy.img bs=1440k
 		</screen>
 	</section>
-	<section id="hdd.format">
-		<title>Format partition</title>
-		<para>format /dev/sdb1</para>
-		<section>
-			<title>ext3</title>
-			<screen>
-neo@master:~$ sudo mkfs.ext3 /dev/sdb1
-			</screen>
-		</section>
-		<section>
-			<title>ReiserFS</title>
-			<para>you also can using other file system</para>
-			<para>reiserfs</para>
-			<screen>
-neo@master:~$ sudo mkfs.reiserfs /dev/sdb1
-			</screen>
-		</section>
-	</section>
-
 	<section id="du.max-depth">
 		<title>estimate disk / directory / file space usage</title>
 		<para>total for a directory</para>

@@ -170,6 +170,28 @@ rm: cannot remove directory '/home/neo/foo': Device or resource busy
 		</section>
 		
 	</section>
+	<section id="hdd.format">
+		<title>ext2</title>
+		<screen>
+neo@netkiller:~# mkfs.ext2 /dev/sdb1		
+		</screen>
+		<para>ext2 是早期Linux使用的文件系统存在很多缺陷，建议不要在使用。</para>
+	</section>		
+	<section>
+		<title>ext3</title>
+		<para>format /dev/sdb1</para>
+		<screen>
+neo@netkiller:~$ sudo mkfs.ext3 /dev/sdb1
+		</screen>
+	</section>
+	<section>
+		<title>ReiserFS</title>
+		<para>you also can using other file system</para>
+		<para>reiserfs</para>
+		<screen>
+neo@netkiller:~$ sudo mkfs.reiserfs /dev/sdb1
+		</screen>
+	</section>
 	
 	<section id="ext4">
 		<title>EXT4</title>

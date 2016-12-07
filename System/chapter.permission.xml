@@ -237,6 +237,35 @@ x = 1
 	<screen>
 [neo@development ~]$ su root -c "rm -rf linux/"	
 	</screen>
+	<screen>
+su - www -c "/srv/apache-tomcat-www/bin/startup.sh"
+su - www -c "/srv/apache-tomcat-m/bin/startup.sh"
+
+su - www -c "/srv/java/bin/java -jar /www/netkiller.cn/api.netkiller.cn/api.netkiller.cn-0.0.2-SNAPSHOT.jar &"
+	</screen>
+</section>
+<section id="runuser">
+	<title>runuser - run a command with substitute user and group ID</title>
+	<screen>
+[root@netkiller ~]# runuser -l www -c 'ulimit -SHa'
+core file size          (blocks, -c) 0
+data seg size           (kbytes, -d) unlimited
+scheduling priority             (-e) 0
+file size               (blocks, -f) unlimited
+pending signals                 (-i) 63473
+max locked memory       (kbytes, -l) 64
+max memory size         (kbytes, -m) unlimited
+open files                      (-n) 65535
+pipe size            (512 bytes, -p) 8
+POSIX message queues     (bytes, -q) 819200
+real-time priority              (-r) 0
+stack size              (kbytes, -s) 8192
+cpu time               (seconds, -t) unlimited
+max user processes              (-u) 4096
+virtual memory          (kbytes, -v) unlimited
+file locks                      (-x) unlimited
+
+	</screen>
 </section>
 <section id="sudo">
 	<title>sudo, sudoedit - execute a command as another user</title>
