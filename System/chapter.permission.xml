@@ -228,25 +228,27 @@ x = 1
 ------------- /etc/passwd
 		</screen>
 	</section>
-<section id="su">
-	<title>su - run a shell with substitute user and group IDs</title>
-	<para>Change the effective user id and group id to that of USER.</para>
-	<screen>
+	<section id="su">
+		<title>su - run a shell with substitute user and group IDs</title>
+		<para>Change the effective user id and group id to that of USER.</para>
+		<screen>
 [neo@development ~]$ su - root
-	</screen>
-	<screen>
+		</screen>
+		<screen>
 [neo@development ~]$ su root -c "rm -rf linux/"	
-	</screen>
-	<screen>
+		</screen>
+		<screen>
+		<![CDATA[
 su - www -c "/srv/apache-tomcat-www/bin/startup.sh"
 su - www -c "/srv/apache-tomcat-m/bin/startup.sh"
 
 su - www -c "/srv/java/bin/java -jar /www/netkiller.cn/api.netkiller.cn/api.netkiller.cn-0.0.2-SNAPSHOT.jar &"
-	</screen>
-</section>
-<section id="runuser">
-	<title>runuser - run a command with substitute user and group ID</title>
-	<screen>
+		]]>
+		</screen>
+	</section>
+	<section id="runuser">
+		<title>runuser - run a command with substitute user and group ID</title>
+		<screen>
 [root@netkiller ~]# runuser -l www -c 'ulimit -SHa'
 core file size          (blocks, -c) 0
 data seg size           (kbytes, -d) unlimited
@@ -265,15 +267,15 @@ max user processes              (-u) 4096
 virtual memory          (kbytes, -v) unlimited
 file locks                      (-x) unlimited
 
-	</screen>
-</section>
-<section id="sudo">
-	<title>sudo, sudoedit - execute a command as another user</title>
-	<screen>
+		</screen>
+	</section>
+	<section id="sudo">
+		<title>sudo, sudoedit - execute a command as another user</title>
+		<screen>
 debian:~# apt-get install sudo		
-	</screen>
-	<para>/etc/sudoers</para>
-	<screen>
+		</screen>
+		<para>/etc/sudoers</para>
+		<screen>
 # /etc/sudoers
 #
 # This file MUST be edited with the 'visudo' command as root.
@@ -297,55 +299,55 @@ root    ALL=(ALL) ALL
 # it further down)
 %sudo ALL=NOPASSWD: ALL
 		
-	</screen>
-	<para>sudo group</para>
-	<screen>
+		</screen>
+		<para>sudo group</para>
+		<screen>
 neo@debian:/etc/mysql$ cat /etc/group | grep 'sudo'
 sudo:x:27:neo		
-	</screen>
-	<section>
-		<title>NOPASSWD</title>
-		<para>ubuntu NOPASSWD sudo的时候不需要输入密码</para>
-		<para>组</para>
-		<screen>
+		</screen>
+		<section>
+			<title>NOPASSWD</title>
+			<para>ubuntu NOPASSWD sudo的时候不需要输入密码</para>
+			<para>组</para>
+			<screen>
 %admin ALL=(ALL)ALL
 改为
 %admin ALL=(ALL) NOPASSWD: NOPASSWD: ALL	
-		</screen>			
-		<para>用户</para>
-		<screen>
+			</screen>			
+			<para>用户</para>
+			<screen>
 www localhost=NOPASSWD: /bin/cat, /bin/ls			
-		</screen>
-	</section>
-	<section>
-		<title>允许或禁止命令</title>
-		<para>命令前面加‘!’可以禁止用户运行该命令</para>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>允许或禁止命令</title>
+			<para>命令前面加‘!’可以禁止用户运行该命令</para>
+			<screen>
 neo ALL = （root） /bin/mount, /bin/umount, !/bin/mount /data0
 dba ALL = /bin/mount /u0[1-5], /bin/umount /u0[1-5]
-		</screen>		
-	</section>
-	<section>
-		<title>Cmnd_Alias 用法</title>
-		<para>Cmnd_Alias 定义命令别名</para>
-		<screen>
+			</screen>		
+		</section>
+		<section>
+			<title>Cmnd_Alias 用法</title>
+			<para>Cmnd_Alias 定义命令别名</para>
+			<screen>
 Cmnd_Alias WEBMASTER = /srv/nginx/sbin/nginx, /srv/php/sbin/php-fpm, !/srv/mysql/bin/mysql
 www localhost = NETWORKING, SERVICES, DELEGATING, PROCESSES, WEBMASTER
-		</screen>
-	</section>
-	<section id="wheel">
-		<title>wheel 组</title>
-		<screen>
+			</screen>
+		</section>
+		<section id="wheel">
+			<title>wheel 组</title>
+			<screen>
 ## Allow root to run any commands anywhere
 root    ALL=(ALL)       ALL
 neo     ALL=(ALL)       ALL
 %wheel  ALL=(ALL)       ALL
-		</screen>
-	</section>	
-</section>
-<section id="system.permission.acl">
-	<title>ACL - Access Control List</title>
-	<screen>
+			</screen>
+		</section>	
+	</section>
+	<section id="acl">
+		<title>ACL - Access Control List</title>
+		<screen>
 $ sudo modprobe loop
 $ dd if=/dev/zero of=file bs=1k count=100
 $ sudo losetup /dev/loop0 file
@@ -354,17 +356,17 @@ $ sudo mkdir /mnt/loop
 $ sudo mount -o rw,acl /dev/loop0 /mnt/loop/
 $ sudo chown neo.neo -R /mnt/loop
 $ cd /mnt/loop/	
-	</screen>
-	<section id="getfacl">
-		<title>getfacl - get file access control lists</title>
-		<para>UGO</para>
-		<screen>
+		</screen>
+		<section id="getfacl">
+			<title>getfacl - get file access control lists</title>
+			<para>UGO</para>
+			<screen>
 $ touch file
 $ ls -l file
 -rw-r--r-- 1 neo neo 0 2008-12-22 15:28 file
-		</screen>
-		<para>ACL</para>
-		<screen>
+			</screen>
+			<para>ACL</para>
+			<screen>
 $ getfacl file
 # file: file
 # owner: neo
@@ -372,9 +374,9 @@ $ getfacl file
 user::rw-
 group::r--
 other::r--		
-		</screen>
-		<para>display the default access control list only</para>
-		<screen>
+			</screen>
+			<para>display the default access control list only</para>
+			<screen>
 neo@netkiller:/mnt/loop$ getfacl  dir
 # file: dir
 # owner: neo
@@ -399,9 +401,9 @@ group::r-x
 group:nagios:rw-
 mask::rwx
 other::r-x
-		</screen>
-		<para>recurse into subdirectories</para>
-		<screen>
+			</screen>
+			<para>recurse into subdirectories</para>
+			<screen>
 $ getfacl -R dir
 # file: dir
 # owner: neo
@@ -425,23 +427,23 @@ group::r-x                      #effective:r--
 group:nagios:rw-
 mask::rw-
 other::r--		
-		</screen>
-	</section>
-	<section id="setfacl">
-		<title>setfacl - set file access control lists</title>
-		<section>
-			<title>set</title>
-			<para>add a user svnroot to file</para>
-			<screen>
-neo@netkiller:/mnt/loop$ setfacl -m u:svnroot:rw file
 			</screen>
-			<para>if you can see a '+' at last, it's successed</para>
-			<screen>
+		</section>
+		<section id="setfacl">
+			<title>setfacl - set file access control lists</title>
+			<section>
+				<title>set</title>
+				<para>add a user svnroot to file</para>
+				<screen>
+neo@netkiller:/mnt/loop$ setfacl -m u:svnroot:rw file
+				</screen>
+				<para>if you can see a '+' at last, it's successed</para>
+				<screen>
 $ ls -l file
 -rw-rw-r--+ 1 neo neo 0 2008-12-22 15:44 file		
-			</screen>
-			<para>let me see acl.</para>
-			<screen>
+				</screen>
+				<para>let me see acl.</para>
+				<screen>
 neo@netkiller:/mnt/loop$ getfacl file
 # file: file
 # owner: neo
@@ -451,9 +453,9 @@ user:svnroot:rw-
 group::r--
 mask::rw-
 other::r--
-			</screen>
-			<para>add a user cvsroot to file again</para>
-			<screen>
+				</screen>
+				<para>add a user cvsroot to file again</para>
+				<screen>
 neo@netkiller:/mnt/loop$ setfacl -m u:cvsroot:rw file
 neo@netkiller:/mnt/loop$ getfacl file
 # file: file
@@ -465,9 +467,9 @@ user:svnroot:rw-
 group::r--
 mask::rw-
 other::r--		
-			</screen>
-			<para>add a user and group for that</para>
-			<screen>
+				</screen>
+				<para>add a user and group for that</para>
+				<screen>
 neo@netkiller:/mnt/loop$ setfacl -m u:gnump3d:rwx,g:nagios:r file
 neo@netkiller:/mnt/loop$ getfacl file
 # file: file
@@ -481,10 +483,10 @@ group::r--
 group:nagios:r--
 mask::rwx
 other::r--		
-			</screen>
-			
-			<para>modify the current ACL(s) of file(s)</para>
-			<screen>
+				</screen>
+				
+				<para>modify the current ACL(s) of file(s)</para>
+				<screen>
 neo@netkiller:/mnt/loop$ getfacl file
 # file: file
 # owner: neo
@@ -505,11 +507,11 @@ user:svnroot:r-x
 group::r--
 mask::r-x
 other::r--			
-			</screen>	
-		</section>
-		<section>
-			<title>default</title>
-			<screen>
+				</screen>	
+			</section>
+			<section>
+				<title>default</title>
+				<screen>
 neo@netkiller:/mnt/loop$ setfacl -d -m u:svnroot:rw dir/
 neo@netkiller:/mnt/loop$ getfacl dir/
 # file: dir
@@ -538,9 +540,9 @@ default:group::r-x
 default:group:nagios:rw-
 default:mask::rwx
 default:other::r-x			
-			</screen>
-			<para>the file1 will inherit acl by default.</para>
-			<screen>
+				</screen>
+				<para>the file1 will inherit acl by default.</para>
+				<screen>
 neo@netkiller:/mnt/loop$ touch dir/file1
 neo@netkiller:/mnt/loop$ getfacl dir/file1
 # file: dir/file1
@@ -553,12 +555,12 @@ group:nagios:rw-
 mask::rw-
 other::r--
 			
-			</screen>
-		</section>
-		<section>
-			<title>remove</title>
-			<para>remove entries from the ACL(s) of file(s)</para>
-			<screen>
+				</screen>
+			</section>
+			<section>
+				<title>remove</title>
+				<para>remove entries from the ACL(s) of file(s)</para>
+				<screen>
 neo@netkiller:/mnt/loop$ setfacl -x u:cvsroot file
 neo@netkiller:/mnt/loop$ setfacl -x g:nagios file
 neo@netkiller:/mnt/loop$ getfacl file
@@ -571,10 +573,10 @@ user:svnroot:rw-
 group::r--
 mask::rwx
 other::r--
-			</screen>
-		
-			<para>remove all extended ACL entries</para>
-			<screen>
+				</screen>
+			
+				<para>remove all extended ACL entries</para>
+				<screen>
 neo@netkiller:/mnt/loop$ setfacl -b file
 neo@netkiller:/mnt/loop$ getfacl file
 # file: file
@@ -582,20 +584,20 @@ neo@netkiller:/mnt/loop$ getfacl file
 # group: neo
 user::rw-
 group::r--
-other::r--		
-			</screen>			
+	other::r--		
+				</screen>			
+			</section>
+			<section>
+				<title>backup and restore</title>
+				<para>backup</para>
+				<screen>
+$ getfacl -R dir > dir.acl		
+				</screen>
+				<para>restore</para>
+				<screen>
+$ setfacl --restore dir.acl		
+				</screen>
+			</section>
 		</section>
 	</section>
-	<section>
-		<title>backup and restore</title>
-		<para>backup</para>
-		<screen>
-$ getfacl -R dir > dir.acl		
-		</screen>
-		<para>restore</para>
-		<screen>
-$ setfacl --restore dir.acl		
-		</screen>
-	</section>
-</section>
 </chapter>

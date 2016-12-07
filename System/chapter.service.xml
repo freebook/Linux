@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="service">
+<chapter id="index"><?dbhtml dir="service" ?>
 	<title>设备管理</title>
 	&chapter.service.ubuntu.xml;
 	&chapter.service.centos.xml;

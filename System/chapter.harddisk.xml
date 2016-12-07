@@ -54,7 +54,7 @@ lrwxrwxrwx 1 root root 10 2009-07-11 00:52 cc2c1be9-a6e0-4494-a5f0-76b39d3fc1f0 
 		</section>
 	</section>
 	<section id="swap">
-		<title>临时增加 swap 分区</title>
+		<title>swap 交换分区</title>
 		<para>查看交换分区信息</para>
 		<screen>
 $ swapon -s
@@ -67,6 +67,29 @@ dd if=/dev/zero of=/root/swap0 bs=1M count=2048
 mkswap /root/swap0
 swapon /root/swap0
 		</screen>
+		<example>
+			<title>增加交换分区</title>
+			<screen>
+# fallocate -l 4G swap0
+# chmod 600 swap0
+# mkswap swap0
+# swapon /www/swap0
+			</screen>
+		</example>
+		<section>
+			<title>swapon failed: Invalid argument</title>
+			<screen>
+[root@netkiller www]# swapon /www/swap0
+swapon: /www/swap0: swapon failed: Invalid argument
+			</screen>
+			<para>注意：swap 不能建立在 btrfs 分区上</para>
+			<screen>
+[root@netkiller www]# df -T /www
+Filesystem     Type  1K-blocks     Used Available Use% Mounted on
+/dev/vdb1      btrfs 209714176 26751256 181122984  13% /www
+			</screen>
+			<para>/www 分区使用 btrfs 所以当运行swapon时出现问题。</para>
+		</section>
 	</section>
 	<section id="hdd.partition">
 		<title>Show partition</title>
