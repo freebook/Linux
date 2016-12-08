@@ -1,7 +1,8 @@
 <chapter id="jabber">
-	<title>jabber</title>
+	<title>jabber XMPP</title>
 	<para>
 		<ulink url="http://www.jabber.org/">jabber homepage</ulink>
+		<ulink url="http://www.jabber.org/">XMPP</ulink>
 	</para>
 	<section id="ejabberd">
 		<title>ejabberd - Distributed, fault-tolerant Jabber/XMPP
@@ -100,6 +101,14 @@ $ sudo ejabberdctl set-password eva netkiller.8800.org eva
 			</screen>
 		</section>
 	</section>
+	<section id="tigase">
+		<title>tigase</title>
+		<para>http://www.tigase.net/</para>
+	</section>
+	<section id="openfire">
+		<title>Openfire</title>
+		<para>http://www.igniterealtime.org/index.jsp</para>
+	</section>	
 	<section id="djabberd">
 		<title>DJabberd</title>
 		<para>http://www.danga.com/djabberd/
