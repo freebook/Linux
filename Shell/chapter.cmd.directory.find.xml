@@ -142,6 +142,15 @@ find /usr/local \(-path /usr/local/dir1 -o -path /usr/local/file1 \) -prune -o -
 find . \( -path ./templates_c -o -path ./caches \) -prune -o -name "*.php" -print
 		</screen>
 	</section>
+	<section id="mmin">
+		<title>-mmin n File's data was last modified n minutes ago.</title>
+		<screen>
+# find . -mmin +5 -mmin -10
+		</screen>	
+		<screen>
+find /www -type f -mtime +60s
+		</screen>	
+	</section>
 	<section id="find.mtime">
 		<title>-mtime / -mmin</title>
 		<para>查询最近3天前内修改的文件</para>
@@ -152,10 +161,6 @@ find . -type f -mtime -3
 		<screen>
 find . -type f -mtime +3
 		</screen>
-
-		<screen>
-# find . -mmin +5 -mmin -10
-		</screen>
 		<example>
 			<title>backup(find + tar)</title>
 			<screen>
@@ -163,7 +168,13 @@ find / -type f -mtime -7 | xargs tar -rf weekly_incremental.tar
 gzip weekly_incremental.tar
 			</screen>
 		</example>
+		<para>保留7天，删除7天的日志文件</para>
+		<screen>
+COPIES=7
+find /var/log -type f -mtime +$COPIES -delete
+		</screen>
 	</section>
+	
 	<section id="find.newer">
 		<title>--newer</title>
 		<screen>

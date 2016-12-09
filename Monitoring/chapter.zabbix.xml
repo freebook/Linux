@@ -271,7 +271,7 @@ systemctl restart zabbix-server
 	</section>
 	<section id="zabbix-agent">
 		<title>zabbix-agent</title>
-		<section>
+		<section id="ubuntu">
 			<title>Ubuntu</title>
 			<screen>
 # sudo apt-get install zabbix-agent
@@ -293,7 +293,7 @@ zabbix-agent    10050/udp                       #Zabbix Agent
 # sudo /etc/init.d/zabbix-agent restart
 			</screen>
 		</section>
-		<section>
+		<section id="centos">
 			<title>CentOS 7</title>
 			<screen>
 yum localinstall -y http://repo.zabbix.com/zabbix/3.2/rhel/7/x86_64/zabbix-release-3.2-1.el7.noarch.rpm
@@ -327,6 +327,17 @@ Include=/etc/zabbix/zabbix_agentd.d/*.conf
 				</screen>
 			</example>
 			<para>配置完成</para>
+		</section>
+		<section id="zabbix_agentd">
+			<title>zabbix_agentd 命令</title>
+			<para>测试工具</para>
+			<screen>
+# zabbix_agentd --test dependency.discovery
+dependency.discovery                          [t|{"data":[
+{"{#NAME}":"UCWEB","{#IP}":"115.84.241.16","{#PORT}":"6666"},{"{#NAME}":"Redis","{#IP}":"115.84.241.16","{#PORT}":"6379"},{"{#NAME}":"Binary","{#IP}":"223.197.79.114","{#PORT}":"80"},{"{#NAME}":"SMS","{#IP}":"192.230.90.194","{#PORT}":"80"},{"{#NAME}":"CF1","{#IP}":"192.168.42.153","{#PORT}":"8080"},{"{#NAME}":"CF2","{#IP}":"192.168.42.134","{#PORT}":"8008"},{"{#NAME}":"CF3","{#IP}":"192.168.42.177","{#PORT}":"8080"},{"{#NAME}":"EDM","{#IP}":"47.89.27.78","{#PORT}":"80"}
+]}]
+			
+			</screen>
 		</section>
 		<section id="nginx">
 			<title>Nginx status 监控</title>
@@ -1032,7 +1043,7 @@ last request memory:  262144
 				</screen>
 			</section>
 			<section>
-				<title></title>
+				<title>userparameter_postfix.conf</title>
 				<screen>
 # wget https://raw.githubusercontent.com/oscm/zabbix/master/postfix/userparameter_postfix.conf -P /etc/zabbix/zabbix_agentd.d/
 # systemctl restart zabbix-agent				
@@ -1046,9 +1057,31 @@ last request memory:  262144
 149 
 [root@netkiller ~]# zabbix_get -s 173.24.22.53 -k 'postfix[log,sent]'
 10931
-				
 				</screen>
 			</section>
+		</section>
+		<section id="tcpstats">
+			<title>TCP stats</title>
+			<screen>
+curl -s https://raw.githubusercontent.com/oscm/shell/master/monitor/zabbix/zabbix-agent/tcpstats.sh | bash		
+			</screen>
+			<section>
+				<title>采集脚本</title>
+				<screen>
+# zabbix_agentd --test tcp.stats[FIN-WAIT-2]
+tcp.stats[FIN-WAIT-2]                         [t|130]			
+				</screen>
+				<para>Zabbix</para>
+				<screen>
+zabbix_get -s 10.24.15.18 -k 'tcp.stats[LISTEN]'				
+				</screen>
+			</section>
+		</section>
+		<section id="dependency">
+			<title>应用依赖检查</title>
+			<screen>
+curl -s https://raw.githubusercontent.com/oscm/shell/master/monitor/zabbix/zabbix-agent/dependency.sh | bash
+			</screen>
 		</section>
 	</section>
 </chapter>
