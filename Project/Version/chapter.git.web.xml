@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.git.web.xml 474 2012-10-29 11:01:51Z netkiller $ -->
+<chapter id="webui">
+	<title>Web Tools</title>
+	<section id="viewgit">
+		<title>viewgit</title>
+		<para>http://viewgit.sourceforge.net/</para>
+	</section>
+</chapter>

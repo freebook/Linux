@@ -11,4 +11,65 @@
 				都可以发送HUP信号例如: pkill -HUP httpd</para>
 		</note>
 	</para>
+	<para>我的系列文档:</para>
+	<para>操作系统</para>
+	<simplelist type='horiz' columns='8'>
+		<title>操作系统</title>
+		<member>
+			<ulink url="../linux/index.html">Netkiller Linux 手札</ulink>
+		</member>
+		<member>
+			<ulink url="../freebsd/index.html">Netkiller FreeBSD 手札</ulink>
+		</member>
+		<member>
+			<ulink url="../shell/index.html">Netkiller Shell 手札</ulink>
+		</member>
+		<member>
+			<ulink url="../security/index.html">Netkiller Security 手札</ulink>
+		</member>
+		<member>
+			<ulink url="../www/index.html">Netkiller Web 手札</ulink>
+		</member>
+		<member>
+			<ulink url="../monitoring/index.html">Netkiller Monitoring 手札</ulink>
+		</member>
+		<member>
+			<ulink url="../storage/index.html">Netkiller Storage 手札</ulink>
+		</member>
+		<member>
+			<ulink url="../mail/index.html">Netkiller Mail 手札</ulink>
+		</member>		
+	</simplelist>
+		
+	<para>数据库</para>
+	<simplelist type='horiz' columns='6'>
+		<member>
+			<ulink url="../database/index.html">Netkiller Database 手札</ulink>
+		</member>
+		<member>
+			<ulink url="../postgresql/index.html">Netkiller PostgreSQL 手札</ulink>
+		</member>
+		<member>
+			<ulink url="../mysql/index.html">Netkiller MySQL 手札</ulink>
+		</member>
+		<member>
+			<ulink url="../nosql/index.html">Netkiller NoSQL 手札</ulink>
+		</member>
+		<member>
+			<ulink url="../ldap/index.html">Netkiller LDAP 手札</ulink>
+		</member>
+	</simplelist>
+	
+	<para>以下文档停止更新合并到 《Netkiller Linux 手札》</para>
+	<simplelist type='horiz' columns='6'>
+		<member>
+			<ulink url="../debian/index.html">Netkiller Debian 手札</ulink>
+		</member>
+		<member>
+			<ulink url="../centos/index.html">Netkiller CentOS 手札</ulink>
+		</member>
+		<member>
+			<ulink url="../multimedia/index.html">Netkiller Multimedia 手札</ulink>
+		</member>
+	</simplelist>
 </abstract>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="gitlab" ?>
+	<title>GitLab</title>
+	<para><ulink url="https://github.com/gitlabhq" /></para>
+	<para>GitLab是一个利用 Ruby on Rails 开发的开源应用程序，实现一个自托管的Git项目仓库，可通过Web界面进行访问公开的或者私人项目。</para>
+	<para>它拥有与Github类似的功能，能够浏览源代码，管理缺陷和注释。可以管理团队对仓库的访问，它非常易于浏览提交过的版本并提供一个文件历史库。团队成员可以利用内置的简单聊天程序(Wall)进行交流。它还提供一个代码片段收集功能可以轻松实现代码复用，便于日后有需要的时候进行查找。</para>
+	<para>GitLab 5.0以前版本要求服务器端采用 Gitolite 搭建，5.0版本以后不再使用 Gitolite ，采用自己开发的 gitlab-shell 来实现。如果你觉得安装麻烦可以使用 GitLab Installers 一键安装程序。</para>
+	<section id="install">
+		<title>安装 GitLab</title>
+		<screen>
+yum localinstall -y https://downloads-packages.s3.amazonaws.com/centos-6.6/gitlab-ce-7.10.0~omnibus.2-1.x86_64.rpm
+
+gitlab-ctl reconfigure
+
+cp /etc/gitlab/gitlab.rb{,.original}
+		</screen>
+		<para>停止 GitLab 服务</para>
+		<screen>
+# gitlab-ctl stop
+ok: down: logrotate: 1s, normally up
+ok: down: nginx: 0s, normally up
+ok: down: postgresql: 0s, normally up
+ok: down: redis: 0s, normally up
+ok: down: sidekiq: 1s, normally up
+ok: down: unicorn: 0s, normally up
+		</screen>
+		<para>启动 GitLab 服务</para>
+		<screen>
+# gitlab-ctl start
+ok: run: logrotate: (pid 3908) 0s
+ok: run: nginx: (pid 3911) 1s
+ok: run: postgresql: (pid 3921) 0s
+ok: run: redis: (pid 3929) 1s
+ok: run: sidekiq: (pid 3933) 0s
+ok: run: unicorn: (pid 3936) 1s
+		</screen>
+		<para>配置gitlab</para>
+		<screen>
+# vim /etc/gitlab/gitlab.rb
+external_url 'http://gitlab.example.com'		
+		</screen>
+		<para>SMTP配置</para>
+		<screen>
+gitlab_rails['gitlab_email_enabled'] = true
+gitlab_rails['gitlab_email_from'] = 'openunix@163.com'
+gitlab_rails['gitlab_email_display_name'] = 'Neo'
+gitlab_rails['gitlab_email_reply_to'] = 'noreply@example.com'
+
+gitlab_rails['smtp_enable'] = true
+gitlab_rails['smtp_address'] = "smtp.163.com"
+gitlab_rails['smtp_user_name'] = "openunix@163.com"
+gitlab_rails['smtp_password'] = "password"
+gitlab_rails['smtp_domain'] = "163.com"
+gitlab_rails['smtp_authentication'] = "login"		
+		</screen>
+		<para>任何配置文件变化都需要运行 # gitlab-ctl reconfigure</para>
+		<para>WEB管理员</para>
+		<screen>
+# Username: root 
+# Password: 5iveL!fe		
+		</screen>
+	</section>
+	<section id="user">
+		<title>用户管理</title>
+		<para>初始化GitLab，进入Admin area，单击左侧菜单Users，在这里为gitlab添加用户</para>
+	</section>
+	<section id="group">
+		<title>组管理</title>
+		<para>初始化GitLab组，我比较喜欢使用“域名”作为组名，例如example.com</para>
+	</section>
+	<section id="project">
+		<title>项目管理</title>
+		<para>创建项目，我通常会在组下面创建项目，每个域名对应一个项目,例如www.example.com,images.example.com</para>
+		<para>版本库URL如下</para>
+		<screen>
+http: http://192.168.0.1/example.com/www.example.com.git
+ssh: git@192.168.0.1:example.com/www.example.com.git
+		</screen>
+	</section>
+	<section id="faq">
+		<title>FAQ</title>
+		<section>
+			<title>gitolite 向 gitlab 迁移</title>
+			<para>早期gitlab使用gitolite为用户提供SSH服务，新版gitlab有了更好的解决方案gitlab-shell。安装新版本是必会涉及gitolite 向 gitlab 迁移，下面是我总结的一些迁移经验。</para>
+			<para>第一步,将gitolite复制到gitlab仓库目录下</para>
+			<screen>
+# cp -r /gitroot/gitolite/repositories/* /var/opt/gitlab/git-data/repositories/
+			</screen>
+			<para>执行导入处理程序</para>
+			<screen>
+# gitlab-rake gitlab:import:repos
+			</screen>
+			<para>上面程序会处理一下目录结构，例如</para>
+			<para>进入gitlab web界面，创建仓库与导入的仓库同名，这样就完成了导入工作。</para>
+			<tip><para>转换最好在git用户下面操作，否则你需要运行</para>
+				<screen>
+# chown git:git -R /var/opt/gitlab/git-data/repositories				
+				</screen>
+			</tip>
+		</section>
+		<section>
+			<title>修改主机名</title>
+			<para>默认Gitlab采用主机名，给我使用代理一定麻烦</para>
+			<screen>
+git@hostname:example.com/www.example.com.git
+http://hostname/example.com/www.example.com.git
+			</screen>
+			<para>我们希望使用IP地址替代主机名</para>
+			<screen>
+git@172.16.0.1:example.com/www.example.com.git
+http://172.16.0.1/example.com/www.example.com.git
+			</screen>
+			<para>编辑 /etc/gitlab/gitlab.rb 配置文件</para>
+			<screen>
+external_url 'http://172.16.0.1'
+			</screen>
+			<para>重新启动Gitlab</para>
+			<screen>
+# gitlab-ctl reconfigure
+# gitlab-ctl restart
+			</screen>
+		</section>
+	</section>
+
+</chapter>

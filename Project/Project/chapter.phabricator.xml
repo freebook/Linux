@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="phabricator">
+	<title>Phabricator - an open source, software engineering platform</title>
+	<subtitle>Phabricator is a collection of open source web applications that help software companies build better software.</subtitle>
+	<para>Phabricator 是 Facebook 开源的Code Review 工具</para>
+</chapter>
+<chapter id="gerrit">
+	<title>Gerrit</title>
+	<para>Gerrit 是 Google 开发的Code Review 工具</para>
+</chapter>

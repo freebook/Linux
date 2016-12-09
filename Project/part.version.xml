@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: part.version.xml 385 2012-04-10 10:40:06Z netkiller $ -->
+
+	&chapter.git.xml;
+	&chapter.version.svn;
+	&chapter.version.cvs;
+	&chapter.miscellaneous.xml;
+	

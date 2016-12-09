@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Id: book.xml 559 2013-04-10 07:03:49Z netkiller $ -->
+<?xml-stylesheet type="text/xsl" href="../stylesheet/docbook-article.xsl"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V5.0//EN"
+	"/usr/share/xml/docbook/schema/dtd/5.0/docbook.dtd" [
+
+	<!ENTITY book.info.legalnotice.xml	SYSTEM "../common/book.info.legalnotice.xml">
+	<!ENTITY book.info.abstract.xml		SYSTEM "../common/book.info.abstract.xml">
+	<!ENTITY book.info.author.xml		SYSTEM "../common/book.info.author.xml">
+    <!ENTITY book.preface.xml           SYSTEM "../common/book.preface.xml">
+	<!ENTITY preface.about.me.xml       SYSTEM "../common/about.me.xml">
+	<!ENTITY book.dedication.xml       	SYSTEM "../common/book.dedication.xml">
+
+	<!ENTITY % doctype.entity.xml 			SYSTEM "doctype.entity.xml">
+	%doctype.entity.xml;
+
+]>
+<book xml:base="http://netkiller.github.com/book/version/"
+	xmlns="http://docbook.org/ns/docbook" xml:lang="zh-cn">
+	<info>
+		<title>Netkiller Project 手札</title>
+		<subtitle>Software engineering platform, Integrated SCM &amp; Project Management, Version Control System</subtitle>
+		<authorgroup>
+		&book.info.author.xml;
+<!--
+		<author>
+			<firstname>netkiller</firstname>
+			<surname>Neo Chan</surname>
+			<address>
+				<phone>13113668890</phone>
+				<email>netkiller(at)msn(dot)com</email>
+			</address>
+			<affiliation>
+
+			</affiliation>
+		</author>
+
+		<collab>
+			<collabname>
+				<personname>
+					<honorific>Mr</honorific>
+					<firstname>your name</firstname>
+					<surname></surname>
+		    	</personname>
+			</collabname>
+        	<affiliation>
+        		<address>
+				    <country>中国</country><state>广东</state><city>深圳</city><street>科技园</street><postcode>518000</postcode>
+					<email>something@domain.com</email>
+				</address>
+			</affiliation>
+     	</collab>
+ -->
+		</authorgroup>
+		<copyright>
+			<year>2009</year>
+			<year>2010</year>
+			<year>2011</year>
+			<year>2012</year>
+			<year>2013</year>
+			<year>2014</year>
+			<year>2015</year>
+			<holder>Neo Chan</holder>
+		</copyright>
+		<releaseinfo>
+			<pubdate>$Date: 2013-04-10 15:03:49 +0800 (Wed, 10 Apr 2013) $</pubdate>
+			<remark>2009-12-12</remark>
+		</releaseinfo>
+
+		&book.info.legalnotice.xml;
+		&book.info.abstract.xml;
+
+		<keywordset>
+			<keyword>
+svn, svnauthz-validate, svnlook,svn-populate-node-origins-index, svnsync, svnadmin, svndumpfilter, svnmucc, svnserve, svnversion
+			</keyword>
+			<keyword>
+git,git-add,git-add--interactive,git-am,git-annotate,git-apply,git-archive,git-bisect,git-bisect--helper,git-blame,git-branch,git-bundle,git-cat-file,git-check-attr,git-checkout,git-checkout-index,git-check-ref-format,git-cherry,git-cherry-pick,git-clean,git-clone,git-commit,git-commit-tree,git-config,git-count-objects,git-daemon,git-describe,git-diff,git-diff-files,git-diff-index,git-difftool,git-difftool--helper,git-diff-tree,git-fast-export,git-fast-import,git-fetch,git-fetch-pack,git-filter-branch,git-fmt-merge-msg,git-for-each-ref,git-format-patch,git-fsck,git-fsck-objects,git-gc,git-get-tar-commit-id,git-grep,git-hash-object,git-help,git-http-backend,git-http-fetch,git-http-push,git-imap-send,git-index-pack,git-init,git-init-db,git-instaweb,git-log,git-lost-found,git-ls-files,git-ls-remote,git-ls-tree,git-mailinfo,git-mailsplit,git-merge,git-merge-base,git-merge-file,git-merge-index,git-merge-octopus,git-merge-one-file,git-merge-ours,git-merge-recursive,git-merge-resolve,git-merge-subtree,git-mergetool,git-mergetool--lib,git-merge-tree,git-mktag,git-mktree,git-mv,git-name-rev,git-notes,git-pack-objects,git-pack-redundant,git-pack-refs,git-parse-remote,git-patch-id,git-peek-remote,git-prune,git-prune-packed,git-pull,git-push,git-quiltimport,git-read-tree,git-rebase,git-rebase--interactive,git-receive-pack,git-reflog,git-relink,git-remote,git-remote-ftp,git-remote-ftps,git-remote-http,git-remote-https,git-remote-testgit,git-repack,git-replace,git-repo-config,git-request-pull,git-rerere,git-reset,git-revert,git-rev-list,git-rev-parse,git-rm,git-send-pack,git-shell,git-shortlog,git-show,git-show-branch,git-show-index,git-show-ref,git-sh-setup,git-stage,git-stash,git-status,git-stripspace,git-submodule,git-symbolic-ref,git-tag,git-tar-tree,git-unpack-file,git-unpack-objects,git-update-index,git-update-ref,git-update-server-info,git-upload-archive,git-upload-pack,git-var,git-verify-pack,git-verify-tag,git-web--browse,git-whatchanged,git-write-tree
+			</keyword>
+		</keywordset>
+	</info>
+
+	&book.dedication.xml;
+	&book.preface.xml;
+	&part.project.xml;
+	&part.version;
+	
+</book>

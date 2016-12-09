@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.project.xml 534 2013-03-13 07:18:58Z netkiller $ -->
+<part id="index"><?dbhtml dir="project" ?>
+	<title>项目管理工具</title>
+	<subtitle>project management tool</subtitle>
+	<para>建模工具</para>
+	<itemizedlist>
+		<listitem>FreeMind</listitem>
+		<listitem>ArgoUML,StarUML</listitem>
+	</itemizedlist>
+
+	<para>常用的项目管理工具</para>
+	<itemizedlist>
+		<listitem><para>TRAC</para></listitem>
+		<listitem><para>Subversion</para></listitem>
+		<listitem><para>Bugzilla</para></listitem>
+		<listitem><para>TWiki</para></listitem>
+	</itemizedlist>
+	&chapter.trac.xml;
+	&chapter.gitlab.xml;
+	&chapter.redmine.xml;
+	&chapter.tutos.xml;
+</part>

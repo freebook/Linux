@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="tutos">
+	<title>TUTOS</title>
+	<para>TUTOS is a tool to manage the organizational needs of small groups, teams, departments ...</para>
+	<para><ulink url="http://www.tutos.org/">http://www.tutos.org/</ulink></para>
+
+	<procedure>
+		<title>TUTOS</title>
+		<step>
+			<para>extract</para>
+			<screen>
+tar jxvf TUTOS-php-1.3.20070317.tar.bz2
+sudo mv tutos /www/htdocs/
+			</screen>
+		</step>
+		<step>
+			<para>database</para>
+			<screen>
+netkiller@shenzhen:/www/htdocs/tutos$ mysqladmin -uroot -p create tutos
+netkiller@shenzhen:/www/htdocs/tutos$ mysql -uroot -p
+Enter password:
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 846
+Server version: 5.0.45 Source distribution
+
+Type 'help;' or '\h' for help. Type '\c' to clear the buffer.
+
+mysql> grant all on tutos.* to tutos@% identified by "chen";
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> grant all on tutos.* to tutos@localhost identified by "chen";
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> FLUSH PRIVILEGES;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> quit
+Bye
+
+netkiller@shenzhen:/www/htdocs/tutos$ mysqladmin -uroot -p reload
+			</screen>
+		</step>
+		<step>
+			<para>config</para>
+			<screen>
+mkdir /www/htdocs/tutos/repository
+			</screen>
+			<para>http://192.168.1.7/tutos/php/admin/scheme.php</para>
+			<para>or</para>
+			<screen>
+cp config_default.pinc  config.php
+			</screen>
+			<literallayout>
+			<![CDATA[
+<?php
+# remove this line when finsihed with config
+$tutos['CCSID'] = "10880f50567242006bf2c1a2c0b8b350";
+#
+# sessionpath
+#
+$tutos[sessionpath] = "/tmp";
+#
+# the next lines are a database definition
+#
+$tutos[dbname][0]     = "tutos";
+$tutos[dbhost][0]     = "localhost";
+$tutos[dbport][0]     = "5432";
+$tutos[dbuser][0]     = "tutos";
+$tutos[dbpasswd][0]   = "chen";
+$tutos[dbtype][0]     = "2";
+$tutos[dbalias][0]    = "Mysql database";
+$tutos[cryptpw][0]    = "";
+$tutos[repository][0] = "repository";
+$tutos[dbprefix][0]   = "";
+#
+# MAIL
+#
+$tutos[mailmode] = "2";
+$tutos[sendmail] = "/usr/lib/sendmail";
+$tutos[smtphost] = "localhost";
+#
+# demo mode
+#
+$tutos[demo] = 0;
+#
+# debug mode
+#
+$tutos[debug] = 0;
+$tutos[errlog] = "/tmp/debug.out";
+#
+$tutos[jpgraph] = "/www/htdocs/tutos/php/admin/jpgraph";
+#
+# EOF
+?>
+			]]>
+			</literallayout>
+			<para>sudo apt-get install perl libnet-ssleay-perl openssl libauthen-pam-perl libpam-runtime libio-pty-perl libmd5-perl</para>
+		</step>
+		<step>
+			<para>login</para>
+			<para>http://192.168.1.7/tutos/php/mytutos.php</para>
+			<para>User: superuser Password: tutos </para>
+		</step>
+	</procedure>
+</chapter>
+<chapter id="osrmt">
+    <title>Open Source Requirements Management Tool</title>
+    <para>http://sourceforge.net/projects/osrmt/</para>
+    <screen>
+	<![CDATA[
+<client directory>\v1_50\client\
+	
+copy connection.mysql.xml connection.xml
+	]]>
+	</screen>
+    <screen>
+	<![CDATA[
+<client directory>\v1_50\client\upgrade.bat
+
+Select configuration option 1,2,3 or 4
+1) Define a new connection
+2) Test the connection
+3) Save the new connection
+4) Initialize a new database
+5) Upgrade 1.3 to 1.4 database
+6) Migrate database contents
+7) Export language file
+8) Import language file
+0) Exit
+Enter option number [Exit]:
+
+
+Enter option number [Exit]: 4
+initializing database defined in connection.xml:
+jdbc:mysql://localhost/osrmt?useUnicode=true&characterEncoding=UTF-8
+osrmt
+mysql
+Target correct? Y|N [Y]: y
+Empty schema located - initialize and populate schema? [Y]:
+	]]>
+	</screen>	
+</chapter>

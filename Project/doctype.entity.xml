@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<!ENTITY part.version 				SYSTEM "part.version.xml">
+	<!ENTITY chapter.version.cvs	 	SYSTEM "Version/chapter.version.cvs.xml">
+	<!ENTITY chapter.version.svn 		SYSTEM "Version/chapter.version.svn.xml">
+	<!ENTITY chapter.git.xml	 		SYSTEM "Version/chapter.git.xml">
+	<!ENTITY chapter.git.gitolite.xml 	SYSTEM "Version/chapter.git.gitolite.xml">
+	<!ENTITY chapter.git.web.xml	 	SYSTEM "Version/chapter.git.web.xml">
+
+	<!ENTITY part.project.xml			SYSTEM "part.project.xml">
+	<!ENTITY chapter.trac.xml			SYSTEM "Project/chapter.trac.xml">
+	<!ENTITY chapter.gitlab.xml 		SYSTEM "Project/chapter.gitlab.xml">
+	<!ENTITY chapter.redmine.xml 		SYSTEM "Project/chapter.redmine.xml">
+	<!ENTITY chapter.tutos.xml			SYSTEM "Project/chapter.tutos.xml">
+
+	<!ENTITY chapter.miscellaneous.xml 	SYSTEM "chapter.miscellaneous.xml">

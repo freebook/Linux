@@ -85,7 +85,7 @@ env.ports 80
 		</section>
 	</section>
 </section>
-	<section>
+	<section id="centos">
 		<title>CentOS</title>
 		<screen>
 # rpm -Uvh http://download.fedora.redhat.com/pub/epel/5/x86_64/epel-release-5-4.noarch.rpm	
@@ -108,7 +108,7 @@ cpu df df_inode entropy forks fw_packets http_loadtime if_err_eth0 if_eth0 inter
 		</screen>
 		<para>http://localhost/munin/</para>
 	</section>
-	<section id="munin.auth">
+	<section id="auth">
 		<title>用户认证</title>
 		<screen>
 $ sudo vim /etc/apache2/conf.d/munin.conf
@@ -120,7 +120,7 @@ $ sudo vim /etc/apache2/conf.d/munin.conf
 			
 		</screen>
 	</section>	
-	<section id="munin.plugins">
+	<section id="plugins">
 		<title>munin-node and plugins</title>
 		<para>config: /etc/munin/munin-node.conf</para>
 		<para>plugins: /usr/share/munin/plugins/</para>
@@ -193,7 +193,7 @@ ln -s /usr/share/munin/plugins/memcached_traffic_ /etc/munin/plugins/memcached_t
 			<para>验证安装，telnet localhost 4949 之后，执行 fetch memcached_requests_127_0_0_1_11211</para>
 		</section>
 	</section>
-	<section id="munin.conf">
+	<section id="conf">
 		<title>munin.conf</title>
 		<screen>
 # vim /etc/munin/munin.conf
@@ -206,7 +206,7 @@ ln -s /usr/share/munin/plugins/memcached_traffic_ /etc/munin/plugins/memcached_t
     use_node_name yes
 		</screen>
 	</section>
-	<section id="munin.node">
+	<section id="node">
 		<title>munin-node</title>
 		<screen>
 # yum install munin-node -y

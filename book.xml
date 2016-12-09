@@ -15,9 +15,8 @@
 	<!ENTITY BG7NYT "&Neo;">
 	<!ENTITY Netkiller "<emphasis><trademark>Netkiller</trademark></emphasis>">
 
-	<!ENTITY book.info.legalnotice 		SYSTEM "../common/book.info.legalnotice.xml">
-	<!ENTITY book.info.abstract.xml		SYSTEM "../common/book.info.abstract.xml">
-	<!ENTITY book.info.abstract 		SYSTEM "book.info.abstract.xml">
+	<!ENTITY book.info.legalnotice.xml	SYSTEM "../common/book.info.legalnotice.xml">
+	<!ENTITY book.info.abstract.xml		SYSTEM "book.info.abstract.xml">
 	<!ENTITY about.me 					SYSTEM "../common/about.me.xml">
 	<!ENTITY book.dedication.xml       	SYSTEM "../common/book.dedication.xml">
 
@@ -83,6 +82,9 @@
 	%virtualization.doctype.entity.xml;	
 	<!ENTITY part.virtualization.xml				SYSTEM "part.virtualization.xml">
 	
+	<!ENTITY % project.doctype.entity.xml 				SYSTEM "Project/doctype.entity.xml">
+	%project.doctype.entity.xml;
+	
 	<!ENTITY part.im 			SYSTEM "part.im.xml">
 	<!ENTITY chapter.gps 		SYSTEM "chapter.gps.xml">
 	
@@ -133,15 +135,7 @@
 
 		<copyright>
 			<year>2006</year>
-			<year>2007</year>
-			<year>2008</year>
-			<year>2009</year>
-			<year>2010</year>
-			<year>2011</year>
-			<year>2012</year>
-			<year>2013</year>
-			<year>2014</year>
-			<year>2015</year>
+			<year>-</year>
 			<year>2016</year>
 			<holder>Netkiller(Neo Chan). All rights reserved.</holder>
 		</copyright>
@@ -154,8 +148,7 @@
 		<pubdate></pubdate>
 		<releaseinfo></releaseinfo>
 
-		&book.info.legalnotice;
-		&book.info.abstract;
+		&book.info.legalnotice.xml;
 		&book.info.abstract.xml;
 
 		<keywordset>
@@ -208,6 +201,9 @@ a2p,ab,aclocal,aclocal-1.11,addftinfo,addr2line,airdaemon,apropos,ar,as,attr,aul
 <!-- =========================================================================== -->
 	&part.multimedia.xml;
 	&chapter.x.xml;
+	
+	&part.project.xml;
+	&part.version;
 <!-- =========================================================================== -->	
 	&chapter.ibm.websphere.xml;
 <!-- =========================================================================== -->

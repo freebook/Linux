@@ -1,0 +1,954 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.version.svn.xml 446 2012-08-06 09:43:09Z netkiller $ -->
+<part id="subversion"><?dbhtml dir="subversion"?>
+	<title>Subversion</title>
+
+<chapter id="subversion.daemon">
+	<title>Invoking the Server</title>
+	<para>配置开发环境版本控制Subversion</para>
+	<para>Squid + Subversion 请参考Squid一节</para>
+	<!-- repository, repositories -->
+
+	<section id="svn.install">
+		<title>Installing</title>
+		<section>
+			<title>CentOS</title>
+			<procedure>
+				<title>subversion</title>
+				<step>
+					<para>installation</para>
+					<command>$ sudo apt-get install subversion</command>
+					<screen>
+$ sudo apt-get install subversion
+					</screen>
+				</step>
+				<step>
+					<para>create svn group and svnroot user</para>
+					<screen>
+$ sudo groupadd svn
+$ sudo adduser svnroot --ingroup svn
+					</screen>
+				</step>
+				<step>
+					<para>create repository</para>
+					<screen>
+$ svnadmin create /home/svnroot/test
+					</screen>
+				</step>
+				<step>
+					<para>testing</para>
+					<screen>
+svnroot@netkiller:~$ svnserve -d --foreground -r /home/svnroot/
+					</screen>
+					<para>check out</para>
+					<para>
+neo@netkiller:/tmp$ svn list svn://localhost/test
+					</para>
+					<para>you may see some file and directory</para>
+					<screen>
+neo@netkiller:/tmp$ ls test/.svn/
+entries  format  prop-base  props  text-base  tmp
+					</screen>
+				</step>
+				<step>
+					<para>configure</para>
+					<para>$ vim repositories/conf/svnserve.conf</para>
+					<screen>
+[general]
+anon-access = read
+auth-access = write
+password-db = passwd
+# authz-db = authz
+# realm = My First Repository
+					</screen>
+					<para>$ vim repositories/conf/passwd</para>
+					<screen>
+[users]
+# harry = harryssecret
+# sally = sallyssecret
+neo = chen
+					</screen>
+					<para>如果不允许匿名用户checkout代码，配置文件这样写anon-access = none</para>
+					<screen>
+[general]
+anon-access = none
+auth-access = write
+					</screen>
+				</step>
+				<step>
+					<para>firewall</para>
+					<screen>
+$ sudo ufw allow svn
+					</screen>
+				</step>
+			</procedure>
+		</section>
+		<section>
+			<title>CentOS</title>
+			<screen>
+# yum install xinetd
+# yum install subversion
+
+# mkdir -p /opt/svnroot
+			</screen>
+			<para>xinetd 配置</para>
+			<screen>
+# vim /etc/xinetd.d/svn
+service svn
+{
+    disable = no
+    port = 3690
+    socket_type = stream
+    protocol = tcp
+    wait = no
+    user = svnroot
+    server = /usr/bin/svnserve
+    server_args = -i -r /opt/svnroot
+}
+
+# /etc/init.d/xinetd restart
+Stopping xinetd:                                           [FAILED]
+Starting xinetd:                                           [  OK  ]
+
+# tail /var/log/messages | grep xinetd
+May  5 18:57:20 SZVM42-C1-02 yum: Installed: 2:xinetd-2.3.14-16.el5.i386
+May  5 18:59:22 SZVM42-C1-02 xinetd[4558]: Unknown user: svnroot [file=/etc/xinetd.d/svn] [line=8]
+May  5 18:59:22 SZVM42-C1-02 xinetd[4558]: Error parsing attribute user - DISABLING SERVICE
+
+[file=/etc/xinetd.d/svn] [line=8]
+May  5 18:59:22 SZVM42-C1-02 xinetd[4558]: xinetd Version 2.3.14 started with libwrap loadavg labeled-networking
+
+options compiled in.
+May  5 18:59:22 SZVM42-C1-02 xinetd[4558]: Started working: 0 available services
+			</screen>
+			<para>service 名字必须与 /etc/services中定义的名字相同，否则将不能启动，同时在/var/log/message中会提示如下</para>
+			<screen>
+May  4 14:33:08 www xinetd[5656]: service/protocol combination not in /etc/services: subversion/tcp
+May  4 14:33:08 www xinetd[5656]: xinetd Version 2.3.14 started with libwrap loadavg labeled-networking options compiled in.
+May  4 14:33:08 www xinetd[5656]: Started working: 0 available services
+May  4 14:33:33 www pulseaudio[21913]: sink-input.c: Failed to create sink input: too many inputs per sink.
+May  4 14:33:33 www pulseaudio[21913]: sink-input.c: Failed to create sink input: too many inputs per sink.
+May  4 14:33:33 www pulseaudio[21913]: sink-input.c: Failed to create sink input: too many inputs per sink.
+May  4 14:33:33 www pulseaudio[21913]: sink-input.c: Failed to create sink input: too many inputs per sink.
+May  4 14:33:33 www pulseaudio[21913]: sink-input.c: Failed to create sink input: too many inputs per sink.
+May  4 14:33:33 www pulseaudio[21913]: sink-input.c: Failed to create sink input: too many inputs per sink.
+May  4 14:33:33 www pulseaudio[21913]: sink-input.c: Failed to create sink input: too many inputs per sink.
+May  4 14:33:33 www pulseaudio[21913]: sink-input.c: Failed to create sink input: too many inputs per sink.
+May  4 14:33:41 www xinetd[5656]: Exiting...
+May  4 14:33:41 www xinetd[5676]: xinetd Version 2.3.14 started with libwrap loadavg labeled-networking options compiled in.
+May  4 14:33:41 www xinetd[5676]: Started working: 1 available service
+			</screen>
+		</section>
+	</section>
+	<section id="svnserve">
+		<title>standalone “daemon” process</title>
+		<para>svn daemon</para>
+		<screen>
+$ svnserve --daemon --root /home/svnroot
+		</screen>
+		<section id="subversion.start">
+			<title>starting subversion for debian/ubuntu</title>
+
+			<para>/etc/init.d/subversion for debian/ubuntu</para>
+			<screen>
+			<![CDATA[
+debian:/etc/init.d# cat subversion
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          subversion
+# Required-Start:    $remote_fs $network
+# Required-Stop:     $remote_fs $network
+# Should-Start:      fam
+# Should-Stop:       fam
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start the subversion subversion server.
+### END INIT INFO
+
+#########################
+# Author: Neo <openunix@163.com>
+#########################
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+DAEMON=/usr/bin/svnserve
+NAME=subversion
+DESC="subversion server"
+PIDFILE=/var/run/$NAME.pid
+SCRIPTNAME=/etc/init.d/$NAME
+SVNROOT=/srv/svnroot
+DAEMON_OPTS="-d -T -r $SVNROOT --pid-file $PIDFILE"
+
+test -x $DAEMON || exit 0
+
+set -e
+
+. /lib/lsb/init-functions
+
+case "$1" in
+    start)
+        log_daemon_msg "Starting $DESC" $NAME
+        echo
+        $DAEMON $DAEMON_OPTS
+        echo `pgrep -o $NAME` > $PIDFILE > /dev/null 2> /dev/null
+        ;;
+    stop)
+        log_daemon_msg "Stopping $DESC" $NAME
+        echo
+        killall `basename $DAEMON` > /dev/null 2> /dev/null
+        rm -rf $PIDFILE
+        ;;
+    restart)
+        $0 stop
+        $0 start
+        ;;
+    status)
+        ps ax | grep $NAME
+        ;;
+    *)
+        echo "Usage: $SCRIPTNAME {start|stop|restart|status}" >&2
+        exit 1
+        ;;
+esac
+
+exit 0
+			]]>
+			</screen>
+		</section>
+		<section id="subversion.script">
+			<title>starting subversion daemon script for CentOS/Radhat</title>
+			<screen>
+			<![CDATA[
+#!/bin/bash
+#
+# /etc/rc.d/init.d/subversion
+#
+# Starts the Subversion Daemon
+#
+# chkconfig: 345 90 10
+#
+# description: Subversion Daemon
+
+# processname: svnserve
+
+source /etc/rc.d/init.d/functions
+
+[ -x /usr/bin/svnserve ] || exit 1
+
+### Default variables
+SYSCONFIG="/etc/sysconfig/subversion"
+
+### Read configuration
+[ -r "$SYSCONFIG" ] && source "$SYSCONFIG"
+
+RETVAL=0
+USER="svnroot"
+prog="svnserve"
+desc="Subversion Daemon"
+
+start() {
+   echo -n $"Starting $desc ($prog): "
+   daemon --user $USER $prog -d $OPTIONS
+   RETVAL=$?
+   [ $RETVAL -eq 0 ] && touch /var/lock/subsys/$prog
+   echo
+}
+
+stop() {
+   echo -n $"Shutting down $desc ($prog): "
+   killproc $prog
+   RETVAL=$?
+   [ $RETVAL -eq 0 ] && success || failure
+   echo
+   [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/$prog
+   return $RETVAL
+}
+
+case "$1" in
+  start)
+   start
+   ;;
+  stop)
+   stop
+   ;;
+  restart)
+   stop
+   start
+   RETVAL=$?
+   ;;
+  condrestart)
+        [ -e /var/lock/subsys/$prog ] && restart
+   RETVAL=$?
+   ;;
+  *)
+   echo $"Usage: $0 {start|stop|restart|condrestart}"
+   RETVAL=1
+esac
+
+exit $RETVAL
+			]]>
+			</screen>
+			<para>/etc/sysconfig/subversion</para>
+			<screen>
+# Configuration file for the Subversion service
+
+#
+# To pass additional options (for instace, -r root of directory to server) to
+# the svnserve binary at startup, set OPTIONS here.
+#
+#OPTIONS=
+OPTIONS="--threads --root /srv/svnroot"
+				</screen>
+			</section>
+		</section>
+		<section id="inetd.conf">
+			<title>classic Unix-like inetd daemon</title>
+			<para>/etc/inetd.conf</para>
+			<screen>
+svn stream tcp nowait svn /usr/bin/svnserve svnserve -i -r /home/svnroot/repositories
+			</screen>
+			<para>xinetd.d</para>
+			<para>/etc/xinetd.d/subversion</para>
+			<screen>
+$ sudo apt-get install xinetd
+$ sudo vim /etc/xinetd.d/subversion
+
+service subversion
+{
+    disable = no
+    port = 3690
+    socket_type = stream
+    protocol = tcp
+    wait = no
+    user = svnroot
+    server = /usr/bin/svnserve
+    server_args = -i -r /home/svnroot
+}
+			</screen>
+			<para>restart xinetd</para>
+			<screen>
+$ sudo /etc/init.d/xinetd restart
+			</screen>
+		</section>
+
+		<section id="hooks">
+			<title>hooks</title>
+			<screen>
+$ sudo apt-get install subversion-tools
+			</screen>
+			<section id="post-commit">
+				<title>post-commit</title>
+				<para>install SVN::Notify</para>
+				<screen>
+perl -MCPAN -e 'install SVN::Notify'
+				</screen>
+				<screen>
+				<![CDATA[
+$ sudo cp post-commit.tmpl post-commit
+$ sudo chown svnroot:svn post-commit
+$ sudo vim post-commit
+
+REPOS="$1"
+REV="$2"
+
+#/usr/share/subversion/hook-scripts/commit-email.pl "$REPOS" "$REV" openunix@163.com
+/usr/share/subversion/hook-scripts/commit-email.pl "$1" "$2" --from neo@netkiller.8800.org -h localhost  -s "[SVN]" --diff y openunix@163.com openx@163.com
+				]]>
+				</screen>
+				<para>另一种方法</para>
+				<screen>
+				<![CDATA[
+#!/bin/sh
+
+REPOS="$1"
+REV="$2"
+
+/usr/local/bin/svnnotify                    \
+    --repos-path    "$REPOS"                \
+    --revision      "$REV"                  \
+    --subject-cx                            \
+    --with-diff                             \
+    --handler       HTML::ColorDiff         \
+    --to            <your e-mail address>   \
+    --from          <from e-mail address>
+    			]]>
+				</screen>
+				<screen>
+/usr/bin/svnnotify --repos-path "$REPOS" --revision "$REV" \
+--from neo@netkiller.8800.org --to openunix@163.com --smtp localhost \
+--handler "HTML::ColorDiff"  --with-diff --charset zh_CN:GB2312  -g zh_CN --svnlook /usr/bin/svnlook --subject-prefix '[SVN]'
+				</screen>
+				<para>如果你没有安装邮件服务器，你可以使用服务商的SMTP如163.com</para>
+				<screen>
+/usr/bin/svnnotify --repos-path "$REPOS" --revision "$REV" \
+--from openx@163.com --to openunix@163.com --smtp smtp.163.com  --smtp-user openunix --smtp-pass ****** \
+--handler "HTML::ColorDiff"  --with-diff --charset UTF-8 --language zh_CN --svnlook /usr/bin/svnlook --subject-prefix '[SVN]'
+				</screen>
+				<para>Charset</para>
+				<screen>
+REPOS="$1"
+REV="$2"
+
+svnnotify --repos-path "$REPOS" --revision "$REV" \
+        --subject-cx \
+        --from neo.chen@example.com \
+        --to group@example.com,manager@example.com \
+        --with-diff \
+        --svnlook /usr/bin/svnlook \
+        --subject-prefix '[SVN]' \
+        --charset UTF-8  --language zh_CN
+				</screen>
+			</section>
+		</section>
+
+		<section id="webdav">
+			<title>WebDav</title>
+			<para>Apache SVN</para>
+			<command>$ sudo apt-get install libapache2-svn</command>
+			<screen>
+netkiller@neo:/etc/apache2$ sudo apt-get install libapache2-svn
+			</screen>
+			<para>vhost</para>
+			<screen>
+			<![CDATA[
+<VirtualHost *>
+        ServerName svn.netkiller.8800.org
+        DocumentRoot /var/svn
+
+      <Location />
+                DAV svn
+                SVNPath /var/svn
+                AuthType Basic
+                AuthName "Subversion Repository"
+                AuthUserFile /etc/apache2/svn.passwd
+                <LimitExcept GET PROPFIND OPTIONS REPORT>
+                        Require valid-user
+                </LimitExcept>
+        </Location>
+</VirtualHost>
+			]]>
+			</screen>
+			<para>建立密码文件</para>
+			<para>建立第一个用户需要加-c参数</para>
+			<screen>
+netkiller@neo:/etc/apache2$ sudo htpasswd2 -c /etc/apache2/svn.passwd svn
+New password:
+Re-type new password:
+Adding password for user svn
+			</screen>
+			<para>输入两次密码</para>
+			<para>建立其他用户</para>
+			<screen>
+sudo htpasswd2 /etc/apache2/svn.passwd otheruser
+			</screen>
+			<section id="davfs2">
+				<title>davfs2 - mount a WebDAV resource as a regular file system</title>
+				<para>install</para>
+				<screen>
+$ sudo apt-get install davfs2
+				</screen>
+				<para>mount a webdav to directory</para>
+				<screen>
+$ sudo mount.davfs https://opensvn.csie.org/netkiller /mnt/davfs/
+Please enter the username to authenticate with server
+https://opensvn.csie.org/netkiller or hit enter for none.
+Username: svn
+Please enter the password to authenticate user svn with server
+https://opensvn.csie.org/netkiller or hit enter for none.
+Password:
+mount.davfs: the server certificate is not trusted
+  issuer:      CSIE.org, CSIE.org, Taipei, Taiwan, TW
+  subject:     CSIE.org, CSIE.org, Taipei, TW
+  identity:    *.csie.org
+  fingerprint: e6:05:eb:fb:69:5d:25:4e:11:3c:83:e8:7c:44:ee:bf:a9:85:a3:64
+You only should accept this certificate, if you can
+verify the fingerprint! The server might be faked
+or there might be a man-in-the-middle-attack.
+Accept certificate for this session? [y,N] y
+				</screen>
+				<para>test</para>
+				<screen>
+$ ls davfs/
+branches  lost+found  tags  trunk
+				</screen>
+			</section>
+		</section>
+</chapter>
+
+<chapter id="svn.repository">
+	<title>repository 管理</title>
+		<section id="repository.create">
+			<title>create repository</title>
+			<screen>
+$ su - svnroot
+$ svnadmin create /home/svnroot/neo
+			</screen>
+		</section>
+		<section id="repository.user">
+			<title>user admin</title>
+			<screen>
+			<![CDATA[
+#!/bin/bash
+###############################
+# Author: Neo<openunix@163.com
+# Home: http://netkiller.sf.net
+###############################
+SVNROOT=/srv/svnroot/project
+adduser(){
+    echo $1  $2
+    if [ -z $1 ]; then
+        usage
+    else
+        local user=$1
+    fi
+    if [ -z $2 ]; then
+        usage
+    else
+        local passwd=$2
+    fi
+    echo "$1 = $2" >> $SVNROOT/conf/passwd
+}
+deluser(){
+    local user=$1
+    if [ -z $user ]; then
+        usage
+    else
+        ed -s $SVNROOT/conf/passwd <<EOF
+/$user/
+d
+wq
+EOF
+    fi
+}
+list(){
+    cat $SVNROOT/conf/passwd
+}
+usage(){
+    echo $"Usage: $0 {list|add|del} username"
+}
+case "$1" in
+    list)
+        list
+        ;;
+    add)
+        adduser $2 $3
+        ;;
+    del)
+        deluser $2
+        ;;
+    restart)
+        stop
+        start
+        ;;
+    condrestart)
+        condrestart
+        ;;
+
+    *)
+        usage
+        exit 1
+esac
+			]]>
+			</screen>
+			<para>用法</para>
+			<screen>
+./svnuser list
+./svnuser add user passwd
+./svnuser del user
+			</screen>
+		</section>
+		<section id="repository.authz">
+			<title>authz</title>
+			<para>$ svnadmin create /home/svnroot/project</para>
+			<para>$ svnserve --daemon --root /home/svnroot/project</para>
+			<screen>
+[groups]
+member = neo
+blog = neo,netkiller
+wiki = bg7nyt,chen,jingfeng
+
+[/]
+* =
+
+[/member]
+@member = rw
+* = r
+
+[/app/blog]
+@blog = rw
+* =
+
+[/app/wiki]
+@blog = rw
+* =
+
+# [repository:/baz/fuz]
+# @harry_and_sally = rw
+# * = r
+			</screen>
+
+			<para>$ svnadmin create /home/svnroot/project1</para>
+			<para>$ svnadmin create /home/svnroot/project2</para>
+			<para>$ svnserve --daemon --root /home/svnroot</para>
+			<screen>
+[groups]
+member = neo
+blog = neo,netkiller
+wiki = bg7nyt,chen,jingfeng
+
+[project1:/]
+* =
+[project2:/]
+* = r
+
+[project1:/member]
+@member = rw
+* = r
+
+[project2:/app/blog]
+@blog = rw
+* =
+
+[project2:/app/wiki]
+@blog = rw
+* = r
+			</screen>
+			<example>
+				<title>authz</title>
+				<screen>
+[aliases]
+# joe = /C=XZ/ST=Dessert/L=Snake City/O=Snake Oil, Ltd./OU=Research Institute/CN=Joe Average
+
+### This file is an example authorization file for svnserve.
+### Its format is identical to that of mod_authz_svn authorization
+### files.
+### As shown below each section defines authorizations for the path and
+### (optional) repository specified by the section name.
+### The authorizations follow. An authorization line can refer to:
+###  - a single user,
+###  - a group of users defined in a special [groups] section,
+###  - an alias defined in a special [aliases] section,
+###  - all authenticated users, using the '$authenticated' token,
+###  - only anonymous users, using the '$anonymous' token,
+###  - anyone, using the '*' wildcard.
+###
+### A match can be inverted by prefixing the rule with '~'. Rules can
+### grant read ('r') access, read-write ('rw') access, or no access
+### ('').
+
+[aliases]
+# joe = /C=XZ/ST=Dessert/L=Snake City/O=Snake Oil, Ltd./OU=Research Institute/CN=Joe Average
+
+[groups]
+
+manager = neo
+developer = jam,john,zen
+tester = eva
+designer = allan
+deployer = ken
+
+[/]
+@manager = rw
+@developer = r
+@designer = r
+@deployer = r
+@tester = r
+* =
+
+#############################
+# Trunk
+# ##########################
+[/www.mydomain.com/trunk]
+@manager = rw
+@designer = rw
+@developer = rw
+@deployer = r
+
+[/images.mydomain.com/trunk]
+@designer = rw
+
+[/myid.mydomain.com/trunk]
+@designer = r
+
+[/info.mydomain.com/trunk]
+@developer = r
+@designer = r
+
+#############################
+#\Branches
+#############################
+[/admin.mydomain.com/branches]
+@developer = rw
+@designer = rw
+
+[/myid.mydomain.com/branches]
+@developer = rw
+@designer = rw
+
+[/info.mydomain.com/branches]
+@developer = rw
+@designer = rw
+
+[/www.mydomain.com/branches]
+@developer = rw
+@designer = rw
+
+[/images.mydomain.com/branches]
+@developer = rw
+@designer = rw
+
+[/log.mydomain.com/branches]
+@developer = rw
+
+[/report.mydomain.com/branches]
+@developer = rw
+
+###############################
+# TAGS
+# #############################
+[/myid.mydomain.com/tags]
+@deployer = rw
+[/admin.mydomain.com/tags]
+@deployer = rw
+[/info.mydomain.com/tags]
+@deployer = rw
+				</screen>
+			</example>
+		</section>
+
+		<section id="repository.dump">
+			<title>dump</title>
+			<screen>
+svnadmin dump /svnroot/project | gzip > svn.gz
+			</screen>
+		</section>
+</chapter>
+<chapter id="svn">
+	<title>使用Subversion</title>
+		<section id="initialized">
+			<title>Initialized empty subversion repository for project</title>
+			<screen>
+svn co svn://127.0.0.1/project
+cd project
+mkdir trunk
+mkdir tags
+mkdir branches
+svn ci -m "Initialized empty subversion repository in your_project"
+			</screen>
+		</section>
+		<section id="ignore">
+			<title>ignore</title>
+			<command>svn propset svn:ignore [filename] [folder]</command>
+			<screen>
+$ svn propset svn:ignore 'images' .
+$ svn ci -m 'Ignoring a directory called "images".'
+			</screen>
+			<screen>
+$ svn propset svn:ignore '*' images
+$ svn ci -m 'Ignoring a directory called "images".'
+			</screen>
+			<screen>
+$ svn export spool spool-tmp
+$ svn rm spool
+$ svn ci -m 'Removing inadvertently added directory "spool".'
+$ mv spool-tmp spool
+$ svn propset svn:ignore 'spool' .
+$ svn ci -m 'Ignoring a directory called "spool".'
+			</screen>
+			<para>.ignore</para>
+			<screen>
+svn propset svn:ignore -F .cvsignore .
+svn propset -R svn:ignore -F .svnignore .
+			</screen>
+		</section>
+		<section id="keywords">
+			<title>关键字替换</title>
+			<screen>
+Date
+	 这个关键字保存了文件最后一次在版本库修改的日期，看起来类似于$Date: 2012-08-06 17:43:09 +0800 (Mon, 06 Aug 2012) $，它也可以用LastChangedDate来指定。
+Revision
+	 这个关键字描述了这个文件最后一次修改的修订版本，看起来像$Revision: 446 $，也可以通过LastChangedRevision或者Rev引用。
+Author
+	 这个关键字描述了最后一个修改这个文件的用户，看起来类似$Author: netkiller $，也可以用LastChangedBy来指定。
+HeadURL
+	 这个关键字描述了这个文件在版本库最新版本的完全URL，看起来类似$HeadURL: https://svn.code.sf.net/p/netkiller/svn/trunk/Docbook/Version/chapter.version.svn.xml $，可以缩写为URL。
+Id
+	 这个关键字是其他关键字一个压缩组合，它看起来就像$Id: chapter.version.svn.xml 446 2012-08-06 09:43:09Z netkiller $，可以解释为文件calc.c上一次修改的修订版本号是148，时间是2006年7月28日，作者是sally。
+			</screen>
+
+			<screen>
+$ cat weather.txt
+$Id: chapter.version.svn.xml 446 2012-08-06 09:43:09Z netkiller $
+
+$ svn propset svn:keywords "Id" weather.txt
+property 'svn:keywords' set on 'weather.txt'
+
+$ cat weather.txt
+$Id: chapter.version.svn.xml 446 2012-08-06 09:43:09Z netkiller $
+			</screen>
+			<para>设置多个关键字</para>
+			<screen>
+$ svn propset svn:keywords "Author HeadURL Id Revision" -R *.php
+			</screen>
+			<screen>
+svn -R propset svn:keywords -F .keywords *
+			</screen>
+		</section>
+		<section id="lock-unlock">
+			<title>lock 加锁/ unlock 解锁</title>
+			<para>$ svn lock -m "LockMessage" [–force] PATH</para>
+			<screen>
+$ svn lock -m “lock test file“ test.php
+$ svn unlock PATH
+			</screen>
+		</section>
+		<section id="import">
+			<title>import</title>
+			<screen>
+svn import [PATH] URL
+svn export URL [PATH]
+			</screen>
+		</section>
+		<section id="export">
+			<title>export 指定版本</title>
+			<screen>
+svn log file
+svn export -r rxxxxx file
+or
+svn export -r rxxxxx file newfile
+svn ci -m "restore rxxxxxx"
+			</screen>
+		</section>
+		<section id="reversion">
+			<title>修订版本关键字</title>
+			<screen>
+HEAD
+
+    版本库中最新的（或者是“最年轻的”）版本。
+BASE
+
+    工作拷贝中一个条目的修订版本号，如果这个版本在本地修改了，则“BASE版本”就是这个条目在本地未修改的版本。
+COMMITTED
+
+    项目最近修改的修订版本，与BASE相同或更早。
+PREV
+
+    一个项目最后修改版本之前的那个版本，技术上可以认为是COMMITTED -1。
+			</screen>
+			<screen>
+$ svn cat -r PREV filename > filename
+$ svn diff -r PREV filename
+			</screen>
+		</section>
+		<section id="merge">
+			<title>恢复旧版本</title>
+			<para>svn没有恢复旧版本的直接功能，不过可以使用svn merge命令恢复。比如说当前HEAD为2，而我要恢复成1版本，怎么做？ </para>
+			<para>用svn merge：</para>
+			<screen>
+			<![CDATA[
+svn update
+svn merge --revision 2:1 svn://localhost/lynn
+svn commit -m "restore to revision 1"
+			]]>
+			</screen>
+			<para>svn merge --r HEAD:1 svn://localhost/lynn</para>
+		</section>
+</chapter>
+
+<chapter id="svn.branch">
+	<title>branch</title>
+		<section id="create">
+			<title>create</title>
+			<para>create a new branch using copy</para>
+			<screen>
+svn cp http://www.domain.com/truck/project http://www.domain.com/branches/project_branch_1
+			</screen>
+		</section>
+		<section id="remove">
+			<title>remove</title>
+			<para>remove</para>
+			<screen>
+svn rm http://www.domain.com/branches/project_branch_1
+			</screen>
+		</section>
+		<section id="switch">
+			<title>switch</title>
+			<screen>
+svn switch http://www.domain.com/branches/project_branch_2 .
+			</screen>
+		</section>
+		<section id="merge">
+			<title>merge</title>
+			<screen>
+svn -r 148:149 merge svn://server/trunk branches/module
+			</screen>
+		</section>
+		<section id="relocate">
+			<title>relocate</title>
+			<para>switch --relocate FROM TO [PATH...]</para>
+			<screen>
+svn switch --relocate svn://192.168.3.9/neo svn://192.168.3.5/neo .
+			</screen>
+		</section>
+</chapter>
+<chapter id="faq">
+	<title>FAQ</title>
+	<section id="faq.svn.add">
+		<title>递归添加文件</title>
+		<screen>
+$ svn add `svn st | grep '?' | awk '{print $2}'`
+		</screen>
+	</section>
+	<section id="clean.svn">
+		<title>清除项目里的所有.svn目录</title>
+		<screen>
+find . -type d -iname ".svn" -exec rm -rf {} \;
+		</screen>
+	</section>
+	<section id="diff.color">
+		<title>color diff</title>
+		<para>http://colordiff.sourceforge.net/</para>
+		<screen>
+$ sudo apt-get install colordiff
+		</screen>
+		<para>add the following to your ~/.bashrc</para>
+		<screen>
+alias svndiff=’svn diff --diff-cmd=colordiff’
+		</screen>
+	</section>
+	<section id="cvs2svn">
+		<title>cvs2svn</title>
+		<para>http://cvs2svn.tigris.org/</para>
+		<screen>
+[root@development ~]# cvs2svn --encoding=gb2312 --fallback-encoding=utf_8 --existing-svnrepos --svnrepos /home/svnroot /home/cvsroot
+[root@development ~]# cvs2svn --encoding=gb2312 --fallback-encoding=utf_8 --svnrepos /home/svnroot /home/cvsroot
+		</screen>
+	</section>
+	<section id="macromedia.dreamweaver.webdav">
+		<title>Macromedia Dreamweaver MX 2004 + WebDAV +Subversion</title>
+		<para>首先进入站点管理</para>
+		<graphic fileref="images/dreamweaver/image001.jpg" />
+		<para>单击新建(New…)按钮选择站点(Site)</para>
+		<graphic fileref="images/dreamweaver/image002.jpg" />
+		<para>显示站点设置面版 Local Info 中设置</para>
+		<graphic fileref="images/dreamweaver/image003.jpg" />
+		<para>Remote Info 中设置</para>
+		<graphic fileref="images/dreamweaver/image004.jpg" />
+		<para>单击设置按钮（settings）</para>
+		<graphic fileref="images/dreamweaver/image005.jpg" />
+		<para>单击确定</para>
+		<graphic fileref="images/dreamweaver/image006.jpg" />
+		<para>单击Done完成</para>
+		<para>连接 WebDAV 服务器</para>
+		<graphic fileref="images/dreamweaver/image007.jpg" />
+		<para>单击<graphic fileref="images/dreamweaver/image008.jpg" />连接</para>
+		<para><graphic fileref="images/dreamweaver/image009.jpg" /></para>
+	</section>
+	<section id="faq.login">
+		<title>指定用户名与密码</title>
+		<screen>
+svn co svn://www.example.com/repos  --username neo --password chen;
+		</screen>
+	</section>
+</chapter>
+
+</part>

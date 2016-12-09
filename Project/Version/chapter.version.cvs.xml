@@ -1,0 +1,687 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.version.cvs.xml 340 2012-02-03 09:18:44Z netkiller $ -->
+<part id="index"><?dbhtml dir="cvs"?>
+	<title>cvs - Concurrent Versions System</title>
+	<chapter id="installation">
+	<title>installation</title>
+	<procedure>
+		<title>install cvs</title>
+		<step>
+			<para>install</para>
+			<screen>
+$ sudo apt-get install xinetd
+$ sudo apt-get install cvs
+			</screen>
+			<para>show the cvs version</para>
+			<screen>
+$ cvs -v
+
+Concurrent Versions System (CVS) 1.12.13 (client/server)
+			</screen>
+		</step>
+		<step>
+			<para>create cvs group and cvsroot user</para>
+			<screen>
+$ sudo groupadd cvs
+$ sudo adduser cvsroot --ingroup cvs
+			</screen>
+			<para>change user become cvsroot</para>
+			<screen>
+$ su - cvsroot
+			</screen>
+		</step>
+		<step>
+			<para>initialization 'CVSROOT'</para>
+			<screen>
+$ cvs -d /home/cvsroot init
+			</screen>
+			<para>if you have successed, you can see CVSROOT directory in the '/home/cvsroot'</para>
+			<screen>
+$ ls /home/cvsroot/
+CVSROOT
+			</screen>
+		</step>
+		<step>
+			<para>authentication</para>
+			<para>default SystemAuth=yes, you can use system user to login cvs.</para>
+			<para>but usually, we don't used system user because it isn't security.</para>
+			<para>SystemAuth = no</para>
+			<para>edit '/home/cvsroot/CVSROOT/config' make sure SystemAuth = no</para>
+			<screen>
+$ vim /home/cvsroot/CVSROOT/config
+SystemAuth = no
+			</screen>
+			<para>create passwd file</para>
+			<para>the format is user:password:cvsroot</para>
+			<para>you need to using htpasswd command, if you don't have, please install it as the following</para>
+			<screen>
+$ sudo apt-get install apache2-utils
+			</screen>
+			<para>or</para>
+			<screen>
+$ perl -e 'print("userPassword: ".crypt("secret","salt")."\n");'
+			</screen>
+			<para>or</para>
+			<screen>
+$ cat passwd
+#!/usr/bin/perl
+srand (time());
+my $randletter = "(int (rand (26)) + (int (rand (1) + .5) % 2 ? 65 : 97))";
+my $salt = sprintf ("%c%c", eval $randletter, eval $randletter);
+my $plaintext = shift; my $crypttext = crypt ($plaintext, $salt);
+print "${crypttext}\n";
+
+$ ./passwd "mypasswd"
+atfodI2Y/dcdc
+			</screen>
+			<para>let's using htpasswd to create a passwd</para>
+			<screen>
+$ htpasswd -n neo
+New password:
+Re-type new password:
+neo:yA50LI1BkXysY
+			</screen>
+			<para>copy 'neo:yA50LI1BkXysY' and add ':cvsroot' to the end</para>
+			<screen>
+$ vim /home/cvsroot/CVSROOT/passwd
+neo:yA50LI1BkXysY:cvsroot
+nchen:GXaAkSKaQ/Hpk:cvsroot
+			</screen>
+		</step>
+		<step>
+			<para>Go into directory '/etc/xinetd.d/', and then create a cvspserver file as the following.</para>
+			<screen>
+$ sudo vim /etc/xinetd.d/cvspserver
+
+service cvspserver
+{
+   disable = no
+   flags = REUSE
+   socket_type = stream
+   wait = no
+   user = cvsroot
+   server = /usr/bin/cvs
+   server_args = -f --allow-root=/home/cvsroot pserver
+   log_on_failure += USERID
+}
+			</screen>
+		</step>
+		<step>
+			<para>check cvspserver in the '/etc/services'</para>
+			<screen>
+$ grep cvspserver /etc/services
+cvspserver      2401/tcp                        # CVS client/server operations
+cvspserver      2401/udp
+			</screen>
+		</step>
+		<step>
+			<para>restart xinetd</para>
+			<screen>
+$ /etc/init.d/xinetd
+Usage: /etc/init.d/xinetd {start|stop|reload|force-reload|restart}
+			</screen>
+		</step>
+		<step>
+			<para>port</para>
+			<screen>
+$ nmap localhost -p cvspserver
+
+Starting Nmap 4.53 ( http://insecure.org ) at 2008-11-14 16:21 HKT
+Interesting ports on localhost (127.0.0.1):
+PORT     STATE SERVICE
+2401/tcp open  cvspserver
+
+Nmap done: 1 IP address (1 host up) scanned in 0.080 seconds
+			</screen>
+		</step>
+		<step>
+			<para>firewall</para>
+			<screen>
+$ sudo ufw allow cvspserver
+			</screen>
+		</step>
+	</procedure>
+	<para>environment variable</para>
+	<para>CVSROOT=:pserver:username@ip:/home/cvsroot</para>
+	<screen>
+vim .bashrc
+
+export CVS_RSH=ssh
+export CVSROOT=:pserver:neo@localhost:/home/cvsroot
+	</screen>
+	<para>test</para>
+	<screen>
+$ cvs login
+Logging in to :pserver:neo@localhost:2401/home/cvsroot
+CVS password:
+neo@netkiller:/tmp/test$ cvs co test
+cvs checkout: Updating test
+U test/.project
+U test/NewFile.xml
+U test/newfile.php
+neo@netkiller:/tmp/test$
+	</screen>
+	<section>
+		<title>chroot</title>
+		<screen>
+$ sudo apt-get install cvsd
+		</screen>
+	</section>
+		<para>environment variable</para>
+		<screen>
+neo@netkiller:~/workspace/cvs$ export CVSROOT=:pserver:neo@localhost:/home/cvsroot
+		</screen>
+		<para>ssh</para>
+		<screen>
+export CVS_RSH=ssh
+export CVSROOT=:ext:$USER@localhost:/home/cvsroot
+		</screen>
+	</chapter>
+	<chapter id="login">
+		<title>cvs login | logout</title>
+		<screen>
+neo@netkiller:~/workspace/cvs$ cvs login
+Logging in to :pserver:neo@localhost:2401/home/cvsroot
+CVS password:
+		</screen>
+		<para>logout</para>
+		<screen>
+$ cvs logout
+Logging out of :pserver:neo@localhost:2401/home/cvsroot
+		</screen>
+	</chapter>
+	<chapter id="import">
+		<title>cvs import</title>
+		<para>cvs import -m "write some comments here" project_name vendor_tag release_tag</para>
+		<screen>
+$ cvs import -m "write some comments here" project_name vendor_tag release_tag
+		</screen>
+	</chapter>
+	<chapter id="checkout">
+		<title>cvs checkout</title>
+		<screen>
+$ cvs checkout project_name
+cvs checkout: Updating project_name
+		</screen>
+		<para>checkout before</para>
+		<command>cvs checkout -r release_1_0 project_name</command>
+		<screen>
+$ cvs checkout -r release_1_0 project_name
+cvs checkout: Updating project_name
+U project_name/file
+cvs checkout: Updating project_name/dir1
+U project_name/dir1/file1
+cvs checkout: Updating project_name/dir2
+U project_name/dir2/file1
+U project_name/dir2/file2
+		</screen>
+	</chapter>
+	<chapter id="update">
+		<title>cvs update</title>
+		<para>about update</para>
+		<screen>
+$ cvs update
+$ cvs update -r HEAD
+$ cvs update -r 1.5
+$ cvs update -D now
+$ cvs update -D now file
+		</screen>
+	</chapter>
+	<chapter id="add">
+		<title>cvs add</title>
+		<screen>
+$ cd project_name/
+$ touch new_file
+$ cvs add new_file
+cvs add: scheduling file `new_file' for addition
+cvs add: use `cvs commit' to add this file permanently
+		</screen>
+		<para>if the file is binary</para>
+		<para>cvs add -kb new_file.gif</para>
+		<para>add a directory</para>
+		<screen>
+$ mkdir dir1
+$ mkdir dir2
+$ touch dir1/file1
+$ touch dir2/file1
+$ touch dir2/file2
+$ cvs add dir1
+? dir1/file1
+Directory /home/cvsroot/project_name/dir1 added to the repository
+$ cvs add dir2
+? dir2/file1
+? dir2/file2
+Directory /home/cvsroot/project_name/dir2 added to the repository
+		</screen>
+		<para>add mulit files</para>
+		<screen>
+$ cvs add dir1/file1
+$ cvs add dir2/file?
+		</screen>
+	</chapter>
+	<chapter id="status">
+		<title>cvs status</title>
+		<screen>
+$ cvs status dir1/file1
+cvs status: use `cvs add' to create an entry for `dir1/file1'
+===================================================================
+File: file1             Status: Unknown
+
+   Working revision:  No entry for file1
+   Repository revision: No revision control file
+		</screen>
+	</chapter>
+	<chapter id="commit">
+		<title>cvs commit</title>
+		<screen>
+		<![CDATA[
+$ cvs commit -m "add a new file"
+cvs commit: Examining .
+/home/cvsroot/project_name/new_file,v  <--  new_file
+initial revision: 1.1
+		]]>
+		</screen>
+		<para>commit multi files</para>
+		<screen>
+		<![CDATA[
+$ cvs commit -m "add a new file" dir1/* dir2/*
+/home/cvsroot/project_name/dir1/file1,v  <--  dir1/file1
+initial revision: 1.1
+/home/cvsroot/project_name/dir2/file1,v  <--  dir2/file1
+initial revision: 1.1
+/home/cvsroot/project_name/dir2/file2,v  <--  dir2/file2
+initial revision: 1.1
+		]]>
+		</screen>
+	</chapter>
+	<chapter id="remove">
+		<title>cvs remove</title>
+		<screen>
+		<![CDATA[
+$ rm -rf new_file
+$ cvs remove new_file
+cvs remove: scheduling `new_file' for removal
+cvs remove: use `cvs commit' to remove this file permanently
+$ cvs commit -m "delete file" new_file
+/home/cvsroot/project_name/new_file,v  <--  new_file
+new revision: delete; previous revision: 1.1
+		]]>
+		</screen>
+	</chapter>
+	<chapter id="log">
+		<title>cvs log</title>
+		<para>let me create a file, and then modify the file to make several version</para>
+		<screen>
+		<![CDATA[
+$ touch file
+$ echo helloworld > file
+$ cvs add file
+cvs add: scheduling file `file' for addition
+cvs add: use `cvs commit' to add this file permanently
+$ cvs commit -m 'add file to cvs' file
+/home/cvsroot/project_name/file,v  <--  file
+initial revision: 1.1
+$ echo I am Neo > file
+$ cvs commit -m 'add file to cvs' file
+/home/cvsroot/project_name/file,v  <--  file
+new revision: 1.2; previous revision: 1.1
+$ echo my nickname is netkiller > file
+$ cvs commit -m 'modified file' file
+/home/cvsroot/project_name/file,v  <--  file
+new revision: 1.3; previous revision: 1.2
+$ echo I am 28 years old > file
+$ cvs commit -m 'modified file' file
+/home/cvsroot/project_name/file,v  <--  file
+new revision: 1.4; previous revision: 1.3
+		]]>
+		</screen>
+		<para>show log message</para>
+		<screen>
+		<![CDATA[
+$ cvs log file
+
+RCS file: /home/cvsroot/project_name/file,v
+Working file: file
+head: 1.4
+branch:
+locks: strict
+access list:
+symbolic names:
+keyword substitution: kv
+total revisions: 4;   selected revisions: 4
+description:
+----------------------------
+revision 1.4
+date: 2008-11-24 15:42:49 +0800;  author: neo;  state: Exp;  lines: +1 -1;  commitid: V0iuptfP43iETPrt;
+modified file
+----------------------------
+revision 1.3
+date: 2008-11-24 15:42:20 +0800;  author: neo;  state: Exp;  lines: +1 -1;  commitid: YWfYHFSV10duTPrt;
+modified file
+----------------------------
+revision 1.2
+date: 2008-11-24 15:41:47 +0800;  author: neo;  state: Exp;  lines: +1 -1;  commitid: 4iRs5fm1g9diTPrt;
+add file to cvs
+----------------------------
+revision 1.1
+date: 2008-11-24 15:41:28 +0800;  author: neo;  state: Exp;  commitid: zCWkxnWxLZHbTPrt;
+add file to cvs
+=============================================================================
+		]]>
+		</screen>
+		<para>cvs log -r1.2 file</para>
+		<screen>
+$ cvs log -r1.2 file
+
+RCS file: /home/cvsroot/project_name/file,v
+Working file: file
+head: 2.1
+branch:
+locks: strict
+access list:
+symbolic names:
+        release_1_0_patch: 1.4.0.2
+        release_1_0: 1.4
+keyword substitution: kv
+total revisions: 5;     selected revisions: 1
+description:
+----------------------------
+revision 1.2
+date: 2008-11-24 15:41:47 +0800;  author: neo;  state: Exp;  lines: +1 -1;  commitid: 4iRs5fm1g9diTPrt;
+add file to cvs
+=============================================================================
+		</screen>
+	</chapter>
+	<chapter id="annotate">
+		<title>cvs annotate</title>
+		<screen>
+$ cvs annotate file
+
+Annotations for file
+***************
+2.2          (nchen    26-Nov-08): I am Neo
+2.2          (nchen    26-Nov-08): My nickname netkiller
+2.3          (nchen    26-Nov-08): I'm from shenzhen
+1.4          (neo      24-Nov-08): I am 28 years old
+		</screen>
+	</chapter>
+	<chapter id="diff">
+		<title>cvs diff</title>
+		<screen>
+		<![CDATA[
+neo@netkiller:~/workspace/cvs/project_name$ cvs diff -r1.3 -r1.4 file
+Index: file
+===================================================================
+RCS file: /home/cvsroot/project_name/file,v
+retrieving revision 1.3
+retrieving revision 1.4
+diff -r1.3 -r1.4
+1c1
+< my nickname is netkiller
+---
+> I am 28 years old
+neo@netkiller:~/workspace/cvs/project_name$ cvs diff -r1.2 -r1.4 file
+Index: file
+===================================================================
+RCS file: /home/cvsroot/project_name/file,v
+retrieving revision 1.2
+retrieving revision 1.4
+diff -r1.2 -r1.4
+1c1
+< I am Neo
+---
+> I am 28 years old
+		]]>
+		</screen>
+		<para>--side-by-side</para>
+		<screen>
+neo@netkiller:/tmp/cvs/test/project_name$ cvs diff --side-by-side -r1.2 -r1.4 file
+Index: file
+===================================================================
+RCS file: /home/cvsroot/project_name/file,v
+retrieving revision 1.2
+retrieving revision 1.4
+diff --side-by-side -r1.2 -r1.4
+I am Neo                                                      | I am 28 years old
+		</screen>
+	</chapter>
+	<chapter id="rename">
+		<title>rename file</title>
+		<literallayout>
+		<![CDATA[
+mv file_name new_file_name && cvs remove file_name
+cvs add new_file_name
+		]]>
+		</literallayout>
+		<screen>
+		<![CDATA[
+neo@netkiller:/tmp/cvs/project_name$ mv file file.txt
+neo@netkiller:/tmp/cvs/project_name$ cvs remove file
+cvs remove: scheduling `file' for removal
+cvs remove: use `cvs commit' to remove this file permanently
+neo@netkiller:/tmp/cvs/project_name$ cvs add file.txt
+cvs add: scheduling file `file.txt' for addition
+cvs add: use `cvs commit' to add this file permanently
+neo@netkiller:/tmp/cvs/project_name$ cvs commit -m 'rename file to file.txt'
+cvs commit: Examining .
+cvs commit: Examining dir1
+cvs commit: Examining dir2
+/home/cvsroot/project_name/file,v  <--  file
+new revision: delete; previous revision: 2.3
+/home/cvsroot/project_name/file.txt,v  <--  file.txt
+initial revision: 1.1
+		]]>
+		</screen>
+	</chapter>
+	<chapter id="revision">
+		<title>revision</title>
+		<screen>
+neo@netkiller:~/workspace/cvs/project_name$ cvs update -r 1.2 file
+U file
+neo@netkiller:~/workspace/cvs/project_name$ cvs st file
+===================================================================
+File: file              Status: Up-to-date
+
+   Working revision:  1.2
+   Repository revision: 1.2     /home/cvsroot/project_name/file,v
+   Commit Identifier: 4iRs5fm1g9diTPrt
+   Sticky Tag:        1.2
+   Sticky Date:       (none)
+   Sticky Options:    (none)
+		</screen>
+		<para>last version</para>
+		<screen>
+neo@netkiller:~/workspace/cvs/project_name$ cvs update -r HEAD file
+U file
+neo@netkiller:~/workspace/cvs/project_name$ cvs st file
+===================================================================
+File: file              Status: Up-to-date
+
+   Working revision:  1.4
+   Repository revision: 1.4     /home/cvsroot/project_name/file,v
+   Commit Identifier: V0iuptfP43iETPrt
+   Sticky Tag:        HEAD (revision: 1.4)
+   Sticky Date:       (none)
+   Sticky Options:    (none)
+		</screen>
+	</chapter>
+	<chapter id="export">
+		<title>cvs export</title>
+		<command>cvs export -r release_1_0 project_name</command>
+		<screen>
+$ cvs export -r release_1_0 project_name
+cvs export: Updating project_name
+U project_name/file
+cvs export: Updating project_name/dir1
+U project_name/dir1/file1
+cvs export: Updating project_name/dir2
+U project_name/dir2/file1
+U project_name/dir2/file2
+		</screen>
+		<para>cvs export -D 20081126 project_name</para>
+		<screen>
+$ cvs export -D 20081126 project_name
+cvs export: Updating project_name
+U project_name/file
+cvs export: Updating project_name/dir1
+U project_name/dir1/file1
+cvs export: Updating project_name/dir2
+U project_name/dir2/file1
+U project_name/dir2/file2
+		</screen>
+		<command>cvs export -D now -d nightly project_name</command>
+		<screen>
+$ cvs export -D now -d nightly project_name
+cvs export: Updating nightly
+U nightly/file
+cvs export: Updating nightly/dir1
+U nightly/dir1/file1
+cvs export: Updating nightly/dir2
+U nightly/dir2/file1
+U nightly/dir2/file2
+neo@netkiller:/tmp/cvs$
+		</screen>
+	</chapter>
+	<chapter id="release">
+		<title>cvs release</title>
+		<screen>
+$ ls
+project_name
+
+$ cvs release -d project_name
+You have [0] altered files in this repository.
+Are you sure you want to release (and delete) directory `project_name': y
+
+$ ls
+		</screen>
+	</chapter>
+	<chapter id="branch">
+		<title>branch</title>
+		<section>
+			<title>milestone</title>
+			<para>set up a release number</para>
+			<screen>
+$ cvs tag release_1_0
+cvs tag: Tagging .
+T file
+cvs tag: Tagging dir1
+T dir1/file1
+cvs tag: Tagging dir2
+T dir2/file1
+T dir2/file2
+			</screen>
+			<para>beginning next one milestone</para>
+			<screen>
+			<![CDATA[
+$ cvs commit -r 2
+
+Log message unchanged or not specified
+a)bort, c)ontinue, e)dit, !)reuse this message unchanged for remaining dirs
+Action: (continue) c
+
+CVS: ----------------------------------------------------------------------
+CVS: Enter Log.  Lines beginning with `CVS:' are removed automatically
+CVS:
+CVS: Committing in .
+CVS:
+CVS: Modified Files:
+CVS:  Tag: 2
+CVS:    file dir1/file1 dir2/file1 dir2/file2
+CVS: ----------------------------------------------------------------------
+
+/home/cvsroot/project_name/file,v  <--  file
+new revision: 2.1; previous revision: 1.4
+/home/cvsroot/project_name/dir1/file1,v  <--  dir1/file1
+new revision: 2.1; previous revision: 1.1
+/home/cvsroot/project_name/dir2/file1,v  <--  dir2/file1
+new revision: 2.1; previous revision: 1.1
+/home/cvsroot/project_name/dir2/file2,v  <--  dir2/file2
+new revision: 2.1; previous revision: 1.1
+			]]>
+			</screen>
+
+			<para>other user</para>
+			<screen>
+$ cvs up
+cvs update: Updating .
+P file
+cvs update: Updating dir1
+U dir1/file1
+cvs update: Updating dir2
+U dir2/file1
+U dir2/file2
+
+$ cvs st file
+===================================================================
+File: file              Status: Up-to-date
+
+   Working revision:    2.1
+   Repository revision: 2.1     /home/cvsroot/project_name/file,v
+   Commit Identifier:   SuZpTC1gCRrH2Qrt
+   Sticky Tag:          (none)
+   Sticky Date:         (none)
+   Sticky Options:      (none)
+			</screen>
+		</section>
+		<section id="patch">
+			<title>patch branch</title>
+			<para>create a branch release_1_0_patch from release_1_0 by cvs admin</para>
+			<screen>
+$ cvs rtag -b -r release_1_0 release_1_0_patch project_name
+cvs rtag: Tagging project_name
+cvs rtag: Tagging project_name/dir1
+cvs rtag: Tagging project_name/dir2
+			</screen>
+			<para>checkout release_1_0_patch by other user</para>
+			<screen>
+$ cvs checkout -r release_1_0_patch project_name
+cvs checkout: Updating project_name
+U project_name/file
+cvs checkout: Updating project_name/dir1
+U project_name/dir1/file1
+cvs checkout: Updating project_name/dir2
+U project_name/dir2/file1
+U project_name/dir2/file2
+			</screen>
+			<para>show the status, and you can see 'Sticky Tag' is 'release_1_0_patch'</para>
+			<screen>
+$ cvs st file
+===================================================================
+File: file              Status: Up-to-date
+
+   Working revision:    1.4
+   Repository revision: 1.4     /home/cvsroot/project_name/file,v
+   Commit Identifier:   V0iuptfP43iETPrt
+   Sticky Tag:          release_1_0_patch (branch: 1.4.2)
+   Sticky Date:         (none)
+   Sticky Options:      (none)
+			</screen>
+		</section>
+	</chapter>
+	<chapter id="keywords">
+		<title>keywords</title>
+		<literallayout>
+$Author: netkiller $
+$Date: 2012-02-03 17:18:44 +0800 (Fri, 03 Feb 2012) $
+$Name$
+$Id: chapter.version.cvs.xml 340 2012-02-03 09:18:44Z netkiller $
+$Header$
+$Log$
+$Revision: 340 $
+		</literallayout>
+		<para>add above keywords into a file, and then commit it.</para>
+		<screen>
+$ cat file.txt
+$Author: netkiller $
+$Date: 2012-02-03 17:18:44 +0800 (Fri, 03 Feb 2012) $
+$Name:  $
+$Id: chapter.version.cvs.xml 340 2012-02-03 09:18:44Z netkiller $
+$Header: /home/cvsroot/project_name/file.txt,v 1.2 2008-11-27 01:33:29 nchen Exp $
+$Log: file.txt,v $
+Revision 1.2  2008-11-27 01:33:29  nchen
+added some of keywords
+
+$Revision: 340 $
+		</screen>
+	</chapter>
+</part>

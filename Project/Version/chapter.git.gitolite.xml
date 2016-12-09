@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.git.gitolite.xml 472 2012-10-24 05:30:15Z netkiller $ -->
+<chapter id="gitolite">
+	<title>gitolite - SSH-based gatekeeper for git repositories</title>
+	<screen>
+$ apt-cache search gitolite
+gitolite - SSH-based gatekeeper for git repositories
+	</screen>
+	<screen>
+sudo apt-get install gitolite
+	</screen>
+	<para>No adminkey given - not setting up gitolite.</para>
+	<section id="gitolite-admin">
+		<title>gitolite-admin</title>
+		<screen>
+git@192.168.2.1:gitolite-admin.git
+		</screen>
+		<section id="gitolite.conf">
+			<title>gitolite.conf</title>
+			<para>gitolite-admin/conf/gitolite.conf</para>
+			<section>
+				<title>staff</title>
+				<screen>
+@admin 		= neo
+@developer 	= bottle nada dick blank phabricator
+@designer 	= blank
+@deployer 	= phoenix
+@tester 	= jimmy
+				</screen>
+			</section>
+			<section>
+				<title>repo</title>
+				<screen>
+repo gitolite-admin
+    RW+     = @admin
+    R       = @deployer
+
+repo mydomain.com/www.mydomain.com
+    RW+     = @admin
+    RW		= @developer @designer
+    R		= @deployer
+
+repo mydomain.com/images.mydomain.com
+    RW+     = @admin
+    RW		= @developer @designer
+    R		= @deployer
+
+repo mydomain.com/passport.mydomain.com
+    RW+     = @admin
+    RW		= @developer
+    R		= @deployer @designer
+
+repo    example.com/www.example.com
+  RW+       = @all  
+
+repo    @all
+  RW        = @developer @designer
+  R         = @agentbot @deployment @test	
+				</screen>
+			</section>
+		</section>
+	</section>
+</chapter>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="redmine">
+	<title>Redmine</title>
+	<para>http://www.redmine.org/</para>
+	<para><ulink url="http://bitnami.org/stack/redmine">redmine 一键安装包</ulink></para>
+	<section id="install">
+		<title>CentOS 安装</title>
+		<para>安装MySQL数据库</para>
+		<screen>
+curl -s https://raw.githubusercontent.com/oscm/shell/master/database/mysql/mysql.server.sh | bash
+curl -s https://raw.githubusercontent.com/oscm/shell/master/database/mysql/mysql.devel.sh | bash		
+		</screen>
+		<para>创建数据库账号</para>
+		<screen>
+CREATE DATABASE redmine CHARACTER SET utf8;
+GRANT ALL PRIVILEGES ON redmine.* TO 'redmine'@'localhost' IDENTIFIED BY 'my_password';		
+		</screen>
+		<para>安装</para>
+		<screen>
+		<![CDATA[
+yum install -y ruby rubygems ruby-devel ImageMagick-devel
+
+cd /usr/local/src/
+wget http://www.redmine.org/releases/redmine-3.3.0.tar.gz
+tar zxf redmine-3.3.0.tar.gz
+mv redmine-3.3.0 /srv/
+ln -s /srv/redmine-3.3.0 /srv/redmine
+cd /srv/redmine
+
+
+cat >> config/database.yml <<EOF
+production:
+  adapter: mysql2
+  database: redmine
+  host: localhost
+  username: redmine
+  password: my_password
+  encoding: utf8
+EOF
+
+gem install bundler
+bundle install --without development test
+bundle exec rake generate_secret_token
+
+RAILS_ENV=production bundle exec rake db:migrate
+#bundle exec rake redmine:load_default_data
+RAILS_ENV=production REDMINE_LANG=zh bundle exec rake redmine:load_default_data
+
+mkdir -p tmp tmp/pdf public/plugin_assets
+sudo chown -R redmine:redmine files log tmp public/plugin_assets
+sudo chmod -R 755 files log tmp public/plugin_assets
+
+bundle exec rails server webrick -e production
+		]]>
+		</screen>
+		<para>默认用户名与密码 login: admin，password: admin</para>
+	</section>
+	<section id="launch">
+		<title>Redmine 运行</title>
+		<screen>
+# rails server -h
+Usage: rails server [mongrel, thin etc] [options]
+    -p, --port=port                  Runs Rails on the specified port.
+                                     Default: 3000
+    -b, --binding=IP                 Binds Rails to the specified IP.
+                                     Default: localhost
+    -c, --config=file                Uses a custom rackup configuration.
+    -d, --daemon                     Runs server as a Daemon.
+    -u, --debugger                   Enables the debugger.
+    -e, --environment=name           Specifies the environment to run this server under (test/development/production).
+                                     Default: development
+    -P, --pid=pid                    Specifies the PID file.
+                                     Default: tmp/pids/server.pid
+
+    -h, --help                       Shows this help message.
+		</screen>
+		<para>绑定监听地址 -b</para>
+		<screen>
+# bundle exec rails server webrick -e production -b 0.0.0.0
+		</screen>
+		<para>守护进程 -d</para>
+	</section>
+	<section id="plugins">
+		<title>插件</title>
+		<section>
+			<title>workflow</title>
+			<para>http://www.redmine.org/plugins/redmine_workflow_enhancements</para>
+		</section>
+	</section>
+</chapter>

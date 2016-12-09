@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: section.miscellaneous.xml 385 2012-04-10 10:40:06Z netkiller $ -->
+<section id="miscellaneous">
+	<title>Miscellaneous</title>
+<section id="codehost">
+	<title>代码托管</title>
+	<section id="sourceforge">
+		<title>sourceforge.net</title>
+		<section>
+			<title>http://netkiller.users.sourceforge.net/ 页面</title>
+			<para>使用 sftp命令连接netkiller@frs.sourceforge.net，然后切换目录cd userweb/htdocs/，上传页面文件 put index.html，sourceforge.net 支持php</para>
+			<screen>
+			<![CDATA[
+$ sftp netkiller@frs.sourceforge.net
+netkiller@frs.sourceforge.net's password:
+Connected to frs.sourceforge.net.
+sftp> ls -l
+lrwxrwxrwx    1 root     root           28 Apr 26  2012 userweb
+sftp> cd userweb/htdocs/
+sftp> put /tmp/index.html
+Uploading /tmp/index.html to /home/user-web/n/ne/netkiller/htdocs/index.html
+/tmp/index.html                     100%   10     0.0KB/s   00:00
+sftp> put /tmp/index.php
+Uploading /tmp/index.php to /home/user-web/n/ne/netkiller/htdocs/index.php
+/tmp/index.php                      100%   17     0.0KB/s   00:00
+sftp> pwd
+Remote working directory: /home/user-web/n/ne/netkiller/htdocs
+sftp> ls
+index.html  index.php
+sftp> exit
+			]]>
+			</screen>
+			<para>将上面netkiller改为你注册的用户名即可</para>
+			<para>帮助: https://sourceforge.net/apps/trac/sourceforge/wiki/Developer%20web</para>
+		</section>
+	</section>	
+	<section id="GoogleCode">
+		<title>Google Code</title>
+	</section>
+	<section id="GitHub">
+		<title>GitHub</title>
+		<para>http://www.github.com/</para>
+		<section>
+			<title>首次操作</title>
+			<para>Global setup:</para>
+			<para>Download and install Git</para>
+	 		<screen>
+git config --global user.name "Neo Chan"
+git config --global user.email bg7nyt@gmail.com
+	 		</screen>
+			<para>Next steps:</para>
+			<screen>
+mkdir neo
+cd neo
+git init
+touch README
+git add README
+git commit -m 'first commit'
+git remote add origin git@github.com:netkiller/neo.git
+git push origin master
+		  	</screen>
+		  	<para>Existing Git Repo?</para>
+			<screen>
+cd existing_git_repo
+git remote add origin git@github.com:netkiller/neo.git
+git push origin master
+  			</screen>
+  		</section>
+  		<section id="github.clone">
+  			<title>clone 已经存在的仓库</title>
+  			<screen>
+$ git clone https://github.com/netkiller/netkiller.github.com.git
+
+git config --global user.name "Your Name"
+git config --global user.email you@example.com
+git commit --amend --reset-author
+  			</screen>
+  		</section>
+	</section>
+</section>
+<section id="gui">
+	<title>GUI</title>
+	<section id="TortoiseSVN">
+		<title>TortoiseSVN</title>
+		<ulink url="http://tortoisesvn.net/" />
+	</section>
+	<section id="TortoiseGit">
+		<title>TortoiseGit</title>
+		<ulink url="http://code.google.com/p/tortoisegit/" />
+	</section>
+</section>
+</section>
