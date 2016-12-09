@@ -156,6 +156,15 @@ $ cat mount.conf
 172.16.0.5:/	/www/logs/5
 		]]>
 		</programlisting>
+		<para>读一行</para>		
+		<programlisting>
+		<![CDATA[
+while IFS='' read -r line || [[ -n "$line" ]]; do
+	echo "Text read from file: $line"
+done < "$1"
+		
+		]]>
+		</programlisting>
 	</section>
 	<section id="until">
 		<title>until</title>
