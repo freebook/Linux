@@ -20,6 +20,7 @@
 	<!ENTITY chapter.security.firewall.iptables SYSTEM "chapter.security.firewall.iptables.xml">
 	<!ENTITY chapter.security.stunnel 		SYSTEM "chapter.security.stunnel.xml">
 	<!ENTITY chapter.security.openssh 		SYSTEM "chapter.security.openssh.xml">	
+	<!ENTITY chapter.firewalld.xml	 		SYSTEM "chapter.firewalld.xml">
 
 	<!ENTITY chapter.vpn.xml 				SYSTEM "chapter.vpn.xml">
 	<!ENTITY chapter.vpn.openvpn.xml		SYSTEM "chapter.vpn.openvpn.xml">

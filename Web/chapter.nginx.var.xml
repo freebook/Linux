@@ -29,6 +29,16 @@ $server_name
 $server_port
 $uri
 	</screen>
+	<section id="host">
+		<title>$host</title>
+		<para>抽取域名中的域，例如www.netkiller.cn 返回netkiller.cn</para>
+		<screen>
+if ($host ~* ^www\.(.*)) {       
+    set $domain $1;
+    rewrite ^(.*) http://user.$domain permanent;
+}
+		</screen>
+	</section>
 	<section id="http_user_agent">
 		<title>http_user_agent</title>
 		<screen>
@@ -51,6 +61,9 @@ if ($http_user_agent ~ (Spider|Robot) ) {
     return 403;
 }
 
+if ($http_user_agent ~ MSIE) {
+    rewrite ^(.*)$ /msie/$1 break;
+}
 		</screen>
 		<section>
 			<title>禁止非浏览器访问</title>
@@ -236,6 +249,30 @@ $ curl 192.168.0.1/134
 192
 		</screen>
 	</section>
+	<section id="http_cookie">
+		<title>http_cookie</title>
+		<screen>
+if ($http_cookie ~* "id=([^;]+)(?:;|$)") {
+    set $id $1;
+}	
+		</screen>
+	</section>
+	<section id="request_method">
+		<title>request_method</title>
+		<screen>
+if ($request_method = POST) {
+    return 405;
+}
+		</screen>
+	</section>
+	<section id="invalid_referer">
+		<title>invalid_referer</title>
+		<screen>
+if ($invalid_referer) {
+    return 403;
+}		
+		</screen>
+	</section>		
 	<section id="set">
 		<title>自定义变量</title>
 		<screen>

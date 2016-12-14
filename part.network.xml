@@ -14,6 +14,7 @@
 	&chapter.security.firewall;
 	&chapter.security.stunnel;
 	&chapter.security.openssh;
+	&chapter.firewalld.xml;
 	&chapter.vpn.xml;
 	&chapter.network.p2p;	
 </part>
