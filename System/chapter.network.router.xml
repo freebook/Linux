@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.network.router.xml 388 2012-04-11 10:01:38Z netkiller $ -->
-<chapter id="router">
+<section id="router">
 	<title>Linux IP And Router</title>
 	<!-- http://www.sme-solution.com/integration/route/01/index.html -->
 	<!-- http://www.cyberciti.biz/tips/howto-configure-linux-virtual-local-area-network-vlan.html -->
@@ -462,4 +462,4 @@ Name-Type: VLAN_NAME_TYPE_RAW_PLUS_VID_NO_PAD
 		<title>Zebra</title>
 		<para>http://www.zebra.org/</para>
 	</section>
-</chapter>
+</section>

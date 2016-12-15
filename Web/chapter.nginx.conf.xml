@@ -10,14 +10,6 @@ worker_processes  1;
 error_log  /var/log/nginx/error.log warn;
 pid        /var/run/nginx.pid;
 	</screen>
-	<section id="events">
-		<title>events</title>
-		<screen>
-events {
-    worker_connections  4096;
-}
-		</screen>
-	</section>
 
 	<section id="http">
 		<title>http 配置</title>
@@ -35,20 +27,30 @@ client_header_timeout 10;
 keepalive_timeout  	  65;
 send_timeout          10;
 		</screen>
-		<section id="x-forwarded-for">
+	</section>
+	
+	<section id="events">
+		<title>events</title>
+		<screen>
+events {
+    worker_connections  4096;
+}
+		</screen>
+	</section>
+
+	<section id="x-forwarded-for">
 			<title>X-Forwarded-For</title>
 			<screen>
 real_ip_header X-Forwarded-For;
 			</screen>
 		</section>
-
-		<section id="gzip">
+	<section id="gzip">
 			<title>gzip</title>
 			<screen>
 gzip  on;
 gzip_min_length  1000;
 gzip_buffers     4 8k;
-gzip_types       text/plain application/x-javascript text/css text/html application/xml;
+gzip_types       text/plain text/css application/json application/x-javascript application/xml;
 
 
 gzip on;
@@ -58,10 +60,42 @@ gzip_types text/plain application/x-javascript text/css text/javascript;
 			</screen>
 			<para>gzip_types 压缩类型</para>
 			<screen>
-gzip_types text/plain text/html text/css application/javascript text/javascript application/x-javascript text/xml application/xml application/xml+rss application/json;			
+gzip_types text/plain text/css application/javascript text/javascript application/x-javascript text/xml application/xml application/xml+rss application/json;			
+			</screen>
+			<para>text/html 是 gzip_types 默认值，所以不要将text/html加入到gzip_types</para>
+			
+			<para>测试，验证 gzip 正常工作</para>
+			<screen>
+neo@netkiller:~/workspace$ curl -s -I -H 'Accept-Encoding: gzip,deflate' http://img.netkiller.cn/js/react.js | grep gzip
+Content-Encoding: gzip
+			</screen>
+			<para>如果提示 Content-Encoding: gzip 便是配置正确</para>
+			<para>不仅仅只能压缩html,js,css还能压缩json</para>
+			<screen>
+neo@netkiller:~$ curl -s -I -H 'Accept-Encoding: gzip,deflate' http://inf.netkiller.cn/list/json/2.json
+HTTP/1.1 200 OK
+Server: nginx
+Date: Thu, 15 Dec 2016 03:36:31 GMT
+Content-Type: application/json; charset=utf-8
+Connection: keep-alive
+Cache-Control: max-age=60
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Headers: Content-Type,Origin
+Access-Control-Allow-Methods: GET,OPTIONS
+Content-Encoding: gzip
+			</screen>
+		<section>
+			<title>CDN支持</title>
+			<para>配置 gzip_proxied any; 后CDN才能识别 gzip</para>
+			<screen>
+	server_tokens off;
+    gzip  on;
+    gzip_types text/plain text/css application/javascript text/javascript application/x-javascript text/xml application/xml application/xml+rss application/json;
+    gzip_proxied any;
 			</screen>
 		</section>
-		<section id="server_tokens">
+	</section>
+	<section id="server_tokens">
 			<title>server_tokens</title>
 			<para>隐藏nginx版本号</para>
 			<screen>
@@ -71,8 +105,7 @@ server_tokens off;
 ...
 }
 			</screen>
-		</section>
-		<section id="ssi">
+		</section><section id="ssi">
 			<title>ssi</title>
 			<screen>
 http {
@@ -98,10 +131,8 @@ client_max_body_size 8m;
 			<para>ssi_silent_errors 默认值是off，开启后在处理SSI文件出错时不输出错误提示:"[an error occurred while processing the directive] "</para>
 			<para>ssi_types 默认是ssi_types text/html，如果需要shtml支持，则需要设置：ssi_types text/shtml</para>
 			<para>ssi_value_length 默认值是 256，用于定义SSI参数的长度。</para>
-		</section>
-	</section>
-	
-	<section id="http.server">
+		</section>	
+	<section id="server">
 		<title>server</title>
 		<section id="listen">
 			<title>listen</title>

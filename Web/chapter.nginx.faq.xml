@@ -283,4 +283,8 @@ server {
 		</screen>
 		<para>上面的例子location /module 是指 /www/netkiller.com/www.netkiller.com + /module，如果  /www/netkiller.com/www.netkiller.com 目录下面没有 module 目录是出现404， error.log显示 "/www/netkiller.cn/www.netkiller.cn/module/index.html" failed (2: No such file or directory)</para>
 	</section>
+	<section>
+		<title>nginx: [warn] duplicate MIME type "text/html" in /etc/nginx/nginx.conf</title>
+		<para><para>text/html 是 gzip_types 默认值，所以不要将text/html加入到gzip_types列表内</para></para>
+	</section>
 </section>
