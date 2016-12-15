@@ -13,6 +13,7 @@
 	<!ENTITY chapter.filesystem.xml			SYSTEM "chapter.filesystem.xml">
 	<!ENTITY chapter.fs.btrfs.xml			SYSTEM "chapter.fs.btrfs.xml">
 	<!ENTITY chapter.network.xml 			SYSTEM "chapter.network.xml">
+	<!ENTITY chapter.network.router.xml		SYSTEM "chapter.network.router.xml">
 	<!ENTITY chapter.service.xml	 		SYSTEM "chapter.service.xml">
 	<!ENTITY chapter.service.ubuntu.xml 	SYSTEM "chapter.service.ubuntu.xml">
 	<!ENTITY chapter.service.centos.xml		SYSTEM "chapter.service.centos.xml">

@@ -549,7 +549,7 @@ $ sudo iwconfig wlan1 essid Netkiller key 66535215
 			</screen>
 		</example>
 	</section>
-
+	&chapter.network.router.xml;
 	<section id="sys.net.centos">
 		<title>CentOS 网络配置</title>
 		<command>system-config-network</command>

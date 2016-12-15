@@ -4,7 +4,6 @@
 	<!ENTITY chapter.network.dhcp			SYSTEM "chapter.network.dhcp.xml">
 	<!ENTITY chapter.network.bind 			SYSTEM "chapter.network.bind.xml">
 	<!ENTITY chapter.network.dnsmasq.xml	SYSTEM "chapter.network.dnsmasq.xml">
-	<!ENTITY chapter.network.router 		SYSTEM "chapter.network.router.xml">
 	
 	<!ENTITY chapter.network.proxy 			SYSTEM "chapter.network.proxy.xml">
 	<!ENTITY chapter.network.proxy.squid 	SYSTEM "chapter.network.proxy.squid.xml">
