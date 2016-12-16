@@ -123,16 +123,6 @@ grep -v 0$ access.2010-11-05.log | awk -F '\" ' '{print $4" " $1}' web.log | awk
 			</screen>
 		</section>
 	</section>
-	<section id="log.tomcat">
-		<title>Tomcat Log</title>
-		<section>
-			<title>截取 0-3 点区间的日志</title>
-			<screen>
-egrep '^2011-08-02 0[0-3].*' sale-debug.log
-			</screen>
-		</section>
-	</section>
-
 	<section id="awstats">
 		<title>awstats</title>
 		<para><ulink url="http://sourceforge.net/projects/awstats/">http://sourceforge.net/projects/awstats/</ulink></para>
@@ -646,6 +636,23 @@ $ sudo apt-get install goaccess
 		<para>使用方法</para>
 		<screen>
 # goaccess -f access.log
+		</screen>
+	</section>
+</section>
+
+<section id="tomcat">
+	<title>Tomcat</title>
+	<para>Tomcat 日志监控主要是分析 catalina.out 文件</para>
+	<section>
+		<title>截取 0-3 点区间的日志</title>
+		<screen>
+egrep '^2011-08-02 0[0-3].*' sale-debug.log
+		</screen>
+	</section>
+	<section>
+		<title>监控Redis</title>
+		<screen>
+redis.clients.jedis.exceptions.JedisConnectionException: java.net.SocketTimeoutException: Read timed out			
 		</screen>
 	</section>
 </section>

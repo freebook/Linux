@@ -1085,9 +1085,24 @@ curl -s https://raw.githubusercontent.com/oscm/shell/master/monitor/zabbix/zabbi
 		</section>
 		<section id="oracle">
 			<title>Oracle</title>
-			<screen>
+			<section>
+				<title>采集脚本</title>
+				<para>创建JDBC配置文件　/srv/zabbix/conf/jdbc.properties</para>
+				<screen>
+# Oracle 单机环境
+jdbc.url=jdbc:oracle:thin:@//172.16.0.10:1521/oral
+# Oracle RAC 环境
+# jdbc.url=jdbc\:oracle\:thin\:@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=172.16.0.5)(PORT=1521))(LOAD_BALANCE=yes)(FAILOVER=ON)(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=oral)(FAILOVER_MODE=(TYPE=SESSION)(METHOD=BASIC))))
+jdbc.username=b01
+jdbc.password=jI0CfJly7y5YB06
+				</screen>
+				<para></para>
+				<screen>
+
+				</screen>
+				<para></para>
+			</section>
 			
-			</screen>
 		</section>
 	</section>
 </chapter>
