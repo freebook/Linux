@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	<section id="bandwidth">
+	<chapter id="bandwidth">
 		<title>Bandwidth</title>
 		<para><ulink url="http://bandwidthd.sourceforge.net/" /></para>
-		<section>
+		<section id="install.ubuntu">
 			<title>apt-get install</title>
 			<screen>
 			<![CDATA[
@@ -56,7 +56,7 @@ $ sudo apt-get install bandwidthd
 			</screen>
 			<para>http://localhost/bandwidthd/index.html</para>
 		</section>
-		<section>
+		<section id="install.centos">
 			<title>CentOS rpm/yum</title>
 			<screen>
 rpm -Uvh http://dl.fedoraproject.org/pub/epel/5/i386/epel-release-5-4.noarch.rpm
@@ -184,7 +184,7 @@ bandwidth.i386 : Artificial benchmark for measuring memory bandwidth
 				</screen>
 			</note>
 		</section>
-		<section>
+		<section id="install.source">
 			<title>source code</title>
 			<screen>
 tar zxvf bandwidthd-2.0.1.tgz
@@ -194,7 +194,7 @@ make
 make install
 			</screen>
 		</section>
-		<section>
+		<section id="bandwidthd.conf">
 			<title>/etc/bandwidthd.conf</title>
 			<screen>
 # 监控所有地址
@@ -206,4 +206,4 @@ subnet 172.16.0.0/12
 
 			</screen>
 		</section>
-	</section>
+	</chapter>

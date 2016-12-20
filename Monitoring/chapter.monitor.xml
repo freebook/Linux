@@ -6,9 +6,9 @@
 	&chapter.nagios.xml;
 	&chapter.log.xml;
 	&chapter.mrtg.xml;
-	&chapter.bandwidth.xml;
 	&chapter.munin.xml;
 	&chapter.network.ntop.xml;
+	&chapter.bandwidth.xml;
 	&chapter.netflow.xml;
 	&chapter.network.cluster.xml;
 	&chapter.network.observium.xml;
