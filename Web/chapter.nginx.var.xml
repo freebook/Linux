@@ -231,6 +231,10 @@ location /name/(match) {
     proxy_buffering off;
     proxy_pass http://10.10.20.1/${1}.html;
 }
+
+if ($remote_addr ~* "192.168.0.50|192.168.0.51|192.168.0.56") {
+	proxy_pass http://www.netkiller.cn/error;
+}
 		</screen>
 		<screen>
 location ~ /(\d+) {
