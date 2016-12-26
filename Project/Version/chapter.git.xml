@@ -329,7 +329,7 @@ $ git-show-branch
 	</chapter>
 
 
-<chapter id="git。remote">
+<chapter id="git.remote">
 	<title>Sharing Repositories with others</title>
 	<section id="git.server">
 		<title>Setting up a git server</title>
