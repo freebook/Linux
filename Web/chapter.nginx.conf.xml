@@ -850,7 +850,7 @@ server {
 }
 
 			</screen>
-			<section>
+			<screen>
 
 server {
     listen 80
@@ -865,7 +865,7 @@ server {
         return 301 https://$server_name$request_uri;
     }
 }	
-			</section>
+			</screen>
 		</section>
 	</section>
 	<section id="rewrite">
