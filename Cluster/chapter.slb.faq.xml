@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.fastcgi.xml 374 2012-03-20 09:43:09Z netkiller $ -->
+<chapter id="faq">
+	<title>FAQ</title>
+	
+	<section>
+		<title>Haproxy 与 Nginx</title>
+		<para>Haproxy 与 Nginx 都能实现负载均衡，那么 Haproxy 与 <ulink url="http://www.netkiller.cn/www/nginx/proxy.html">Nginx proxy</ulink> 有什么差异，我们怎样选择两种方案。</para>
+		<para>如果是用于 HTTP 负载均衡我建议使用 Nginx，它可以SSL证书挂载，缓存定制，实现各种复杂的需求。而 Haproxy 与 Nginx 相比就没有那么灵活。</para>
+		<para>他们有什么区别呢？</para>
+		<para> Haproxy 依赖 inter，rise，fall 三个参数设置监控状态检查间隔时间和恢复时间，满足条件才能剔除坏节点跟加入好节点</para>
+		<para>Nginx 是通过 max_fails，fail_timeout 参数配置实现节点检查，原理是timeout。</para>
+		<para>实际场景有什么不同？</para>
+		<para>Haproxy 每隔 inter 时间，统计次数达到 fall 便踢出节点，监控检查是独立工作的，如果监控检查没有达到fall次数，haproxy 仍会向节点分配请求。一旦fall次数达到节点被踢出，这一时间段请求的用户集体分配到新节点。</para>
+		<para>Nginx 则是达到timeout 时间才会踢除，在没有达到timeout时间值是，nginx 一直处于pending 状态，Nginx 有个好处就是在timeout 时间内节点恢复了，这些pending用户还能继续访问节点。否则全部分配到新节点。</para>
+	</section>
+</chapter>

@@ -8,4 +8,5 @@
 <!ENTITY chapter.slb.perlbal.xml    	SYSTEM "chapter.slb.perlbal.xml">
 <!ENTITY chapter.slb.balanceng.xml  	SYSTEM "chapter.slb.balanceng.xml">
 <!ENTITY chapter.slb.example.xml		SYSTEM "chapter.slb.example.xml">
+<!ENTITY chapter.slb.faq.xml			SYSTEM "chapter.slb.faq.xml">
 <!ENTITY chapter.pacemaker.xml			SYSTEM "chapter.pacemaker.xml">

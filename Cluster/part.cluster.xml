@@ -13,10 +13,10 @@
 	&chapter.slb.lvs.xml;
 	&chapter.slb.keepalived.xml;
  	&chapter.slb.piranha.xml;
-<!--	&chapter.slb.nginx;-->
 	&chapter.slb.haproxy.xml;
 	&chapter.slb.balanceng.xml;
 	&chapter.slb.perlbal.xml;
 	&chapter.pacemaker.xml;
 	&chapter.slb.example.xml;
+	&chapter.slb.faq.xml;
 </part>
