@@ -827,14 +827,14 @@ find ./ -type d -empty | grep -v \.git | xargs -i touch {}/.gitignore
 	&chapter.git.web.xml;
 <chapter id="faq">
 	<title>FAQ</title>
-	<section>
+	<section id="HEAD">
 		<title>导出最后一次修改过的文件</title>
 		<para>有时我们希望把刚刚修改的文件复制出来，同时维持原有的目录结构，这样可能交给运维直接覆盖服务器上的代码。我们可以使用下面的命令完成这样的操作，而不用一个一个文件的复制。</para>
 		<screen>
 git archive -o update.zip HEAD $(git diff --name-only HEAD^)
 		</screen>
 	</section>
-	<section>
+	<section id="range">
 		<title>导出指定版本区间修改过的文件</title>
 		<para>首先使用git log查看日志，找到指定的 commit ID号。</para>
 		<screen>
@@ -870,7 +870,7 @@ Date:   Wed Oct 14 17:27:15 2015 +0800
 $ git archive -o update2.zip HEAD $(git diff --name-only b111c253321fb4b9c5858302a0707ba0adc3cd07)
 		</screen>
 	</section>
-	<section>
+	<section id="config">
 		<title>fatal: The remote end hung up unexpectedly</title>
 		<screen>
 error: RPC failed; result=22, HTTP code = 413 | 18.24 MiB/s
