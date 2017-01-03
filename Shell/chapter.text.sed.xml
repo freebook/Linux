@@ -7,7 +7,7 @@
 sed -i -e 's/aaa/bbb/g' *
 perl -p -i -e 's/aaa/bbb/g' *
 	</programlisting>
-	<section>
+	<section id="replace">
 		<title>查找与替换</title>
 		<subtitle>find and replace</subtitle>
 		<screen>
@@ -106,7 +106,7 @@ Zookeeper
 			</screen>
 		</section>
 	</section>
-	<section>
+	<section id="in-place">
 		<title>编辑文件</title>
 		<screen>
 -i[SUFFIX], --in-place[=SUFFIX]
@@ -130,7 +130,7 @@ find -name "*.php" -exec sed -i '/<?.*eval(gzinflate(base64.*?>/ d' '{}' \; -pri
 		]]>
 		</screen>
 	</section>
-	<section>
+	<section id="show">
 		<title>内容打印</title>
 		<para>模式空间中的内容全部打印出来</para>
 		<para>定位行：</para>
@@ -188,7 +188,7 @@ sed -nr '/(root)*/p' /etc/passwd   #匹配0-n次前导单词
 		]]>
 		</screen>
 	</section>
-	<section>
+	<section id="edit">
 		<title>编辑操作</title>
 		<para>对行的插入、删除、替换操作</para>
 		<screen>
@@ -197,5 +197,12 @@ sed '/root/i admin' /etc/passwd   #在root行前插入一个admin
 sed '/root/c admin' /etc/passwd   #将root行替换为admin
 sed '/root/d' /etc/passwd    		#删除含有root的行		
 		</screen>
+		<section>
+			<title>insert</title>
+			<para>i 命令插入一行，并且在当前行前面有两个空格</para>
+			<screen>
+sed -i "33 i \ \ authorization: enabled" /etc/mongod.conf
+			</screen>
+		</section>
 	</section>
 </section>

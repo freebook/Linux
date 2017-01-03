@@ -19,13 +19,14 @@
 	<!ENTITY chapter.cmd.numeric.xml			SYSTEM "chapter.cmd.numeric.xml">
 	<!ENTITY chapter.cmd.datetime.xml			SYSTEM "chapter.cmd.datetime.xml">
 	<!ENTITY chapter.cmd.text.xml		 		SYSTEM "chapter.cmd.text.xml">
-	<!ENTITY chapter.cmd.text.vim.xml	 		SYSTEM "chapter.cmd.text.vim.xml">
 	<!ENTITY chapter.cmd.text.grep.xml	 		SYSTEM "chapter.cmd.text.grep.xml">
 	<!ENTITY chapter.cmd.text.sort.xml			SYSTEM "chapter.cmd.text.sort.xml">
-	<!ENTITY chapter.cmd.text.awk.xml			SYSTEM "chapter.cmd.text.awk.xml">
-	<!ENTITY chapter.cmd.text.sed.xml			SYSTEM "chapter.cmd.text.sed.xml">
 	<!ENTITY chapter.cmd.table.xml				SYSTEM "chapter.cmd.table.xml">
 	<!ENTITY chapter.cmd.io.xml					SYSTEM "chapter.cmd.io.xml">
+	
+	<!ENTITY chapter.text.vim.xml	 		SYSTEM "chapter.text.vim.xml">
+	<!ENTITY chapter.text.awk.xml			SYSTEM "chapter.text.awk.xml">
+	<!ENTITY chapter.text.sed.xml			SYSTEM "chapter.text.sed.xml">
 
 	<!ENTITY chapter.utility.xml		 		SYSTEM "chapter.utility.xml">
 	<!ENTITY chapter.utility.curl.xml		 	SYSTEM "chapter.utility.curl.xml">
