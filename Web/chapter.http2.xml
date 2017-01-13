@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="http2">
+	<title>HTTP2</title>
+	<section>
+		<title>Chrome</title>
+		<para>检查你的浏览器是否支持 HTTP2 <ulink url="chrome://net-internals/#http2" /></para>
+		<screen>
+HTTP/2 Enabled: true		
+		</screen>
+		<para>表示正常</para>
+	</section>
+</chapter>

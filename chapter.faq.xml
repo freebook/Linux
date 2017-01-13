@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter>
+<chapter id="index"><?dbhtml dir="faq" ?>
 	<title>FAQ</title>
-	<section>
+	<section id="ssh">
 		<title>通过SSH与控制台不能登录</title>
 		<para>通过SSH与控制台不能登录，登录后立即退出。</para>
 		<para>我在做压力测试的时候将所有用户的 nofile 设置为 1050000 导致 SSH 与控制台均不能登录Linux 系统。</para>

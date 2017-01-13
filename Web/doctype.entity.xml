@@ -31,3 +31,6 @@
 <!ENTITY chapter.web.app 			SYSTEM "chapter.web.app.xml">
 <!ENTITY chapter.web.optimization 	SYSTEM "chapter.web.optimization.xml">
 <!ENTITY chapter.web.analysis 		SYSTEM "chapter.web.analysis.xml">
+
+<!ENTITY chapter.http2.xml			SYSTEM "chapter.http2.xml">
+
