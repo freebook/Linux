@@ -22,6 +22,17 @@ ibus-daemon -r -d -x
 		<title>Firefox</title>
 		<para>配置firefox选项</para>
 		<para>在Firefox的地址栏中输入about:config</para>
+		<section>
+			<title>Error code: NS_ERROR_NET_INADEQUATE_SECURITY</title>
+			<para>原因：你的nginx 配置了 http2 (listen 443 ssl http2 default_server;) 目前firefox 对http2支持还不够好。</para>
+			<screen>
+(1) 在firefox浏览器地址栏中输入 about:config 进入配置模式
+
+(2) 搜索 http2 选项
+
+(3) 双击 network.http.spdy.enabled.http2 改变 true 为 false
+			</screen>
+		</section>
 	</section>
 	<section id="chromium">
 		<title>Chromium Web Browser</title>
