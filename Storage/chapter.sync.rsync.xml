@@ -222,6 +222,7 @@ $ sudo ufw allow rsync
 		</section>
 		<section id="rsync.xinetd">
 			<title>xinetd</title>
+			<para>CentOS 6 之前的版本可以使用 xinetd， CentOS 7 不建议使用</para>
 			<screen>
 yum install xinetd
 			</screen>
@@ -249,6 +250,34 @@ service rsync
 			<screen>
 chkconfig xinetd on
 /etc/init.d/xinetd restart
+			</screen>
+		</section>
+		<section id="systemctl">
+			<title>CentOS 7 - systemctl</title>
+			<screen>
+systemctl enable rsyncd
+systemctl start rsyncd
+systemctl restart rsyncd
+systemctl stop rsyncd
+			</screen>
+			<para>启动配置项 /etc/sysconfig/rsyncd</para>
+			<screen>
+# cat /etc/sysconfig/rsyncd
+OPTIONS="" 			
+			</screen>
+			<para>启动脚本</para>
+			<screen>
+# cat /usr/lib/systemd/system/rsyncd.service
+[Unit]
+Description=fast remote file copy program daemon
+ConditionPathExists=/etc/rsyncd.conf
+
+[Service]
+EnvironmentFile=/etc/sysconfig/rsyncd
+ExecStart=/usr/bin/rsync --daemon --no-detach "$OPTIONS"
+
+[Install]
+WantedBy=multi-user.target			
 			</screen>
 		</section>
 	</section>
