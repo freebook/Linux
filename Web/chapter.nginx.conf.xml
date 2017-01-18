@@ -37,13 +37,6 @@ events {
 }
 		</screen>
 	</section>
-
-	<section id="x-forwarded-for">
-			<title>X-Forwarded-For</title>
-			<screen>
-real_ip_header X-Forwarded-For;
-			</screen>
-		</section>
 	<section id="gzip">
 			<title>gzip</title>
 			<screen>

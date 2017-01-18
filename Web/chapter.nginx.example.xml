@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="nginx.example">
 	<title>Example</title>
-	<section>
+	<section id="tomcat">
 		<title>Nginx + Tomcat</title>
 		<example>
 			<title>Nginx + Tomcat</title>
@@ -53,7 +53,7 @@ server {
 			</screen>
 		</example>
 	</section>
-	<section>
+	<section id="index.html">
 		<title>拦截index.html</title>
 		<para>背景：网站推广审核需要隐藏或不现实首页，其他页面正常</para>
 		<para>需求：要求访问首页事显示指定页面</para>
@@ -67,8 +67,8 @@ server {
     error_log  /var/log/nginx/any.netkiller.cn.error.log;
 
     location /index.html {
-	ssi on;
-	proxy_set_header Accept-Encoding "";
+		ssi on;
+		proxy_set_header Accept-Encoding "";
         proxy_pass http://172.16.0.1/www/temp.html;
         proxy_set_header Host www.netkiller.cn;
 
@@ -76,7 +76,8 @@ server {
 
     location / {
 		ssi on;
-		rewrite ^/$ /zt/hy/temp.html; 
+		rewrite ^/$ /zt/your.html; 
+		
 		proxy_set_header Accept-Encoding "";
 		proxy_pass http://127.0.0.1:8080;
         proxy_set_header    Host    $host;
@@ -120,32 +121,6 @@ server {
     location /module {
         root /www/netkiller.cn/www.netkiller.cn;
     }
-
-    location ^~ /images/CF_a48/ {
-        ssi on;
-        proxy_set_header Accept-Encoding "";
-        proxy_pass http://172.16.0.1/www/images/CF_a48/;
-        proxy_set_header Host www.netkiller.cn;
-        proxy_cache www;
-        proxy_cache_valid  200 302  1m;
-    }
-    location ^~ /js/ {
-        ssi on;
-        proxy_set_header Accept-Encoding "";
-        proxy_pass http://172.16.0.1/www/js/;
-        proxy_set_header Host www.netkiller.cn;
-        proxy_cache www;
-        proxy_cache_valid  200 302  1m;
-    }
-    location ^~ /CF_a48css.css {
-        ssi on;
-        proxy_set_header Accept-Encoding "";
-        proxy_pass http://172.16.0.1/www/CF_a48css.css;
-        proxy_set_header Host www.netkiller.cn;
-        proxy_cache www;
-        proxy_cache_valid  200 302  1m;
-    }
-
 }
 		</screen>
 	</section>
