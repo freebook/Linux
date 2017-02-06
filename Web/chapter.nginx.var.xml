@@ -258,7 +258,7 @@ $ curl 192.168.0.1/134
 		<screen>
 if ($http_cookie ~* "id=([^;]+)(?:;|$)") {
     set $id $1;
-}	
+}
 		</screen>
 	</section>
 	<section id="request_method">
@@ -268,15 +268,20 @@ if ($request_method = POST) {
     return 405;
 }
 		</screen>
+		<screen>
+if ($request_method !~ ^(GET|HEAD|POST)$) {
+	return 403;
+}
+		</screen>
 	</section>
 	<section id="invalid_referer">
 		<title>invalid_referer</title>
 		<screen>
 if ($invalid_referer) {
     return 403;
-}		
+}
 		</screen>
-	</section>		
+	</section>
 	<section id="set">
 		<title>自定义变量</title>
 		<screen>
