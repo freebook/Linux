@@ -533,8 +533,16 @@ input=$(sed 's/[^0-9]*//g' <<< $input)
 		</screen>
 	</section>
 </section>
-
+	<section id="subshell">
+		<title>subshell</title>
+		<para>echo $$ $BASHPID ; ( echo $$ $BASHPID  )</para>
+		<para>su 运行 shell 并获取 PID 并存入文件</para>
+		<screen>
+		<![CDATA[
+su - $USER -c "$PROG & echo \$! > $PIDFILE"
+		]]>
+		</screen>
+	</section>
 	&chapter.bash.example.xml;
 
 </chapter>
-
