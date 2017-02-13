@@ -37,9 +37,7 @@
 		&book.info.author.xml;
 
 		<copyright>
-			<year>2010</year>
-			<year>-</year>
-			<year>2016</year>
+			<year>2010-2017</year>
 			<holder>Netkiller(Neo Chan). All rights reserved.</holder>
 		</copyright>
 
@@ -48,8 +46,8 @@
 		</publisher>
 		<isbn>ISBN#</isbn>
 		<edition>User's Guide version 1.0 for Linux</edition>
-		<pubdate>2010-11-18</pubdate>
-		<releaseinfo></releaseinfo>
+		<pubdate>2017-02-13</pubdate>
+		<releaseinfo>2010-11-18</releaseinfo>
 
 		&book.info.legalnotice.xml;
 		&book.info.abstract.xml;
