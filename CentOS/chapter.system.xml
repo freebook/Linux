@@ -3,14 +3,7 @@
 
 	&chapter.system.utilities.xml;
 
-	<chapter id="logging">
-		<title>Logging</title>
-	</chapter>
-	<section id="crontabs">
-		<title>crontab</title>
-		<screen>
-# yum install crontabs
-		</screen>
-	</section>
+
+
 
 </part>

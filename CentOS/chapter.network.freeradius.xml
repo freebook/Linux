@@ -2,18 +2,10 @@
 <chapter id="freeradius">
 	<title>radiusd - Authentication, Authorization and Accounting server</title>
 	<para>http://freeradius.org/</para>
-		<section>
-			<title>CentOS</title>
 
-		</section>	
 	<section id="wifi">
 		<title>802.1</title>
-		<para></para>
-		<screen>
-		<![CDATA[
-		
- 		]]>
-		</screen>
+
 		<para></para>
 		<procedure>
 			<title> </title>

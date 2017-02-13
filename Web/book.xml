@@ -47,8 +47,8 @@
 		</publisher>
 		<isbn>ISBN#</isbn>
 		<edition>2010-11-18</edition>
-		<pubdate>$Date: 2013-04-10 15:03:49 +0800 (Wed, 10 Apr 2013) $</pubdate>
-		<releaseinfo>$Id: book.xml 559 2013-04-10 07:03:49Z netkiller $</releaseinfo>
+		<pubdate>2017-02-13</pubdate>
+		<releaseinfo>$Date: 2013-04-10 15:03:49 +0800 (Wed, 10 Apr 2013) $, $Id: book.xml 559 2013-04-10 07:03:49Z netkiller $</releaseinfo>
 
 		&book.info.legalnotice.xml;
 		&book.info.abstract.xml;
