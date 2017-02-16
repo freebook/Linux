@@ -817,7 +817,7 @@ server {
 
 }
 			</screen>
-			<para>spdy 是google提出，现在已经归入 http2 标准</para>
+			<para>spdy 是google提出的标准，现在已经归入 http2 标准，Nginx 1.10 之后建议使用 http2 替代 spdy.</para>
 		</section>
 		<section id="http2">
 			<title>HTTP2</title>
