@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="strongswan">
+	<title>strongswan - IPSec utilities for strongSwan</title>
+	<para>http://www.strongswan.org/</para>
+	<screen>
+	<![CDATA[
+User -> Windows 10 Desktop -> Inside Greatwall -> VPN Server(Hongkong/Other) -> Outside Greatwall
+	]]>
+	</screen>
+	<para>首先在海外部署一台服务器，将服务器配置成为VPN服务器，然后桌面用户通过该服务器，你懂的......</para>
+	<para>由于pptp,l2tp,openvpn 先后被墙，所以我选择了IKEv2。</para>
+	<section>
+		<title>安装 strongswan VPN 服务器</title>
+		<para>CentOS 7 环境</para>
+		<screen>
+yum install -y strongswane
+
+yum install -y haveged
+systemctl enable haveged
+systemctl start haveged
+
+cd /etc/strongswan
+		</screen>
+		<para>创建自签名CA根证书</para>
+		<screen>
+# 私钥证书
+strongswan pki --gen --type rsa --size 4096 --outform der > ipsec.d/private/CARootKey.der
+chmod 600 ipsec.d/private/CARootKey.der
+
+# 公钥证书
+strongswan pki --self --ca --lifetime 3650 --in ipsec.d/private/CARootKey.der --type rsa --dn "C=NL, O=Example Company, CN=StrongSwan Root CA" --outform der > ipsec.d/cacerts/CARootCert.der
+strongswan  pki --print --in ipsec.d/cacerts/CARootCert.der
+		</screen>
+		<para>颁发服务器证书</para>
+		<screen>
+# 私钥证书
+strongswan pki --gen --type rsa --size 2048 --outform der > ipsec.d/private/ServerKey.der
+chmod 600 ipsec.d/private/ServerKey.der
+
+# 公钥证书
+strongswan pki --pub --in ipsec.d/private/ServerKey.der --type rsa | strongswan pki --issue --lifetime 730 --cacert ipsec.d/cacerts/CARootCert.der --cakey ipsec.d/private/CARootKey.der --dn "C=NL, O=Example Company, CN=vpn.example.org" --san vpn.example.com --san vpn.example.net --san 147.90.44.87  --san @147.90.44.87 --flag serverAuth --flag ikeIntermediate --outform der > ipsec.d/certs/ServerCert.der
+strongswan pki --print --in ipsec.d/certs/ServerCert.der
+		</screen>
+		<para>颁发客户端用户证书</para>
+		<screen>
+# 私钥证书
+cd /etc/strongswan/
+strongswan pki --gen --type rsa --size 2048 --outform der > ipsec.d/private/ClientKey.der
+chmod 600 ipsec.d/private/ClientKey.der
+
+# 公钥证书
+strongswan pki --pub --in ipsec.d/private/ClientKey.der --type rsa | strongswan pki --issue --lifetime 730 --cacert ipsec.d/cacerts/CARootCert.der --cakey ipsec.d/private/CARootKey.der --dn "C=NL, O=Example Company, CN=netkiller@msn.com" --san "netkiller@msn.com" --san "neo.chan@live.com" --outform der > ipsec.d/certs/ClientCert.der
+
+# 证书转换，转过过程是 der -> pem -> p12 
+openssl rsa -inform DER -in ipsec.d/private/ClientKey.der -out ipsec.d/private/ClientKey.pem -outform PEM
+openssl x509 -inform DER -in ipsec.d/certs/ClientCert.der -out ipsec.d/certs/ClientCert.pem -outform PEM
+openssl x509 -inform DER -in ipsec.d/cacerts/CARootCert.der -out ipsec.d/cacerts/CARootCert.pem -outform PEM
+
+# 请为证书设置一个密码
+openssl pkcs12 -export  -inkey ipsec.d/private/ClientKey.pem -in ipsec.d/certs/ClientCert.pem -name "Client's VPN Certificate"  -certfile ipsec.d/cacerts/CARootCert.pem -caname "strongSwan Root CA" -out Client.p12				
+		</screen>
+		<para>p12中包含了CA证书，客户端私钥证书，客户端公钥证书。Client.p12 发送给最终用户即可</para>
+		<tip>
+		<para>如果你安装过 OpenVPN 那么会很好理解，上述的几个步骤等同于：</para>
+		<screen>	
+build-ca 				= CARootKey/CARootCert
+build-key-server server = ServerKey/ServerCert
+build-key client1		= Client.p12 
+		</screen>
+		</tip>
+	</section>
+	<section>
+		<title>防火墙配置</title>
+		<para>开启转发</para>
+		<screen>
+		<![CDATA[
+cat > /etc/sysctl.d/vpn.conf <<EOF
+# VPN
+net.ipv4.ip_forward = 1
+net.ipv4.conf.all.accept_redirects = 0
+net.ipv4.conf.all.send_redirects = 0
+EOF
+
+sysctl -p /etc/sysctl.d/vpn.conf
+		]]>
+		</screen>
+		<para>开放500，4500两个端口，注意是UDP协议，允许esp,ah协议通过，最后IP伪装</para>
+		<screen>
+# for ISAKMP (handling of security associations)
+iptables -A INPUT -p udp --dport 500 --j ACCEPT
+
+# for NAT-T (handling of IPsec between natted devices)
+iptables -A INPUT -p udp --dport 4500 --j ACCEPT
+
+# for ESP payload (the encrypted data packets)
+iptables -A INPUT -p esp -j ACCEPT
+iptables -A INPUT -p ah -j ACCEPT
+
+# for the routing of packets on the server
+iptables -I POSTROUTING -t nat -o eth1 -j MASQUERADE
+iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to-source xxx.xxx.xxx.xxx
+		</screen>
+		<para>xxx.xxx.xxx.xxx 改为你的出口IP，也就是 eth1的IP地址。</para>
+		<para>启动 strongswan 服务</para>
+		
+		<para>如果你使用 CentOS 7 firewalld 请用下面命令</para>
+		<screen>
+firewall-cmd --zone=dmz --permanent --add-rich-rule='rule protocol value="esp" accept' # ESP (the encrypted data packets)
+firewall-cmd --zone=dmz --permanent --add-rich-rule='rule protocol value="ah" accept' # AH (authenticated headers)
+firewall-cmd --zone=dmz --permanent --add-port=500/udp #IKE  (security associations)
+firewall-cmd --zone=dmz --permanent --add-port=4500/udp # IKE NAT Traversal (IPsec between natted devices)
+firewall-cmd --permanent --add-service="ipsec"
+firewall-cmd --zone=dmz --permanent --add-masquerade
+firewall-cmd --permanent --set-default-zone=dmz
+firewall-cmd --reload
+firewall-cmd --list-all		
+		</screen>
+
+	</section>	
+	<section>
+		<title>配置 IPSEC</title>
+		<para>下面配置 IPSEC 复制粘贴即可</para>
+		<screen>
+		<![CDATA[
+cp /etc/strongswan/ipsec.conf{,.original}
+cat > /etc/strongswan/ipsec.conf <<EOF
+# ipsec.conf - strongSwan IPsec configuration file
+
+config setup
+    charondebug="ike 2, knl 2, cfg 2, net 2, esp 2, dmn 2,  mgr 2"
+
+conn %default
+    keyexchange=ikev2
+    ike=aes128-sha256-ecp256,aes256-sha384-ecp384,aes128-sha256-modp2048,aes128-sha1-modp2048,aes256-sha384-modp4096,aes256-sha256-modp4096,aes256-sha1-modp4096,aes128-sha256-modp1536,aes128-sha1-modp1536,aes256-sha384-modp2048,aes256-sha256-modp2048,aes256-sha1-modp2048,aes128-sha256-modp1024,aes128-sha1-modp1024,aes256-sha384-modp1536,aes256-sha256-modp1536,aes256-sha1-modp1536,aes256-sha384-modp1024,aes256-sha256-modp1024,aes256-sha1-modp1024!
+    esp=aes128gcm16-ecp256,aes256gcm16-ecp384,aes128-sha256-ecp256,aes256-sha384-ecp384,aes128-sha256-modp2048,aes128-sha1-modp2048,aes256-sha384-modp4096,aes256-sha256-modp4096,aes256-sha1-modp4096,aes128-sha256-modp1536,aes128-sha1-modp1536,aes256-sha384-modp2048,aes256-sha256-modp2048,aes256-sha1-modp2048,aes128-sha256-modp1024,aes128-sha1-modp1024,aes256-sha384-modp1536,aes256-sha256-modp1536,aes256-sha1-modp1536,aes256-sha384-modp1024,aes256-sha256-modp1024,aes256-sha1-modp1024,aes128gcm16,aes256gcm16,aes128-sha256,aes128-sha1,aes256-sha384,aes256-sha256,aes256-sha1!
+    dpdaction=clear
+    dpddelay=300s
+    rekey=no
+    left=%any
+    leftsubnet=0.0.0.0/0
+    leftcert=ServerCert.der
+    right=%any
+    rightdns=8.8.8.8,8.8.4.4
+    rightsourceip=10.10.0.0/24
+
+conn IPSec-IKEv2
+    keyexchange=ikev2
+    auto=add
+
+conn IPSec-IKEv2-EAP
+    also="IPSec-IKEv2"
+    rightauth=eap-mschapv2
+    rightauthby2=pubkey
+    rightsendcert=never
+    eap_identity=%any
+
+conn CiscoIPSec
+    keyexchange=ikev1
+    forceencaps=yes
+    authby=xauthrsasig
+    xauth=server
+    auto=add
+EOF
+		]]>
+		</screen>
+		<para>配置 VPN 账号与密码</para>
+		<screen>
+		<![CDATA[
+# VPN user accounts and secrets
+cat > /etc/strongswan/ipsec.secrets <<EOF
+: RSA ServerKey.der
+
+neo : EAP "hWAS5IJWD8NxlQvVFaUVAKid6IFJ6uNO" 
+jam : EAP "1cNEwkfsaN6GzcmWYLedUvJXSpb16UPH" 
+EOF
+		]]>
+		</screen>
+		<para>启动 strongswan</para>
+		<screen>
+systemctl enable strongswan
+systemctl start strongswan
+		</screen>
+		<para></para>
+	</section>
+
+	<section>
+		<title>Windows 10 VPN 客户端配置</title>
+		<para>导入客户端p12证书，直接双击Client.p12文件即可</para>
+		<para><graphic format="png" fileref="../../images/vpn/win10/p12/import-1.png" srccredit="neo" width=""/></para>
+		<para>选择“本地计算机”</para>
+		<para><graphic format="png" fileref="../../images/vpn/win10/p12/import-2.png" srccredit="neo" width=""/></para>
+		<para>下一步</para>
+		<para><graphic format="png" fileref="../../images/vpn/win10/p12/import-3.png" srccredit="neo" width=""/></para>
+		<para>输入证书密码，下一步</para>
+		<para><graphic format="png" fileref="../../images/vpn/win10/p12/import-4.png" srccredit="neo" width=""/></para>
+		<para>下一步</para>
+		<para><graphic format="png" fileref="../../images/vpn/win10/p12/import-5.png" srccredit="neo" width=""/></para>
+		<para>点击“完成”按钮</para>
+		<para><graphic format="png" fileref="../../images/vpn/win10/p12/import-6.png" srccredit="neo" width=""/></para>
+		<para>证书导入成功</para>
+		<para>接下来配置 Windows 10 VPN 链接</para>
+		<para>任务条最右测系统托盘区，点击网络图标，再点击“网络设置”</para>
+		<para><graphic format="png" fileref="../../images/vpn/win10/ikev2/ikev2-1.png" srccredit="neo" width=""/></para>
+		<para>点击“VPN”，然后点击“添加 VPN 链接”</para>
+		<para><graphic format="png" fileref="../../images/vpn/win10/ikev2/ikev2-2.png" srccredit="neo" width=""/></para>
+		<para>填写信息并保存</para>
+		<para><graphic format="png" fileref="../../images/vpn/win10/ikev2/ikev2-3.png" srccredit="neo" width=""/></para>
+		<para>点击“更改适配器选项”</para>
+		<para><graphic format="png" fileref="../../images/vpn/win10/ikev2/ikev2-4.png" srccredit="neo" width=""/></para>
+		<para>找到VPN网络适配器，鼠标右键点击，选择“属性”</para>
+		<para><graphic format="png" fileref="../../images/vpn/win10/ikev2/ikev2-5.png" srccredit="neo" width=""/></para>
+		<para><graphic format="png" fileref="../../images/vpn/win10/ikev2/ikev2-6.png" srccredit="neo" width=""/></para>
+		<para>切换到“网络”选项卡，选中“IPv4”后点击“属性按钮”</para>
+		<para><graphic format="png" fileref="../../images/vpn/win10/ikev2/ikev2-7.png" srccredit="neo" width=""/></para>
+		<para>点击“高级”按钮</para>
+		<para><graphic format="png" fileref="../../images/vpn/win10/ikev2/ikev2-8.png" srccredit="neo" width=""/></para>
+		<para>勾选“在远程网络上使用默认网关”，然后点击“确定”按钮</para>
+		<para><graphic format="png" fileref="../../images/vpn/win10/ikev2/ikev2-9.png" srccredit="neo" width=""/></para>
+		<para>回到网络设置界面，点击VPN图标，再点击链接</para>
+		<para><graphic format="png" fileref="../../images/vpn/win10/ikev2/ikev2-10.png" srccredit="neo" width=""/></para>
+		<para>现在查看你的IP地址，正确应该是经过VPN Server 访问互联网。</para>
+	</section>
+	<section>
+		<title>FAQ</title>
+		<section>
+			<title>查看证书信息</title>
+			<screen>
+strongswan  pki --print --in ipsec.d/cacerts/CARootCert.der
+strongswan pki --print --in ipsec.d/certs/ServerCert.der
+			</screen>
+			<para>或使用openssl查看</para>
+			<screen>
+openssl x509 -inform DER -in ipsec.d/certs/ServerCert.der -noout -text			
+			</screen>
+		</section>
+	</section>
+</section>

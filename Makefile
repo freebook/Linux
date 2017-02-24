@@ -38,6 +38,7 @@ clean:
 linux: clean
 	$(call reset,linux)
 	@$(XSLTPROC) -o $(PUBLIC_HTML)/$@/ $(DSSSL) book.xml
+	@$(shell test -d images && rsync -au --exclude=.svn images $(PUBLIC_HTML)/linux/)
 debian:
 	$(call reset,debian)
 	$(call book,System,debian)

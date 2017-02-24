@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+	&chapter.vpn.strongswan.xml;
+	&chapter.vpn.openswan.xml;
 <section id="ipsec">
 	<title>Ipsec VPN</title>
 	
@@ -6,6 +8,4 @@
 		<title>ipsec-tools - IPsec tools for Linux</title>
 		<para>https://trac.ipsec-tools.net/</para>
 	</section>
-	&chapter.vpn.openswan.xml;
-</section>
-	
+</section>	

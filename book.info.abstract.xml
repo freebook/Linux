@@ -40,26 +40,7 @@
 			<ulink url="../mail/index.html">Netkiller Mail 手札</ulink>
 		</member>		
 	</simplelist>
-		
-	<para>数据库</para>
-	<simplelist type='horiz' columns='6'>
-		<member>
-			<ulink url="../database/index.html">Netkiller Database 手札</ulink>
-		</member>
-		<member>
-			<ulink url="../postgresql/index.html">Netkiller PostgreSQL 手札</ulink>
-		</member>
-		<member>
-			<ulink url="../mysql/index.html">Netkiller MySQL 手札</ulink>
-		</member>
-		<member>
-			<ulink url="../nosql/index.html">Netkiller NoSQL 手札</ulink>
-		</member>
-		<member>
-			<ulink url="../ldap/index.html">Netkiller LDAP 手札</ulink>
-		</member>
-	</simplelist>
-	
+
 	<para>以下文档停止更新合并到 《Netkiller Linux 手札》</para>
 	<simplelist type='horiz' columns='6'>
 		<member>

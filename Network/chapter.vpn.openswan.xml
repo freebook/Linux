@@ -17,10 +17,3 @@ net.ipv4.conf.all.send_redirects = 0
 ipsec newhostkey --output /etc/ipsec.secert
 	</screen>
 </section>
-<section id="strongswan">
-	<title>strongswan - IPSec utilities for strongSwan</title>
-	<para>http://www.strongswan.org/</para>
-	<screen>
-
-	</screen>
-</section>

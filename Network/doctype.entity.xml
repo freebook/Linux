@@ -27,3 +27,5 @@
 	<!ENTITY chapter.vpn.l2tp.xml 			SYSTEM "chapter.vpn.l2tp.xml">
 	<!ENTITY chapter.vpn.ipsec.xml			SYSTEM "chapter.vpn.ipsec.xml">
 	<!ENTITY chapter.vpn.openswan.xml	 	SYSTEM "chapter.vpn.openswan.xml">
+	<!ENTITY chapter.vpn.strongswan.xml	 	SYSTEM "chapter.vpn.strongswan.xml">
+	
