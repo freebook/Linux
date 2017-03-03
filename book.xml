@@ -15,15 +15,15 @@
 	<!ENTITY BG7NYT "&Neo;">
 	<!ENTITY Netkiller "<emphasis><trademark>Netkiller</trademark></emphasis>">
 
-	<!ENTITY book.info.legalnotice.xml	SYSTEM "../common/book.info.legalnotice.xml">
-	<!ENTITY book.info.abstract.xml		SYSTEM "book.info.abstract.xml">
-	<!ENTITY about.me 					SYSTEM "../common/about.me.xml">
-	<!ENTITY book.dedication.xml       	SYSTEM "../common/book.dedication.xml">
+	<!ENTITY % common.doctype.entity.xml 		SYSTEM "../common/doctype.entity.xml">
+	%common.doctype.entity.xml;
+	
+	<!ENTITY book.info.abstract.xml 	SYSTEM "book.info.abstract.xml">
 
-	<!ENTITY book.preface 		SYSTEM "book.preface.xml">
-	<!ENTITY book.dedication 	SYSTEM "book.dedication.xml">
-	<!ENTITY book.appendix 		SYSTEM "book.appendix.xml">
-	<!ENTITY book.history 		SYSTEM "book.history.xml">
+	<!ENTITY book.preface 			SYSTEM "book.preface.xml">
+	<!ENTITY book.dedication.xml 	SYSTEM "book.dedication.xml">
+	<!ENTITY book.appendix.xml 		SYSTEM "book.appendix.xml">
+	<!ENTITY book.history.xml 		SYSTEM "book.history.xml">
 
 	<!ENTITY chapter.introduction.xml		SYSTEM "chapter.introduction.xml">
 	<!ENTITY chapter.install.xml 		SYSTEM "chapter.install.xml">
@@ -170,7 +170,6 @@ a2p,ab,aclocal,aclocal-1.11,addftinfo,addr2line,airdaemon,apropos,ar,as,attr,aul
 
 <!-- =========================================================================== -->
 	&book.dedication.xml;
-	&book.dedication;
 	&book.preface;
 <!-- =========================================================================== -->
 	&chapter.introduction.xml;
@@ -207,8 +206,8 @@ a2p,ab,aclocal,aclocal-1.11,addftinfo,addr2line,airdaemon,apropos,ar,as,attr,aul
 	&chapter.x.xml;
 	&chapter.faq.xml;
 <!-- =========================================================================== -->
-	&book.appendix;
-	&book.history;
+	&book.appendix.xml;
+	&book.history.xml;
 <!-- =========================================================================== -->
 
 </book>

@@ -53,6 +53,6 @@
 		</orderedlist>
  -->
 	</section>
-	&about.me;
-
+	&preface.about.me.xml;
+	&section.donations.xml;
 </preface>
