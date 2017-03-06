@@ -71,7 +71,9 @@ ls
 		</screen>
 		<para>局部切换，运行$PROG后将pid（进程ID）写入$PIDFILE文件</para>
 		<screen>
+		<![CDATA[
 su - $USER -c "$PROG & echo \$! > $PIDFILE"
+		]]>
 		</screen>
 	</section>
 	<section id="test">
