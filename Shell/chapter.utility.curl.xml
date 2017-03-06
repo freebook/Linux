@@ -74,6 +74,16 @@ curl -o /dev/null -s -w %{http_code} http://netkiller.sourceforge.net/
 
 curl --connect-timeout 5 --max-time 60 --output /dev/null -s -w %{response_code} http://www.netkiller.cn/
 		</screen>
+		<screen>
+# curl -w '\nLookup time:\t%{time_namelookup}\nConnect time:\t%{time_connect}\nPreXfer time:\t%{time_pretransfer}\nStartXfer time:\t%{time_starttransfer}\n\nTotal time:\t%{time_total}\n' -o /dev/null -s http://www.netkiller.cn
+
+Lookup time:	0.125
+Connect time:	0.125
+PreXfer time:	0.125
+StartXfer time:	0.125
+
+Total time:	0.126		
+		</screen>
 	</section>
 	<section id="curl.a">
 		<title><![CDATA[-A/--user-agent <agent string>]]></title>

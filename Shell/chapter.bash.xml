@@ -52,7 +52,28 @@ neo@netkiller:~$ cat /etc/passwd|grep neo
 neo:x:1000:1000:Neo Chen,,,:/home/neo:/bin/zsh
 		</screen>
 	</section>
-	
+	<section>
+		<title>切换身份</title>
+		<para>判断当前用户是否为root</para>
+		<screen>
+#!/bin/bash
+if [[ $EUID -ne 0 ]]; then
+   echo "This script must be run as root" 
+   exit 1
+fi		
+		</screen>
+		<para>使用 #!/bin/su 可以切换当前shell的所有者，全局切换</para>
+		<screen>
+# cat test.sh
+
+#!/bin/su www
+ls
+		</screen>
+		<para>局部切换，运行$PROG后将pid（进程ID）写入$PIDFILE文件</para>
+		<screen>
+su - $USER -c "$PROG & echo \$! > $PIDFILE"
+		</screen>
+	</section>
 	<section id="test">
 		<title>test 命令</title>
 		<screen>
