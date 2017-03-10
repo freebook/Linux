@@ -487,7 +487,7 @@ Tuesday, 03-Nov-2015 09:32:30 HKT
 		]]>
 		</screen>
 	</section>
-	<section>
+	<section id="logs">
 		<title>Logging 日志</title>
 		<section id="log4j">
 			<title>开启 debug 模式</title>

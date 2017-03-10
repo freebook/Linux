@@ -259,8 +259,13 @@ $ openssl s_client -connect www.example.com:443
 			</screen>
 		</section>
 		
-		<section id="http.server.subdomain">
-			<title>泛解析主机</title>
+		<section id="server_name">
+			<title>server_name 配置</title>
+			<para>匹配所有域名</para>
+			<screen>
+server_name  _;			
+			</screen>
+			<para>泛解析主机</para>
 			<screen>
 			<![CDATA[
 server {
@@ -288,6 +293,25 @@ server {
 }			
 			]]>
 			</screen>
+		</section>
+		<section id="root">
+			<title>root 通过$host智能匹配目录</title>
+			<para>为每个host创建一个目录太麻烦，</para>
+			<screen>
+server {
+    listen       80;
+    server_name www.netkiller.cn news.netkiller.cn bbs.netkiller.cn;
+
+    charset utf-8;
+    access_log  /var/log/nginx/test.access.log  main;
+
+    location / {
+        root   /www/netkiller.cn/$host;
+        index  index.html index.htm;
+    }
+}
+			</screen>
+			<para>处理主机名中的域</para>
 			<screen>
 server {
 	listen       80;
@@ -333,7 +357,8 @@ server {
 		include fcgi.conf;
 	}
 }
-			</screen>
+			</screen>			
+			
 		</section>
 		<section id="http.server.location">
 			<title>location</title>
