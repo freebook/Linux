@@ -991,6 +991,13 @@ Connection: keep-alive
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>正则取非</title>
+			<para>需求如下，除了2015年保留，其他所有页面重定向到新页面</para>
+			<screen>
+rewrite ^/promotion/(?!2015\/)(.*) https://www.netkiller.cn/promotion.html permanent;
+			</screen>
+		</section>
 	</section>
 	<section id="upstream">
 		<title>upstream 负载均衡</title>
