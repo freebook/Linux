@@ -26,6 +26,9 @@ echo $@
 1
 helloworld
 			</screen>
+		</section>
+		<section>
+			<title>$n $# $0 $?</title>
 			<para>其中使用得比较多得是 $n $# $0 $? ,看看下面的例子：</para>
 			<screen>
 #!/bin/sh
@@ -48,8 +51,15 @@ Not Found "usage" in chapter2.2.sh
 -bash-2.05b$ ./chapter2.2.sh Usage chapter2.2.sh
 echo "Usage: $0 string file";
 Found "Usage" in chapter2.2.sh
+			</screen>			
+			<screen>
+			<![CDATA[
+			]]>
 			</screen>
-			<para>shift 移位</para>
+		</section>
+		<section id="shift">
+			<title>shift 移位</title>
+			<para>shift 移位传递过来的参数</para>
 			<screen>
 			<![CDATA[
 $ cat test.sh 
@@ -60,10 +70,10 @@ echo $@
 $ ./test.sh aaa bbb ccc ddd
 aaa bbb ccc ddd
 bbb ccc ddd
-
-
-
-
+			]]>
+			</screen>			
+			<screen>
+			<![CDATA[
 $ cat test.sh 
 echo $@
 shift
@@ -75,24 +85,9 @@ $ ./test.sh aaa bbb ccc ddd eee
 aaa bbb ccc ddd eee
 bbb ccc ddd eee
 ddd eee
-
 			]]>
 			</screen>
-		</section>
-		<section>
-			<title></title>
-			<screen>
-			<![CDATA[
-			]]>
-			</screen>
-		</section>
-		<section>
-			<title></title>
-			<screen>
-			<![CDATA[
-			]]>
-			</screen>
-		</section>
+		</section>		
 	</section>
 <section id="expression">
 		<title>表达式</title>
