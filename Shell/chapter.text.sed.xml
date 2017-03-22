@@ -129,6 +129,12 @@ $ cat t.php
 find -name "*.php" -exec sed -i '/<?.*eval(gzinflate(base64.*?>/ d' '{}' \; -print
 		]]>
 		</screen>
+		<para>指定查找替换的行号</para>
+		<screen>
+		<![CDATA[
+sed -i "7,7 s/#server.host: \"localhost\"/server.host: \"0.0.0.0\"/" /etc/kibana/kibana.yml		
+		]]>
+		</screen>
 	</section>
 	<section id="show">
 		<title>内容打印</title>
@@ -204,5 +210,22 @@ sed '/root/d' /etc/passwd    		#删除含有root的行
 sed -i "33 i \ \ authorization: enabled" /etc/mongod.conf
 			</screen>
 		</section>
+	</section>
+	<section>
+		<title>管道操作</title>
+		<screen>
+		<![CDATA[
+cat <<! | sed '/aaa=\(bbb\|ccc\|ddd\)/!s/\(aaa=\).*/\1xxx/'
+> aaa=bbb
+> aaa=ccc
+> aaa=ddd
+> aaa=[something else]
+!
+aaa=bbb
+aaa=ccc
+aaa=ddd
+aaa=xxx		
+		]]>
+		</screen>
 	</section>
 </section>

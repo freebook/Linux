@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+&chapter.log.elk.xml;
 <chapter id="index"><?dbhtml dir="logs" ?>
 	<title>Logs 分析</title>
 	<chapterinfo>
@@ -391,10 +392,6 @@ Feb 15 16:21:41 iZ623qr3xctZ sshd[19469]: Accepted publickey for root from 147.9
 	</section>
 	<section id="splunk">
 		<title>Splunk</title>
-	</section>
-	<section id="logstash">
-		<title>logstash - open source log management</title>
-		<para><ulink url="http://logstash.net/" /></para>
 	</section>
 	<section id="octopussy">
 		<title>Octopussy</title>

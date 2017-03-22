@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: chapter.git.gitolite.xml 472 2012-10-24 05:30:15Z netkiller $ -->
-<chapter id="gitolite">
+<!-- $Id: section.git.gitolite.xml 472 2012-10-24 05:30:15Z netkiller $ -->
+<section id="gitolite">
 	<title>gitolite - SSH-based gatekeeper for git repositories</title>
 	<screen>
 $ apt-cache search gitolite
@@ -60,4 +60,4 @@ repo    @all
 			</section>
 		</section>
 	</section>
-</chapter>
+</section>

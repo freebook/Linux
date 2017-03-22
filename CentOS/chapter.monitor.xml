@@ -9,21 +9,9 @@
 yum install cacti
 		</screen>
 		<para>database</para>
-		<screen>
-		<![CDATA[
-mysqladmin -uroot -p create cacti
-echo "GRANT ALL ON cacti.* TO cacti@localhost IDENTIFIED BY '1ba0128c';" | mysql -uroot -p
-echo "flush privileges;" | mysql -uroot -p		
-mysql -uroot -p cacti < /usr/share/doc/cacti-0.8.7e/cacti.sql
-		]]>
-		</screen>
+
 		<para>enable crontab</para>
-		<screen>
-		<![CDATA[
-# cat /etc/cron.d/cacti
-*/5 * * * *     cacti   /usr/bin/php /usr/share/cacti/poller.php > /dev/null 2>&1
-		]]>		
-		</screen>
+
 		<para>install cacti</para>
 		<para>http://localhost/cacti/install/</para>
 	</chapter>

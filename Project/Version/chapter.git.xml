@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: chapter.version.git.xml 666 2013-08-21 10:06:25Z netkiller $ -->
-<part id="index"><?dbhtml dir="git"?>
+<!-- $Id: section.version.git.xml 666 2013-08-21 10:06:25Z netkiller $ -->
+<chapter id="index"><?dbhtml dir="git"?>
 	<title>Git - Fast Version Control System</title>
 	<subtitle>distributed revision control system</subtitle>
 	<info>
@@ -51,7 +51,7 @@ $ cat ~/.gitconfig
 		</step>
 	</procedure>
 <!-- http://tkg.im.ncue.edu.tw/?p=755 -->
-<chapter id="repositories">
+<section id="repositories">
 	<title>Repositories 仓库管理</title>
 	<section>
 		<title>initial setup</title>
@@ -270,9 +270,9 @@ git log
 git push -f
 		</screen>
 	</section>
-</chapter>
+</section>
 
-	<chapter id="git-branch">
+	<section id="git-branch">
 		<title>Manipulating branches</title>
 		<para>git-branch - List, create, or delete branches</para>
 		<section id="branch.list">
@@ -326,10 +326,10 @@ $ git-show-branch
 +* [master] add a new file
 			</screen>
 		</section>
-	</chapter>
+	</section>
 
 
-<chapter id="git.remote">
+<section id="git.remote">
 	<title>Sharing Repositories with others</title>
 	<section id="git.server">
 		<title>Setting up a git server</title>
@@ -374,9 +374,9 @@ git push origin master
 		<para>replace REMOTE_SERVER with your server name or IP</para>
 
 	</section>
-</chapter>
+</section>
 
-<chapter id="git.command">
+<section id="git.command">
 	<title>command</title>
 	<section id="git-add">
 		<title>git-add - Add file contents to the index</title>
@@ -464,10 +464,10 @@ $ git-branch
 $ git config --file config http.receivepack true
 		</screen>
 	</section>
-</chapter>
+</section>
 
 
-<chapter id="git-daemon">
+<section id="git-daemon">
 	<title>git-daemon 服务器</title>
 	<section>
 		<title>git-daemon - A really simple server for git repositories</title>
@@ -791,9 +791,9 @@ Receiving objects: 100% (3/3), done.
 		]]>
 		</screen>
 	</section>
-</chapter>
+</section>
 
-	<chapter id="git-svn">
+	<section id="git-svn">
 		<title>git-svn - Bidirectional operation between a single Subversion branch and git</title>
 		<screen>
 		<![CDATA[
@@ -814,18 +814,18 @@ git-svn dcommit
 git-svn rebase
 		</screen>
 		<para>git-svn init svn://netkiller.8800.org/neo/public_html</para>
-	</chapter>
+	</section>
 
-	<chapter id="gitignore">
+	<section id="gitignore">
 		<title>.gitignore</title>
 		<screen>
 find ./ -type d -empty | grep -v \.git | xargs -i touch {}/.gitignore
 		</screen>
-	</chapter>
+	</section>
 
 	&chapter.git.gitolite.xml;
 	&chapter.git.web.xml;
-<chapter id="faq">
+<section id="faq">
 	<title>FAQ</title>
 	<section id="HEAD">
 		<title>导出最后一次修改过的文件</title>
@@ -880,5 +880,5 @@ fatal: The remote end hung up unexpectedly
 git config http.postBuffer 524288000
 		</screen>
 	</section>
+</section>
 </chapter>
-</part>

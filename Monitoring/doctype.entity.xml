@@ -29,4 +29,5 @@
 <!ENTITY chapter.log.xml		 		SYSTEM "chapter.log.xml">
 <!ENTITY chapter.log.web.xml			SYSTEM "chapter.log.web.xml">
 <!ENTITY chapter.log.flume.xml			SYSTEM "chapter.log.flume.xml">
+<!ENTITY chapter.log.elk.xml			SYSTEM "chapter.log.elk.xml">
 <!ENTITY chapter.jvm.xml		 		SYSTEM "chapter.jvm.xml">

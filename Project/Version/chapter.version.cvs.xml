@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: chapter.version.cvs.xml 340 2012-02-03 09:18:44Z netkiller $ -->
-<part id="index"><?dbhtml dir="cvs"?>
+<!-- $Id: section.version.cvs.xml 340 2012-02-03 09:18:44Z netkiller $ -->
+<chapter id="index"><?dbhtml dir="cvs"?>
 	<title>cvs - Concurrent Versions System</title>
-	<chapter id="installation">
+	<section id="installation">
 	<title>installation</title>
 	<procedure>
 		<title>install cvs</title>
@@ -176,8 +176,8 @@ neo@netkiller:~/workspace/cvs$ export CVSROOT=:pserver:neo@localhost:/home/cvsro
 export CVS_RSH=ssh
 export CVSROOT=:ext:$USER@localhost:/home/cvsroot
 		</screen>
-	</chapter>
-	<chapter id="login">
+	</section>
+	<section id="login">
 		<title>cvs login | logout</title>
 		<screen>
 neo@netkiller:~/workspace/cvs$ cvs login
@@ -189,15 +189,15 @@ CVS password:
 $ cvs logout
 Logging out of :pserver:neo@localhost:2401/home/cvsroot
 		</screen>
-	</chapter>
-	<chapter id="import">
+	</section>
+	<section id="import">
 		<title>cvs import</title>
 		<para>cvs import -m "write some comments here" project_name vendor_tag release_tag</para>
 		<screen>
 $ cvs import -m "write some comments here" project_name vendor_tag release_tag
 		</screen>
-	</chapter>
-	<chapter id="checkout">
+	</section>
+	<section id="checkout">
 		<title>cvs checkout</title>
 		<screen>
 $ cvs checkout project_name
@@ -215,8 +215,8 @@ cvs checkout: Updating project_name/dir2
 U project_name/dir2/file1
 U project_name/dir2/file2
 		</screen>
-	</chapter>
-	<chapter id="update">
+	</section>
+	<section id="update">
 		<title>cvs update</title>
 		<para>about update</para>
 		<screen>
@@ -226,8 +226,8 @@ $ cvs update -r 1.5
 $ cvs update -D now
 $ cvs update -D now file
 		</screen>
-	</chapter>
-	<chapter id="add">
+	</section>
+	<section id="add">
 		<title>cvs add</title>
 		<screen>
 $ cd project_name/
@@ -258,8 +258,8 @@ Directory /home/cvsroot/project_name/dir2 added to the repository
 $ cvs add dir1/file1
 $ cvs add dir2/file?
 		</screen>
-	</chapter>
-	<chapter id="status">
+	</section>
+	<section id="status">
 		<title>cvs status</title>
 		<screen>
 $ cvs status dir1/file1
@@ -270,8 +270,8 @@ File: file1             Status: Unknown
    Working revision:  No entry for file1
    Repository revision: No revision control file
 		</screen>
-	</chapter>
-	<chapter id="commit">
+	</section>
+	<section id="commit">
 		<title>cvs commit</title>
 		<screen>
 		<![CDATA[
@@ -293,8 +293,8 @@ initial revision: 1.1
 initial revision: 1.1
 		]]>
 		</screen>
-	</chapter>
-	<chapter id="remove">
+	</section>
+	<section id="remove">
 		<title>cvs remove</title>
 		<screen>
 		<![CDATA[
@@ -307,8 +307,8 @@ $ cvs commit -m "delete file" new_file
 new revision: delete; previous revision: 1.1
 		]]>
 		</screen>
-	</chapter>
-	<chapter id="log">
+	</section>
+	<section id="log">
 		<title>cvs log</title>
 		<para>let me create a file, and then modify the file to make several version</para>
 		<screen>
@@ -391,8 +391,8 @@ date: 2008-11-24 15:41:47 +0800;  author: neo;  state: Exp;  lines: +1 -1;  comm
 add file to cvs
 =============================================================================
 		</screen>
-	</chapter>
-	<chapter id="annotate">
+	</section>
+	<section id="annotate">
 		<title>cvs annotate</title>
 		<screen>
 $ cvs annotate file
@@ -404,8 +404,8 @@ Annotations for file
 2.3          (nchen    26-Nov-08): I'm from shenzhen
 1.4          (neo      24-Nov-08): I am 28 years old
 		</screen>
-	</chapter>
-	<chapter id="diff">
+	</section>
+	<section id="diff">
 		<title>cvs diff</title>
 		<screen>
 		<![CDATA[
@@ -444,8 +444,8 @@ retrieving revision 1.4
 diff --side-by-side -r1.2 -r1.4
 I am Neo                                                      | I am 28 years old
 		</screen>
-	</chapter>
-	<chapter id="rename">
+	</section>
+	<section id="rename">
 		<title>rename file</title>
 		<literallayout>
 		<![CDATA[
@@ -472,8 +472,8 @@ new revision: delete; previous revision: 2.3
 initial revision: 1.1
 		]]>
 		</screen>
-	</chapter>
-	<chapter id="revision">
+	</section>
+	<section id="revision">
 		<title>revision</title>
 		<screen>
 neo@netkiller:~/workspace/cvs/project_name$ cvs update -r 1.2 file
@@ -504,8 +504,8 @@ File: file              Status: Up-to-date
    Sticky Date:       (none)
    Sticky Options:    (none)
 		</screen>
-	</chapter>
-	<chapter id="export">
+	</section>
+	<section id="export">
 		<title>cvs export</title>
 		<command>cvs export -r release_1_0 project_name</command>
 		<screen>
@@ -541,8 +541,8 @@ U nightly/dir2/file1
 U nightly/dir2/file2
 neo@netkiller:/tmp/cvs$
 		</screen>
-	</chapter>
-	<chapter id="release">
+	</section>
+	<section id="release">
 		<title>cvs release</title>
 		<screen>
 $ ls
@@ -554,8 +554,8 @@ Are you sure you want to release (and delete) directory `project_name': y
 
 $ ls
 		</screen>
-	</chapter>
-	<chapter id="branch">
+	</section>
+	<section id="branch">
 		<title>branch</title>
 		<section>
 			<title>milestone</title>
@@ -657,14 +657,14 @@ File: file              Status: Up-to-date
    Sticky Options:      (none)
 			</screen>
 		</section>
-	</chapter>
-	<chapter id="keywords">
+	</section>
+	<section id="keywords">
 		<title>keywords</title>
 		<literallayout>
 $Author: netkiller $
 $Date: 2012-02-03 17:18:44 +0800 (Fri, 03 Feb 2012) $
 $Name$
-$Id: chapter.version.cvs.xml 340 2012-02-03 09:18:44Z netkiller $
+$Id: section.version.cvs.xml 340 2012-02-03 09:18:44Z netkiller $
 $Header$
 $Log$
 $Revision: 340 $
@@ -675,7 +675,7 @@ $ cat file.txt
 $Author: netkiller $
 $Date: 2012-02-03 17:18:44 +0800 (Fri, 03 Feb 2012) $
 $Name:  $
-$Id: chapter.version.cvs.xml 340 2012-02-03 09:18:44Z netkiller $
+$Id: section.version.cvs.xml 340 2012-02-03 09:18:44Z netkiller $
 $Header: /home/cvsroot/project_name/file.txt,v 1.2 2008-11-27 01:33:29 nchen Exp $
 $Log: file.txt,v $
 Revision 1.2  2008-11-27 01:33:29  nchen
@@ -683,5 +683,5 @@ added some of keywords
 
 $Revision: 340 $
 		</screen>
-	</chapter>
-</part>
+	</section>
+</chapter>

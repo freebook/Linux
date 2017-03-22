@@ -199,7 +199,7 @@ a2p,ab,aclocal,aclocal-1.11,addftinfo,addr2line,airdaemon,apropos,ar,as,attr,aul
 <!-- =========================================================================== -->
 	&part.multimedia.xml;
 	&part.project.xml;
-	&part.version;
+	&part.version.xml;
 <!-- =========================================================================== -->	
 	&chapter.ibm.websphere.xml;
 <!-- =========================================================================== -->

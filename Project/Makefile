@@ -5,7 +5,7 @@ DOCBOOK=project
 PUBLIC_HTML=~/public_html
 HTMLHELP=$(PUBLIC_HTML)/htmlhelp/$(DOCBOOK)/chm
 
-DSSSL=../docbook-xsl/docbook.xsl
+DSSSL=../../docbook-xsl/docbook.xsl
 TMPDIR = $(shell mktemp -d --suffix=.tmp -p /tmp html.XXXXXX)
 
 XSLTPROC_OPT=--stringparam epub.stylesheet docbook.css --stringparam use.id.as.filename 1
@@ -17,7 +17,7 @@ html:
 
 	@mkdir -p ${PUBLIC_HTML}
 	@find ${PUBLIC_HTML} -type f -iname "*.html" -exec rm -rf {} \;
-	@rsync -au ../common/docbook.css $(PUBLIC_HTML)/
+	@rsync -au ../../common/docbook.css $(PUBLIC_HTML)/
 	@$(XSLTPROC) -o $(PUBLIC_HTML)/${DOCBOOK}/ $(DSSSL) book.xml
 	@$(shell test -d $(PUBLIC_HTML)/${DOCBOOK}/images && find $(PUBLIC_HTML)/${DOCBOOK}/images/ -type f -exec rm -rf {} \;)
 	@$(shell test -d images && rsync -au --exclude=.svn images $(PUBLIC_HTML)/${DOCBOOK}/)

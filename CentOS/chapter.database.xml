@@ -1,10 +1,6 @@
 <chapter id="mysql">
 	<title>MySQL</title>
-	<chapterinfo>
-		<keywordset>
-			<keyword>mysql, mysqldump, postgresql</keyword>
-		</keywordset>
-	</chapterinfo>
+
 	<section id="mysql.install">
 		<title>Installation</title>
 		<screen>

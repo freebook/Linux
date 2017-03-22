@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: section.miscellaneous.xml 385 2012-04-10 10:40:06Z netkiller $ -->
-<section id="miscellaneous">
+<chapter id="miscellaneous">
 	<title>Miscellaneous</title>
 <section id="codehost">
 	<title>代码托管</title>
@@ -89,4 +89,19 @@ git commit --amend --reset-author
 		<ulink url="http://code.google.com/p/tortoisegit/" />
 	</section>
 </section>
-</section>
+
+	<section id="viewcv">
+		<title>Browser interface for CVS and SVN version control repositories</title>
+		<para>viewvc 10年前还有人再用，目前基本淘汰</para>
+		<screen>
+# yum install viewvc
+		</screen>
+		<para>CGI 方式安装</para>
+		<screen>
+# vim /etc/httpd/conf/httpd.conf
+ScriptAlias /viewvc /usr/lib/python2.4/site-packages/viewvc/bin/cgi/viewvc.cgi
+Alias /viewvc-static/ "/usr/share/viewvc/templates/docroot/"
+		</screen>
+	</section>
+
+</chapter>

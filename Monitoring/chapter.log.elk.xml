@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="elk" ?>
+	<title>ElasticSearch + Logstash + Kibana</title>
+	<chapterinfo>
+		<keywordset>
+			<keyword>ElasticSearch, Logstash, Kibana</keyword>
+		</keywordset>
+	</chapterinfo>
+	<para>官方网站<ulink url="https://www.elastic.co" /></para>
+	<para>环境准备:</para>
+	<para>操作系统： CentOS 7</para>
+	<para>Java 1.8</para>
+	<para>Redis</para>
+	<para>ElasticSearch + Logstash + Kibana 均使用 5.2 版本</para>
+	<para>以下安装均使用 Netkiller OSCM 脚本一键安装</para>
+	<section>
+		<title>ElasticSearch + Logstash + Kibana 安装</title>
+		
+		<section>
+			<title>ElasticSearch 安装</title>
+			<para>粘贴下面命令到Linux控制台即可一键安装</para>
+			<screen>
+			<![CDATA[
+curl -s https://raw.githubusercontent.com/oscm/shell/master/search/elasticsearch/elasticsearch-5.2.sh | bash
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Kibana 安装</title>
+			<screen>
+			<![CDATA[
+curl -s https://raw.githubusercontent.com/oscm/shell/master/log/kibana/kibana-5.2.sh | bash
+			]]>		
+			</screen>
+		</section>
+		<section id="logstash">
+			<title>Logstash 安装</title>
+			<screen>
+curl -s https://raw.githubusercontent.com/oscm/shell/master/log/kibana/logstash-5.2.sh | bash		
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>日志采集</title>
+		<para></para>
+	</section>
+</chapter>

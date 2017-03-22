@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	<!ENTITY part.version 				SYSTEM "part.version.xml">
+	<!ENTITY part.version.xml			SYSTEM "part.version.xml">
 	<!ENTITY chapter.version.cvs	 	SYSTEM "Version/chapter.version.cvs.xml">
 	<!ENTITY chapter.version.svn 		SYSTEM "Version/chapter.version.svn.xml">
 	<!ENTITY chapter.git.xml	 		SYSTEM "Version/chapter.git.xml">

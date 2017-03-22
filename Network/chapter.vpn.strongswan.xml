@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="strongswan">
 	<title>strongswan - IPSec utilities for strongSwan</title>
+	<subtitle>Windows 10 + IKEv2 VPN</subtitle>
 	<para>http://www.strongswan.org/</para>
 	<screen>
 	<![CDATA[

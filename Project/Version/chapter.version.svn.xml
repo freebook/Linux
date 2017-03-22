@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: chapter.version.svn.xml 446 2012-08-06 09:43:09Z netkiller $ -->
-<part id="subversion"><?dbhtml dir="subversion"?>
+<!-- $Id: section.version.svn.xml 446 2012-08-06 09:43:09Z netkiller $ -->
+<chapter id="subversion"><?dbhtml dir="subversion"?>
 	<title>Subversion</title>
 
-<chapter id="subversion.daemon">
+<section id="subversion.daemon">
 	<title>Invoking the Server</title>
 	<para>配置开发环境版本控制Subversion</para>
 	<para>Squid + Subversion 请参考Squid一节</para>
@@ -12,7 +12,7 @@
 	<section id="svn.install">
 		<title>Installing</title>
 		<section>
-			<title>CentOS</title>
+			<title>Ubuntu</title>
 			<procedure>
 				<title>subversion</title>
 				<step>
@@ -83,8 +83,95 @@ $ sudo ufw allow svn
 				</step>
 			</procedure>
 		</section>
+		
+	<section id="centos">
+		<title>CentOS 5</title>
+		<screen>
+		<![CDATA[
+[root@development ~]# yum -y install subversion
+		]]>
+		</screen>
 		<section>
-			<title>CentOS</title>
+			<title>classic Unix-like xinetd daemon</title>
+			<screen>
+			<![CDATA[
+[root@development ~]# vim /etc/xinetd.d/subversion
+service subversion
+{
+    disable = no
+    port = 3690
+    socket_type = stream
+    protocol = tcp
+    wait = no
+    user = svnroot
+    server = /usr/bin/svnserve
+    server_args = -i -r /home/svnroot
+}
+			]]>
+			</screen>
+			<para>firewall</para>
+			<screen>
+			<![CDATA[
+iptables -A INPUT -p tcp -m tcp --sport 3690 -j ACCEPT
+iptables -A OUTPUT -p tcp -m tcp --dport 3690 -j ACCEPT
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>WebDav</title>
+			<para>install webdav module</para>
+			<screen>
+			<![CDATA[
+[root@development ~]# yum install mod_dav_svn
+			]]>
+			</screen>
+			<para>create directory</para>
+			<screen>
+			<![CDATA[
+mkdir /var/www/repository
+svnadmin create /var/www/repository
+			]]>
+			</screen>
+			<para>subversion.conf</para>
+			<screen>
+			<![CDATA[
+[root@development ~]# vim /etc/httpd/conf.d/subversion.conf
+LoadModule dav_module modules/mod_dav.so
+LoadModule dav_svn_module modules/mod_dav_svn.so
+LoadModule authz_svn_module modules/mod_authz_svn.so
+			]]>
+			</screen>
+			<para>vhost.conf</para>
+			<screen>
+			<![CDATA[
+<Location />
+DAV svn
+SVNPath /var/www/repository
+AuthType Basic
+AuthName "Subversion Repository"
+AuthUserFile /etc/subversion/svn-auth-file
+Require valid-user
+</Location>
+			]]>
+			</screen>
+			<para>auth file</para>
+			<screen>
+			<![CDATA[
+[root@development ~]# htpasswd -c /etc/subversion/svn-auth-file my_user_name
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>项目目录结构</title>
+			<para>–trunk #存放主线</para>
+			<para>–branches #存放分支，可修改</para>
+			<para>–tags #存放标记，不可修改</para>
+		</section>
+	</section>		
+		
+		<section>
+			<title>CentOS 6</title>
+			<para>CentOS 6 默认没有安装xinetd</para>
 			<screen>
 # yum install xinetd
 # yum install subversion
@@ -472,9 +559,9 @@ branches  lost+found  tags  trunk
 				</screen>
 			</section>
 		</section>
-</chapter>
+</section>
 
-<chapter id="svn.repository">
+<section id="svn.repository">
 	<title>repository 管理</title>
 		<section id="repository.create">
 			<title>create repository</title>
@@ -721,8 +808,8 @@ deployer = ken
 svnadmin dump /svnroot/project | gzip > svn.gz
 			</screen>
 		</section>
-</chapter>
-<chapter id="svn">
+</section>
+<section id="svn">
 	<title>使用Subversion</title>
 		<section id="initialized">
 			<title>Initialized empty subversion repository for project</title>
@@ -770,20 +857,20 @@ Revision
 Author
 	 这个关键字描述了最后一个修改这个文件的用户，看起来类似$Author: netkiller $，也可以用LastChangedBy来指定。
 HeadURL
-	 这个关键字描述了这个文件在版本库最新版本的完全URL，看起来类似$HeadURL: https://svn.code.sf.net/p/netkiller/svn/trunk/Docbook/Version/chapter.version.svn.xml $，可以缩写为URL。
+	 这个关键字描述了这个文件在版本库最新版本的完全URL，看起来类似$HeadURL: https://svn.code.sf.net/p/netkiller/svn/trunk/Docbook/Version/section.version.svn.xml $，可以缩写为URL。
 Id
-	 这个关键字是其他关键字一个压缩组合，它看起来就像$Id: chapter.version.svn.xml 446 2012-08-06 09:43:09Z netkiller $，可以解释为文件calc.c上一次修改的修订版本号是148，时间是2006年7月28日，作者是sally。
+	 这个关键字是其他关键字一个压缩组合，它看起来就像$Id: section.version.svn.xml 446 2012-08-06 09:43:09Z netkiller $，可以解释为文件calc.c上一次修改的修订版本号是148，时间是2006年7月28日，作者是sally。
 			</screen>
 
 			<screen>
 $ cat weather.txt
-$Id: chapter.version.svn.xml 446 2012-08-06 09:43:09Z netkiller $
+$Id: section.version.svn.xml 446 2012-08-06 09:43:09Z netkiller $
 
 $ svn propset svn:keywords "Id" weather.txt
 property 'svn:keywords' set on 'weather.txt'
 
 $ cat weather.txt
-$Id: chapter.version.svn.xml 446 2012-08-06 09:43:09Z netkiller $
+$Id: section.version.svn.xml 446 2012-08-06 09:43:09Z netkiller $
 			</screen>
 			<para>设置多个关键字</para>
 			<screen>
@@ -852,9 +939,9 @@ svn commit -m "restore to revision 1"
 			</screen>
 			<para>svn merge --r HEAD:1 svn://localhost/lynn</para>
 		</section>
-</chapter>
+</section>
 
-<chapter id="svn.branch">
+<section id="svn.branch">
 	<title>branch</title>
 		<section id="create">
 			<title>create</title>
@@ -889,8 +976,8 @@ svn -r 148:149 merge svn://server/trunk branches/module
 svn switch --relocate svn://192.168.3.9/neo svn://192.168.3.5/neo .
 			</screen>
 		</section>
-</chapter>
-<chapter id="faq">
+</section>
+<section id="faq">
 	<title>FAQ</title>
 	<section id="faq.svn.add">
 		<title>递归添加文件</title>
@@ -949,6 +1036,6 @@ alias svndiff=’svn diff --diff-cmd=colordiff’
 svn co svn://www.example.com/repos  --username neo --password chen;
 		</screen>
 	</section>
-</chapter>
+</section>
 
-</part>
+</chapter>
