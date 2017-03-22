@@ -101,7 +101,7 @@ systemctl restart httpd
 			]]>
 			</screen>
 			<para>配置php.ini文件 date.timezone = Asia/Hong_Kong</para>
-			<para><graphic  format="png" fileref="../images/zabbix/zabbix-1.png" srccredit="neo" width=""/> 下一步</para>	
+			<para><graphic  format="png" fileref="../images/zabbix/zabbix-1.png" srccredit="neo" width=""/> 下一步</para>
 			<para><graphic  format="png" fileref="../images/zabbix/zabbix-2.png" srccredit="neo" width=""/> 检查PHP模块与配置，如果未提示错误信息点击下一步按钮</para>
 			<para><graphic  format="png" fileref="../images/zabbix/zabbix-3.png" srccredit="neo" width=""/> 填写数据主机名，用户与密码，然后下一步</para>
 			<para><graphic  format="png" fileref="../images/zabbix/zabbix-4.png" srccredit="neo" width=""/> Zabbix Server 直接点击下一步</para>

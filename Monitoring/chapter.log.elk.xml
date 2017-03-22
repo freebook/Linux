@@ -15,7 +15,6 @@
 	<para>以下安装均使用 Netkiller OSCM 脚本一键安装</para>
 	<section>
 		<title>ElasticSearch + Logstash + Kibana 安装</title>
-		
 		<section>
 			<title>ElasticSearch 安装</title>
 			<para>粘贴下面命令到Linux控制台即可一键安装</para>
@@ -41,7 +40,266 @@ curl -s https://raw.githubusercontent.com/oscm/shell/master/log/kibana/logstash-
 		</section>
 	</section>
 	<section>
-		<title>日志采集</title>
+		<title>本地文件</title>
+		<screen>
+		<![CDATA[
+input {
+  file {
+    type => "syslog"
+    path => [ "/var/log/maillog", "/var/log/messages", "/var/log/secure" ]
+    start_position => "beginning"
+  }
+}
+output {
+  stdout { codec => rubydebug }
+  elasticsearch { 
+    hosts => ["127.0.0.1:9200"] 
+  }
+}		
+		]]>
+		</screen>
+	</section>
+	<section id="socket">
+		<title>TCP/UDP</title>
+		<screen>
+		<![CDATA[
+input {
+  file {
+    type => "syslog"
+    path => [ "/var/log/auth.log", "/var/log/messages", "/var/log/syslog" ]
+  }
+  tcp {
+    port => "5145"
+    type => "syslog-network"
+  }
+  udp {
+    port => "5145"
+    type => "syslog-network"
+  }
+}
+output {
+  elasticsearch { 
+    hosts => ["127.0.0.1:9200"] 
+  }
+}
+		]]>
+		</screen>
+	</section>
+	<section id="redis">
+		<title>配置 Broker(Redis)</title>
+		<section id="indexer">
+			<title>indexer</title>
+			<para><graphic  format="png" fileref="../images/elk/Redis.png" srccredit="neo" width=""/></para>
+			<para>/etc/logstash/conf.d/indexer.conf</para>
+			<screen>
+			<![CDATA[
+input {
+  redis {
+    host => "127.0.0.1"
+    port => "6379" 
+    key => "logstash:demo"
+    data_type => "list"
+    codec  => "json"
+    type => "logstash-redis-demo"
+    tags => ["logstashdemo"]
+  }
+}
+
+output {
+  stdout { codec => rubydebug }
+  elasticsearch {
+    hosts => ["127.0.0.1:9200"]
+  }
+}	
+			]]>
+			</screen>
+			<para>测试</para>
+			<screen>
+			<![CDATA[
+# redis-cli 
+127.0.0.1:6379> RPUSH logstash:demo "{\"time\": \"2012-01-01T10:20:00\", \"message\": \"logstash demo message\"}"
+(integer) 1
+127.0.0.1:6379> exit
+			]]>
+			</screen>
+			<para>如果执行成功日志如下</para>
+			<screen>
+			<![CDATA[
+# cat /var/log/logstash/logstash-plain.log 
+[2017-03-22T15:54:36,491][INFO ][logstash.outputs.elasticsearch] Elasticsearch pool URLs updated {:changes=>{:removed=>[], :added=>[http://127.0.0.1:9200/]}}
+[2017-03-22T15:54:36,496][INFO ][logstash.outputs.elasticsearch] Running health check to see if an Elasticsearch connection is working {:healthcheck_url=>http://127.0.0.1:9200/, :path=>"/"}
+[2017-03-22T15:54:36,600][WARN ][logstash.outputs.elasticsearch] Restored connection to ES instance {:url=>#<URI::HTTP:0x20dae6aa URL:http://127.0.0.1:9200/>}
+[2017-03-22T15:54:36,601][INFO ][logstash.outputs.elasticsearch] Using mapping template from {:path=>nil}
+[2017-03-22T15:54:36,686][INFO ][logstash.outputs.elasticsearch] Attempting to install template {:manage_template=>{"template"=>"logstash-*", "version"=>50001, "settings"=>{"index.refresh_interval"=>"5s"}, "mappings"=>{"_default_"=>{"_all"=>{"enabled"=>true, "norms"=>false}, "dynamic_templates"=>[{"message_field"=>{"path_match"=>"message", "match_mapping_type"=>"string", "mapping"=>{"type"=>"text", "norms"=>false}}}, {"string_fields"=>{"match"=>"*", "match_mapping_type"=>"string", "mapping"=>{"type"=>"text", "norms"=>false, "fields"=>{"keyword"=>{"type"=>"keyword"}}}}}], "properties"=>{"@timestamp"=>{"type"=>"date", "include_in_all"=>false}, "@version"=>{"type"=>"keyword", "include_in_all"=>false}, "geoip"=>{"dynamic"=>true, "properties"=>{"ip"=>{"type"=>"ip"}, "location"=>{"type"=>"geo_point"}, "latitude"=>{"type"=>"half_float"}, "longitude"=>{"type"=>"half_float"}}}}}}}}
+[2017-03-22T15:54:36,693][INFO ][logstash.outputs.elasticsearch] Installing elasticsearch template to _template/logstash
+[2017-03-22T15:54:36,780][INFO ][logstash.outputs.elasticsearch] New Elasticsearch output {:class=>"LogStash::Outputs::ElasticSearch", :hosts=>[#<URI::Generic:0x2f9efc89 URL://127.0.0.1>]}
+[2017-03-22T15:54:36,787][INFO ][logstash.pipeline        ] Starting pipeline {"id"=>"main", "pipeline.workers"=>8, "pipeline.batch.size"=>125, "pipeline.batch.delay"=>5, "pipeline.max_inflight"=>1000}
+[2017-03-22T15:54:36,792][INFO ][logstash.inputs.redis    ] Registering Redis {:identity=>"redis://@127.0.0.1:6379/0 list:logstash:demo"}
+[2017-03-22T15:54:36,793][INFO ][logstash.pipeline        ] Pipeline main started
+[2017-03-22T15:54:36,838][INFO ][logstash.agent           ] Successfully started Logstash API endpoint {:port=>9600}
+[2017-03-22T15:55:10,018][WARN ][logstash.runner          ] SIGTERM received. Shutting down the agent.
+[2017-03-22T15:55:10,024][WARN ][logstash.agent           ] stopping pipeline {:id=>"main"}			
+			]]>
+			</screen>
+		</section>
+		<section id="shipper">
+			<title>shipper</title>
+			<screen>
+			<![CDATA[
+input {
+  file {
+    path => [ "/var/log/nginx/access.log" ]
+    start_position => "beginning"
+  }
+}
+
+filter {
+  grok {
+    match => { "message" => "%{NGINXACCESS}" }
+    add_field => { "type" => "access" }
+  }
+  date {
+    match => [ "timestamp" , "dd/MMM/YYYY:HH:mm:ss Z" ]
+  }
+  geoip {
+    source => "clientip"
+  }
+}
+
+output {
+  redis {
+    host => "127.0.0.1"
+    port => 6379
+    data_type => "list"
+    key => "logstash:demo"
+  }
+}
+			]]>
+			</screen>
+		</section>
+	</section>
+	
+	<section id="kafka">
+		<title>Kafka</title>
+		<para><graphic  format="png" fileref="../images/elk/Kafka.png" srccredit="neo" width=""/></para>
 		<para></para>
+		<screen>
+		<![CDATA[
+input {
+  kafka {
+   zk_connect => "kafka:2181"
+   group_id => "logstash"
+   topic_id => "apache_logs"
+   consumer_threads => 16
+  }
+}		
+		]]>
+		</screen>
+	</section>
+	<section id="logstash">
+		<title>logstash 配置项</title>
+		<section>
+			<title>input</title>
+		</section>
+		<section>
+			<title>filter</title>
+		</section>
+		<section>
+			<title>output</title>
+			<section>
+				<title>elasticsearch</title>
+				<para>默认 index 格式，每日切割一个 index</para>
+				<screen>
+				<![CDATA[
+"_index" : "logstash-2017.03.22"		
+				]]>
+				</screen>
+				<para>可以通过 index 自定义</para>
+				<screen>
+				<![CDATA[
+output {
+  stdout { codec => rubydebug }
+  elasticsearch {
+    hosts => ["127.0.0.1:9200"]
+    index => "logging"
+  }
+}				
+				]]>
+				</screen>
+			</section>
+		</section>
+	</section>
+	
+	<section id="Beats">
+		<title>Beats</title>
+	</section>
+	<section id="faq">
+		<title>FAQ</title>
+		<section>
+			<title>查看 Kibana 数据库</title>
+			<screen>
+			<![CDATA[
+# curl 'http://localhost:9200/_search?pretty'
+{
+  "took" : 1,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 1,
+    "successful" : 1,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : 1,
+    "max_score" : 1.0,
+    "hits" : [
+      {
+        "_index" : ".kibana",
+        "_type" : "config",
+        "_id" : "5.2.2",
+        "_score" : 1.0,
+        "_source" : {
+          "buildNum" : 14723
+        }
+      }
+    ]
+  }
+}			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>logstash 无法写入 elasticsearch</title>
+			<para>elasticsearch 的配置不能省略 9200 端口，否则将无法链接elasticsearch</para>
+			<screen>
+			<![CDATA[
+  elasticsearch {
+    hosts => ["127.0.0.1:9200"]
+  }			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>标准输出</title>
+			<screen>
+			<![CDATA[
+#cd /etc/logstash/conf.d
+#vim logstash_server.conf
+input {
+    redis {
+        port => "6379"
+        host => "127.0.0.1"
+        data_type => "list"
+        key => "logstash-redis"
+        type => "redis-input"
+   }
+}
+output {
+    stdout {
+    	codec => rubydebug
+    }
+}			
+			]]>
+			</screen>
+		</section>
 	</section>
 </chapter>
