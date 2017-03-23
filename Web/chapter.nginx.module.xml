@@ -1,7 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 	&chapter.nginx.proxy.xml;
+	<section id="sub_filter">
+		<title>sub_filter 页面中查找和替换</title>
+		<para></para>
+		<screen>
+		<![CDATA[
+location / {
+    sub_filter '<a href="http://127.0.0.1:8080/'  '<a href="https://$host/';
+    sub_filter '<img src="http://127.0.0.1:8080/' '<img src="https://$host/';
+    sub_filter_once on;
+}
+		]]>
+		</screen>
+		<para>替换掉proxy_pass页面中的内容</para>
+		<screen>
+    location ~ ^/live800 {
+        proxy_pass           http://218.23.24.53;
+        rewrite              ^/live800/(.*)  /$1 break;
+        proxy_set_header    Accept-Encoding "";
+        proxy_set_header    X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header    Host www.abc.com;
 
+        sub_filter_types text/html text/css text/xml text/css text/javascript;
+        sub_filter 'www.abc.com'  '$host';
+        sub_filter_once off;
+    }
+		</screen>
+	</section>
 	<section id="ngx_http_flv_module">
 		<title>ngx_http_flv_module</title>
 		<screen>
@@ -113,3 +138,4 @@ location ~* ^/images/resize/([\d\-]+)_([\d\-]+)/(.+) { 
 }		
 		</screen>
 	</section>
+	
