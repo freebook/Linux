@@ -586,33 +586,7 @@ location ~ ^/private/.*\.php$
 }			
 			</screen>
 		</section>
-		<section id="auth_basic">
-			<title>auth_basic</title>
-			<screen>
-cd /usr/local/nginx/conf
-server {
-	listen 80;
-	server_name www.example.com;
-	root /var/www/htdocs;
-	index index.html;
-
-	location / {
-		try_files $uri $uri/ /index.html;
-		auth_basic            "Login";
-        auth_basic_user_file  htpasswd;
-	}
-}
-			</screen>
-			<para>生成密码文件</para>
-			<screen>
-$ sudo apt-get install apache2-utils
-
-htpasswd -c -d htpasswd user_name
-			</screen>
-			<tip>
-				<para>必须使用 -d  Force CRYPT encryption of the password. 选项，</para>
-			</tip>
-		</section>
+	
 		<section id="autoindex">
 			<title>autoindex</title>
 			<para>开启目录浏览</para>
@@ -664,30 +638,6 @@ server {
 }
 			</screen>
 		</section>
-
-		<section id="stub_status">
-			<title>stub_status</title>
-			<screen>
-location /nginx_status {
-	stub_status on;
-	access_log  off;
-	allow 127.0.0.1;
-	deny all;
-}
-			</screen>
-			<para>php-fpm 状态</para>
-			<screen>
-    location ~ ^/(status|ping)$ {
-        access_log off;
-        allow 202.82.21.12;
-        deny all;
-        fastcgi_pass 127.0.0.1:9000;
-		fastcgi_param SCRIPT_FILENAME $fastcgi_script_name;
-        include fastcgi_params;
-    }
-			</screen>
-		</section>
-
 		<section id="add_header">
 			<title>add_header</title>
 			<para># 相关页面设置Cache-Control头信息</para>
@@ -737,39 +687,6 @@ location / {
 }
 				</screen>
 			</section>
-		</section>
-		<section id="valid_referers">
-			<title>valid_referers</title>
-			<example>
-				<title>Example: valid_referers</title>
-				<screen>
-location /photos/ {
-  valid_referers none blocked www.mydomain.com mydomain.com;
-
-  if ($invalid_referer) {
-    return   403;
-  }
-}
-				</screen>
-				<screen>
-location ~* \.(gif|jpg|jpeg|png|bmp|txt|zip|jar|swf)$ {
-	valid_referers none blocked *.mydomain.com;
-	if ($invalid_referer) {
-		rewrite ^/  http://www.mydomain.com/default.gif;
-		#return 403;
-	}
-
-}
-
-location /images/ {
-	alias /www/images/;
-	valid_referers none blocked *.mydomain.com;
-	if ($invalid_referer) {
-		rewrite ^/  http://www.mydomain.com/default.gif;
-	}
-}
-				</screen>
-			</example>
 		</section>
 	</section>
 	<section id="http2">
