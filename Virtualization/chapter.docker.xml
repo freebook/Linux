@@ -21,8 +21,8 @@ docker run -i -t centos /bin/bash
 		<section>
 			<title>Ubuntu</title>
 			<screen>
-$ sudo apt-get update
-$ sudo apt-get install docker.io
+$ sudo apt update
+$ sudo apt install docker.io
 $ sudo ln -sf /usr/bin/docker.io /usr/local/bin/docker
 $ sudo sed -i '$acomplete -F _docker docker' /etc/bash_completion.d/docker.io
 			</screen>
@@ -35,7 +35,7 @@ $ sudo docker run -i -t ubuntu /bin/bash
 		<title>镜像</title>
 		<para>Docker 镜像地址 <ulink url="https://registry.hub.docker.com/">https://registry.hub.docker.com/</ulink></para>
 		<section>
-			<screen>搜索镜像</screen>
+			<title>搜索镜像</title>
 			<screen>
 $ sudo docker search centos |more
 NAME                                            DESCRIPTION                                     STARS     OFFICIAL   AUTOMATED

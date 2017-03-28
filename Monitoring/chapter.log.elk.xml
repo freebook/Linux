@@ -38,52 +38,12 @@ curl -s https://raw.githubusercontent.com/oscm/shell/master/log/kibana/kibana-5.
 curl -s https://raw.githubusercontent.com/oscm/shell/master/log/kibana/logstash-5.2.sh | bash		
 			</screen>
 		</section>
-	</section>
-	<section>
-		<title>本地文件</title>
-		<screen>
-		<![CDATA[
-input {
-  file {
-    type => "syslog"
-    path => [ "/var/log/maillog", "/var/log/messages", "/var/log/secure" ]
-    start_position => "beginning"
-  }
-}
-output {
-  stdout { codec => rubydebug }
-  elasticsearch { 
-    hosts => ["127.0.0.1:9200"] 
-  }
-}		
-		]]>
-		</screen>
-	</section>
-	<section id="socket">
-		<title>TCP/UDP</title>
-		<screen>
-		<![CDATA[
-input {
-  file {
-    type => "syslog"
-    path => [ "/var/log/auth.log", "/var/log/messages", "/var/log/syslog" ]
-  }
-  tcp {
-    port => "5145"
-    type => "syslog-network"
-  }
-  udp {
-    port => "5145"
-    type => "syslog-network"
-  }
-}
-output {
-  elasticsearch { 
-    hosts => ["127.0.0.1:9200"] 
-  }
-}
-		]]>
-		</screen>
+		<section id="beats">
+			<title>Beats 安装</title>
+			<screen>
+curl -s https://raw.githubusercontent.com/oscm/shell/master/log/beats/beats-5.2.sh | bash
+			</screen>
+		</section>
 	</section>
 	<section id="redis">
 		<title>配置 Broker(Redis)</title>
@@ -178,13 +138,88 @@ output {
 			</screen>
 		</section>
 	</section>
-	
-	<section id="kafka">
-		<title>Kafka</title>
-		<para><graphic  format="png" fileref="../images/elk/Kafka.png" srccredit="neo" width=""/></para>
-		<para></para>
-		<screen>
-		<![CDATA[
+
+	<section id="logstash">
+		<title>logstash 配置项</title>
+		<section>
+			<title>input</title>
+			
+			<section>
+				<title>本地文件</title>
+				<screen>
+				<![CDATA[
+input {
+  file {
+    type => "syslog"
+    path => [ "/var/log/maillog", "/var/log/messages", "/var/log/secure" ]
+    start_position => "beginning"
+  }
+}
+output {
+  stdout { codec => rubydebug }
+  elasticsearch { 
+    hosts => ["127.0.0.1:9200"] 
+  }
+}		
+				]]>
+				</screen>
+			</section>
+			<section id="socket">
+				<title>TCP/UDP</title>
+				<screen>
+				<![CDATA[
+input {
+  file {
+    type => "syslog"
+    path => [ "/var/log/secure", "/var/log/messages", "/var/log/syslog" ]
+  }
+  tcp {
+    port => "5145"
+    type => "syslog-network"
+  }
+  udp {
+    port => "5145"
+    type => "syslog-network"
+  }
+}
+output {
+  elasticsearch { 
+    hosts => ["127.0.0.1:9200"] 
+  }
+}
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>Redis</title>
+				<screen>
+				<![CDATA[
+input {
+  redis {
+    host => "127.0.0.1"
+    port => "6379" 
+    key => "logstash:demo"
+    data_type => "list"
+    codec  => "json"
+    type => "logstash-redis-demo"
+    tags => ["logstashdemo"]
+  }
+}
+
+output {
+  elasticsearch {
+    hosts => ["127.0.0.1:9200"]
+  }
+}
+				]]>
+				</screen>
+			</section>
+			<section id="kafka">
+				<title>Kafka</title>
+				<para><graphic  format="png" fileref="../images/elk/Kafka.png" srccredit="neo" width=""/></para>
+				<para></para>
+				<screen>
+				<![CDATA[
 input {
   kafka {
    zk_connect => "kafka:2181"
@@ -193,19 +228,29 @@ input {
    consumer_threads => 16
   }
 }		
-		]]>
-		</screen>
-	</section>
-	<section id="logstash">
-		<title>logstash 配置项</title>
-		<section>
-			<title>input</title>
+				]]>
+				</screen>
+			</section>
 		</section>
 		<section>
 			<title>filter</title>
 		</section>
 		<section>
 			<title>output</title>
+			<section>
+				<title>file 写入文件</title>
+				<screen>
+				<![CDATA[
+output {
+    file {
+        path => "/path/to/%{host}/%{+yyyy}/%{+MM}/%{+dd}.log.gz"
+        message_format => "%{message}"
+        gzip => true
+    }
+}				
+				]]>
+				</screen>
+			</section>
 			<section>
 				<title>elasticsearch</title>
 				<para>默认 index 格式，每日切割一个 index</para>
@@ -227,12 +272,29 @@ output {
 				]]>
 				</screen>
 			</section>
+			<section>
+				<title>exec 执行脚本</title>
+				<screen>
+				<![CDATA[
+output {
+    exec {
+        command => "sendsms.php \"%{message}\" -t %{user}"
+    }
+}
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>stdout</title>
+				<screen>
+output {
+	stdout { codec => rubydebug }
+}
+				</screen>
+			</section>
 		</section>
 	</section>
 	
-	<section id="Beats">
-		<title>Beats</title>
-	</section>
 	<section id="faq">
 		<title>FAQ</title>
 		<section>
