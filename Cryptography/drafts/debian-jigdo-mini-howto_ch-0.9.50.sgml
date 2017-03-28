@@ -1,0 +1,1002 @@
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook V3.1//EN">
+
+<article>
+
+<artheader>
+
+	<title>Debian Jigdo mini-HOWTO</title>
+	<titleabbrev>DJ-HOWTO</titleabbrev>
+
+	<author>
+		<firstname>Peter</firstname>
+		<othername role='middle'>Jay</othername>
+		<surname>Salzman</surname>
+		<affiliation>
+		<address><email>p@dirac.org</email></address>
+		</affiliation>
+	</author>
+
+	<!--     year-month-day            -->
+	<pubdate>2002-11-8 ver 0.112</pubdate>
+
+	<copyright>
+		<year>2001</year>
+		<holder>Peter Jay Salzman</holder>
+	</copyright>
+
+	<legalnotice>
+		<para><email>p@dirac.org</email> / <systemitem role="url">www.dirac.org/p</systemitem>.</para>
+		<para>Distributed subject to the GNU General Public License, version 2.</para>
+	</legalnotice>
+
+	<abstract><title>摘要</title>
+
+	<para>获取 Debian ISO 映象文件通常是一个痛苦、缓慢而且低效的过程。Jigdo 是一种以容易、快速且非常有效的方式获取 Debian ISO 文件的新工具。这个 HOWTO 文章讲述了为什么要使用 jigdo，一些它如何工作的原理以及如何使用它去获取和更新 Debian ISO 文件。
+	</para>
+
+	<para>Jigdo 是一个非常通用的工具，并没有特别地与 Debian ISO 结合在一起。Jigdo 可以用于制作任何提供类似 Debian ISO 文件那样容易、快速和有效的下载方式的 ISO 文件。这个 HOWTO 文章同样会包含这方面的内容，但主要还是集中于下载 Debian ISO 文件。
+	</para>
+
+        </abstract>
+
+</artheader>
+
+
+
+
+
+<sect1 id="administrata"><title>前言</title>
+
+
+		<sect2 id="authorship"><title>作者身份和版权</title>
+
+			<para>这个文档的版权 (c) 2001 属于Peter Jay Salzman, <email><ulink
+			url="mailto:p@dirac.org">p@dirac.org</ulink></email>.  在GNU Free Documentation License（版本1．1）之下，允许进行拷贝、发布和/或修改，除我在下一段落所列出的规定以外。
+			 我讨厌包含版权声明的HOWTO文章，它是一个“树杀手”。 你可以从<ulink
+			url="http://www.gnu.org/copyleft/fdl.html">http://www.gnu.org/copyleft/fdl.html</ulink>处读到 GNU FDL
+			声明。</para>
+
+			<para>如果你想从此HOWTO文章创建一个延伸的作品或将其以商业目的发表，请先与我联系。这将给我一个提供给你最新版本的机会。 我将很感激能收到一份拷贝，不管它是你正在做的东西还是
+一个菠菜、大蒜、蘑菇、羊乳酪和洋蓟做成的心形比萨。
+			</para>
+
+		</sect2>
+
+
+
+
+		<sect2 id="acknowledgements"><title>致谢</title>
+
+			<para>首先，我要感谢 jigdo 的作者 <ulink url="mailto:atterer@debian.org">Richard Atterer</ulink>。
+			任何使用过 Debian PIK（或更差的）来下载整个 Debian ISO 文件的人都知道原因。 然而，我要再次感谢 Richard Atterer。这个 HOWTO 文章源于我写的一些有关使用 jigdo 的主页，Richard花费时间通过 email 给我大量的改正，澄清和回答了有关 jigdo 的问题。在更新这些网页和转化成 HOWTO 文件过程中，他多次阅读了我的作品。他显然是一个不仅关心自己作品，而且关心使用它的人们的开发人员。不幸的是，这种事情在我们生活的繁忙世界中正变得越来越少。谢谢 Richard，继续这项杰出的工作。
+
+			</para>
+
+			<para>我同时要感谢 <ulink url="mailto:cnw@conradwood.net">Conrad Wood</ulink>， <ulink
+			url="mailto:mello@ajato.com.br">Elcio Mello</ulink> 和 <ulink
+			url="mailto:mramos@montevideo.com.uy">Marcelo Ramos</ulink>，
+			他们翻译了这篇文章。我对于他们认为我的文章值得他们花费时间和努力感到光荣。谢谢你们！</para>
+
+		</sect2>
+
+
+
+		<sect2><title>评论和改正</title>
+
+			<para>我非常关注使用这个文档的人们。即使是 mini-HOWTOs
+			也要花长时间去写，并且我不会在人们不感兴趣的东西上投入如此多的精力。如果你对此有评论，改正和建议，甚至关于写作风格的话，请不要犹疑，马上写信给我。只要我还没有我的博士学位所淹没，我将尽力回答所收到的关于这一
+			mini-HOWTO 的每一封来信。
+			</para>
+
+		</sect2>
+
+
+
+
+		<sect2 id="version"><title>最新版本和译文</title>
+
+			<para>Conrad Wood <email>cnw@conradwood.net</email> 将此文章翻译成德语。</para>
+
+			<para>Elcio Mello <email>mello@ajato.com.br</email> 将此文章翻译成葡萄牙语。</para>
+			
+			<para>Marcelo Ramos <email>mello@ajato.com.br</email> 将此文章翻译成西班牙语。</para>
+
+			<para>这些译文放在 <ulink url="http://www.dirac.org/linux/debian/jigdo"
+			>http://www.dirac.org/linux/debian/jigdo</ulink>上。请看 <xref linkend="disacknowledgements">。</para>
+
+			<para>稳定的英语版本可以从 The Linux Documentation Project: <ulink
+			url="http://tldp.org/docs.html">http://tldp.org/docs.html</ulink> 的mini-HOWTO
+			部分找到。如果你想看正在工作的版本，请从 <ulink
+			url="http://www.dirac.org/linux/debian/jigdo">http://www.dirac.org/linux/debian</ulink>
+			处获取。如果你想将这个 mini-HOWTO 翻译成其它语言，请与我
+			<email><ulink
+			url="mailto:p@dirac.org">p@dirac.org</ulink></email>联系。</para>
+
+		</sect2>
+
+
+</sect1>
+
+
+
+
+
+<sect1 id="whyjigdo"><title>为什么选择 jigdo ？</title>
+
+		<sect2><title>如何获取 Debian ISO 映象集？</title>
+
+
+		<para> 如果你想拥有自己的 Debian CD，有很多种方法可以得到它们。一种方法是从销售 Debian CD 的<ulink url="http://www.debian.org/CD/vendors/">供货商</ulink> 那里购买，这种方法因有些供应商捐款给 Debian 项目而显得有点价值。你的捐献帮助 Debian 得以长时间存在。
+			</para>
+
+
+			<para>另一种得到一套 Debian CD 的方法是自己炼录，这样必须首先获得一个 ISO 映象文件，然后将这个 ISO 映象文件炼录到一个空白的CD上。在有 jigdo 之前，有两种方法可以创建 Debian CD：</para>
+	
+
+			<orderedlist>
+			<listitem><para>下载完整的ISO文件</para>
+			<listitem><para>使用PIK（pseudo-image)工具</para>
+			</orderedlist>
+
+			<para> 这篇文章是关于使用一种工具jidgo，以一种新的更好的方式获取Debian ISO映象文件。事实上，PIK已经过时了，新的规范的获取Debian ISO映象文件的方法是采用jigdo。
+			</para>
+		</sect2>
+
+
+
+
+		<sect2 id="whynotdownloadthewholeisoimage"><title>为什么不下载整个ISO映象文件呢？</title>
+
+			<para>有一些镜像站点提供 Debian ISO 文件的 HTTP 和 FTP 下载。问题是镜像站点太少，并且它们的带宽不足以支持每个想要 Debian ISO 文件的人。例如，fsn.hu 的提供者报告联接饱合，每个月输出的流量达到几个TB！</para>
+
+			<para>另外，Debian 的测试版本和不稳定版本经常更新，你的 ISO
+			文件可能在你下载的当天就变得过时了，除非你找到象将 ISO 文件安装到一个 look-back 设备上，并采用 rsync（那是 PIK 所做的）进行更新。所以当你需要最新的 ISO 映象文件时，你必须每天下载新的 ISO 文件集。显然，这不是你想要的获取 Debian ISO 文件的方法！</para>
+
+			<para>即使你想要下载稳定的 ISO 映像文件，它们仍旧每几个月进行更新。下载 ISO 文件会在几个月中给你最新的映像，但每次 Debian 稳定版本的修订版本发布，你又将经历下载整个 ISO 文件集的痛苦历程。这对于你的时间和镜像站点不是很好的利用。</para>
+
+
+
+
+		<sect2 id="whynotusethewholepik"><title>为什么不使用 Pseudo Image Kit（PIK）？</title>
+	
+			<para>PIK 解决了下载整个 ISO 映像文件的问题。快速的下载速度，和 PIK 使用 rsync 来更新 ISO 映像中只需要更新的部分，所以它是一种有效地保持最新 ISO 文件的方法。然而 PIK 仍存在一些严重的问题：</para>
+
+			<itemizedlist>
+			<listitem><para>PKI 难于使用并且不是很用户友好（user friendly）</para></listitem>
+			<listitem><para>不能使用 PIK 下载测试版本和不稳定版本的 ISO 文件集。</para></listitem>
+			<listitem><para>PIK 所依赖的 rsync 将占用服务器较多的 CPU 资源。当很多用户在同一台服务器上使用 PIK 时，服务器资源将被耗尽。即使 PIK 被做得对用户更友好一些，对于镜像站点来说仍是不可接受的不友好。
+				</para></listitem>
+			<listitem><para>PIK 所使用的 rsync，被许多严格的防火墙所阻隔。所以想使用公司快速的网络工作，使用 PIK
+			时将会碰到问题。
+			<listitem><para>每一个映像都要存放在服务器上，这在老 Potato 的日子里是可以的，28个 CD
+			映像“只”需要17GB。从 Woody 开始，96个 CD 大约需要57GB。现在想象还想提供 DVD 映像，这个数字还将翻倍。</para></listitem>
+			</itemizedlist>
+
+		</sect2>
+
+
+
+
+		<sect2 id="whatisjigdo"><title>什么是 Jigdo？</title>
+
+			<para>Jigdo（代表着“Jigsaw Download”），为<ulink url="mailto:atterer@debian.org">Richard
+			Atterer</ulink> 所写并且发布于 GNU GPL 条款之下。它是一个进行有效下载和更新 ISO 映像的工具。任何 ISO 映像。Jigdo 不是 Debian 所特有的，然而 Debian 选择它作为下载 ISO 映像的指定方法。Jigdo 工具包含两个工具：jigdo-file 为下载准备一个 ISO 映像，而 jigdo-lite 用于下载 jigdo-file 所准备的 ISO 映像。</para>
+			
+			<para>jigdo   带有两个工具：</para>
+			
+			<itemizedlist>
+			<listitem><para>jigdo-file 由提供 ISO 映像的人使用，它通过为映像文件创建 .jigdo 文件和 .template 文件使别人可以下载它。</para></listitem>
+			<listitem><para>jigdo-lite 由想下载映像文件的人使用。它使用 jigdo-file 所生成的 映像文件的 .jigdo 和
+			.template 文件来下载该映像。如果你所关心的是简单地下载 Debian 映像的话，你只需要使用 jigdo-lite。</para></listitem>
+			</itemizedlist>
+			
+			<para>通常的误解是 jigdo 创建 ISO 映像。jigdo 并不创建 ISO 映像文件。jigdo-file 通过创建 .jigdo 和
+			.template 文件来让人们下载 ISO 映像。想要下载 ISO 映像的人将取得这两个文件并使用 jigdo-lite
+			去下载该映像文件。ISO 映像文件必须在 使用 jigdo-file 之前创建好，这通常由象 mkisofs 或 debian-cd
+			的工具来完成。</para>
+
+			<para>Jigdo 解决了另两种获取Debian ISO映像的方法所存在的所有问题：</para>
+
+			<itemizedlist>
+			<listitem><para>它比下载整个 ISO 映像 快得多。</para></listitem>
+			<listitem><para>不象下载整个 ISO 映像，它可以使一个过时的 CD 映像（或者一个 loop 方式安装的过时的 ISO 映像）<emphasis>只</emphasis>下载那些自从创建这个 CD（或 ISO 映像）改动过的文件并创建一个更新过的 ISO 映像。与你使用 cvs 更新源代码非常相似。</para></listitem>
+			<listitem><para>jigdo-lite比PIK更容易使用。</para></listitem>
+			<listitem><para>jigdo-lite 使用 wget，wget 默认使用 http 进行文件传输。PIK 使用 rsync。rsync
+			可能会被某些防火墙所阻隔，而只有那些阻隔 http 的防火墙你是无法让 jigdo
+			与它们一起工作的。你几乎将永远不会在使用 jigdo-lite 时碰到防火墙的问题。</para></listitem>
+			<listitem><para>jigdo-lite 比 PIK 更加用户友好（user friendly）。</para></listitem>
+			<listitem><para>jigdo-lite 比 PIK 更加服务器友好（server friendly）。</para></listitem>
+			</itemizedlist>
+
+			<para>显然，jigdo是获取Debian ISO映像的最佳方法。</para>
+
+		</sect2>
+
+</sect1>
+
+
+
+
+
+<sect1 id="howjigdoworks"><title>Jigdo 如何工作（可选的）</title>
+
+	<para>你使用 jigdo 时不必了解这篇材料，但是它有助于揭开 jigdo 的秘密。如果你对这些细节不感兴趣，只需往前跳至<xref linkend="downloadingyourfirstimage">，“如何使用 Jigdo”。
+</para>
+
+  <para>jigdo拥有两个组成部分：</para>
+
+	<itemizedlist>
+	<listitem><para>jigdo-file：为下载准备 ISO 文件（由提供 ISO 文件的人使用）</para></listitem>
+	<listitem><para>jigdo-lite：下载 ISO 文件（由下载 ISO 文件的人使用）</para></listitem>
+	</itemizedlist>
+
+
+    <sect2 id="preparingtheisofordownload"><title>为下载准备 ISO 映像文件</title>
+
+			<para> CD 映像是一个叫 iso9660 的文件系统，但在这个讨论中，我们所谈及的 CD 映像是一个称之为“ISO 映像”（大约650MB）的大文件，它包含了处于不同偏移量的文件。 如果一个 CD 包含一个567字节的 README 文件，ISO 映像文件可能包含 README 文件的内容在偏移量20480000到20480567，你可以想象一个 CD 映像为： </para>
+
+      <screen>
+                    --------------------------------------------------------
+      ISO Image:    |xxxx| file-0 |xx| file-1 |xxx| file-2 |x| file-3 |xxxx|
+                    --------------------------------------------------------
+      </screen>
+
+			<para>图形中的“x”区域包含了诸如目录信息，补零，磁盘名字，引导块等东西。
+			</para>
+
+			<para>jigdo-file 使用两个东西作为输入：一个完全的 CD 映像（所以 ISO 文件需要预先建好）和一些可能存在或可能不存在映像中的文件的集合。这是一个jigdo-file输入的图形：</para>
+
+      <screen>
+                    --------------------------------------------------------
+      ISO Image:    |xxxx| file-0 |xx| file-1 |xxx| file-2 |x| file-3 |xxxx|
+                    --------------------------------------------------------
+
+                         ----------  ----------              ----------    ----------
+      Loose Files:       | file-0 |  | file-1 |              | file-3 |    | file-4 |
+                         ----------  ----------              ----------    ----------
+      </screen>
+
+			<para> 通过魔法，jigdo-file 找出 loose 文件中那些文件属于 ISO 映像以及它们在 ISO 文件中的偏移量。它输出两个文件：一个“.template”文件和一个“.jigdo”文件。 </para>
+
+    </sect2>
+
+
+
+
+    <sect2 id="the.templatefile"><title>.template 文件</title>
+
+			<para>给 jigdo-file 提供一个 ISO 映像和一些可能在或可能不在 ISO 映像中的文件作输入后，它为那个 ISO 映像文件输出了一个 .template 文件。这个文件看起来像下面的样子：
+</para>
+
+      <screen>
+                    --------------------------------------------------------
+      .template:    |xxxx| md5-0  |xx| md5-1  |xxx|cccccccc|x| md5-3  |xxxx|
+                    --------------------------------------------------------
+      </screen>
+
+			<para>jigdo-file 发现 <filename>file-0</filename>， <filename>file-1</filename> 和
+			<filename>file-3</filename>
+			包含在ISO映像之中，它移去这些文件的内容代之以各个文件的md5校验和（<filename>md5-0</filename>， <filename>md5-1</filename> 等等 ）。
+</para>
+
+			<para>ISO 映像中的"<literal remap="bf">x</literal>"数据（目录信息、补零等等东西）被压缩后写入了.template 文件，最后，那些在 ISO 映像中的文件，如果没有象 <filename>file-2</filename> 一样提供 loose file ，也被压缩后写进.template 文件。这在.template文件的图形中以"<literal remap="bf">c</literal>"的形式表现。
+</para>
+			<para>提供给jigdo-file，但在ISO映像中没有找到相对应文件的loose
+			file（如<filename>file-4</filename>）则被忽略。
+			</para>
+   
+		</sect2>
+
+
+
+
+    <sect2 id="the.jigdofile"><title>.jigdo 文件</title>
+
+			<para>给 jigdo-file 提供一个 ISO 映像和一些可能在或可能不在 ISO 映像中的文件作输入后，它为那个 ISO 映像文件输出了一个 .jigdo 文件。它是一个 GZIP 格式的文件，因此你必须使用 zcat 或 zless 查看。.jigdo 文件用 gunzip 打开后看起来象下面：
+			</para>
+
+      <screen>
+      md5-0=http://somemirror.org/file-0
+      md5-1=http://somemirror.org/file-1
+      md5-2=http://somemirror.org/file-2
+      md5-3=http://somemirror.org/file-3
+      </screen>
+
+			<para> .jigdo 文件简单地在 ISO 映像中的文件和该文件的下载 URL 间提供了一种对应关系。.jigdo 文件中还有其它的东西。当你看过整个文件时，你会发觉 .jigdo 文件与 .ini
+			文件有着相同的格式。它应该是可以自我说明的，但如果你要详细的资料，请看 jigdo 的文档。
+			</para>
+   
+			<para>上面的显示的格式并不完全与你看到的典型的 .jigdo 文件相同，但已经非常相似。如果你看到 .jigdo 文件尾部的 [Servers] 节，就将看到上面所提供的 .jigdo 文件与实际的 .jigdo 文件的差异了。</para>
+
+    </sect2>
+
+
+
+
+    <sect2 id="downloadingtheimage"><title>下载映像文件</title>
+
+			<para>一旦你使用 jigdo-file 为下载准备好了ISO文件，任何人都可以用 jigdo-lite 下载 ISO 文件。jigdo-lite 使用 wget 下载 Debian ISO 文件中的所有文件，并将它们重新组装形成一个 ISO 文件。
+			</para>
+
+    </sect2>
+
+</sect1>
+
+
+
+
+
+<sect1 id="downloadingyourfirstimage"><title>下载你的第一个映像（5个容易的步骤）</title>
+
+	<para>我们假设你正从头开始，手中没有任何 Debian 的 ISO 文件。一旦你生成自己的 ISO 文件集，以后就可以通过 jigdo-lite 更新它们。我们将在下一节谈谈如何更新你的 ISO 文件。
+</para>
+
+
+		<sect2><title>安装 Jigdo</title>
+
+			<para>首先安装 jigdo-file 包：</para>
+
+			<screen>
+      # apt-get install jigdo-file
+			</screen>
+
+			<para> Jigdo 仍处于继续开发之中。错误修正和改进是正常的， 所以当你正在使用 stable 或 testing 版本（应该是指 Debian 的版本）时，请从<ulink url= "http://packages.debian.org/unstable/utils/jigdo-file.html">http://packages.debian.org/unstable/utils/jigdo-file.html</ulink>处下载基于 unstable 版本的 jigdo-file。直到2002年7月19日它的版本号是0.6.8-1。这是本文的例子所用的版本。
+			</para>
+
+			<para>Woody 的用户请注意：Woody（rev 0）所带的 jigdo-lite 不能下载 Sarge 或 Sid。请看<xref linkend="needtoupgrade">
+</para>
+		</sect2>
+
+
+
+
+		<sect2 id="downloadthe.templateand.jigdofiles"><title>下载 .template 和 .jigdo 文件</title>
+
+			<para>对于每个想下载的 ISO 映像，你将需要两个文件：</para>
+
+	 		<itemizedlist>
+			<listitem><para>你想下载的映像文件对应的 .jigdo 文件。</para></listitem>
+			<listitem><para>你想下载的映像文件对应的 .template 文件。</para></listitem>
+	 		</itemizedlist>
+
+			<para> 例如：Woody 一共有8个映像文件，因此你需要下载8个 .jigdo 文件和8个 .template 文件。它们可以从<ulink url="http://www.debian.org/CD/jigdo-cd/" >http://www.debian.org/CD/jigdo-cd/</ulink>处下载，名字为<filename>woody-i386-1.iso.jigdo</filename>，<filename>woody-i386-1.iso.template</filename>，...，和 <filename>woody-i386-8.iso.template</filename>。 
+			</para>
+
+			<para>你也可以选择给 jigdo-file 一个指向所需的 .jigdo 文件的 URL 来代替下载每一个 ISO 映像的 .jigdo 和
+			.template 文件，如<literal>http://a.mirror/woody-i386-1.jigdo</literal>。jigdo-lite 会马上下载相关的
+			.jigdo 和 .template 文件。然而，如果你对第一次使用 jigdo-lite
+			感到有点紧张，就下载这些文件。我将带你完成整个过程。</para>
+		</sect2>
+
+
+
+
+		<sect2 id="runjigdo-lite"><title>运行 jigdo-lite</title>
+
+			<para>以你想下载的映像的.jigdo文件为参数运行jigdo-lite。 以Woody为例：</para>
+
+
+			<screen>
+      $ jigdo-lite woody-i386-1.iso.jigdo
+			</screen>
+   
+			<para>另外，如果你想使用 .jigdo 文件的 URL，而不是 .jigdo 文件在硬盘上的拷贝。则使用这个 URL 作为参数运行 jigdo-lite：</para>
+
+			<screen>
+      $ jigdo-lite http://a.mirror/woody-i386-1.jigdo
+			</screen>
+
+			<para>你将看到如下的一些东西：</para>
+
+
+
+			<screen>
+      -----------------------------------------------------------------
+      Jigsaw Download "lite"
+      Copyright 2001-2002 by Richard Atterer &lt;jigdo@atterer.net&gt;
+      Getting mirror information from /etc/apt/sources.list
+      -----------------------------------------------------------------
+      Images offered by `woody-i386-1.iso.jigdo':
+        1: woody-i386-1.iso
+      
+      -----------------------------------------------------------------
+      If you already have a previous version of the CD you are
+      downloading, jigdo can re-use files on the old CD that are also
+      present on the new image, and you do not need to download them
+      again. Mount the old CD ROM and enter the path it is mounted under
+      (e.g. `/mnt/cdrom'). Alternatively, just press enter if you want
+      to start the download of any remaining files.
+      Files to scan: 
+			</screen>
+
+			<para>如果你忘了将一个.jigdo文件作为参数传给jigdo-lite，它将会提示你输入一个。</para>
+
+
+
+			<para>如果你用Ctrl-z挂起jigdo-lite（别这样干，我将告诉你会看到些什么）并 <command>ls</command> 一下，你会发现目录中有一个名为 <filename>woody-i386-1.iso.jigdo.unpacked</filename> 的文件。这是 .jigdo 文件解压缩后的版本。
+			</para>
+
+			<para>现在，jigdo-lite 正在告诉我们如果有一个过时的 CD 版本的话，给出那个 CD
+			的路径名。开始我们已假设你是从头开始并且没有任何 Debian 的 ISO
+			映像，所以我们不用进行扫描（我们将在<xref linkend="updatingyourimage">中详细讨论这个问题）。现在只需按&lt;ENTER&gt;。
+			</para>
+
+		</sect2>
+
+
+
+
+		<sect2 id="specifyamirror"><title>指定一个镜像站点</title>
+
+
+			<para>你将会看到：</para>
+
+			<screen>
+      -----------------------------------------------------------------
+      The jigdo file refers to files stored on Debian mirrors. Please
+      choose a Debian mirror as follows: Either enter a complete URL
+      pointing to a mirror (in the form
+      `ftp://ftp.debian.org/debian/'), or enter any regular expression
+      for searching through the list of mirrors (try a two-letter
+      country code such as `de', or a country name like `United
+      States', or a server name like `sunsite'):
+      Debian mirror [http://linux.csua.berkeley.edu/debian//]: 
+			</screen>
+
+			<para> jigdo-lite 足够聪明以至能从<filename>/etc/apt/sources.list</filename> 中将你用来更新 Debian 的镜像站点拉出来使用（你能看到我是使用 <filename>linux.csua.berkeley.edu</filename> 来作更新的）。如果由于某些原因想使用不同的镜像站点，只需在这里指定这个镜像站点。如果这正是你想使用的镜像站点，按&lt;ENTER&gt;键，jigdo-file 将会在你的主目录中创建一个 <filename>.jigdo-lite</filename> 文件。
+			</para>
+
+			<para>接着，如果你正在使用的.jigdo文件引用的一个包需要从一个Non-US的服务器上下载（软件受美国出口限制阻碍），jigdo-lite会提示你需要一个Non-US服务器。这一消息的显示（和你的回答）与前面段落中描述的镜像对话框非常相似，仅有的区别是你需要指定（或接受默认值）一个Non-US服务器。如果你正要下载的ISO镜像包含Non-US软件，你将会看到：</para>
+
+			<screen>
+      -----------------------------------------------------------------
+      The jigdo file also refers to the Non-US section of the Debian
+      archive. Please repeat the mirror selection for Non-US. Do not
+      simply copy the URL you entered above; this does not work because
+      the path on the servers differs!
+      Debian non-US mirror [http://linux.csua.berkeley.edu/debian-non-US//]: 
+			</screen>
+
+			<para>并且jigdo-lite会将你的选择写到 <filename>$HOME/.jigdo-lite</filename> 文件中。然而，如果你要下载的映像文件不包含Non-US软件的话，你将不会看到这个对话框。
+</para>
+			
+			<para>注意，你可以改变 <filename>$HOME/.jigdo-lite</filename> 文件中如下面的行来改变以后下载的默认的镜像站点：
+</para>
+
+      <screen>
+      debianMirror='http://some-mirror-to-use/debian/'
+      nonusMirror='http://some-other-mirror/debian-non-US/'
+      </screen>
+
+		</sect2>
+
+
+
+
+		<sect2 id="downloadingoftheiso"><title>ISO 文件的下载过程</title>
+
+
+			<para>当指定镜像站点后，jigdo-lite 将寻找 .template 文件。如果没有找到，它将从镜像站点上下载一个 .template 文件。当它找到 .template 文件（或下载一个）后，你将看到：
+</para>
+
+			<screen>
+      -----------------------------------------------------------------
+      Merging parts from `file:' URIs, if any...
+      Found 0 of the 1224 files required by the template
+      Will not create image or temporary file - try again with different input files
+      --13:38:08--  http://linux.csua.berkeley.edu/debian/pool/main/b/bind9/
+            lwresd_9.2.1-2.woody.1_i386.deb => `lwresd_9.2.1-2.woody.1_i386.deb'
+      Resolving linux.csua.berkeley.edu... done.
+      Connecting to linux.csua.berkeley.edu[128.32.247.238]:80... connected.
+      HTTP request sent, awaiting response... 200 OK
+      Length: 157,318 [application/x-debian-package]
+      
+      30% [==========>                          ] 47,418       113.22K/s    ETA 00:00
+      ...
+      </screen>
+
+			<para>当 .template 文件被找到（或被下载）后，jigdo-lite 开始将软件包拉到你的硬盘上。这时将有大量的信息从你的屏幕上闪过，如果这使你感到糊涂，请看<xref
+			linkend="wgetoptions">。 当 jigdo-lite 正在下载这些包时，切换到另外一个控制台（或打开另一个 xterm ）并对 jigdo-lite 所在的目录做一次 <command>ls</command>，现在这个目录应该有6个文件：</para>
+
+			<itemizedlist>
+			<listitem><para><filename>jigdo-file-cache.db</filename></para></listitem>
+			<listitem><para><filename role="directory">tmp/</filename></para></listitem>
+			<listitem><para><filename>woody-i386-1.iso.jigdo</filename></para></listitem>
+			<listitem><para><filename>woody-i386-1.iso.jigdo.unpacked</filename></para></listitem>
+			<listitem><para><filename>woody-i386-1.iso.list</filename></para></listitem>
+			<listitem><para><filename>woody-i386-1.iso.template</filename></para></listitem>
+			<listitem><para><filename>woody-i386-1.iso.tmp</filename></para></listitem>
+			</itemizedlist>
+
+			<para><filename>woody-i386-1.iso.tmp</filename> 不会马上就出现，它是 ISO 文件的临时版本，只是在写 ISO 文件时才出现。</para>
+
+			<para><filename>jigdo-file-cache.db</filename> 是一个 Berekeley DB 文件，它包含了当你在<literal>Files to
+			scan:</literal> 提示时指定目录后读入的任何文件的 MD5 校验和。更全面的描述在<xref linkend="jigdo-file-cache">.</para>
+			
+			<para><filename role="direcotry">tmp/</filename> 是容纳下载的Debian包的目录。例如，当我在写这个的时候，它包括了：
+			</para>
+
+			<screen>
+      $ ls tmp/
+      alsa-headers-0.5_0.5.12a-2_all.deb  tkdiff_3.08-3_all.deb
+      alsa-utils-0.4_0.4.1-9.1_i386.deb   xfonts-intl-chinese-big_1.2-2.1_all.deb
+      gnuserv_3.12.4-3_i386.deb           xmanpages-ja_4.1.0.20011224-1_all.deb
+      pilot-link_0.9.5.0-8_i386.deb       xscreensaver_3.34-3_i386.deb
+      smpeg-plaympeg_0.4.4-8_i386.deb
+			</screen>
+
+			<para>这个目录中的文件时不时被写进 <filename>woody-i386-1.iso.tmp</filename> 并且目录被清空。
+			</para>
+
+			<para>此时，去玩一会Quake
+			III游戏，因为整个过程需要一些时间（你可能想到另一台机器上玩游戏，因为当jigdo在装配ISO文件是非常消耗磁盘的）。过些时间，下载将结束，你将会看到：
+			</para>
+
+			<screen>
+      FINISHED --13:32:58--
+      Downloaded: 7,469,872 bytes in 9 files
+      Found 9 of the 9 files required by the template                              
+      Successfully created `woody-i386-3.raw'
+      
+      -----------------------------------------------------------------
+      Finished!
+      The fact that you got this far is a strong indication that `woody-i386-3.raw'
+      was generated correctly. I will perform an additional, final check,
+      which you can interrupt safely with Ctrl-C if you do not want to wait.
+      
+      OK: Checksums match, image is good!   
+      $
+			</screen>
+
+		</sect2>
+
+</sect1>
+
+
+<!--
+
+			<orderedlist>
+			<listitem><para>If you have an outdated copy of the CD:  Mount it and give jigdo-lite the path to your CD.  On Debian,
+				this is most likely <filename role="directory">/cdrom</filename>.</para></listitem>
+			<listitem><para>If you have an outdated copy of the ISO file:  Currently, jigdo-lite can't scan an outdated ISO image
+				file (it's on the TODO list), but you can employ a trick to use your ISO file.  ISO files are actually filesystems, just
+				like the filesystems on your hard drive, but their contained in a file rather than a partition on your drive.  Linux
+				can mount these files just as if they were filesystems on a partition.  Mount the ISO file as a loop device
+				using <command>mount -o loop /path/to/iso/outdated-iso.iso /mnt</command>.  If you look at <filename
+				role="directory">/mnt</filename>, you'll see the CD image.  Then give the directory <filename
+				role="directory">/mnt</filename> to jigdo-lite and it will scan your outdated ISO file.</para></listitem>
+			</orderedlist>
+-->
+
+
+<sect1 id="updatingyourimage"><title>更新你的映像文件</title>
+
+	<para>大概，你已经阅读了最后一节，根据指引将新创建的 ISO 文件烧录到 CD
+	上并感觉到有点兴奋。迟早，有些包将被更新，或你要将你的旧 CD 在当地LUG的
+	installfest 上捐赠给新手们，并给自己烧录一套最新的CD。 由于你已经上手并正在逐渐成为 jigdo 高手，我们不会讲得象前面的部分一样详细。</para>
+
+	<para>第一步是下载所要更新映像的 .jigdo 文件和 .template 文件。 你可能会想知道为什么要第二次下载它们，原因你要下载得最新的映像已经发生变化。文件可能被加入和删除，即使没有，任何更新过的包或文件的校验和都与你最开始下载映像所用的 .jigdo 文件和 .template 文件所列的校验和不同。
+</para>
+
+	<para>在这里，你手里可能拿着一个过时的 Debian CD 或者在你的硬盘上有那个过时 CD 的 ISO 映像。让我们逐步进行来获得一个更新的 ISO 文件。如果你有一个 CD，将它放入你的光驱并安装它：
+	</para>
+
+	<screen>
+      $ mount /cdrom
+	</screen>
+
+	<para>另一方面，如果你有一个想进行更新的 ISO 文件，把它以 loop 方式安装（你可能需要成为 root 以完成这个工作）。由于注意到 Woody 刚得到了一些安全方面的更新，我将更新我的 Woody 映像：
+</para>
+	<screen>
+      # mount -o loop woody-i386-1.iso /mnt
+	</screen>
+
+	<para>现在将.jigdo文件作为参数运行jigdo-lite。</para>
+
+
+
+<!-- good for 0.6.8-1 -->
+	<screen>
+      $ jigdo-lite woody-i386-1.jigdo 
+      
+      -----------------------------------------------------------------
+      Jigsaw Download "lite"
+      Copyright 2001-2002 by Richard Atterer &lt;jigdo@atterer.net&gt;
+      Loading settings from `/home/p/.jigdo-lite'
+      
+      -----------------------------------------------------------------
+      Images offered by `woody-i386-1.jigdo':
+        1: Debian GNU/Linux 3.0 r0 Woody - Official i386 Binary-1 CD (debian-30r0-i386-binary-1.iso)
+      
+      Further information about `debian-30r0-i386-binary-1.iso':
+      Generated on Thu, 18 Jul 2002 14:34:12 +0100
+      
+      -----------------------------------------------------------------
+      If you already have a previous version of the CD you are
+      downloading, jigdo can re-use files on the old CD that are also
+      present on the new image, and you do not need to download them
+      again. Mount the old CD ROM and enter the path it is mounted under
+      (e.g. `/mnt/cdrom'). Alternatively, just press enter if you want
+      to start the download of any remaining files.
+      
+      You can also enter a single digit from the list below to
+      select the respective entry for scanning:
+        1: /mnt
+      Files to scan:
+	</screen>
+
+	<para>jigdo-lite 正在请求我们给出已安装的 CD（如果你正在更新一个 CD）或以 loop 方式安装的 ISO 文件（如果你正使用 ISO
+	文件）的位置。 我将 ISO 文件以 loop 方式安装在 <filename role="directory">/mnt</filename> 上使用，所以我输入
+	<literal>/mnt</literal>。 如果你正在更新CD，就输入CD所安装的目录，大多数情况下是 <literal>/cdrom</literal>。 在任一情况下，jigdo-lite 会扫描安装介质的目录，决定那些文件需要更新和重新使用不需要更新的文件。你将看到类似下面的东西： 
+</para>	
+
+<!-- good for 0.6.8-1 -->
+	<screen>
+      Files to scan: /mnt/other
+      
+      Not downloading .template file - `woody-i386-1.template' already present
+      jigdo-file: Output file `debian-30r0-i386-binary-1.iso' already exists - delete
+      it or use --force
+      jigdo-file failed with code 3 - aborting.
+	</screen>
+
+
+	<para> 发生了什么事情？事实上，我想让你看看这个，因为你迟早会碰到它。我正在更新一个 ISO
+	文件，但那个过时的映像文件正在我工作的目录下。 jjigdo-lite想生成一个叫 <filename>woody-i386-1.iso</filename>
+	的文件，但当前的目录下已有一个同名的文件存在（那个过时的映像）。 jigdo-lite
+	不想毁坏那个文件，所以它提示我们可以删除那个文件或使用 <literal>--force</literal>选项去覆盖它。 你也可以将其改名或移走它，但我猜想 jigdo-lite 假设我们已知道这些。？:-) 
+</para>
+	
+	<para>别因为这个映像文件是以 loop 安装的而不敢移动或重新命名它。 文件系统使用 inode，即使你移动或重新命名它，inode
+	保持不变。 你不会伤害到安装在 <filename role="directory">/mnt</filename> 下的文件系统。 至于删除 ISO
+	文件，那同样不会损害已安装的文件系统；一个文件的 inode 只有当它的引用计数减为零时才会被释放。 安装 ISO
+	文件使引用计数增加，所以该文件只有在你 <command>rm</command>删除它<emphasis>并</emphasis>卸载它后才真正被删除。正在更新
+	CD 的你们不必为此担心。 :-)</para>
+
+	<para>我将会把该 ISO 文件改名为 <filename>woody-i386-1.iso.old</filename> 并重新运行 jigdo-lite。让我们再试一次:</para>
+
+	<screen>
+      $ jigdo-lite woody-i386-1.iso.jigdo
+      
+      -----------------------------------------------------------------
+      Jigsaw Download "lite"
+      Copyright 2001-2002 by Richard Atterer &lt;jigdo@atterer.net&gt;
+      Loading settings from `/home/p/.jigdo-lite'
+      
+      -----------------------------------------------------------------
+      Images offered by `woody-i386-1.iso.jigdo':
+        1: Debian GNU/Linux 3.0 r0 Woody - Official i386 Binary-1 CD
+             (debian-30r0-i386-binary-1.iso)
+
+      Further information about `debian-30r0-i386-binary-1.iso':
+      Generated on Thu, 18 Jul 2002 14:34:12 +0100
+      
+      -----------------------------------------------------------------
+      If you already have a previous version of the image you are
+      downloading, jigdo can re-use files on the old image that are also
+      present on the new image, and you do not need to download them
+      again. Mount the old CD ROM and enter the path it is mounted under
+      (e.g. `/mnt/cdrom'). Alternatively, just press enter if you want
+      to start the download of any remaining files.
+      You can also enter a single digit from the list below to
+      select the respective entry for scanning:
+        1: /mnt
+      Files to scan: /mnt
+      Not downloading .template file - `woody-i386-1.template' already present
+      ...
+      Found 1200 of the 1224 files required by the template                          
+      ...
+</screen>
+
+	<para>jigdo-lite 记住了我想要扫描 <filename role="directory">/mnt</filename> 并告诉我可以敲入 <literal>1</literal> 或再次输入该目录。我再次输入了目录的名字。 </para>
+
+	<para>省略号代表某些文字快速改变。第一个省略号是 jigdo-lite 正在扫描的文件的动态列表，第二个省略号表示正在写
+	<filename>woody-i386-1.iso.tmp</filename> 的进度。一旦 jigdo-lite 完成扫描这些文件和写好 ISO 的临时文件，它打印出：</para>
+
+	<screen>
+      Copied input files to temporary file `woody-i386-1.iso.tmp'
+         - repeat command and supply more files to continue
+      
+      -----------------------------------------------------------------
+      If you already have a previous version of the image you are
+      downloading, jigdo can re-use files on the old image that are also
+      present on the new image, and you do not need to download them
+      again. Mount the old CD ROM and enter the path it is mounted under
+      (e.g. `/mnt/cdrom'). Alternatively, just press enter if you want
+      to start the download of any remaining files.
+      You can also enter a single digit from the list below to
+      select the respective entry for scanning:
+        1: /mnt
+      Files to scan: 
+	</screen>
+
+	<para>因为通常你除了以 loop 方式安装的 ISO 文件（或你的 CD ）并没有另外的文件来源需要扫描，按
+	&lt;ENTER&gt;。Jigdo-lite将问你想使用哪一个镜像站点，就如你第一次下载ISO文件时它问的一样。你之前已经回答过这些问题，但如果你真的忘了，你可能要重新阅读<xref
+	linkend="specifyamirror">。</para>
+
+	<para>到这里时，你将看到jigdo-lite正在施展它的魔法。这不是很简单吗？</para>
+
+
+
+</sect1>
+
+
+
+
+<sect1><title>常见问答（FAQ）</title>
+
+	<para>带有日期的预先计划的问题表明这些问题是时间敏感（time
+	sensitive），换句话说，这个问题与一种临时条件有关。如果你看到这些问题之一并且知道临时条件已发生变化，请<ulink
+	url="mailto:p@dirac.org">与我联系</ulink>并让我知道，以便我能将该问题从这个 mini-HOWTO中删除掉。</para>
+
+
+		<sect2><title>[11 Aug 2002]: 我看到 Woody 和 Sid 的 .jigdo 文件。Sarge 的 .jigdo 文件在哪里？</title>
+
+			<para>在此刻 testing 版本的 ISO 映像因为引导软盘损坏而不能提供。当它们修复好以后，Sarge 每周快照的
+			.jigdo 文件将会在一个半官方的来源（可能是<ulink url="http://non-us.cdimage.debian.org">http://non-us.cdimage.debian.org</ulink>）上提供。
+
+		</sect2>
+
+
+
+
+		<sect2><title>[11 Aug 2002]:我能否同时在同一个目录上运行两个 jigdo-lite 会话？</title>
+
+			<para>现在不行。两个会话会在 <filename>tmp/</filename> 和 <filename>jigdo-file-cache.db</filename>
+			文件上发生冲突。这个问题正在解决中。如果你想并发地运行 jigdo-lite 会话，使用不同的工作目录。</para>
+
+		</sect2>
+
+
+
+
+		<sect2 id="disacknowledgements"><title>[11 Aug 2002]: 为什么 LDP 上没有这个 HOWTO 文件的译文？</title>
+
+			<para>I've been having trouble getting the translations of this HOWTO submitted to the non-English LDP editors.</para>
+
+			<para>The German LDP editor, Marco Budde <email>Budde@tu-harburg.de</email> refuses to accept the German translation
+			because it was written in Docbook and not Linuxdoc, even though Docbook is the preferred SGML language for the LDP.</para>
+			
+			<para>The Portuguese LDP editor, Alfredo Carvalho <email>ajpc@poli.org</email> and Spanish LDP editors, (no name)
+			<email>pacopepe@insflug.org</email> and Ismael Olea <email>ismael@olea.org</email> have completely ignored my submission
+			of the Portuguese and Spanish translations.</para>
+			
+			<para>If you care about having LDP documents in these languages, I urge you to write to these editors and ask them to
+			please be more responsible about accepting translated documents.  For the time being, you can download these translations
+			from my personal website, <ulink url="http://www.dirac.org/linux/debian/jigdo"
+			>http://www.dirac.org/linux/debian/jigdo</ulink>.</para>
+
+		</sect2>
+
+
+
+
+		<sect2><title>How can I make jigdo use a proxy?</title>
+
+			<para>This is described on <ulink url="http://debian.org/CD/jigdo-cd/">http://debian.org/CD/jigdo-cd/</ulink> as well as
+			the <filename>README</filename> of the jigdo-lite tarball.</para>
+
+		</sect2>
+
+
+
+
+		<sect2 id="interrupted"><title>What do I do if my jigdo download gets interrupted?</title>
+
+			<para>If your download gets interrupted, all you need to do is restart jigdo-lite and hit &lt;ENTER&gt; at all the
+			question prompts.  Jigdo-lite will pick up where it left off.</para>
+
+		</sect2>
+
+
+
+
+		<sect2><title>My jigdo download won't complete because the .jigdo file is broken.  When I download a new, fixed .jigdo file,
+		do I need to download all the data over again?</title>
+
+			<para>You may find that the .jigdo file you downloaded is broken.  It's very uncommon, but it does happen from time to
+			time with moving targets like Debian testing or unstable.</para>
+			
+			<para>If you find that your .jigdo file is broken, you'll need to download a new .jigdo file (when a fixed one becomes
+			available), but you <emphasis>won't</emphasis> need to download all the ISO data again.</para>
+
+			<para>You can use the same loop mounting trick we use when updating an ISO image.  The difference is that there's no
+			finished .iso file to start with, but the .iso.tmp file is an ISO image too and can be used to finish the download without
+			having to re-download all the data that was downloaded before the broken .jigdo file caused jigdo-file to halt.  Simply
+			loop mount the .tmp.iso file on <filename role="directory">/mnt</filename> and when you re-run jigdo-lite with the fixed
+			.jigdo file, tell jigdo-lite to scan <filename role="directory">/mnt</filename>.  Don't forget to rename or move the
+			.tmp.iso file so it doesn't interfere with jigdo-lite which will want to create a new .tmp.iso file.</para>
+
+		</sect2>
+
+
+
+
+		<sect2><title>Can I use jigdo to download images for DVD?</title>
+
+			<para>Absolutely; the process is identical to downloading CD images.  The only thing you need to do differently is to
+			download the .jigdo and .template files for DVDs instead of CDs.  You can find the DVD .jigdo and .template files at
+			<ulink url="http://www.debian.org/CD/jigdo-cd/">http://www.debian.org/CD/jigdo-cd/</ulink>.</para>
+
+			<para>Note that you need Linux 2.4 or later to create DVD-sized files.  Under Windows, DVD-sized images can't be created
+			at all at the moment because the C++ library of the mingw gcc port doesn't have big file support yet.</para>
+
+		</sect2>
+
+
+
+
+		<sect2><title>Can I burn the <filename>.iso.tmp</filename> file to CD?</title>
+
+			<para>We haven't tried yet, but it should be possible.  You'd probably find some files are filled with "0"'s.  If someone
+			tries it, please contact me at <email><ulink url="mailto:p@dirac.org">p@dirac.org</ulink></email> and let me know what
+			happened.</para>
+
+			<para>But more importantly, why would you WANT to do this? &nbsp; :-)</para>
+
+		</sect2>
+
+
+
+
+		<sect2><title>Why doesn't jigdo work?  It downloads some packages and deletes them.  I know it doesn't write them to the
+		<filename>iso.tmp</filename> file because the file size doesn't change!</title>
+
+			<para>Jigdo works just fine - the .iso.tmp file is created at the beginning with its final size, but filled with zero
+			bytes.  Later, parts of it are overwritten with the downloaded data.</para>
+
+			<para>You can tell that jigdo is making progress by looking at the messages "<literal>Found X of the Y files required by
+			the template</literal>" that are printed from time to time.  The second value "<literal>Y</literal>" should decrease.
+			When it reaches zero, the download is finished.</para>
+
+		</sect2>
+
+
+
+
+		<sect2 id="troublewithjigdoeasy"><title>I'm having trouble getting jigdo-easy to work.</title>
+
+			<para>See <xref linkend="jigdo-easy">.</para>
+
+		</sect2>
+
+
+
+
+		<sect2 id="needtoupgrade"><title>I'm having trouble getting jigdo to download Sarge or Sid.</title>
+
+			<para>If you're using Potato or Woody, upgrade to jigdo-lite 0.6.8.  Because of a change in Jigdo, the version of
+			jigdo-lite that comes with Woody (rev 0) cannot download Sarge and Sid images.  The version that comes with Sarge is
+			sufficient (<xref linkend="links">).
+
+			<para>If you're using Sarge or Sid, then you may need some help.  Search the archives of the debian-cd mailing list, and
+			if that doesn't solve your problem, you should send them a request for help (<xref linkend="links">).</para>
+
+		</sect2>
+
+
+
+
+		<sect2 id="wgetoptions"><title>Jigdo-lite is too verbose.  How can I supress some or all of its messages?</title>
+
+			<para>Jigdo-lite uses wget, and wget's output can be quite verbose.  If this is unsettling, you can make wget more quiet
+			by adding <literal>--non-verbose</literal> to the <literal>wgetOpts</literal> switch in your
+			<filename>~/.jigdo-lite</filename> file.  If you want wget to print no messages at all, use <literal>--quiet</literal> in
+			the <literal>wgetOpts</literal> switch.</para>
+
+		</sect2>
+
+
+
+
+		<sect2 id="otherplatforms"><title>Can I use jigdo on platforms other than Linux?</title>
+
+			<para>Certainly.  If you're interested in Potato or Woody under Microsoft Windows, old SunOS, HP-UX and IRIX you can use
+			jigdo-easy.  See <xref linkend="jigdo-easy"> and <xref linkend="links">.</para>
+
+			<para>If you want to download Potato, Woody, Sarge or Sid under Microsoft Windows, jigdo-lite has been ported to that
+			platform and can be downloaded from the main jigdo site (<xref linkend="links">).</para>
+
+		</sect2>
+
+
+</sect1>
+
+
+
+
+
+<sect1 id="errata"><title>Errata</title>
+
+		<sect2 id="jigdo-easy"><title>jigdo-easy</title>
+
+			<para>Jigdo-easy, by Anne Bezemer, is a fork from jigdo-lite which is portable to a wider range of systems, including
+			Microsoft Windows, old SunOS, HP-UX and IRIX).  It's also easier to use than jigdo-lite but because of changes made to
+			Jigdo, will only work with Potato and Woody.  Jigdo-easy will not be able to download Sarge and Sid.  See <xref
+			linkend="links"> and <xref linkend="otherplatforms">.</para>
+
+		</sect2>
+
+
+
+
+		<sect2><title>GUI Interface</title>
+
+			<para>A GTK+ interface to jigdo is currently being worked on.  It's not fully functional yet, but will be available at
+			some point.  There will be a Linux as well as a Windows GUI client.</para>
+
+		</sect2>
+
+
+
+
+		<sect2 id="jigdo-file-cache"><title>jigdo-file-cache.db</title>
+
+			<para>The cache contains the md5sums of files read when you supply a directory at the <literal>Files to scan:</literal>
+			prompt.  If you have jigdo-file scan the same directory a second time, the scan will be very fast.</para>
+
+			<para>This could be useful in the following case: rev0 gets updated to rev1.  With the rev1 CD images, some packages may
+			have been pushed from CD <literal>n</literal> to CD <literal>n+1</literal>, or vice versa.  If you had a particularly slow
+			link (e.g.  modem), you'd try to avoid downloading these packages again.  For this reason, when downloading the new
+			version of CD <literal>n</literal>, you'd let jigdo-lite scan the three CDs <literal>n-1</literal>, <literal>n</literal>
+			and <literal>n+1</literal> (or even all 8 CDs if you want to be 100% sure).</para>
+
+			<para>If you have jigdo-lite scan the same CDs over and over again while updating each of the 8 CD images, the cache will
+			prevent all the data on the CDs from being read multiple times.</para>
+
+			<para>The cache is much more important when <emphasis>generating</emphasis> jigdo files, because you don't want jigdo-file
+			to read in your whole 50GB Debian mirror for every generated jigdo file.</para>
+
+		</sect2>
+
+
+
+
+		<sect2 id="links"><title>Resources</title>
+
+			<para>This HOWTO is winding down to a close, but I thought I'd leave you with a few links and references to learn more
+			about the jigdo tools and how they work.</para>
+
+			<variablelist>
+			<varlistentry><term><ulink url="http://atterer.net/jigdo"
+			>http://atterer.net/jigdo</ulink></term>
+				<listitem><para>This is the jigdo home site.  You should definitely browse this site; lots of information about ports,
+				GUI clients and everything under the sun relating to jigdo.</para></listitem>
+
+			<varlistentry><term><ulink url="http://cdimage.debian.org/~costar/jigdo"
+			>http://cdimage.debian.org/~costar/jigdo</ulink></term>
+				<listitem><para>The Debian page for jigdo-easy (<xref linkend="jigdo-easy">).</para></listitem>
+
+			<varlistentry><term><ulink url="http://www.debian.org/CD/jigdo-cd"
+			>http://www.debian.org/CD/jigdo-cd</ulink></term>
+				<listitem><para>The main Debian page for jigdo.</para></listitem>
+
+			<varlistentry><term><ulink url="http://packages.debian.org/testing/utils/jigdo-file.html"
+			>http://packages.debian.org/testing/utils/jigdo-file.html</ulink></term>
+				<listitem><para>If you're using Potato or Woody, please upgrade jigdo-file to version <literal>0.6.8</literal>, which
+				comes with Sarge (<xref linkend="needtoupgrade">).</para></listitem>
+
+			<varlistentry><term><ulink url="http://lists.debian.org/search.html"
+			>http://lists.debian.org/search.html</ulink></term>
+				<listitem><para>You can use this page to search the debian-cd mailing list archives.</para></listitem>
+
+			<varlistentry><term><ulink url="http://www.debian.org/MailingLists/subscribe"
+			>http://www.debian.org/MailingLists/subscribe</ulink></term>
+				<listitem><para>The subscription page for the debian-cd mailing list.</para></listitem>
+
+			</variablelist>
+
+		</sect2>
+
+</sect1>
+	
+
+
+</article>
+
+<!--
+vim: tw=128
+-->
+
+
+<!-- don't run as root -->

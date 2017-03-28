@@ -1,0 +1,89 @@
+<chapter id="index"><?dbhtml dir="devel" ?>
+	<title>数字证书开发</title>
+	<para> </para>
+	
+<section id="java.security">
+	<title>Java (java.security.*)</title>
+	<section>
+		<title>访问X.509证书</title>
+		<para>Java访问X.509证书</para>
+		<screen>
+		<![CDATA[
+/*
+ * Created on 2005-7-1
+ *
+ * Author: neo chen <openunix@163.com>
+ * Nickname: netkiller
+ */
+import java.io.*;
+import java.security.cert.*;
+import java.security.cert.CertificateFactory;
+
+public class CertInfo {
+	static String issue,after,before,subject;
+	static String serialno,signalg;
+	static int version;
+	public void Init() throws Exception{
+	CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
+	FileInputStream fis=new FileInputStream("e:/Java/chen.cer");
+	X509Certificate cert = (X509Certificate)certFactory.generateCertificate(fis);
+
+	fis.close();
+	issue=cert.getIssuerDN().toString();
+	subject=cert.getSubjectDN().getName();
+	after=cert.getNotAfter().toString();
+	before=cert.getNotBefore().toString();
+	version=cert.getVersion();
+	serialno=cert.getSerialNumber().toString();
+	signalg=cert.getSigAlgName();
+	}
+	public String getIssue(){
+	return issue;
+	}
+
+	public String getAfter(){
+	return after;
+	}
+
+	public String getBefore(){
+	return before;
+	}
+
+	public String getSerial(){
+	return serialno;
+	}
+
+	public String getsignalg(){
+	return signalg;
+	}
+
+	public String getsubject(){
+	return subject;
+	}
+
+	public String getversion(){
+	return ("ver:"+version);
+	}
+
+
+	public static void main(String[] args) throws Exception
+	{
+	CertInfo c=new CertInfo();
+	c.Init();
+	System.out.println(c.getBefore());
+	System.out.println(version);
+	System.out.println(c.getversion());
+	System.out.println(issue);
+	System.out.println(c.getsubject());
+	System.out.println(c.getsignalg());
+	}
+}
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>创建证书</title>
+	</section>
+</section>
+	&chapter.devel.socket.xml;
+</chapter>

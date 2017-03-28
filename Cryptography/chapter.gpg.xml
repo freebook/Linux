@@ -1,0 +1,329 @@
+<chapter id="index"><?dbhtml dir="gpg" ?>
+	<title>OpenPGP/OpenGPG(GnuPG)</title>
+	<para>下载PGP: http://www.pgp.com/</para>
+	<para>下载OpenPGP: http://www.pgpi.org/</para>
+	<section id="GnuPG">
+		<title>GnuPG</title>
+		<para>GnuPG</para>
+		<screen>
+~/.gnupg/gpg.conf 	 – 配置文件
+~/.gnupg/trustdb.gpg – 信任库
+~/.gnupg/pubring.gpg – 公钥库
+~/.gnupg/secring.gpg – 私钥库
+		</screen>
+		<section>
+			<title>Creating a key (创建key) </title>
+			<subtitle>--gen-key                 generate a new key pair</subtitle>
+			<screen>
+			<![CDATA[
+neo@neo-laptop:~$ gpg --gen-key
+gpg (GnuPG) 1.4.11; Copyright (C) 2010 Free Software Foundation, Inc.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Please select what kind of key you want:
+   (1) RSA and RSA (default)
+   (2) DSA and Elgamal
+   (3) DSA (sign only)
+   (4) RSA (sign only)
+Your selection?
+RSA keys may be between 1024 and 4096 bits long.
+What keysize do you want? (2048)
+Requested keysize is 2048 bits
+Please specify how long the key should be valid.
+         0 = key does not expire
+      <n>  = key expires in n days
+      <n>w = key expires in n weeks
+      <n>m = key expires in n months
+      <n>y = key expires in n years
+Key is valid for? (0) 1y
+Key expires at Tuesday, October 22, 2013 PM03:25:35 HKT
+Is this correct? (y/N) y
+
+You need a user ID to identify your key; the software constructs the user ID
+from the Real Name, Comment and Email Address in this form:
+    "Heinrich Heine (Der Dichter) <heinrichh@duesseldorf.de>"
+
+Real name: Neo Chan
+Email address: 324@example.com
+Comment: Office Email
+You selected this USER-ID:
+    "Neo Chan (Office Email) <324@example.com>"
+
+Change (N)ame, (C)omment, (E)mail or (O)kay/(Q)uit? O
+You need a Passphrase to protect your secret key.
+
+We need to generate a lot of random bytes. It is a good idea to perform
+some other action (type on the keyboard, move the mouse, utilize the
+disks) during the prime generation; this gives the random number
+generator a better chance to gain enough entropy.
+
+Not enough random bytes available.  Please do some other work to give
+the OS a chance to collect more entropy! (Need 282 more bytes)
+.......+++++
+.......+++++
+We need to generate a lot of random bytes. It is a good idea to perform
+some other action (type on the keyboard, move the mouse, utilize the
+disks) during the prime generation; this gives the random number
+generator a better chance to gain enough entropy.
+..+++++
+..+++++
+gpg: key CEF09301 marked as ultimately trusted
+public and secret key created and signed.
+
+gpg: checking the trustdb
+gpg: 3 marginal(s) needed, 1 complete(s) needed, PGP trust model
+gpg: depth: 0  valid:   1  signed:   0  trust: 0-, 0q, 0n, 0m, 0f, 1u
+gpg: next trustdb check due at 2013-10-22
+pub   2048R/CEF09301 2012-10-22 [expires: 2013-10-22]
+      Key fingerprint = C5B7 50EF 762F 3F7F 1AE5  8AEC AF10 D50D CEF0 9301
+uid                  Neo Chan (Office Email) <324@example.com>
+sub   2048R/0BF4D523 2012-10-22 [expires: 2013-10-22]
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>--list-keys 列出已存在的证书</title>
+			<screen>
+			<![CDATA[
+$ gpg --list-keys
+/home/neo/.gnupg/pubring.gpg
+----------------------------
+pub   1024R/63268A35 2013-09-11
+uid                  Neo Chen (netkiller) <netkiller@msn.com>
+sub   1024R/F4F946F9 2013-09-11
+			]]>	
+			</screen>
+		</section>
+		<section>
+			<title>Exporting keys (导出key)</title>
+			<section>
+				<title>--export                  export keys</title>
+				<para></para>
+				<screen>
+				<![CDATA[
+gpg --export -a
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>-o, --output                  use as output file</title>
+				<screen>
+				<![CDATA[
+$ gpg --export -a -o test.asc
+$ gpg --output yourname.asc --export -a
+				]]>
+				</screen>
+			</section>
+		</section>
+		<section>
+			<title>Importing keys (导入key)</title>
+			<subtitle>--import                  import/merge keys</subtitle>
+			<para></para>
+			<screen>
+			<![CDATA[
+neo@neo-laptop:~$ gpg --import 409.asc
+gpg: key 4D3A0803: public key "Phoenix.L <409@example.com>" imported
+gpg: key CEF09301: "Neo Chan (Office Email) <324@example.com>" not changed
+gpg: Total number processed: 2
+gpg:               imported: 1  (RSA: 1)
+gpg:              unchanged: 1
+
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Revoke a key (吊销key)</title>
+			<screen>
+			<![CDATA[
+gpg --gen-revoke
+			]]>
+			</screen>
+		</section>
+	</section>
+
+	<section id="GnuPG4Windows">
+		<title>GnuPG For Windows</title>
+		<para>下载OpenGPG: http://www.gnupg.org/</para>
+		<note><para>GnuPG (OpenGPG)安装时可以选择语言，支持简体中文．但对中文支持不是很好，如真实姓名输入：王老五,系统提示"姓名至少要有五个字符长"</para></note>
+
+		<section>
+			<title>生成密钥对</title>
+			<para>使用 gpg --gen-key	生成密钥对</para>
+			<screen>
+			<![CDATA[
+C:\GNU>gpg --gen-key
+gpg (GnuPG) 1.4.3; Copyright (C) 2006 Free Software Foundation, Inc.
+This program comes with ABSOLUTELY NO WARRANTY.
+This is free software, and you are welcome to redistribute it
+under certain conditions. See the file COPYING for details.
+
+请选择您要使用的密钥种类：
+   (1) DSA 和 ElGamal (默认)
+   (2) DSA (仅用于签字)
+   (5) RSA (仅用于签字)
+您的选择？
+DSA 密钥对会有 1024 位。
+ELG-E 密钥长度应在 1024 位与 4096 位之间。
+您想要用多大的密钥尺寸？(2048)
+您所要求的密钥尺寸是 2048 位
+请设定这把密钥的有效期限。
+         0 = 密钥永不过期
+      <n>  = 密钥在 n 天后过期
+      <n>w = 密钥在 n 周后过期
+      <n>m = 密钥在 n 月后过期
+      <n>y = 密钥在 n 年后过期
+密钥的有效期限是？(0)
+密钥永远不会过期
+以上正确吗？(y/n)y
+
+您需要一个用户标识来辨识您的密钥；本软件会用真实姓名、注释和电子邮件地址组合
+成用户标识，如下所示：
+    “Heinrich Heine (Der Dichter) <heinrichh@duesseldorf.de>”
+
+真实姓名：neo chen
+电子邮件地址：openunix@163.com
+注释：netkiller
+您选定了这个用户标识：
+    “neo chen (netkiller) <openunix@163.com>”
+
+更改姓名(N)、注释(C)、电子邮件地址(E)或确定(O)/退出(Q)？O
+您需要一个密码来保护您的私钥。
+
+我们需要生成大量的随机字节。这个时候您可以多做些琐事(像是敲打键盘、移动
+鼠标、读写硬盘之类的)，这会让随机数字发生器有更好的机会获得足够的熵数。
++++++++++++++++++++++++++++++++++++.+++++++++++++++++++++++++++++++++++.++++++++
+++++++++++++.++++++++++++++++++++.+++++++++++++++++++++++++...>+++++............
+..+++++
+我们需要生成大量的随机字节。这个时候您可以多做些琐事(像是敲打键盘、移动
+鼠标、读写硬盘之类的)，这会让随机数字发生器有更好的机会获得足够的熵数。
++++++.++++++++++++++++++++..++++++++++.+++++.++++++++++.++++++++++.+++++.+++++++
+++++++++.+++++....+++++..++++++++++.++++++++++++++++++++..++++++++++++++++++++.+
+++++>++++++++++...>.+++++.............................>+++++<+++++..............
+..............+++++^^^^^
+gpg: 密钥 C9441A1A 被标记为绝对信任
+公钥和私钥已经生成并经签字。
+
+gpg: 正在检查信任度数据库
+gpg: 需要 3 份勉强信任和 1 份完全信任，PGP 信任模型
+gpg: 深度：0 有效性：  2 已签字：  0 信任度：0-，0q，0n，0m，0f，2u
+pub   1024D/C9441A1A 2006-06-02
+密钥指纹 = EFDC A97C C711 E9C9 FAC1  3EA9 33C1 1FB2 C944 1A1A
+uid                  neo chen (netkiller) <openunix@163.com>
+sub   2048g/B713326C 2006-06-02
+
+C:\GNU>
+			]]>
+			</screen>
+
+		</section>
+		<section>
+			<title>列出密钥</title>
+			<para>列出密钥使用 gpg --list-keys</para>
+			<screen>
+<![CDATA[
+C:\GNU>gpg --list-keys
+C:/Documents and Settings/neo.chen/Application Data/gnupg\pubring.gpg
+---------------------------------------------------------------------
+pub   1024D/C9441A1A 2006-06-02
+uid                  neo chen (netkiller) <openunix@163.com>
+sub   2048g/B713326C 2006-06-02
+]]>
+			</screen>
+			<para>列出密钥和签字使用 gpg --list-keys</para>
+			<screen>
+<![CDATA[
+C:\GNU>gpg --list-sigs
+C:/Documents and Settings/neo.chen/Application Data/gnupg\pubring.gpg
+---------------------------------------------------------------------
+pub   1024D/C9441A1A 2006-06-02
+uid                  neo chen (netkiller) <openunix@163.com>
+sig 3        C9441A1A 2006-06-02  neo chen (netkiller) <openunix@163.com>
+sub   2048g/B713326C 2006-06-02
+sig          C9441A1A 2006-06-02  neo chen (netkiller) <openunix@163.com>
+]]>
+			</screen>
+			<para>列出并检查密钥签字 gpg --check-sigs</para>
+			<screen>
+<![CDATA[
+C:\GNU>gpg --check-sigs
+C:/Documents and Settings/neo.chen/Application Data/gnupg\pubring.gpg
+---------------------------------------------------------------------
+pub   1024D/C9441A1A 2006-06-02
+uid                  neo chen (netkiller) <openunix@163.com>
+sig!3        C9441A1A 2006-06-02  neo chen (netkiller) <openunix@163.com>
+sub   2048g/B713326C 2006-06-02
+sig!         C9441A1A 2006-06-02  neo chen (netkiller) <openunix@163.com>
+]]>
+			</screen>
+		</section>
+		<section>
+			<title>验证签字</title>
+			<para>检查 PGP 签名 与 <link linkend="md5sum">md5sum</link> 作用类似: </para>
+			<screen>
+bash$ gpg --verify gnupg-x.x.x.tar.gz.sig gnupg-x.x.x.tar.gz
+bash$ md5sum gnupg-x.x.x.tar.gz
+			</screen>
+
+		</section>
+	</section>
+	<section id="gpg4win">
+		<title>EMail-Security</title>
+		<para>EMail-Security using GnuPG for Windows</para>
+		<para><ulink url='http://www.gpg4win.org/'>gpg4win</ulink></para>
+	</section>
+	<section id="smartcard">
+		<title>Smart Card</title>
+		<para>http://www.gnupg.org/howtos/card-howto/en/smartcard-howto-single.html</para>
+
+	</section>
+	<section id="gpg.example">
+		<title>例子</title>
+		<section>
+			<title>加密文件</title>
+			<para>加密</para>
+			<screen>
+			<![CDATA[
+# echo hello > file.txt
+# gpg -c file.txt
+
+       lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk
+       x Enter passphrase                                    x
+       x                                                     x
+       x                                                     x
+       x Passphrase ****____________________________________ x
+       x                                                     x
+       x       <OK>                             <Cancel>     x
+       mqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj
+
+       lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk
+       x Please re-enter this passphrase                     x
+       x                                                     x
+       x Passphrase ****____________________________________ x
+       x                                                     x
+       x       <OK>                             <Cancel>     x
+       mqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj
+       		]]>
+			</screen>
+			<screen>
+# ls file.txt*
+file.txt  file.txt.gpg
+			</screen>
+			<para>解密</para>
+			<screen>
+			<![CDATA[
+# gpg -o myfile -d file.txt.gpg
+
+       lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk
+       x Enter passphrase                                    x
+       x                                                     x
+       x                                                     x
+       x Passphrase ________________________________________ x
+       x                                                     x
+       x       <OK>                             <Cancel>     x
+       mqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj
+       		]]>
+			</screen>
+		</section>
+	</section>
+</chapter>

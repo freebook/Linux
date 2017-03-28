@@ -1,0 +1,62 @@
+<section id="3rdparty">
+	<title>第三方工具</title>
+	<section id="htpasswd">
+		<title>htpasswd</title>
+		<screen>
+$ sudo apt-get install apache2-utils
+		</screen>
+		<section>
+			<title>CRYPT</title>
+			<para></para>
+			<screen>
+neo@master:~$ htpasswd -d -n neo.chen
+New password:
+Re-type new password:
+neo.chen:Tyr60pyBFo0ng
+
+			</screen>
+		</section>
+		<section>
+			<title>MD5</title>
+			<screen>
+neo@master:~$ htpasswd -m -n neo.chen
+New password:
+Re-type new password:
+neo.chen:$apr1$CbZkN...$QzT7LwjRpQCKr4IkryM3Z.
+
+			</screen>
+		</section>
+		<section>
+			<title>SHA</title>
+			<screen>
+neo@master:~$ htpasswd -s -n neo.chen
+New password:
+Re-type new password:
+neo.chen:{SHA}iol5jPCHjje7ZYmuHDa52KA2J1s=
+			</screen>
+		</section>
+	</section>
+	<section id="htdigest">
+		<title>htdigest</title>
+		<para>htdigest 與 htpasswd 不同的地方在於對密碼的加密方式，htdigest 是使用 md5 來加密而 htpasswd 則是使用 crypt 來加密</para>
+		<screen>
+htdigest -c /home/neo/trac/conf/passwd.digest localhost netkiller
+htdigest /home/neo/trac/conf/passwd.digest localhost neo
+		</screen>
+	</section>
+	<section id="md5sum">
+		<title>md5sum</title>
+		<screen>
+$ md5sum /etc/passwd
+325b7229c82c90c8a1823f5d939156bc  /etc/passwd
+		</screen>
+	</section>
+	<section id="sha1sum">
+		<title>sha1sum</title>
+		<screen>
+$ sha1sum /etc/passwd
+f7a5582dd42ce0411bc2c59e2f1d8e89adcf0f81  /etc/passwd
+		</screen>
+	</section>
+</section>
+

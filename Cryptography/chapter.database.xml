@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="db" ?>
+	<title>数据库与加密</title>
+	<section id="mysql">
+		<title>MySQL 加密函数</title>
+		<section>
+			<title>AES_ENCRYPT / AES_DECRYPT</title>
+			<para>简单用法</para>
+			<screen>
+			<![CDATA[
+mysql> select AES_ENCRYPT('helloworld','key');
++---------------------------------+
+| AES_ENCRYPT('helloworld','key') |
++---------------------------------+
+|                                 |
++---------------------------------+
+1 row in set (0.00 sec)
+
+mysql> select AES_DECRYPT(AES_ENCRYPT('helloworld','key'),'key');
++----------------------------------------------------+
+| AES_DECRYPT(AES_ENCRYPT('helloworld','key'),'key') |
++----------------------------------------------------+
+| helloworld                                         |
++----------------------------------------------------+
+1 row in set (0.00 sec)
+
+mysql>
+			]]>
+			</screen>
+			<para>加密数据入库</para>
+			<screen>
+			<![CDATA[
+CREATE TABLE `encryption` (
+	`mobile` VARBINARY(16) NOT NULL,
+	`key` VARCHAR(32) NOT NULL
+)
+ENGINE=InnoDB;
+
+INSERT INTO encryption(`mobile`,`key`)VALUES( AES_ENCRYPT('13691851789',md5('13691851789')), md5('13691851789')) 
+select AES_DECRYPT(mobile,`key`), length(mobile) from encryption;
+			]]>
+			</screen>
+		</section>
+		<section id="mcrypt">
+			<title>通过PHP mcrypt 函数加密解密MySQL数据库</title>
+			<para>由于AES_DECRYPT()与AES_ENCRYPT()会耗费一部们数据库资源，于是我想出在外部实现AES_DECRYPT/AES_ENCRYPT同时完全兼容mysql。</para>
+			<para>MySQL AES_ENCRYPT() 加密,通过 PHP mcrypt_decrypt() 解密</para>
+			<para>PHP mcrypt_encrypt 加密,通过MySQL AES_DECRYPT() 解密</para>
+			<screen>
+			<![CDATA[
+<?php
+$dbh = new PDO ( 'mysql:host=192.168.6.1;dbname=test', 'www', 'passw0rd' );
+$dbh->setAttribute ( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
+$dbh->exec ( 'set names utf8' );
+$data = 'Helloworld!!!';
+//$data = '123456789';
+$key = 'neo';
+
+$sql = "SELECT AES_ENCRYPT(:data, :key) as string";
+$stmt = $dbh->prepare ( $sql );
+$stmt->execute ( array (
+		':data' => $data,
+		':key' => $key 
+) );
+$row = $stmt->fetch ( PDO::FETCH_ASSOC );
+$encrypt = $row ['string'];
+printf ( "MySQL AES Encrypt: %s \n", $encrypt );
+
+$sql = "SELECT AES_DECRYPT(:data, :key) as string";
+$stmt = $dbh->prepare ( $sql );
+$stmt->execute ( array (
+		':data' => $encrypt,
+		':key' => $key 
+) );
+$row = $stmt->fetch ( PDO::FETCH_ASSOC );
+
+$decrypt = $row ['string'];
+printf ( "MySQL AES Decrypt: %s \n", $decrypt );
+printf ( "-----------------------------------\n" );
+function aes_decrypt($encrypted, $key) {
+	return rtrim ( mcrypt_decrypt ( MCRYPT_RIJNDAEL_128, $key, $encrypted, MCRYPT_MODE_ECB, '' ), "\x00..\x1F" );
+}
+function aes_encrypt($decrypted, $key) {
+	return mcrypt_encrypt ( MCRYPT_RIJNDAEL_128, $key, $decrypted, MCRYPT_MODE_ECB, '' );
+}
+
+printf ( "MySQL AES_ENCRYPT => PHP AES_Decrypt: %s => %s \n", $encrypt, aes_decrypt ( $encrypt, $key ) );
+
+$str = 'Test by neo';
+
+$sql = "SELECT AES_DECRYPT(:data, :key) as string";
+$stmt = $dbh->prepare ( $sql );
+$stmt->execute ( array (
+		':data' => aes_encrypt ( $str, $key ),
+		':key' => $key 
+) );
+$row = $stmt->fetch ( PDO::FETCH_ASSOC );
+
+$decrypt = $row ['string'];
+printf ( "PHP encrypt => MySQL Decrypt: %s => %s \n", $str, $decrypt );
+
+printf ( "PHP enctypt => PHP  Decrypt: %s => %s \n", $str, aes_decrypt ( aes_encrypt ( $str, $key ), $key ) );
+?>
+			]]>
+			</screen>
+		</section>
+	</section>
+</chapter>

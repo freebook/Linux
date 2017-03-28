@@ -1,0 +1,62 @@
+<chapter id="index"><?dbhtml dir="office" ?>
+	<title>Office</title>
+	<section id="word">
+		<title>给文档加密码</title>
+		<para>以Word为例,启动Word -> 工具 -> 选项 -> 安全性</para>
+		<para><graphic fileref="images/word_001.jpg" /></para>
+		<para>常规操作,在这里输入:</para>
+		<para>打开密码</para>
+		<para>修改密码</para>
+		<para>这样的安全性对一般用户有效,对于电脑高手,他们可以下载一些破解工具,可以在几秒钟内破解你认为安全的密码.</para>
+		<para>我们现在让密码更安全一些,方法是点击"打开时的文件密码"后面的"高级"按钮</para>
+		<para><graphic fileref="images/word_002.jpg" /></para>
+		<para>现在你可以看到默认的加密方式是"Offices 97/2000 兼容",这是一种不太安全加密方法</para>
+		<para>请在列表中选择RAS/DSS算法的加密类型,同时"选择密钥长度"输入大于128的倍数如:256,1024,2048...</para>
+		<para>单击"确定"按钮完成操作</para>
+		<para>上面的操作也不能保证万无一失,通过穷举算法加黑客字典,只要有足够的时间还可以猜到你的密码,这取决你密码长度和复杂度</para>
+	</section>
+	<section id="sign">
+		<title>数字签名</title>
+		<para>开始菜单 -> 程序 -> Microsoft Office -> Microsoft Office 工具 -> VBA 项目的数字证书</para>
+		<para>位置:D:\Program Files\Microsoft Office\OFFICE11\SELFCERT.EXE</para>
+		<para><graphic fileref="images/office_vba.jpg" /></para>
+		<para>"您的证书名称" 中输入如:netkiller</para>
+		<para>单击"确定"按钮</para>
+		<para><graphic fileref="images/office_vba_1.jpg" /></para>
+		<para>以Word为例,启动Word 新键文档并输入一些内容或打开一个有内容的文档</para>
+		<para>Word -> 工具 -> 选项 -> 安全性 -> 数字签名</para>
+		<graphic fileref="images/word_003.jpg" />
+		<para>单击"添加"按钮</para>
+		<graphic fileref="images/word_004.jpg" />
+		<para>单击"是"按钮,同时保存文档</para>
+		<graphic fileref="images/word_005.jpg" />
+		<para>在列表内选择刚才创建是数字证书"netkiller"</para>
+		<para>单击"OK"按钮</para>
+		<graphic fileref="images/word_006.jpg" />
+		<para>单击"确定"按钮</para>
+		<para>选项对话框内单击"确定"按钮</para>
+		<para>关闭Word 完成操作</para>
+
+		<para>验证数字签名是否有效</para>
+		<para>打开刚刚签名的文档</para>
+		<graphic fileref="images/word_007.jpg" />
+		<para>Word窗口标题栏上(已签名,未验证) 表示签名成功</para>
+
+		<para>如果有人修改你的文档,当他再次保存时提示</para>
+		<graphic fileref="images/word_008.jpg" />
+		<para>再打开文档时Word窗口标题栏上"(已签名,未验证)"消失,表示你的文档被其它人撰改</para>
+
+		<tip><para>你同样可以使用第三方数字证书来签名你的文档</para></tip>
+	</section>
+	<section id="email">
+		<title>Email Security using OpenPGP and S/MIME</title>
+		<section id="gpg4win">
+			<title>Gpg4win</title>
+			<para>http://www.gpg4win.org/</para>
+		</section>
+		<section id="smime">
+			<title>S/MIME</title>
+			<ulink url="/book/postfix/x1239.html">数字签名、加密与证书颁发机构</ulink>
+		</section>
+	</section>
+</chapter>

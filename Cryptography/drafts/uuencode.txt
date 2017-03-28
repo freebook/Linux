@@ -1,0 +1,125 @@
+相信上过网的朋友们都遇见过“乱码”，也就是在浏览网页或看Email时出现的不能辨认的字符。以前也有许多的文章介绍过“乱码”，不过他们的文章只是讲怎样辨别和怎样用工具解码，并没有详细介绍各种编码的算法的实现，本文将对互联网上最常用的几种编码的编码和解码算法作以详细的阐述。希望对想了解“乱码” 算法或想在自己程序中实现这些功能朋友们有一些参考价值。本文的源程序用C语言写成，形式为函数，可直接使用。
+
+    Uuencode:
+
+    Uuencode 是将二进制文件以文本文件方式进行编码表示、以利于基于文本传输环境中进行二进制文件的传输/交换的编码方法之一， 在邮件系统/二进制新闻组中使用频率比较高，经常用于 Attach 二进制文件。
+
+    这种编码的特征是：每一行开头用“M”标志。下面是我做的一个测试用的文件mogao.txt，编码为Uuencode：
+
+begin 644 mogao.txt
+
+M"0D)("`@(*&VPM+"Z\OCMZBT\\BKH;<-"@G7]]7?.FUO9V%OHZRPU]3&N\:Z
+
+MU]6^HZAT96QN970Z+R\R,#(N,3$R+C(P+C$S,CHR,Z.IL\G4L:&C#0H)("`@
+
+M("`@Q*JXW\CMO/ZYI-?WRM*CNFAT='`Z+R]M;V=A;RYB96YT:75N+FYE=`T*
+
+M"0D)16UA:6QT;SIM;V=A;T`S-S$N;F5T#0H)("`@*BHJ*BHJ*BHJ*BHJ*BHJ
+
+M*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ("`@("`@("`@("`@("`@
+
+M#0H)("`@*B"S_<'+O,?2Y,JRP[2VO+*[M/C7WZ.LL_W!R]?CO*/*LL.TMKRR
+
+MN\'TS\(J#0H)("`@*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ
+
+,*BHJ*BHJ*BHJ*BHJ
+
+`
+
+end
+
+
+
+    你可以把它单独存成一个文件：mogao.uue，然后用Winzip打开，解压即得mogao.txt。
+
+    Uuencode的算法很简单，编码时它将3个字符顺序放入一个 24 位的缓冲区，缺字符的地方补零，然后将缓冲区截断成为 4 个部分，高位在先，每个部分 6 位，用下面的64个字符重新表示：
+
+"`!"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_"
+
+    在文件的开头有“begin xxx 被编码的文件名”，在文件的结尾有“end”，用来标志Uue文件的开始和结束。编码时，每次读取源文件的45个字符，不足45个的用“NULL”补足为 3的整数倍（如：23补为24），然后输入目标文件一个ASCII为：“32+实际读取的字符数”的字符作为每一行的开始。读取的字符编码后输入目标文件，再输入一个“换行符”。如果源文件被编码完了，那么输入“`（ASCII为96）”和一个“换行符”表示编码结束。
+
+    解码时它将4个字符分别转换为4个6位字符后，截取有用的后六位放入一个 24 位的缓冲区，即得3个二进制代码。
+
+    下面我给出Uuencode编码和解码的C语言描述：
+
+/*Uuencode编码*/
+
+void Uue(unsigned char chasc[3],unsigned char chuue[4])
+
+/*
+
+chasc：未编码的二进制代码
+
+chuue：编码过的Uue代码
+
+*/
+
+{int i,k=2;
+
+unsigned char t=NULL;
+
+for(i=0;i<3;i++)
+
+{*(chuue+i)=*(chasc+i)>>k;
+
+*(chuue+i)|=t;
+
+if(*(chuue+i)==NULL) *(chuue+i)+=96;
+
+else *(chuue+i)+=32;
+
+t=*(chasc+i)<<(8-k);
+
+t>>=2;
+
+k+=2;
+
+}
+
+*(chuue+3)=*(chasc+2)&63;
+
+if(*(chuue+3)==NULL) *(chuue+3)+=96;
+
+else *(chuue+3)+=32;
+
+}
+
+
+
+/*Uuencode解码*/
+
+void unUue（unsigned char chuue[4]，unsigned char chasc[3]）
+
+/*
+
+chuue：未解码的Uue代码
+
+chasc：解码过的二进制代码
+
+*/
+
+{int i,k=2;
+
+unsigned char t=NULL;
+
+if(*chuue==96) *chuue=NULL;
+
+else *chuue-=32;
+
+for(i=0;i<3;i++)
+
+{*(chasc+i)=*(chuue+i)<<k;
+
+k+=2;
+
+if(*(chuue+i+1)==96) *(chuue+i+1)=NULL;
+
+else *(chuue+i+1)-=32;
+
+t=*(chuue+i+1)>>8-k;
+
+*(chasc+i)|=t;
+
+}
+
+}

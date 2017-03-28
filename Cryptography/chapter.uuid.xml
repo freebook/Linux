@@ -1,0 +1,398 @@
+<chapter id="index"><?dbhtml dir="uuid" ?>
+	<title>UUID (Universally Unique Identifier)</title>
+	<para>以前对UUID的了解很少，只知道是128位整数(16字节)的全局唯一标识符(Universally Unique Identifier)。</para>
+	<para>UUID 是指在一台机器上生成的数字，它保证对在同一时空中的所有机器都是唯一的。通常平台会提供生成UUID的API。UUID按照开放软件基金会(OSF)制定的标准计算，用到了以太网卡地址、纳秒级时间、芯片ID码和许多可能的数字。由以下几部分的组合：当前日期和时间(UUID的第一个部分与时间有关，如果你在生成一个UUID之后，过几秒又生成一个UUID，则第一个部分不同，其余相同)，时钟序列，全局唯一的IEEE机器识别号（如果有网卡，从网卡获得，没有网卡以其他方式获得），UUID的唯一缺陷在于生成的结果串会比较长。关于UUID这个标准使用最普遍的是微软的GUID(Globals Unique Identifiers)。</para>
+	<para>其格式为： xxxxxxxx-xxxx-xxxx-xxxxxxxxxxxxxxxx(8-4-4-16)，其中每个 x 是 0-9 或 a-f 范围内的一个十六进制的数字。而标准的UUID格式为：xxxxxxxx-xxxx-xxxx-xxxxxx-xxxxxxxxxx (8-4-4-4-12)</para>
+	<para>使用UUID的好处在分布式的软件系统中（比如：DCE/RPC, COM+,CORBA）就能体现出来，它能保证每个节点所生成的标识都不会重复，并且随着WEB服务等整合技术的发展，UUID的优势将更加明显。</para>
+	<para><ulink url="http://en.wikipedia.org/wiki/UUID">http://en.wikipedia.org/wiki/UUID</ulink></para>
+	<para><ulink url="http://www.ietf.org/rfc/rfc4122.txt">RFC</ulink></para>
+	<section id="guid">
+		<title>GUID</title>
+		<para>GUID是UUID的windows实现，GUID也是一个128位长的数字，一般用16进制表示。算法的核心思想是结合机器的网卡、当地时间、一个随机数来生成GUID。从理论上讲，如果一台机器每秒产生10000000个GUID，则可以保证（概率意义上）3240年不重复。</para>
+		<para>到微软件网站下载GUIDGEN.EXE来生成GUID</para>
+		<graphic fileref="images/GUID.jpg" />
+		<para>点击"New GUID"生成新GUID</para>
+		<para>单击"Copy"复制到剪贴板</para>
+		<para>生成的GUID：{12466768-64A9-426a-A2E8-ABFDB016B248}</para>
+	</section>
+	<section id="svn">
+		<title>Subversion</title>
+		<para>svnlook uuid — 打印版本库的UUID。</para>
+		<screen>
+svnlook uuid REPOS_PATH
+		</screen>
+		<para>打印版本库的UUID，UUID是版本库的universal unique IDentifier（全局唯一标示），Subversion客户端可以使用这个标示区分不同的版本库。</para>
+		<screen>
+$ svnlook uuid /usr/local/svn/repos
+e7fe1b91-8cd5-0310-98dd-2f12e793c5e8
+		</screen>
+		<para>请参考：http://www.subversion.org.cn/svnbook/nightly/index.html</para>
+	</section>
+	<section id="php">
+		<title>PHP UUID</title>
+		<literallayout>
+		<screen>
+
+<![CDATA[
+<?php
+/* Copyright 2006 Maciej Strzelecki
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA */
+
+function uuid()
+{
+   // version 4 UUID
+   return sprintf(
+       '%08x-%04x-%04x-%02x%02x-%012x',
+       mt_rand(),
+       mt_rand(0, 65535),
+       bindec(substr_replace(
+           sprintf('%016b', mt_rand(0, 65535)), '0100', 11, 4)
+       ),
+       bindec(substr_replace(sprintf('%08b', mt_rand(0, 255)), '01', 5, 2)),
+       mt_rand(0, 255),
+       mt_rand()
+   );
+}
+?>
+
+]]>
+		</screen>
+		</literallayout>
+		<para>参考：http://cn.php.net/uniqid</para>
+	</section>
+	<section id="java">
+		<title>JAVA UUID</title>
+		<screen>
+<![CDATA[
+import java.util.UUID;
+public class Test {
+	public static void main(String[] args) {
+		UUID uuid = UUID.randomUUID();
+		System.out.println (uuid);
+	}
+}
+编译运行输出：
+07ca3dec-b674-41d0-af9e-9c37583b08bb
+]]>
+		</screen>
+		<para>参考：http://java.sun.com/j2se/1.5.0/docs/api/java/util/UUID.html</para>
+	</section>
+	<section id="perl">
+		<title>PERL UUID</title>
+		<screen>
+<![CDATA[
+
+#!/usr/bin/perl
+use CGI::Carp qw(fatalsToBrowser);
+
+my $uuid_str;
+if (@ARGV) {
+  $uuid_str = $ARGV[0];
+} else {
+  eval {
+    require Data::UUID;
+    my $ug = new Data::UUID;
+    $uuid_str = $ug->create_str;
+  };
+  if ($@) {
+    $uuid_str = `uuidgen`;
+    $uuid_str =~ s/\r?\n?$//;
+  }
+}
+my @stuff = split /-/, $uuid_str;
+
+print "Content-type: text/html\n\n";
+print "<html><head><title>GUID Generator</title></head><body>";
+print '<h2><font face="verdana, arial">GUID Generator</font></h2>';
+print '<font face="new courier, courier">';
+print "{$uuid_str}</font><br>";
+print '<h6><font face="verdana, arial"><a href="http://extensions.roachfiend.com/cgi-bin/guid.pl">Get another GUID</a></font></h6>';
+print '<h6><font face="verdana, arial"><a href="http://extensions.roachfiend.com/guid.txt">View the source of this script</a></font></h6>';
+print "</body></html>";
+exit;
+
+]]>
+		</screen>
+		<para>参考：http://extensions.roachfiend.com/cgi-bin/guid.pl</para>
+	</section>
+	<section id="python">
+		<title>Python UUID</title>
+		<screen>
+<![CDATA[
+"""UUID (universally unique identifiers) as specified in RFC 4122.
+
+This module provides the UUID class and the functions uuid1(), uuid3(),
+uuid4(), uuid5() for generating version 1, 3, 4, and 5 UUIDs respectively.
+
+This module works with Python 2.3 or higher."""
+
+__author__ = 'Ka-Ping Yee <ping@zesty.ca>'
+__date__ = '$Date: 2012-02-01 13:40:49 +0800 (Wed, 01 Feb 2012) $'.split()[1].replace('/', '-')
+__version__ = '$Revision: 333 $'
+
+RESERVED_NCS, RFC_4122, RESERVED_MICROSOFT, RESERVED_FUTURE = [
+    'reserved for NCS compatibility', 'specified in RFC 4122',
+    'reserved for Microsoft compatibility', 'reserved for future definition']
+
+class UUID(object):
+    """Instances of the UUID class represent UUIDs as specified in RFC 4122.
+    Converting a UUID to a string using str() produces a string in the form
+    "{12345678-1234-1234-1234-123456789abc}".  The UUID constructor accepts
+    a similar string (braces and hyphens optional), or six integer arguments
+    (with 32-bit, 16-bit, 16-bit, 8-bit, 8-bit, and 48-bit values
+    respectively).  UUID objects have the following attributes:
+
+        bytes       gets or sets the UUID as a 16-byte string
+
+        urn         gets the UUID as a URN as specified in RFC 4122
+
+        variant     gets or sets the UUID variant as one of the constants
+                    RESERVED_NCS, RFC_4122, RESERVED_MICROSOFT, RESERVED_FUTURE
+
+        version     gets or sets the UUID version number (1 through 5)
+    """
+
+    def __init__(self, *args):
+        """Create a UUID either from a string representation in hexadecimal
+        or from six integers (32-bit time_low, 16-bit time_mid, 16-bit
+        time_hi_ver, 8-bit clock_hi_res, 8-bit clock_low, 48-bit node)."""
+        if len(args) == 1:
+            digits = args[0].replace('urn:', '').replace('uuid:', '')
+            digits = digits.replace('{', '').replace('}', '').replace('-', '')
+            assert len(digits) == 32, ValueError('badly formed UUID string')
+            time_low = int(digits[:8], 16)
+            time_mid = int(digits[8:12], 16)
+            time_hi_ver = int(digits[12:16], 16)
+            clock_hi_res = int(digits[16:18], 16)
+            clock_low = int(digits[18:20], 16)
+            node = int(digits[20:32], 16)
+        else:
+            (time_low, time_mid, time_hi_ver,
+             clock_hi_res, clock_low, node) = args
+        assert 0 <= time_low < 0x100000000, ValueError('time_low out of range')
+        assert 0 <= time_mid < 1<<16, ValueError('time_mid out of range')
+        assert 0 <= time_hi_ver < 1<<16, ValueError('time_hi_ver out of range')
+        assert 0 <= clock_hi_res < 1<<8, ValueError('clock_hi_res out of range')
+        assert 0 <= clock_low < 1<<8, ValueError('clock_low out of range')
+        assert 0 <= node < 0x1000000000000, ValueError('node out of range')
+        self.time_low = time_low
+        self.time_mid = time_mid
+        self.time_hi_ver = time_hi_ver
+        self.clock_hi_res = clock_hi_res
+        self.clock_low = clock_low
+        self.node = node
+
+    def __cmp__(self, other):
+        return cmp(self.bytes, getattr(other, 'bytes', other))
+
+    def __str__(self):
+        return '{%08x-%04x-%04x-%02x%02x-%012x}' % (
+            self.time_low, self.time_mid, self.time_hi_ver,
+            self.clock_hi_res, self.clock_low, self.node)
+
+    def __repr__(self):
+        return 'UUID(%r)' % str(self)
+
+    def get_bytes(self):
+        def byte(n):
+            return chr(n & 0xff)
+
+        return (byte(self.time_low >> 24) + byte(self.time_low >> 16) +
+                byte(self.time_low >> 8) + byte(self.time_low) +
+                byte(self.time_mid >> 8) + byte(self.time_mid) +
+                byte(self.time_hi_ver >> 8) + byte(self.time_hi_ver) +
+                byte(self.clock_hi_res) + byte(self.clock_low) +
+                byte(self.node >> 40) + byte(self.node >> 32) +
+                byte(self.node >> 24) + byte(self.node >> 16) +
+                byte(self.node >> 8) + byte(self.node))
+
+    def set_bytes(self, bytes):
+        values = map(ord, bytes)
+        self.time_low = ((values[0] << 24) + (values[1] << 16) +
+                         (values[2] << 8) + values[3])
+        self.time_mid = (values[4] << 8) + values[5]
+        self.time_hi_ver = (values[6] << 8) + values[7]
+        self.clock_hi_res = values[8]
+        self.clock_low = values[9]
+        self.node = ((values[10] << 40) + (values[11] << 32) +
+                     (values[12] << 24) + (values[13] << 16) +
+                     (values[14] << 8) + values[15])
+
+    bytes = property(get_bytes, set_bytes)
+
+    def get_urn(self):
+        return 'urn:uuid:%08x-%04x-%04x-%02x%02x-%012x' % (
+            self.time_low, self.time_mid, self.time_hi_ver,
+            self.clock_hi_res, self.clock_low, self.node)
+
+    urn = property(get_urn)
+
+    def get_variant(self):
+        if not self.clock_hi_res & 0x80:
+            return RESERVED_NCS
+        elif not self.clock_hi_res & 0x40:
+            return RFC_4122
+        elif not self.clock_hi_res & 0x20:
+            return RESERVED_MICROSOFT
+        else:
+            return RESERVED_FUTURE
+
+    def set_variant(self, variant):
+        if variant == RESERVED_NCS:
+            self.clock_hi_res &= 0x7f
+        elif variant == RFC_4122:
+            self.clock_hi_res &= 0x3f
+            self.clock_hi_res |= 0x80
+        elif variant == RESERVED_MICROSOFT:
+            self.clock_hi_res &= 0x1f
+            self.clock_hi_res |= 0xc0
+        elif variant == RESERVED_FUTURE:
+            self.clock_hi_res &= 0x1f
+            self.clock_hi_res |= 0xe0
+        else:
+            raise ValueError('illegal variant identifier')
+
+    variant = property(get_variant, set_variant)
+
+    def get_version(self):
+        return self.time_hi_ver >> 12
+
+    def set_version(self, version):
+        assert 1 <= version <= 5, ValueError('illegal version number')
+        self.time_hi_ver &= 0x0fff
+        self.time_hi_ver |= (version << 12)
+
+    version = property(get_version, set_version)
+
+def unixgetaddr(program):
+    """Get the hardware address on a Unix machine."""
+    from os import popen
+    for line in popen(program):
+        words = line.lower().split()
+        if 'hwaddr' in words:
+            addr = words[words.index('hwaddr') + 1]
+            return int(addr.replace(':', ''), 16)
+        if 'ether' in words:
+            addr = words[words.index('ether') + 1]
+            return int(addr.replace(':', ''), 16)
+
+def wingetaddr(program):
+    """Get the hardware address on a Windows machine."""
+    from os import popen
+    for line in popen(program + ' /all'):
+        if line.strip().lower().startswith('physical address'):
+            addr = line.split(':')[-1].strip()
+            return int(addr.replace('-', ''), 16)
+
+def getaddr():
+    """Get the hardware address as a 48-bit integer."""
+    from os.path import join, isfile
+    for dir in ['/sbin', '/usr/sbin', r'c:\windows',
+                r'c:\windows\system', r'c:\windows\system32']:
+        if isfile(join(dir, 'ifconfig')):
+            return unixgetaddr(join(dir, 'ifconfig'))
+        if isfile(join(dir, 'ipconfig.exe')):
+            return wingetaddr(join(dir, 'ipconfig.exe'))
+
+def uuid1():
+    """Generate a UUID based on the time and hardware address."""
+    from time import time
+    from random import randrange
+    nanoseconds = int(time() * 1e9)
+    # 0x01b21dd213814000 is the number of 100-ns intervals between the
+    # UUID epoch 1582-10-15 00:00:00 and the Unix epoch 1970-01-01 00:00:00.
+    timestamp = int(nanoseconds/100) + 0x01b21dd213814000
+    clock = randrange(1<<16) # don't use stable storage
+    time_low = timestamp & (0x100000000 - 1)
+    time_mid = (timestamp >> 32) & 0xffff
+    time_hi_ver = (timestamp >> 48) & 0x0fff
+    clock_low = clock & 0xff
+    clock_hi_res = (clock >> 8) & 0x3f
+    node = getaddr()
+    uuid = UUID(time_low, time_mid, time_hi_ver, clock_low, clock_hi_res, node)
+    uuid.variant = RFC_4122
+    uuid.version = 1
+    return uuid
+
+def uuid3(namespace, name):
+    """Generate a UUID from the MD5 hash of a namespace UUID and a name."""
+    from md5 import md5
+    uuid = UUID(0, 0, 0, 0, 0, 0)
+    uuid.bytes = md5(namespace.bytes + name).digest()[:16]
+    uuid.variant = RFC_4122
+    uuid.version = 3
+    return uuid
+
+def uuid4():
+    """Generate a random UUID."""
+    try:
+        from os import urandom
+    except:
+        from random import randrange
+        uuid = UUID(randrange(1<<32), randrange(1<<16), randrange(1<<16),
+                    randrange(1<<8), randrange(1<<8), randrange(1<<48))
+    else:
+        uuid = UUID(0, 0, 0, 0, 0, 0)
+        uuid.bytes = urandom(16)
+    uuid.variant = RFC_4122
+    uuid.version = 4
+    return uuid
+
+def uuid5(namespace, name):
+    """Generate a UUID from the SHA-1 hash of a namespace UUID and a name."""
+    from sha import sha
+    uuid = UUID(0, 0, 0, 0, 0, 0)
+    uuid.bytes = sha(namespace.bytes + name).digest()[:16]
+    uuid.variant = RFC_4122
+    uuid.version = 5
+    return uuid
+
+NAMESPACE_DNS = UUID('{6ba7b810-9dad-11d1-80b4-00c04fd430c8}')
+NAMESPACE_URL = UUID('{6ba7b811-9dad-11d1-80b4-00c04fd430c8}')
+NAMESPACE_OID = UUID('{6ba7b812-9dad-11d1-80b4-00c04fd430c8}')
+NAMESPACE_X500 = UUID('{6ba7b814-9dad-11d1-80b4-00c04fd430c8}')
+
+]]>
+		</screen>
+		<para>参考：http://zesty.ca/python/uuid.html</para>
+		<para>参考：https://svn.n-h.com/svn/exchange4linux/trunk/src/BILL-StorageServer/UUID.py</para>
+
+	</section>
+	<section id="mysql">
+		<title>MySQL uuid()</title>
+		<screen>
+		<![CDATA[
+mysql> select uuid();
++--------------------------------------+
+| uuid()                               |
++--------------------------------------+
+| 2f761256-8360-102c-b767-001cc07156cb |
++--------------------------------------+
+1 row in set (0.02 sec)
+
+		]]>
+		</screen>
+	</section>
+	<section id="linux">
+		<title>linux command uuid</title>
+		<screen>
+$ sudo apt-get install uuid
+
+$ uuid
+5ce08f58-21ac-11de-a16f-001cc07156cb
+		</screen>
+	</section>
+</chapter>

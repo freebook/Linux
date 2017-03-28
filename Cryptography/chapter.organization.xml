@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="organization">
+	<title>Credentials Organization</title>
+	<section id="verisign">
+		<title>VeriSign</title>
+		<para>http://www.verisign.com/</para>
+		<para>http://www.verisign.com/cn/</para>
+		<para>
+			VeriSign (Nasdaq: VRSN) is the trusted provider of Internet
+			infrastructure
+			services for the networked world. Billions of times
+			each day,
+			VeriSign helps companies and consumers all over the world
+			engage in
+			communications and commerce with confidence. VeriSign
+			offerings
+			include SSL, SSL Certificates, Extended Validation (EV SSL),
+			VeriSign
+			Trust Seal, two-factor authentication, identity protection,
+			malware
+			scan, public key infrastructure (PKI), DDoS mitigation and
+			Domain
+			Name Services.
+		</para>
+		<section id="itruschina">
+			<title>iTrusChina</title>
+			<para>http://verisign.itrus.com.cn/</para>
+		</section>
+		<section id="thawte">
+			<title>Thawte</title>
+			<para>http://www.thawte.com/</para>
+			<para>Thawte is a leading global Certification Authority. Our SSL and
+				code signing digital certificates are used globally to secure
+				servers, provide data encryption, authenticate users, protect
+				privacy
+				and assure online identifies through stringent authentication and
+				verification processes. Our SSL certificates include Wildcard SSL
+				Certificates, SGC SuperCerts and Extended Validation SSL
+				Certificates. 
+			</para>
+			<para>thawte 是全球领先的认证机构。我们的 SSL
+				和代码签名数字证书在全球范围内提供服务器的安全保护，可以进行数据加密、可以验证用户，通过严格的验证和认证程序保护个人隐私，确保在线识别过程的安全。我们的
+				SSL 证书包括通配符 SSL 证书、SGC SuperCerts 和扩展验证 SSL 证书。</para>
+		</section>
+		<section id="geotrust">
+			<title>Geotrust</title>
+			<para>http://geotrust.itrus.com.cn/</para>
+		</section>
+	</section>
+
+	<section id="usertrust">
+		<title>UserTrust</title>
+		<para>http://www.usertrust.com/</para>
+		<para>
+			Comodo offers essential infrastructure to enable e-merchants,
+			other
+			Internet-connected companies, software providers, and individual
+			consumers to interact and conduct business via the Internet safely
+			and securely. Our PKI solutions including, SSL Certificates, Extended
+			Validation Certificates, Code Signing Certificates as well as Secure
+			E-Mail Certificates, increase consumer trust in transacting business
+			online, secure information through strong encryption, and satisfy
+			many industry best practices or security compliance requirements with
+			SSL.
+		</para>
+	</section>
+	<section id="wosign">
+		<title>境内其他CA机构</title>
+		<section id="wosign">
+			<title>WoSign®、I'm Verified®、WoTrust®、沃通® </title>
+			<para>http://www.wosign.com/</para>
+			<para>上级是 UserTrust </para>
+		</section>
+	</section>
+	<section id="csr">
+		<title>生成 .csr 文件</title>
+		<screen>
+		<![CDATA[
+# openssl genrsa -des3 -out example.com.key 2048
+Generating RSA private key, 2048 bit long modulus
+.....................................................................................+++
+.................................................................................+++
+e is 65537 (0x10001)
+Enter pass phrase for example.com.key:
+Verifying - Enter pass phrase for example.com.key:
+
+
+# openssl req -new -key example.com.key -out example.com.csr
+Enter pass phrase for example.com.key:
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [GB]:CN
+State or Province Name (full name) [Berkshire]:Guangdong
+Locality Name (eg, city) [Newbury]:Shenzhen
+Organization Name (eg, company) [My Company Ltd]:XXX CO.LTD.,
+Organizational Unit Name (eg, section) []:Technical Support Center
+Common Name (eg, your name or your server's hostname) []:*.example.com
+Email Address []:webmaster@example.com
+
+Please enter the following 'extra' attributes
+to be sent with your certificate request
+A challenge password []:
+An optional company name []:
+		]]>
+		<!-- openssl req -new -nodes -keyout myserver.key -out myserver.csr -->
+		</screen>
+	</section>
+</chapter>

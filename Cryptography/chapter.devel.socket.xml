@@ -1,0 +1,210 @@
+<section id="socket">
+	<title>SSL Socket</title>
+	<para> </para>
+	<section id="socket.https">
+		<title>Java Socket HTTPS</title>
+		<screen>
+		<![CDATA[
+package netkiller;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
+public class HTTPS {
+
+	public static void main(String[] args) {
+	    // Create a trust manager that does not validate certificate chains
+	    TrustManager[] trustAllCerts = new TrustManager[]{
+	        new X509TrustManager() {
+	            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+	                return null;
+	            }
+	            public void checkClientTrusted(
+	                java.security.cert.X509Certificate[] certs, String authType) {
+	            }
+	            public void checkServerTrusted(
+	                java.security.cert.X509Certificate[] certs, String authType) {
+	            }
+	        }
+	    };
+
+	    // Install the all-trusting trust manager
+	    try {
+	        SSLContext sc = SSLContext.getInstance("SSL");
+	        sc.init(null, trustAllCerts, new java.security.SecureRandom());
+	        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+	    } catch (Exception e) {
+	    }
+
+	    // Now you can access an https URL without having the certificate in the truststore
+	    try {
+	    	//Create a URL for the desired page
+	        URL url = new URL("https://java.sun.com/");
+
+	        // Read all the text returned by the server
+	        BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+	        String html;
+	        while ((html = in.readLine()) != null) {
+	            // str is one line of text; readLine() strips the newline character(s)
+	        	System.out.println(html);
+	        }
+	        in.close();
+
+	    } catch (MalformedURLException mue) {
+	    } catch (IOException ioe) {
+	    }
+
+	}
+
+}
+
+		]]>
+		</screen>
+	</section>
+
+	<section id="socket.ssl">
+		<title>Java SSL Socket Client</title>
+		<screen>
+		<![CDATA[
+package netkiller;
+
+import java.io.*;
+import java.net.*;
+import javax.net.SocketFactory;
+import javax.net.ssl.*;
+
+public class SSLClientSocket {
+
+	public static void main(String[] args) {
+	    try {
+	        int port = 443;
+	        String hostname = "java.sun.com";
+
+	        SocketFactory socketFactory = SSLSocketFactory.getDefault();
+	        Socket socket = socketFactory.createSocket(hostname, port);
+
+	        // Create streams to securely send and receive data to the server
+	        InputStream in = socket.getInputStream();
+	        OutputStream out = socket.getOutputStream();
+
+	        BufferedReader socketReader = new BufferedReader(new InputStreamReader(in));
+	        PrintWriter socketWriter = new PrintWriter(out);
+
+	        socketWriter.println("GET /");
+	        socketWriter.flush();
+	        String line=null;
+	        StringBuffer html = new StringBuffer();
+	        while((line=socketReader.readLine())!=null){
+	        	html.append(line+"\n");
+	        }
+	        // Read from in and write to out...
+	        System.out.println(html.toString());
+
+	        // Close the socket
+	        socketReader.close();
+	        socketWriter.close();
+	        in.close();
+	        out.close();
+	    } catch(IOException e) {
+	    }
+
+	}
+
+}
+
+		]]>
+		</screen>
+	</section>
+
+	<section id="socket.ssl.server">
+		<title>Java SSL Socket Server</title>
+		<para>这里实现一个简单的SSL Echo服务器</para>
+		<para>创建证书</para>
+		<literallayout>
+		keytool -genkey -keyalg RSA -alias mycert -keystore mySrvKeystore
+		</literallayout>
+
+		<screen>
+		<![CDATA[
+C:\workspace\test>keytool -genkey -keyalg RSA -alias mycert -keystore mySrvKeystore
+输入keystore密码：  13721218
+您的名字与姓氏是什么？
+  [Unknown]：  陈景峰
+您的组织单位名称是什么？
+  [Unknown]：  中国无线电运动协会
+您的组织名称是什么？
+  [Unknown]：  无线电运动协会
+您所在的城市或区域名称是什么？
+  [Unknown]：  深圳
+您所在的州或省份名称是什么？
+  [Unknown]：  广东省
+该单位的两字母国家代码是什么
+  [Unknown]：  CN
+CN=陈景峰, OU=中国无线电运动协会, O=无线电运动协会, L=深圳, ST=广东省, C=CN 正确
+吗？
+  [否]：  Y
+
+输入<mycert>的主密码
+        （如果和 keystore 密码相同，按回车）：  13721218
+
+		]]>
+		</screen>
+		<userinput>C:\workspace\neo>javac netkiller\SSLServerSocket.java</userinput>
+		<literallayout>
+
+	java -Djavax.net.ssl.keyStore=mySrvKeystore -Djavax.net.ssl.keyStorePassword=13721218 netkiller.SSLServerSocket
+		</literallayout>
+		<para>Client</para>
+		<userinput>C:\workspace\neo>javac netkiller\SSLClientSocket.java</userinput>
+			<userinput>java -Djavax.net.ssl.trustStore=truststore -Djavax.net.ssl.trustStorePassword=13721218 netkiller.SSLClientSocket</userinput>
+	</section>
+</section>
+<!--
+
+C:\workspace\neo>c:\Java\jdk\bin\javac netkiller\echo\EchoServer.java
+C:\workspace\neo>c:\Java\jdk\bin\javac netkiller\echo\EchoClient.java
+
+C:\workspace\neo>java -Djavax.net.ssl.keyStore=mySrvKeystore -Djavax.net.ssl.keyStorePassword=13721218 netkiller.echo.EchoServer
+
+
+	<ulink url="http://www.linuxfocus.org/Deutsch/March2003/article285.shtml">PostgreSQL JDBC Java-SSL-Tunnel</ulink>
+
+	http://netkiller.hikz.com/book/iptables/
+
+	<graphic fileref="images/CWCom_003.jpg" />
+	<para>Pin 6 - ּ  Զ  </para>
+	<para>Pin 4 - ּ  Զ </para>
+	<para>Pin 8 - Զҽ </para>
+	<para>Pin 7 - Ƶ </para>
+
+
+	<para>DB25 C 25 Pin 25봮</para>
+
+	<para>Pin 6 - ּ  Զ </para>
+	<para>Pin 20 - ּ  Զ </para>
+	<para>Pin 5 - Զҽ </para>
+	<para>Pin 4 - Ƶ </para>
+	<para>Pin 7 - Ƶӵ </para>
+		<para>ͼ <graphic fileref="images/CWCom_011.jpg" /></para>
+		<para>Ի:</para>
+		<para><graphic fileref="images/CWCom_009.jpg" /></para>
+		<para>Channel Ƶ,뽨86,Ϊй,ҿԼƵQSO</para>
+		<para>Callsign ,дԼĺż</para>
+		<para>"Connect" ӵ,ͬʱԻ,гǰƵϵHam</para>
+		<para><graphic fileref="images/CWCom_010.jpg" /></para>
+		<para>"Close"ťCWCom,ϵͳʾ: 13:58  DE  IONOSPHERE:	CONNECTED!</para>
+		<para>ʱHam㷢CQCW,ͬʱĻϳѾQ</para>
+
+		<para>ٴεͼ <graphic fileref="images/CWCom_011.jpg" /></para>
+		<para>"Disconnect" Ͽѻģʽ</para>
+
+-->
+

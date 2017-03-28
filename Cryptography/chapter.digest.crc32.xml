@@ -1,0 +1,15 @@
+<section id="crc32">
+	<title>CRC32</title>
+	<para>CRC校验实用程序库在数据存储和数据通讯领域，为了保证数据的正确，就不得不采用检错的手段。在诸多检错手段中，CRC是最著名的一种。CRC的全称是循环冗余校验，其特点是:检错能力极强，开销小，易于用编码器及检测电路实现。从其检错能力来看，它所不能发现的错误的几率仅为0.0047%以下。从性能上和开销上考虑，均远远优于奇偶校验及算术和校验等方式。因而，在数据存储和数据通讯领域，CRC无处不在:著名的通讯协议X.25的FCS(帧检错序列)采用的是CRC- CCITT，ARJ、LHA等压缩工具软件采用的是CRC32，磁盘驱动器的读写采用了CRC16，通用的图像存储格式GIF、TIFF等也都用CRC作为检错手段。</para>
+	<section id="crc32.php">
+		<title>PHP CRC32</title>
+		<screen>
+		<![CDATA[
+<?php
+$checksum = crc32("The quick brown fox jumped over the lazy dog.");
+printf("%u\n", $checksum);
+?>
+		]]>
+		</screen>
+	</section>
+</section>

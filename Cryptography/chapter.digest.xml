@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="digest" ?>
+	<title>Message Digest (数字摘要)</title>
+	&chapter.digest.md5.xml;
+	&chapter.digest.sha.xml;
+	&chapter.digest.crc32.xml;
+	&chapter.digest.3rdparty.xml;
+</chapter>

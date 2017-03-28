@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+<?altova_sps http://www.altova.com/sps/template/publishing/DocBook.sps?>
+<?xml-stylesheet type="text/xsl" href="http://www.altova.com/stylesheets/docbook/xhtml/docbook.xsl"?>
+-->
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+	"/usr/share/xml/docbook/schema/dtd/5.0/docbook.dtd" [
+	<!ENTITY Neo "http://netkiller.github.io">
+	<!ENTITY BG7NYT "&Neo;">
+	<!ENTITY Netkiller "<emphasis><trademark>Netkiller</trademark></emphasis>">
+
+        <!ENTITY % common.doctype.entity.xml 		SYSTEM "../../common/doctype.entity.xml">
+	%common.doctype.entity.xml;
+	
+	<!ENTITY book.info.abstract.xml 		SYSTEM "../book.info.abstract.xml">
+
+	<!ENTITY chapter.office.xml			SYSTEM "chapter.office.xml">
+	<!ENTITY chapter.gpg.xml			SYSTEM "chapter.gpg.xml">
+	<!ENTITY chapter.uuid.xml			SYSTEM "chapter.uuid.xml">
+	<!ENTITY chapter.des.xml			SYSTEM "chapter.des.xml">
+	<!ENTITY chapter.aes.xml			SYSTEM "chapter.aes.xml">
+	<!ENTITY chapter.digest.xml 			SYSTEM "chapter.digest.xml">
+	<!ENTITY chapter.digest.md5.xml 		SYSTEM "chapter.digest.md5.xml">
+	<!ENTITY chapter.digest.sha.xml 		SYSTEM "chapter.digest.sha.xml">
+	<!ENTITY chapter.digest.crc32.xml		SYSTEM "chapter.digest.crc32.xml">
+	<!ENTITY chapter.digest.3rdparty.xml		SYSTEM "chapter.digest.3rdparty.xml">
+
+	<!ENTITY chapter.openssl.xml			SYSTEM "chapter.openssl.xml">
+	<!ENTITY chapter.rsa.xml 			SYSTEM "chapter.rsa.xml">
+	<!ENTITY chapter.code.xml 			SYSTEM "chapter.code.xml">
+	<!ENTITY chapter.code.base64.xml 		SYSTEM "chapter.code.base64.xml">
+	<!ENTITY chapter.code.uuencode.xml 		SYSTEM "chapter.code.uuencode.xml">
+	<!ENTITY chapter.code.quoted-printable.xml	SYSTEM "chapter.code.quoted-printable.xml">
+	<!ENTITY chapter.certificate.xml		SYSTEM "chapter.certificate.xml">
+
+	<!ENTITY chapter.tunnel.xml			SYSTEM "chapter.tunnel.xml">
+	<!ENTITY chapter.devel.xml 			SYSTEM "chapter.devel.xml">
+	<!ENTITY chapter.devel.socket.xml		SYSTEM "chapter.devel.socket.xml">
+	<!ENTITY chapter.mail.xml			SYSTEM "chapter.mail.xml">
+	<!ENTITY chapter.openstego.xml			SYSTEM "chapter.openstego.xml">
+	<!ENTITY chapter.filesystem.xml			SYSTEM "chapter.filesystem.xml">
+	<!ENTITY chapter.organization.xml		SYSTEM "chapter.organization.xml">
+
+	<!ENTITY chapter.smartcard.xml			SYSTEM "chapter.smartcard.xml">
+	<!ENTITY chapter.database.xml			SYSTEM "chapter.database.xml">
+
+	<!ENTITY openssl "<![CDATA[<link linkend='openssl'>OpenSSL</link>]]>">
+	<!ENTITY OpenSSL "&openssl;">
+	<!ENTITY uuid "<link linkend='uuid'>UUID</link>">
+	<!ENTITY homepage "http://netkiller.sf.net/">
+
+]>
+<book>
+	<bookinfo>
+		<title>Netkiller Cryptography 手札</title>
+		<!-- Cryptography Encryption -->
+		<subtitle>信息安全与加密</subtitle>
+		<author>
+			<personname>
+				<honorific>Mr</honorific>
+				<firstname>Neo</firstname>
+				<othername></othername>
+				<surname>Chan</surname>
+				<lineage>陈景峰(BG7NYT)</lineage>
+			</personname>
+			<affiliation>
+				<address>
+					<country>中国</country><state>广东省</state><city>深圳市</city><street>宝安区龙华镇溪山美地</street>
+					<postcode>518109</postcode>
+					<phone>+86 13113668890</phone>
+					<fax>+86 755 29812080</fax>
+					<email>netkiller@msn.com</email>
+				</address>
+			</affiliation>
+
+			<date>2006-6</date>
+		</author>
+		<copyright>
+			<year>2006-2017</year>
+			<holder>Netkiller. All rights reserved.</holder>
+		</copyright>
+
+		<edition>$Revision: 659 $</edition>
+  		<pubdate>$Date: 2013-08-09 18:01:31 +0800 (Fri, 09 Aug 2013) $</pubdate>
+  		<releaseinfo>
+			<remark>$Id: book.xml 659 2013-08-09 10:01:31Z netkiller $</remark>
+		</releaseinfo>
+
+		&book.info.legalnotice.xml;
+		&book.info.abstract.xml;
+
+		<abstract>
+			<title>为什么写这篇文章</title>
+			<para>有很多想法,不能实现.工作中也用不到,所以想写出来,和大家分享.有一点写一点,写得也不好,就当学习笔记了.</para>
+			<simplelist>
+				<member>我想到那写到那,你会发现文章没一个中心,今天这里写点,明天跳过本章写其它的.</member>
+				<member>文中例子决对多,对喜欢复制然后粘贴朋友很有用,不用动手写,也省时间.</member>
+				<member>理论的东西,网上大把,我这里就不写了,需要可以去网上查.</member>
+				<member>我爱写错别字,还有一些是打错的,如果发现请指正.</member>
+				<member>另外本文98%是我亲自编写，另有小部分来自引用网上，但作者不详.</member>
+			</simplelist>
+		</abstract>
+		<keywordset>
+			<keyword>md5sum, openssl, openpgp, opengpg</keyword>
+			<keyword>md5, sha1, des, rsa, uuid, base64, quoted-printable, uuencode</keyword>
+			<keyword>x509,smime</keyword>
+		</keywordset>
+
+	</bookinfo>
+
+	&book.dedication.xml;
+
+	<preface>
+		<title>自述</title>
+		<para>一直以来,我对数字证书,CA,PKI,非对称加密,非常感兴趣.很想写一篇这方面的文章,因为工作太忙的关系拖到至今.</para>
+		<para>对于CA,PKI我也是摸着石头过河,网上文章到是不少,全是理论性很强的文章,关于CA,PKI实现很少有文章提及.不要以为我是大拿.兴趣原因,我才写这篇文章.</para>
+		<para>我研究过一段时间Java.security.*,也写了一些例子,但工作中一直没用到.前几天我安装Mac OS X for x86,使用System Commander引导.System Commander破坏了我的硬盘分区表,我损失惨重,之前的例子也没了.</para>
+		<para>对数字证书兴趣也很浓,对于OpenSSL,OpenSSH,OpenPGP,GnuPG,SMIME...所用的证书和它们之间的关系一直搞不清楚,只知道他们可以结构很相似,所用的算法和标准,格式不同.</para>
+		<para>如果对我所谈的方面感兴趣可以去我的<ulink url="http://groups.google.com/group/netkiller">邮件列表</ulink>讨论</para>
+<!--
+		<para>如果您想下载这篇文档,或在其它网站看到这篇文章,请使用md5sum校验.</para>
+		<procedure><title>校验步骤:</title>
+			<step>
+				<para><ulink url="security.tar.gz">点击下载 security.tar.gz</ulink></para>
+				<para><ulink url="security.tar.gz.md5">点击下载 security.tar.gz.md5</ulink></para>
+			</step>
+			<step>
+				<para>命令:</para>
+				<literallayout>
+				<![CDATA[ md5sum -c security.tar.gz.md5 ]]>
+				</literallayout>
+				<para>security.tar.gz.md5内容类似下面:</para>
+				<para>4d24e2b653e48a74dace9b6648eb8815 *book.html</para>
+			</step>
+			<step>
+				<para>md5sum -c security.tar.gz.md5</para>
+				<para>book.html: OK</para>
+			</step>
+			<step>
+				<para>OK表示正确,如果非OK请重新下载,或到我的网站下载</para>
+			</step>
+		</procedure>
+ -->
+		<section>
+			<title>读者对象</title>
+			<para>本文档的读者对象:</para>
+			<para>文档面向有所有读者。您可以选读您所需要的章节,无需全篇阅读,因为有些章节不一定对你有用,用得着就翻来看看,暂时用不到的可以不看.</para>
+			<orderedlist><title>大体分来读者可以分为几类:</title>
+				<listitem><para>系统管理员, 可以选读(Openssl,OpenSSH,OpenPGP...)</para></listitem>
+				<listitem><para>程序开发人员, 可以选读(Java.security.*开发,SSL Socket开发)</para></listitem>
+				<listitem><para>系统支持,部署工程师</para></listitem>
+			</orderedlist>
+			<para>不管是谁,做什么的,我希望通过阅读这篇文档都能对你有所帮助。</para>
+
+			<orderedlist><title>我的目的:</title>
+				<listitem><para>通过阅读本文,你可以学会使用md5,sha,base64...技术</para></listitem>
+				<listitem><para>懂得使用OpenSSL,OpenSSH,OpenPGP/GnuPG...</para></listitem>
+				<listitem><para>使用Java.security.*来创建,修改删除,删除各种证书如:SMIME邮件签名与加密,Web服务器信认证书,SSL Socket开发...</para></listitem>
+				<listitem><para>建立一个基本的PKI系统</para></listitem>
+			</orderedlist>
+
+		</section>
+
+		<section>
+			<title>内容简介</title>
+			<para>本文档容简介:</para>
+			<para>文档全篇分为基础应用篇，管理篇，开发篇.</para>
+			<orderedlist><title>文档内容简介:</title>
+				<listitem><para>基础应用篇，主要讲述一般日常用到的加密方法，如Office与PDF文档数字签名，一般权限设置与加密解密等，适合所有人阅读</para></listitem>
+				<listitem><para>管理篇,主要是面向系统管理员，主要讲安装配置等</para></listitem>
+				<listitem><para>开发篇,向要开发人员,讲述安全通信,和数据证书相关编程等.</para></listitem>
+			</orderedlist>
+
+		</section>
+
+		&preface.about.me.xml;
+
+	</preface>
+<!-- =========================================================================== -->
+	&chapter.uuid.xml;
+<!-- =========================================================================== -->
+	&chapter.code.xml;
+<!-- =========================================================================== -->
+	&chapter.digest.xml;
+<!-- =========================================================================== -->
+	&chapter.des.xml;
+	&chapter.aes.xml;
+	&chapter.rsa.xml;
+<!-- =========================================================================== -->
+	&chapter.gpg.xml;
+	&chapter.openssl.xml;
+	&chapter.database.xml;
+	&chapter.certificate.xml;
+<!-- =========================================================================== -->
+	&chapter.tunnel.xml;
+	&chapter.filesystem.xml;
+<!-- =========================================================================== -->
+	&chapter.mail.xml;
+<!-- =========================================================================== -->
+	&chapter.office.xml;
+	&chapter.openstego.xml;
+<!-- =========================================================================== -->
+	&chapter.devel.xml;
+<!-- =========================================================================== -->
+	&chapter.smartcard.xml;
+	&chapter.organization.xml;
+<!-- =========================================================================== -->
+
+</book>

@@ -1,0 +1,49 @@
+﻿email: 
+D:\Program Files\Microsoft.NET\SDK\v2.0\Bin>
+makecert -sv openx -n "CN=openx;E=openx@163.com" openx.cer
+Succeeded
+
+X.509
+RSA
+DES
+MD5
+SHA1
+
+什么是摘要
+什么是签名
+什么是公钥
+什么是私钥
+什么是证书
+
+应用
+   Office
+	Word 加密
+	Word 签名
+   Acrobat 加密
+   WinRAR
+   WinZip
+
+OpenSSL
+OpenSSH
+OpenGPG / OpenPGP
+
+Language
+	Java 安全
+	C#
+	PHP
+
+Network
+	Socket 	SSL
+	隧道
+	OpenVPN
+	POP3
+	SMTP
+	Web SSL
+
+OpenLDAP
+Kerberos 
+
+Smart Card
+
+<ulink url="http://www.ietf.org/html.charters/smime-charter.html">S/MIME Mail Security</ulink>
+http://www.ietf.org/html.charters/pkix-charter.html

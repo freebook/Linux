@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="uuencode">
+	<title>Uuencode</title>
+	<note><para>uuencode不是MIME标准</para></note>
+	<para>application/x-uuencode</para>
+   	<para>Uuencode 是将二进制文件以文本文件方式进行编码表示、以利于基于文本传输环境中进行二进制文件的传输/交换的编码方法之一， 在邮件系统/二进制新闻组中使用频率比较高，经常用于附件二进制文件。</para>
+   	<para>这种编码的特征是：每一行开头用“M”标志。	</para>
+   	<para>Uuencode的算法很简单，编码时它将3个字符顺序放入一个 24 位的缓冲区，缺字符的地方补零，然后将缓冲区截断成为 4 个部分，高位在先，每个部分 6 位，用下面的64个字符重新表示：</para>
+	<literallayout>
+	<![CDATA[
+"`!"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_"
+	]]>
+	</literallayout>
+	<para>解码时它将4个字符分别转换为4个6位字符后，截取有用的后六位放入一个 24 位的缓冲区，即得3个二进制代码。</para>
+	<section id="uuencode.php">
+		<title>PHP uuencode</title>
+		<para>编码：convert_uuencode()</para>
+		<screen>
+		<![CDATA[
+<?php
+$some_string = "test\ntext text\r\n";
+echo convert_uuencode($some_string);
+?>
+		]]>
+		</screen>
+		<para>解码：convert_uuencode()</para>
+		<screen>
+		<![CDATA[
+<?php
+	$some_string = "This is an encoded string";
+	$encode = convert_uuencode($some_string);
+	echo convert_uudecode($encode);
+?>
+		]]>
+		</screen>
+	</section>
+</section>

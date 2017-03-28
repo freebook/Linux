@@ -1,0 +1,110 @@
+<section id="sha">
+	<title>SHA 专题</title>
+	<section id="sha.sha1sum">
+		<title>sha1sum</title>
+		<screen>
+		<![CDATA[
+$ sha1sum /etc/passwd
+c144c5cc8d5d3b90ad74a1dcf6af9e6c935e2a2a  /etc/passwd
+
+$ sha1sum about/*
+905a26de0f2fd6fcb53bf8db75d76c538d094237  about/index.html
+d0aeb4409808b6afded0522964bed6b795d30fc0  about/index.tpl
+
+$ sha1sum about/* > about.sha1
+$ cat about.sha1
+905a26de0f2fd6fcb53bf8db75d76c538d094237  about/index.html
+d0aeb4409808b6afded0522964bed6b795d30fc0  about/index.tpl
+
+$ sha1sum -c about.sha1
+about/index.html: OK
+about/index.tpl: OK
+
+		]]>
+		</screen>
+	</section>
+	<section id="sha.php">
+		<title>PHP sha1()</title>
+		<para>string sha1 ( string str [, bool raw_output] )</para>
+		<screen>
+<![CDATA[
+<?php
+	$str = 'netkiller';
+	echo sha1($str);
+?>
+]]>
+		</screen>
+		<para>运行输出字符串:eb673aa189c814d2db9fb71f162da1c81b4eba1c</para>
+	</section>
+
+	<section id="sha.java">
+		<title>Java SHA</title>
+		<screen>
+<![CDATA[
+import java.security.*;
+
+public class shaTest {
+
+	private static String dumpBytes(byte[] bytes) {
+	    int i;
+	    StringBuffer sb = new StringBuffer();
+	    for (i = 0; i < bytes.length; i++) {
+	      if (i % 32 == 0 && i != 0) {
+	        sb.append("\n");
+	      }
+	      String s = Integer.toHexString(bytes[i]);
+	      if (s.length() < 2) {
+	        s = "0" + s;
+	      }
+	      if (s.length() > 2) {
+	        s = s.substring(s.length() - 2);
+	      }
+	      sb.append(s);
+	    }
+	    return sb.toString();
+	}
+	public static void main(String[] args) {
+
+		String passwd = "netkiller";
+	    MessageDigest md = null;
+		try {
+			md = MessageDigest.getInstance("SHA");
+			md.update("chen".getBytes());
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+
+	    System.out.println(dumpBytes(md.digest()));
+	}
+
+}
+]]>
+		</screen>
+		<para>编译运行,输入字符串:8a89798cf0878e37bb6589ae1c36b9d8a036275b</para>
+	</section>
+	<section id="sha.perl">
+		<title>Perl</title>
+		<screen>
+		<![CDATA[
+ # Functional style
+ use Digest::SHA1  qw(sha1 sha1_hex sha1_base64);
+
+ $digest = sha1($data);
+ $digest = sha1_hex($data);
+ $digest = sha1_base64($data);
+
+ # OO style
+ use Digest::SHA1;
+
+ $ctx = Digest::SHA1->new;
+
+ $ctx->add($data);
+ $ctx->addfile(*FILE);
+
+ $digest = $ctx->digest;
+ $digest = $ctx->hexdigest;
+ $digest = $ctx->b64digest;
+		]]>
+		</screen>
+	</section>
+</section>

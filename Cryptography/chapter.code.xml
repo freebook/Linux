@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="code" ?>
+	<title>Encode &amp; Decode</title>
+	&chapter.code.base64.xml;
+	&chapter.code.uuencode.xml;
+	&chapter.code.quoted-printable.xml;
+</chapter>
