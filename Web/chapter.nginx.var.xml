@@ -38,6 +38,29 @@ if ($host ~* ^www\.(.*)) {
     rewrite ^(.*) http://user.$domain permanent;
 }
 		</screen>
+		<para>提取主机</para>
+		<screen>
+if ($host ~* ^(.+)\.example\.com$) { 
+    set $subdomain $1;
+    rewrite ^(.*) http://www.example.com/$subdomain permanent;
+}		
+		</screen>
+		<para>提取 domain 例如 www.netkiller.cn 提取后 netkiller.cn</para>
+		<para>只处理二级域名 example.com 不处理三级域名</para>
+		<screen>
+	if ($host ~* ^([^\.]+)\.([^\.]+)$) {
+	   set $domain $1.$2;
+	}
+		</screen>
+		<para>处理三级域名</para>
+		<screen>
+		<![CDATA[
+	set $domain $host;
+	if ($host ~* ^([^\.]+)\.([^\.]+)\.([^\.]+)$) {
+	    set $domain $2.$3;
+	}
+		]]>
+		</screen>
 	</section>
 	<section id="http_user_agent">
 		<title>http_user_agent</title>
