@@ -120,6 +120,16 @@ touch [-acdmt] 文件
 		</screen>
 
 	</section>
+	<section id="truncate">
+		<title>truncate</title>
+		<subtitle>truncate - shrink or extend the size of a file to the specified size</subtitle>
+		<para>创建指定大小的文件</para>
+		<para></para>
+		<screen>
+truncate -s 1k /tmp/test.txt
+truncate -s 100m /tmp/test100.txt	
+		</screen>
+	</section>
 	<section id="ls">
 		<title>ls - list directory contents</title>
 		<screen>
