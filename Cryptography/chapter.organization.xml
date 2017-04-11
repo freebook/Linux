@@ -72,42 +72,16 @@
 			<para>上级是 UserTrust </para>
 		</section>
 	</section>
-	<section id="csr">
-		<title>生成 .csr 文件</title>
+	<section id="sslforfree">
+		<title>SSL FOR FREE</title>
+		<para>https://www.sslforfree.com</para>
+		<para>免费SSL证书</para>
+		<para>nginx</para>
 		<screen>
 		<![CDATA[
-# openssl genrsa -des3 -out example.com.key 2048
-Generating RSA private key, 2048 bit long modulus
-.....................................................................................+++
-.................................................................................+++
-e is 65537 (0x10001)
-Enter pass phrase for example.com.key:
-Verifying - Enter pass phrase for example.com.key:
-
-
-# openssl req -new -key example.com.key -out example.com.csr
-Enter pass phrase for example.com.key:
-You are about to be asked to enter information that will be incorporated
-into your certificate request.
-What you are about to enter is what is called a Distinguished Name or a DN.
-There are quite a few fields but you can leave some blank
-For some fields there will be a default value,
-If you enter '.', the field will be left blank.
------
-Country Name (2 letter code) [GB]:CN
-State or Province Name (full name) [Berkshire]:Guangdong
-Locality Name (eg, city) [Newbury]:Shenzhen
-Organization Name (eg, company) [My Company Ltd]:XXX CO.LTD.,
-Organizational Unit Name (eg, section) []:Technical Support Center
-Common Name (eg, your name or your server's hostname) []:*.example.com
-Email Address []:webmaster@example.com
-
-Please enter the following 'extra' attributes
-to be sent with your certificate request
-A challenge password []:
-An optional company name []:
+cat certificate.crt ca_bundle.crt >> netkiller.cn.crt
+openssl rsa -in private.key -out netkiller.cn.key
 		]]>
-		<!-- openssl req -new -nodes -keyout myserver.key -out myserver.csr -->
 		</screen>
 	</section>
 </chapter>
