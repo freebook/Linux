@@ -185,6 +185,12 @@ index e69de29..ce01362 100644
 		<screen>
 git diff 211ab0b19f25b8c81685a97540f4b1491eb17504 -- nqp-cc/src/QASTCompilerMAST.nqp
 		</screen>
+		<section>
+			<title>--name-only 仅显示文件名</title>
+			<screen>
+git diff --name-only
+			</screen>
+		</section>
 	</section>
 	<section id="clone">
 		<title>Cloning</title>

@@ -63,37 +63,42 @@ $ apt-cache depends package
 $ apt-cache showpkg package
 			</screen>
 		</section>
-		<section>
+		<section id="install">
 			<title>Installation</title>
 			<screen>
-$ sudo apt-get install package
+$ sudo apt install package
 			</screen>
 			<para>*.deb</para>
 			<screen>
 sudo dpkg -i *.deb
 			</screen>
 		</section>
-		<section>
+		<section id="update">
 			<title>Update</title>
 			<screen>
-$ apt-get update
-$ apt-get upgrade
+$ apt update
+$ apt upgrade
 			</screen>
 			<para>Smart software update</para>
 			<screen>
-$ apt-get dist-upgrade
+$ apt dist-upgrade
 			</screen>
 		</section>
-
-		<section>
+		<section id="remove">
 			<title>Remove</title>
 			<para> 删除系统中的foo软件包</para>
 			<screen>
-apt-get remove foo
+$ sudo apt remove foo
 			</screen>
 			<para>删除系统中的package软件包及其配置文件</para>
 			<screen>
-$ sudo apt-get remove --purge package
+$ sudo apt remove --purge package
+			</screen>
+		</section>
+		<section id="purge">
+			<title>purge</title>
+			<screen>
+sudo apt purge package			
 			</screen>
 		</section>
 <!--
