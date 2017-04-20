@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="firewalld">
+<section id="firewalld">
 	<title>Firewalld</title>
 	<section>
 		<title>firewalld</title>
@@ -27,7 +27,7 @@
 			</screen>
 		</section>
 	</section>
-	<section id="iptables">
+	<section id="iptables-services">
 		<title>如果你不习惯使用firewalld想用回Iptables</title>
 		<para>安装iptables</para>
 		<screen>
@@ -77,4 +77,4 @@ COMMIT
 
 		</screen>
 	</section>
-</chapter>
+</section>

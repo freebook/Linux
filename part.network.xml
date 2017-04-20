@@ -10,10 +10,9 @@
 	&chapter.network.irc;
 	&chapter.network.jabber;
 	&chapter.network.proxy;
-	&chapter.security.firewall;
+	&chapter.firewall.xml;
 	&chapter.security.stunnel;
 	&chapter.security.openssh;
-	&chapter.firewalld.xml;
 	&chapter.vpn.xml;
 	&chapter.network.p2p;	
 </part>

@@ -54,6 +54,23 @@ for ip in {81..92}; do ssh root@172.16.3.$ip date; done
 
 for n in  {23..32} {49,50} {81..92}; do mkdir /tmp/$n; echo $n; done
 		</programlisting>
+		<programlisting>
+		<![CDATA[
+for keyword in bash cmd ls
+do
+	echo $keyword
+done 
+
+string="aaa bbb ccc ddd" && for word in $string; do echo "$word"; done
+
+	
+files=( "/etc/passwd" "/etc/group" "/etc/hosts" )
+for file in "${files[@]}"
+do
+    echo $file
+done
+		]]>
+		</programlisting>
 		<para>infinite loops</para>
 		<programlisting>
 		<![CDATA[

@@ -1,4 +1,4 @@
-<chapter id="firewall">
+<chapter id="index"><?dbhtml dir="firewall" ?>
 	<title>Firewall</title>
 	<chapterinfo>
 		<abstract>
@@ -90,7 +90,7 @@ net.ipv4.icmp_echo_ignore_all = 1
 		</section>
 	</section>
 	
-	&chapter.security.firewall.iptables;
+	&chapter.firewall.iptables.xml;
 
 	<section id="ulogd">
 		<title>ulogd - The Netfilter Userspace Logging Daemon</title>
@@ -529,7 +529,7 @@ Rule added
 			</screen>
 		</section>
 	</section>
-
+	&chapter.firewalld.xml;
 <section id="shorewall">
 	<title>Shorewall</title>
 	<!-- http://net.zdnet.com.cn/files/list-0-0-94191-1-1.htm -->
