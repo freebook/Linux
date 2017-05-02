@@ -1,4 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="vagrant">
 	<title>vagrant - Tool for building and distributing virtualized development environments</title>
+	<para>https://www.vagrantup.com/downloads.html</para>
+	<screen>
+	</screen>
+	<section>
+		<title>vagrant for windows</title>
+		<para><graphic  format="png" fileref="../images/vagrant/vagrant-setup-1.png" srccredit="neo" width=""/> 下一步</para>
+		<para><graphic  format="png" fileref="../images/vagrant/vagrant-setup-2.png" srccredit="neo" width=""/> 下一步</para>
+		<para><graphic  format="png" fileref="../images/vagrant/vagrant-setup-3.png" srccredit="neo" width=""/> 下一步</para>
+		<para><graphic  format="png" fileref="../images/vagrant/vagrant-setup-4.png" srccredit="neo" width=""/> 安装</para>
+		<para><graphic  format="png" fileref="../images/vagrant/vagrant-setup-5.png" srccredit="neo" width=""/> 下一步</para>
+		<para><graphic  format="png" fileref="../images/vagrant/vagrant-setup-6.png" srccredit="neo" width=""/> 完成</para>
+		<para><graphic  format="png" fileref="../images/vagrant/vagrant-setup-7.png" srccredit="neo" width=""/> 重启</para>
+	</section>
 </chapter>
