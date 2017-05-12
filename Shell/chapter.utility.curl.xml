@@ -251,6 +251,28 @@ curl -H HOST:www.example.com -I http://172.16.1.10/product/374218.html
 curl-config --features
 		</screen>
 	</section>
+	<section>
+		<title>RestFul 应用 JSON 数据处理</title>
+		<para>下面提供一些使用 curl 操作 restful 的实例</para>
+		<para>GET 操作</para>
+		<screen>
+curl http://api.netkiller.cn/v1/withdraw/get/15.json
+		</screen>
+		<para>用户认证的情况</para>
+		<screen>
+curl http://test:123456@api.netkiller.cn/v1/withdraw/get/id/815.json		
+		</screen>
+		<para>POST 操作</para>
+		<screen>
+		<![CDATA[
+curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X POST -d '
+{
+"id":"B040200000000000000","name":"Neo","amount":12,"password":"12345","createdate":"2016-09-12 13:10:10"
+
+}' https://test:123456@api.netkiller.cn/v1/withdraw/create.json
+		]]>
+		</screen>
+	</section>
 	<section id="curl.faq">
 		<title>FAQ</title>
 		<para>Error in TLS handshake, trying SSLv3...</para>

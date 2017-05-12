@@ -44,6 +44,55 @@ test -x /usr/bin/munin-cron && /usr/bin/munin-cron
 		]]>
 		</screen>
 	</section>
+	<section id="cmd.file">
+		<title>file — determine file type</title>
+		<para></para>
+		<screen>
+$ file mis.netkiller.cn-0.0.1.war 
+mis.netkiller.cn-0.0.1.war: Zip archive data, at least v2.0 to extract
+
+$ file dian_icon.png 
+dian_icon.png: PNG image data, 8 x 24, 8-bit/color RGBA, non-interlaced
+
+$ file sms-s3.jpg
+sms-s3.jpg: JPEG image data, JFIF standard 1.01
+
+$ file -i favicon.ico 
+favicon.ico: image/x-icon; charset=binary
+
+$ file netkiller.wmv 
+netkiller.wmv: Microsoft ASF
+
+$ file netkiller.flv
+netkiller.flv: Macromedia Flash Video
+
+$ file neo.swf
+neo.swf: Macromedia Flash data (compressed), version 10
+
+$ file cs800.css 
+cs800.css: ISO-8859 text, with CRLF line terminators
+		</screen>
+		<para>查看mime</para>
+		<screen>
+$ file -i sms.jpg
+sms.jpg: image/jpeg; charset=binary
+
+$ file -i call.png
+call.png: image/png; charset=binary
+
+$ file -i cs800.css
+cs800.css: text/plain; charset=iso-8859-1
+
+$ file -i neo.swf
+neo.swf: application/x-shockwave-flash; charset=binary
+
+$ file -i neo.wmv
+neo.wmv: video/x-ms-asf; charset=binary
+
+$ file -i neo.flv
+neo.flv: video/x-flv; charset=binary
+		</screen>
+	</section>
 	<section id="stat">
 		<title>stat</title>
 		<screen>
