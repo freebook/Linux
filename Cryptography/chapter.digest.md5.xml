@@ -123,9 +123,11 @@ mysql>
 		</section>
 		<section id="md5.java">
 			<title>Java MD5</title>
-			<para>1.2版之前的JDK没有实现md5;</para>
-			<screen>
-<![CDATA[
+			<section>
+				<title>JDK 1.2</title>
+				<para>1.2版之前的JDK没有实现md5;</para>
+				<screen>
+				<![CDATA[
 /************************************************
 MD5 算法的Java Bean
 @author:Topcat Tuppin
@@ -771,11 +773,14 @@ public class MD5 {
 
 
 }
-]]>
-			</screen>
-			<para>以下使用JDK 1.5.x版实现;</para>
-			<screen>
-<![CDATA[
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>JDK 1.5</title>
+				<para>以下使用JDK 1.5.x版实现;</para>
+				<screen>
+				<![CDATA[
 import java.security.*;
 
 public class md5Test {
@@ -813,10 +818,19 @@ public class md5Test {
 	}
 
 }
-]]>
-			</screen>
-			<para>编译运行,输入字符串:a1a8887793acfc199182a649e905daab</para>
+				]]>
+				</screen>
+				<para>编译运行,输入字符串:a1a8887793acfc199182a649e905daab</para>
+			</section>
+			<section>
+				<title>JDK 1.8</title>
+				<para>JDK 1.8</para>
+				<programlisting>
+String hash = DatatypeConverter.printHexBinary(MessageDigest.getInstance("MD5").digest("Helloword!!!".getBytes("UTF-8")));		
+				</programlisting>
+			</section>				
 		</section>
+			
 	<section id="md5.perl">
 		<title>perl md5</title>
 		<programlisting>
