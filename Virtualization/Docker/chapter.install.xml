@@ -1,0 +1,59 @@
+<!-- <part id="index"><?dbhtml dir="" ?> -->
+<!-- <title>System</title> -->
+<section id="install">
+	<title>Installation</title>
+	<section>
+		<title>CentOS 6</title>
+		<screen>
+			<![CDATA[
+yum install docker-io
+service docker start
+chkconfig docker on
+docker pull centos:latest
+docker images centos
+			]]>
+		</screen>
+		<para>test</para>
+		<screen>
+			<![CDATA[
+docker run -i -t centos /bin/bash
+			]]>
+		</screen>
+	</section>
+	<section>
+		<title>CentOS 7</title>
+		<screen>
+			<![CDATA[
+yum install -y yum-utils
+yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+yum makecache fast
+yum -y install docker-ce
+
+systemctl start docker
+			]]>
+		</screen>
+		<para>测试安装是否成功</para>
+		<screen>
+			<![CDATA[
+docker run hello-world
+			]]>
+		</screen>
+	</section>
+	<section>
+		<title>Ubuntu</title>
+		<screen>
+			<![CDATA[
+$ sudo apt update
+$ sudo apt install docker.io
+$ sudo ln -sf /usr/bin/docker.io /usr/local/bin/docker
+$ sudo sed -i '$acomplete -F _docker docker' /etc/bash_completion.d/docker.io
+			]]>
+		</screen>
+		<screen>
+			<![CDATA[
+$ sudo docker run -i -t ubuntu /bin/bash
+			]]>
+		</screen>
+	</section>
+</section>
+<!-- </part> -->

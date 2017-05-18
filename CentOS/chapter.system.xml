@@ -1,9 +1,0 @@
-<part id="index"><?dbhtml dir="system" ?>
-	<title>System</title>
-
-	&chapter.system.utilities.xml;
-
-
-
-
-</part>

@@ -2,35 +2,7 @@
 <chapter id="index"><?dbhtml dir="docker" ?>
 	<title>Docker</title>
 	<para><ulink url="https://www.docker.com" /></para>
-	<section id="install">
-		<title>Installation</title>
-		<section>
-			<title>CentOS</title>
-			<screen>
-yum install docker-io
-service docker start
-chkconfig docker on
-docker pull centos:latest
-docker images centos
-			</screen>
-			<para>test</para>
-			<screen>
-docker run -i -t centos /bin/bash
-			</screen>
-		</section>
-		<section>
-			<title>Ubuntu</title>
-			<screen>
-$ sudo apt update
-$ sudo apt install docker.io
-$ sudo ln -sf /usr/bin/docker.io /usr/local/bin/docker
-$ sudo sed -i '$acomplete -F _docker docker' /etc/bash_completion.d/docker.io
-			</screen>
-			<screen>
-$ sudo docker run -i -t ubuntu /bin/bash
-			</screen>
-		</section>
-	</section>
+	&chapter.install.xml;
 	<section id="images">
 		<title>镜像</title>
 		<para>Docker 镜像地址 <ulink url="https://registry.hub.docker.com/">https://registry.hub.docker.com/</ulink></para>
