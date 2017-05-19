@@ -2,7 +2,7 @@
 <chapter id="index"><?dbhtml dir="docker" ?>
 	<title>Docker</title>
 	<para><ulink url="https://www.docker.com" /></para>
-	&chapter.install.xml;
+	&chapter.docker.install.xml;
 	<section id="images">
 		<title>镜像</title>
 		<para>Docker 镜像地址 <ulink url="https://registry.hub.docker.com/">https://registry.hub.docker.com/</ulink></para>
@@ -198,14 +198,17 @@ f8c7b2afff14        ubuntu:14.10        "/bin/bash"         16 minutes ago      
 	</section>
 	<section id="repository">
 		<title>仓库</title>
-		<para>登录</para>
-		<screen>
+		<section>
+			<title>登陆仓库</title>
+			<para>登录</para>
+			<screen>
 $ sudo docker login
 Username: netkiller
 Password: 
 Email: netkiller@msn.com
 Login Succeeded
-		</screen>
+			</screen>
+		</section>
 	</section>	
 	<section id="cli">
 		<title>docker 命令</title>

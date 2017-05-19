@@ -5,5 +5,5 @@
 <!ENTITY chapter.kvm.xml				SYSTEM "chapter.kvm.xml">
 <!ENTITY chapter.vagrant.xml			SYSTEM "chapter.vagrant.xml">
 <!ENTITY chapter.docker.xml					SYSTEM "Docker/chapter.docker.xml">
-<!ENTITY chapter.install.xml				SYSTEM "Docker/chapter.install.xml">
+<!ENTITY chapter.docker.install.xml			SYSTEM "Docker/chapter.docker.install.xml">
 <!ENTITY chapter.docker.dockerfile.xml		SYSTEM "Docker/chapter.docker.dockerfile.xml">
