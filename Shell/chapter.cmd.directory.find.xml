@@ -107,10 +107,14 @@ find . -name "*.html" -type f -exec sed -i "s/aaa/bbb/" {} \;
 ./javascript/commonjs.js:function openWindow(url){
 ./javascript/commonjs.js-	window.open(url + "?rand=" + getRandom(), 'gamebinary');
 ./javascript/commonjs.js-}
-
+		</screen>
+		<screen>
+find -type f -regex ".*\.\(css\|js\)" -exec yuicompressor {} -o {} \;
+find -type f -name "*.js" -exec yuicompressor --type js {} -o {} \;
+find -type f -name "*.css" -exec yuicompressor --type css {} -o {} \;
 		</screen>
 	</section>
-	<section id="xargs">
+	<section id="find.xargs">
 		<title>xargs</title>
        	<screen>
 find /etc -type f|xargs md5sum
@@ -142,7 +146,7 @@ find /usr/local \(-path /usr/local/dir1 -o -path /usr/local/file1 \) -prune -o -
 find . \( -path ./templates_c -o -path ./caches \) -prune -o -name "*.php" -print
 		</screen>
 	</section>
-	<section id="mmin">
+	<section id="find.mmin">
 		<title>-mmin n File's data was last modified n minutes ago.</title>
 		<screen>
 # find . -mmin +5 -mmin -10
@@ -182,7 +186,7 @@ tar --newer="2011-07-04" -zcvf backup.tar.gz /var/www/
 tar cvzf foo.tgz /bak -N "2004-03-03 16:49:17"
 		</screen>
 	</section>
-	<section id="print">
+	<section id="find.print">
 		<title>-print / -printf</title>
 		<screen>
 [root@scientific ~]# find / -maxdepth 1 -name '[!.]*' -printf 'Name: %16f Size: %6s\n'
@@ -214,7 +218,7 @@ Name:              bin Size:   4096
 # find /etc/ -type f -printf "%CY-%Cm-%Cd %Cr %8s %f\n"
 		</screen>
 	</section>
-	<section id="size">
+	<section id="find.size">
 		<title>-size</title>
 		<para>查找0字节文件</para>
 		<screen>
