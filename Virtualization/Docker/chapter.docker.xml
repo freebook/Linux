@@ -209,7 +209,21 @@ Email: netkiller@msn.com
 Login Succeeded
 			</screen>
 		</section>
-	</section>	
+		<section>
+			<title>获取镜像</title>
+			<screen>
+docker pull ubuntu:14.04
+			</screen>
+		</section>
+		<section>
+			<title>上传镜像</title>
+			<screen>
+docker tag friendlyhello username/repository:tag
+docker push username/repository:tag
+			</screen>
+		</section>
+	</section>
+	&chapter.docker.dockerfile.xml;
 	<section id="cli">
 		<title>docker 命令</title>
 		<section>
