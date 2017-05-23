@@ -7,3 +7,5 @@
 <!ENTITY chapter.docker.xml					SYSTEM "Docker/chapter.docker.xml">
 <!ENTITY chapter.docker.install.xml			SYSTEM "Docker/chapter.docker.install.xml">
 <!ENTITY chapter.docker.dockerfile.xml		SYSTEM "Docker/chapter.docker.dockerfile.xml">
+<!ENTITY chapter.docker.example.xml		SYSTEM "Docker/chapter.docker.example.xml">
+<!ENTITY chapter.docker.java.xml		SYSTEM "Docker/chapter.docker.java.xml">

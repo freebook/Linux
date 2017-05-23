@@ -24,10 +24,5 @@ vncserver :1 -geometry 800x600 -depth 24
 vncserver -kill :1
 	</screen>
 </chapter>
-<chapter id="gparted">
-	<title>gparted</title>
-	<screen>
-yum install gparted
-	</screen>
-</chapter>
+
 </part>
