@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!ENTITY chapter.virtualization.xml		SYSTEM "chapter.virtualization.xml">
 <!ENTITY chapter.xen.xml				SYSTEM "chapter.xen.xml">
 <!ENTITY chapter.kvm.xml				SYSTEM "chapter.kvm.xml">
 <!ENTITY chapter.vagrant.xml			SYSTEM "chapter.vagrant.xml">
-<!ENTITY chapter.docker.xml					SYSTEM "Docker/chapter.docker.xml">
-<!ENTITY chapter.docker.install.xml			SYSTEM "Docker/chapter.docker.install.xml">
-<!ENTITY chapter.docker.dockerfile.xml		SYSTEM "Docker/chapter.docker.dockerfile.xml">
+<!ENTITY chapter.docker.xml				SYSTEM "Docker/chapter.docker.xml">
+<!ENTITY chapter.docker.install.xml		SYSTEM "Docker/chapter.docker.install.xml">
+<!ENTITY chapter.docker.dockerfile.xml	SYSTEM "Docker/chapter.docker.dockerfile.xml">
 <!ENTITY chapter.docker.example.xml		SYSTEM "Docker/chapter.docker.example.xml">
 <!ENTITY chapter.docker.java.xml		SYSTEM "Docker/chapter.docker.java.xml">
+<!ENTITY chapter.docker.system.xml		SYSTEM "Docker/chapter.docker.system.xml">
 <!ENTITY chapter.docker.dockerfile.xml	SYSTEM "Docker/chapter.docker.dockerfile.xml">
+<!ENTITY chapter.docker.cli.xml			SYSTEM "Docker/chapter.docker.cli.xml">

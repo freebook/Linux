@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="kvm">
-	<title>KVM</title>
+<chapter id="index"><?dbhtml dir="kvm" ?>
+	<title>Kernel-based Virtual Machine(KVM)</title>
 	<chapterinfo>
 		<keywordset>
 			<keyword>kvm,vmx,svm,qemu-img,virsh,brctl,tunctl,qemu-kvm,virt-manager,iso</keyword>

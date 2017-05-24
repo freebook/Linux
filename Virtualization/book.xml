@@ -11,12 +11,10 @@
 	<!ENTITY BG7NYT "&Neo;">
 	<!ENTITY Netkiller "<emphasis><trademark>Netkiller</trademark></emphasis>">
 
-	<!ENTITY book.info.author.xml		SYSTEM "../common/book.info.author.xml">
-	<!ENTITY book.info.legalnotice.xml 	SYSTEM "../common/book.info.legalnotice.xml">
-	<!ENTITY book.info.abstract.xml 	SYSTEM "../common/book.info.abstract.xml">
-    <!ENTITY book.preface.xml           SYSTEM "../common/book.preface.xml">
-	<!ENTITY preface.about.me.xml       SYSTEM "../common/about.me.xml">
-	<!ENTITY book.dedication.xml       	SYSTEM "../common/book.dedication.xml">
+	<!ENTITY % common.doctype.entity.xml 		SYSTEM "../../common/doctype.entity.xml">
+	%common.doctype.entity.xml;
+	
+	<!ENTITY book.info.abstract.xml 	SYSTEM "../book.info.abstract.xml">
 
 <!--
 	<!ENTITY book.preface 		SYSTEM "book.preface.xml">
@@ -32,12 +30,12 @@
 	xmlns="http://docbook.org/ns/docbook" xml:lang="zh-cn">
 	<info>
 		<title>Netkiller Virtualization 手札</title>
-		<subtitle>KVM, VirtualBox, Docker...</subtitle>
+		<subtitle>Docker, KVM, OpenVZ, Vagrant, VirtualBox ...</subtitle>
 
 		&book.info.author.xml;
 
 		<copyright>
-			<year>2015</year>
+			<year>2015-2017</year>
 			<holder>Netkiller(Neo Chan). All rights reserved.</holder>
 		</copyright>
 
@@ -56,8 +54,8 @@
 		<keywordset>
 			<keyword>qmeu,kvm,xen,openvz</keyword>
 			<keyword>docker, coreos</keyword>
-			<keyword>apache,lighttpd,nginx,tomcat</keyword>
-			<keyword>awstatus, webalizer</keyword>
+			<keyword></keyword>
+			<keyword></keyword>
 		</keywordset>
 	</info>
 

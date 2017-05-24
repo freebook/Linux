@@ -13,7 +13,7 @@
 	</para>
 	<para>我的系列文档:</para>
 	<para>操作系统</para>
-	<simplelist type='horiz' columns='8'>
+	<simplelist type='horiz' columns='1'>
 		<title>操作系统</title>
 		<member>
 			<ulink url="../linux/index.html">Netkiller Linux 手札</ulink>
@@ -38,7 +38,10 @@
 		</member>
 		<member>
 			<ulink url="../mail/index.html">Netkiller Mail 手札</ulink>
-		</member>		
+		</member>
+		<member>
+			<ulink url="../virtualization/index.html">Netkiller Virtualization 手札</ulink>
+		</member>
 	</simplelist>
 
 	<para>以下文档停止更新合并到 《Netkiller Linux 手札》</para>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="docker.system">
+	<title>操作系统</title>
+	<section>
+		<title>/etc/hosts 配置</title>
+		<screen>
+		<![CDATA[
+# docker run --add-host=docker:10.180.0.1 --rm -it debian
+		]]>
+		</screen>
+	</section>
+	<section id="sysctl">
+		<title>sysctl</title>
+		<screen>
+		<![CDATA[
+$ docker run --sysctl net.ipv4.ip_forward=1 someimage		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>ulimits</title>
+		<para>查看 ulimit 设置</para>
+		<screen>
+		<![CDATA[
+$ docker run --ulimit nofile=1024:1024 --rm debian sh -c "ulimit -n"
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+$ docker run -it --ulimit as=1024 fedora /bin/bash
+$ docker run -d -u daemon --ulimit nproc=3 busybox top
+		]]>
+		</screen>
+	</section>
+</section>

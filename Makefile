@@ -61,6 +61,10 @@ security:
 	$(call reset,security)
 	$(call book,Security,security)
 
+virtualization:
+	$(call reset,virtualization)
+	$(call book,Virtualization,virtualization)
+
 htmlhelp:
 	@rm -rf $(HTMLHELP) && mkdir -p $(HTMLHELP)
 	@test -d images && rsync -a images $(HTMLHELP) 

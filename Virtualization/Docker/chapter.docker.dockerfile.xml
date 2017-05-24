@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="Dockerfile">
 	<title>Dockerfile</title>
-		<screen>
-		<![CDATA[
-
-		]]>
-		</screen>
+	<screen>
+	<![CDATA[
+$ docker build -f /path/to/a/Dockerfile .
+	]]>
+	</screen>
 </section>

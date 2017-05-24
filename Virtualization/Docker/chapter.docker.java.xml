@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="example.java">
-	<title>Example Java</title>
+	<title>Example Java - Spring boot with Docker</title>
 	<section>
 		<title>获取 CentOS 7 镜像</title>
 		<para>docker pull centos:7</para>
