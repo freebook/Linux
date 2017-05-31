@@ -821,14 +821,7 @@ git-svn rebase
 		</screen>
 		<para>git-svn init svn://netkiller.8800.org/neo/public_html</para>
 	</section>
-
-	<section id="gitignore">
-		<title>.gitignore</title>
-		<screen>
-find ./ -type d -empty | grep -v \.git | xargs -i touch {}/.gitignore
-		</screen>
-	</section>
-
+	&chapter.git.dotfiles.xml;
 	&chapter.git.gitolite.xml;
 	&chapter.git.web.xml;
 <section id="faq">

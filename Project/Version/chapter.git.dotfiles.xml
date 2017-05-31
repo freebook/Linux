@@ -1,0 +1,36 @@
+	<section id="gitignore">
+		<title>.gitignore</title>
+		<screen>
+find ./ -type d -empty | grep -v \.git | xargs -i touch {}/.gitignore
+		</screen>
+	</section>
+
+	<section id="gitattributes">
+		<title>.gitattributes</title>
+		<section>
+			<title>SVN Keywords</title>
+			<screen>
+			<![CDATA[
+Example:
+
+$ echo '*.txt ident' >> .gitattributes
+$ echo '$Id$' > test.txt
+$ git commit -a -m "test"
+
+$ rm test.txt
+$ git checkout -- test.txt
+$ cat test.txt			
+			]]>
+			</screen>
+			
+			<screen>
+			<![CDATA[]]>
+			</screen>
+			<screen>
+			<![CDATA[]]>
+			</screen>
+			<screen>
+			<![CDATA[]]>
+			</screen>
+		</section>
+	</section>
