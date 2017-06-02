@@ -60,7 +60,7 @@ gitlab_rails['smtp_authentication'] = "login"
 # Password: 5iveL!fe		
 		</screen>
 	</section>
-	<section>
+	<section id="gitlab.runner">
 		<title>GitLab Runner</title>
 		<screen>
 curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-ci-multi-runner/script.rpm.sh | sudo bash
@@ -96,15 +96,15 @@ Runner registered successfully. Feel free to start it, but if it's running alrea
 yum install gitlab-ci-multi-runner		
 		</screen>
 	</section>
-	<section id="user">
+	<section id="gitlab.user">
 		<title>用户管理</title>
 		<para>初始化GitLab，进入Admin area，单击左侧菜单Users，在这里为gitlab添加用户</para>
 	</section>
-	<section id="group">
+	<section id="gitlab.group">
 		<title>组管理</title>
 		<para>初始化GitLab组，我比较喜欢使用“域名”作为组名，例如example.com</para>
 	</section>
-	<section id="project">
+	<section id="gitlab.project">
 		<title>项目管理</title>
 		<para>创建项目，我通常会在组下面创建项目，每个域名对应一个项目,例如www.example.com,images.example.com</para>
 		<para>版本库URL如下</para>
@@ -113,7 +113,7 @@ http: http://192.168.0.1/example.com/www.example.com.git
 ssh: git@192.168.0.1:example.com/www.example.com.git
 		</screen>
 	</section>
-	<section id="faq">
+	<section id="gitlab.faq">
 		<title>FAQ</title>
 		<section>
 			<title>gitolite 向 gitlab 迁移</title>

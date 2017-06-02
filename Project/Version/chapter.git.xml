@@ -824,20 +824,20 @@ git-svn rebase
 	&chapter.git.dotfiles.xml;
 	&chapter.git.gitolite.xml;
 	&chapter.git.web.xml;
-<section id="faq">
-	<title>FAQ</title>
-	<section id="HEAD">
-		<title>导出最后一次修改过的文件</title>
-		<para>有时我们希望把刚刚修改的文件复制出来，同时维持原有的目录结构，这样可能交给运维直接覆盖服务器上的代码。我们可以使用下面的命令完成这样的操作，而不用一个一个文件的复制。</para>
-		<screen>
+	<section id="faq">
+		<title>FAQ</title>
+		<section id="HEAD">
+			<title>导出最后一次修改过的文件</title>
+			<para>有时我们希望把刚刚修改的文件复制出来，同时维持原有的目录结构，这样可能交给运维直接覆盖服务器上的代码。我们可以使用下面的命令完成这样的操作，而不用一个一个文件的复制。</para>
+			<screen>
 git archive -o update.zip HEAD $(git diff --name-only HEAD^)
-		</screen>
-	</section>
-	<section id="range">
-		<title>导出指定版本区间修改过的文件</title>
-		<para>首先使用git log查看日志，找到指定的 commit ID号。</para>
-		<screen>
-		<![CDATA[
+			</screen>
+		</section>
+		<section id="range">
+			<title>导出指定版本区间修改过的文件</title>
+			<para>首先使用git log查看日志，找到指定的 commit ID号。</para>
+			<screen>
+			<![CDATA[
 $ git log
 commit ee808bb4b3ed6b7c0e7b24eeec39d299b6054dd0
 Author: 168 <lineagelx@126.com>
@@ -862,22 +862,40 @@ Author: netkiller <netkiller@msn.com>
 Date:   Wed Oct 14 17:27:15 2015 +0800
 
     init repo
-   		]]>
-		</screen>
-		<para>导入 b111c253321fb4b9c5858302a0707ba0adc3cd07 至 ee808bb4b3ed6b7c0e7b24eeec39d299b6054dd0 间修改过的文件。</para>
-		<screen>
+	   		]]>
+			</screen>
+			<para>导入 b111c253321fb4b9c5858302a0707ba0adc3cd07 至 ee808bb4b3ed6b7c0e7b24eeec39d299b6054dd0 间修改过的文件。</para>
+			<screen>
 $ git archive -o update2.zip HEAD $(git diff --name-only b111c253321fb4b9c5858302a0707ba0adc3cd07)
-		</screen>
-	</section>
-	<section id="config">
-		<title>fatal: The remote end hung up unexpectedly</title>
-		<screen>
+			</screen>
+		</section>
+		<section id="config">
+			<title>fatal: The remote end hung up unexpectedly</title>
+			<screen>
 error: RPC failed; result=22, HTTP code = 413 | 18.24 MiB/s
 fatal: The remote end hung up unexpectedly
-		</screen>
-		<screen>
+			</screen>
+			<screen>
 git config http.postBuffer 524288000
-		</screen>
+			</screen>
+		</section>
+		<section>
+			<title>回撤提交</title>
+			<para>首先 reset 到指定的版本，根据实际情况选择 --mixed 还是 --hard</para>
+			<screen>
+			<![CDATA[
+git reset --mixed 096392721f105686fc3cdafcb4159439a66b0e5b --
+or
+git reset --hard 33ba6503b4fa8eed35182262770e4eab646396cd --
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+git push origin --force --all
+or
+git push --force --progress "origin" master:master
+			]]>
+			</screen>
+		</section>
 	</section>
-</section>
 </chapter>
