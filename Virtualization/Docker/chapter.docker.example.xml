@@ -4,4 +4,5 @@
 	<screen>
 	</screen>
 	&chapter.docker.java.xml;
+	&chapter.docker.redis.xml;
 </section>

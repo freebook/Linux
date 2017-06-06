@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="example.redis">
+	<title>Redis</title>
+	<section>
+		<title>获取 Redis 镜像</title>
+		<para>docker pull redis</para>
+		<screen>
+		<![CDATA[
+# docker pull redis  
+Using default tag: latest
+latest: Pulling from library/redis
+10a267c67f42: Pull complete 
+5b690bc4eaa6: Pull complete 
+4cdd94354d2a: Pull complete 
+71c1f30d820f: Pull complete 
+c54584150374: Pull complete 
+d1f9221193a6: Pull complete 
+d45bc46b48e4: Pull complete 
+Digest: sha256:548a75066f3f280eb017a6ccda34c561ccf4f25459ef8e36d6ea582b6af1decf
+Status: Downloaded newer image for redis:latest
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>启动一个 Redis 实例</title>
+		<screen>
+# docker run --name my-redis -d redis
+10207174e18f61290f9c869e6437fa787e459e07b076b82cedf800a8c37c515d		
+		</screen>
+		<para>查看启动情况</para>
+		<screen>
+		<![CDATA[
+# docker ps 
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS               NAMES
+10207174e18f        redis               "docker-entrypoint..."   8 minutes ago       Up 8 minutes        6379/tcp            my-redis
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>进入 Redis </title>
+		<screen>
+		<![CDATA[
+# docker run -it --link my-redis:redis --rm redis redis-cli -h redis -p 6379
+redis:6379> set name neo
+OK
+redis:6379> get name
+"neo"
+redis:6379> exit
+		]]>		
+		</screen>
+	</section>
+	
+	<section>
+		<title>启动一个 Redis 实例并映射 6379 端口</title>
+		<screen>
+		<![CDATA[
+# docker rm my-redis
+my-redis
+
+# docker stop my-redis
+my-redis
+
+# docker run --name my-redis -d -p 6379:6379 redis
+10207174e18f61290f9c869e6437fa787e459e07b076b82cedf800a8c37c515d
+
+# docker ps -a                                    
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                    NAMES
+1c4540d8617f        redis               "docker-entrypoint..."   2 seconds ago       Up 1 second         0.0.0.0:6379->6379/tcp   my-redis
+		]]>
+		</screen>
+		<para>检查端口</para>
+		<screen>
+		<![CDATA[
+# ss -lnt | grep 6379
+LISTEN     0      128         :::6379                    :::*  
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>维护容器</title>
+		<para>使用下面命令进入容器维护 Redis</para>
+		<screen>
+		<![CDATA[
+# docker exec -it my-redis /bin/bash
+root@1c4540d8617f:/data#
+
+root@1c4540d8617f:/data# redis-server -v
+Redis server v=3.2.9 sha=00000000:0 malloc=jemalloc-4.0.3 bits=64 build=a30533b464d1689b
+		]]>
+		</screen>
+	</section>
+</section>

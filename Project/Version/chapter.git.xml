@@ -470,6 +470,16 @@ $ git-branch
 $ git config --file config http.receivepack true
 		</screen>
 	</section>
+	<section id="git.log">
+		<title>git log</title>
+		<screen>
+		<![CDATA[
+git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+
+git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%ai) %C(bold blue)<%an>%Creset' --abbrev-commit
+		]]>
+		</screen>
+	</section>
 </section>
 
 
