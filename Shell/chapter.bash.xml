@@ -160,6 +160,13 @@ Endofmessage
 		]]>
 		</screen>
 		<section>
+			<title>stdout</title>
+			<screen>
+$ ln -s /dev/stdout test
+$ cat file > test
+			</screen>
+		</section>
+		<section>
 			<title>error 重定向</title>
 			<screen>
 			<![CDATA[
