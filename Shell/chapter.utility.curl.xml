@@ -48,7 +48,7 @@ curl -x 127.0.0.1:80 your.exmaple.com/index.php
 		</screen>
 	</section>
 	<section id="curl.w">
-		<title>输出格式定义</title>
+		<title>-w, --write-out &lt;format&gt; 输出格式定义</title>
 		<screen>
 计时器				描述
 time_connect		建立到服务器的 TCP 连接所用的时间
@@ -59,6 +59,14 @@ speed_download		下载速度，单位-字节每秒。
 		</screen>
 		<screen>
 curl -o /dev/null -s -w %{time_connect}:%{time_starttransfer}:%{time_total} http://www.example.net
+curl -o /dev/null -s -w "Connect: %{time_connect}\nTransfer: %{time_starttransfer}\nTotal: %{time_total}\n" https://www.netkiller.cn/index.html
+
+curl -o /dev/null -s -w "Connect: %{time_connect} \nTransfer: %{time_starttransfer}\nTotal: %{time_total}\nNamelookup: %{time_namelookup}\nDownload: %{speed_download}\n" https://www.netkiller.cn/index.html
+Connect: 0.024241 
+Transfer: 0.117727
+Total: 0.117842
+Namelookup: 0.004367
+Download: 129877.000
 		</screen>
 		<para>测试页面所花费的时间</para>
 		<screen>

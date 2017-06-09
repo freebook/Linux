@@ -1,9 +1,202 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="Dockerfile">
-	<title>Dockerfile</title>
+	<title>基于 Dockerfile 创建镜像</title>
 	<screen>
 	<![CDATA[
 $ docker build -f /path/to/a/Dockerfile .
 	]]>
 	</screen>
+	<section>
+		<title>创建 Dockerfile 文件</title>
+		<para>需求基于centos7镜像创建nginx stable最新版本镜像</para>
+		<screen>
+		<![CDATA[
+############################################################
+# Dockerfile to build Nginx container
+# Based on centos7
+############################################################
+
+FROM centos:latest
+
+MAINTAINER Netkiller <netkiller@msn.com>
+
+# Install EPEL
+RUN yum install -y epel-release && yum clean all
+
+# Update RPM Packages
+RUN yum -y update
+
+# Install Nginx
+RUN rpm -ivh http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm
+RUN yum install -y nginx
+RUN yum clean all
+
+# forward request and error logs to docker log collector
+RUN ln -sf /dev/stdout /var/log/nginx/access.log
+RUN ln -sf /dev/stderr /var/log/nginx/error.log
+
+# be backwards compatible with pre-official images
+#RUN ln -sf ../share/nginx /usr/local/nginx
+
+# prepare container
+
+# add startup script
+#ADD startup.sh /startup.sh
+#RUN chmod 755 /startup.sh
+
+VOLUME ["/etc/nginx"]
+VOLUME ["/usr/share/nginx/html"]
+VOLUME ["/var/www"]
+
+EXPOSE 80 443
+
+CMD ["nginx", "-g", "daemon off;"]
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>创建镜像</title>
+		<screen>
+		<![CDATA[
+		# docker build -t "centos:nginx" .
+Sending build context to Docker daemon 3.072 kB
+Step 1/14 : FROM centos:latest
+ ---> 3bee3060bfc8
+Step 2/14 : MAINTAINER Netkiller <netkiller@msn.com>
+ ---> Using cache
+ ---> 8f351964d568
+Step 3/14 : RUN yum install -y epel-release && yum clean all
+ ---> Using cache
+ ---> bf86eff77ff3
+Step 4/14 : RUN yum -y update
+ ---> Using cache
+ ---> 4915172ac4f3
+Step 5/14 : RUN rpm -ivh http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm
+ ---> Using cache
+ ---> 4a919bd141c9
+Step 6/14 : RUN yum install -y nginx
+ ---> Using cache
+ ---> 2718221eab8c
+Step 7/14 : RUN yum clean all
+ ---> Using cache
+ ---> 62231a5f1d76
+Step 8/14 : RUN ln -sf /dev/stdout /var/log/nginx/access.log
+ ---> Using cache
+ ---> 38be8f0cc782
+Step 9/14 : RUN ln -sf /dev/stderr /var/log/nginx/error.log
+ ---> Using cache
+ ---> bbf3a468d24f
+Step 10/14 : VOLUME /etc/nginx
+ ---> Using cache
+ ---> 919292c7ce04
+Step 11/14 : VOLUME /usr/share/nginx/html
+ ---> Using cache
+ ---> c2aeb8ed3c1c
+Step 12/14 : VOLUME /var/www
+ ---> Using cache
+ ---> 31849cb8a9d0
+Step 13/14 : EXPOSE 80 443
+ ---> Using cache
+ ---> 0e3d3b4a215b
+Step 14/14 : CMD nginx -g daemon off;
+ ---> Using cache
+ ---> d5f21e409690
+Successfully built d5f21e409690
+		]]>
+		</screen>
+		<para>查看镜像</para>
+		<screen>
+		<![CDATA[
+# docker image ls                 
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+centos              nginx               d5f21e409690        4 minutes ago       364 MB
+centos              latest              3bee3060bfc8        2 days ago          193 MB
+nginx               latest              958a7ae9e569        8 days ago          109 MB
+redis               latest              a858478874d1        2 weeks ago         184 MB		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>运行镜像</title>
+		<screen>
+		<![CDATA[
+# docker run --name my-centos-nginx -d centos:nginx
+ecf342ddd66d1d5f3d28c583ec852c05903ef4813fcb75295c907a6b578dea3d
+
+# docker ps
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                    NAMES
+ecf342ddd66d        centos:nginx        "nginx -g 'daemon ..."   23 seconds ago      Up 23 seconds       80/tcp, 443/tcp          my-centos-nginx
+0df3b275bb03        nginx               "nginx -g 'daemon ..."   6 hours ago         Up 6 hours          80/tcp                   my-nginx
+1c4540d8617f        redis               "docker-entrypoint..."   2 days ago          Up 2 days           0.0.0.0:6379->6379/tcp   my-redis
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>测试 Nginx</title>
+		<screen>
+		<![CDATA[
+[root@netkiller]~/docker/nginx# docker exec -it my-centos-nginx /bin/bash
+
+[root@netkiller-docker /]# ps ax
+  PID TTY      STAT   TIME COMMAND
+    1 ?        Ss     0:00 nginx: master process nginx -g daemon off;
+    7 ?        S      0:00 nginx: worker process
+    8 ?        Ss     0:00 /bin/bash
+   22 ?        R+     0:00 ps ax
+
+[root@netkiller-docker /]# curl http://localhost
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>提交镜像</title>
+		<screen>
+		<![CDATA[
+# docker commit my-centos-nginx netkiller/centos:nginx
+sha256:9ea1851b1c9f04aa3168977f666337223d09e20983f7a2c2328e15132a03d224
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+# docker push netkiller/centos:nginx
+The push refers to a repository [docker.io/netkiller/centos]
+16916856eaaa: Pushed 
+6172d61b45f1: Pushed 
+db323af550f0: Pushed 
+232df2cfd38f: Pushed 
+c247a550215b: Pushed 
+3b5451d7989c: Pushed 
+e3a6f1af6a7a: Pushed 
+9e3cea652b37: Pushed 
+dc1e2dcdc7b6: Mounted from library/centos 
+nginx: digest: sha256:ad9bd1ae3a3e17dac70f32afc14baf90932949d3eaa8bebbe907726aca3ea336 size: 2205
+		]]>
+		</screen>
+	</section>
 </section>

@@ -74,12 +74,7 @@ ubuntu              14.10               277eb4304907        3 days ago          
 ubuntu              latest              5506de2b643b        3 days ago          197.8 MB
 			</screen>
 		</section>
-		<section>
-			<title>创建镜像</title>
-			<screen>
-
-			</screen>
-		</section>
+		
 		<section>
 			<title>保存和载入镜像</title>
 			<para>保存镜像</para>
@@ -102,6 +97,7 @@ $ sudo docker rmi ubuntu:12.04
 Untagged: ubuntu:12.04
 			</screen>
 		</section>
+		&chapter.docker.dockerfile.xml;
 	</section>
 	<section id="container">
 		<title>容器</title>
@@ -354,14 +350,12 @@ Total reclaimed space: 11 B
 			<screen>
 			<![CDATA[
 # docker run -it --name mycentos1 -v /www:/tmp/test docker.io/centos:7 /bin/bash
-
 # docker run -d -v ~/logs:/var/log/nginx -p 80:80 -i nginx			
 			]]>
 			</screen>
 		</section>
 	</section>
 	&chapter.docker.system.xml;
-	&chapter.docker.dockerfile.xml;
 	&chapter.docker.cli.xml;
 	&chapter.docker.example.xml;
 </chapter>
