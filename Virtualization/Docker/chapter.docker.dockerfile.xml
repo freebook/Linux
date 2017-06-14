@@ -6,6 +6,7 @@
 $ docker build -f /path/to/a/Dockerfile .
 	]]>
 	</screen>
+	<para>为什么要自己创建镜像呢？ 因为官方提供的镜像无法满足我们的需求，例如 nginx 镜像你会发现 ps, top 等等很多命令缺失。</para>
 	<section>
 		<title>创建 Dockerfile 文件</title>
 		<para>需求基于centos7镜像创建nginx stable最新版本镜像</para>

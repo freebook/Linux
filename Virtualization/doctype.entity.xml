@@ -6,9 +6,11 @@
 <!ENTITY chapter.docker.xml				SYSTEM "Docker/chapter.docker.xml">
 <!ENTITY chapter.docker.install.xml		SYSTEM "Docker/chapter.docker.install.xml">
 <!ENTITY chapter.docker.dockerfile.xml	SYSTEM "Docker/chapter.docker.dockerfile.xml">
-<!ENTITY chapter.docker.example.xml		SYSTEM "Docker/chapter.docker.example.xml">
-<!ENTITY chapter.docker.java.xml		SYSTEM "Docker/chapter.docker.java.xml">
-<!ENTITY chapter.docker.redis.xml		SYSTEM "Docker/chapter.docker.redis.xml">
 <!ENTITY chapter.docker.system.xml		SYSTEM "Docker/chapter.docker.system.xml">
 <!ENTITY chapter.docker.dockerfile.xml	SYSTEM "Docker/chapter.docker.dockerfile.xml">
 <!ENTITY chapter.docker.cli.xml			SYSTEM "Docker/chapter.docker.cli.xml">
+
+<!ENTITY chapter.docker.example.xml		SYSTEM "Docker/chapter.docker.example.xml">
+<!ENTITY chapter.docker.java.xml		SYSTEM "Docker/chapter.docker.java.xml">
+<!ENTITY chapter.docker.redis.xml		SYSTEM "Docker/chapter.docker.redis.xml">
+<!ENTITY chapter.docker.nginx.xml		SYSTEM "Docker/chapter.docker.nginx.xml">

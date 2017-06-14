@@ -5,4 +5,5 @@
 	</screen>
 	&chapter.docker.java.xml;
 	&chapter.docker.redis.xml;
+	&chapter.docker.nginx.xml;
 </section>
