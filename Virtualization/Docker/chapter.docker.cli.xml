@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id$ -->
-	<section id="cli">
-		<title>docker 命令</title>
-		<section>
+<section id="cli">
+	<title>docker 命令</title>
+		<section id="run">
 			<title>run</title>
 			<para>run</para>
 			<screen>
@@ -10,7 +10,7 @@ $ sudo docker run ubuntu:14.04 /bin/echo 'Hello world'
 Hello world
 			</screen>
 		</section>
-		<section>
+		<section id="start">
 			<title>start / stop / restart</title>
 			<screen>
 sudo docker start silly_bohr
@@ -23,7 +23,7 @@ $ sudo docker restart silly_bohr
 silly_bohr
 			</screen>
 		</section>
-		<section>
+		<section id="ps">
 			<title>ps</title>
 			<screen>
 sudo docker ps
@@ -34,7 +34,7 @@ CONTAINER ID        IMAGE               COMMAND                CREATED          
 84391d1de0fc        ubuntu:14.04        /bin/echo Hello worl   31 minutes ago      Exit 0                                  romantic_ritchie
 			</screen>
 		</section>
-		<section>
+		<section id="top">
 			<title>top</title>
 			<screen>
 $ sudo docker ps
@@ -46,7 +46,7 @@ UID                 PID                 PPID                C                   
 root                23225               22908               0                   12:17               pts/14              00:00:00            /bin/bash
 			</screen>
 		</section>
-		<section>
+		<section id="inspect">
 			<title>inspect</title>
 			<screen>
 			<![CDATA[
@@ -131,7 +131,7 @@ $ sudo docker inspect silly_bohr
 $ sudo docker inspect -f '{{ .NetworkSettings.IPAddress }}' silly_bohr
 			</screen>
 		</section>
-		<section>
+		<section id="images">
 			<title>images</title>
 			<screen>
 $ sudo docker images
@@ -164,7 +164,50 @@ ef52fb1fe610: Download complete
 				</screen>
 			</section>
 		</section>
+	<section id="logs">
+		<title>logs</title>
+		<para>显示容器运行日志，用于排查异常情况</para>
+		<para>例如下面是nginx容易启动出错日志</para>
+		<screen>
+[root@netkiller]# docker logs my-nginx-container   
+nginx: [emerg] invalid server name or wildcard "www.*.com" on 0.0.0.0:80
+nginx: [emerg] invalid server name or wildcard "www.*.com" on 0.0.0.0:80
+nginx: [emerg] invalid server name or wildcard "www.*.com" on 0.0.0.0:80
+nginx: [emerg] invalid server name or wildcard "www.*.com" on 0.0.0.0:80
+nginx: [emerg] invalid server name or wildcard "www.*.com" on 0.0.0.0:80
+nginx: [emerg] invalid server name or wildcard "www.*.com" on 0.0.0.0:80
+		</screen>
 	</section>
+	<section id="history">
+		<title>history</title>
+		<para>镜像历史纪录</para>
+		<screen>
+		<![CDATA[
+# docker history centos:tomcat
+IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT
+2faf9a2d2bdc        22 hours ago        /bin/sh -c #(nop)  CMD ["catalina.sh" "run"]    0 B                 
+8e12c1e8fd89        22 hours ago        /bin/sh -c #(nop)  EXPOSE 8080/tcp              0 B                 
+35158d8231c5        22 hours ago        /bin/sh -c #(nop)  VOLUME [/srv/tomcat/temp]    0 B                 
+4302c5c13241        22 hours ago        /bin/sh -c #(nop)  VOLUME [/srv/tomcat/work]    0 B                 
+53537696aa19        22 hours ago        /bin/sh -c #(nop) ADD file:ac42f23f37092b9...   298 B               
+be04ba27a9ae        23 hours ago        /bin/sh -c set -x   && wget -O tomcat.tar....   8.75 MB             
+847be662a35f        5 days ago          /bin/sh -c #(nop)  ENV TOMCAT_ASC_URL=http...   0 B                 
+ac6550346558        5 days ago          /bin/sh -c #(nop)  ENV TOMCAT_TGZ_URL=http...   0 B                 
+50c12be7ca48        5 days ago          /bin/sh -c #(nop)  ENV TOMCAT_VERSION=8.5.15    0 B                 
+89c44758e4ae        5 days ago          /bin/sh -c #(nop)  ENV TOMCAT_MAJOR=8           0 B                 
+560ad98c1b23        5 days ago          /bin/sh -c yum install -y java-1.8.0-openj...   236 MB              
+befeedbb7dc7        5 days ago          /bin/sh -c #(nop) WORKDIR /srv/tomcat           0 B                 
+c85cf394faf8        5 days ago          /bin/sh -c mkdir -p "$CATALINA_HOME"            0 B                 
+debf78012b2c        5 days ago          /bin/sh -c #(nop)  ENV PATH=/srv/tomcat/bi...   0 B                 
+ccc27f4f3bcf        5 days ago          /bin/sh -c #(nop)  ENV CATALINA_HOME=/srv/...   0 B                 
+8f351964d568        6 days ago          /bin/sh -c #(nop)  MAINTAINER Netkiller <n...   0 B                 
+3bee3060bfc8        9 days ago          /bin/sh -c #(nop)  CMD ["/bin/bash"]            0 B                 
+<missing>           9 days ago          /bin/sh -c #(nop)  LABEL name=CentOS Base ...   0 B                 
+<missing>           9 days ago          /bin/sh -c #(nop) ADD file:d22a9c627d1d1f3...   193 MB		
+		]]>
+		</screen>
+	</section>
+</section>
 <!-- <chapter id="">
 	<title></title>
 </chapter> -->

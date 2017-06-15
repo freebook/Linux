@@ -240,6 +240,19 @@ http://www.netkiller.cn/product
 1catalina.org.apache.juli.FileHandler.prefix = catalina.
 		</screen>
 	</section>
+	<section>
+		<title>catalina.properties</title>
+		<para>配置跳过扫描*.jar</para>
+		<screen>
+tomcat.util.scan.StandardJarScanFilter.jarsToSkip=\*.jar		
+		</screen>
+		<para>context.xml</para>
+		<screen>
+		<![CDATA[
+<JarScanner scanClassPath="false"/>		
+		]]>
+		</screen>
+	</section>
 </section>
 
 	<section id="vhost">
