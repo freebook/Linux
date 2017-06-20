@@ -51,9 +51,38 @@ Not Found "usage" in chapter2.2.sh
 -bash-2.05b$ ./chapter2.2.sh Usage chapter2.2.sh
 echo "Usage: $0 string file";
 Found "Usage" in chapter2.2.sh
-			</screen>			
+			</screen>
+		</section>
+		<section>
+			<title>$? 程序运行返回值</title>
+			<para>0 表示正常结束运行， 1 表示异常退出</para>
 			<screen>
 			<![CDATA[
+[root@iZ621r6pk9aZ nginx]# ping -W 2 -c 2 www.google.com
+PING www.google.com (172.217.24.196) 56(84) bytes of data.
+64 bytes from hkg12s13-in-f4.1e100.net (172.217.24.196): icmp_seq=1 ttl=57 time=1.51 ms
+64 bytes from hkg12s13-in-f4.1e100.net (172.217.24.196): icmp_seq=2 ttl=57 time=1.44 ms
+
+--- www.google.com ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1001ms
+rtt min/avg/max/mdev = 1.447/1.479/1.512/0.050 ms
+
+[root@iZ621r6pk9aZ nginx]# echo $?
+0
+
+			]]>
+			</screen>
+			<para>我们ping 一个不存在的IP地址，然后 Ctrl+C 推出程序，返回值是 1.</para>
+			<screen>
+			<![CDATA[
+[root@iZ621r6pk9aZ nginx]# ping -W 2 -c 2 172.16.1.100
+PING 172.16.1.100 (172.16.1.100) 56(84) bytes of data.
+^C
+--- 172.16.1.100 ping statistics ---
+2 packets transmitted, 0 received, 100% packet loss, time 999ms
+
+[root@iZ621r6pk9aZ nginx]# echo $?
+1			
 			]]>
 			</screen>
 		</section>
