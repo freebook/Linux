@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="openldap">
+	<title>OpenLDAP server (slapd)</title>
+	<section id="installation">
+		<title>Installation</title>
+		<section>
+			<title>CentOS/Redhat</title>
+			<para>Yum</para>
+			<screen>
+[root@development ~]# yum -y install openldap-servers
+[root@development ~]# yum -y install openldap-clients
+			</screen>
+			<para>Redhat AS4</para>
+			<screen>
+[root@backup openldap]# rpm -aq |grep openldap
+compat-openldap-2.1.30-6.4E
+openldap-2.2.13-6.4E
+openldap-devel-2.2.13-6.4E
+openldap-clients-2.2.13-6.4E
+openldap-servers-2.2.13-6.4E
+openldap-servers-sql-2.2.13-6.4E
+			</screen>			
+		</section>
+		<section>
+			<title>Debian/Ubuntu</title>
+			<command>$ sudo apt-get install slapd</command>
+			<screen>
+$ sudo apt-get install slapd
+$ sudo apt-get install ldap-utils
+			</screen>
+			<para>Admin password/Confirm password</para>
+			<screen>
+			<![CDATA[
+            ┌───────────────────────────┤  正在设定 slapd  ├────────────────────────────┐
+            │  Please enter the password for the admin entry in your LDAP directory.  │
+            │                                                                         │
+            │ Admin password:                                                         │
+            │                                                                         │
+            │ _______________________________________________________________________ │
+            │                                                                         │
+            │                                 <Ok>                                    │
+            │                                                                         │
+            └─────────────────────────────────────────────────────────────────────────┘
+            ]]>
+			</screen>
+		</section>
+	</section>		
+	<section id="configure">
+		<title>Configure</title>
+		<procedure>
+			<title>Configure Openldap</title>
+		<step>
+			<para>配置/etc/ldap.conf</para>
+			<screen>
+#
+# LDAP Defaults
+#
+
+# See ldap.conf(5) for details
+# This file should be world readable but not world writable.
+
+#BASE   dc=example, dc=com
+#URI    ldap://ldap.example.com ldap://ldap-master.example.com:666
+
+#SIZELIMIT      12
+#TIMELIMIT      15
+#DEREF          never
+HOST 127.0.0.1
+BASE dc=bg7nyt,dc=cn
+TLS_CACERTDIR /etc/openldap/cacerts
+			</screen>
+		</step>
+		<step>
+			<para>配置/etc/slapd.conf</para>
+			<screen>
+suffix          "dc=bg7nyt,dc=cn"
+rootdn          "cn=Manager,dc=bg7nyt,dc=cn"
+rootpw          {crypt}ijFYNcSNctBYg
+			</screen>
+			<para>rootpw 默认是 secret</para>
+			<para>crypt 密码产生很简单，很多语言里都有crypt(key,salt)函数，不过最简单的办法是，使用UNIX Shadow 密码，使用apache的htpasswd生成</para>
+			<para>如果你想使用更复杂的加密算法，可以参考我的另一篇文章<ulink url="http://netkiller.8800.org/book/security/">《信息安全与加密》</ulink></para>
+		</step>
+		<step>
+			<para>ldap 脚本</para>
+			<para>service ldap {start|stop|restart|status|condrestart}</para>
+			<para>or</para>
+			<para>/etc/init.d/ldap {start|stop|restart|status|condrestart}</para>
+			<screen>
+[root@backup openldap]# service ldap
+Usage: /etc/init.d/ldap {start|stop|restart|status|condrestart}
+[root@backup openldap]# service ldap start
+Checking configuration files for : config file testing succeeded
+Starting slapd:                                            [  OK  ]
+[root@backup openldap]# service ldap restart
+Stopping slapd:                                            [  OK  ]
+Checking configuration files for slapd: config file testing succeeded
+Starting slapd:                                            [  OK  ]
+[root@backup openldap]# service ldap stop
+Stopping slapd:                                            [  OK  ]
+[root@backup openldap]#
+			</screen>
+		</step>
+
+		</procedure>
+		<para>reconfigure</para>
+		<screen>
+sudo dpkg-reconfigure slapd		
+		</screen>
+	</section>
+	<section id="base-dn">
+		<title>基本操作</title>
+		<section>
+			<title>base-dn</title>
+ 			<para>建立基本DN</para>
+		  	<example>
+		  		<title>base-dn.ldif</title>
+		  		<screen>
+dn: dc=bg7nyt,dc=cn
+objectclass: dcObject
+objectclass: organization
+o:bg7nyt.net
+dc: bg7nyt
+description:Top level of directory
+
+dn: cn=Manager,dc=bg7nyt,dc=cn
+objectclass: organizationalRole
+cn: Manager
+
+dn: cn=admin,dc=bg7nyt,dc=cn
+objectclass: organizationalRole
+cn: admin
+
+dn: cn=root,dc=bg7nyt,dc=cn
+objectclass: organizationalRole
+cn: root
+		  		</screen>
+			</example>
+			<para>ldapadd -x -D "cn=root,dc=bg7nyt,dc=cn" -W -f base-dn.ldif</para>		
+		</section>
+		<section>
+			<title>Add</title>
+		      <para>添加条目</para>
+		  		<screen>
+		  		<![CDATA[
+[chenjingfeng@backup ldap]$ ldapadd -x -D "cn=root,dc=bg7nyt,dc=cn" -W -f base-dn.ldif
+Enter LDAP Password:
+adding new entry "dc=bg7nyt,dc=cn"
+
+adding new entry "cn=Manager,dc=bg7nyt,dc=cn"
+
+adding new entry "cn=admin,dc=bg7nyt,dc=cn"
+
+adding new entry "cn=root,dc=bg7nyt,dc=cn"
+				]]>
+				</screen>
+				<para>查看条目</para>
+				<screen>
+				<![CDATA[
+[chenjingfeng@backup ldap]$ ldapsearch -x -b 'dc=bg7nyt,dc=cn' '(objectclass=*)'
+# extended LDIF
+#
+# LDAPv3
+# base <dc=bg7nyt,dc=cn> with scope sub
+# filter: (objectclass=*)
+# requesting: ALL
+#
+
+# bg7nyt.cn
+dn: dc=bg7nyt,dc=cn
+objectClass: dcObject
+objectClass: organization
+o: bg7nyt.net
+dc: bg7nyt
+description: Top level of directory
+
+# Manager, bg7nyt.cn
+dn: cn=Manager,dc=bg7nyt,dc=cn
+objectClass: organizationalRole
+cn: Manager
+
+# admin, bg7nyt.cn
+dn: cn=admin,dc=bg7nyt,dc=cn
+objectClass: organizationalRole
+cn: admin
+
+# root, bg7nyt.cn
+dn: cn=root,dc=bg7nyt,dc=cn
+objectClass: organizationalRole
+cn: root
+
+# search result
+search: 2
+result: 0 Success
+
+# numResponses: 5
+# numEntries: 4
+				]]>
+			  </screen>
+		</section>
+		<section>
+			<title>Search</title>
+		</section>		
+		<section>
+			<title>Modify</title>
+		</section>
+		<section>
+			<title>Delete</title>
+			<para>删除条目</para>
+			<screen>
+ldapdelete -x -D "cn=root,dc=bg7nyt,dc=cn" -W "dc=bg7nyt,dc=cn"
+			</screen>			
+		</section>
+		<section>
+			<title>Search</title>
+				<para>搜索条目</para>
+				<para>dn条目</para>
+				<screen>
+ldapsearch -x -b '' -s base '(objectclass=*)' namingContexts
+				</screen>
+				<para>结果</para>
+				<screen>
+				<![CDATA[
+# extended LDIF
+#
+# LDAPv3
+# base <> with scope base
+# filter: (objectclass=*)
+# requesting: namingContexts
+#
+
+#
+dn:
+namingContexts: dc=bg7nyt,dc=cn
+
+# search result
+search: 2
+result: 0 Success
+
+# numResponses: 2
+# numEntries: 1
+				]]>
+				</screen>
+				<screen>
+
+ldapsearch -x -b 'dc=bg7nyt,dc=cn'
+				</screen>			
+		</section>
+		<section>
+			<title>Organization Unit</title>
+			<para>建立组织单元</para>
+			<example>
+				<title>ou.ldif</title>
+				<screen>
+dn: ou=address,dc=bg7nyt,dc=cn
+ou: address
+objectClass: organizationalUnit
+
+dn: cn=neo, ou=address, dc=bg7nyt,dc=cn
+objectClass: person
+cn: neo
+sn: neo
+
+dn: cn=netkiller, ou=address, dc=bg7nyt,dc=cn
+objectClass: person
+objectClass: inetOrgPerson
+cn: netkiller
+sn: netkiller
+mail: openunix@163.com
+
+dn: cn=bg7nyt, ou=address, dc=bg7nyt,dc=cn
+objectClass: person
+cn: bg7nyt
+sn: bg7nyt
+				</screen>
+			</example>
+			<para>建立ou</para>
+			<screen>
+[chenjingfeng@backup ldap]$ ldapadd -x -D "cn=root,dc=bg7nyt,dc=cn" -W -f ou.ldif
+Enter LDAP Password:
+adding new entry "ou=address,dc=bg7nyt,dc=cn"
+
+adding new entry "cn=neo, ou=address, dc=bg7nyt,dc=cn"
+
+adding new entry "cn=netkiller, ou=address, dc=bg7nyt,dc=cn"
+
+adding new entry "cn=bg7nyt, ou=address, dc=bg7nyt,dc=cn"
+
+			</screen>
+			<para>删除ou</para>
+			<screen>
+[chenjingfeng@backup ldap]$ ldapdelete -x -D "cn=root,dc=bg7nyt,dc=cn" -W "ou=address,dc=bg7nyt,dc=cn"
+Enter LDAP Password:
+			</screen>		
+		</section>
+	</section>
+</chapter>

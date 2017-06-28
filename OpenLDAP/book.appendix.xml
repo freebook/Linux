@@ -1,0 +1,52 @@
+<appendix>
+	<title>附录</title>
+	<section>
+		<title>Linux 下载排名</title>
+		<para><ulink url="http://distrowatch.com/">http://distrowatch.com/</ulink></para>
+	</section>
+	<section>
+		<title>to convert utf-8 from gb2312 code</title>
+		<programlisting>
+		<![CDATA[
+perl   -  MEncode   -  pi   -  e   '  $_=encode_utf8(decode(gb2312=>$_))  '   filename
+for f in `find .`; do [ -f $f ] && perl -MEncode -pi -e '$_=encode_utf8(decode(gb2312=>$_))' $f; done;
+		]]>
+		</programlisting>
+	</section>		
+	<section>
+		<title>使用内存的百分比 </title>
+		<screen>
+$ free | sed -n 2p | awk '{print "used="$3/$2*100"%","free="$4/$2*100"%"}'
+used=53.9682% free=46.0318%		
+		</screen>
+	</section>	
+	<section>
+		<title>查找文件并删除</title>
+		<screen>
+#!/bin/sh
+LOCATE=/home/samba
+find $LOCATE -name '*.eml'>log
+find $LOCATE -name '*.nws'>>log
+gawk '{print "rm -rf "$1}' log > rmfile
+chmod 755 rmfile
+./rmfile 		
+		</screen>
+	</section>
+	<section>
+		<title>xargs</title>
+		<screen>
+find /etc -type f|xargs md5sum
+		</screen>
+	</section>
+	
+	<section>
+		<title>find and replace</title>
+		<programlisting>
+		<![CDATA[
+ls -1 *.html| awk '{printf "sed \047s/ADDRESS/address/g\047 %s >%s.sed;mv %s.sed %s\n", $1, $1, $1, $1;}'|bash
+
+for f in `ls -1 *.html`; do [ -f $f ] && sed 's/<\/BODY>/<script src="http:\/\/www.google-analytics.com\/urchin.js" type="text\/javascript"><\/script>\n<script type="text\/javascript">\n_uacct = "UA-2033740-1";\nurchinTracker();\n<\/script>\n<\/BODY>/g' $f >$f.sed;mv $f.sed $f ; done;
+		]]>
+		</programlisting>
+	</section>	
+</appendix>

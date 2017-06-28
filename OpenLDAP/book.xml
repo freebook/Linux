@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../stylesheet/docbook-article.xsl"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V5.0//EN"
+	"/usr/share/xml/docbook/schema/dtd/5.0/docbook.dtd" [
+
+	<!ENTITY book.info.legalnotice.xml	SYSTEM "../common/book.info.legalnotice.xml">
+	<!ENTITY book.info.abstract.xml		SYSTEM "../common/book.info.abstract.xml">
+	<!ENTITY preface.about.me.xml       SYSTEM "../common/about.me.xml">
+	<!ENTITY book.preface.xml           SYSTEM "../common/book.preface.xml">
+	<!ENTITY book.dedication.xml       	SYSTEM "../common/book.dedication.xml">
+	<!ENTITY book.appendix.xml		 SYSTEM "book.appendix.xml">
+
+	<!ENTITY chapter.openldap.xml			SYSTEM "chapter.openldap.xml">
+	<!ENTITY chapter.openldap.ad.xml		SYSTEM "chapter.openldap.ad.xml">
+	<!ENTITY chapter.openldap.devel.xml		SYSTEM "chapter.openldap.devel.xml">
+	<!ENTITY chapter.openldap.replication.xml	 SYSTEM "chapter.openldap.replication.xml">
+	<!ENTITY chapter.openldap.outlook.xml	SYSTEM "chapter.openldap.outlook.xml">
+	<!ENTITY chapter.openldap.backup.xml	SYSTEM "chapter.openldap.backup.xml">
+<!--
+	<!ENTITY chapter.openldap.faq.xml	 	SYSTEM "chapter.openldap.faq.xml">
+-->
+
+]>
+<book xml:base="http://netkiller.mooo.com/book/publish/"
+	xmlns="http://docbook.org/ns/docbook" xml:lang="zh-cn">
+	<info>
+		<title>Netkiller LDAP 手札</title>
+		<authorgroup>
+		<author>
+			<firstname>netkiller</firstname>
+			<surname>Neo Chan</surname>
+			<address>
+				<phone>13113668890</phone>
+				<email>openunix(at)163(dot)com</email>
+			</address>
+			<affiliation>
+
+			</affiliation>
+		</author>
+
+		</authorgroup>
+		<copyright>
+			<year>2009</year>
+			<year>2010</year>
+			<year>2011</year>
+			<year>2012</year>
+			<year>2013</year>
+			<year>2014</year>
+			<holder>Neo Chan</holder>
+		</copyright>
+		<releaseinfo>
+			<remark>2009-11-16</remark>
+		</releaseinfo>
+
+		&book.info.legalnotice.xml;
+		&book.info.abstract.xml;
+
+	</info>
+
+	&book.dedication.xml;
+	&book.preface.xml;
+
+	&chapter.openldap.xml;
+	&chapter.openldap.replication.xml;
+	&chapter.openldap.backup.xml;
+	&chapter.openldap.ad.xml;
+	&chapter.openldap.outlook.xml;
+	&chapter.openldap.devel.xml;
+
+<!--
+	&book.appendix.xml;
+	&chapter.openldap.faq.xml;
+ -->
+
+</book>

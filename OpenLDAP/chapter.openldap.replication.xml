@@ -1,0 +1,143 @@
+<chapter id="replication">
+	<title>Replication</title>
+	<section id="primary">
+		<title>Primary</title>
+		<procedure>
+			<title>Primary configure</title>
+			<step>
+				<para>installation</para>
+				<screen>
+neo@master:~$ sudo apt-get install slapd ldap-utils
+				</screen>
+			</step>
+			<step>
+				<para>slapd.conf</para>
+				<screen>
+neo@master:~$ vi /etc/ldap/slapd.conf
+suffix          "dc=example,dc=org"
+replogfile      /var/lib/ldap/replog
+syncrepl        rid=001
+                provider=ldap://192.168.245.131:389/
+                binddn="cn=admin,dc=example,dc=org"
+                bindmethod=simple
+                credentials=chen
+                searchbase="dc=example,dc=org"
+                type=refreshAndPersist
+                retry="5 5 300 5"
+				</screen>
+			</step>
+			<step>
+				<para>initial entries base dn</para>
+				<screen>
+neo@master:~$ cat base-dn.ldif
+					
+dn: dc=example,dc=org
+objectclass: dcObject
+objectclass: organization
+o:example.org
+dc: example
+description:Top level of directory
+
+dn: cn=Manager,dc=example,dc=org
+objectclass: organizationalRole
+cn: Manager
+
+dn: cn=admin,dc=example,dc=org
+objectclass: organizationalRole
+cn: admin
+
+dn: cn=root,dc=example,dc=org
+objectclass: organizationalRole
+cn: root					
+				</screen>
+				<para>Add initial entries to your directory.</para>
+				<screen>
+neo@master:~$ ldapadd -x -D "cn=admin,dc=example,dc=org" -W -f base-dn.ldif
+Enter LDAP Password:
+adding new entry "dc=example,dc=org"
+
+adding new entry "cn=Manager,dc=example,dc=org"
+
+adding new entry "cn=admin,dc=example,dc=org"
+
+adding new entry "cn=root,dc=example,dc=org"					
+				</screen>
+				<para>check</para>
+				<screen>
+				<![CDATA[
+neo@master:~$ ldapsearch -x -b 'dc=example,dc=org' '(objectclass=*)'
+# extended LDIF
+#
+# LDAPv3
+# base <dc=example,dc=org> with scope subtree
+# filter: (objectclass=*)
+# requesting: ALL
+#
+
+# example.org
+dn: dc=example,dc=org
+objectClass: dcObject
+objectClass: organization
+o: example.org
+dc: example
+description: Top level of directory
+
+# Manager, example.org
+dn: cn=Manager,dc=example,dc=org
+objectClass: organizationalRole
+cn: Manager
+
+# admin, example.org
+dn: cn=admin,dc=example,dc=org
+objectClass: organizationalRole
+cn: admin
+
+# root, example.org
+dn: cn=root,dc=example,dc=org
+objectClass: organizationalRole
+cn: root
+
+# search result
+search: 2
+result: 0 Success
+
+# numResponses: 5
+# numEntries: 4				
+				]]>	
+				</screen>
+			</step>
+			<step>
+				<para>Export the database of the master using slapcat. Then copy master.ldif to the slave using scp or other tools. </para>
+				<screen>
+neo@master:~$ sudo slapcat -l master.ldif					
+				</screen>
+			</step>
+		</procedure>
+	</section>
+	<section id="secondary">
+		<title>Secondary</title>
+		<procedure>
+			<title>Secondary configure</title>
+			<step>
+				<para>installation</para>
+				<screen>
+neo@slave:~$ sudo apt-get install slapd ldap-utils
+				</screen>
+			</step>
+			<step>
+				<para>configure</para>
+				<screen>
+neo@master:~$ vi /etc/ldap/slapd.conf
+updatedn        cn=admin,dc=example,dc=org
+updateref       ldap://master.example.org					
+				</screen>
+			</step>
+			<step>
+				<para>Import the master.ldif using slapadd. </para>
+				<screen>
+neo@slave:~$ sudo slapadd -c -l master.ldif
+				</screen>
+			</step>
+		</procedure>
+	</section>
+</chapter>

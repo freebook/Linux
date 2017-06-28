@@ -1,0 +1,14 @@
+<chapter id="backup">
+	<title>Backup and Restore </title>
+	<para>backup</para>
+	<screen>
+cp -r /etc/openldap .
+CURRENT_DATA=`date '+%m-%d-%y'`
+slapcat -l backup_${CURRENT_DATA}_neo_chen.ldif
+tar zcvf backup_ldap.tar.gz ldap/
+md5sum backup_ldap.tar.gz > backup_ldap.tar.gz.md5
+
+	</screen>
+	<para>restore</para>
+	<para>ldapadd -x -D "cn=root,dc=bg7nyt,dc=cn" -W -f your.ldif</para>
+</chapter>

@@ -1,0 +1,9 @@
+<chapter id="development">
+	<title>Development</title>
+	<section id="python">
+		<title>Python</title>
+		<screen>
+[root@development ~]# yum -y install python-ldap		
+		</screen>
+	</section>
+</chapter>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<part>
+	<title>OpenLDAP</title>
+	&chapter.openldap.xml;
+	&chapter.openldap.replication.xml;
+	&chapter.openldap.backup.xml;
+	&chapter.openldap.ad.xml;
+	&chapter.openldap.outlook.xml;
+	&chapter.openldap.devel.xml;
+</part>

@@ -1,0 +1,28 @@
+<chapter id="ad">
+	<title>Active Directory</title>
+	<para>通过ldapsearch查询Windows Active Directory 是一件很有趣事情。</para>
+	<para>列出所有员工姓名</para>
+	<screen>
+	<![CDATA[
+ldapsearch -x -H ldap://192.168.19.238 -D neo.chen@company.com -w 12345678 -b 'OU=china,DC=company,DC=com' '(&(objectCategory=person)(objectClass=user)(company=*)(mail=*))'|grep '^name::' | awk -F ' ' '{print $2}' |base64 --decode | sed 's/)/)\r\n/g'		
+	]]>
+	</screen>
+	<para>统计员工数目</para>
+	<screen>
+	<![CDATA[
+ldapsearch -x -H ldap://192.168.19.238 -D neo.chen@company.com -w 12345678 -b 'OU=china,DC=company,DC=com' '(&(objectCategory=person)(objectClass=user)(company=*)(mail=*))'|grep '^name::' | wc -l		
+	]]>
+	</screen>
+	<para>制作通讯录,或导出邮件列表</para>
+	<screen>
+	<![CDATA[
+ldapsearch -x -H ldap://192.168.19.238 -D neo.chen@company.com -w 12345678 -b 'OU=china,DC=company,DC=com' '(&(objectCategory=person)(objectClass=user)(company=*)(mail=*))'|grep ^mail:|awk -F ' ' '{print $2}'		
+	]]>
+	</screen>
+	<para>列出 name mail mobile telephoneNumber</para>
+	<screen>
+	<![CDATA[
+ldapsearch -x -H ldap://192.168.19.238 -D neo.chen@company.com -w 12345678 -b 'OU=china,DC=company,DC=com' '(&(objectCategory=person)(objectClass=user)(name=*)(mail=*))' name mail mobile telephoneNumber
+	]]>
+	</screen>
+</chapter>
