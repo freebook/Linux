@@ -6,6 +6,13 @@
 	<section id="hosts">
 		<title>hosts</title>
 		<section>
+			<title>/etc/hostname</title>
+			<screen>
+# cat /etc/hostname
+web1.example.com
+			</screen>
+		</section>
+		<section>
 			<title>hostnamectl - Control the system hostname</title>
 			<screen>
 [root@localhost ~]# hostnamectl
@@ -19,14 +26,14 @@
             Kernel: Linux 3.10.0-229.el7.x86_64
       Architecture: x86_64
 			</screen>
-		</section>		
-		<section>
-			<title>/etc/hostname</title>
+			<para>设置 hostname</para>
 			<screen>
-# cat /etc/hostname
-web1.example.com
+			<![CDATA[
+[root@localhost ~]# hostnamectl set-hostname master
+			]]>
 			</screen>
 		</section>		
+			
 		<screen>
 		<![CDATA[
 # cat -n /etc/hosts

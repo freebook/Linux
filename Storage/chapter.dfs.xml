@@ -4,7 +4,6 @@
 	&chapter.dfs.ndb.xml;
 	&chapter.dfs.gridfs.xml;
     &chapter.dfs.moosefs.xml;
-    &chapter.dfs.hdfs.xml;
     &chapter.dfs.ceph.xml;
     &chapter.dfs.lustre.xml;
 	&chapter.dfs.mogilefs.xml;
@@ -17,8 +16,11 @@
 <section id="dfs.mapping">
     <title>Mapping</title>
 </section>
-
 -->
+	<section id="hdfs">
+	    <title>Hadoop - HDFS</title>
+	    <para>改章节已从此处经移出到《Netkiller Linux 手札》中</para>
+	</section>
 	<section id="dfs.BeeGFS">
 		<title>BeeGFS - The Parallel Cluster File System</title>
 		<para>http://www.beegfs.com/</para>

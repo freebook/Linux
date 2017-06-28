@@ -1,5 +1,644 @@
 <chapter id="hadoop">
 	<title>Hadoop</title>
+	<para>http://hadoop.apache.org/</para>
+	<section>
+		<title>单机安装（CentOS 7 + Server JRE 1.8 + Hadoop-2.8.0）</title>
+		<para>本章节介绍 CentOS 7 下安装Hadoop最新版本2.8.0，首先登陆系统，设置主机名。</para>
+		<screen>
+		<![CDATA[
+# hostnamectl set-hostname master
+		]]>
+		</screen>
+		<para>创建一个 hadoop 用户，这个用户将用于hadoop的启动</para>
+		<screen>
+			
+		</screen>
+		<section id="hdfs.jre">
+			<title>安装 Java 环境</title>
+			<para>这里你可以选择使用 OpenJDK 或者 Oracle 的 Server JRE</para>
+			<screen>
+# yum install -y java-1.8.0-openjdk			
+			</screen>
+			<para>如果你使用的是Oracle Java 请到Oracle网站下载的Server JRE 并配置 java classpath</para>
+			<screen>
+			<![CDATA[
+# wget --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/server-jre-8u131-linux-x64.tar.gz
+如果你的服务器上没有安装 wget 还可以使用 curl 命令下载
+# curl -LO -H "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/server-jre-8u131-linux-x64.tar.gz?AuthParam=1498632436_9d59c44e2a4f0ca5bd359423ac5b790b
+
+
+$ sudo vim /etc/profile.d/java.sh
+################################################
+### Java environment by neo
+################################################
+export JAVA_HOME=/usr
+export JRE_HOME=/usr
+export PATH=$PATH:/usr/local/apache-tomcat/bin/:/usr/local/jetty-6.1.18/bin:/usr/local/apache-nutch/bin
+export CLASSPATH="./:/usr/share/java/:/usr/local/apache-solr/example/multicore/lib"
+export JAVA_OPTS="-Xms128m -Xmx1024m"
+			]]>
+			</screen>
+			<para>如果你不需要编译，仅仅用于服务器环境，那么无需下载JDK，Server JRE就可以了</para>
+		</section>
+		<section>
+			<title>安装 Hadoop</title>
+			<screen>
+cd /usr/local/src
+wget http://mirrors.tuna.tsinghua.edu.cn/apache/hadoop/common/hadoop-2.8.0/hadoop-2.8.0.tar.gz
+tar zxf hadoop-2.8.0.tar.gz
+			</screen>
+			<para>启动与停止 hadoop</para>
+			<literallayout>
+启动/关闭所有服务 start-all.sh/stop-all.sh
+启动/关闭HDFS: start-dfs.sh/stop-dfs.sh
+启动/关闭MapReduce:  start-mapred.sh/stop-mapred.sh
+			</literallayout>
+		</section>
+		<section>
+			<title>创建用户</title>
+			<para>如果使用tar包安装，需要创建用户，这里请忽略</para>
+			<screen>
+# adduser hadoop
+			</screen>
+			<para></para>
+			<screen>
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>单机安装 CentOS 5 + hadoop-0.20.0</title>
+		<para>这种安装方式仅仅适用于做实验，快速搭建Hadoop环境，不适合生产环境。</para>
+		<para>Ubuntu 环境</para>
+		<screen>
+$ sudo apt-get install openjdk-7-jre
+		</screen>
+		<procedure>
+			<title>Master configure</title>
+			<step>
+				<para>Download and Installing Software</para>
+				<screen>
+				<![CDATA[
+$ cd /usr/local/src/
+$ wget http://apache.etoak.com/hadoop/core/hadoop-0.20.0/hadoop-0.20.0.tar.gz
+$ tar zxvf hadoop-0.20.0.tar.gz
+$ sudo cp -r hadoop-0.20.0 ..
+$ sudo ln -s hadoop-0.20.0 hadoop
+$ cd hadoop
+				]]>
+				</screen>
+			</step>
+
+			<step>
+				<para>Configuration</para>
+				<para>hadoop-env.sh</para>
+				<screen>
+				<![CDATA[
+$ vim conf/hadoop-env.sh
+export JAVA_HOME=/usr
+				]]>
+				</screen>
+				<para>conf/core-site.xml</para>
+				<screen>
+				<![CDATA[
+$ vim conf/core-site.xml
+
+<configuration>
+  <property>
+    <name>fs.default.name</name>
+    <value>hdfs://localhost:9000</value>
+  </property>
+</configuration>
+				]]>
+				</screen>
+				<para>conf/hdfs-site.xml</para>
+				<screen>
+				<![CDATA[
+$ vim conf/hdfs-site.xml
+
+<configuration>
+  <property>
+    <name>dfs.replication</name>
+    <value>1</value>
+  </property>
+</configuration>
+				]]>
+				</screen>
+				<para>conf/mapred-site.xml</para>
+				<screen>
+				<![CDATA[
+$ vim conf/mapred-site.xml
+
+<configuration>
+  <property>
+    <name>mapred.job.tracker</name>
+    <value>localhost:9001</value>
+  </property>
+</configuration>
+				]]>
+				</screen>
+			</step>
+			<step>
+				<para>Setup passphraseless ssh</para>
+				<screen>
+				<![CDATA[
+Now check that you can ssh to the localhost without a passphrase:
+$ ssh localhost
+
+If you cannot ssh to localhost without a passphrase, execute the following commands:
+$ ssh-keygen -t dsa -P '' -f ~/.ssh/id_dsa
+$ cat ~/.ssh/id_dsa.pub >> ~/.ssh/authorized_keys
+				]]>
+				</screen>
+			</step>
+			<step>
+				<para>Execution</para>
+				<screen>
+ Format a new distributed-filesystem:
+$ bin/hadoop namenode -format
+
+Start the hadoop daemons:
+$ bin/start-all.sh
+
+When you're done, stop the daemons with:
+$ bin/stop-all.sh
+				</screen>
+			</step>
+			<step>
+				<para>Monitor</para>
+				<para>Browse the web interface for the NameNode and the JobTracker; by default they are available at:</para>
+				<itemizedlist>
+					<listitem><para>NameNode - http://localhost:50070/</para></listitem>
+					<listitem><para>JobTracker - http://localhost:50030/</para></listitem>
+				</itemizedlist>
+			</step>
+			<step>
+				<para>Test</para>
+				<screen>
+				<![CDATA[
+$ bin/hadoop dfs -mkdir test
+$ echo helloworld > testfile
+$ bin/hadoop dfs -copyFromLocal testfile test/
+$ bin/hadoop dfs -ls
+Found 1 items
+drwxr-xr-x   - neo supergroup          0 2009-07-10 14:18 /user/neo/test
+
+$ bin/hadoop dfs -ls test
+
+$ bin/hadoop dfs –cat test/file
+				]]>
+				</screen>
+			</step>
+		</procedure>
+		<procedure>
+			<title>slave config</title>
+			<step>
+				<para>SSH</para>
+				<screen>
+				<![CDATA[
+$ scp neo@master:~/.ssh/id_dsa.pub .ssh/master.pub
+$ cat .ssh/master.pub >> .ssh/authorized_keys
+				]]>
+				</screen>
+			</step>
+			<step>
+				<para>Hadoop</para>
+				<screen>
+				<![CDATA[
+$ scp neo@master:/usr/local/hadoop /usr/local/hadoop
+				]]>
+				</screen>
+			</step>
+		</procedure>
+	</section>
+	<section>
+		<title>分布式安装</title>
+		<literallayout>
+HDFS:
+      NameNode  ：管理节点
+      DataNode  ：数据节点
+      SecondaryNamenode : 数据源信息备份整理节点
+
+MapReduce
+       JobTracker  ：任务管理节点
+       Tasktracker ：任务运行节点
+		</literallayout>
+		<section>
+			<title>准备工作</title>
+			<para>准备4台服务器，操作系统为 Centos 6.4 最小化安装</para>
+			<literallayout>
+NameNode  	192.168.2.10	hostname namenode
+DataNode    192.168.2.11	hostname:datanode1
+DataNode    192.168.2.12	hostname:datanode2
+
+JobTracker  192.168.2.10	(也可单独配置一台,也可以与NameNode公用，这里只用到了HDFS，这台可有可无，准备上面4台即可)
+TaskTracker					(与DataNode共用)
+			</literallayout>
+			<para>设置网络使其可以互访，然后关闭防火墙与selinux</para>
+			<screen>
+# yum update -y
+# lokkit --disabled --selinux=disabled
+			</screen>
+			<para>Hadoop 重要的端口</para>
+			<literallayout>
+1.Job Tracker 管理界面： 50030
+2.HDFS 管理界面 ：		 50070
+3.HDFS通信端口：		 9000
+4.MapReduce通信端口：	 9001
+			</literallayout>
+
+			<procedure>
+				<title>Hadoop - 准备工作</title>
+				<step>
+					<para>为所有服务器安装Java运行环境</para>
+					<para>以 CentOS 6.4 为例</para>
+					<screen>
+# yum install java-1.7.0-openjdk
+					</screen>
+				</step>
+				<step>
+					<para>在所有服务器上安装 Hadoop</para>
+					<para>安装方案有下面两种 RPM与YUM，选择其中一种</para>
+					<screen>
+# rpm -ivh http://ftp.cuhk.edu.hk/pub/packages/apache.org/hadoop/common/hadoop-1.1.2/hadoop-1.1.2-1.x86_64.rpm
+Retrieving http://ftp.cuhk.edu.hk/pub/packages/apache.org/hadoop/common/hadoop-1.1.2/hadoop-1.1.2-1.x86_64.rpm
+Preparing...                ########################################### [100%]
+   1:hadoop                 ########################################### [100%]
+					</screen>
+					<screen>
+yum localinstall http://ftp.cuhk.edu.hk/pub/packages/apache.org/hadoop/common/hadoop-1.1.2/hadoop-1.1.2-1.x86_64.rpm
+					</screen>
+					<para>如果网络比较慢，可以使用Wget或axel下载后安装</para>
+					<screen>
+wget http://ftp.cuhk.edu.hk/pub/packages/apache.org/hadoop/common/hadoop-1.1.2/hadoop-1.1.2-1.x86_64.rpm
+yum localinstall hadoop-1.1.2-1.x86_64.rpm
+					</screen>
+					<para>Hadoop 用户</para>
+					<screen>
+# cat /etc/passwd | grep Hadoop
+mapred:x:202:123:Hadoop MapReduce:/tmp:/bin/bash
+hdfs:x:201:123:Hadoop HDFS:/tmp:/bin/bash
+					</screen>
+				</step>
+				<step>
+					<para>配置/etc/hosts文件</para>
+					<screen>
+					<![CDATA[
+cat >> /etc/hosts <<EOD
+
+###############################
+# Hadoop Host
+###############################
+#NameNode
+192.168.2.10 	namenode.example.com
+
+#DataNode
+192.168.2.11 	datanode1.example.com
+192.168.2.12 	datanode2.example.com
+
+EOD
+					]]>
+					</screen>
+				</step>
+				<step>
+					<para>生成其密钥</para>
+					<screen>
+					<![CDATA[
+# ssh-keygen
+Generating public/private rsa key pair.
+Enter file in which to save the key (/root/.ssh/id_rsa):
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /root/.ssh/id_rsa.
+Your public key has been saved in /root/.ssh/id_rsa.pub.
+The key fingerprint is:
+cc:6f:30:76:82:28:96:13:c8:e6:bc:d7:5b:2d:11:d7 root@images-upload
+The key's randomart image is:
++--[ RSA 2048]----+
+|                 |
+|..        .      |
+|.o.    . . E     |
+|+  o . +o        |
+| o= . ..S .      |
+| ..o.  .o*       |
+| . . . o .o      |
+|  .   o ..       |
+|     .           |
++-----------------+
+					]]>
+					</screen>
+				</step>
+				<step>
+					<para>植入公钥证书</para>
+					<para>向DataNode节点所有的服务器植入公钥证书</para>
+					<screen>
+					<![CDATA[
+ssh-copy-id root@datanode1.example.com
+ssh-copy-id root@datanode2.example.com
+					]]>
+					</screen>
+					<para>只需要输入yes后，再输入密码即可完成公钥证书的植入。过程类似下面：</para>
+					<screen>
+# ssh-copy-id root@datanode1.example.com
+The authenticity of host 'datanode1.example.com (192.168.2.11)' can't be established.
+RSA key fingerprint is f1:0b:b1:63:1a:f6:ac:a3:da:4f:14:b5:f0:cc:df:67.
+Are you sure you want to continue connecting (yes/no)? yes 输入yes
+Warning: Permanently added 'datanode1.example.com' (RSA) to the list of known hosts.
+root@datanode1.example.com's password: 输入密码
+Now try logging into the machine, with "ssh 'root@datanode1.example.com'", and check in:
+
+  .ssh/authorized_keys
+
+to make sure we haven't added extra keys that you weren't expecting.
+
+# ssh-copy-id root@datanode2.example.com
+The authenticity of host 'datanode2.example.com (192.168.2.12)' can't be established.
+RSA key fingerprint is f1:0b:b1:63:1a:f6:ac:a3:da:4f:14:b5:f0:cc:df:67.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added 'datanode2.example.com,192.168.2.12' (RSA) to the list of known hosts.
+root@datanode2.example.com's password:
+Now try logging into the machine, with "ssh 'root@datanode2.example.com'", and check in:
+
+  .ssh/authorized_keys
+
+to make sure we haven't added extra keys that you weren't expecting.
+
+					</screen>
+					<para>完成后测试登陆，如果没有提示密码直接进入表示正确</para>
+					<screen>
+# ssh root@datanode1.example.com
+# exit
+					</screen>
+				</step>
+
+			</procedure>
+		</section>
+
+		<section>
+			<title>NameNode 配置名称节点</title>
+			<para>配置文件</para>
+			<screen>
+core-site.xml	 common属性配置
+hdfs-site.xml    HDFS属性配置
+mapred-site.xml  MapReduce属性配置
+hadoop-env.sh    hadooop 环境变量配置
+			</screen>
+			<procedure>
+				<title>Hadoop - NameNode</title>
+				<step>
+					<para>配置文件 hadoop-env.sh</para>
+					<para>将 /usr/java/default 改为 /usr</para>
+					<screen>
+# cp hadoop-env.sh hadoop-env.sh.original
+# sed -i "s:/usr/java/default:/usr:" hadoop-env.sh
+					</screen>
+				</step>
+				<step>
+					<para>配置文件 core-site.xml</para>
+					<screen>
+					<![CDATA[
+# cp core-site.xml core-site.xml.original
+
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+    <property>
+         <name>fs.default.name</name>
+         <value>hdfs://namenode.example.com:9000</value>
+    </property>
+    <property>
+         <name>hadoop.tmp.dir</name>
+         <value>/var/tmp/hadoop</value>
+    </property>
+</configuration>
+					]]>
+					</screen>
+					<para>fs.default.name: NameNode的URI。hdfs://主机名:端口/ </para>
+					<para>hadoop.tmp.dir: Hadoop的默认临时路径， </para>
+				</step>
+				<step>
+					<para>配置文件 mapred-site.xml </para>
+					<screen>
+					<![CDATA[
+# cp mapred-site.xml mapred-site.xml.original
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+    <property>
+        <name>mapred.job.tracker</name>
+        <value>namenode.example.com:9001</value>
+    </property>
+    <property>
+        <name>mapred.local.dir</name>
+        <value>/var/tmp/hadoop</value>
+    </property>
+</configuration>
+					]]>
+					</screen>
+					<para>mapred.job.tracker: JobTracker的主机和端口。</para>
+				</step>
+				<step>
+					<para>配置文件 hdfs-site.xml </para>
+					<screen>
+					<![CDATA[
+# cp hdfs-site.xml hdfs-site.xml.original
+
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+    <property>
+        <name>dfs.name.dir</name>
+        <value>/var/hadoop/name1</value>
+        <description>  </description>
+    </property>
+    <property>
+        <name>dfs.data.dir</name>
+        <value>/var/hadoop/hdfs/data1</value>
+        <description> </description>
+    </property>
+    <property>
+        <name>dfs.replication</name>
+        <value>2</value>
+    </property>
+</configuration>
+					]]>
+					</screen>
+					<screen>
+dfs.name.dir: NameNode持久存储名字空间及事务日志的本地文件系统路径。 当这个值是一个逗号分割的目录列表时，nametable数据将会被复制到所有目录中做冗余备份。
+2）   dfs.data.dir是DataNode存放块数据的本地文件系统路径，逗号分割的列表。 当这个值是逗号分割的目录列表时，数据将被存储在所有目录下，通常分布在不同设备上。
+3）dfs.replication是数据需要备份的数量，默认是3，如果此数大于集群的机器数会出错。
+					</screen>
+				</step>
+				<step>
+					<para>配置masters和slaves主从结点</para>
+					<para>备份masters与slaves配置文件 </para>
+					<screen>
+ cp masters masters.original
+ cp slaves slaves.original
+					</screen>
+					<screen>
+					<![CDATA[
+cat > /etc/hadoop/masters <<EOD
+namenode.example.com
+EOD
+					]]>
+					</screen>
+					<screen>
+					<![CDATA[
+cat > /etc/hadoop/slaves <<EOD
+datanode1.example.com
+datanode2.example.com
+EOD
+					]]>
+					</screen>
+				</step>
+				<step>
+					<para>复制配置文件</para>
+					<screen>
+# cd /etc/hadoop/
+# scp hadoop-env.sh core-site.xml mapred-site.xml hdfs-site.xml masters slaves root@datanode1.example.com:/etc/hadoop/
+# scp hadoop-env.sh core-site.xml mapred-site.xml hdfs-site.xml masters slaves root@datanode2.example.com:/etc/hadoop/
+					</screen>
+					<para>控制台输出类似下面表示复制成功。</para>
+					<screen>
+# scp hadoop-env.sh core-site.xml mapred-site.xml hdfs-site.xml masters slaves root@datanode1.example.com:/etc/hadoop/
+hadoop-env.sh                                                                          100% 2116     2.1KB/s   00:00
+core-site.xml                                                                          100%  412     0.4KB/s   00:00
+mapred-site.xml                                                                        100%  406     0.4KB/s   00:00
+hdfs-site.xml                                                                          100%  595     0.6KB/s   00:00
+masters                                                                                100%   21     0.0KB/s   00:00
+slaves
+					</screen>
+					<para>将 NameNode 上的配置文件复制给 DataNode</para>
+				</step>
+				<step>
+					<para>启动 Hadoop </para>
+					<para>创建工作目录 </para>
+					<screen>
+# mkdir /var/hadoop/
+# mkdir /var/hadoop/name{1,2}
+# su - hdfs -c  "mkdir -p  /var/hadoop/hdfs/data{1,2}"
+					</screen>
+					<screen>
+# hadoop namenode -format
+13/04/23 14:35:33 INFO namenode.NameNode: STARTUP_MSG:
+/************************************************************
+STARTUP_MSG: Starting NameNode
+STARTUP_MSG:   host = namenode.example.com/192.168.2.10
+STARTUP_MSG:   args = [-format]
+STARTUP_MSG:   version = 1.1.2
+STARTUP_MSG:   build = https://svn.apache.org/repos/asf/hadoop/common/branches/branch-1.1 -r 1440782; compiled by 'hortonfo' on Thu Jan 31 02:06:43 UTC 2013
+************************************************************/
+Re-format filesystem in /var/hadoop/name1 ? (Y or N) Y
+13/04/23 14:35:37 INFO util.GSet: VM type       = 64-bit
+13/04/23 14:35:37 INFO util.GSet: 2% max memory = 2.475 MB
+13/04/23 14:35:37 INFO util.GSet: capacity      = 2^18 = 262144 entries
+13/04/23 14:35:37 INFO util.GSet: recommended=262144, actual=262144
+13/04/23 14:35:37 INFO namenode.FSNamesystem: fsOwner=root
+13/04/23 14:35:37 INFO namenode.FSNamesystem: supergroup=supergroup
+13/04/23 14:35:37 INFO namenode.FSNamesystem: isPermissionEnabled=true
+13/04/23 14:35:37 INFO namenode.FSNamesystem: dfs.block.invalidate.limit=100
+13/04/23 14:35:37 INFO namenode.FSNamesystem: isAccessTokenEnabled=false accessKeyUpdateInterval=0 min(s), accessTokenLifetime=0 min(s)
+13/04/23 14:35:38 INFO namenode.NameNode: Caching file names occuring more than 10 times
+13/04/23 14:35:38 INFO common.Storage: Image file of size 110 saved in 0 seconds.
+13/04/23 14:35:38 INFO namenode.FSEditLog: closing edit log: position=4, editlog=/var/hadoop/name1/current/edits
+13/04/23 14:35:38 INFO namenode.FSEditLog: close success: truncate to 4, editlog=/var/hadoop/name1/current/edits
+13/04/23 14:35:38 INFO common.Storage: Storage directory /var/hadoop/name1 has been successfully formatted.
+13/04/23 14:35:38 INFO common.Storage: Image file of size 110 saved in 0 seconds.
+13/04/23 14:35:38 INFO namenode.FSEditLog: closing edit log: position=4, editlog= /var/hadoop/name2/current/edits
+13/04/23 14:35:38 INFO namenode.FSEditLog: close success: truncate to 4, editlog= /var/hadoop/name2/current/edits
+13/04/23 14:35:38 INFO common.Storage: Storage directory  /var/hadoop/name2 has been successfully formatted.
+13/04/23 14:35:38 INFO namenode.NameNode: SHUTDOWN_MSG:
+/************************************************************
+SHUTDOWN_MSG: Shutting down NameNode at namenode.example.com/192.168.2.10
+************************************************************/
+					</screen>
+					<screen>
+# chown hdfs:hadoop -R /var/hadoop
+					</screen>
+					<screen>
+# /etc/init.d/hadoop-namenode start
+# /etc/init.d/hadoop-datanode start
+					</screen>
+				</step>
+			</procedure>
+			<para>http://192.168.2.10:50070/</para>
+		</section>
+		<section>
+			<title>DataNode 配置数据节点</title>
+			<procedure>
+				<title>Hadoop - DataNode</title>
+				<step>
+					<para>创建hadoop数据存储目录</para>
+					<screen>
+					<![CDATA[
+mkdir /var/hadoop/
+chown hdfs:hadoop -R /var/hadoop
+su - hdfs -c  "mkdir -p  /var/hadoop/hdfs/data1"
+					]]>
+					</screen>
+				</step>
+				<step>
+					<para>启动  Hadoop</para>
+					<screen>
+					<![CDATA[
+# /etc/init.d/hadoop-datanode start
+					]]>
+					</screen>
+				</step>
+			</procedure>
+		</section>
+		<section>
+			<title>Hadoop UI (WEB界面)</title>
+			<para>常用访问页面</para>
+			<literallayout>
+1. HDFS 界面
+        http://hostname:50070
+2. MapReduce 管理界面
+        http://hostname:50030
+        	</literallayout>
+		</section>
+		<section>
+			<title>测试Hadoop</title>
+			<para>将install.log文件拷贝到分布式文件系统</para>
+			<screen>
+hadoop fs -mkdir test
+hadoop fs -put install.log test
+			</screen>
+			<para>显示文件内容</para>
+			<screen>
+# hadoop dfs -cat test/install.log
+			</screen>
+			<para>查看目录结构</para>
+			<screen>
+# hadoop dfs -ls
+Found 1 items
+drwxr-xr-x   - root supergroup          0 2013-04-23 15:20 /user/root/test
+[root@namenode ~]# hadoop dfs -ls test
+Found 1 items
+-rw-r--r--   2 root supergroup      10278 2013-04-23 15:20 /user/root/test/install.log
+			</screen>
+		</section>
+	</section>
+	&chapter.hadoop.hdfs.xml;
+	<section>
+		<title>FAQ</title>
+		<section>
+			<title>hadoop-1.1.2-1.x86_64.rpm 包含哪些文件内容</title>
+			<para>查看安装文件</para>
+			<screen>
+# rpm -ql hadoop-1.1.2-1
+			</screen>
+		</section>
+	</section>
 </chapter>
 <chapter id="hpcc">
 	<title>HPCC Systems (High Performance Computing Cluster)</title>

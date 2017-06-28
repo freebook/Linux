@@ -6,3 +6,5 @@
 <!ENTITY chapter.spark.xml		    SYSTEM "chapter.spark.xml">
 <!ENTITY chapter.tachyon.xml		SYSTEM "chapter.tachyon.xml">
 <!ENTITY chapter.zookeeper.xml		SYSTEM "chapter.zookeeper.xml">
+<!ENTITY chapter.hadoop.xml			SYSTEM "chapter.hadoop.xml">
+<!ENTITY chapter.hadoop.hdfs.xml	SYSTEM "chapter.hadoop.hdfs.xml">

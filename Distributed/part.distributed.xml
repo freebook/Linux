@@ -7,4 +7,5 @@
 	&chapter.spark.xml;
 	&chapter.tachyon.xml;
 	&chapter.zookeeper.xml;
+	&chapter.hadoop.hdfs.xml;
 </part>

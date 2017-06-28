@@ -15,7 +15,6 @@
 <!ENTITY chapter.dfs.drbd.xml	        SYSTEM "chapter.dfs.drbd.xml">
 <!ENTITY chapter.dfs.mogilefs.xml	    SYSTEM "chapter.dfs.mogilefs.xml">
 <!ENTITY chapter.dfs.lustre.xml		    SYSTEM "chapter.dfs.lustre.xml">
-<!ENTITY chapter.dfs.hdfs.xml		    SYSTEM "chapter.dfs.hdfs.xml">
 <!ENTITY chapter.dfs.moosefs.xml 	    SYSTEM "chapter.dfs.moosefs.xml">
 <!ENTITY chapter.dfs.gridfs.xml 	    SYSTEM "chapter.dfs.gridfs.xml">
 <!ENTITY chapter.dfs.ndb.xml     	    SYSTEM "chapter.dfs.ndb.xml">

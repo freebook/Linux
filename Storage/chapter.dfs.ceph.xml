@@ -2,7 +2,7 @@
 <section id="ceph">
 	<title>Ceph</title>
 	<para><ulink url="http://ceph.com/" /></para>
-	<section>
+	<section id="ubuntu">
 		<title>Installation on Ubuntu</title>
 		<screen>
 $ apt-cache search ceph
@@ -203,7 +203,7 @@ none                    tmpfs       102400        0    102400   0% /run/user
 $ sudo touch /mnt/ceph/hello
 		</screen>
 	</section>
-	<section>
+	<section id="centos6">
 		<title>Installation on CentOS</title>
 		<para>CentOS 6.4</para>
 
