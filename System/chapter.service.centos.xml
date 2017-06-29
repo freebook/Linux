@@ -9,6 +9,15 @@
 # systemctl disable avahi-daemon		
 		</screen>
 		<section>
+			<title>rc.local</title>
+			<screen>
+$ chmod +x /etc/rc.d/rc.local
+$ systemctl enable rc-local
+$ systemctl start rc-local
+$ systemctl status rc-local
+			</screen>
+		</section>
+		<section>
 			<title>is-enabled 查看当前服务的启用状态</title>
 			<screen>
 [root@www.netkiller.cn ~]# systemctl is-enabled mongod
