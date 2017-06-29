@@ -1,4 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="hdfs">
+<section id="hadoop.hdfs">
 	<title>Hadoop - HDFS</title>
+	<section>
+		<title>创建目录</title>
+		<screen>
+$ hdfs dfs -mkdir /mydir
+		</screen>
+	</section>
+	<section>
+		<title>上传文件</title>
+		<screen>
+$ hdfs dfs -put LICENSE.txt /mydir
+		</screen>
+	</section>
+	<section>
+		<title>文件列表</title>
+		<screen>
+$ hdfs dfs -ls /mydir/
+		</screen>
+	</section>
+	<section>
+		<title>显示文件</title>
+		<screen>
+$ hdfs dfs -cat /mydir/LICENSE.txt
+		</screen>
+	</section>
+	<section>
+		<title>下载文件</title>
+		<screen>
+$ hdfs dfs -get /mydir/ ./
+		</screen>
+	</section>	
+</section>
+<section id="hadoop.webui">
+	<title>Web UI - Browse Hadoop Services</title>
+	<section>
+		<title>Cluster and Apps Information (ResourceManager)</title>
+		<para>http://localhost:8088</para>
+	</section>
+	<section>
+		<title>NodeManager Information</title>
+		<para>http://localhost:8042 </para>
+	</section>
+	<section>
+		<title>Hadoop Overview of NameNode service</title>
+		<para>http://localhost:50070</para>
+	</section>
+	<section>
+		<title>Hadoop file system browsing (Directory Browse)</title>
+		<para>http://localhost:50070/explorer.html</para>
+	</section>
 </section>

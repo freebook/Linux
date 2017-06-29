@@ -1,7 +1,7 @@
 <chapter id="hadoop">
 	<title>Hadoop</title>
 	<para>http://hadoop.apache.org/</para>
-	<section id="singo">
+	<section id="single">
 		<title>单机安装（CentOS 7 + Server JRE 1.8 + Hadoop-2.8.0）</title>
 		<para>本章节介绍 CentOS 7 下安装Hadoop最新版本2.8.0。</para>
 		<para>创建一个 hadoop 用户，这个用户将用于hadoop的启动与管理</para>
@@ -330,8 +330,11 @@ localhost: starting nodemanager, logging to /srv/hadoop-2.8.0/logs/yarn-hadoop-n
 			</screen>
 			<para>检查端口</para>
 			<literallayout>
-[hadoop@localhost ~]$ ss -lnt | grep 9000
-LISTEN     0      128    127.0.0.1:9000                     *:*
+[hadoop@localhost ~]$ ss -lnt | egrep "(9000|50070|8088|8042)"
+LISTEN     0      128    127.0.0.1:9000                     *:*                  
+LISTEN     0      128          *:50070                    *:*                  
+LISTEN     0      128         :::8042                    :::*                  
+LISTEN     0      128         :::8088                    :::* 
 			</literallayout>
 		</section>
 	</section>
