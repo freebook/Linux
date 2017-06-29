@@ -196,6 +196,30 @@ yum list updates
 	<section id="yum">
 		<title>yum - Yellowdog Updater Modified</title>
 		<section>
+			<title>YUM 源管理</title>
+			<para>列出所有yum源</para>
+			<screen>
+# yum repolist all
+			</screen>
+			<para>查看启用YUM源</para>
+			<screen>
+# yum repolist enabled
+			</screen>
+			<para>查看禁用YUM源</para>
+			<screen>
+# yum repolist disabled
+			</screen>
+			<para>禁用YUM源</para>
+			<screen>
+# yum-config-manager --disable mysql-connectors-community
+			</screen>
+			<para>启用YUM源</para>
+			<screen>
+sudo yum-config-manager --enable mysql57-community-dmr
+			</screen>
+			<para>或者修改/etc/yum.repos.d/文件也能实现相同的作用  enabled=0 为禁用 enabled=1启用</para>
+		</section>
+		<section id="install">
 			<title>install</title>
 			<screen>
 yum -y install package
@@ -205,14 +229,14 @@ yum -y install package
 yum -y reinstall package
 			</screen>
 		</section>
-		<section>
+		<section id="localinstall">
 			<title>localinstall</title>
 			<para>yum localinstall 可以代替 rpm -ivh 并且会自己安装依赖包</para>
 			<screen>
 # yum localinstall asymptote-2.08-1.fc12.i686.rpm
 			</screen>
 		</section>
-		<section>
+		<section id="list">
 			<title>list</title>
 			<screen>
 			<![CDATA[
@@ -237,13 +261,13 @@ yum list updates
 yum list extras
 			</screen>
 		</section>
-		<section>
+		<section id="search">
 			<title>search</title>
 			<screen>
 yum search mysql
 			</screen>
 		</section>
-		<section>
+		<section id="update">
 			<title>update / upgrade</title>
 			<para>check update</para>
 			<screen>
@@ -257,7 +281,7 @@ yum search mysql
 # yum upgrade
 			</screen>
 		</section>
-		<section>
+		<section id="remove">
 			<title>remove</title>
 			<para></para>
 			<screen>
@@ -280,7 +304,7 @@ yum search mysql
 # yum list installed
 			</screen>
 		</section>
-		<section>
+		<section id="group">
 			<title>group</title>
 			<section>
 				<title>grouplist</title>
@@ -404,13 +428,13 @@ yum groupremove "GNOME Desktop Environment" "Games and Entertainment" "Graphical
 				</screen>
 			</section>
 		</section>
-		<section>
+		<section id="deplist">
 			<title>查看包的依赖关系</title>
 			<screen>
 # yum deplist libcurl
 			</screen>
 		</section>
-		<section>
+		<section id="provides">
 			<title>provides / whatprovides</title>
 			<para>查询pg_config命令在那一个包中</para>
 			<screen>
@@ -422,30 +446,6 @@ yum groupremove "GNOME Desktop Environment" "Games and Entertainment" "Graphical
 			<screen>
 # yum whatprovides mysql_config			
 			</screen>
-		</section>
-		<section>
-			<title>YUM 源管理</title>
-			<para>列出所有yum源</para>
-			<screen>
-# yum repolist all
-			</screen>
-			<para>查看启用YUM源</para>
-			<screen>
-# yum repolist enabled
-			</screen>
-			<para>查看禁用YUM源</para>
-			<screen>
-# yum repolist disabled
-			</screen>
-			<para>禁用YUM源</para>
-			<screen>
-# yum-config-manager --disable mysql-connectors-community
-			</screen>
-			<para>启用YUM源</para>
-			<screen>
-sudo yum-config-manager --enable mysql57-community-dmr
-			</screen>
-			<para>或者修改/etc/yum.repos.d/文件也能实现相同的作用  enabled=0 为禁用 enabled=1启用</para>
 		</section>
 	</section>
 	<section id="rpm">

@@ -23,4 +23,7 @@
 			<title>Beowulf</title>
 		</section>
 	</section>
+	<chapter id="hpcc">
+		<title>HPCC Systems (High Performance Computing Cluster)</title>
+	</chapter>
 </chapter>
