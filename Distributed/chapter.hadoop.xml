@@ -1,41 +1,91 @@
 <chapter id="hadoop">
 	<title>Hadoop</title>
 	<para>http://hadoop.apache.org/</para>
-	<section>
+	<section id="singo">
 		<title>单机安装（CentOS 7 + Server JRE 1.8 + Hadoop-2.8.0）</title>
-		<para>本章节介绍 CentOS 7 下安装Hadoop最新版本2.8.0，首先登陆系统，设置主机名。</para>
+		<para>本章节介绍 CentOS 7 下安装Hadoop最新版本2.8.0。</para>
+		<para>创建一个 hadoop 用户，这个用户将用于hadoop的启动与管理</para>
+		<screen>
+[root@localhost ~]# adduser hadoop
+[root@localhost ~]# passwd hadoop
+Changing password for user hadoop.
+New password: 
+Retype new password: 
+passwd: all authentication tokens updated successfully.
+		</screen>
+		<para>创建HFDS存储目录,建议使用 btrfs 子卷功能，创建子卷然后挂载到 /opt/hadoop</para>
+		<screen>
+[root@localhost ~]# mkdir -p /opt/hadoop/volume/{namenode,datanode}
+[root@localhost ~]# chown -R hadoop:hadoop /opt/hadoop/
+		</screen>
+		<para>创建SSH秘钥</para>
 		<screen>
 		<![CDATA[
-# hostnamectl set-hostname master
+[root@localhost ~]# su - hadoop
+Last login: Wed Jun 28 20:53:16 EDT 2017 on pts/0
+Last failed login: Wed Jun 28 20:58:20 EDT 2017 from localhost on ssh:notty
+There were 10 failed login attempts since the last successful login.
+
+[hadoop@localhost ~]$ ssh-keygen 
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/hadoop/.ssh/id_rsa): 
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /home/hadoop/.ssh/id_rsa.
+Your public key has been saved in /home/hadoop/.ssh/id_rsa.pub.
+The key fingerprint is:
+87:d5:6f:4f:b5:ac:d0:35:76:77:6e:5e:98:ae:92:2a hadoop@localhost.localdomain
+The key's randomart image is:
++--[ RSA 2048]----+
+|                 |
+|           .     |
+|          . .  +=|
+|         o  ..++B|
+|        S .. .=o=|
+|         .  .o.=.|
+|           . .. o|
+|      E   o  .   |
+|       ... ..    |
++-----------------+
+
+[hadoop@localhost ~]$ ssh-copy-id hadoop@localhost
+/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
+/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
+hadoop@localhost's password: 
+
+Number of key(s) added: 1
+
+Now try logging into the machine, with:   "ssh 'hadoop@localhost'"
+and check to make sure that only the key(s) you wanted were added.
 		]]>
-		</screen>
-		<para>创建一个 hadoop 用户，这个用户将用于hadoop的启动</para>
-		<screen>
-			
 		</screen>
 		<section id="hdfs.jre">
 			<title>安装 Java 环境</title>
 			<para>这里你可以选择使用 OpenJDK 或者 Oracle 的 Server JRE</para>
 			<screen>
-# yum install -y java-1.8.0-openjdk			
+[root@localhost ~]# yum install -y java-1.8.0-openjdk			
 			</screen>
+			<para>JAVA环境变量配置</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# cat >> /etc/profile.d/java.sh <<EOF
+################################################
+### Java environment by neo<netkiller@msn.com>
+################################################
+export JAVA_HOME=/usr/java/default
+export PATH=$PATH:$JAVA_HOME/bin
+export CLASSPATH=.:$JAVA_HOME/jre/lib:$JAVA_HOME/lib:$JAVA_HOME/lib/tools.jar
+export JAVA_OPTS="-Xms2048m -Xmx4096m"
+EOF
+			]]>
+			</screen>
+			
 			<para>如果你使用的是Oracle Java 请到Oracle网站下载的Server JRE 并配置 java classpath</para>
 			<screen>
 			<![CDATA[
 # wget --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/server-jre-8u131-linux-x64.tar.gz
 如果你的服务器上没有安装 wget 还可以使用 curl 命令下载
 # curl -LO -H "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/server-jre-8u131-linux-x64.tar.gz?AuthParam=1498632436_9d59c44e2a4f0ca5bd359423ac5b790b
-
-
-$ sudo vim /etc/profile.d/java.sh
-################################################
-### Java environment by neo
-################################################
-export JAVA_HOME=/usr
-export JRE_HOME=/usr
-export PATH=$PATH:/usr/local/apache-tomcat/bin/:/usr/local/jetty-6.1.18/bin:/usr/local/apache-nutch/bin
-export CLASSPATH="./:/usr/share/java/:/usr/local/apache-solr/example/multicore/lib"
-export JAVA_OPTS="-Xms128m -Xmx1024m"
 			]]>
 			</screen>
 			<para>如果你不需要编译，仅仅用于服务器环境，那么无需下载JDK，Server JRE就可以了</para>
@@ -43,27 +93,256 @@ export JAVA_OPTS="-Xms128m -Xmx1024m"
 		<section>
 			<title>安装 Hadoop</title>
 			<screen>
-cd /usr/local/src
-wget http://mirrors.tuna.tsinghua.edu.cn/apache/hadoop/common/hadoop-2.8.0/hadoop-2.8.0.tar.gz
-tar zxf hadoop-2.8.0.tar.gz
+[root@localhost ~]# cd /usr/local/src
+[root@localhost src]# wget http://mirrors.tuna.tsinghua.edu.cn/apache/hadoop/common/hadoop-2.8.0/hadoop-2.8.0.tar.gz
+[root@localhost src]# tar zxf hadoop-2.8.0.tar.gz
+[root@localhost src]# mv hadoop-2.8.0 /srv/
+[root@localhost src]# ln -s /srv/hadoop-2.8.0 /srv/hadoop
+[root@localhost src]# chown -R hadoop:hadoop /srv/hadoop*
+[root@localhost src]# su - hadoop
+[hadoop@localhost hadoop]$ cd /srv/hadoop
 			</screen>
+			<para>默认 Hadoop 使用 JAVA_HOME 设置，如果你想使用的JRE来运行Hadoop可以配置</para>
+			<screen>
+			<![CDATA[
+[hadoop@localhost hadoop]$ cp /srv/hadoop/etc/hadoop/hadoop-env.sh{,.original}
+[hadoop@localhost hadoop]$ sed -i "25s:\${JAVA_HOME}:/srv/java:" hadoop-env.sh
+			]]>
+			</screen>
+			<para>编辑 etc/hadoop/core-site.xml 配置文件，配置HDFS地址</para>
+			<screen>
+			<![CDATA[
+[hadoop@localhost hadoop]$ cp /srv/hadoop/etc/hadoop/core-site.xml{,.original}
+			
+[hadoop@localhost hadoop]$ cat > /srv/hadoop/etc/hadoop/core-site.xml <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+	<property>
+		<name>fs.defaultFS</name>
+		<value>hdfs://localhost:9000/</value>
+	</property>	
+</configuration>
+EOF
+			]]>
+			</screen>
+			<para>编辑 /srv/hadoop/etc/hadoop/hdfs-site.xml 配置文件，配置HDFS卷目录</para>
+			<screen>
+			<![CDATA[
+[hadoop@localhost hadoop]$ cp /srv/hadoop/etc/hadoop/hdfs-site.xml{,.original}
+
+[hadoop@localhost hadoop]$ cat > /srv/hadoop/etc/hadoop/hdfs-site.xml <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+	<property>
+		<name>dfs.data.dir</name>
+		<value>file:///opt/hadoop/volume/datanode</value>
+	</property>
+	<property>
+		<name>dfs.name.dir</name>
+		<value>file:///opt/hadoop/volume/namenode</value>
+	</property>
+</configuration>
+EOF
+			]]>
+			</screen>
+			<para>编辑 /srv/hadoop/etc/hadoop/mapred-site.xml 配置文件</para>
+			<screen>
+			<![CDATA[
+[hadoop@localhost hadoop]$ cp /srv/hadoop/etc/hadoop/mapred-site.xml{,.original}
+
+[hadoop@localhost hadoop]$ cat > /srv/hadoop/etc/hadoop/mapred-site.xml <<"EOF"
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+	<property>
+		<name>mapreduce.framework.name</name>
+		<value>yarn</value>
+	</property>
+</configuration>
+EOF
+			]]>
+			</screen>
+			<para>编辑 /srv/hadoop/etc/hadoop/yarn-site.xml 配置文件</para>
+			<screen>
+			<![CDATA[
+[hadoop@localhost hadoop]$ cp /srv/hadoop/etc/hadoop/yarn-site.xml{,.original}
+
+[hadoop@localhost hadoop]$ cat > /srv/hadoop/etc/hadoop/yarn-site.xml <<"EOF"
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+	<property>
+		<name>yarn.nodemanager.aux-services</name>
+		<value>mapreduce_shuffle</value>
+	</property>
+</configuration>
+EOF
+			]]>
+			</screen>
+			<para>单机配置不需要不需要处理slaves保持默认即可</para>
+			<screen>
+			<![CDATA[
+[hadoop@localhost hadoop]$ cat /srv/hadoop/etc/hadoop/slaves 
+localhost
+			]]>
+			</screen>
+			<para>至此 Hadoop 配置已经完成</para>
+		</section>
+		<section>
+			<title>启动 Hadoop</title>
+			<para>初始化 HDFS</para>
+			<screen>
+			<![CDATA[
+[hadoop@localhost hadoop]$ bin/hdfs namenode -format
+17/06/28 06:16:58 INFO namenode.NameNode: STARTUP_MSG: 
+/************************************************************
+STARTUP_MSG: Starting NameNode
+STARTUP_MSG:   user = hadoop
+STARTUP_MSG:   host = localhost/127.0.0.1
+STARTUP_MSG:   args = [-format]
+STARTUP_MSG:   version = 2.8.0
+STARTUP_MSG:   classpath = /srv/hadoop-2.8.0/etc/hadoop:/srv/hadoop-2.8.0/share/hadoop/common/lib/activation-1.1.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/apacheds-i18n-2.0.0-M15.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/apacheds-kerberos-codec-2.0.0-M15.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/api-asn1-api-1.0.0-M20.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/api-util-1.0.0-M20.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/asm-3.2.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/avro-1.7.4.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/commons-beanutils-1.7.0.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/commons-beanutils-core-1.8.0.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/commons-cli-1.2.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/commons-codec-1.4.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/commons-collections-3.2.2.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/commons-compress-1.4.1.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/commons-configuration-1.6.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/commons-digester-1.8.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/commons-io-2.4.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/commons-lang-2.6.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/commons-logging-1.1.3.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/commons-math3-3.1.1.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/commons-net-3.1.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/curator-client-2.7.1.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/curator-framework-2.7.1.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/curator-recipes-2.7.1.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/gson-2.2.4.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/guava-11.0.2.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/hadoop-annotations-2.8.0.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/hadoop-auth-2.8.0.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/hamcrest-core-1.3.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/htrace-core4-4.0.1-incubating.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/httpclient-4.5.2.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/httpcore-4.4.4.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/jackson-core-asl-1.9.13.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/jackson-jaxrs-1.9.13.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/jackson-mapper-asl-1.9.13.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/jackson-xc-1.9.13.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/java-xmlbuilder-0.4.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/jaxb-api-2.2.2.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/jaxb-impl-2.2.3-1.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/jcip-annotations-1.0.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/jersey-core-1.9.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/jersey-json-1.9.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/jersey-server-1.9.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/jets3t-0.9.0.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/jettison-1.1.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/jetty-6.1.26.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/jetty-sslengine-6.1.26.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/jetty-util-6.1.26.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/jsch-0.1.51.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/json-smart-1.1.1.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/jsp-api-2.1.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/jsr305-3.0.0.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/junit-4.11.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/log4j-1.2.17.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/mockito-all-1.8.5.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/netty-3.6.2.Final.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/nimbus-jose-jwt-3.9.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/paranamer-2.3.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/protobuf-java-2.5.0.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/servlet-api-2.5.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/slf4j-api-1.7.10.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/slf4j-log4j12-1.7.10.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/snappy-java-1.0.4.1.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/stax-api-1.0-2.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/xmlenc-0.52.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/xz-1.0.jar:/srv/hadoop-2.8.0/share/hadoop/common/lib/zookeeper-3.4.6.jar:/srv/hadoop-2.8.0/share/hadoop/common/hadoop-common-2.8.0-tests.jar:/srv/hadoop-2.8.0/share/hadoop/common/hadoop-common-2.8.0.jar:/srv/hadoop-2.8.0/share/hadoop/common/hadoop-nfs-2.8.0.jar:/srv/hadoop-2.8.0/share/hadoop/hdfs:/srv/hadoop-2.8.0/share/hadoop/hdfs/lib/asm-3.2.jar:/srv/hadoop-2.8.0/share/hadoop/hdfs/lib/commons-cli-1.2.jar:/srv/hadoop-2.8.0/share/hadoop/hdfs/lib/commons-codec-1.4.jar:/srv/hadoop-2.8.0/share/hadoop/hdfs/lib/commons-daemon-1.0.13.jar:/srv/hadoop-2.8.0/share/hadoop/hdfs/lib/commons-io-2.4.jar:/srv/hadoop-2.8.0/share/hadoop/hdfs/lib/commons-lang-2.6.jar:/srv/hadoop-2.8.0/share/hadoop/hdfs/lib/commons-logging-1.1.3.jar:/srv/hadoop-2.8.0/share/hadoop/hdfs/lib/guava-11.0.2.jar:/srv/hadoop-2.8.0/share/hadoop/hdfs/lib/hadoop-hdfs-client-2.8.0.jar:/srv/hadoop-2.8.0/share/hadoop/hdfs/lib/htrace-core4-4.0.1-incubating.jar:/srv/hadoop-2.8.0/share/hadoop/hdfs/lib/jackson-core-asl-1.9.13.jar:/srv/hadoop-2.8.0/share/hadoop/hdfs/lib/jackson-mapper-asl-1.9.13.jar:/srv/hadoop-2.8.0/share/hadoop/hdfs/lib/jersey-core-1.9.jar:/srv/hadoop-2.8.0/share/hadoop/hdfs/lib/jersey-server-1.9.jar:/srv/hadoop-2.8.0/share/hadoop/hdfs/lib/jetty-6.1.26.jar:/srv/hadoop-2.8.0/share/hadoop/hdfs/lib/jetty-util-6.1.26.jar:/srv/hadoop-2.8.0/share/hadoop/hdfs/lib/jsr305-3.0.0.jar:/srv/hadoop-2.8.0/share/hadoop/hdfs/lib/leveldbjni-all-1.8.jar:/srv/hadoop-2.8.0/share/hadoop/hdfs/lib/log4j-1.2.17.jar:/srv/hadoop-2.8.0/share/hadoop/hdfs/lib/netty-3.6.2.Final.jar:/srv/hadoop-2.8.0/share/hadoop/hdfs/lib/netty-all-4.0.23.Final.jar:/srv/hadoop-2.8.0/share/hadoop/hdfs/lib/okhttp-2.4.0.jar:/srv/hadoop-2.8.0/share/hadoop/hdfs/lib/okio-1.4.0.jar:/srv/hadoop-2.8.0/share/hadoop/hdfs/lib/protobuf-java-2.5.0.jar:/srv/hadoop-2.8.0/share/hadoop/hdfs/lib/servlet-api-2.5.jar:/srv/hadoop-2.8.0/share/hadoop/hdfs/lib/xercesImpl-2.9.1.jar:/srv/hadoop-2.8.0/share/hadoop/hdfs/lib/xml-apis-1.3.04.jar:/srv/hadoop-2.8.0/share/hadoop/hdfs/lib/xmlenc-0.52.jar:/srv/hadoop-2.8.0/share/hadoop/hdfs/hadoop-hdfs-2.8.0-tests.jar:/srv/hadoop-2.8.0/share/hadoop/hdfs/hadoop-hdfs-2.8.0.jar:/srv/hadoop-2.8.0/share/hadoop/hdfs/hadoop-hdfs-client-2.8.0-tests.jar:/srv/hadoop-2.8.0/share/hadoop/hdfs/hadoop-hdfs-client-2.8.0.jar:/srv/hadoop-2.8.0/share/hadoop/hdfs/hadoop-hdfs-native-client-2.8.0-tests.jar:/srv/hadoop-2.8.0/share/hadoop/hdfs/hadoop-hdfs-native-client-2.8.0.jar:/srv/hadoop-2.8.0/share/hadoop/hdfs/hadoop-hdfs-nfs-2.8.0.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/activation-1.1.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/aopalliance-1.0.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/asm-3.2.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/commons-cli-1.2.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/commons-codec-1.4.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/commons-collections-3.2.2.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/commons-compress-1.4.1.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/commons-io-2.4.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/commons-lang-2.6.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/commons-logging-1.1.3.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/commons-math-2.2.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/curator-client-2.7.1.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/curator-test-2.7.1.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/fst-2.24.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/guava-11.0.2.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/guice-3.0.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/guice-servlet-3.0.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/jackson-core-asl-1.9.13.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/jackson-jaxrs-1.9.13.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/jackson-mapper-asl-1.9.13.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/jackson-xc-1.9.13.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/javassist-3.18.1-GA.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/javax.inject-1.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/jaxb-api-2.2.2.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/jaxb-impl-2.2.3-1.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/jersey-client-1.9.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/jersey-core-1.9.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/jersey-guice-1.9.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/jersey-json-1.9.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/jersey-server-1.9.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/jettison-1.1.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/jetty-6.1.26.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/jetty-util-6.1.26.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/jsr305-3.0.0.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/leveldbjni-all-1.8.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/log4j-1.2.17.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/netty-3.6.2.Final.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/objenesis-2.1.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/protobuf-java-2.5.0.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/servlet-api-2.5.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/stax-api-1.0-2.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/xz-1.0.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/zookeeper-3.4.6-tests.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/lib/zookeeper-3.4.6.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/hadoop-yarn-api-2.8.0.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/hadoop-yarn-applications-distributedshell-2.8.0.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/hadoop-yarn-applications-unmanaged-am-launcher-2.8.0.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/hadoop-yarn-client-2.8.0.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/hadoop-yarn-common-2.8.0.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/hadoop-yarn-registry-2.8.0.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/hadoop-yarn-server-applicationhistoryservice-2.8.0.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/hadoop-yarn-server-common-2.8.0.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/hadoop-yarn-server-nodemanager-2.8.0.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/hadoop-yarn-server-resourcemanager-2.8.0.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/hadoop-yarn-server-sharedcachemanager-2.8.0.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/hadoop-yarn-server-tests-2.8.0.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/hadoop-yarn-server-timeline-pluginstorage-2.8.0.jar:/srv/hadoop-2.8.0/share/hadoop/yarn/hadoop-yarn-server-web-proxy-2.8.0.jar:/srv/hadoop-2.8.0/share/hadoop/mapreduce/lib/aopalliance-1.0.jar:/srv/hadoop-2.8.0/share/hadoop/mapreduce/lib/asm-3.2.jar:/srv/hadoop-2.8.0/share/hadoop/mapreduce/lib/avro-1.7.4.jar:/srv/hadoop-2.8.0/share/hadoop/mapreduce/lib/commons-compress-1.4.1.jar:/srv/hadoop-2.8.0/share/hadoop/mapreduce/lib/commons-io-2.4.jar:/srv/hadoop-2.8.0/share/hadoop/mapreduce/lib/guice-3.0.jar:/srv/hadoop-2.8.0/share/hadoop/mapreduce/lib/guice-servlet-3.0.jar:/srv/hadoop-2.8.0/share/hadoop/mapreduce/lib/hadoop-annotations-2.8.0.jar:/srv/hadoop-2.8.0/share/hadoop/mapreduce/lib/hamcrest-core-1.3.jar:/srv/hadoop-2.8.0/share/hadoop/mapreduce/lib/jackson-core-asl-1.9.13.jar:/srv/hadoop-2.8.0/share/hadoop/mapreduce/lib/jackson-mapper-asl-1.9.13.jar:/srv/hadoop-2.8.0/share/hadoop/mapreduce/lib/javax.inject-1.jar:/srv/hadoop-2.8.0/share/hadoop/mapreduce/lib/jersey-core-1.9.jar:/srv/hadoop-2.8.0/share/hadoop/mapreduce/lib/jersey-guice-1.9.jar:/srv/hadoop-2.8.0/share/hadoop/mapreduce/lib/jersey-server-1.9.jar:/srv/hadoop-2.8.0/share/hadoop/mapreduce/lib/junit-4.11.jar:/srv/hadoop-2.8.0/share/hadoop/mapreduce/lib/leveldbjni-all-1.8.jar:/srv/hadoop-2.8.0/share/hadoop/mapreduce/lib/log4j-1.2.17.jar:/srv/hadoop-2.8.0/share/hadoop/mapreduce/lib/netty-3.6.2.Final.jar:/srv/hadoop-2.8.0/share/hadoop/mapreduce/lib/paranamer-2.3.jar:/srv/hadoop-2.8.0/share/hadoop/mapreduce/lib/protobuf-java-2.5.0.jar:/srv/hadoop-2.8.0/share/hadoop/mapreduce/lib/snappy-java-1.0.4.1.jar:/srv/hadoop-2.8.0/share/hadoop/mapreduce/lib/xz-1.0.jar:/srv/hadoop-2.8.0/share/hadoop/mapreduce/hadoop-mapreduce-client-app-2.8.0.jar:/srv/hadoop-2.8.0/share/hadoop/mapreduce/hadoop-mapreduce-client-common-2.8.0.jar:/srv/hadoop-2.8.0/share/hadoop/mapreduce/hadoop-mapreduce-client-core-2.8.0.jar:/srv/hadoop-2.8.0/share/hadoop/mapreduce/hadoop-mapreduce-client-hs-2.8.0.jar:/srv/hadoop-2.8.0/share/hadoop/mapreduce/hadoop-mapreduce-client-hs-plugins-2.8.0.jar:/srv/hadoop-2.8.0/share/hadoop/mapreduce/hadoop-mapreduce-client-jobclient-2.8.0-tests.jar:/srv/hadoop-2.8.0/share/hadoop/mapreduce/hadoop-mapreduce-client-jobclient-2.8.0.jar:/srv/hadoop-2.8.0/share/hadoop/mapreduce/hadoop-mapreduce-client-shuffle-2.8.0.jar:/srv/hadoop-2.8.0/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.8.0.jar:/contrib/capacity-scheduler/*.jar
+STARTUP_MSG:   build = https://git-wip-us.apache.org/repos/asf/hadoop.git -r 91f2b7a13d1e97be65db92ddabc627cc29ac0009; compiled by 'jdu' on 2017-03-17T04:12Z
+STARTUP_MSG:   java = 1.8.0_131
+************************************************************/
+17/06/28 06:16:58 INFO namenode.NameNode: registered UNIX signal handlers for [TERM, HUP, INT]
+17/06/28 06:16:58 INFO namenode.NameNode: createNameNode [-format]
+Formatting using clusterid: CID-1c208cbf-7b56-41d5-9736-4e9a1f02aadb
+17/06/28 06:16:58 INFO namenode.FSEditLog: Edit logging is async:false
+17/06/28 06:16:58 INFO namenode.FSNamesystem: KeyProvider: null
+17/06/28 06:16:58 INFO namenode.FSNamesystem: fsLock is fair: true
+17/06/28 06:16:58 INFO namenode.FSNamesystem: Detailed lock hold time metrics enabled: false
+17/06/28 06:16:58 INFO blockmanagement.DatanodeManager: dfs.block.invalidate.limit=1000
+17/06/28 06:16:58 INFO blockmanagement.DatanodeManager: dfs.namenode.datanode.registration.ip-hostname-check=true
+17/06/28 06:16:58 INFO blockmanagement.BlockManager: dfs.namenode.startup.delay.block.deletion.sec is set to 000:00:00:00.000
+17/06/28 06:16:58 INFO blockmanagement.BlockManager: The block deletion will start around 2017 Jun 28 06:16:58
+17/06/28 06:16:58 INFO util.GSet: Computing capacity for map BlocksMap
+17/06/28 06:16:58 INFO util.GSet: VM type       = 64-bit
+17/06/28 06:16:58 INFO util.GSet: 2.0% max memory 889 MB = 17.8 MB
+17/06/28 06:16:58 INFO util.GSet: capacity      = 2^21 = 2097152 entries
+17/06/28 06:16:58 INFO blockmanagement.BlockManager: dfs.block.access.token.enable=false
+17/06/28 06:16:58 INFO blockmanagement.BlockManager: defaultReplication         = 3
+17/06/28 06:16:58 INFO blockmanagement.BlockManager: maxReplication             = 512
+17/06/28 06:16:58 INFO blockmanagement.BlockManager: minReplication             = 1
+17/06/28 06:16:58 INFO blockmanagement.BlockManager: maxReplicationStreams      = 2
+17/06/28 06:16:58 INFO blockmanagement.BlockManager: replicationRecheckInterval = 3000
+17/06/28 06:16:58 INFO blockmanagement.BlockManager: encryptDataTransfer        = false
+17/06/28 06:16:58 INFO blockmanagement.BlockManager: maxNumBlocksToLog          = 1000
+17/06/28 06:16:58 INFO namenode.FSNamesystem: fsOwner             = hadoop (auth:SIMPLE)
+17/06/28 06:16:58 INFO namenode.FSNamesystem: supergroup          = supergroup
+17/06/28 06:16:58 INFO namenode.FSNamesystem: isPermissionEnabled = true
+17/06/28 06:16:58 INFO namenode.FSNamesystem: HA Enabled: false
+17/06/28 06:16:58 INFO namenode.FSNamesystem: Append Enabled: true
+17/06/28 06:16:59 INFO util.GSet: Computing capacity for map INodeMap
+17/06/28 06:16:59 INFO util.GSet: VM type       = 64-bit
+17/06/28 06:16:59 INFO util.GSet: 1.0% max memory 889 MB = 8.9 MB
+17/06/28 06:16:59 INFO util.GSet: capacity      = 2^20 = 1048576 entries
+17/06/28 06:16:59 INFO namenode.FSDirectory: ACLs enabled? false
+17/06/28 06:16:59 INFO namenode.FSDirectory: XAttrs enabled? true
+17/06/28 06:16:59 INFO namenode.NameNode: Caching file names occurring more than 10 times
+17/06/28 06:16:59 INFO util.GSet: Computing capacity for map cachedBlocks
+17/06/28 06:16:59 INFO util.GSet: VM type       = 64-bit
+17/06/28 06:16:59 INFO util.GSet: 0.25% max memory 889 MB = 2.2 MB
+17/06/28 06:16:59 INFO util.GSet: capacity      = 2^18 = 262144 entries
+17/06/28 06:16:59 INFO namenode.FSNamesystem: dfs.namenode.safemode.threshold-pct = 0.9990000128746033
+17/06/28 06:16:59 INFO namenode.FSNamesystem: dfs.namenode.safemode.min.datanodes = 0
+17/06/28 06:16:59 INFO namenode.FSNamesystem: dfs.namenode.safemode.extension     = 30000
+17/06/28 06:16:59 INFO metrics.TopMetrics: NNTop conf: dfs.namenode.top.window.num.buckets = 10
+17/06/28 06:16:59 INFO metrics.TopMetrics: NNTop conf: dfs.namenode.top.num.users = 10
+17/06/28 06:16:59 INFO metrics.TopMetrics: NNTop conf: dfs.namenode.top.windows.minutes = 1,5,25
+17/06/28 06:16:59 INFO namenode.FSNamesystem: Retry cache on namenode is enabled
+17/06/28 06:16:59 INFO namenode.FSNamesystem: Retry cache will use 0.03 of total heap and retry cache entry expiry time is 600000 millis
+17/06/28 06:16:59 INFO util.GSet: Computing capacity for map NameNodeRetryCache
+17/06/28 06:16:59 INFO util.GSet: VM type       = 64-bit
+17/06/28 06:16:59 INFO util.GSet: 0.029999999329447746% max memory 889 MB = 273.1 KB
+17/06/28 06:16:59 INFO util.GSet: capacity      = 2^15 = 32768 entries
+17/06/28 06:16:59 INFO namenode.FSImage: Allocated new BlockPoolId: BP-577822066-127.0.0.1-1498645019088
+17/06/28 06:16:59 INFO common.Storage: Storage directory /opt/hadoop/volume/namenode has been successfully formatted.
+17/06/28 06:16:59 INFO namenode.FSImageFormatProtobuf: Saving image file /opt/hadoop/volume/namenode/current/fsimage.ckpt_0000000000000000000 using no compression
+17/06/28 06:16:59 INFO namenode.FSImageFormatProtobuf: Image file /opt/hadoop/volume/namenode/current/fsimage.ckpt_0000000000000000000 of size 323 bytes saved in 0 seconds.
+17/06/28 06:16:59 INFO namenode.NNStorageRetentionManager: Going to retain 1 images with txid >= 0
+17/06/28 06:16:59 INFO util.ExitUtil: Exiting with status 0
+17/06/28 06:16:59 INFO namenode.NameNode: SHUTDOWN_MSG: 
+/************************************************************
+SHUTDOWN_MSG: Shutting down NameNode at localhost/127.0.0.1
+************************************************************/
+			]]>
+			</screen>
+			<para>如果一切正常，运行完毕后可以看到初始化创建的目录</para>
+			<screen>
+			<![CDATA[
+[hadoop@localhost hadoop]$ find /opt/hadoop/volume/
+/opt/hadoop/volume/
+/opt/hadoop/volume/namenode
+/opt/hadoop/volume/namenode/current
+/opt/hadoop/volume/namenode/current/VERSION
+/opt/hadoop/volume/namenode/current/seen_txid
+/opt/hadoop/volume/namenode/current/fsimage_0000000000000000000.md5
+/opt/hadoop/volume/namenode/current/fsimage_0000000000000000000
+/opt/hadoop/volume/datanode
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>启动与停止 hadoop</title>
 			<para>启动与停止 hadoop</para>
 			<literallayout>
 启动/关闭所有服务 start-all.sh/stop-all.sh
-启动/关闭HDFS: start-dfs.sh/stop-dfs.sh
-启动/关闭MapReduce:  start-mapred.sh/stop-mapred.sh
+			</literallayout>
+			<para>你也可以根据自己的需要手工启动</para>
+			<para>启动/关闭HDFS: start-dfs.sh/stop-dfs.sh</para>
+			<screen>
+			<![CDATA[
+[hadoop@localhost ~]$ /srv/hadoop/sbin/start-dfs.sh 
+Starting namenodes on [localhost]
+localhost: starting namenode, logging to /srv/hadoop-2.8.0/logs/hadoop-hadoop-namenode-localhost.localdomain.out
+localhost: starting datanode, logging to /srv/hadoop-2.8.0/logs/hadoop-hadoop-datanode-localhost.localdomain.out
+Starting secondary namenodes [0.0.0.0]
+The authenticity of host '0.0.0.0 (0.0.0.0)' can't be established.
+ECDSA key fingerprint is f4:b8:65:48:55:4f:a5:a7:0f:16:ad:66:ef:98:f3:1f.
+Are you sure you want to continue connecting (yes/no)? yes
+0.0.0.0: Warning: Permanently added '0.0.0.0' (ECDSA) to the list of known hosts.
+0.0.0.0: starting secondarynamenode, logging to /srv/hadoop-2.8.0/logs/hadoop-hadoop-secondarynamenode-localhost.localdomain.out
+			]]>
+			</screen>
+			<para>启动/关闭 yarn:  start-yarn.sh/stop-yarn.sh</para>
+			<screen>
+			<![CDATA[
+[hadoop@localhost ~]$ /srv/hadoop/sbin/start-yarn.sh 
+starting yarn daemons
+starting resourcemanager, logging to /srv/hadoop-2.8.0/logs/yarn-hadoop-resourcemanager-localhost.localdomain.out
+localhost: starting nodemanager, logging to /srv/hadoop-2.8.0/logs/yarn-hadoop-nodemanager-localhost.localdomain.out
+			]]>
+			</screen>
+			<para>检查 Hadoop 线程</para>
+			<screen>
+			<![CDATA[
+[hadoop@localhost ~]$ jps
+25294 NodeManager
+25189 ResourceManager
+24770 DataNode
+25665 Jps
+24942 SecondaryNameNode
+24634 NameNode
+			]]>
+			</screen>
+			<para>检查端口</para>
+			<literallayout>
+[hadoop@localhost ~]$ ss -lnt | grep 9000
+LISTEN     0      128    127.0.0.1:9000                     *:*
 			</literallayout>
 		</section>
-		<section>
-			<title>创建用户</title>
-			<para>如果使用tar包安装，需要创建用户，这里请忽略</para>
-			<screen>
-# adduser hadoop
-			</screen>
-			<para></para>
-			<screen>
-			</screen>
-		</section>
+	</section>
+	<section>
+		<title>分布式模式</title>
+		<para>首先登陆系统，设置主机名</para>
+		<screen>
+		<![CDATA[
+# hostnamectl set-hostname master
+		]]>
+		</screen>
 	</section>
 	<section>
 		<title>单机安装 CentOS 5 + hadoop-0.20.0</title>
