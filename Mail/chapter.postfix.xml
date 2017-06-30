@@ -199,6 +199,24 @@ smtpd_client_connection_rate_limit = 0
 			</screen>
 		</section>
 	</section>
+	<section>
+		<title>aliases</title>
+		<para>查找别名文件地址</para>
+		<screen>
+# postconf alias_maps
+alias_maps = hash:/etc/aliases
+		</screen>
+		<para>增加别名</para>
+		<screen>
+# vim /etc/aliases
+
+neo:		netkiller@msn.com
+		</screen>
+		<para>newaliases - rebuild the data base for the mail aliases file</para>
+		<screen>
+
+		</screen>
+	</section>
 	<section id="dkim">
 		<title>dkim</title>
 		<para>DKIM(DomainKeys Identified Mail) 是一种电子邮件的验证技术，使用密码学的基础提供了签名与验证的功能。DKIM 能增加你邮件的信任度。</para>
