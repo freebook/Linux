@@ -144,7 +144,7 @@ http://www.netkiller.cn/product
 				<para>修改 Cookie 变量 JSESSIONID， 这个cookie 是用于维持Session关系。建议你改为PHPSESSID。 </para>
 				<screen>
 				<![CDATA[
-<Context path="" docBase="path/to/your" reloadable="false" sessionCookieDomain=".example.com" sessionCookiePath="/" sessionCookieName="PHPSESSID">				
+<Context path="" docBase="path/to/your" reloadable="false" sessionCookieDomain=".example.com" sessionCookiePath="/" sessionCookieName="PHPSESSID" />				
 				]]>
 				</screen>
 			</section>
