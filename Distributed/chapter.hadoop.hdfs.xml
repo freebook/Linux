@@ -1,36 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="hadoop.hdfs">
 	<title>Hadoop - HDFS</title>
-	<section>
+	<section id="mkdir">
 		<title>创建目录</title>
 		<screen>
 $ hdfs dfs -mkdir /mydir
 		</screen>
 	</section>
-	<section>
-		<title>上传文件</title>
-		<screen>
-$ hdfs dfs -put LICENSE.txt /mydir
-		</screen>
-	</section>
-	<section>
+	<section id="ls">
 		<title>文件列表</title>
 		<screen>
 $ hdfs dfs -ls /mydir/
 		</screen>
 	</section>
-	<section>
+	<section id="cat">
 		<title>显示文件</title>
 		<screen>
 $ hdfs dfs -cat /mydir/LICENSE.txt
 		</screen>
 	</section>
-	<section>
+	<section id="put">
+		<title>上传文件</title>
+		<screen>
+$ hdfs dfs -put LICENSE.txt /mydir
+		</screen>
+	</section>
+	<section id="get">
 		<title>下载文件</title>
 		<screen>
 $ hdfs dfs -get /mydir/ ./
 		</screen>
 	</section>	
+	<section id="chown">
+		<title>用户权限</title>
+		<screen>
+[hadoop@VM_3_2_centos ~]$ hdfs dfs -chown -R hadoop:hadoop /
+		</screen>
+	</section>	
+	<section id="chmod">
+		<title>访问权限</title>
+		<screen>
+[hadoop@VM_3_2_centos ~]$ hdfs dfs -chmod -R 777 /
+		</screen>
+	</section>	
+
+
 </section>
 <section id="hadoop.webui">
 	<title>Web UI - Browse Hadoop Services</title>

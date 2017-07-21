@@ -911,7 +911,7 @@ Found 1 items
 		</section>
 	</section>
 	&chapter.hadoop.hdfs.xml;
-	<section>
+	<section id="faq">
 		<title>FAQ</title>
 		<section>
 			<title>hadoop-1.1.2-1.x86_64.rpm 包含哪些文件内容</title>
@@ -919,6 +919,57 @@ Found 1 items
 			<screen>
 # rpm -ql hadoop-1.1.2-1
 			</screen>
+		</section>
+		<section>
+			<title>启动 Hadoop 后 9000 端口不存在</title>
+			<para>首先通过 jps 排查 NameNode 是否存在</para>
+			<screen>
+			<![CDATA[
+[hadoop@netkiller apache-hadoop]$ jps
+23345 NodeManager
+23042 SecondaryNameNode
+11076 Jps
+22860 DataNode
+23228 ResourceManager		
+			]]>
+			</screen>
+			<para>检查 hdfs 目录</para>
+			<screen>
+			<![CDATA[
+[hadoop@netkiller ~]$ find /opt/hadoop/volume/
+/opt/hadoop/volume/
+/opt/hadoop/volume/datanode
+/opt/hadoop/volume/namenode	
+			]]>
+			</screen>
+			<para>故障是 hdfs 目录没有初始化，初始化 hdfs 后重启 hadoop 即可解决</para>
+			<screen>
+			<![CDATA[
+[hadoop@netkiller apache-hadoop]$ bin/hdfs namenode -format
+
+[hadoop@netkiller apache-hadoop]$ find /opt/hadoop/volume/
+/opt/hadoop/volume/
+/opt/hadoop/volume/datanode
+/opt/hadoop/volume/namenode
+/opt/hadoop/volume/namenode/current
+/opt/hadoop/volume/namenode/current/seen_txid
+/opt/hadoop/volume/namenode/current/fsimage_0000000000000000000
+/opt/hadoop/volume/namenode/current/VERSION
+/opt/hadoop/volume/namenode/current/fsimage_0000000000000000000.md5
+
+[hadoop@netkiller ~]$ /srv/apache-hadoop/sbin/stop-all.sh
+[hadoop@netkiller ~]$ /srv/apache-hadoop/sbin/start-all.sh
+
+[hadoop@netkiller ~]$ jps
+13728 NameNode
+13875 DataNode
+14308 ResourceManager
+14776 Jps
+14105 SecondaryNameNode
+14425 NodeManager			
+			]]>
+			</screen>
+			<para>故障处理完毕</para>
 		</section>
 	</section>
 </chapter>
