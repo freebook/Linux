@@ -596,6 +596,86 @@ nmap --script all localhost
 <section id="tcpdump">
 	<title>tcpdump - A powerful tool for network monitoring and data acquisition</title>
 	<command>tcpdump</command>
+	<screen>
+	<![CDATA[
+tcpdump -Xnnnps0 -i any port $port and host $host
+
+-nn选项: 意思是说当tcpdump遇到协议号或端口号时,不要将这些号码转换成对应的协议名称或端口名称.
+-X选项: 告诉tcpdump命令,需要把协议头和包内容都原原本本的显示出来(tcpdump会以16进制和ASCII的形式显示).
+-p: 将网卡设置为非混杂模式,有时候不生效.
+-s:  抓报长度,一般设置为0,即65535字节,防止包截断.否则默认只抓68字节.
+-i : 抓指定网口的包
+port: 抓指定端口的包
+host: 抓指定地址的包
+
+其他常用选项:
+-c选项: 是Count的含义,这设置了我们希望tcpdump帮我们抓几个包.
+-l 选项的作用就是将tcpdump的输出变为"行缓冲"方式,这样可以确保tcpdump遇到的内容一旦是换行符即将缓冲的内容输出到标准输出,以便于利用管道或重定向方式来进行后续处理.(Linux/UNIX的标准I/O提供了全缓冲、行缓冲和无缓冲三种缓冲方式.标准错误是不带缓冲的,终端设备常为行缓冲,而其他情况默认都是全缓冲的.)
+-e: 指定将监听到的数据包链路层的信息打印出来,包括源mac和目的mac,以及网络层的协议.
+-w: 指定将监听到的数据包写入文件中保存.
+
+tcpdump的过滤表达式:
+
+man pcap-filter
+你会发现,过滤表达式大体可以分成三种过滤条件: 类型 ,方向和协议,这三种条件的搭配组合就构成了我们的过滤表达式.
+
+tcpdump支持如下的类型: 
+1 host: 指定主机名或IP地址,例如'host roclinux.cn'或'host 202.112.18.34'
+2 net : 指定网络段,例如'arp net 128.3'或'dst net 128.3'
+3 port:  指定端口,'port 20'
+4 portrange: 指定端口区域,例如'src or dst portrange 6000-6008'
+
+如果我们没有设置过滤类型,那么默认是host.
+
+dir:
+ src,  dst,  src  or dst, src and dst, ra, ta, addr1, addr2, addr3, and addr4.
+
+proto:
+
+Possible protos are: ether, fddi, tr,  wlan,  ip,  ip6,  arp, rarp, decnet, tcp and udp.
+
+1) 抓取45这台主机和192.168.1.1或者192.168.2.1 通讯的包
+#tcpdump host 192.168.2.45 and \(192.168.1.1 or 192.168.2.1 \)
+
+2) proto [ expr : size]
+proto   => 协议
+expr    => 指定数据报偏移量
+size     => 从偏移量的位置开始提取多少个字节
+如果只设置了expr,而没有设置size,则默认提取1个字节.比如ip[2:2],就表示提取出第3、4个字节;而ip[0]则表示提取ip协议头的第一个字节.
+
+3) tcp[tcpflags]
+只抓SYN包
+#tcpdump -i eth1 'tcp[tcpflags] = tcp-syn'
+抓SYN, ACK
+#tcpdump -i eth1 'tcp[tcpflags] & tcp-syn != 0 and tcp[tcpflags] & tcp-ack != 0'
+抓RST
+#tcpdump -i eth1 'tcp[13] & 4 = 4'
+抓HTTP GET数据
+#tcpdump -i eth1 'tcp[(tcp[12]>>2):4] = 0x5353482D'
+
+
+### exec
+
+exec 命令: 常用来替代当前 shell 并重新启动一个 shell,换句话说,并没有启动子shell.
+使用这一命令时任何现有环境都将会被清除.
+exec在对文件描述符进行操作的时候,也只有在这时,exec不会覆盖你当前的 shell 环境.
+
+I/O重定向通常与FD有关,shell的FD通常为10个,即0～9.
+常用重定向
+
+&- 关闭标准输出
+n&- 表示将 n 号输出关闭
+
+ 2>&1 :  2>&1 也就是 FD2＝FD1 ,这里并不是说FD2 的值等于FD1的值,因为 > 是改变送出的数据信道,也就是说把 FD2 的 "数据输出通道" 改为 FD1 的 "数据输出通道".
+ 
+[j]<>filename
+      为了读写"filename", 把文件"filename"打开, 并且将文件描述符"j"分配给它.
+      如果文件"filename"不存在, 那么就创建它.
+      如果文件描述符"j"没指定, 那默认是fd 0, stdin.
+      这种应用通常是为了写到一个文件中指定的地方.
+  exec 3<> File             # 打开"File"并且将fd 3分配给它.	
+	]]>
+	</screen>
 	<section id="tcpdump.i">
 		<title>监控网络适配器接口</title>
 		<screen>
