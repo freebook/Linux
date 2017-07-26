@@ -1,0 +1,65 @@
+<chapter id="crontab">
+	<title>crontab</title>
+	<section>
+		<title>/etc/crontab</title>
+		<screen>
+		<![CDATA[
+neo@netkiller ~/workspace/Linux % cat /etc/crontab
+# /etc/crontab: system-wide crontab
+# Unlike any other crontab you don't have to run the `crontab'
+# command to install the new version when you edit this file
+# and files in /etc/cron.d. These files also have username fields,
+# that none of the other crontabs do.
+
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+# m h dom mon dow user	command
+17 *	* * *	root    cd / && run-parts --report /etc/cron.hourly
+25 6	* * *	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.daily )
+47 6	* * 7	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.weekly )
+52 6	1 * *	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.monthly )
+#		
+		]]>
+		</screen>
+		<para>演示实例</para>
+		<screen>
+		<![CDATA[
+1) 每10分钟检查次mysql主从同步
+*/10 * * * * /bin/bash /usr/local/bin/monitor/mysql_check_slave.sh > /dev/null 2>&1
+
+2) 每天重启下nsac服务
+* * */1 * * /etc/init.d/nsca restart
+
+3) 每天的20时50分删除指定目录下30天前文件
+50 20 * * * find /var/log/rsyncxk015log/ -type f -ctime +30 -delete /dev/null 2>&1
+
+4) 每月的1、11、21、31日是的6点30分执行一次ls命令
+30 6 */10 * * ls
+
+5) 周一到周五每天的16点0分做一次svn日备份（自己写的svn备份脚本）
+0 16 * * 1-5    /bin/bash /usr/local/bin/shell/svn_hotcopy.sh day  > /dev/null 2>&1
+
+6) 每月1号17点0分做一次svn月备份
+0 17 1 * *      /bin/bash /usr/local/bin/shell/svn_hotcopy.sh month > /dev/null 2>&1
+
+7) 每周周六的16点0分做一次svn周备份
+0 16 * * 6      /bin/bash /usr/local/bin/shell/svn_hotcopy.sh week > /dev/null 2>&1
+
+8) 每隔两周,在周6的22点30分执行一次mysql完全备份,注意%在crontab下要转义
+30 22 * * 6 [ $(/usr/bin/expr $(/bin/date +\%W) % 2) -eq 1 ] && /usr/local/bin/backup_shell/mysql_fullback.sh
+
+9) 每个月,在最后一周的周6的22点30分执行一次mysql完全备份,注意%在crontab下要转义
+30 22 * * 6 [ $(date -d "+7 days" +\%d) -gt  23 ] && /usr/local/bin/backup_shell/mysql_fullback.sh
+
+每个月,在第一周的周6的22点30分执行一次mysql完全备份
+30 22 * * 6 [ $(date -d "+7 days" +\%d) -lt  14 ] && /usr/local/bin/cron_mysql_feeds_db.sh &> /tmp/cron_mysql_feeds_db.log
+
+10)  一个随机时间执行脚本 如签到 . 下面例子依赖atd 服务
+0 7 * * * source /etc/profile && /bin/echo '/usr/local/bin/casperjs /root/51ca.js' | at now + $(shuf -i 2-59 -n 1) min	
+		]]>
+		</screen>
+		<para></para>
+		<command></command>
+	</section>
+</chapter>

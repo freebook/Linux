@@ -84,3 +84,4 @@ $ chsh /bin/bash
 	&chapter.kickstart.xml;
 	&chapter.system.utilities.xml;
 <!-- =========================================================================== -->
+	&chapter.crontab.xml;
