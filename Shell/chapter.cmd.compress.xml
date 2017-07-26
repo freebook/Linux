@@ -4,7 +4,7 @@
 	<title>package / compress and decompress</title>
 	<section id="tar">
 		<title>tar — The GNU version of the tar archiving utility</title>
-		<section>
+		<section id="tar.cvf">
 			<title>tar examples</title>
 			<para>tar</para>
 			<screen>
@@ -15,7 +15,7 @@ tar -xvf foo.tar
        extract foo.tar
 			</screen>
 		</section>
-		<section>
+		<section id="tar.gunzip">
 			<title>gunzip</title>
 			<screen>
 tar -zcvf foo.tar foo/
@@ -26,7 +26,7 @@ tar -xvzf foo.tar.gz
        extract gzipped foo.tar.gz
 			</screen>
 		</section>
-		<section>
+		<section id="tar.b2zip">
 			<title>b2zip</title>
 			<command>b2zip</command>
 			<screen>
@@ -37,7 +37,7 @@ tar -jxvf foo.tar.bz2
        extract b2zip foo.tar.bz2
 			</screen>
 		</section>
-		<section>
+		<section id="tar.compress">
 			<title>compress</title>
 			<command>compress/uncompress</command>
 			<screen>
@@ -49,7 +49,7 @@ tar -Zxvf foo.tar.Z
       		</screen>
 		</section>
 
-		<section>
+		<section id="tar.list">
 			<title>-t, --list</title>
 			<para>-t, --list	list the contents of an archive</para>
 			<para>列出tar包中的文件</para>
@@ -77,16 +77,19 @@ www/test.com/www.test.com/test.txt
 			</screen>
 		</section>
 
-		<section>
+		<section id="tar.absolute-names">
 			<title>tar: Removing leading `/’ from member names</title>
 			<para>-P, --absolute-names       don't strip leading `/'s from file names</para>
 			<screen>
 $ tar -czvPf neo.tar.gz /home/neo/
-
 $ tar -xzvPf neo.tar.gz
 			</screen>
+			<screen>
+tar zcvfP www.test.com.tar.gz /www/test.com/www.test.com/
+tar zxvfP www.test.com.tar.gz
+			</screen>
 		</section>
-		<section>
+		<section id="tar.directory">
 			<title>-C, --directory=DIR</title>
 			<para>-C, --directory=DIR        change to directory DIR</para>
 			<para>解压到目标目录</para>
@@ -118,14 +121,8 @@ www/test.com/www.test.com/test.txt
 /www/test.com/www.test.com/test.txt
 			</screen>
 		</section>
-		<section>
-			<title>-P, --absolute-names       don't strip leading `/'s from file names</title>
-			<screen>
-tar zcvfP www.test.com.tar.gz /www/test.com/www.test.com/
-tar zxvfP www.test.com.tar.gz
-			</screen>
-		</section>
-		<section>
+		
+		<section id="tar.exclude">
 			<title>--exclude</title>
 			<para>排除neo目录</para>
 			<screen>
@@ -134,7 +131,7 @@ tar --exclude /home/neo -zcvf myfile.tar.gz /home/* /etc
 tar zcvf rpmbuild/SOURCES/netkiller-1.0.tar.gz ~/workspace/public_html/* --exclude .git --exclude .svn
 			</screen>
 		</section>
-		<section>
+		<section id="tar.T">
 			<title>-T </title>
 			<screen>
 find . -name "*.jpg" -print >list
@@ -143,34 +140,34 @@ tar -T list -czvf picture.tar.gz
 find /etc/ | tar czvf xxx1.tar.gz -T -
 			</screen>
 		</section>
-		<section>
+		<section id="tar.N">
 			<title>日期过滤</title>
 			<para>打包 2010/08/01 之后的文件和目录</para>
 			<screen>
 tar -N '2010/08/01' -zcvf home.tar.gz /home
 			</screen>
 		</section>
-		<section>
+		<section id="tar.f">
 			<title>保留权限</title>
 			<screen>
 tar -zxvpf /tmp/etc.tar.gz /etc
 			</screen>
 		</section>
-		<section>
+		<section id="tar.append">
 			<title>-r, --append</title>
 			<para>追加最近7天更改过的文件</para>
 			<screen>
 find / -type f -mtime -7 | xargs tar -rf weekly_incremental.tar
 			</screen>
 		</section>
-		<section>
+		<section id="tar.ssh">
 			<title>远程传输</title>
 			<command>tar -jcpvf - file | ssh remote "tar -jxpvf -"</command>
 			<screen>
 tar -jcpvf - file.php | ssh root@172.16.3.1 "tar -jxpvf -"
 			</screen>
 		</section>
-		<section>
+		<section id="tar.split">
 			<title>分卷压缩</title>
 			<screen>
 分卷压缩一个目录：如doc
@@ -300,5 +297,8 @@ $ 7z e test.7z
 ./a.7z			
 			</screen>
 		</section>
+	</section>
+	<section id="unrar">
+$ unrar test.rar
 	</section>
 </section>
