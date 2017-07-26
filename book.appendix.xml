@@ -1,6 +1,10 @@
 <appendix id="appendix">
 	<title>附录</title>
 	<section>
+		<title>贡献用户列表</title>
+		<para>刘军 QQ: 470499989, 470499989@qq.com</para>
+	</section>
+	<section>
 		<title>参考文档</title>
 		<para>http://www.faqs.org/docs/Linux-HOWTO/Bash-Prog-Intro-HOWTO.html</para>
 		<para>http://xiaowang.net/bgb-cn/index.html</para>

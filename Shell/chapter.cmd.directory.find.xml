@@ -50,6 +50,37 @@ find . -regex ".*\.\(jpg\|png\)"
 find . -regex ".*\.\(txt\|sh\)"
 find . -name "*.sh" -o -name "*.txt"
 		</screen>
+		<para>-regex参数，使用正则表达式来匹配. 查找当前目录以及子目录中以 ".sh",并改为以".shell"结尾.</para>
+		<screen>
+[neo@netkiller test]# tree a
+a
+├── a.py
+├── a.sh
+└── b
+    ├── b.py
+    ├── b.sh
+    ├── c
+    │   └── c.sh
+    └── d
+        └── d.sh
+
+[neo@netkiller test]# find ./a -type f  -regex ".*\.sh$" | sed -r -n 's#(.*\.)sh$#mv & \1shell#e'
+[neo@netkiller test]# tree a
+a
+├── a.py
+├── a.shell
+└── b
+    ├── b.py
+    ├── b.shell
+    ├── c
+    │   └── c.shell
+    └── d
+        └── d.shell
+        
+ // 注意 sed s->e  使用方式,官方文档是这样解释的.
+This command allows one to pipe input from a shell command into pattern space. If a substitution was made, the command that is found in pattern space is executed and pattern space is replaced with its output. A trailing newline is suppressed; results are undefined if the command to be executed contains a NUL character. This is a GNU sed extension.
+		
+		</screen>
 	</section>
 	<section id="find.user">
 		<title>user</title>
@@ -65,6 +96,10 @@ $ find . -user nobody -iname '*.php'
 		<screen>
 find ./ -perm -7 -print | xargs chmod o-w
 find . -perm -o=w
+		</screen>
+		<para>查找当前目录下权限为777的文件并显示到标准输出</para>
+		<screen>
+find ./ -type f -perm 777 -print		
 		</screen>
 	</section>
 	<section id="find.type">
@@ -114,24 +149,7 @@ find -type f -name "*.js" -exec yuicompressor --type js {} -o {} \;
 find -type f -name "*.css" -exec yuicompressor --type css {} -o {} \;
 		</screen>
 	</section>
-	<section id="find.xargs">
-		<title>xargs</title>
-       	<screen>
-find /etc -type f|xargs md5sum
-		</screen>
-		<para>sha1sum</para>
-		<screen>
-find /etc -type f|xargs sha1sum
-		</screen>
-		<screen>
-find ./ -name "*html" | xargs -n 1 sed -i -e 's/aaa/bbb/g'
-		</screen>
-		<para></para>
-		<screen>
-find /tmp -name core -type f -print | xargs /bin/rm -f
-find . -type f -exec file '{}' \;
-		</screen>
-	</section>
+	
 	<section id="find.path">
 		<title>排除目录</title>
 		<screen>
@@ -154,6 +172,19 @@ find . \( -path ./templates_c -o -path ./caches \) -prune -o -name "*.php" -prin
 		<screen>
 find /www -type f -mtime +60s
 		</screen>	
+	</section>
+	<section id="find.ctime">
+		<title>-ctime</title>
+		<para>查找当前目录下超过6天且是空文件并删除</para>
+		<screen>
+find ./ -type d -empty -ctime +6 -exec rm -f {} \;	
+		</screen>
+		<para>查找7天前的文件并删除</para>
+		<screen>
+find /backup/svn/day -type f -ctime +7 -exec rm -f {} \; 
+find /backup/svn/day -type f -ctime +7 -delete
+find /backup/svn/day -type f -ctime +7 | xargs rm -f	
+		</screen>
 	</section>
 	<section id="find.mtime">
 		<title>-mtime / -mmin</title>
@@ -223,6 +254,53 @@ Name:              bin Size:   4096
 		<para>查找0字节文件</para>
 		<screen>
 find /www -type f -size 0
+		</screen>
+		<para>查找根目录下大于1G的文件</para>
+		<screen>
+find /  -type f -size +1000M		
+		</screen>
+	</section>
+	<section id="find.path">
+		<title>-path</title>
+		<para>搜索当前目录下除了keys目录下所以子目录中的文件</para>
+		<screen>
+find ./ -path "./keys" -prune -o -type f -print 		
+		</screen>
+		<para>find排除多个目录</para>
+		<screen>
+find ./ \( -path ./conf -o -path ./logs \) -prune -o -print
+
+find /data/ \( -path /data/data_backup -o -path /data/mysql \) -prune -o -name "core.*" -type f 
+/data/mysql
+/data/data_backup		
+		</screen>
+		<para>ps 要么都是绝对路径 要么都是相对路径 /data/ 必须有"/" path 后面的路径必须没有"/"</para>
+	</section>
+	<section id="find.maxdepth">
+		<title>-maxdepth</title>
+		<para>-maxdepth和-mindepth，最大深度，最小深度搜索，搜索当前目录下最大深度为1的所以文件</para>
+		<screen>
+find . -maxdepth 1 -type f 		
+		</screen>
+	</section><section id="find.xargs">
+		<title>xargs</title>
+       	<screen>
+find /etc -type f|xargs md5sum
+		</screen>
+		<para>sha1sum</para>
+		<screen>
+find /etc -type f|xargs sha1sum
+		</screen>
+		<screen>
+find ./ -name "*html" | xargs -n 1 sed -i -e 's/aaa/bbb/g'
+		</screen>
+		<screen>
+find /tmp -name core -type f -print | xargs /bin/rm -f
+find . -type f -exec file '{}' \;
+		</screen>
+		<para>find后执行xargs提示xargs: argument line too long解决方法：</para>
+		<screen>
+find . -type f -name "*.log" -print0 | xargs -0 rm -f		
 		</screen>
 	</section>
 </section>

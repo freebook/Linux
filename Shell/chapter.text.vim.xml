@@ -182,5 +182,16 @@ done
 		<screen>
 :g/^/ s//\=line('.').' '/			
 		</screen>
-	</section>		
+	</section>
+	<section id="line()">
+		<title>set fileformat</title>
+		<para>加入行号</para>
+		<screen>
+vim    set fileformat
+执行 set fileformat  会返回当前文件的 format 类型 如:fileformat=dos
+也可执行 set line	
+		</screen>
+	</section>
+
+	
 </section>

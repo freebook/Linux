@@ -105,6 +105,19 @@ Line5
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>-v, --show-nonprinting   use ^ and M- notation, except for LFD and TAB</title>
+			<para>显示控制字符。例如Tab等，下面例子查看文件结尾换行符类型</para>
+			<screen>
+			<![CDATA[
+[neo@netkiller ~]# cat -v file.txt
+GRANT USAGE ON *.* TO 'esauser'@'localhost' IDENTIFIED BY xxxxxxx; ^M
+^M
+file^M
+2059^M
+			]]>
+			</screen>
+		</section>
 	</section>
 
 	<section id="nl">

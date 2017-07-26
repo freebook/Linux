@@ -11,6 +11,7 @@ $ dpkg-query -W -f='${Installed-Size;10}\t${Package}\n' | sort -k1,1n
 	</screen>
 	<section>
 		<title>对列排序</title>
+		<para>sort -k  具体说来, 你可以使用 -k1,1 来对第一列排序, -k1来对全行排序</para>
 		<screen>
 # sort -t ':' -k 1 /etc/passwd
 		</screen>
@@ -20,6 +21,13 @@ ort -n -t ‘ ‘ -k 2 file.txt
 		<para>多列排序</para>
 		<screen>
 $ sort -n -t ‘ ‘ -k 2 -k 3 file.txt
+		</screen>
+	</section>
+	<section>
+		<title>-s, --stable              stabilize sort by disabling last-resort comparison</title>
+		<para>例如: 如果你要想对两例排序, 先是以第二列, 然后再以第一列, 那么你可以这样. sort -s 会很有用</para>
+		<screen>
+ sort -k1,1 | sort -s -k2,2		
 		</screen>
 	</section>
 </section>

@@ -273,8 +273,11 @@ $((EXPR))
 		</screen>
 		<para></para>
 		<screen>
-echo $((1+1))
-echo $((5*5))
+neo@netkiller ~ % echo $((1+1))
+neo@netkiller ~ % echo $((5*5))
+
+neo@netkiller ~ % echo $(( (1 + 1) * 2 ))
+4
 		</screen>
 		<screen>
 num=$(awk "BEGIN {print $num1+$num2; exit}")
@@ -282,9 +285,59 @@ num=$(python -c "print $num1+$num2")
 num=$(perl -e "print $num1+$num2")
 num=$(echo $num1 + $num2 | bc) 		
 		</screen>
+		<para>巧用linux服务器下的/dev/shm, 实现斐波拉切数列</para>
+		<screen>
+		<![CDATA[
+[neo@netkiller ~]# cat mblq.sh
+
+TEMP_FILE=/dev/shm/mblq
+echo 0 > $TEMP_FILE
+echo 1 >> $TEMP_FILE
+count=$1
+for i in `seq $count`
+do
+    first=$(tail -2 $TEMP_FILE |head -1)
+    two=$(tail -1 $TEMP_FILE)
+    echo $((first+two)) >> $TEMP_FILE
+done
+cat $TEMP_FILE
+[neo@netkiller ~]# bash mblq.sh 15
+0
+1
+1
+2
+3
+5
+8
+13
+21
+34
+55
+89
+144
+233
+377
+610
+987
+		]]>
+		</screen>
 	</section>
 	<section id="variable.strings">
 		<title>Strings 字符串操作</title>
+		<screen>
+		<![CDATA[
+[neo@netkiller ~]# cat abcde.sh
+#!/bin/bash
+str="abcde";
+for ((m=1;m<=${#str};m++));do
+    for ((n=0;n<${#str};n++));do
+        [[ ${#str}-$n -lt $m ]] && continue || echo -n ${str:$n:$m}' '
+    done
+done
+[neo@netkiller ~]# bash abcde.sh
+a b c d e ab bc cd de abc bcd cde abcd bcde abcde 		
+		]]>
+		</screen>
 		<section>
 			<title>##/#</title>
 			<screen>
