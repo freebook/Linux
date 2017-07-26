@@ -166,7 +166,7 @@ p q r s t
 u v w x y
 z
 
-[root@test23 test]# echo 'a b c d e 1 2 3 4 5' | xargs -n 5
+[neo@netkiller test]# echo 'a b c d e 1 2 3 4 5' | xargs -n 5
 a b c d e
 1 2 3 4 5
 			]]>
@@ -177,7 +177,7 @@ a b c d e
 			<para>-t 参数可以让 xargs 在执行指令之前先显示要执行的指令</para>
 			<screen>
 			<![CDATA[
-[root@test23 test]# echo a b c d e f | xargs -t
+[neo@netkiller test]# echo a b c d e f | xargs -t
 /bin/echo a b c d e f
 a b c d e f
 			]]>
@@ -190,7 +190,7 @@ a b c d e f
 			<para>-d  自定义一个定界符 默认是空格</para>
 			<screen>
 			<![CDATA[
-[root@test23 test]# echo 'abc' | xargs -d b
+[neo@netkiller test]# echo 'abc' | xargs -d b
 a c
 
 -d选项可以自定义一个定界符：
@@ -217,18 +217,18 @@ birthday=1980
 			<![CDATA[
 
 每个输入的字符,都视为普通字符禁止掉文件结束符,被视为别的参数.当输入项可能包含白空格,引号,反斜杠等情况时,才适合用此参数
-[root@test23 test]# touch "Mr liu"
-[root@test23 test]# ls M*
+[neo@netkiller test]# touch "Mr liu"
+[neo@netkiller test]# ls M*
 Mr liu
-[root@test23 test]# find -type f -name "Mr*" | xargs rm -f
-[root@test23 test]# ls M*
+[neo@netkiller test]# find -type f -name "Mr*" | xargs rm -f
+[neo@netkiller test]# ls M*
 Mr liu
-[root@test23 test]# find -type f -name "Mr*" | xargs -t rm  -f
+[neo@netkiller test]# find -type f -name "Mr*" | xargs -t rm  -f
 rm -f ./Mr liu
 // 这个时候我们可以将 find 指令加上 -print0 参数，另外将 xargs 指令加上 -0 参数，改成这样:
-[root@test23 test]# find -type f -name "Mr*"  -print0| xargs -t -0 rm  -f
+[neo@netkiller test]# find -type f -name "Mr*"  -print0| xargs -t -0 rm  -f
 rm -f ./Mr liu
-[root@test23 test]# ls M*
+[neo@netkiller test]# ls M*
 ls: 无法访问M*: 没有那个文件或目录			
 			]]>
 			</screen>
@@ -239,13 +239,13 @@ ls: 无法访问M*: 没有那个文件或目录
 			<para>-r  如果标准输入不包含任何非空格，请不要运行该命令.</para>
 			<screen>
 			<![CDATA[
-[root@test23 test]# echo a b c d e f | xargs -p -n 3
+[neo@netkiller test]# echo a b c d e f | xargs -p -n 3
 /bin/echo a b c ?...n
 /bin/echo d e f ?...n
 /bin/echo ?...n
 //当我们使用 -p 参数时，如果所有的指令都输入 n 跳过不执行时候，最后还会出现一个沒有任何参数的 echo 指令,
 如果想要避免以這种空字串作为参数来执行指令，可以加上 -r 参数
-[root@test23 test]# echo a b c d e f | xargs -p -n 3 -r
+[neo@netkiller test]# echo a b c d e f | xargs -p -n 3 -r
 /bin/echo a b c ?...n
 /bin/echo d e f ?...n
 			]]>

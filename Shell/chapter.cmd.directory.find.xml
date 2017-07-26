@@ -52,6 +52,7 @@ find . -name "*.sh" -o -name "*.txt"
 		</screen>
 		<para>-regex参数，使用正则表达式来匹配. 查找当前目录以及子目录中以 ".sh",并改为以".shell"结尾.</para>
 		<screen>
+		<![CDATA[
 [neo@netkiller test]# tree a
 a
 ├── a.py
@@ -79,7 +80,7 @@ a
         
  // 注意 sed s->e  使用方式,官方文档是这样解释的.
 This command allows one to pipe input from a shell command into pattern space. If a substitution was made, the command that is found in pattern space is executed and pattern space is replaced with its output. A trailing newline is suppressed; results are undefined if the command to be executed contains a NUL character. This is a GNU sed extension.
-		
+		]]>
 		</screen>
 	</section>
 	<section id="find.user">
