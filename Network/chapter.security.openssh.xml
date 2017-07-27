@@ -2,7 +2,13 @@
 <!-- $Id: chapter.security.openssh.xml 651 2013-07-25 09:39:11Z netkiller $ -->
 <chapter id="index"><?dbhtml dir="openssh" ?>
 	<title>OpenSSH</title>
-	<section id="faq">
+	<para>ssh 连接过程</para>
+	<screen>
+(1)远程主机收到用户的登录请求,把自己的公钥发给用户.
+(2)用户使用这个公钥,将登录密码加密后,发送回来.
+(3)远程主机用自己的私钥,解密登录密码,如果密码正确,就同意用户登录.	
+	</screen>
+	<section id="ssh.install">
 		<title>安装 OpenSSH</title>
 		<para>使用下面命令安装OpenSSH</para>
 		<para>sudo apt-get install ssh</para>
@@ -147,6 +153,9 @@ PasswordAuthentication no
 			</section>
 			<section id="gssapi">
 				<title>GSSAPI options</title>
+				<para>GSSAPI (Generic Security Services Application Programming Interface) 是一套类似Kerberos 5 的通用网络安全系统接口.
+    该接口是对各种不同的客户端服务器安全机制的封装,以消除安全接口的不同,降低编程难度.
+    但该接口在目标主机无域名解析时会有如下问题</para>
 				<para>GSSAPI 基本用不到建议关闭</para>
 				<screen>
 #GSSAPIAuthentication no
@@ -156,12 +165,71 @@ GSSAPICleanupCredentials yes
 #GSSAPIStrictAcceptorCheck yes
 #GSSAPIKeyExchange no
 				</screen>
+				
+				<screen>
+debug1:  Host  '10.1.1.17'  is known and matches the RSA host key.  
+debug1:  Found key in /home/neo/.ssh/known_hosts: 1   
+debug1:  ssh_rsa_verify: signature correct  
+debug1:  SSH 2 _MSG_NEWKEYS sent  
+debug1:  expecting SSH 2 _MSG_NEWKEYS  
+debug1:  SSH 2 _MSG_NEWKEYS received  
+debug1:  SSH 2 _MSG_SERVICE_REQUEST sent  
+debug1:  SSH 2 _MSG_SERVICE_ACCEPT received  
+debug1:  Authentications that can continue: publickey,gssapi-with-mic,password  
+debug1:  Next authentication method: gssapi-with-mic  
+debug1:  An invalid name was supplied  
+Cannot determine realm for numeric host address  
+debug1:  An invalid name was supplied  
+Cannot determine realm for numeric host address  
+debug1:  An invalid name was supplied  
+debug1:  Next authentication method: publickey  
+debug1:  Trying private key: /home/neo/.ssh/identity  
+debug1:  Trying private key: /home/neo/.ssh/id_rsa  
+debug1:  Trying private key: /home/neo/.ssh/id_dsa  
+debug1:  Next authentication method: password  
+====>
+事实上,正是从gssapi-with-mic这一行开始,开始耗时间:
+
+找到
+GSSAPIAuthentication yes
+改为
+GSSAPIAuthentication no				
+				</screen>
 			</section>
 			<section id="ignoreuserknownhosts">
 				<title>忽略known_hosts文件</title>
 				<para>/etc/ssh/sshd_config</para>
 				<screen>
 IgnoreUserKnownHosts yes
+				</screen>
+			</section>
+			<section id="usedns">
+				<title>UseDNS no</title>
+				<para>ssh登录服务器时总是要停顿等待一下才能连接上,这是因为OpenSSH服务器有一个DNS查找选项(UseDNS)默认是打开的.
+     UseDNS选项打开状态下,当客户端试图登录OpenSSH服务器时,服务器端先根据客户端的IP地址进行DNS PTR反向查询,查询出客户端的host name,然后根据查询出的客户端host name进行DNS正向A记录查询,验证与其原始IP地址是否一致,这是防止客户端欺骗的一种手段.
+				</para>
+				<screen>
+				<![CDATA[
+vim /etc/ssh/sshd_config 
+=====>
+增加 UseDNS no
+
+打开这个参数ssh在连接sever如果无法进行dns解析的时候会出现如下卡顿现象(ssh 加 -v参数)：
+debug1: Found key in /home/neo/.ssh/known_hosts:71
+debug1: ssh_rsa_verify: signature correct
+debug1: SSH2_MSG_NEWKEYS sent
+debug1: expecting SSH2_MSG_NEWKEYS
+debug1: SSH2_MSG_NEWKEYS received
+debug1: SSH2_MSG_SERVICE_REQUEST sent
+debug1: SSH2_MSG_SERVICE_ACCEPT received
+
+<---- delay 4-5 seconds------>
+
+
+debug1: Authentications that can continue: publickey,password
+debug1: Next authentication method: publickey
+debug1: Trying private key: /home/neo/.ssh/identity		
+				]]>
 				</screen>
 			</section>
 		</section>
@@ -175,7 +243,7 @@ ForwardAgent yes
 				</screen>
 			</section>
 		</section>
-		<section>
+		<section id="owner.config">
 			<title>~/.ssh/config</title>
 			<para>格式</para>
 			<screen>
@@ -197,7 +265,30 @@ chmod 600 ~/.ssh/config
 			</screen>
 		</section>
 	</section>
+	<section id="ssh.client">
+		<title>ssh client</title>
+		<section>
+			<title>-o option 参数详解</title>
+			<screen>
+-o option
+             Can be used to give options in the format used in the configuration file.  This is useful for specifying options for which there is no separate command-line flag.  For
+             full details of the options listed below, and their possible values, see ssh_config(5).
 
+
+[root@netkiller tmp]# ssh root@192.168.2.18
+The authenticity of host '192.168.2.18 (192.168.2.18)' can't be established.
+RSA key fingerprint is 83:e9:fc:a9:98:6b:33:41:0f:b2:44:13:01:f5:af:3c.
+Are you sure you want to continue connecting (yes/no)? 
+
+===>这段话的意思是,无法确认host主机的真实性,只知道它的公钥md值,问你还想继续连接吗?
+
+[root@netkiller tmp]# ssh  -o stricthostkeychecking=no root@192.168.2.18
+Warning: Permanently added '192.168.2.18' (RSA) to the list of known hosts.
+root@192.168.2.18's password: 
+	
+			</screen>
+		</section>
+	</section>
 	<section id="tunnel">
 		<title>OpenSSH Tunnel</title>
 		<para>mysql tunnel</para>
@@ -397,6 +488,121 @@ $ cat .ssh/id_rsa.pub > .ssh/authorized_keys
 				</step>
 			</procedure>
 		</section>
+	</section>
+	<section id="google-authenticator">
+		<title>Google Authenticator - Android Apps on Google Play</title>
+		<screen>
+		<![CDATA[
+#### ssh 二次认证
+
+1) 安装依赖环境
+yum install gcc wget pam-devel libpng-devel libtool
+
+2) 安装二维码工具
+yum install -y  qrencode
+
+3) 安装 google_authenticator (EPEL repo)
+yum install google-authenticator -y
+
+4) setup
+<1> Using command line switch to the user you want to setup Google 2-step verification for
+[root@test23 src]# su root
+<2>  Run the Google Authenticator script and answer yes (y) to all questions:
+[root@test23 src]# google-authenticator
+<3> 执行 google-authenticator 命令 会生成一张二维码 ,手机下载   google authenticator app  扫描上面的二维码(或者手动输入),这样就能实现 基于时间的 口令同步.同时在用户的家目录下 下面5个是万能钥匙   用一次少一个 .
+<4> 设置 ssh 登陆认证方式,Edit the file /etc/pam.d/sshd,and add this line towards the top of the file:
+# google authenticator 
+auth required pam_google_authenticator.so
+<5>Next, edit the file /etc/ssh/sshd_config ,and change the ChallengeResponseAuthentication value to yes so it looks something like:
+# google authenticator 
+ChallengeResponseAuthentication yes
+<6> 重启 sshd 服务
+
+#### 普通用户su到root用户二次认证
+
+[root@test23 redhat]# cat /etc/pam.d/su
+#%PAM-1.0
+auth		sufficient	pam_rootok.so
+# Uncomment the following line to implicitly trust users in the "wheel" group.
+#auth		sufficient	pam_wheel.so trust use_uid
+# Uncomment the following line to require a user to be in the "wheel" group.
+#auth		required	pam_wheel.so use_uid
+# google authenticator
+auth required pam_google_authenticator.so
+auth            include        system-auth
+account		sufficient	pam_succeed_if.so uid = 0 use_uid quiet
+account		include		system-auth
+password	include		system-auth
+session		include		system-auth
+session		optional	pam_xauth.so
+
+#### 普通用户su到root用户不需要输入系统密码认证
+
+[root@test23 redhat]# cat /etc/pam.d/su
+#%PAM-1.0
+auth            sufficient      pam_rootok.so
+# Uncomment the following line to implicitly trust users in the "wheel" group.
+#auth           sufficient      pam_wheel.so trust use_uid
+# Uncomment the following line to require a user to be in the "wheel" group.
+#auth           required        pam_wheel.so use_uid
+# google authenticator
+auth            required        pam_google_authenticator.so
+auth            [success=ignore default=1] pam_succeed_if.so user = root
+auth            sufficient      pam_succeed_if.so use_uid user = redhat
+auth            include         system-auth
+account         sufficient      pam_succeed_if.so uid = 0 use_uid quiet
+account         include         system-auth
+password        include         system-auth
+session         include         system-auth
+session         optional        pam_xauth.so
+
+其中:
+auth            [success=ignore default=1] pam_succeed_if.so user = root
+auth            sufficient      pam_succeed_if.so use_uid user = redhat
+第一行的意思是 要 su 到哪个用户不需要输入密码
+第二行的意思是 要从哪个用户 su 到一行时候才不要密码
+由于 auth            required        pam_google_authenticator.so 这一行在前面,所有 本列中从 redhat su 到 root ,不需要输入 root 的系统密码, 但是需要输入 google 的动态口令.
+
+如果说想指定和多用户 su 到 root 都不需要 root 密码,只需输入动态口令,有两种方式:
+
+1)  把上面的两行改成如下
+auth            [success=ignore default=1] pam_succeed_if.so user = root
+auth            sufficient      pam_succeed_if.so use_uid user ingroup allowedpeople
+
+意思是把 需要的普通用户都加入一个 allowedpeople 用户组里, 对该用户组授权!
+
+2) 见下面是用 普通用户 sudo 到 root 用户不需要输入系统密码认证 
+
+#### 普通用户 sudo 到 root 用户不需要输入系统密码认证
+
+
+1) 切换到普通用户(redhat) 执行google-authenticator
+
+2) 此普通用户(redhat)在 sudo 的配置文件为
+
+redhat	ALL=(ALL)	/bin/su - root
+
+3) 修改 sudo 的pam 文件如下
+[root@test23 pam.d]# cat /etc/pam.d/sudo
+#%PAM-1.0
+# google authenticator
+#auth       required      pam_radius_auth.so
+auth 	   required 	pam_google_authenticator.so
+#auth       include      system-auth
+account    include      system-auth
+password   include      system-auth
+session    optional     pam_keyinit.so revoke
+session    required     pam_limits.so
+
+4) 普通用户通过 google 口令 sudo  到 root 用户
+[redhat@test23 ~]$ sudo su - root
+Verification code:
+[root@test23 ~]#
+
+
+另外一种方式 见 Radius
+		]]>
+		</screen>
 	</section>
 	<section id="ssh.faq">
 		<title>FAQ</title>

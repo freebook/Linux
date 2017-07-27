@@ -274,8 +274,12 @@ file locks                      (-x) unlimited
 		<screen>
 debian:~# apt-get install sudo		
 		</screen>
-		<para>/etc/sudoers</para>
-		<screen>
+		<section>
+			<title>/etc/sudoers</title>
+			<para>sudo的配置文件是/etc/sudoers,visudo修改时会锁住sudoers文件,保存修改到临时文件,然后检查文件格式,确保正确后才会覆盖sudoers文件.
+    必须保证sudoers格式正确,否则sudo将无法运行.</para>
+			<para>/etc/sudoers</para>
+			<screen>
 # /etc/sudoers
 #
 # This file MUST be edited with the 'visudo' command as root.
@@ -299,12 +303,39 @@ root    ALL=(ALL) ALL
 # it further down)
 %sudo ALL=NOPASSWD: ALL
 		
-		</screen>
-		<para>sudo group</para>
-		<screen>
+			</screen>
+			<para>sudo group</para>
+			<screen>
 neo@debian:/etc/mysql$ cat /etc/group | grep 'sudo'
 sudo:x:27:neo		
-		</screen>
+			</screen>
+		</section>
+		<section>
+			<title>/etc/sudoers</title>
+			<para>visudo调用的默认编辑器是vi,如果要临时使用其他编辑器,在该命令前加上EDITOR环境变量即可.</para>
+			<screen>		
+[root@netkiller ~]# EDITOR=vim visudo
+			</screen>
+		</section>
+		<section>
+			<title>设置示例</title>
+			<screen>
+			<![CDATA[
+>1 允许neo用户从任何主机登录,以root的身份执行/usr/sbin/useradd命令
+
+neo   ALL=(root) /usr/sbin/useradd 
+
+>2 允许jam用户从任何主机登录,以root的身份无密码使用sudo执行/sbin/iptables -n -t filter -L 
+
+jam   ALL=(ALL) NOPASSWD: /sbin/iptables -n -t filter -L 
+
+>3 neo用户从任何主机登录,以root的身份执行自定义命令链里面的命令
+
+Cmnd_Alias USERCOMMAND = /sbin/route,/sbin/ifconfig,/bin/ping,/sbin/dhclient,/usr/bin/net,/sbin/iptables,/usr/bin/rfcomm,/usr/bin/wvdial,/sbin/iwconfig
+neo   ALL=(root)    USERCOMMAND
+			]]>
+			</screen>
+		</section>
 		<section>
 			<title>NOPASSWD</title>
 			<para>ubuntu NOPASSWD sudo的时候不需要输入密码</para>
@@ -334,6 +365,12 @@ dba ALL = /bin/mount /u0[1-5], /bin/umount /u0[1-5]
 Cmnd_Alias WEBMASTER = /srv/nginx/sbin/nginx, /srv/php/sbin/php-fpm, !/srv/mysql/bin/mysql
 www localhost = NETWORKING, SERVICES, DELEGATING, PROCESSES, WEBMASTER
 			</screen>
+			<para>自定义用户组(以所有的身份)执行自定义的命令链里的命令</para>
+			<screen>
+Cmnd_Alias USERCOMMAND = /sbin/route,/sbin/ifconfig,/bin/ping,/usr/sbin/mtr,/bin/traceroute,/usr/bin/top,/bin/df,/usr/bin/free,/usr/bin/du,/bin/ls,/bin/date,/usr/bin/less
+User_Alias    ADMINS = user1, user2
+ADMINS	ALL=(ALL)	USERCOMMAND			
+			</screen>
 		</section>
 		<section id="wheel">
 			<title>wheel 组</title>
@@ -343,7 +380,22 @@ root    ALL=(ALL)       ALL
 neo     ALL=(ALL)       ALL
 %wheel  ALL=(ALL)       ALL
 			</screen>
-		</section>	
+		</section>
+		<section>
+			<title>注意事项</title>
+			<screen>
+1 修改sudo记录密码的时间
+
+
+Defaults:用户名 timestamp_timeout=20
+eg:
+Defaults:redhat timestamp_timeout=20
+
+2 默认sudo命令只能在tty上执行,注释掉下面选项可以使程序调用sudo命令
+
+Defaults    requiretty			
+			</screen>
+		</section>
 	</section>
 	<section id="acl">
 		<title>ACL - Access Control List</title>

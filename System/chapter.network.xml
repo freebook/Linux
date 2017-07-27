@@ -2,7 +2,15 @@
 <!-- $Id: chapter.system.network.xml 515 2013-01-15 06:34:09Z netkiller $ -->
 <chapter id="index"><?dbhtml dir="network" ?>
 	<title>Networking</title>
-			
+	<section id="ping">
+		<title>ping</title>
+		<screen>
+-f: 发送洪水请求,每个请求打印一个点,每个响应删除一个点.如果网络存在丢包,那么会呈现出一长串不断增加的点.
+
+-n: 选项,加上之后可以阻止ping程序去进行反向dns查询
+    当每次ping完得到响应之后,ping程序会尝试一次反向dns查询(reverse dns lookup)来获取“64 bytes from”后面的域名,如果查询速度很慢的话,就会给人似乎延迟很大的感觉,其实这也是ping感觉慢,但是每次ping的响应时间却并不慢的原因.
+		</screen>
+	</section>	
 	<section id="hosts">
 		<title>hosts</title>
 		<section>

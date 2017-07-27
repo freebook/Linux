@@ -2,13 +2,45 @@
 <!-- $Id: chapter.cmd.datetime.xml 381 2012-04-03 09:49:08Z netkiller $ -->
 <section id="datatime">
 	<title>date and time</title>
+	
 	<section id="data.format">
 		<title>日期格式</title>
+		<para>自定义格式化显示日期</para>
+		<screen>
+%n : 下一行
+%t : 跳格
+%H : 小时(00..23)
+%I : 小时(01..12)
+%k : 小时(0..23)
+%l : 小时(1..12)
+%M : 分钟(00..59)
+%p : 显示本地 AM 或 PM
+%r : 直接显示时间 (12 小时制，格式为 hh:mm:ss [AP]M)
+%s : 从 1970 年 1 月 1 日 00:00:00 UTC 到目前为止的秒数
+%S : 秒(00..61)
+%T : 直接显示时间 (24 小时制)
+%X : 相当于 %H:%M:%S
+%Z : 显示时区 %a : 星期几 (Sun..Sat)
+%A : 星期几 (Sunday..Saturday)
+%b : 月份 (Jan..Dec)
+%B : 月份 (January..December)
+%c : 直接显示日期与时间
+%d : 日 (01..31)
+%D : 直接显示日期 (mm/dd/yy)
+%h : 同 %b
+%j : 一年中的第几天 (001..366)
+%m : 月份 (01..12)
+%U : 一年中的第几周 (00..53) (以 Sunday 为一周的第一天的情形)
+%w : 一周中的第几天 (0..6)
+%W : 一年中的第几周 (00..53) (以 Monday 为一周的第一天的情形)
+%x : 直接显示日期 (mm/dd/yy)
+%y : 年份的最后两位数字 (00.99)
+%Y : 完整年份 (0000..9999)	
+		</screen>
 		<para>2010/06/18 17:57:38</para>
 		<screen>
 $ date '+%Y/%m/%d %H:%M:%S'
 		</screen>
-
 		<para>2010-06-18 17:57:58</para>
 		<screen>
 $ date '+%Y-%m-%d %H:%M:%S'
@@ -17,6 +49,23 @@ $ date '+%Y-%m-%d %H:%M:%S'
 $ date +'%Y-%m-01 00:00:01'
 2010-10-01 00:00:01
 		</screen>
+		<screen>
+[root@netkiller ~]# date +%F
+2015-07-30
+
+[root@netkiller ~]# date +%Y-%m-%d-%H-%M
+2015-07-30-13-49			
+		</screen>
+		<section id="weekday">
+			<title>weekday name</title>
+			<screen>
+$ date +%a
+Fri
+
+$ date +%A
+Friday
+			</screen>
+		</section>
 	</section>
 	<section id="data.d">
 		<title>-d --date=</title>
@@ -36,7 +85,38 @@ $ date +'%Y-%m-01 00:00:01'
 # date -d next-year +%Y
 2007
 		</screen>
+		<screen>
+date 命令的另一个扩展是 -d 选项
 
+1) 2周后的日期 和一天前的日期
+[root@netkiller ~]# date -d '2 weeks'
+2015年 08月 13日 星期四 13:53:06 HKT
+
+[root@netkiller ~]# date -d '1 day ago'
+2015年 07月 29日 星期二 13:53:14 HKT
+[root@netkiller ~]# date -d yesterday
+2015年 07月 29日 星期三 13:53:26 HKT
+
+2)下周一的日期
+[root@netkiller ~]# date -d 'next monday'
+2015年 08月 03日 星期一 00:00:00 HKT
+
+3)使用负数以得到相反的日期
+[root@netkiller ~]# date -d '-1 weeks'
+2015年 07月 23日 星期四 13:59:43 HKT
+[root@netkiller ~]# date -d '1 weeks'
+2015年 08月 06日 星期四 13:59:50 HKT
+
+上个月的一周前
+[root@netkiller ~]# date -d 'last-month -1 week'
+2015年 06月 23日 星期二 14:00:59 HKT
+
+相对于6月30号的前两周
+[root@netkiller ~]# date -d 'jun 30 -2 weeks'
+2015年 06月 16日 星期二 00:00:00 HKT
+[root@netkiller ~]# date -d 'jun 30 -2 weeks'  +%Y_%m_%d
+2015_06_16		
+		</screen>
 		<section >
 			<title>日期偏移量</title>
 			<screen>
@@ -99,24 +179,51 @@ date --date='1 seconds' "+%Y-%m-%d %H:%M:%S"
 			</screen>
 		</section>
 	</section>
-	<section id="weekday">
-		<title>weekday name</title>
+	<section>
+		<title>时间戳</title>
 		<screen>
-$ date +%a
-Fri
+1 计算当天的时间戳
 
-$ date +%A
-Friday
+
+[root@netkiller ~]#  date +%s
+1440641485
+
+2 计算指定日期的时间戳
+
+
+[root@netkiller ~]# date -d "2015-08-05 09:45:44" +%s
+1438739144
+
+3 时间戳转换成时间
+
+[root@netkiller ~]# date -d @1438739144
+2015年 08月 05日 星期三 09:45:44 HKT
+
+格式输出
+[root@mygitlab ~]# date -d @1440661395  +%Y-%m-%d-%H-%M
+2015-08-27-00-43		
+		</screen>
+	</section>
+	<section id="RFC2822">
+		<title>RFC 2822</title>
+		<para>RFC 2822 的日期与时间输出格式, RFC 2822 的格式像这样: 星期,日-月-年,小时:分钟:秒 时区</para>
+		<para>时区 +0800 等同于 GMT +8</para>
+		<screen>
+[root@netkiller ~]# date -R
+Thu, 30 Jul 2015 11:29:00 +0800
 		</screen>
 	</section>
 	<section id="datatime.utc">
 		<title>UTC</title>
-		<para>UTC time</para>
+		<para>UTC time  以UTC形式显示日期和时间</para>
 		<screen>
 $ datetime=$(date -u '+%Y%m%d %H:%M:%S')
 $ echo $datetime
 20091203 06:22:03
 		</screen>
+		<screen>
+[root@netkiller ~]# date -u
+2015年 07月 30日 星期四 03:35:01 UTC		
+		</screen>
 	</section>
-
 </section>

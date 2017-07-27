@@ -7,7 +7,7 @@
 	<!-- http://linux-ip.net/ -->
 	<section id="netmask">
 		<title>netmask</title>
-		<!-- 
+		<para>
 		
 子网掩码快速算法
 大家都应该知道2的x次方值吧？下面是2的0次到10次方的计算值分别是：
@@ -20,9 +20,8 @@
 
 再试验一下，就拿200台机器分成4个子网来做例子吧。
 200台机器，4个子网，那么就是每个子网50台机器，设定为192.168.10.0，C类的IP，大子网掩码应为255.255.255.0，对吧，但是我们要分子网，所以按照上面的，我们用32个IP一个子网内不够，应该每个子网用64个IP（其中62位可用，足够了吧），然后用我的办法：子网掩码应该是256-64=192，那么总的子网掩码应该为：255.255.255.192。不相信？算算：0-63，64-127，128-191，192-255，这样你就可以把四个区域分别设定到四个子网的机器上了。
-		 -->
-		
-		<section>
+		</para>
+		<section id="iptab">
 			<title>iptab</title>
 			<screen>
 # iptab
@@ -65,7 +64,7 @@
 +----------------------------------------------+
 			</screen>
 		</section>
-		<section>
+		<section id="netmask">
 			<title>netmask - a netmask generation and conversion program</title>
 			<screen>
 $ sudo apt-get install netmask
@@ -83,6 +82,9 @@ $ netmask -s 192.168.1.0/24
 
 $ netmask -s 192.168.1.0/26
     192.168.1.0/255.255.255.192
+    
+[root@netkiller src]# netmask -s  11.111.195.211/27
+ 11.111.195.192/255.255.255.224
 			</screen>
 			<para>-c, --cidr			Output CIDR format address lists</para>
 			<screen>
@@ -110,6 +112,11 @@ $ netmask  -i 192.168.1.0/28
     192.168.1.0 0.0.0.15  
 			</screen>
 			<para>-r, --range			Output ip address ranges 输出地址范围</para>
+			<para>计算子网掩码位数</para>
+			<screen>
+[root@netkiller src]# netmask  11.111.195.211/255.255.255.224
+ 11.111.195.192/27			
+			</screen>			
 			<screen>
 $ netmask  -r 192.168.1.0/255.255.255.0
     192.168.1.0-192.168.1.255   (256)
