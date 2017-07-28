@@ -1,0 +1,46 @@
+<chapter id="sendmail">
+	<title>Sendmail</title>
+	<section>
+		<title>sendmail 参数解释</title>
+		<screen>
+cd /usr/local/src
+wget http://caspian.dotconf.net/menu/Software/SendEmail/sendEmail-v1.56.tar.gz
+tar xf sendEmail-v1.56.tar.gz 
+cp -a sendEmail-v1.56/sendEmail /usr/local/bin 
+chmod +x /usr/local/bin/sendEmail
+
+-f 表示发送者的邮箱
+-t 表示接收者的邮箱
+-s 表示SMTP服务器的域名或者ip
+-u 表示邮件的主题
+-m 表示邮件的内容
+-a 表示邮件的附件
+-xu 表示SMTP验证的用户名
+-xp 表示SMTP验证的密码(注意,这个密码貌似有限制,例如我用d!5neyland就不能被正确识别)
+-o message-content-type=html 邮件内容的格式
+-o message-header=utf8   邮件标题编码
+-o message-charset=utf8  邮件内容编码
+-o message-file=FILE    邮件内容从哪个文件读出
+-o message-format=raw   内容格式
+-cc 表示抄送
+-bcc 表示暗抄送
+
+		</screen>
+	<para>网络管理</para>
+	<screen>
+
+
+	</screen>
+	
+	<para>xargs</para>
+	<screen>
+
+	</screen>
+
+	<para>硬件信息</para>
+	<command>dmidecode</command>
+	<screen>
+
+	</screen>
+	</section>
+</chapter>

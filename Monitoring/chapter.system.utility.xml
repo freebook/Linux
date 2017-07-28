@@ -255,26 +255,147 @@ $ strace -f -F lighttpd
 	
 </chapter>
 
-	<section id="lsof">
-		<title>文件监控</title>
-		<subtitle>lsof - list open files</subtitle>
-		<screen>
+<chapter id="lsof">
+	<title>lsof - list open files 文件监控</title>
+	<subtitle>lsof - list open files</subtitle>
+	<screen>
+	<![CDATA[
+Command、PID 和 User 列分别表示进程的名称 进程标识符 (PID) 和所有者名称.
+
+FD: 文件描述符,应用程序通过文件描述符识别该文件.如cwd txt等
+  (1) cwd : current working directory
+      应用程序的当前工作目录,这是该应用程序启动的目录,除非它本身对这个目录进行更改
+  (2) txt : program text (code and data)
+      该类型的文件是程序代码,如应用程序二进制文件本身或共享库,如上列表中显示的 /sbin/init 程序
+  (3) lnn : library references (AIX)
+      库引用
+  (4) er  : FD information error (see NAME column)
+      FD错误信息
+  (5) jld : jail directory (FreeBSD)
+      安全目录
+  (6) ltx : shared library text (code and data)
+      共享库文本
+  (7) mxx : hex memory-mapped type number xx
+      十六进制内存映射型号码xx
+  (8) m86 : DOS Merge mapped file
+      DOS的合并映射文件
+  (9) mem : memory-mapped file
+      文件内存映射
+ (10) mmap : memory-mapped device
+      设备内存映射
+ (11) pd  : parent directory
+      父目录
+ (12) rtd : root directory
+      root目录
+ (13)  tr : kernel trace file (OpenBSD)
+     内核跟踪文件
+ (14) v86 : VP/ix mapped file
+      VP/ix映射文件
+      
+ (15) 0 : 表示标准输出
+ (16) 1 : 表示标准输入
+ (17) 2 : 表示标准错误
+     初始打开每个应用程序时,都具有三个文件描述符,从 0 到 2,分别表示 标准输入 标准输出 和 错误流. 正因为如此,大多数应用程序所打开的文件的 FD 都是从3开始.
+     一般在标准输出 标准错误 标准输入 后还跟着文件状态模式: r w u等
+  (1) u : 表示该文件被打开并处于读取/写入模式
+  (2) r : 表示该文件被打开并处于只读模式
+  (3) w : 表示该文件被打开并处于
+  (4) 空格 : 表示该文件的状态模式为unknow,且没有锁定
+  (5) - : 表示该文件的状态模式为unknow,且被锁定
+      同时在文件状态模式后面,还跟着相关的锁
+  (1) N : for a Solaris NFS lock of unknown type;
+  (2) r : for read lock on part of the file;
+  (3) R : for a read lock on the entire file;
+  (4) w : for a write lock on part of the file;
+          文件的部分写锁
+  (5) W : for a write lock on the entire file
+          整个文件的写锁
+  (6) u : for a read and write lock of any length;
+  (7) U : for a lock of unknown type;
+  (8) x : for an SCO OpenServer Xenix lock on part of the file;
+  (9) X : for an SCO OpenServer Xenix lock on the      entire file;
+  (10) space : if there is no lock.
+  
+TYPE :  文件类型,与 FD 列相比,Type 列则比较直观.
+     根据具体操作系统的不同,您会发现将文件和目录称为REG 和 DIR（在 Solaris 中，称为 VREG 和 VDIR）.
+     其他可能的取值为 CHR 和 BLK,分别表示字符和块设备;
+     或者 UNIX、FIFO 和 IPv4,分别表示 UNIX 域套接字 先进先出 (FIFO) 队列和网际协议 (IP) 套接字.
+  (1) DIR : 表示目录
+  (2) CHR : 表示字符类型
+  (3) BLK : 块设备类型
+  (4) UNIX : UNIX 域套接字
+  (5) FIFO :先进先出 (FIFO) 队列
+  (6) IPv4 :网际协议 (IP) 套接字
+
+Device  SIZE/OFF Node 和 NA 
+      列涉及到文件本身的信息,分别表示
+          指定磁盘的名称
+          文件的大小
+          索引节点(文件在磁盘上的标识)
+          该文件的确切名称		
+	]]>		
+	</screen>
+	<screen>
 $ sudo lsof -c lighttpd
+	</screen>
+	<section id="$$">
+		<title>$$</title>
+		<screen>
+neo@netkiller:~/workspace/Document$ lsof -p $$
+COMMAND  PID USER   FD   TYPE DEVICE SIZE/OFF   NODE NAME
+zsh     4536  neo  cwd    DIR    8,6     4096     30 /home/neo/workspace/Document
+zsh     4536  neo  rtd    DIR    8,1     4096      2 /
+zsh     4536  neo  txt    REG    8,1   675792   6907 /bin/zsh4
+zsh     4536  neo  mem    REG    8,1    68824  56594 /usr/lib/zsh/4.3.10/zsh/computil.so
+zsh     4536  neo  mem    REG    8,1    41000  30570 /usr/lib/zsh/4.3.10/zsh/parameter.so
+zsh     4536  neo  mem    REG    8,1    31512  53350 /usr/lib/zsh/4.3.10/zsh/zutil.so
+zsh     4536  neo  mem    REG    8,1   153096  53354 /usr/lib/zsh/4.3.10/zsh/complete.so
+zsh     4536  neo  mem    REG    8,1   290888  56596 /usr/lib/zsh/4.3.10/zsh/zle.so
+zsh     4536  neo  mem    REG    8,1    10544  30579 /usr/lib/zsh/4.3.10/zsh/terminfo.so
+zsh     4536  neo  mem    REG    8,1    51712  19594 /lib/libnss_files-2.11.1.so
+zsh     4536  neo  mem    REG    8,1    43552  23798 /lib/libnss_nis-2.11.1.so
+zsh     4536  neo  mem    REG    8,1    97256  15503 /lib/libnsl-2.11.1.so
+zsh     4536  neo  mem    REG    8,1    35712  16431 /lib/libnss_compat-2.11.1.so
+zsh     4536  neo  mem    REG    8,1    18704   1902 /lib/libattr.so.1.1.0
+zsh     4536  neo  mem    REG    8,1  1568136   7583 /lib/libc-2.11.1.so
+zsh     4536  neo  mem    REG    8,1   534832  11379 /lib/libm-2.11.1.so
+zsh     4536  neo  mem    REG    8,1   323640   7295 /lib/libncursesw.so.5.7
+zsh     4536  neo  mem    REG    8,1    14696  11378 /lib/libdl-2.11.1.so
+zsh     4536  neo  mem    REG    8,1    18888   5099 /lib/libcap.so.2.17
+zsh     4536  neo  mem    REG    8,1   136936   7487 /lib/ld-2.11.1.so
+zsh     4536  neo  mem    REG    8,1   256324 145156 /usr/lib/locale/en_US.utf8/LC_CTYPE
+zsh     4536  neo  mem    REG    8,1       54 131099 /usr/lib/locale/en_US.utf8/LC_NUMERIC
+zsh     4536  neo  mem    REG    8,1     2454 145158 /usr/lib/locale/en_US.utf8/LC_TIME
+zsh     4536  neo  mem    REG    8,1  1170770 145157 /usr/lib/locale/en_US.utf8/LC_COLLATE
+zsh     4536  neo  mem    REG    8,1      286 145159 /usr/lib/locale/en_US.utf8/LC_MONETARY
+zsh     4536  neo  mem    REG    8,1       57 145160 /usr/lib/locale/en_US.utf8/LC_MESSAGES/SYS_LC_MESSAGES
+zsh     4536  neo  mem    REG    8,1    26048  73711 /usr/lib/gconv/gconv-modules.cache
+zsh     4536  neo  mem    REG    8,1       34 131105 /usr/lib/locale/en_US.utf8/LC_PAPER
+zsh     4536  neo  mem    REG    8,1       77 131106 /usr/lib/locale/en_US.utf8/LC_NAME
+zsh     4536  neo  mem    REG    8,1      155 145161 /usr/lib/locale/en_US.utf8/LC_ADDRESS
+zsh     4536  neo  mem    REG    8,1       59 145162 /usr/lib/locale/en_US.utf8/LC_TELEPHONE
+zsh     4536  neo  mem    REG    8,1       23 131109 /usr/lib/locale/en_US.utf8/LC_MEASUREMENT
+zsh     4536  neo  mem    REG    8,1      373 145163 /usr/lib/locale/en_US.utf8/LC_IDENTIFICATION
+zsh     4536  neo    0u   CHR  136,0      0t0      3 /dev/pts/0
+zsh     4536  neo    1u   CHR  136,0      0t0      3 /dev/pts/0
+zsh     4536  neo    2u   CHR  136,0      0t0      3 /dev/pts/0
+zsh     4536  neo   10u   CHR  136,0      0t0      3 /dev/pts/0
 		</screen>
-		<section>
-			<title>监控文件系统</title>
-			<para>谁打开了该文件? 显示打开文件filename的进程</para>
-			<screen>
+	</section>
+	<section id="lsof.filename">
+		<title>监控文件系统</title>
+		<para>谁打开了该文件? 显示打开文件filename的进程</para>
+		<screen>
 lsof filename
-			</screen>
-			<para>列出某个目录下被打开的文件</para>
-			<screen>
+		</screen>
+		<para>列出某个目录下被打开的文件</para>
+		<screen>
 # lsof /tmp/
 COMMAND    PID USER   FD   TYPE DEVICE SIZE/OFF    NODE NAME
 seahorse- 4158  neo  cwd    DIR    8,2    53248 1310721 /tmp
-			</screen>
-			<para>递归子目录列出文件状态</para>
-			<screen>
+		</screen>
+		<para>递归子目录列出文件状态</para>
+		<screen>
 $ sudo lsof +D /srv/
 COMMAND  PID USER  FD   TYPE DEVICE SIZE/OFF    NODE NAME
 match   5227 root txt    REG  252,0  1351616 1966083 /srv/match
@@ -283,11 +404,37 @@ match   5227 root txt    REG  252,0  1351616 1966083 /srv/match
 COMMAND PID USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
 systemd   1 root    9r   REG    0,3        0 8401 /proc/1/mountinfo
 
-			</screen>
-		</section>
-		<section>
-			<title>设备文件</title>
-			<screen>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+>1 查看某个文件被哪个进程/命令正在使用
+
+```
+在一个窗口执行
+[root@netkiller ~]# less /etc/passwd
+在另外一个窗口执行
+[root@netkiller ~]# lsof /etc/passwd
+COMMAND   PID USER   FD   TYPE DEVICE SIZE/OFF    NODE NAME
+less    14493 root    4r   REG    8,2     2676 4466070 /etc/passwd
+
+递归查看某个目录中文件被哪些命令/程序使用
+    使用了+D，对应目录下的所有子目录和文件都会被列出
+开两个窗口分别执行如下命令
+[root@netkiller ~]# less test/logs/access/2013-05-22.access
+[root@netkiller ~]# less test/11
+再第三个窗口执行
+[root@netkiller ~]# lsof +D test/
+COMMAND   PID USER   FD   TYPE DEVICE SIZE/OFF    NODE NAME
+less    14840 root    4r   REG    8,2      252 6166856 test/11
+less    14877 root    4r   REG    8,2        0 6166852 test/logs/access/2013-05-22.access
+```		
+		]]>
+		</screen>
+	</section>
+	<section id="lsof.dev">
+		<title>设备文件</title>
+		<screen>
 $ lsof /dev/tty1
 COMMAND   PID USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
 bash    17187  neo    0u   CHR    4,1      0t0 1057 /dev/tty1
@@ -296,12 +443,12 @@ bash    17187  neo    2u   CHR    4,1      0t0 1057 /dev/tty1
 bash    17187  neo  255u   CHR    4,1      0t0 1057 /dev/tty1
 
 
-			</screen>
-		</section>
-		<section>
-			<title>用户监控</title>
-			<para>用户显示打开的文件</para>
-			<screen>
+		</screen>
+	</section>
+	<section id="lsof.user">
+		<title>用户监控</title>
+		<para>用户显示打开的文件</para>
+		<screen>
 # lsof -u apache |more
 COMMAND  PID   USER   FD   TYPE DEVICE SIZE/OFF   NODE NAME
 httpd   4374 apache  cwd    DIR  252,1     4096      2 /
@@ -313,9 +460,14 @@ httpd   4374 apache  mem    REG  252,1    65928    909 /lib64/libnss_files-2.12.
 httpd   4374 apache  mem    REG  252,1    10416 408095 /usr/lib64/httpd/modules/mod_version.so
 httpd   4374 apache  mem    REG  252,1    27312 408054 /usr/lib64/httpd/modules/mod_cgi.so
 httpd   4374 apache  mem    REG  252,1    22992 408061 /usr/lib64/httpd/modules/mod_disk_cache.so
-			</screen>
-			<para>列出被打开的文件信息,排除root用户</para>
-			<screen>
+
+[root@netkiller ~]# lsof -u www
+COMMAND  PID USER   FD   TYPE             DEVICE SIZE/OFF     NODE NAME
+httpd   2412  www  DEL    REG                0,4             12653 /dev/zero
+httpd   2412  www  mem    REG                8,2    90784  5636110 /lib64/libgcc_s-4.4.7-20120601.so.1
+		</screen>
+		<para>列出被打开的文件信息,排除root用户</para>
+		<screen>
 [root@netkiller neo]# lsof -u ^root |more
 
 COMMAND     PID   TID          USER   FD      TYPE             DEVICE   SIZE/OFF      NODE NAME
@@ -348,9 +500,15 @@ dbus-daem   448                dbus    9u     unix 0xffff880037101e00        0t0
 dbus-daem   448                dbus   10u     unix 0xffff8800292ae900        0t0 626418112 /var/run/dbus/system_bus_socket
 dbus-daem   448                dbus   11u     unix 0xffff880426f3cec0        0t0   5345962 socket
 dbus-daem   448                dbus   12u     unix 0xffff8801f8149e00        0t0 626420423 /var/run/dbus/system_bus_socket
-			</screen>
-			<para>组监控</para>
-			<screen>
+		
+
+[root@netkiller ~]# lsof -u ^www 
+COMMAND     PID      USER   FD      TYPE             DEVICE  SIZE/OFF       NODE NAME
+init          1      root  txt       REG                8,2    150352    2228260 /sbin/init
+init          1      root  mem       REG                8,2     65928    5636192 /lib64/libnss_files-2.12.so		
+		</screen>
+		<para>组监控</para>
+		<screen>
 [root@netkiller neo]# lsof -g 0
 COMMAND     PID PGID USER   FD      TYPE DEVICE SIZE/OFF NODE NAME
 kthreadd      2    0 root  cwd       DIR  202,1     4096    2 /
@@ -365,22 +523,33 @@ kworker/0     5    0 root  txt   unknown                      /proc/5/exe
 migration     7    0 root  cwd       DIR  202,1     4096    2 /
 migration     7    0 root  rtd       DIR  202,1     4096    2 /
 migration     7    0 root  txt   unknown                      /proc/7/exe
-			</screen>
-		</section>
+		</screen>
 		
-		<section>
-			<title>监控进程</title>
-			<para>显示httpd进程现在打开的文件</para>
-			<screen>
+	</section>
+	
+	<section id="lsof.proc">
+		<title>监控进程</title>
+		<para>列出某个程序进程所打开的文件信息,显示httpd进程现在打开的文件</para>
+		<screen>
 lsof -c httpd
-			</screen>
-			<para>-p 进程ID, 显示该进程打开了那些文件</para>
-			<screen>
+		</screen>
+		<para>显示多个进程命令用法</para>
+		<screen>
+[root@netkiller ~]# lsof -c smbd
+COMMAND  PID USER   FD   TYPE             DEVICE SIZE/OFF    NODE NAME
+smbd    2506 root  cwd    DIR                8,2     4096       2 /
+smbd    2506 root  rtd    DIR                8,2     4096       2 /
+smbd    2506 root  txt    REG                8,2 10112200 3935771 /usr/sbin/smbd
+
+[root@netkiller ~]# lsof -c smbd -c httpd		
+		</screen>
+		<para>-p 进程ID, 显示该进程打开了那些文件</para>
+		<screen>
 pgrep httpd
 lsof -p 1782
-			</screen>
-			<para>显示进程ID</para>
-			<screen>
+		</screen>
+		<para>显示进程ID</para>
+		<screen>
 # lsof -t -u apache
 4374
 4375
@@ -389,9 +558,19 @@ lsof -p 1782
 4378
 4379
 4380
-			</screen>
-			<para>监控多个进程ID</para>
-			<screen>
+
+列出某个程序号打开的文件
+
+[root@netkiller ~]# lsof -p 2374
+COMMAND  PID USER   FD   TYPE DEVICE SIZE/OFF    NODE NAME
+httpd   2374 root  cwd    DIR    8,2     4096       2 /
+httpd   2374 root  rtd    DIR    8,2     4096       2 /
+httpd   2374 root  txt    REG    8,2  1772950 4985314 /usr/local/apache/bin/httpd
+httpd   2374 root  DEL    REG    0,4            12653 /dev/zero
+httpd   2374 root  mem    REG    8,2    90784 5636110 /lib64/libgcc_s-4.4.7-20120601.so.1	
+		</screen>
+		<para>监控多个进程ID</para>
+		<screen>
 [root@netkiller neo]# lsof -p 20535,26359,31462 | more
 COMMAND   PID    USER   FD   TYPE             DEVICE   SIZE/OFF      NODE NAME
 nginx   20535    root  cwd    DIR              253,1       4096         2 /
@@ -421,10 +600,10 @@ nginx   20535    root  mem    REG              253,1     164440    132816 /usr/l
 nginx   20535    root  DEL    REG                0,4            686393042 /dev/zero
 nginx   20535    root    0u   CHR                1,3        0t0      1028 /dev/null
 nginx   20535    root    1u   CHR                1,3        0t0      1028 /dev/null
-			
-			</screen>
-			<para>排除1，4，显示2，3，5</para>
-			<screen>
+		
+		</screen>
+		<para>排除1，4，显示2，3，5</para>
+		<screen>
 [root@netkiller neo]# lsof -p ^1,2,3,^4,5
 COMMAND   PID USER   FD      TYPE DEVICE SIZE/OFF NODE NAME
 kthreadd    2 root  cwd       DIR  253,1     4096    2 /
@@ -437,12 +616,13 @@ kworker/0   5 root  cwd       DIR  253,1     4096    2 /
 kworker/0   5 root  rtd       DIR  253,1     4096    2 /
 kworker/0   5 root  txt   unknown                      /proc/5/exe
 			
-			</screen>
-		</section>
-		<section>
-			<title>监控网络</title>
-			<para>列出所有的网络连接</para>
-			<screen>
+		</screen>
+		
+	</section>
+	<section id="lsof.net">
+		<title>监控网络</title>
+		<para>列出所有的网络连接</para>
+		<screen>
 [root@netkiller neo]# lsof -i
 COMMAND     PID          USER   FD   TYPE    DEVICE SIZE/OFF NODE NAME
 php-fpm    2274           www    0u  IPv4  96056019      0t0  TCP localhost:cslistener (LISTEN)
@@ -464,7 +644,18 @@ ntpd      11646           ntp   17u  IPv6 626406239      0t0  UDP *:ntp
 ntpd      11646           ntp   18u  IPv4 626406244      0t0  UDP localhost:ntp 
 ntpd      11646           ntp   19u  IPv4 626406245      0t0  UDP iZ623qr3xctZ:ntp 
 ntpd      11646           ntp   20u  IPv4 626406246      0t0  UDP iZ623qr3xctZ:ntp 
-			
+
+
+5 列出所有的网络连接/端口
+
+```
+[root@netkiller ~]# lsof -i 
+COMMAND     PID   USER   FD   TYPE   DEVICE SIZE/OFF NODE NAME
+portreser  1698   root    5u  IPv4    10656      0t0  UDP *:ldaps 
+snmpd      1993   root    7u  IPv4    12071      0t0  UDP *:snmp 
+snmpd      1993   root    9u  IPv4    12073      0t0  TCP localhost:smux (LISTEN)
+sshd       2005   root    3u  IPv4    12109      0t0  TCP *:ssh (LISTEN)
+	
 			</screen>
 			<para>什么程序运行在22端口上</para>
 			<screen>
@@ -554,7 +745,7 @@ dnsmasq   3647   nobody    7u  IPv4    15680      0t0  UDP 192.168.122.1:domain
 			<screen>
 lsof -i tcp;
 			</screen>
-			<para>监控 udp 端口 123</para>
+			<para>特定的tcp/udp端口, 监控 udp 端口 123</para>
 			<screen>
 [root@netkiller neo]# lsof -i udp:123
 COMMAND   PID USER   FD   TYPE    DEVICE SIZE/OFF NODE NAME
@@ -562,7 +753,16 @@ ntpd    11646  ntp   16u  IPv4 626409506      0t0  UDP *:ntp
 ntpd    11646  ntp   17u  IPv6 626406239      0t0  UDP *:ntp 
 ntpd    11646  ntp   18u  IPv4 626406244      0t0  UDP localhost:ntp 
 ntpd    11646  ntp   19u  IPv4 626406245      0t0  UDP iZ623qr3xctZ:ntp 
-ntpd    11646  ntp   20u  IPv4 626406246      0t0  UDP iZ623qr3xctZ:ntp 			
+ntpd    11646  ntp   20u  IPv4 626406246      0t0  UDP iZ623qr3xctZ:ntp 		
+
+检测某个端口所占用的进程，如22端口
+[root@netkiller ~]# lsof -i :22
+
+[root@netkiller ~]# lsof -i udp:53	
+			</screen>
+			<para>列出所有tcp/UDP 网络连接信息</para>
+			<screen>
+[root@netkiller ~]# lsof -i tcp/udp			
 			</screen>
 			<para>列出nginx用户活跃的链接</para>
 			<screen>
@@ -615,8 +815,39 @@ bash    1394 root  255u   CHR  136,7      0t0      10 /dev/pts/7
 			<screen>
 # lsof -c init -a -r5
 			</screen>
+			<screen>
+列出www用户的所有活跃的网络端口
+[root@netkiller ~]# lsof -a -u www -i
+
+列出被sshd进程所打开的所有IPV4网络相关文件
+[root@netkiller ~]# lsof -i 4 -c sshd  -a
+
+列出被root用户所打开的所有TCP和IPV4网络相关文件
+[root@netkiller ~]# lsof -i 4 -i tcp  -u root -a					
+			</screen>
 		</section>
-	</section>
+		<section>
+			<title>根据文件描述列出对应的文件信息</title>
+			<screen>
+lsof -d  fd_type
+
+[root@netkiller ~]# lsof -d 2
+COMMAND     PID      USER   FD   TYPE DEVICE SIZE/OFF    NODE NAME
+init          1      root    2u   CHR    1,3      0t0    3794 /dev/null
+
+根据文件描述范围列出文件信息
+[root@netkiller ~]# lsof -d 2-4 
+COMMAND     PID      USER   FD   TYPE             DEVICE  SIZE/OFF       NODE NAME
+init          1      root    2u   CHR                1,3       0t0       3794 /dev/null
+
+列出COMMAND列中包含字符串" httpd"，且文件描符的类型为txt的文件信息
+[root@netkiller ~]# lsof -c httpd -a -d txt
+COMMAND  PID USER  FD   TYPE DEVICE SIZE/OFF    NODE NAME
+httpd   2374 root txt    REG    8,2  1772950 4985314 /usr/local/apache/bin/httpd
+			</screen>
+		</section>
+
+	</chapter>
 
 	&chapter.system.io.xml;
 
