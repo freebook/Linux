@@ -2,6 +2,55 @@
 	<title>Process</title>
 	<section id="top">
 		<title>top - display Linux tasks</title>
+		<para>top命令算是最直观、好用的查看服务器负载的命令了。它实时动态刷新显示服务器状态信息，且可以通过交互式命令自定义显示内容，非常强大。</para>
+		<screen>
+		<![CDATA[
+> 进程信息
+
+PID：进程的ID 
+USER：进程所有者 
+PR：进程的优先级别，越小越优先被执行 
+NInice：值 
+VIRT：进程占用的虚拟内存 
+RES：进程占用的物理内存 
+SHR：进程使用的共享内存 
+S：进程的状态。S表示休眠，R表示正在运行，Z表示僵死状态，N表示该进程优先值为负数 
+%CPU：进程占用CPU的使用率 
+%MEM：进程使用的物理内存和总内存的百分比 
+TIME+：该进程启动后占用的总的CPU时间，即占用CPU使用时间的累加值。 
+COMMAND：进程启动命令名称
+
+
+### top交互
+
+s：设置刷新时间间隔
+c：显示命令完全模式
+t:：显示或隐藏进程和CPU状态信息
+m：显示或隐藏内存状态信息
+l：显示或隐藏uptime信息
+f：增加或减少进程显示标志
+S：累计模式，会把已完成或退出的子进程占用的CPU时间累计到父进程的MITE+
+P：按%CPU使用率排行
+T：按MITE+排行
+M：按%MEM排行
+u：指定显示用户进程
+r：修改进程renice值
+kkill：进程
+i：只显示正在运行的进程
+W：保存对top的设置到文件~/.toprc，下次启动将自动调用toprc文件的设置。
+h：帮助命令。
+q：退出
+
+如果想看每一个cpu的处理情况，按1即可；折叠，再次按1
+
+按键b打开或关闭 运行中进程的高亮效果
+
+按键x打开或关闭 排序列的高亮效果
+
+shift + > 或 shift + < 可以向右或左改变排序列
+
+f键，可以进入编辑要显示字段的视图，有 号的字段会显示，无 号不显示，可根据页面提示选择或取消字段。		
+		</screen>
 		<screen>
 $ top
 top - 22:30:02 up 14:24,  1 user,  load average: 0.17, 0.15, 0.10
@@ -20,11 +69,148 @@ Swap:  1951856k total,        0k used,  1951856k free,   603728k cached
     1 root      20   0 19320 1600 1132 S    0  0.1   0:01.50 init
     2 root      15  -5     0    0    0 S    0  0.0   0:00.00 kthreadd
     3 root      RT  -5     0    0    0 S    0  0.0   0:10.41 migration/0
-
+		]]>
 		</screen>
 	</section>
 	<section id="ps">
 		<title>ps - report a snapshot of the current processes</title>
+		<screen>
+		<![CDATA[
+ps命令能够给出当前系统中进程的快照。它能捕获系统在某一时间的进程状态。如果你想不断更新查看的这个状态，可以使用top命令。
+
+### Display all processes
+
+1) 使用 -a 参数
+    -a 代表 all,同时加上x参数会显示没有控制终端的进程.
+ps aux
+
+[root@netkiller ~]# ps aux | head -n 1
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+
+2) 参数 -e 显示所有进程信息,-f 参数来查看全格式的信息列表
+ps -ef
+
+[root@netkiller ~]# ps -ef | head -n 1
+UID        PID  PPID  C STIME TTY          TIME CMD
+
+Use the "u" option or "-f" option to display detailed information about the processes
+
+3) -F You can get even more columns .
+ ps -eF
+
+[root@netkiller ~]# ps -eF | head -n 1
+UID        PID  PPID  C    SZ   RSS PSR STIME TTY          TIME CMD
+
+The extra columns are SZ, RSS and PSR. 
+    SZ is the size of the process
+    RSS is the real memory size 
+    PSR is the processor the command is assigned to
+
+### Selecting Specific Processes Using The ps Command
+
+1) 通过进程名过滤
+使用 -C 参数,后面跟你要找的进程的名字.如果想要看到更多的细节,我们可以使用-f参数来查看全格式的信息列表：
+// 比如想显示一个名为 mysqld 的进程的信息,就可以使用下面的命令：
+ps -f  -C mysqld
+
+2) -p  pid|pids
+
+3) -U  username 
+
+如果我们想知道特定进程的线程，可以使用 -L 参数，后面加上特定的PID.
+-L参数显示进程，并尽量显示其LWP(线程ID)和NLWP(线程的个数)
+
+ps -Lf -p  1036
+
+
+> --no-header 
+
+
+--no-header  print no header line at all
+
+[root@netkiller ~]# ps -C mysqld  --no-header
+ 1036 ?        01:20:48 mysqld
+
+### Formatting ps Command Output
+
+ps -e --format <format>
+The formats available are as follows:
+    %cpu    - cpu utilisation
+    %mem    - memory percentage utilisation
+    args    - The command with all its arguments
+    c       - processor utilisation
+    cmd     - The command
+    comm    - The command name only
+    cp      - CPU Usage
+    cputime - CPU Time
+    egid    - Effective group id
+    egroup  - Effective group
+    etime   - Elapsed time
+    euid    - Effective user id
+    euser   - Effective user
+    gid     - Group id
+    group   - Group name
+    pgid    - Process group id
+    pgrp    - Process group
+    ppid    - Parent Process ID
+    start   - Time the process started
+    sz      - Size in physical pages
+    thcount - Threads owned by the process
+    time    - Cumulative time
+    uid     - User Id
+    uname   - User name
+
+ps -e --format="uid uname cmd time"  // eq
+ps -eo uid,uname,cmd,time
+
+### Sorting Output
+
+ps -ef --sort <sortcolumns>
+
+--sort 参数则是指定排序的依据栏位，预设会依照数值由小到大排序，若要由大到小的方式排序的话，可以在栏位名称前加上一个负号('-')
+
+The choice of sort options are as follows:
+    cmd    - Executable name
+    pcpu   - CPU utilisation
+    flags  - Flags
+    pgrp   - Process group id
+    cutime - Cumulative user time
+    cstime - Cumulative system time
+    utime  - User time
+    pid    - Process ID
+    ppid   - Parent process ID
+    size   - Size
+    uid    - User ID
+    user   - User Name
+
+ps -eo pid,ppid,cmd,%mem,%cpu --sort=-%cpu
+
+1) 根据 CPU 使用来升序排序
+ps aux --sort -pcpu
+
+2)  内存使用 来升序排序
+ps aux --sort -pmem
+
+3) 合并前面两个命令,并通过管道显示前10个结果
+ps aux --sort -pcpu,+pmem  | head
+
+### example
+> CPU占用最多的前10个进程
+
+
+1) ps aux | sort -k3nr | head
+
+2) top （然后按下P，注意大写）
+
+3) ps -eo user,pid,ppid,tid,time,%cpu,cmd --sort=-%cpu
+
+>  获取特定进程的线程信息
+
+
+ps -Lf -p  1036
+		
+		]]>
+		</screen>
 		<para>ps aux</para>
 		<screen>
 		<![CDATA[

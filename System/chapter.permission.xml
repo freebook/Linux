@@ -7,6 +7,27 @@
 			<screen>
 $ adduser neo			
 			</screen>
+			<screen>
+			<![CDATA[
+## 添加一个账号和root有一样的权限
+useradd -o -u 0 -g 0  admin
+
+## 指定家目录和shell
+useradd -o -u 0 -g 0  -d /root -s /bin/bash admin
+
+## 添加 root 用户并且设置密码
+useradd -o -u 0 -g 0 admin
+echo redhat | passwd admin --stdin
+// 上面两条同下面一条
+useradd -o -u 0 -g 0 -p $(openssl passwd -1 redhat@@neo) admin
+
+## 添加普通用户并且设置密码
+useradd -p $(openssl passwd -1 redhat@@admin) admin
+
+##  添加普通用户指定其第二用户组
+useradd -G root  -p $(openssl passwd -1 redhat@@admin) admin			
+			]]>
+			</screen>
 		</section>
 		<section id="userdel">
 			<title>remove an existed user</title>

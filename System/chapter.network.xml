@@ -11,6 +11,208 @@
     当每次ping完得到响应之后,ping程序会尝试一次反向dns查询(reverse dns lookup)来获取“64 bytes from”后面的域名,如果查询速度很慢的话,就会给人似乎延迟很大的感觉,其实这也是ping感觉慢,但是每次ping的响应时间却并不慢的原因.
 		</screen>
 	</section>	
+	<section>
+		<title>ss - another utility to investigate sockets</title>
+		<screen>
+		<![CDATA[
+ss是Socket Statistics的缩写
+    ss命令可以用来获取socket统计信息,它可以显示和netstat类似的内容;但ss的优势在于它能够显示更多更详细的有关TCP和连接状态的信息,而且比netstat更快速更高效.
+    
+    当服务器的socket连接数量变得非常大时,无论是使用netstat命令还是直接cat /proc/net/tcp,执行速度都会很慢;ss快的秘诀在于,它利用到了TCP协议栈中 tcp_diag . tcp_diag是一个用于分析统计的模块, 用netfilter来获取第Linux内核中第一手的信息,这就确保了ss的快捷高效;如果你的系统中没有tcp_diag,ss也可以正常运行,只是效率会变得稍慢.
+    
+    netstat命令是net-tools工具集中的一员,而ss命令是iproute工具集中的一员.
+    yum install iproute iproute-doc
+
+
+#### ss过滤器
+
+ss的过滤器分为两种:
+     state
+         状态:established,syn-sent,syn-recv,fin-wait-1,fin-wait-2,time-wait,closed,close-wait,last-ack,listen,closing
+         除了这13种状态之外,还有几个聚类的状态:
+             all – for all the states
+             bucket – 显示状态为maintained as minisockets,如：time-wait和syn-recv
+             big – 和bucket相反
+             connected – 除了listen and closed的所有状态
+             synchronized – 所有已连接的状态除了syn-sent
+     addr+port
+         地址和端口可以使用表达式,类似于tcpdump中的用法,关键字有:
+             dst ADDRESS_PATTERN – matches remote address and port
+             src ADDRESS_PATTERN – matches local address and port
+             dport RELOP PORT – compares remote port to a number
+             sport RELOP PORT – compares local port to a number
+             autobound – checks that socket is bound to an ephemeral port
+
+#### ss usage
+
+ss [ OPTIONS ] [ FILTER ]
+        OPTIONS:
+            -p 显示每个进程的名字和pid
+            -s 列出当前socket详细信息
+            -n 不解析服务名称
+            -r 解析主机名
+            -a 显示所有套接字(sockets)
+            -o 显示计时器信息(timer)
+            -l 显示监听状态的套接字(sockets)
+            -e 显示详细的套接字(sockets)信息
+            -m 显示套接字(sockets)的内存使用情况
+            -i 显示 TCP内部信息
+            -4 仅显示IPv4的套接字(sockets)
+            -6 仅显示IPv6的套接字(sockets)
+            -0 显示 PACKET 套接字(sockets)
+            -t 仅显示 TCP套接字(sockets)
+            -u 仅显示 UCP套接字(sockets)
+            -d 仅显示 DCCP套接字(sockets)
+            -w 仅显示 RAW套接字(sockets)
+            -x 仅显示 Unix套接字(sockets)
+            -f --family=FAMILY  显示 FAMILY类型的套接字(sockets),FAMILY可选,支持 unix, inet, inet6, link, netlink
+            -D --diag=FILE     将原始TCP套接字(sockets)信息转储到文件
+            -F --filter=FILE   从文件中都去过滤器信息 FILTER := [ state TCP-STATE ] [ EXPRESSION ]
+
+#### Recv And Send
+
+[root@netkiller ~]# ss -anp | column -c1
+State      Recv-Q Send-Q        Local Address:Port          Peer Address:Port
+LISTEN     0      128               127.0.0.1:9000                     *:*      users:(("php-fpm",1481,9),("php-fpm",1482,0),("php-fpm",1483,0),("php-fpm",1484,0),("php-fpm",1485,0),("php-fpm",1486,0),("php-fpm",1487,0),("php-fpm",1488,0),("php-fpm",1489,0),("php-fpm",1490,0),("php-fpm",1491,0))
+LISTEN     0      50                        *:3306                     *:*      users:(("mysqld",2680,11))
+LISTEN     0      128                       *:443                      *:*      users:(("nginx",1743,8),("nginx",1744,8),("nginx",1745,8))
+LISTEN     0      128              10.1.17.17:2812                     *:*      users:(("monit",2030,6))
+TIME-WAIT  0      0                 127.0.0.1:43251            127.0.0.1:80
+TIME-WAIT  0      0                 127.0.0.1:43248            127.0.0.1:80
+ESTAB      0      0                10.1.17.17:22              10.1.17.18:51752  users:(("sshd",3122,3))
+ESTAB      0      0                10.1.17.17:22              10.1.20.70:51531  users:(("sshd",19093,3))
+
+处于LISTEN状态的socket:
+    Recv-Q表示了current listen backlog队列元素数目(等待用户调用accept的完成3次握手的socket)
+    Send-Q表示了listen socket最大能容纳的backlog.这个数目由listen时指定,且不能大于 /proc/sys/net/ipv4/tcp_max_syn_backlog;
+    
+对于非LISTEN socket:
+    Recv-Q表示了receive queue中的字节数目(等待接收的下一个tcp段的序号-尚未从内核空间copy到用户空间的段最前面的一个序号)
+    Send-Q表示发送queue中容纳的字节数(已加入发送队列中最后一个序号-输出段中最早一个未确认的序号)
+
+
+#### Sockets State
+>1 Listen
+
+
+[root@netkiller ~]# ss -lnp | column -c1
+State      Recv-Q Send-Q        Local Address:Port          Peer Address:Port
+LISTEN     0      128               127.0.0.1:9000                     *:*      users:(("php-fpm",1481,9),("php-fpm",1482,0),("php-fpm",1483,0),("php-fpm",1484,0),("php-fpm",1485,0),("php-fpm",1486,0),("php-fpm",1487,0),("php-fpm",1488,0),("php-fpm",1489,0),("php-fpm",1490,0),("php-fpm",1491,0))
+LISTEN     0      50                        *:3306                     *:*      users:(("mysqld",2680,11))
+LISTEN     0      50                        *:3307                     *:*      users:(("mysqld",2564,11))
+
+>2 Established
+
+
+[root@netkiller ~]# ss -onp state established | column -c1
+Recv-Q Send-Q             Local Address:Port               Peer Address:Port
+0      0                     10.1.17.17:22                   10.1.17.18:51752  timer:(keepalive,70min,0) users:(("sshd",3122,3))
+0      0                     10.1.17.17:22                   10.1.20.70:51531  timer:(keepalive,69min,0) users:(("sshd",19093,3))
+
+>3 Sockets Summary
+
+
+[root@netkiller ~]# ss -s
+Total: 93 (kernel 150)
+TCP:   106 (estab 10, closed 88, orphaned 0, synrecv 0, timewait 88/0), ports 41
+
+Transport Total     IP        IPv6
+*	  150       -         -
+RAW	  0         0         0
+UDP	  1         1         0
+TCP	  18        18        0
+INET	  19        19        0
+FRAG	  0         0         0
+
+>4 Expand
+
+
+1 显示所有状态为established的ssh连接
+[root@netkiller ~]# ss -o state established '( dport = :ssh or sport = :ssh )'
+Recv-Q Send-Q                                      Local Address:Port                                          Peer Address:Port
+0      0                                              10.1.17.17:ssh                                             10.1.17.18:51752    timer:(keepalive,109min,0)
+0      0                                              10.1.17.17:ssh                                             10.1.20.70:51531    timer:(keepalive,103min,0)
+
+#### ***timer user mem rto*** 
+
+------在另外一个终端执行 ssh 10.1.2.103-----
+然后在本终端执行如下命令
+[root@netkiller ~]# ss -eimpn '( dport = :22 )' -o
+State      Recv-Q Send-Q                                                          Local Address:Port                                                            Peer Address:Port
+ESTAB      0      0                                                                   10.1.2.23:44107                                                             10.1.2.103:22     timer:(keepalive,28min,0) users:(("ssh",9545,4)) ino:21970248 sk:ffff88013c2e5900
+	 mem:(r0,w0,f4096,t0) sack cubic wscale:7,8 rto:203 rtt:3.25/1.75 ato:40 cwnd:10 send 35.9Mbps rcv_rtt:33427 rcv_space:113592
+	 
+------在另外一个终端执行 telnet 27.111.200.86 15672-----
+然后在本终端执行如下命令
+[root@netkiller ~]# ss -eimpn '( dport = :15672 )' -o
+State      Recv-Q Send-Q                                                          Local Address:Port                                                            Peer Address:Port
+ESTAB      0      2                                                                   10.1.2.23:57531                                                          27.111.200.86:15672  timer:(on,614ms,0) users:(("telnet",10163,4)) ino:21983807 sk:ffff8800378ba040
+	 mem:(r0,w554,f3542,t0) sack cubic wscale:7,8 cwnd:10 rcv_space:14600
+
+> timer
+
+
+-o 显示计时器信息(timer),linux对一个tcp socket总共有7个定时器,通过4个timer实现
+    通过icsk_retransmit_timer实现的重传定时器,零窗口探测定时器;
+    通过sk_timer实现的连接建立定时器,保活定时器和FIN_WAIT_2定时器;
+    通过icsk_delack_timer实现的延时ack定时器以及TIME_WAIT定时器.
+    
+timer 这个输出描述的是tcp socket上的定时器
+timer 的输出含义就是(类型,过期时间,重试次数)
+    off: 当前socket没有timer
+    on: 重传timer
+    keepalive：连接建立timer or fin_wait_2 timer or 保活timer;具体是那个timer,可以根据连接的状态来确定.
+    timewait: TIME_WAITtimer
+    persist：零窗口探测timer 
+
+> user
+
+
+ss -p 输出users项里会出现三个参数:
+    第一个是进程名
+    第二个为pid
+    第三项该进程文件描述符的使用数量
+
+> mem
+
+
+mem:(r0,w554,f3542,t0)
+r  the read (inbound) buffer
+w  the write (outbound) buffer
+f  the "forward allocated memory" (memory available to the socket)
+t  the transmit queue (stuff waiting to be sent or waiting on an ACK)
+
+> socket information
+
+
+sack cubic wscale
+rto
+rtt
+cwnd
+send
+rcv_space
+
+#### Notice
+>1 ss process name and pid
+
+
+only name
+
+ss -tp | grep -v Recv-Q | sed -e 's/.*users:(("//' -e 's/".*$//' | sort | uniq
+
+only  pid
+[root@netkiller ~]# ss -tp | grep -v Recv-Q | sed -e 's/.*users:((.*",//' -e 's/,.*$//'  | sort | uniq
+
+name  and pid
+# ss -tp | grep -v Recv-Q | sed -e 's/.*users:(("\(.*\)",\(.*\),.*$/\1:\2/' | sort | uniq
+f_e_related_dat:4695
+mysqld:4289
+salt-minion:4001
+sshd:25161
+		
+		]]>
+		</screen>
+	</section>
 	<section id="hosts">
 		<title>hosts</title>
 		<section>
@@ -23,8 +225,8 @@ web1.example.com
 		<section>
 			<title>hostnamectl - Control the system hostname</title>
 			<screen>
-[root@localhost ~]# hostnamectl
-   Static hostname: localhost.localdomain
+[root@netkiller ~]# hostnamectl
+   Static hostname: netkiller.localdomain
          Icon name: computer-desktop
            Chassis: desktop
         Machine ID: 072e88a0fdd2447296554f3cd5129076
@@ -37,7 +239,7 @@ web1.example.com
 			<para>设置 hostname</para>
 			<screen>
 			<![CDATA[
-[root@localhost ~]# hostnamectl set-hostname master
+[root@netkiller ~]# hostnamectl set-hostname master
 			]]>
 			</screen>
 		</section>		
@@ -47,7 +249,7 @@ web1.example.com
 # cat -n /etc/hosts
      1  # Do not remove the following line, or various programs
      2  # that require network functionality will fail.
-     3  127.0.0.1               development.domain.org development localhost.localdomain localhost
+     3  127.0.0.1               development.domain.org development netkiller.localdomain netkiller
      4  ::1             localhost6.localdomain6 localhost6
 
 		]]>

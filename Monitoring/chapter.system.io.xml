@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="system.io">
     <title>Harddisk IO</title>
-	<section>
+	<section id="sysstat">
 		<title>input/output statistics</title>
 		<para></para>
 		<screen>

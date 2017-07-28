@@ -7,6 +7,57 @@
 	<title>nmap - Network exploration tool and security / port scanner</title>
 	<command>nmap</command>
 	<screen>
+	<![CDATA[
+Nmap支持的四种最基本的扫描方式:
+
+    * TCP connect()端口扫描（-sT参数）
+
+    * TCP同步（SYN）端口扫描（-sS参数）
+
+    * UDP端口扫描（-sU参数）
+
+    * Ping扫描（-sP参数）
+
+如果要勾画一个网络的整体情况,Ping扫描和TCP SYN扫描最为实用
+
+ Ping扫描通过发送ICMP（Internet Control Message Protocol，Internet控制消息协议）回应请求数据包和TCP应答（Acknowledge，简写ACK）数据包，确定主机的状态，非常适合于检测指定网段内正在运行的主机数量.
+
+ TCP SYN扫描与TCP connect()扫描比较
+    TCP connect()扫描中,扫描器利用操作系统本身的系统调用打开一个完整的TCP连接也就是说,扫描器打开了两个主机之间的完整握手过程（SYN, SYN-ACK和ACK）.一次完整执行的握手过程表明远程主机端口是打开的.
+
+    TCP SYN扫描创建的是半打开的连接,它与TCP connect()扫描的不同之处在于,TCP SYN扫描发送的是复位（RST）标记而不是结束ACK标记（即SYN,SYN-ACK,或RST）：如果远程主机正在监听且端口是打开的,远程主机用 SYN-ACK应答,Nmap发送一个RST:如果远程主机的端口是关闭的,它的应答将是RST,此时Nmap转入下一个端口
+
+
+-sS 使用SYN＋ACK的方法,使用TCP SYN，
+
+-sT 使用TCP的方法,3次握手全做
+
+-sU 使用UDP的方法
+
+-sP ICMP ECHO Request 送信，有反应的端口进行检查
+
+-sN 全部FLAG OFF的无效的TCP包送信，根据错误代码判断端口情况
+
+-P0 无视ICMP ECHO request的结果，SCAN
+
+-p scan port range 指定SCAN的目标端口的范围
+
+   1-100, 或者使用25,100的方式
+
+-O 侦测OS的类型
+
+-A 全面进攻性扫描(包括各种主机发现、端口扫描、版本扫描、OS扫描及默认脚本扫描)
+
+-oN 文件名 通常格式文件输出
+
+-oX 文件名 通过DTD,使用XML格式输出结果
+
+-oG 文件名, grep容易的格式输出
+
+-sV 服务的程序名和版本SCAN	
+	]]>
+	</screen>
+	<screen>
 $ nmap localhost
 
 Starting Nmap 4.20 ( http://insecure.org ) at 2007-11-19 05:20 EST
@@ -35,6 +86,10 @@ PORT     STATE SERVICE
 8008/tcp open  http
 
 Nmap done: 1 IP address (1 host up) scanned in 7.50 seconds
+		</screen>
+		<para>扫描网段内开机的主机</para>
+		<screen>
+nmap -sP 140.15.35.0/24		
 		</screen>
 	</section>
 	<section id="host">
@@ -152,6 +207,38 @@ Nmap done: 1 IP address (1 host up) scanned in 1.33 seconds
            Raw packets sent: 1007 (28.196KB) | Rcvd: 993 (55.608KB)
 
 			</screen>
+			<para>以UDP数据包格式进行扫描,
+如果你想知道在某台主机上提供哪些UDP(用户数据报协议,RFC768)服务,可以使用这种扫描方法.nmap首先向目标主机的每个端口发出一个0字节的UDP包,如果我们收到端口不可达的ICMP消息,端口就是关闭的,否则我们就假设它是打开的.
+			</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# nmap -sU x.x.x.x
+
+Nmap scan report for x.x.x.x
+Host is up (0.023s latency).
+Not shown: 984 closed ports
+PORT     STATE         SERVICE
+67/udp   open|filtered dhcps
+68/udp   open|filtered dhcpc
+80/udp   open|filtered http
+111/udp  open          rpcbind
+135/udp  open|filtered msrpc
+136/udp  open|filtered profile
+137/udp  open|filtered netbios-ns
+138/udp  open|filtered netbios-dgm
+139/udp  open|filtered netbios-ssn
+445/udp  open|filtered microsoft-ds
+520/udp  open|filtered route
+626/udp  open|filtered serialnumberd
+631/udp  open|filtered ipp
+1433/udp open|filtered ms-sql-s
+1434/udp open|filtered ms-sql-m
+5353/udp open          zeroconf
+
+Nmap done: 1 IP address (1 host up) scanned in 1026.28 seconds
+	
+			]]>
+			</screen>
 		</section>
 		<section>
 			<title><![CDATA[-b <FTP relay host>: FTP bounce scan]]></title>
@@ -177,6 +264,20 @@ sudo nmap -sU -p U:67,68 192.168.0.0/24 > /tmp/dhcp.log
 			<para></para>
 			<screen>
 $ sudo nmap -sU -p161 192.168.0.0/24 > /tmp/snmp.log
+			</screen>
+			<para>扫描多台主机</para>
+			<screen>
+			<![CDATA[
+1) 扫描子网
+nmap 192.168.0.*
+nmap 192.168.0.0/24
+
+2) 指定几台主机
+nmap 192.168.0.123,124,125
+
+3) 指定一段主机
+nmap 192.168.0.123-140			
+			]]>
 			</screen>
 		</section>
 	</section>
@@ -497,6 +598,29 @@ Nmap done: 0 IP addresses (0 hosts up) scanned in 0.12 seconds
 			<screen>
 nmap -O -v scanme.nmap.org
 			</screen>
+			<para>探测目标主机的操作系统和 tcp 端口</para>
+			<screen>
+			<![CDATA[
+[root@cacti ~]# nmap -O 192.168.2.40
+
+Starting Nmap 5.51 ( http://nmap.org ) at 2014-02-11 16:22 HKT
+Nmap scan report for 192.168.2.40
+Host is up (0.00039s latency).
+Not shown: 999 filtered ports
+PORT    STATE SERVICE
+135/tcp open  msrpc
+MAC Address: 78:E3:B5:90:D0:A8 (Unknown)
+Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
+Device type: general purpose
+Running (JUST GUESSING): Microsoft Windows 2008|7|Vista (97%), FreeBSD 6.X (88%)
+Aggressive OS guesses: Microsoft Windows Server 2008 (97%), Microsoft Windows Server 2008 Beta 3 (97%), Microsoft Windows 7 Professional (97%), Microsoft Windows Vista SP0 or SP1, Server 2008 SP1, or Windows 7 (97%), Microsoft Windows Vista Business SP1 (91%), Microsoft Windows Vista Home Premium SP1, Windows 7, or Server 2008 (90%), FreeBSD 6.2-RELEASE (88%), FreeBSD 6.3-RELEASE (88%), Microsoft Windows Server 2008 R2 (88%)
+No exact OS matches for host (test conditions non-ideal).
+Network Distance: 1 hop
+
+OS detection performed. Please report any incorrect results at http://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 16.00 seconds			
+			]]>
+			</screen>
 		</section>
 	</section>
 
@@ -509,7 +633,98 @@ nmap -O -v scanme.nmap.org
 			</screen>
 		</section>
 	</section>
+	<section id="exclude">
+		<title>排除指定的主机</title>
+		<screen>
+1) nmap 192.168.0.* --exclude 192.168.0.100
 
+2) 也可以使用 --excludefile 指定排除的列表
+
+nmap -iL hostlist.txt --excludefile excludelist.txt		
+		</screen>
+	</section>
+	<section id="iflist">
+		<title>查看本地路由与接口</title>
+		<screen>
+		<![CDATA[
+Nmap中提供了 --iflist 选项来查看本地主机的接口信息与路由信息.
+
+[root@test23 ~]# nmap --iflist
+
+Starting Nmap 5.51 ( http://nmap.org ) at 2017-03-30 14:23 CST
+************************INTERFACES************************
+DEV     (SHORT)   IP/MASK        TYPE     UP MTU   MAC
+lo      (lo)      127.0.0.1/8    loopback up 65536
+eth0    (eth0)    10.1.2.23/24   ethernet up 1500  00:50:56:80:04:FA
+docker0 (docker0) 172.17.42.1/16 ethernet up 1500  56:84:7A:FE:97:99
+
+**************************ROUTES**************************
+DST/MASK       DEV     GATEWAY
+10.1.2.0/24    eth0
+169.254.0.0/16 eth0
+172.17.0.0/16  docker0
+0.0.0.0/0      eth0    10.1.2.1
+
+> 指定网口与IP地址
+
+
+1) 在Nmap可指定用哪个网口发送数据, -e <interface>选项.
+
+2) Nmap也可以显式地指定发送的源端IP地址, 使用-S <spoofip>选项, nmap将用指定的spoofip作为源端IP来发送探测包.
+
+3) Nmap 使用 Decoy(诱骗)方式来掩盖真实的扫描地址,例如-D ip1,ip2,ip3,ip4,ME,这样就会产生多个虚假的ip同时对目标机进行探测,其中ME代表本机的真实地址,这样对方的防火墙不容易识别出是扫描者的身份.
+
+nmap -F -n -Pn -D192.168.1.100,192.168.1.101,192.168.1.102,ME 192.168.1.1
+
+> 定制探测包
+
+
+Nmap 提供 --scanflags 选项, 用户可以对需要发送的TCP探测包的标志位进行完全的控制.可以使用数字或符号指定 TCP 标志位:URG ACK PSH RST SYN FIN.
+例如, --scanflags URGACKPSHRSTSYNFIN 设置了所有标志位,但是这对扫描没有太大用处. 标志位的顺序不重要.
+
+-sN; -sF; -sX (TCP Null，FIN，and Xmas扫描)
+
+Null扫描 (-sN)
+    不设置任何标志位(tcp标志头是0)
+
+FIN扫描 (-sF)
+    只设置TCP FIN标志位
+Xmas扫描 (-sX)
+    设置FIN, PSH, 和URG标志位
+
+
+#### nmap scan port shell
+
+#!/bin/bash
+#author junun
+#This script for scan the port for you commit servers
+#
+#
+server_list=(x.x.x.x x1.x1.x1.x1)
+port_list=(5307 5308)
+while true ;do
+    for i in `seq 0 $[${#server_list[*]}-1]`; do
+        nmap -p ${port_list[$i]} ${server_list[$i]} | grep open
+        if  [ $? -gt 0 ];then
+            for m in {1..3};do
+                nmap -p ${port_list[$i]} ${server_list[$i]} | grep open
+                if [ $?  -gt 0 ] ;then
+                     let result$m=$m
+                else
+                     break
+                fi
+                sleep 1
+            done
+            if [ $result1 -gt 0 -a $result2 -gt 0 -a $result3 -gt 0 ];then
+                echo "error port"
+            fi
+        fi
+    done
+    sleep 30
+done
+		]]>
+		</screen>
+	</section>
 	<section>
 		<title>MISC</title>
 		<section>
