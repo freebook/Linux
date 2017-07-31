@@ -20,7 +20,7 @@
 			<para>粘贴下面命令到Linux控制台即可一键安装</para>
 			<screen>
 			<![CDATA[
-curl -s https://raw.githubusercontent.com/oscm/shell/master/search/elasticsearch/elasticsearch-5.2.sh | bash
+curl -s https://raw.githubusercontent.com/oscm/shell/master/search/elasticsearch/elasticsearch-5.x.sh | bash
 			]]>
 			</screen>
 		</section>
@@ -28,20 +28,20 @@ curl -s https://raw.githubusercontent.com/oscm/shell/master/search/elasticsearch
 			<title>Kibana 安装</title>
 			<screen>
 			<![CDATA[
-curl -s https://raw.githubusercontent.com/oscm/shell/master/log/kibana/kibana-5.2.sh | bash
+curl -s https://raw.githubusercontent.com/oscm/shell/master/log/kibana/kibana-5.x.sh | bash
 			]]>		
 			</screen>
 		</section>
 		<section id="logstash">
 			<title>Logstash 安装</title>
 			<screen>
-curl -s https://raw.githubusercontent.com/oscm/shell/master/log/kibana/logstash-5.2.sh | bash		
+curl -s https://raw.githubusercontent.com/oscm/shell/master/log/kibana/logstash-5.x.sh | bash		
 			</screen>
 		</section>
 		<section id="beats">
 			<title>Beats 安装</title>
 			<screen>
-curl -s https://raw.githubusercontent.com/oscm/shell/master/log/beats/beats-5.2.sh | bash
+curl -s https://raw.githubusercontent.com/oscm/shell/master/log/beats/beats-5.x.sh | bash
 			</screen>
 		</section>
 	</section>
