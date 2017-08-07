@@ -63,6 +63,9 @@ neo@netkiller:~$
 autoload colors; colors
 export PS1="%B[%{$fg[red]%}%n%{$reset_color%}%b@%B%{$fg[cyan]%}%m%b%{$reset_color%}:%~%B]%b "
 		</screen>
+		<screen>
+[neo@netkiller:~/.oh-my-zsh/themes] 		
+		</screen>
 	</section>
 	<section id="alias">
 		<title>Aliases</title>
