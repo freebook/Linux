@@ -24,6 +24,7 @@
 <!ENTITY part.stream.xml			SYSTEM "Stream/part.stream.xml">
 <!ENTITY chapter.broadcast.xml 		SYSTEM "Stream/chapter.broadcast.xml">
 <!ENTITY chapter.webrtc.xml			SYSTEM "Stream/chapter.webrtc.xml">
+<!ENTITY chapter.rtsp.xml			SYSTEM "Stream/chapter.rtsp.xml">
 
 <!ENTITY chapter.miscellaneous.xml	SYSTEM "chapter.miscellaneous.xml">
 

@@ -4,5 +4,5 @@
 
 	&chapter.broadcast.xml;
 	&chapter.webrtc.xml;
-
+	&chapter.rtsp.xml;
 </chapter>
