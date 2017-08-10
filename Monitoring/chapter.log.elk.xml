@@ -45,8 +45,8 @@ curl -s https://raw.githubusercontent.com/oscm/shell/master/log/beats/beats-5.x.
 			</screen>
 		</section>
 	</section>
-	<section>
-		<title>简单应用</title>
+	<section id="logstash.cli">
+		<title>logstash 命令简单应用</title>
 		<section id="stdin">
 			<title>标准输入输出</title>
 			<para>logstash -e "input {stdin{}} output {stdout{}}"</para>
@@ -181,10 +181,10 @@ output {
 
 	<section id="logstash">
 		<title>logstash 配置项</title>
-		<section>
+		<section id="input">
 			<title>input</title>
 			
-			<section>
+			<section id="file">
 				<title>本地文件</title>
 				<screen>
 				<![CDATA[
@@ -230,7 +230,7 @@ output {
 				]]>
 				</screen>
 			</section>
-			<section>
+			<section id="redis">
 				<title>Redis</title>
 				<screen>
 				<![CDATA[
@@ -253,6 +253,30 @@ output {
 }
 				]]>
 				</screen>
+				<para>指定 Database 10</para>
+				<screen>
+				<![CDATA[
+root@VM_3_2_centos /etc/logstash/conf.d % cat spring-boot-redis.conf 
+input {
+ redis {
+  codec => json
+  host => "localhost"
+  port => 6379
+  db => 10
+  key => "logstash:redis"
+  data_type => "list"
+ }
+}
+
+output {
+  stdout { codec => rubydebug }
+  elasticsearch {
+    hosts => ["127.0.0.1:9200"]
+    index => "logstash-api"
+  }
+}
+				]]>
+				</screen>
 			</section>
 			<section id="kafka">
 				<title>Kafka</title>
@@ -271,11 +295,60 @@ input {
 				]]>
 				</screen>
 			</section>
+			<section id="jdbc">
+				<title>jdbc</title>
+				<screen>
+				<![CDATA[
+root@netkiller /etc/logstash/conf.d % cat jdbc.conf 
+input {
+  jdbc {
+    jdbc_driver_library => "/usr/share/java/mysql-connector-java.jar"
+    jdbc_driver_class => "com.mysql.jdbc.Driver"
+    jdbc_connection_string => "jdbc:mysql://localhost:3306/cms"
+    jdbc_user => "cms"
+    jdbc_password => "123456"
+    schedule => "* * * * *"
+    statement => "select * from article where id > :sql_last_value"
+    use_column_value => true
+    tracking_column => "id"
+    tracking_column_type => "numeric" 
+    record_last_run => true
+    last_run_metadata_path => "/var/tmp/article.last"
+  }
+  jdbc {
+    jdbc_driver_library => "/usr/share/java/mysql-connector-java.jar"
+    jdbc_driver_class => "com.mysql.jdbc.Driver"
+    jdbc_connection_string => "jdbc:mysql://localhost:3306/cms"
+    jdbc_user => "cms"
+    jdbc_password => "123456"
+    schedule => "* * * * *"	#定时cron的表达式,这里是每分钟执行一次
+    statement => "select * from article where ctime > :sql_last_value"
+    use_column_value => true
+    tracking_column => "ctime"
+    tracking_column_type => "timestamp" 
+    record_last_run => true
+    last_run_metadata_path => "/var/tmp/article-ctime.last"
+  }
+
+}
+output {
+    elasticsearch {
+    	hosts => "localhost:9200"
+        index => "information"
+        document_type => "article"
+        document_id => "%{id}"
+        action => "update"
+        doc_as_upsert => true
+    }
+}				
+				]]>
+				</screen>
+			</section>
 		</section>
-		<section>
+		<section id="filter">
 			<title>filter</title>
 		</section>
-		<section>
+		<section id="output">
 			<title>output</title>
 			<section>
 				<title>file 写入文件</title>
@@ -334,7 +407,72 @@ output {
 			</section>
 		</section>
 	</section>
-	
+	<section id="logstash.example">
+		<title>Example</title>
+		<section>
+			<title>Spring boot logback</title>
+			<example>
+				<title>spring boot logback</title>
+				<screen>
+				<![CDATA[
+root@netkiller /etc/logstash/conf.d % cat spring-boot-redis.conf 
+input {
+ redis {
+  codec => json
+  host => "localhost"
+  port => 6379
+  key => "logstash:redis"
+  data_type => "list"
+ }
+}
+
+output {
+  elasticsearch {
+    hosts => ["127.0.0.1:9200"]
+    index => "logstash-api"
+  }
+}
+				
+				]]>
+				</screen>
+				<para>src/main/resources/logback.xml</para>
+				<screen>
+				<![CDATA[
+neo@MacBook-Pro ~/deployment % cat api.netkiller.cn/src/main/resources/logback.xml 
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
+	<include resource="org/springframework/boot/logging/logback/file-appender.xml" />
+	<property name="type.name" value="test" />
+	<appender name="LOGSTASH" class="com.cwbase.logback.RedisAppender">
+		<source>mySource</source>
+		<sourcePath>mySourcePath</sourcePath>
+		<type>myApplication</type>
+		<tags>production</tags>
+		<host>localhost</host>
+		<port>6379</port>
+		<database>0</database>
+		<key>logstash:api</key>
+	</appender>
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%date{yyyy-MM-dd HH:mm:ss} %-4relative [%thread] %-5level %logger{35} : %msg %n</pattern>
+		</encoder>
+	</appender>
+	<root level="INFO">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILE" />
+		<appender-ref ref="LOGSTASH" />
+	</root>
+</configuration>
+				]]>
+				</screen>
+				<screen>
+				<![CDATA[]]>
+				</screen>
+			</example>
+		</section>
+	</section>
 	<section id="faq">
 		<title>FAQ</title>
 		<section>
