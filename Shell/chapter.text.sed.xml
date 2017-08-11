@@ -3,11 +3,7 @@
 <section id="sed">
 	<title>sed</title>
 	<para>http://sed.sourceforge.net/</para>
-	<programlisting>
-sed -i -e 's/aaa/bbb/g' *
-perl -p -i -e 's/aaa/bbb/g' *
-	</programlisting>
-	<section id="replace">
+	<section id="sed.replace">
 		<title>查找与替换</title>
 		<subtitle>find and replace</subtitle>
 		<screen>
@@ -106,7 +102,70 @@ Zookeeper
 			</screen>
 		</section>
 	</section>
-	<section id="in-place">
+	<section id="sed.insert">
+		<title>insert 插入字符</title>
+		<para>i 命令插入一行，并且在当前行前面有两个空格</para>
+		<para>在root行前插入一个admin</para>
+		<screen>
+sed '/root/i admin' /etc/passwd		
+		</screen>
+		<para>33 行处插入字符</para>
+		<screen>
+sed -i "33 i \ \ authorization: enabled" /etc/mongod.conf
+		</screen>
+	</section>
+	<section id="sed.append">
+		<title>追加字符</title>
+		<para>在root行后追加一个admin行</para>
+		<screen>
+sed '/root/a admin' /etc/passwd
+		</screen>
+	</section>
+	<section id="sed.change">
+		<title>修改字符</title>
+		<para>将root行替换为admin</para>
+		<screen>
+sed '/root/c admin' /etc/passwd
+		</screen>
+	</section>
+	<section id="sed.delete">
+		<title>追加字符</title>
+		<para>删除含有root的行</para>
+		<screen>
+sed '/root/d' /etc/passwd 
+		</screen>
+	</section>
+	<section id="sed.line">
+		<title>行操作</title>
+		<para>模式空间中的内容全部打印出来</para>
+		<para>定位行：</para>
+		<screen>
+sed -n '12,~3p' pass #从第12行开始，直到下一个3的倍数行（12-15行）
+sed -n '12,+4p' pass #从第12行开始，连续4行（12-16行）
+sed -n '12~3p' pass #从第12行开始，间隔3行输出一次（12，15，18，21...）
+sed -n '10,$p' pass   #从第10行至结尾
+sed -n '4!p' pass   #除去第4行
+		</screen>
+		
+		<para>打印3~6行间的内容</para>
+		<screen>
+$ sed -n '3,6p' /etc/passwd
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/usr/sbin/nologin
+		</screen>
+		<para>打印35行至行尾</para>
+		<screen>
+$ sed -n '35,$p' /etc/passwd
+sshd:x:116:65534::/var/run/sshd:/usr/sbin/nologin
+mysql:x:117:126:MySQL Server,,,:/nonexistent:/bin/false
+uuidd:x:100:101::/run/uuidd:/bin/false
+libvirt-qemu:x:118:128:Libvirt Qemu,,,:/var/lib/libvirt:/bin/false
+libvirt-dnsmasq:x:119:129:Libvirt Dnsmasq,,,:/var/lib/libvirt/dnsmasq:/bin/false
+redis:x:120:130::/var/lib/redis:/bin/false		
+		</screen>
+	</section><section id="sed.in-place">
 		<title>编辑文件</title>
 		<screen>
 -i[SUFFIX], --in-place[=SUFFIX]
@@ -136,39 +195,12 @@ sed -i "7,7 s/#server.host: \"localhost\"/server.host: \"0.0.0.0\"/" /etc/kibana
 		]]>
 		</screen>
 	</section>
-	<section id="show">
-		<title>内容打印</title>
-		<para>模式空间中的内容全部打印出来</para>
-		<para>定位行：</para>
-		<screen>
-sed -n '12,~3p' pass #从第12行开始，直到下一个3的倍数行（12-15行）
-sed -n '12,+4p' pass #从第12行开始，连续4行（12-16行）
-sed -n '12~3p' pass #从第12行开始，间隔3行输出一次（12，15，18，21...）
-sed -n '10,$p' pass   #从第10行至结尾
-sed -n '4!p' pass   #除去第4行
-		</screen>
-		
-		<para>打印3~6行间的内容</para>
-		<screen>
-$ sed -n '3,6p' /etc/passwd
-bin:x:2:2:bin:/bin:/usr/sbin/nologin
-sys:x:3:3:sys:/dev:/usr/sbin/nologin
-sync:x:4:65534:sync:/bin:/bin/sync
-games:x:5:60:games:/usr/games:/usr/sbin/nologin
-		</screen>
-		<para>打印35行至行尾</para>
-		<screen>
-$ sed -n '35,$p' /etc/passwd
-sshd:x:116:65534::/var/run/sshd:/usr/sbin/nologin
-mysql:x:117:126:MySQL Server,,,:/nonexistent:/bin/false
-uuidd:x:100:101::/run/uuidd:/bin/false
-libvirt-qemu:x:118:128:Libvirt Qemu,,,:/var/lib/libvirt:/bin/false
-libvirt-dnsmasq:x:119:129:Libvirt Dnsmasq,,,:/var/lib/libvirt/dnsmasq:/bin/false
-redis:x:120:130::/var/lib/redis:/bin/false		
-		</screen>
+	
+	<section id="sed.regular">
+		<title>正则表达式</title>
+		<para>正则：'/正则式/'</para>
 		<screen>
 		<![CDATA[
-2、正则：'/正则式/'
 sed -n '/root/p' /etc/passwd
 sed -n '/^root/p' /etc/passwd
 sed -n '/bash$/p' /etc/passwd
@@ -180,8 +212,11 @@ sed -n '/[^ABC]/p' /etc/passwd
 sed -n '/^[^ABC]/p' /etc/passwd
 sed -n '/\<root/p' /etc/passwd
 sed -n '/root\>/p' /etc/passwd
-
-3、扩展正则：
+		]]>
+		</screen>
+		<para>扩展正则：</para>
+		<screen>		
+		<![CDATA[
 sed -n '/root\|yerik/p' /etc/passwd #拓展正则需要转义
 sed -nr '/root|yerik/p' /etc/passwd #加-r参数支持拓展正则
 sed -nr '/ro(ot|ye)rik/p' /etc/passwd #匹配rootrik和royerik单词
@@ -190,28 +225,12 @@ sed -nr '/ro+t/p' /etc/passwd   #匹配1-n次前导字符
 sed -nr '/ro{2}t/p' /etc/passwd   #匹配2次前导字符
 sed -nr '/ro{2,}t/p' /etc/passwd   #匹配多于2次前导字符
 sed -nr '/ro{2，4}t/p' /etc/passwd #匹配2-4次前导字符
-sed -nr '/(root)*/p' /etc/passwd   #匹配0-n次前导单词		
+sed -nr '/(root)*/p' /etc/passwd   #匹配0-n次前导单词	
 		]]>
 		</screen>
 	</section>
-	<section id="edit">
-		<title>编辑操作</title>
-		<para>对行的插入、删除、替换操作</para>
-		<screen>
-sed '/root/a admin' /etc/passwd   #在root行后追加一个admin行
-sed '/root/i admin' /etc/passwd   #在root行前插入一个admin
-sed '/root/c admin' /etc/passwd   #将root行替换为admin
-sed '/root/d' /etc/passwd    		#删除含有root的行		
-		</screen>
-		<section>
-			<title>insert</title>
-			<para>i 命令插入一行，并且在当前行前面有两个空格</para>
-			<screen>
-sed -i "33 i \ \ authorization: enabled" /etc/mongod.conf
-			</screen>
-		</section>
-	</section>
-	<section>
+	
+	<section id="sed.pipeline">
 		<title>管道操作</title>
 		<screen>
 		<![CDATA[
@@ -227,5 +246,12 @@ aaa=ddd
 aaa=xxx		
 		]]>
 		</screen>
+	</section>
+	<section id="sed.perl">
+		<title>perl</title>
+		<programlisting>
+sed -i -e 's/aaa/bbb/g' *
+perl -p -i -e 's/aaa/bbb/g' *
+		</programlisting>
 	</section>
 </section>

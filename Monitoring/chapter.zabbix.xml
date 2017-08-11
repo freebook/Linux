@@ -3,7 +3,7 @@
 	<title>Zabbix</title>
 	<section id="install">
 		<title>Installing and Configuring Zabbix</title>
-		<section>
+		<section id="Ubuntu">
 			<title>Ubuntu</title>
 			<screen>
 neo@monitor:~$ apt-cache search zabbix
@@ -44,7 +44,7 @@ EOF
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="zabbix-2.4">
 			<title>CentOS Zabbix 2.4</title>
 			<screen>
 			<![CDATA[
@@ -69,7 +69,7 @@ systemctl restart httpd
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="centos">
 			<title>Zabbix 3.x CentOS 7</title>
 			<para>安装脚本</para>
 			<screen>
@@ -109,7 +109,6 @@ systemctl restart httpd
 			<para><graphic  format="png" fileref="../images/zabbix/zabbix-6.png" srccredit="neo" width=""/> 完成安装</para>
 			<para><graphic  format="png" fileref="../images/zabbix/login.png" srccredit="neo" width=""/> 登陆Zabbix 默认用户名admin 密码 zabbix ，请务必登陆后修改密码</para>
 		</section>
-		
 	</section>
 	<section id="webui">
 		<title>web ui</title>

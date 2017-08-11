@@ -222,4 +222,18 @@ location ~* ^/images/resize/([\d\-]+)_([\d\-]+)/(.+) { 
 }		
 		</screen>
 	</section>
+	<section id="ngx_http_mirror_module">
+		<title>ngx_http_mirror_module</title>
+		<screen>
+location / {
+    mirror /mirror;
+    proxy_pass http://backend;
+}
+
+location /mirror {
+    internal;
+    proxy_pass http://test_backend$request_uri;
+}
+		</screen>
+	</section>
 </section>
