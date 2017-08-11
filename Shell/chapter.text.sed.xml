@@ -40,14 +40,6 @@ sed s/[[:space:]]//g  filename          删除空格
 			</programlisting>
 		</section>
 		<section>
-			<title>delete</title>
-			<para>删除空行</para>
-			<programlisting>
-sed /^$/d         filename
-sed '/./!d' filename
-			</programlisting>
-		</section>
-		<section>
 			<title>aaa="bbb" 提取bbb</title>
 			<screen>
 			<![CDATA[
@@ -129,11 +121,19 @@ sed '/root/c admin' /etc/passwd
 		</screen>
 	</section>
 	<section id="sed.delete">
-		<title>追加字符</title>
+		<title>删除字符</title>
 		<para>删除含有root的行</para>
 		<screen>
 sed '/root/d' /etc/passwd 
 		</screen>
+		<section>
+			<title>delete</title>
+			<para>删除空行</para>
+			<programlisting>
+sed /^$/d         filename
+sed '/./!d' filename
+			</programlisting>
+		</section>
 	</section>
 	<section id="sed.line">
 		<title>行操作</title>
