@@ -259,7 +259,14 @@ curl -H HOST:www.example.com -I http://172.16.1.10/product/374218.html
 curl-config --features
 		</screen>
 	</section>
-	<section>
+	<section id="curl.interface">
+		<title>指定网络接口或者地址</title>
+		<para>--interface INTERFACE  Use network INTERFACE (or address)</para>
+		<screen>
+curl --interface 127.0.0.1 http://www.netkiller.cn
+		</screen>
+	</section>
+	<section id="restful">
 		<title>RestFul 应用 JSON 数据处理</title>
 		<para>下面提供一些使用 curl 操作 restful 的实例</para>
 		<para>GET 操作</para>
