@@ -91,7 +91,7 @@
 	</screen>	
 	<section id="wget.input">
 		<title>Logging and input file</title>
-		<section>
+		<section id="input-file">
 			<title>-i,  --input-file=FILE     download URLs found in local or external FILE.</title>
 			<para>准备输入文件，将要下载的链接放入文件中，例如：</para>
 			<screen>
@@ -108,14 +108,30 @@ $ wget -i file.lst
 			</screen>
 		</section>
 	</section>
+	<section id="download">
+		<title>下载相关参数</title>
+		<section>
+			<title>-O,  --output-document=FILE      write documents to FILE 保存到文件</title>
+			<screen>
+wget -q https://raw.githubusercontent.com/oscm/shell/master/web/tomcat/systemd/tomcat.service -O /usr/lib/systemd/system/tomcat.service
+			</screen>
+		</section>
+	</section>
 	<section id="wget.http.options">
-		<title>HTTP options</title>
+		<title>HTTP options (HTTP 选项)</title>
 		<section id="post-data">
 			<title>--post-data=STRING use the POST method; send STRING as the data.</title>
 			<screen>
 			<![CDATA[
 wget -O - -q --post-data="user=neo&password=pasw0rd&title=test&message=helloworld" http://localhost/index.php
 			]]>
+			</screen>
+		</section>
+		<section id="header">
+			<title>header HTTP头定义</title>
+			<para>-–header=STRING 在headers中插入字符串 STRING</para>
+			<screen>
+wget --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/server-jre-8u131-linux-x64.tar.gz
 			</screen>
 		</section>
 	</section>
@@ -139,7 +155,7 @@ wget -m http://netkiller.github.com/index.html
 			</screen>
 		</section>
 	</section>
-	<section>
+	<section id="passive">
 		<title>--no-passive-ftp 	disable the "passive" transfer mode.</title>
 		<screen>
 $ wget ftp://ftp:59bde6@42.120.45.123/test.zip
@@ -171,4 +187,5 @@ Length: 42023258 (40M) (unauthoritative)
 
 		</screen>
 	</section>
+	
 </section>

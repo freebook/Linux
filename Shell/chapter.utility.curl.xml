@@ -266,6 +266,24 @@ curl-config --features
 curl --interface 127.0.0.1 http://www.netkiller.cn
 		</screen>
 	</section>
+	<section id="curl.cookie">
+		<title> Cookie 处理</title>
+		<para>cookie 可以从 http header 设置</para>
+		<screen>
+curl -LO -H "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.rpm		
+		</screen>
+		<para>curl 还提供两个参数用于处理 cookie</para>
+		<screen>
+ -b, --cookie STRING/FILE  Read cookies from STRING/FILE (H) 读取 cookie 文件
+ -c, --cookie-jar FILE  Write cookies to FILE after operation (H) 将 cookie 写入文件
+		</screen>
+		<screen>
+		<![CDATA[
+curl -c cookie.txt -d "user=neo&password=123456" http://www.netkiller.cn/login
+curl -b cookie.txt http://www.netkiller.cn/user/profile
+		]]>
+		</screen>
+	</section>
 	<section id="restful">
 		<title>RestFul 应用 JSON 数据处理</title>
 		<para>下面提供一些使用 curl 操作 restful 的实例</para>
