@@ -222,6 +222,36 @@ location ~* ^/images/resize/([\d\-]+)_([\d\-]+)/(.+) { 
 }		
 		</screen>
 	</section>
+	<section id="ngx_stream_proxy_module">
+		<title>ngx_stream_proxy_module</title>
+		<para>ngx_stream_proxy_module 用法与 ngx_http_proxy_module 及其相似, 前者用于tcp代理或负载均衡。后者只能用于 http 的代理</para>
+		<para>ngx_stream_proxy_module模块的proxy_pass 指令只能在server段使用使用, 提供域名或ip地址和端口转发，协议可以是tcp，也可以是udp。</para>
+		<screen>
+server {
+    listen 127.0.0.1:80;
+    proxy_pass 127.0.0.1:8080;
+}
+
+server {
+    listen 25;
+    proxy_connect_timeout 1s;
+    proxy_timeout 1m;
+    proxy_pass mail.example.com:25;
+}
+
+server {
+    listen 53 udp;
+    proxy_responses 1;
+    proxy_timeout 20s;
+    proxy_pass dns.example.com:53;
+}
+
+server {
+    listen [::1]:8000;
+    proxy_pass unix:/tmp/stream.socket;
+}		
+		</screen>
+	</section>
 	<section id="ngx_http_mirror_module">
 		<title>ngx_http_mirror_module</title>
 		<screen>
