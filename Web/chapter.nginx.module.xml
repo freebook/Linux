@@ -225,8 +225,9 @@ location ~* ^/images/resize/([\d\-]+)_([\d\-]+)/(.+) { 
 	<section id="ngx_stream_proxy_module">
 		<title>ngx_stream_proxy_module</title>
 		<para>ngx_stream_proxy_module 用法与 ngx_http_proxy_module 及其相似, 前者用于tcp代理或负载均衡。后者只能用于 http 的代理</para>
-		<para>但 ngx_stream_proxy_module 模块的 proxy_pass 指令只能在server段使用, 提供域名或ip地址和端口转发，协议可以是tcp，也可以是udp。</para>
+		<para><![CDATA[注意模块的proxy_pass指令只能在server段使用, 提供域名或ip地址和端口转发，协议可以是tcp，也可以是udp。]]></para>
 		<screen>
+		<![CDATA[
 server {
     listen 127.0.0.1:80;
     proxy_pass 127.0.0.1:8080;
@@ -264,6 +265,7 @@ location /mirror {
     internal;
     proxy_pass http://test_backend$request_uri;
 }
+		]]>
 		</screen>
 	</section>
 </section>
