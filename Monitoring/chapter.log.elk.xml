@@ -256,7 +256,7 @@ output {
 				<para>指定 Database 10</para>
 				<screen>
 				<![CDATA[
-root@VM_3_2_centos /etc/logstash/conf.d % cat spring-boot-redis.conf 
+root@netkiller /etc/logstash/conf.d % cat spring-boot-redis.conf 
 input {
  redis {
   codec => json
@@ -350,7 +350,7 @@ output {
 		</section>
 		<section id="output">
 			<title>output</title>
-			<section>
+			<section id="file">
 				<title>file 写入文件</title>
 				<screen>
 				<![CDATA[
@@ -364,15 +364,9 @@ output {
 				]]>
 				</screen>
 			</section>
-			<section>
+			<section id="elasticsearch">
 				<title>elasticsearch</title>
-				<para>默认 index 格式，每日切割一个 index</para>
-				<screen>
-				<![CDATA[
-"_index" : "logstash-2017.03.22"		
-				]]>
-				</screen>
-				<para>可以通过 index 自定义</para>
+				
 				<screen>
 				<![CDATA[
 output {
@@ -384,6 +378,50 @@ output {
 }				
 				]]>
 				</screen>
+				<section>
+					<title>自定义 index</title>
+					<para>配置实现每日切割一个 index</para>
+					<screen>
+					<![CDATA[
+index => "logstash-%{+YYYY.MM.dd}"
+
+	
+"_index" : "logstash-2017.03.22"	
+					]]>
+					</screen>
+					<para>index 自定义 logstash-%{type}-%{+YYYY.MM.dd}</para>
+					<screen>
+					<![CDATA[
+input {
+
+    redis {
+        data_type => "list"
+        key => "logstash:redis"
+        host => "127.0.0.1"
+        port => 6379
+        threads => 5
+        codec => "json"
+    }
+}
+filter {
+
+}
+output {
+
+    elasticsearch {
+        hosts => ["127.0.0.1:9200"]
+        index => "logstash-%{type}-%{+YYYY.MM.dd}"
+        document_type => "%{type}"
+        workers => 1
+        flush_size => 20
+        idle_flush_time => 1
+        template_overwrite => true
+    }
+    stdout{}
+}					
+					]]>
+					</screen>
+				</section>
 			</section>
 			<section>
 				<title>exec 执行脚本</title>
@@ -409,6 +447,7 @@ output {
 	</section>
 	<section id="logstash.example">
 		<title>Example</title>
+		<para>https://github.com/kmtong/logback-redis-appender</para>
 		<section>
 			<title>Spring boot logback</title>
 			<example>
@@ -467,8 +506,75 @@ neo@MacBook-Pro ~/deployment % cat api.netkiller.cn/src/main/resources/logback.x
 </configuration>
 				]]>
 				</screen>
+			</example>
+		</section>
+		<section>
+			<title>索引切割实例</title>
+			<example>
+				<title>Elasticsearch 索引切割示例</title>
 				<screen>
-				<![CDATA[]]>
+				<![CDATA[
+root@netkiller /opt/api.netkiller.cn % cat /etc/logstash/conf.d/spring-boot-redis.conf 
+input {
+ redis {
+  codec => json
+  host => "localhost"
+  port => 6379
+  db => 10
+  key => "logstash:redis"
+  data_type => "list"
+ }
+}
+
+output {
+  stdout { codec => rubydebug }
+  elasticsearch {
+    hosts => ["127.0.0.1:9200"]
+    index => "logstash-%{type}-%{+YYYY.MM.dd}"
+  }
+}
+
+				]]>
+				</screen>
+				<screen>
+				<![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
+	<include resource="org/springframework/boot/logging/logback/file-appender.xml" />
+	<property name="logstash.type" value="api" />
+	<property name="logstash.tags" value="springboot" />
+	<appender name="LOGSTASH" class="com.cwbase.logback.RedisAppender">
+		<source>application.properties</source>
+		<type>${logstash.type}</type>
+		<tags>${logstash.tags}</tags>
+
+		<host>localhost</host>
+		<database>10</database>
+		<key>logstash:redis</key>
+
+		<mdc>true</mdc>
+		<location>true</location>
+		<callerStackIndex>0</callerStackIndex>
+
+	</appender>
+	<appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+		<appender-ref ref="LOGSTASH" />
+	</appender>
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%date{yyyy-MM-dd HH:mm:ss} %-4relative [%thread] %-5level %logger{35} : %msg %n</pattern>
+		</encoder>
+	</appender>
+	<root level="INFO">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILE" />
+		<appender-ref ref="LOGSTASH" />
+	</root>
+</configuration>
+				
+				]]>
 				</screen>
 			</example>
 		</section>
