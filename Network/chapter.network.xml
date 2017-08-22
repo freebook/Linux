@@ -10,7 +10,7 @@
 			<keyword>ipv4, ipv6</keyword>
 		</keywordset>
 	</info>
-	<section>
+	<section id="network.tools">
 		<title>curl / w3m / lynx</title>
 		<command>curl</command>
 		<screen>
