@@ -34,13 +34,15 @@ $ hdfs dfs -get /mydir/ ./
 	<section id="chown">
 		<title>用户权限</title>
 		<screen>
-[hadoop@VM_3_2_centos ~]$ hdfs dfs -chown -R hadoop:hadoop /
+[hadoop@netkiller ~]$ hdfs dfs -chown -R hadoop:hadoop /
 		</screen>
+		<para>关闭权限</para>
+		<para>如果是测试环境，可以取消hadoop hdfs的用户权限检查。编辑配置文件 conf/hdfs-site.xml，找到dfs.permissions属性修改为false（默认为true）。</para>
 	</section>	
 	<section id="chmod">
 		<title>访问权限</title>
 		<screen>
-[hadoop@VM_3_2_centos ~]$ hdfs dfs -chmod -R 777 /
+[hadoop@netkiller ~]$ hdfs dfs -chmod -R 777 /
 		</screen>
 	</section>	
 

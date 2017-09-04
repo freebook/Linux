@@ -947,6 +947,25 @@ http {
     }			
 			</screen>
 		</section>
+		<section>
+			<title>backup 实现热备</title>
+			<screen>
+upstream backend {
+    server backend1.example.com       weight=5;
+    server backend2.example.com:8080;
+    server unix:/tmp/backend3;
+
+    server backup1.example.com:8080   backup;
+    server backup2.example.com:8080   backup;
+}
+
+server {
+    location / {
+        proxy_pass http://backend;
+    }
+}	
+			</screen>
+		</section>
 	</section>
 	&chapter.nginx.conf.fastcgi.xml;
 	<section id="return">
