@@ -287,6 +287,21 @@ if ($http_cookie ~* "id=([^;]+)(?:;|$)") {
 	<section id="request_method">
 		<title>request_method</title>
 		<screen>
+location ~* /restful {
+	if ($request_method = PUT ) {
+	return 403;
+	}
+	if ($request_method = DELETE ) {
+	return 403;
+	}
+	if ($request_method = POST ) {
+	return 403;
+	}
+	proxy_method GET;
+	proxy_pass http://backend;
+}		
+		</screen>
+		<screen>
 if ($request_method = POST) {
     return 405;
 }
@@ -294,6 +309,15 @@ if ($request_method = POST) {
 		<screen>
 if ($request_method !~ ^(GET|HEAD|POST)$) {
 	return 403;
+}
+		</screen>
+	</section>
+	<section id="limit_except">
+		<title>limit_except</title>
+		<screen>
+limit_except GET {
+	allow 192.168.1.1;
+	deny all;
 }
 		</screen>
 	</section>
