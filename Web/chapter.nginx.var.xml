@@ -329,6 +329,50 @@ if ($invalid_referer) {
 }
 		</screen>
 	</section>
+	<section>
+		<title>$request_body - HTTP POST 数据</title>
+		<section>
+			<title>用户日志</title>
+			<para>将 POST 数据记录到日志中</para>
+			<screen>
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for" - "$request_body"';
+			</screen>
+			<para>注意：用户登录通常使用POST方式，所以记录POST数据到日志会带来安全问题，例如用户密码泄露。</para>
+		</section>
+		
+		<section>
+			<title>$request_body 用于缓存</title>
+			<para>因为nginx 使用 url 作为缓存的key ( Nginx 将url地址 md5后作为缓存的 key )，所以默认情况下 Nginx 只能处理 HTTP GET 缓存。</para>
+			<para>对于 HTTP POST 请求，提交数据放在HTTP Head 头部提交到服务器的， 提交前后URL始终不变，Nginx 无法区分相同网址两次请求的内容有变化。</para>
+			<para>但是我们可以自定义 缓存 key 例如： "$request_uri|$request_body" 我们将请求地址加上post内容作为缓存的key，这样nginx 便可以区分每次提交后的页面变化。</para>
+			<screen>
+ proxy_cache_path /tmp/cache levels=1:2 keys_zone=netkiller:128m inactive=1m;
+ 
+ server {
+  listen 8080;
+  server_name localhost;
+
+  location / {
+   try_files $uri @backend;
+  }
+ 
+  location @backend {
+   proxy_pass http://node1.netkiller.cn:8080;
+   proxy_cache netkiller;
+   proxy_cache_methods POST;
+   proxy_cache_key "$request_uri|$request_body";
+   proxy_buffers 8 32k;
+   proxy_buffer_size 64k;
+   proxy_cache_valid 5s;
+   proxy_cache_use_stale updating;
+   add_header X-Cached $upstream_cache_status;
+  }
+ }
+			</screen>
+		</section>
+	</section>
 	<section id="set">
 		<title>自定义变量</title>
 		<screen>
