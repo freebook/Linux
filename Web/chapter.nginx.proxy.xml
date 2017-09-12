@@ -554,27 +554,7 @@ proxy_set_header X-Forwarded-URI $request_uri;
 
 		</screen>
 	</section>
-	<section>
-		<title>limit_except</title>
-		<screen>
-    location /api/ {
-
-        limit_except PUT DELETE {
-            proxy_pass http://127.0.0.1:9080;
-        }
-    }		
-		</screen>
-	</section>
-	<section id="proxy.geoip_country_code">
-		<title>geoip_country_code</title>
-		<screen>
-location /google {
-    if ( $geoip_country_code ~ (RU|CN) ) {
-        proxy_pass http://www.google.hk;
-    }
-}
-		</screen>
-	</section>
+	
 	<section id="proxy.example">
 		<title>example</title>
 		<section>
@@ -785,6 +765,52 @@ server {
 }
 			]]>
 			</screen>
+		</section>
+		<section>
+			<title>通过 Proxy 汉化 restful 接口</title>
+			<para>通过 proxy 汉化 restful 接口返回的 json 字符串。</para>
+			<para>背景，有这样一个需求，前端HTML5通过ajax与restful交互，ajax会显示接口返回json数据，由于js做了混淆无法修改与restful交互的逻辑，但是json反馈结果需要汉化。</para>
+			<para>汉化前接口如下，返回message为 "message":"Full authentication is required to access this resource"</para>
+			<screen>
+			<![CDATA[
+neo@netkiller ~/workspace/Developer/Python % curl http://api.api.netkiller.cn/restful/member/get/1.json
+
+{"timestamp":1505206067543,"status":401,"error":"Unauthorized","message":"Full authentication is required to access this resource","path":"/restful/member/get/1.json"}   
+			]]>
+			</screen>
+			<para>建立一个代理服务器，代理介于用户和接口之间，ajax 访问接口需要经过这个代理服务器中转。</para>
+			<para>增加 /etc/nginx/conf.d/api.netkiller.cn.conf 配置文件</para>
+			<screen>
+			<![CDATA[
+server {
+	listen 80;
+	server_name api.netkiller.cn;
+
+	charset utf-8;
+	
+	location / {
+		proxy_pass http://localhost:8443;
+		proxy_http_version 1.1;
+		proxy_set_header    Host    $host;
+
+		sub_filter_types application/json; 
+        sub_filter 'Full authentication is required to access this resource'  '用户验证错误';
+        sub_filter_once off;
+	}
+
+}
+			]]>
+			</screen>
+			<para>所谓汉化就是字符串替换，使用nginx sub_filter 模块。</para>
+			<para>重新启动 nginx 然后测试汉化效果</para>
+			<screen>
+			<![CDATA[
+neo@netkiller ~/workspace/Developer/Python % curl http://api.api.netkiller.cn/restful/member/get/1.json
+
+{"timestamp":1505208931927,"status":401,"error":"Unauthorized","message":"用户验证错误","path":"/restful/member/get/1.json"}   
+			]]>
+			</screen>
+			<para>现在我们看到效果是 "message":"用户验证错误"</para>
 		</section>
 	</section>
 </section>

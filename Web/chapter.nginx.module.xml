@@ -268,4 +268,27 @@ location /mirror {
 		]]>
 		</screen>
 	</section>
+	
+	<section id="limit_except">
+		<title>limit_except</title>
+		<screen>
+    location /api/ {
+
+        limit_except PUT DELETE {
+            proxy_pass http://127.0.0.1:9080;
+        }
+    }		
+		</screen>
+	</section>
+	<section id="proxy.geoip_country_code">
+		<title>geoip_country_code</title>
+		<screen>
+location /google {
+    if ( $geoip_country_code ~ (RU|CN) ) {
+        proxy_pass http://www.google.hk;
+    }
+}
+		</screen>
+	</section>
+	
 </section>
