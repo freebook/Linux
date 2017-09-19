@@ -382,4 +382,33 @@ hsab/nib/:www/:noitacilppA beW:08:08:x:www
 nigolon/nibs/:xnign/ehcac/rav/:resu xnign:894:794:x:xnign
 		</screen>
 	</section>
+	<section id="expand">
+		<title>TAB符号与空格处理</title>
+		<section>
+			<title>expand - convert tabs to spaces</title>
+			<subtitle>转换 TAB 字符为空格</subtitle>
+			<screen>
+root@netkiller /var/log % yum --showduplicates list httpd | expand
+Repository epel is listed more than once in the configuration
+Loaded plugins: fastestmirror, langpacks
+Loading mirror speeds from cached hostfile
+Available Packages
+httpd.x86_64                    2.4.6-67.el7.centos                      os     
+httpd.x86_64                    2.4.6-67.el7.centos.2                    updates
+			</screen>
+		</section>
+		<section id="unexpand">
+			<title>unexpand - convert spaces to tabs</title>
+			<subtitle>转换空格为TAB符</subtitle>
+			<screen>
+root@netkiller /var/log % cat /etc/fstab | unexpand -t 16
+/dev/vda1	     /	          ext3	     noatime,acl,user_xattr 1 1
+proc	     /proc	          proc	     defaults	           0 0
+sysfs	     /sys	          sysfs	     noauto	           0 0
+debugfs	     /sys/kernel/debug    debugfs    noauto	           0 0
+devpts	     /dev/pts	          devpts     mode=0620,gid=5       0 0
+			</screen>
+			<para>将16个空格替换为一个TAB符</para>
+		</section>
+	</section>
 </section>

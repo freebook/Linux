@@ -195,7 +195,7 @@ yum list updates
 	</section>
 	<section id="yum">
 		<title>yum - Yellowdog Updater Modified</title>
-		<section>
+		<section id="repolist">
 			<title>YUM 源管理</title>
 			<para>列出所有yum源</para>
 			<screen>
@@ -221,8 +221,22 @@ sudo yum-config-manager --enable mysql57-community-dmr
 		</section>
 		<section id="install">
 			<title>install</title>
+			<para>有效的包名称</para>
+			<screen>
+name
+name.arch
+name-ver
+name-ver-rel
+name-ver-rel.arch
+name-epoch:ver-rel.arch
+epoch:name-ver-rel.arch			
+			</screen>
 			<screen>
 yum -y install package
+			</screen>
+			<para>指定yum源</para>
+			<screen>
+yum -y install epel:nginx.x86_64			
 			</screen>
 			<para>reinstall</para>
 			<screen>
@@ -259,6 +273,27 @@ yum list installed mysql\*
 			<screen>
 yum list updates
 yum list extras
+			</screen>
+			
+			<para>默认yum只显示最新版本的包，使用 --showduplicates 可以显示历史包</para>
+			<screen>
+root@netkiller /var/log % yum --showduplicates list nginx | expand
+Repository epel is listed more than once in the configuration
+Loaded plugins: fastestmirror, langpacks
+Loading mirror speeds from cached hostfile
+Installed Packages
+nginx.x86_64                      1:1.12.1-1.el7.ngx                      @nginx
+Available Packages
+nginx.x86_64                      1:1.8.0-1.el7.ngx                       nginx 
+nginx.x86_64                      1:1.8.1-1.el7.ngx                       nginx 
+nginx.x86_64                      1:1.10.0-1.el7.ngx                      nginx 
+nginx.x86_64                      1:1.10.1-1.el7.ngx                      nginx 
+nginx.x86_64                      1:1.10.2-1.el7                          epel  
+nginx.x86_64                      1:1.10.2-1.el7.ngx                      nginx 
+nginx.x86_64                      1:1.10.3-1.el7.ngx                      nginx 
+nginx.x86_64                      1:1.12.0-1.el7.ngx                      nginx 
+nginx.x86_64                      1:1.12.1-1.el7.ngx                      nginx 
+			
 			</screen>
 		</section>
 		<section id="search">
