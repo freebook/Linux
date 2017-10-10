@@ -393,13 +393,6 @@ xchat --url=irc://irc.freenode.net/trac
 xchat --url=irc://irc.freenode.net/trac -e
 			</screen>
 		</section>
-		<section id="irc.web">
-			<title>Web IRC</title>
-			<ulink url="http://www.mibbit.com" />
-			<para>点击页面中的 “Launch Mibbit Client” 按钮即可进入 IRC Client</para>
-			<para>选择IRC服务器，然后填写昵称Nick, 和频道 Channel，最后点击 Connect 按钮</para>
-		</section>
-		
 		<section id="f-irc">
 			<title>F-IRC</title>
 			<para>http://www.vanheusden.com/f-irc/</para>
@@ -408,5 +401,30 @@ xchat --url=irc://irc.freenode.net/trac -e
 			</screen>
 		</section>
 
+	</section>
+	<section id="irc.web">
+		<title>Web IRC</title>
+		
+		<section id="QuakeNet">
+			<title>QuakeNet Web IRC</title>
+			<para><ulink url="https://webchat.quakenet.org" /></para>
+			<para>Nickname: 昵称</para>
+			<para>Channels: 频道</para>
+			<para>输入上面两两项后，点击 Join chat 进入聊天室。</para>
+		</section>
+		<section id="web.freenode">
+			<title>freenode</title>
+			<para>http://webchat.freenode.net</para>
+		</section>
+		<section id="Mibbit">
+			<title>Web IRC</title>
+			<ulink url="http://www.mibbit.com" />
+			<para>点击页面中的 “Launch Mibbit Client” 按钮即可进入 IRC Client</para>
+			<para>选择IRC服务器，然后填写昵称Nick, 和频道 Channel，最后点击 Connect 按钮</para>
+		</section>
+		<section id="hackint">
+			<title>hackint</title>
+			<para>https://webirc.hackint.org</para>
+		</section>
 	</section>
 </chapter>
