@@ -409,6 +409,14 @@ openssl rand 12 -base64
 rgphwqZFFA2tY1QfuBrmw3aN62i6ctFy			
 			</screen>
 		</section>
+		<section id="phrase">
+			<title>去除私钥的密码</title>
+			<screen>
+$ openssl rsa -in neo.key -out nopassword.key
+Enter pass phrase for neo.key:
+writing RSA key
+			</screen>
+		</section>
 	</section>
 
 	<section id="web">
@@ -975,14 +983,7 @@ p10是证书请求
 p7r是CA对证书请求的回复，只用于导入
 p7b以树状展示证书链(certificate chain)，同时也支持单个证书，不含私钥。
 		</literallayout>
-		<section id="phrase">
-			<title>去除私钥的密码</title>
-			<screen>
-$ openssl rsa -in neo.key -out nopassword.key
-Enter pass phrase for neo.key:
-writing RSA key
-			</screen>
-		</section>
+		
 		<section>
 			<title>CA证书</title>
 			<para>用openssl创建CA证书的RSA密钥(PEM格式)：</para>
@@ -998,19 +999,19 @@ openssl req -new -x509 -days 365 -key ca.key -out ca.crt -config openssl.cnf
 			</screen>
 			<para>openssl是可以生成DER格式的CA证书的，最好用IE将PEM格式的CA证书转换成DER格式的CA证书。</para>
 		</section>
-		<section>
+		<section id="x5092pfx">
 			<title>x509转换为pfx</title>
 			<screen>
 openssl pkcs12 -export -out server.pfx -inkey server.key -in server.crt
 			</screen>
 		</section>
-		<section>
+		<section id="pem2pvk">
 			<title>PEM格式的ca.key转换为Microsoft可以识别的pvk格式</title>
 			<screen>
 pvk -in ca.key -out ca.pvk -nocrypt -topvk
 			</screen>
 		</section>
-		<section>
+		<section id="pkcs#122pem">
 			<title>PKCS#12 到 PEM 的转换</title>
 			<screen>
 openssl pkcs12 -nocerts -nodes -in cert.p12 -out private.pem
@@ -1018,13 +1019,13 @@ openssl pkcs12 -nocerts -nodes -in cert.p12 -out private.pem
 openssl pkcs12 -clcerts -nokeys -in cert.p12 -out cert.pem
 			</screen>
 		</section>
-		<section>
+		<section id="pfx2key">
 			<title>从 PFX 格式文件中提取私钥格式文件 (.key) </title>
 			<screen>
 openssl pkcs12 -in mycert.pfx -nocerts -nodes -out mycert.key
 			</screen>
 		</section>
-		<section>
+		<section id="pem2spc">
 			<title>转换 pem 到到 spc</title>
 			<screen>
 openssl crl2pkcs7 -nocrl -certfile venus.pem  -outform DER -out venus.spc
@@ -1034,7 +1035,7 @@ openssl crl2pkcs7 -nocrl -certfile venus.pem  -outform DER -out venus.spc
 openssl x509 -in Cert.pem -inform PEM -out cert.der -outform DER
 			</screen>
 		</section>
-		<section>
+		<section id="pem2pkcs#12">
 			<title>PEM 到 PKCS#12 的转换</title>
 			<screen>
 openssl pkcs12 -export -in Cert.pem -out Cert.p12 -inkey key.pem
@@ -1047,7 +1048,7 @@ openssl pkcs12 -export -out server.pfx -inkey server.key -in server.crt
 			</screen>
 			<para>server.key和server.crt文件是Apache的证书文件，生成的server.pfx用于导入IIS</para>
 		</section>
-		<section>
+		<section id="pfx2pem">
 			<title>How to Convert PFX Certificate to PEM Format for SOAP</title>
 			<screen>
 $ openssl pkcs12 -in test.pfx -out client.pem
@@ -1057,13 +1058,19 @@ Enter PEM pass phrase:
 Verifying - Enter PEM pass phrase:
 			</screen>
 		</section>
-		<section>
+		<section id="der2pem">
 			<title>DER文件（.crt .cer .der）转为PEM格式文件</title>
 			<screen>
 转换DER文件(一般后缀名是.crt .cer .der的文件)到PEM文件
 openssl x509 -inform der -in certificate.cer -out certificate.pem
 转换PEM文件到DER文件
 openssl x509 -outform der -in certificate.pem -out certificate.der
+			</screen>
+		</section>
+		<section id="jks2x509">
+			<title>JKS 转 X509</title>
+			<screen>
+keytool -list -rfc --keystore netkiller.jks | openssl x509 -inform pem -pubkey			
 			</screen>
 		</section>
 	</section>
