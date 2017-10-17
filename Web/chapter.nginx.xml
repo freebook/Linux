@@ -263,6 +263,13 @@ neo@MacBook-Pro ~ % brew install nginx
 neo@MacBook-Pro ~ % brew services start nginx
 ==> Successfully started `nginx` (label: homebrew.mxcl.nginx)
 			</screen>
+			<para>重启</para>
+			<screen>
+neo@MacBook-Pro /usr/local/etc/nginx % brew services restart nginx
+Stopping `nginx`... (might take a while)
+==> Successfully stopped `nginx` (label: homebrew.mxcl.nginx)
+==> Successfully started `nginx` (label: homebrew.mxcl.nginx)			
+			</screen>
 			<para>配置文件在 /usr/local/etc/nginx 下，默认使用 8080端口</para>
 			<para>nginx.conf 文件如下</para>
 			<screen>
@@ -386,6 +393,26 @@ http {
 
 			]]>
 			</screen>
+			<section>
+				<title>php-fpm</title>
+				<para>mac下自带的软件</para>
+				<screen>
+neo@MacBook-Pro ~ % php -v
+PHP 5.6.30 (cli) (built: Feb  7 2017 16:18:37) 
+Copyright (c) 1997-2016 The PHP Group
+Zend Engine v2.6.0, Copyright (c) 1998-2016 Zend Technologies
+				</screen>
+				<para>启动php-fpm方法如下</para>
+				<screen>
+cd /private/etc
+sudo cp php-fpm.conf.default php-fpm.conf
+				</screen>
+				<para>修改error_log项, 改为error_log = /usr/local/var/log/php-fpm.log</para>
+				<para>启动 php-fpm</para>
+				<screen>
+php-fpm
+				</screen>
+			</section>
 		</section>
 		<section id="logrotate"> 
 			<title>rotate log</title>
