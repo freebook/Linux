@@ -774,7 +774,7 @@ server {
 }			
 			</screen>
 		</section>
-		<section>
+		<section id="http2.redirect">
 			<title>用户访问 HTTP时强制跳转到 HTTPS</title>
 			<para>497 - normal request was sent to HTTPS  </para>
 			<screen>
@@ -803,6 +803,212 @@ server {
     }
 }	
 			</screen>
+		</section>
+		<section id="ssl.each">
+			<title>SSL 双向认证</title>
+			<section>
+				<title>生成证书</title>
+				<section>
+					<title>CA</title>
+					<screen>
+					<![CDATA[
+touch /etc/pki/CA/index.txt
+echo 00 > /etc/pki/CA/serial
+				
+制作 CA 私钥
+openssl genrsa -out ca.key 2048
+
+制作 CA 根证书（公钥）
+openssl req -new -x509 -days 3650 -key ca.key -out ca.crt
+					]]>			
+					</screen>
+				</section>
+				<section>
+					<title>服务器端</title>
+					<para>服务器端证书</para>
+					<screen>
+					<![CDATA[
+制作服务端私钥
+openssl genrsa -out server.pem 2048
+openssl rsa -in server.pem -out server.key
+
+生成签发请求
+openssl req -new -key server.pem -out server.csr	
+
+用 CA 签发
+openssl x509 -req -sha256 -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -days 3650 -out server.crt		
+					]]>
+					</screen>
+				</section>
+				<section>
+					<title>客户端</title>
+				
+					<para>生成客户端证书</para>
+					<screen>
+					<![CDATA[
+openssl genrsa -des3 -out client.key 2048
+openssl req -new -key client.key -out client.csr  
+
+生成签发请求
+openssl req -new -key server.pem -out server.csr	
+
+用 CA 签发
+openssl ca -in client.csr -cert ca.crt -keyfile ca.key -out client.crt -days 3650
+					]]>
+					</screen>
+				</section>
+				<section>
+					<title>浏览器证书</title>
+					<para>生成浏览器证书</para>
+					<screen>
+openssl pkcs12 -export -inkey client.key -in client.crt -out client.pfx				
+					</screen>
+				</section>
+				<section>
+					<title>SOAP 证书</title>
+					<screen>
+cat client.crt client.key > soap.pem
+					</screen>
+					<screen>
+					<![CDATA[
+	$header = array(		
+		'local_cert' => "soap.pem", //client.pem文件路径
+		'passphrase' => "passw0rd" //client证书密码
+		);
+	$client = new SoapClient(FILE_WSDL, $header); 					
+					]]>
+					</screen>
+				</section>
+				<section>
+					<title>过程演示</title>
+					<example>
+						<title>Nginx SSL 双向认证，证书生成过程</title>
+						<screen>
+						<![CDATA[
+root@VM_7_221_centos /etc/nginx/ssl % openssl genrsa -out ca.key 2048
+Generating RSA private key, 2048 bit long modulus
+...................................................+++
+......................................+++
+e is 65537 (0x10001)
+
+root@VM_7_221_centos /etc/nginx/ssl % openssl req -new -x509 -days 3650 -key ca.key -out ca.crt
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [XX]:CN
+State or Province Name (full name) []:GD
+Locality Name (eg, city) [Default City]:Shenzhen
+Organization Name (eg, company) [Default Company Ltd]:GW
+Organizational Unit Name (eg, section) []:DEV
+Common Name (eg, your name or your server's hostname) []:api.netkiller.cn
+Email Address []:netkiller@msn.com				
+						]]>
+						</screen>
+						<screen>
+						<![CDATA[
+root@VM_7_221_centos /etc/nginx/ssl % openssl genrsa -out server.pem 2048
+Generating RSA private key, 2048 bit long modulus
+.............+++
+........................................................+++
+e is 65537 (0x10001)			
+
+root@VM_7_221_centos /etc/nginx/ssl % openssl rsa -in server.pem -out server.key
+writing RSA key
+
+root@VM_7_221_centos /etc/nginx/ssl % openssl req -new -key server.pem -out server.csr
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [XX]:CN
+State or Province Name (full name) []:GD
+Locality Name (eg, city) [Default City]:Shenzhen
+Organization Name (eg, company) [Default Company Ltd]:GW
+Organizational Unit Name (eg, section) []:DEV
+Common Name (eg, your name or your server's hostname) []:api.netkiller.cn
+Email Address []:netkiller@msn.com
+
+Please enter the following 'extra' attributes
+to be sent with your certificate request
+A challenge password []:
+An optional company name []:
+
+root@VM_7_221_centos /etc/nginx/ssl % openssl x509 -req -sha256 -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -days 3650 -out server.crt
+Signature ok
+subject=/C=CN/ST=GD/L=Shenzhen/O=GW/OU=DEV/CN=api.netkiller.cn/emailAddress=netkiller@msn.com
+Getting CA Private Key	
+						]]>
+						</screen>
+					</example>
+				</section>
+			</section>
+			<section>
+				<title>Nginx 配置</title>
+				<para></para>
+				<screen>
+				<![CDATA[
+mkdir /etc/nginx/ssl
+cp server.crt server.key ca.crt /etc/nginx/ssl
+cd /etc/nginx/ssl  
+				]]>
+				</screen>
+				<para>/etc/nginx/conf.d/api.netkiller.cn.conf</para>
+				<screen>
+				<![CDATA[
+server {
+    listen       443 ssl;
+    server_name  api.netkiller.cn;
+
+    access_log off;
+
+    ssl on;
+    ssl_certificate /etc/nginx/ssl/server.crt;
+    ssl_certificate_key /etc/nginx/ssl/server.key;
+    ssl_client_certificate /etc/nginx/ssl/ca.crt;
+    ssl_verify_client on;
+
+    location / {
+        proxy_pass http://localhost:8443;
+    }
+}				
+				]]>
+				</screen>
+				<para>重启 nginx 服务器</para>
+				<screen>
+root@VM_7_221_centos /etc/nginx % systemctl restart nginx
+				</screen>
+			</section>
+			<section>
+				<title>测试双向认证</title>
+				<para>首先直接请求</para>
+				<screen>
+				<![CDATA[
+root@VM_7_221_centos /etc/nginx % curl -k https://api.netkiller.cn/
+<html>
+<head><title>400 No required SSL certificate was sent</title></head>
+<body bgcolor="white">
+<center><h1>400 Bad Request</h1></center>
+<center>No required SSL certificate was sent</center>
+<hr><center>nginx</center>
+</body>
+</html>
+				]]>
+				</screen>
+				<para>使用证书请求</para>
+				<screen>
+				<![CDATA[
+curl --insecure --key client.key --cert ./client.crt:123456  https://api.netkiller.cn
+				]]>
+				</screen>
+				<para>注意： --cert 参数需要写入路径和密码</para>
+			</section>
 		</section>
 	</section>
 	<section id="rewrite">

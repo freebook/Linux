@@ -1073,6 +1073,35 @@ openssl x509 -outform der -in certificate.pem -out certificate.der
 keytool -list -rfc --keystore netkiller.jks | openssl x509 -inform pem -pubkey			
 			</screen>
 		</section>
+		<section>
+			<title>jks to pem</title>
+			<para>转换流程 jks - p12 - pem</para>
+			<screen>
+keytool -keystore foo.jks -genkeypair -alias foo \
+    -dname 'CN=foo.example.com,L=Melbourne,ST=Victoria,C=AU'
+
+keytool -importkeystore -srckeystore foo.jks \
+   -destkeystore foo.p12 \
+   -srcalias foo \
+   -srcstoretype jks \
+   -deststoretype pkcs12
+
+openssl pkcs12 -in foo.p12 -out foo.pem
+			</screen>
+			<para></para>
+			<screen>
+neo@MacBook-Pro ~/test/test % ls
+foo.jks foo.p12 foo.pem			
+			</screen>
+			<para>查看证书</para>
+			<screen>
+keytool -keystore foo.jks -exportcert -alias foo | openssl x509 -inform der -text
+
+openssl x509 -text -in foo.pem
+
+openssl dsa -text -in foo.pem			
+			</screen>
+		</section>
 	</section>
 	<section id="sslscan">
 		<title>其他证书工具</title>
