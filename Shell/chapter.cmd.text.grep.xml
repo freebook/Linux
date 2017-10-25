@@ -63,8 +63,10 @@ $ cat sss.html | grep -o -E 'thunder://([^<]+)'
 			<section>
 				<title>UUID</title>
 				<screen>
+				<![CDATA[
 neo@MacBook-Pro ~ % curl -s -X POST --user 'api:secret' -d 'grant_type=password&username=netkiller@msn.com&password=123456' http://localhost:8080/oauth/token | grep -o -E '"access_token":"([0-9a-f-]+)"'
-"access_token":"863ef5df-6448-40a6-8809-f6f4b680689b"	
+"access_token":"863ef5df-6448-40a6-8809-f6f4b680689b"
+				]]>	
 				</screen>
 			</section>
 		</section>
