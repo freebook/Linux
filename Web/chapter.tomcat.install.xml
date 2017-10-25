@@ -645,5 +645,32 @@ RewriteRule ^/(.*\.(jsp|do|sevlet)) ajp://localhost:8009/ajp/$1 [P]
 		]]>
 		</screen>
 	</section>
-
+	<section>
+		<title>SSL 双向认证</title>
+		<para>首先我并不建议使用 tomcat 实现SSL双向验证，这个工作可以交给 Web 服务器完成。但有些场景可能需要，可以参考下面例子。</para>
+		<para>服务器端证书</para>
+		<screen>
+keytool -genkey -v -alias serverKey -dname "CN=localhost" -keyalg RSA -keypass xxxxxx -keystore server.ks -storepass xxxxxx
+		</screen>
+		<para>客户端证书</para>
+		<screen>
+keytool -genkey -v -alias clientKey -dname "CN=SomeOne" -keyalg RSA -keypass xxxxxx -keystore client.p12 -storepass xxxxxx -storetype PKCS12		
+keytool -export -alias clientKey -file clientKey.cer -keystore client.p12 -storepass xxxxxx -storetype PKCS12
+		</screen>
+		<para>导入客户端证书</para>
+		<screen>
+keytool -import -v -alias clientKey -file clientKey.cer -keystore server.ks -storepass xxxxxx		
+		</screen>
+		<para>如果希望在 Windows 浏览器中访问，下导入证书方式，双击 client.p12 文件，安装提示导入</para>
+		<para>配置 Tomcat ，编辑 server.xml 文件</para>
+		<screen>
+		<![CDATA[
+<Connector port="8443" protocol="HTTP/1.1" SSLEnabled="true"
+maxThreads="1024" scheme="https" secure="true"
+clientAuth="true" sslProtocol="TLS"
+keystoreFile="server.ks" keystorePass="xxxxxx"
+truststoreFile="server.ks " truststorePass="xxxxxx" />
+		]]>
+		</screen>
+	</section>
 </section>

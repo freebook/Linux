@@ -378,4 +378,49 @@ Jan 12 18:06:10 dev1 logger_test[10991]: 64 bytes from 192.168.0.1: icmp_seq=7 t
 			<!-- http://www.cyberciti.biz/tips/linux-netconsole-log-management-tutorial.html -->
 		</section>
 	</section>	
+	
+	<section id="logsubvolume">
+		<title>挂载日志卷</title>
+		<para>对于有些应用，日志基表庞大，并且需要长期保留日志，这种情况我们通常使用独立卷存储日志。下面的例子我们使用 btrfs 为 tomcat 提供日志卷服务。</para>
+		<section>
+			<title>子卷挂载</title>
+			<para>将 /srv/apache-tomcat/logs 日志目录挂载到 /www/logs 子卷</para>
+			<screen>
+			<![CDATA[
+[root@iZ62sreab5qZ ~]#  btrfs subvolume snapshot /www /www/logs
+Create a snapshot of '/www' in '/www/logs'
+
+UUID=6b2d5cbf-0b0f-42df-b697-7280671ea847 /srv/apache-tomcat/logs btrfs defaults,subvol=logs 1 1
+
+			]]>
+			</screen>
+		</section>
+		<section id="logfile">
+			<title>使用过个子卷</title>
+			<para>挂载多个子卷</para>
+			<screen>
+			<![CDATA[
+[root@iZ62sreab5qZ ~]#  btrfs subvolume snapshot /www /www/logs
+Create a snapshot of '/www' in '/www/logs'
+[root@iZ62sreab5qZ ~]#  btrfs subvolume snapshot /www /www/logs/admin
+Create a snapshot of '/www' in '/www/logs/admin'
+[root@iZ62sreab5qZ ~]#  btrfs subvolume snapshot /www /www/logs/m
+Create a snapshot of '/www' in '/www/logs/m'
+[root@iZ62sreab5qZ ~]#  btrfs subvolume snapshot /www /www/logs/www
+Create a snapshot of '/www' in '/www/logs/www'
+			]]>
+			</screen>
+		</section>
+		<section id="fstab">
+			<title>/etc/fstab配置</title>
+			<screen>
+			<![CDATA[
+UUID=9936c1b9-44ea-46b7-ae7c-2486c4859116 /srv/apache-tomcat-www/logs btrfs defaults,subvol=logs/www 1 1
+UUID=9936c1b9-44ea-46b7-ae7c-2486c4859116 /srv/apache-tomcat-admin/logs btrfs defaults,subvol=logs/admin 1 1
+UUID=9936c1b9-44ea-46b7-ae7c-2486c4859116 /srv/apache-tomcat-m/logs btrfs defaults,subvol=logs/m 1 1
+			]]>
+			</screen>
+		</section>
+	</section>
+	
 </chapter>
