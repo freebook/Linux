@@ -292,7 +292,19 @@ external_url 'http://172.16.0.1'
 			</step>
 		</procedure>
 	</section>
-		<section id="codereview">
+	<section>
+		<title>Issue</title>
+		<para>Issues 任务</para>
+		<section>
+			<title>Milestones 里程碑</title>
+			<para>敏捷开发中可以每周一个里程碑，或者每个月一个里程碑。</para>
+		</section>
+		<section>
+			<title>Labels 标签</title>
+			<para>通常定义四个状态，开发，测试，升级，完成</para>
+		</section>
+	</section>
+	<section id="codereview">
 		<title>代码审查</title>
 	</section>
 	<section id="merge">
