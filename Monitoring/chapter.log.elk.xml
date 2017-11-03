@@ -47,41 +47,23 @@ curl -s https://raw.githubusercontent.com/oscm/shell/master/log/beats/beats-5.x.
 	</section>
 	<section id="logstash.cli">
 		<title>logstash 命令简单应用</title>
-		<section id="stdin">
-			<title>标准输入输出</title>
+		<section>
+			<title>命令行运行</title>
 			<para>logstash -e "input {stdin{}} output {stdout{}}"</para>
 			<screen>
-root@netkiller ~ % /usr/share/logstash/bin/logstash -e "input {stdin{}} output {stdout{}}"
-Helloworld
-ERROR StatusLogger No log4j2 configuration file found. Using default configuration: logging only errors to the console.
-WARNING: Could not find logstash.yml which is typically located in $LS_HOME/config or /etc/logstash. You can specify the path using --path.settings. Continuing using the defaults
-Could not find log4j2 configuration at path //usr/share/logstash/config/log4j2.properties. Using default config which logs to console
-18:03:38.340 [[main]-pipeline-manager] INFO  logstash.pipeline - Starting pipeline {"id"=>"main", "pipeline.workers"=>8, "pipeline.batch.size"=>125, "pipeline.batch.delay"=>5, "pipeline.max_inflight"=>1000}
-18:03:38.356 [[main]-pipeline-manager] INFO  logstash.pipeline - Pipeline main started
-The stdin plugin is now waiting for input:
-2017-08-03T10:03:38.375Z localhost Helloworld
-18:03:38.384 [Api Webserver] INFO  logstash.agent - Successfully started Logstash API endpoint {:port=>9601}
+			<![CDATA[
+/usr/share/logstash/bin/logstash  -e 'input{file {path => "/etc/centos-release" start_position => "beginning"}} output { stdout {}}'			
+			]]>
 			</screen>
 		</section>
-		<section id="rubydebug">
-			<title>rubydebug</title>
-			<para>rubydebug提供以json格式输出到屏幕</para>
+		
+		<section>
+			<title>指定配置文件</title>
+			<para></para>
 			<screen>
-root@netkiller ~ % /usr/share/logstash/bin/logstash -e 'input{stdin{}}output{stdout{codec=>rubydebug}}'
-My name is neo
-ERROR StatusLogger No log4j2 configuration file found. Using default configuration: logging only errors to the console.
-WARNING: Could not find logstash.yml which is typically located in $LS_HOME/config or /etc/logstash. You can specify the path using --path.settings. Continuing using the defaults
-Could not find log4j2 configuration at path //usr/share/logstash/config/log4j2.properties. Using default config which logs to console
-18:05:02.734 [[main]-pipeline-manager] INFO  logstash.pipeline - Starting pipeline {"id"=>"main", "pipeline.workers"=>8, "pipeline.batch.size"=>125, "pipeline.batch.delay"=>5, "pipeline.max_inflight"=>1000}
-18:05:02.747 [[main]-pipeline-manager] INFO  logstash.pipeline - Pipeline main started
-The stdin plugin is now waiting for input:
-{
-    "@timestamp" => 2017-08-03T10:05:02.764Z,
-      "@version" => "1",
-          "host" => "localhost",
-       "message" => "My name is neo"
-}
-18:05:02.782 [Api Webserver] INFO  logstash.agent - Successfully started Logstash API endpoint {:port=>9601}
+			<![CDATA[
+logstash -f stdin.conf			
+			]]>
 			</screen>
 		</section>
 	</section>
@@ -183,7 +165,42 @@ output {
 		<title>logstash 配置项</title>
 		<section id="input">
 			<title>input</title>
-			
+			<section id="stdin">
+				<title>标准输入输出</title>
+				<screen>
+root@netkiller ~ % /usr/share/logstash/bin/logstash -e "input {stdin{}} output {stdout{}}"
+Helloworld
+ERROR StatusLogger No log4j2 configuration file found. Using default configuration: logging only errors to the console.
+WARNING: Could not find logstash.yml which is typically located in $LS_HOME/config or /etc/logstash. You can specify the path using --path.settings. Continuing using the defaults
+Could not find log4j2 configuration at path //usr/share/logstash/config/log4j2.properties. Using default config which logs to console
+18:03:38.340 [[main]-pipeline-manager] INFO  logstash.pipeline - Starting pipeline {"id"=>"main", "pipeline.workers"=>8, "pipeline.batch.size"=>125, "pipeline.batch.delay"=>5, "pipeline.max_inflight"=>1000}
+18:03:38.356 [[main]-pipeline-manager] INFO  logstash.pipeline - Pipeline main started
+The stdin plugin is now waiting for input:
+2017-08-03T10:03:38.375Z localhost Helloworld
+18:03:38.384 [Api Webserver] INFO  logstash.agent - Successfully started Logstash API endpoint {:port=>9601}
+				</screen>
+			</section>
+			<section id="rubydebug">
+				<title>rubydebug</title>
+				<para>rubydebug提供以json格式输出到屏幕</para>
+				<screen>
+root@netkiller ~ % /usr/share/logstash/bin/logstash -e 'input{stdin{}}output{stdout{codec=>rubydebug}}'
+My name is neo
+ERROR StatusLogger No log4j2 configuration file found. Using default configuration: logging only errors to the console.
+WARNING: Could not find logstash.yml which is typically located in $LS_HOME/config or /etc/logstash. You can specify the path using --path.settings. Continuing using the defaults
+Could not find log4j2 configuration at path //usr/share/logstash/config/log4j2.properties. Using default config which logs to console
+18:05:02.734 [[main]-pipeline-manager] INFO  logstash.pipeline - Starting pipeline {"id"=>"main", "pipeline.workers"=>8, "pipeline.batch.size"=>125, "pipeline.batch.delay"=>5, "pipeline.max_inflight"=>1000}
+18:05:02.747 [[main]-pipeline-manager] INFO  logstash.pipeline - Pipeline main started
+The stdin plugin is now waiting for input:
+{
+    "@timestamp" => 2017-08-03T10:05:02.764Z,
+      "@version" => "1",
+          "host" => "localhost",
+       "message" => "My name is neo"
+}
+18:05:02.782 [Api Webserver] INFO  logstash.agent - Successfully started Logstash API endpoint {:port=>9601}
+				</screen>
+			</section>			
 			<section id="file">
 				<title>本地文件</title>
 				<screen>
@@ -203,6 +220,7 @@ output {
 }		
 				]]>
 				</screen>
+				<para>start_position => "beginning" 从头开始读，如果没有这个选项，只会读取最后更新的数据。</para>
 			</section>
 			<section id="socket">
 				<title>TCP/UDP</title>
@@ -347,6 +365,36 @@ output {
 		</section>
 		<section id="filter">
 			<title>filter</title>
+			<section>
+				<title>执行 ruby 代码</title>
+				<para>日期格式化, 将ISO 8601日期格式转换为 %Y-%m-%d %H:%M:%S</para>
+				<para>保存下面内容到配置文件data.conf</para>
+				<screen>
+				<![CDATA[
+input {
+	stdin{}
+}
+filter {
+
+	ruby {
+        code => "event.set('ctime', event.get('[ctime]').time.localtime.strftime('%Y-%m-%d %H:%M:%S'))"
+    }
+
+	ruby {
+        code => "event.set('mtime', event.get('[mtime]').time.localtime.strftime('%Y-%m-%d %H:%M:%S'))"
+    }
+}
+output {
+
+	stdout {
+		codec => rubydebug
+	}
+
+}
+				]]>
+				</screen>
+				<para>/usr/share/logstash/bin/logstash -f date.conf</para>
+			</section>			
 		</section>
 		<section id="output">
 			<title>output</title>
