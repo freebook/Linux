@@ -693,9 +693,11 @@ location / {
 	</section>
 	<section id="http2">
 		<title>HTTP2  配置 SSL证书</title>
-		<para>创建证书</para>
-		<screen>
-		<![CDATA[
+		<section>
+			<title>自颁发证书</title>
+			<para>创建自颁发证书，SSL有两种证书模式，单向认证和双向认证，下面是单向认证模式。</para>
+			<screen>
+			<![CDATA[
 mkdir /etc/nginx/ssl
 cd /etc/nginx/ssl
 openssl req -x509 -nodes -days 365 -newkey rsa:4096 -keyout /etc/nginx/ssl/api.netkiller.cn.key -out /etc/nginx/ssl/api.netkiller.cn.crt
@@ -720,9 +722,11 @@ Organizational Unit Name (eg, section) []:CF
 Common Name (eg, your name or your server's hostname) []:api.netkiller.cn
 Email Address []:netkiller@msn.com
 
-		]]>
-		</screen>
-		<para>注意: Common Name (eg, your name or your server's hostname) []:api.netkiller.cn 要跟你的 nginx server_name api.netkiller.cn 一样。</para>
+			]]>
+			</screen>
+			<para>注意: Common Name (eg, your name or your server's hostname) []:api.netkiller.cn 要跟你的 nginx server_name api.netkiller.cn 一样。</para>
+		</section>
+		
 		<section id="spdy">
 			<title>spdy</title>
 			<para>Nginx 配置 spdy</para>
