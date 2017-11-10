@@ -252,6 +252,22 @@ curl -H HOST:www.example.com -I http://172.16.1.10/product/374218.html
 # curl --compressed -uneo:chen http://webservice.example.com/members
 			</screen>
 		</section>
+		<section id="Accept">
+			<title>Accept</title>
+			<programlisting>
+			<![CDATA[
+-H "Accept: application/json"		
+			]]>
+			</programlisting>
+		</section>
+		<section id="Content-Type">
+			<title>Content-Type</title>
+			<programlisting>
+			<![CDATA[
+-H "Content-Type: application/json"			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="curl-config">
 		<title>curl-config</title>
