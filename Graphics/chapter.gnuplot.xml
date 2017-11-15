@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="gnuplot">
+	<title>Gnuplot</title>
+	<para><ulink url="http://gnuplot.info/">http://gnuplot.info/</ulink></para>
+	<section>
+		<title>安装 Gnuplot</title>
+		<section>
+			<title>CentOS 环境 </title>
+			<screen>
+# yum install gnuplot
+			</screen>
+		</section>
+		<section>
+			<title>Ubuntu 环境 </title>
+			<screen>
+$ sudo apt-get install gnuplot
+			</screen>
+		</section>
+		<section>
+			<title>测试 Gnuplot 是否可用</title>
+			<screen>
+$ cat test.log
+8:00 506.877
+8:30 501.068
+9:00 493.254
+9:30 469.184
+10:00 460.161
+11:00 426.065
+12:00 429.734
+14:00 409.255
+15:00 423.512
+16:00 390.676
+17:00 390.676
+18:00 390.676
+
+$ cat test.gnuplot
+set terminal png truecolor size 800,250
+set output "test.png"
+set autoscale
+set xdata time
+set timefmt "%H:%M"
+set style data lines
+set xlabel "time per day"
+set ylabel "Mbps"
+set title "Apache Traffic"
+set grid
+plot "test.log" using 1:2 title "Hit"
+
+$ gnuplot test.gnuplot
+			</screen>
+		</section>
+	</section>
+
+	<section id="terminal">
+		<title>terminal</title>
+		<para>set terminal png | gif | jpg</para>
+		<screen>
+set terminal png
+
+set terminal png truecolor size 800,600
+set output "asa5550.png"
+		</screen>
+	</section>
+	<section id="output">
+		<title>output</title>
+		<screen>
+set output "apache.png"
+		</screen>
+	</section>
+	<section id="title">
+		<title>title/xlabel/ylabel</title>
+		<para></para>
+		<screen>
+set title "My first graph"
+set xlabel "Angle, \n in degrees"
+set ylabel "sin(angle)"  plot sin(x)
+		</screen>
+	</section>
+	<section id="range">
+		<title>xrange/yrange</title>
+		<screen>
+set xrange [-pi:pi]  replot  reset
+set xrange [-pi:pi]
+
+set xrange [-0.5:3.5]
+set yrange [-1:1.4]
+		</screen>
+		<section>
+			<title>时间轴范围</title>
+			<screen>
+			<![CDATA[
+hour=$(date '+%H')
+gnuplot << EOF
+set terminal png truecolor size 800,480
+set output "/www/example.com/www.example.com/silver-hour.png"
+set autoscale
+set xdata time
+set timefmt "%H:%M"
+set xrange ["$hour:00":"$hour:60"]
+set format x "%H:%M"
+set style data lines
+set xlabel "$datetime GMT+800"
+set ylabel "Ounce/USD"
+set title "SILVER - http://www.example.com"
+set grid
+plot "/var/tmp/silver.log" using 1:2 title "SILVER"
+EOF
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>日期轴范围</title>
+			<screen>
+			<![CDATA[
+gnuplot << EOF
+set terminal png truecolor size 800,480
+set output "/www/example.com/www.example.com/silver-hour.png"
+set autoscale
+set xdata time
+set timefmt "%m/%d/%y"
+set xrange ["03/21/95":"03/22/95"]
+set format x "%H:%M"
+set style data lines
+set xlabel "$datetime GMT+800"
+set ylabel "Ounce/USD"
+set title "SILVER - http://www.example.com"
+set grid
+plot "/var/tmp/silver.log" using 1:2 title "SILVER"
+EOF
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section id="xdata">
+		<title>xdata</title>
+		<screen>
+set xdata time
+		</screen>
+		<section>
+			<title>Date/Time</title>
+			<screen>
+set xdata time
+set timefmt "%m/%d/%y"
+set xrange ["03/21/95":"03/22/95"]
+set format x "%m/%d"
+			</screen>
+		</section>
+	</section>
+	<section id="plot">
+		<title>plot</title>
+		<section>
+			<title>using</title>
+			<screen>
+可以在using里对数据进行简单的计算，例如：
+plot 'test.dat' using ($1):($1*$1)
+			</screen>
+		</section>
+	</section>
+	<section id="phplot">
+		<title>PHPlot</title>
+		<para><ulink url="http://sourceforge.net/projects/phplot/"/></para>
+	</section>
+	<section id="plot.faq">
+		<title>FAQ</title>
+		<section>
+			<title>Could not find/open font when opening font "arial", using internal non-scalable font</title>
+			<screen>
+# yum install liberation-sans-fonts
+			</screen>
+		</section>
+		<section>
+			<title>变量传递</title>
+			<screen>
+			<![CDATA[
+images=test
+gnuplot << EOF
+
+set terminal png truecolor size 800,480
+set output "$images.png"
+set autoscale
+set xdata time
+set timefmt "%H:%M"
+set format x "%H:%M"
+set style data lines
+set xlabel "2013-5-2 12:09 GMT+800"
+set ylabel "Ounce/USD"
+set title "http://www.example.com"
+set grid
+plot "$images.log" using 1:2 title "GOLD"
+quit
+EOF
+			]]>
+			</screen>
+		</section>
+	</section>
+</chapter>

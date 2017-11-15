@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<part id="index"><?dbhtml dir="graphics" ?>
+	<title>Graphics</title>
+	&chapter.gnuplot.xml;
+	&chapter.graphviz.xml;
+	&chapter.ttdtool.xml;
+	&chapter.openbr.xml;
+	&chapter.ocr.xml;
+	&chapter.asymptote.xml;
+	&chapter.map.xml;
+</part>

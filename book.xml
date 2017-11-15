@@ -88,6 +88,9 @@
 	<!ENTITY % queue.doctype.entity.xml		SYSTEM "Queue/doctype.entity.xml">
 	%queue.doctype.entity.xml;
 	
+	<!ENTITY % graphics.doctype.entity.xml 	SYSTEM "Graphics/doctype.entity.xml">
+	%graphics.doctype.entity.xml;
+	
 	<!ENTITY part.im 			SYSTEM "part.im.xml">
 	<!ENTITY chapter.gps 		SYSTEM "chapter.gps.xml">
 	
@@ -200,12 +203,13 @@ a2p,ab,aclocal,aclocal-1.11,addftinfo,addr2line,airdaemon,apropos,ar,as,attr,aul
 	&chapter.management.xml;
 	&part.virtualization.xml;
 <!-- =========================================================================== -->
-	&part.multimedia.xml;
 	&part.project.xml;
 	&part.version.xml;
 <!-- =========================================================================== -->	
 	&chapter.ibm.websphere.xml;
 <!-- =========================================================================== -->
+	&part.graphics.xml;
+	&part.multimedia.xml;
 	&chapter.x.xml;
 	&chapter.faq.xml;
 <!-- =========================================================================== -->

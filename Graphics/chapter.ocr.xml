@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="ocr">
+	<title>OCR - Optical Character Recognition</title>
+	<ulink url="https://help.ubuntu.com/community/OCR" />
+	
+	<section id="tesseract">
+		<title>Tesseract</title>
+		<para>查找Tesseract安装包</para>
+		<screen>
+$ apt-cache search Tesseract
+ocrodjvu - tool to perform OCR on DjVu documents
+slimrat - GUI application for automated downloading from file hosters
+slimrat-nox - CLI application for automated downloading from file hosters
+tesseract-ocr - Command line OCR tool
+tesseract-ocr-deu - tesseract-ocr language files for German text
+tesseract-ocr-deu-f - tesseract-ocr language files for the German Fraktur script
+tesseract-ocr-dev - Development files for the tesseract command line OCR tool
+tesseract-ocr-eng - tesseract-ocr language files for English text
+tesseract-ocr-fra - tesseract-ocr language files for French text
+tesseract-ocr-ita - tesseract-ocr language files for Italian text
+tesseract-ocr-nld - tesseract-ocr language files for Dutch text
+tesseract-ocr-por - tesseract-ocr language files for Brasilian Portuguese text
+tesseract-ocr-spa - tesseract-ocr language files for Spanish text
+tesseract-ocr-vie - tesseract-ocr language files for Vietnamese text
+		</screen>
+		<screen>
+$ sudo apt-get install tesseract-ocr
+		</screen>
+		<screen>
+$ convert test.jpg test.tif
+$ tesseract test.tif test
+$ cat test.txt
+		</screen>
+	</section>
+
+	<section id="cuneiform">
+		<title>cuneiform - multi-language OCR system</title>
+		<para></para>
+	</section>
+</chapter>

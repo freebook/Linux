@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="rrdtool">
+	<title>RRDTool</title>
+	<para><ulink url="http://www.mrtg.org/rrdtool/">http://www.mrtg.org/rrdtool/</ulink></para>
+	<section id="rrdtool.install">
+		<title>install</title>
+		<screen>
+$ apt-get install rrdtool
+		</screen>
+	</section>
+	<section id="rrdtool.demo">
+		<title>rrdtool demo example</title>
+		<screen>
+		<![CDATA[
+rrdtool create datafile.rrd \
+	DS:packets:ABSOLUTE:900:0:10000000 \
+	RRA:AVERAGE:0.5:1:9600 \
+	RRA:AVERAGE:0.5:4:9600 \
+	RRA:AVERAGE:0.5:24:6000
+		]]>
+		</screen>
+
+		<screen>
+		<![CDATA[
+rrdtool update datafile.rrd N:100
+rrdtool update datafile.rrd N:200
+rrdtool update datafile.rrd N:300
+		]]>
+		</screen>
+		<para>or</para>
+		<screen>
+		<![CDATA[
+for (( ; ; )) do
+	rrdtool update datafile.rrd N:$( echo `< /dev/urandom tr -dc [:digit:] | head -c 3`)
+	sleep 5
+done &
+		]]>
+		</screen>
+
+		<screen>
+		<![CDATA[
+rrdtool graph graph.png DEF:pkt=datafile.rrd:packets:AVERAGE \
+  LINE1:pkt#ff0000:Packets
+		]]>
+		</screen>
+	</section>
+	<section id="rrdtool.title">
+		<title>title</title>
+		<screen>
+rrdtool graph graph.png --title="Test Graph" --height=400 --width=800 DEF:pkt=datafile.rrd:packets:AVERAGE \
+  LINE1:pkt#ff0000:Packets
+		</screen>
+	</section>
+	<section id="rrdtool.start-end">
+		<title>start / end</title>
+		<screen>
+--start -1d gives a graph of the last day;
+--start -1w gives a graph of the last week;
+--start -1m gives a graph of the last month;
+--start -1y gives a graph of the last year;
+
+#! /bin/sh
+
+cd /var/log/rrd
+rrds=`find . -type f -name '*.rrd' | cut -c3-`
+
+for i in $rrds;
+  do
+  j=`echo $i | sed 's/.rrd//'`
+  rrdtool graph /var/www/rrd/$j-day.png --start -1d DEF:pkt=$i:packet:AVERAGE LINE1:pkt#ff0000:Packets/sec
+  rrdtool graph /var/www/rrd/$j-week.png --start -1w DEF:pkt=$i:packet:AVERAGE LINE1:pkt#ff0000:Packets/sec
+  rrdtool graph /var/www/rrd/$j-month.png --start -1m DEF:pkt=$i:packet:AVERAGE LINE1:pkt#ff0000:Packets/sec
+  rrdtool graph /var/www/rrd/$j-year.png --start -1y DEF:pkt=$i:packet:AVERAGE LINE1:pkt#ff0000:Packets/sec
+done
+cd -
+		</screen>
+		<screen>
+--start "yesterday"
+--start "-1month"
+--start "-2weeks"
+--start "-1year"
+--start -86400 (24*60*60=86400)
+		</screen>
+		<para>end</para>
+		<screen>
+rrdtool graph graph.png --title="Test Graph" --start=0 --end=start+86400 --width=800 DEF:pkt=datafile.rrd:packets:AVERAGE \
+  LINE1:pkt#ff0000:Packets
+		</screen>
+	</section>
+	<section id="rrdtool.height-width">
+		<title>height / width</title>
+		<screen>
+rrdtool graph graph.png --title="Test Graph" --height=400 --width=800 DEF:pkt=datafile.rrd:packets:AVERAGE \
+  LINE1:pkt#ff0000:Packets
+		</screen>
+	</section>
+	<section id="rrdtool.upper-lower">
+		<title>upper-limit / lower-limit</title>
+		<screen>
+rrdtool graph graph.png --title="Test Graph" --height=400 --width=800 --lower-limit=0 --upper-limit=1000 DEF:pkt=datafile.rrd:packets:AVERAGE \
+  LINE1:pkt#ff0000:Packets
+		</screen>
+	</section>
+	<section id="rrdtool.label">
+		<title>vertical-label</title>
+		<screen>
+rrdtool graph graph.png --title="Test Graph" --height=400 --width=800 --vertical-label="Bits per second" DEF:pkt=datafile.rrd:packets:AVERAGE \
+  LINE1:pkt#ff0000:Packets
+		</screen>
+	</section>
+
+	<section id="rrdtool.ds">
+		<title>Data Source</title>
+		<para>Data Source Fields: DS:DS-Name:DST:HeartBeat:Min:Ma</para>
+	</section>
+
+	<section id="rrdtool.rra">
+		<title>Round Robin Archives</title>
+		<para>Round Robin Archives: RRA:CF:XFF:Steps:Row</para>
+	</section>
+	<section id="rrdtool.line">
+		<title>AREA, LINE and STACK</title>
+		<section>
+			<title>LINE</title>
+			<screen>
+rrdtool graph graph.png --title="Test Graph" --height=400 --width=800 --vertical-label="Bits per second" \
+	DEF:pkt=datafile.rrd:packets:AVERAGE \
+	LINE1:pkt#ff0000:Packets
+			</screen>
+		</section>
+		<section>
+			<title>AREA</title>
+			<screen>
+rrdtool graph graph.png --title="Test Graph" --height=400 --width=800 --vertical-label="Bits per second" \
+	DEF:pkt=datafile.rrd:packets:AVERAGE \
+	AREA:pkt#ff0000:Packets
+			</screen>
+		</section>
+		<section>
+			<title>STACK</title>
+			<screen>
+rrdtool graph graph.png --title="Test Graph" --height=400 --width=800 --vertical-label="Bits per second" \
+	DEF:pkt=datafile.rrd:packets:AVERAGE \
+	LINE1:pkt#ff0000:Packets \
+	STACK:pkt#0000ff:Packets
+
+AREA:x1#FF0000:x1
+STACK:x2#0000FF:x2
+
+LINE2:x1#FF0000:x1
+STACK:x2#0000FF:x2+x1
+
+LINE2:x1#FF0000:x1
+AREA:x2#0000FF:x2:STACK
+			</screen>
+		</section>
+
+		<section>
+			<title>GPRINT</title>
+			<screen>
+
+			</screen>
+		</section>
+	</section>
+	<section id="rrdtool.example">
+		<title>Example</title>
+		<section>
+			<title>Memory</title>
+			<screen>
+rrdtool create memory.rrd \
+        --start 1023654125 \
+        --step 300 \
+        DS:mem:GAUGE:600:0:671744 \
+        RRA:AVERAGE:0.5:12:24 \
+        RRA:AVERAGE:0.5:288:31
+			</screen>
+			<screen>
+			<![CDATA[
+for (( ; ; )) do
+	memory=$(snmpwalk -c public -v2c 172.16.1.10 hrSWRunPerfMem | awk 'BEGIN {total_mem=0} { if ($NF == "KBytes") {total_mem=total_mem+$(NF-1)}}  END {print total_mem}')
+	rrdtool update memory.rrd N:${memory}
+	sleep 300
+done &
+			]]>
+			</screen>
+			<screen>
+rrdtool graph memory.png \
+	--title="Memory Usage" \
+	--vertical-label="Memory Consumption (MB)" \
+	--start=0 \
+	--end=start+1day \
+	--color=BACK#CCCCCC \
+	--color=CANVAS#CCFFFF \
+	--color=SHADEB#9999CC \
+	--height=125 \
+	--upper-limit=656 \
+	--lower-limit=0 \
+	--rigid \
+	--base=1024 \
+	DEF:tot_mem=memory.rrd:mem:AVERAGE \
+	CDEF:tot_mem_cor=tot_mem,0,671744,LIMIT,UN,0,tot_mem,IF,1024,/ \
+	CDEF:machine_mem=tot_mem,656,+,tot_mem,- \
+	HRULE:656#000000:"Maximum Available Memory - 656 MB" \
+	AREA:machine_mem#CCFFFF:"Memory Unused" \
+	AREA:tot_mem_cor#6699CC:"Total memory consumed in MB"
+			</screen>
+		</section>
+		<section>
+			<title>example 1</title>
+			<screen>
+rrdtool create test.rrd             \
+            --start 920804400          \
+            DS:speed:COUNTER:600:U:U   \
+            RRA:AVERAGE:0.5:1:24       \
+            RRA:AVERAGE:0.5:6:10
+
+rrdtool update test.rrd 920804700:12345 920805000:12357 920805300:12363
+rrdtool update test.rrd 920805600:12363 920805900:12363 920806200:12373
+rrdtool update test.rrd 920806500:12383 920806800:12393 920807100:12399
+rrdtool update test.rrd 920807400:12405 920807700:12411 920808000:12415
+rrdtool update test.rrd 920808300:12420 920808600:12422 920808900:12423
+
+rrdtool fetch test.rrd AVERAGE --start 920804400 --end 920809200
+
+rrdtool graph speed.png                                 \
+         --start 920804400 --end 920808000               \
+         DEF:myspeed=test.rrd:speed:AVERAGE              \
+         LINE2:myspeed#FF0000
+
+rrdtool graph speed2.png                           \
+      --start 920804400 --end 920808000               \
+      --vertical-label m/s                            \
+      DEF:myspeed=test.rrd:speed:AVERAGE              \
+      CDEF:realspeed=myspeed,1000,\*                  \
+      LINE2:realspeed#FF0000
+
+rrdtool graph speed3.png                             \
+      --start 920804400 --end 920808000               \
+      --vertical-label km/h                           \
+      DEF:myspeed=test.rrd:speed:AVERAGE              \
+      "CDEF:kmh=myspeed,3600,*"                       \
+      CDEF:fast=kmh,100,GT,kmh,0,IF                   \
+      CDEF:good=kmh,100,GT,0,kmh,IF                   \
+      HRULE:100#0000FF:"Maximum allowed"              \
+      AREA:good#00FF00:"Good speed"                   \
+      AREA:fast#FF0000:"Too fast"
+
+rrdtool graph speed4.png                           \
+      --start 920804400 --end 920808000               \
+      --vertical-label km/h                           \
+      DEF:myspeed=test.rrd:speed:AVERAGE              \
+      CDEF:nonans=myspeed,UN,0,myspeed,IF             \
+      CDEF:kmh=nonans,3600,*                          \
+      CDEF:fast=kmh,100,GT,100,0,IF                   \
+      CDEF:over=kmh,100,GT,kmh,100,-,0,IF             \
+      CDEF:good=kmh,100,GT,0,kmh,IF                   \
+      HRULE:100#0000FF:"Maximum allowed"              \
+      AREA:good#00FF00:"Good speed"                   \
+      AREA:fast#550000:"Too fast"                     \
+      STACK:over#FF0000:"Over speed"
+
+
+
+
+   rrdtool create all.rrd --start 978300900 \
+            DS:a:COUNTER:600:U:U \
+            DS:b:GAUGE:600:U:U \
+            DS:c:DERIVE:600:U:U \
+            DS:d:ABSOLUTE:600:U:U \
+            RRA:AVERAGE:0.5:1:10
+   rrdtool update all.rrd \
+            978301200:300:1:600:300    \
+            978301500:600:3:1200:600   \
+            978301800:900:5:1800:900   \
+            978302100:1200:3:2400:1200 \
+            978302400:1500:1:2400:1500 \
+            978302700:1800:2:1800:1800 \
+            978303000:2100:4:0:2100    \
+            978303300:2400:6:600:2400  \
+            978303600:2700:4:600:2700  \
+            978303900:3000:2:1200:3000
+   rrdtool graph all1.png -s 978300600 -e 978304200 -h 400 \
+            DEF:linea=all.rrd:a:AVERAGE LINE3:linea#FF0000:"Line A" \
+            DEF:lineb=all.rrd:b:AVERAGE LINE3:lineb#00FF00:"Line B" \
+            DEF:linec=all.rrd:c:AVERAGE LINE3:linec#0000FF:"Line C" \
+            DEF:lined=all.rrd:d:AVERAGE LINE3:lined#000000:"Line D"
+			</screen>
+		</section>
+		<section>
+			<title>example 1</title>
+			<screen>
+rrdtool create seconds1.rrd   \
+  --start 920804700          \
+  DS:seconds:COUNTER:600:U:U \
+  RRA:AVERAGE:0.5:1:24
+
+rrdtool update seconds1.rrd \
+  920805000:000 920805300:300 920805600:600 920805900:900
+rrdtool update seconds1.rrd \
+  920806000:000 920806300:300 920806603:603 920806900:900
+
+rrdtool graph seconds1.png                       \
+  --start 920804700 --end 920806200             \
+  --height 200                                  \
+  --upper-limit 1.05 --lower-limit 0.95 --rigid \
+  DEF:seconds=seconds1.rrd:seconds:AVERAGE      \
+  CDEF:unknown=seconds,UN                       \
+  LINE2:seconds#0000FF                          \
+  AREA:unknown#FF0000
+			</screen>
+		</section>
+	</section>
+</chapter>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="openbr">
+	<title>OpenBR</title>
+	<para>开源生物特征识别库  OpenBR (面部识别)</para>
+	<para>http://openbiometrics.org/</para>
+</chapter>

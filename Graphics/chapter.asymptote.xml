@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="plantuml">
+	<title>Open-Source tool in Java to draw UML Diagram</title>
+	<para>http://plantuml.sourceforge.net/</para>
+</chapter>
+<chapter id="asymptote">
+	<title>Asymptote: The Vector Graphics Language</title>
+<!-- Matlab  -->
+	<para>http://asymptote.sourceforge.net/index.html</para>
+	<screen>
+$ sudo apt-get install asymptote
+	</screen>
+	<section id="asymptote.uml">
+		<title>UML</title>
+		<para>http://code.google.com/p/sml4asy/</para>
+		<screen>
+wget http://sml4asy.googlecode.com/files/sml4asy-0.01.tar.gz
+tar zxvf sml4asy-0.01.tar.gz
+sudo scp sml4asy-0.01/asy/* /usr/share/asymptote/
+		</screen>
+		<para>test</para>
+		<screen>
+asy sml4asy-0.01/examples/HelloSML.asy
+$ convert HelloSML.eps HelloSML.png
+		</screen>
+	</section>
+</chapter>
+
+<chapter id="metapost">
+	<title>MetaPost</title>
+</chapter>

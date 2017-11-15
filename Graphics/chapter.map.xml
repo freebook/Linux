@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="openstreetmap">
+	<title>OpenStreetMap</title>
+	<ulink url="https://www.openstreetmap.org/" />
+	<section id="openlayers">
+		<title>OpenLayers</title>
+		<para><ulink url="http://openlayers.org/" /></para>
+	</section>
+ 	<section id="leaflet">
+		<title>Leaflet</title>
+		<para><ulink url="http://leafletjs.com/" /></para>
+		<screen>
+map.setCenter(center,18);
+前面的center好理解，后面的18是个z参数，是一个表示缩放级别的数字，该参数的值范围为 0 到 17。缩放级别 0 表示最低的缩放级别（显示整个地球），增加该数字可以进一步放大。
+		</screen>
+		<screen>
+
+		</screen>
+		<screen>
+
+		</screen>
+	</section>	
+</chapter>
+<chapter id="baidu">
+	<title>Baidu Map</title>
+	<section id="circle">
+		<title>BMap.Circle</title>
+		<programlisting>
+	var point = new BMap.Point(22.111, 114.111);
+        var styleCircleF = {  
+        strokeColor:"red",    	//边线颜色。  
+        fillColor:"red",      	//填充颜色。当参数为空时，圆形将没有填充效果。  
+        strokeWeight: 1,       	//边线的宽度，以像素为单位。  
+        strokeOpacity: 1,    	//边线透明度，取值范围0 - 1。  
+        fillOpacity: 0.3,      	//填充的透明度，取值范围0 - 1。  
+        strokeStyle: 'dashed' 	//边线的样式，solid或dashed。  
+    } 
+    //画圆
+    var circleF = new BMap.Circle(point,50000,styleCircleF);
+		</programlisting>
+	</section>	
+</chapter>	

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!ENTITY part.graphics.xml			SYSTEM "part.graphics.xml">
+<!ENTITY chapter.gnuplot.xml		SYSTEM "chapter.gnuplot.xml">
+<!ENTITY chapter.ttdtool.xml		SYSTEM "chapter.ttdtool.xml">
+<!ENTITY chapter.graphviz.xml		SYSTEM "chapter.graphviz.xml">
+<!ENTITY chapter.openbr.xml			SYSTEM "chapter.openbr.xml">
+<!ENTITY chapter.map.xml			SYSTEM "chapter.map.xml">
+<!ENTITY chapter.ocr.xml			SYSTEM "chapter.ocr.xml">
+<!ENTITY chapter.asymptote.xml		SYSTEM "chapter.asymptote.xml">
