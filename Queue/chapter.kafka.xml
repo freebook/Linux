@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="kafka">
+	<title>Apache Kafka is a distributed publish-subscribe messaging system</title>
+	<para>http://kafka.apache.org/</para>
+	<section>
+		<title>安装 Kafka用于开发与测试环境</title>
+		<para>如果你是开发或测试环境使用，可以使用内置 zookeeper</para>
+		<screen>
+cd /usr/local/src
+wget http://apache.communilink.net/kafka/0.10.2.0/kafka_2.12-0.10.2.0.tgz
+tar zxvf kafka_2.12-0.10.2.0.tgz
+mv kafka_2.12-0.10.2.0 /srv/
+cp /srv/kafka_2.12-0.10.2.0/config/server.properties{,.original}
+echo "advertised.host.name=localhost" >> /srv/kafka_2.12-0.10.2.0/config/server.properties
+ln -s /srv/kafka_2.12-0.10.2.0 /srv/kafka
+/srv/kafka/bin/zookeeper-server-start.sh config/zookeeper.properties
+/srv/kafka/bin/kafka-server-start.sh /srv/kafka/config/server.properties		
+		</screen>
+		<para>启动 Kafka 服务</para>
+		<screen>
+/srv/kafka/bin/zookeeper-server-start.sh -daemon config/zookeeper.properties
+/srv/kafka/bin/kafka-server-start.sh -daemon /srv/kafka/config/server.properties
+		</screen>
+		<para>-daemon 表示守护进程方式在后台启动</para>
+		<para>停止 Kafka 服务</para>
+		<screen>
+/srv/kafka/bin/kafka-server-stop.sh
+/srv/kafka/bin/zookeeper-server-stop.sh
+		</screen>
+	</section>
+	<section>
+		<title>安装 Kafka 适用于 IDC </title>
+		<para>如果是生产环境安装脚本如下，独立安装zookeeper.</para>
+		<screen>
+#!/bin/bash
+
+cd /usr/local/src
+wget http://apache.communilink.net/zookeeper/zookeeper-3.4.9/zookeeper-3.4.9.tar.gz
+tar zxvf zookeeper-3.4.9.tar.gz
+cp zookeeper-3.4.9/conf/zoo_sample.cfg zookeeper-3.4.9/conf/zoo.cfg
+vim zookeeper-3.4.9/conf/zoo.cfg
+mv zookeeper-3.4.9 /srv/
+ln -s /srv/zookeeper-3.4.9 /srv/zookeeper
+#cd zookeeper-3.4.9
+/srv/zookeeper/bin/zkServer.sh start
+
+cd /usr/local/src
+wget http://apache.communilink.net/kafka/0.10.2.0/kafka_2.12-0.10.2.0.tgz
+tar zxvf kafka_2.12-0.10.2.0.tgz
+mv kafka_2.12-0.10.2.0 /srv/
+cp /srv/kafka_2.12-0.10.2.0/config/server.properties{,.original}
+echo "advertised.host.name=localhost" >> /srv/kafka_2.12-0.10.2.0/config/server.properties
+ln -s /srv/kafka_2.12-0.10.2.0 /srv/kafka
+/srv/kafka/bin/kafka-server-start.sh /srv/kafka/config/server.properties
+		</screen>
+		
+		<para>启动 zookeeper</para>
+		<screen>
+$ /srv/zookeeper/bin/zkServer.sh start		
+		</screen>
+		<para>停止 zookeeper</para>
+		<screen>
+$ /srv/zookeeper/bin/zkServer.sh stop
+ZooKeeper JMX enabled by default
+Using config: /srv/zookeeper/bin/../conf/zoo.cfg
+Stopping zookeeper ... STOPPED			
+		</screen>
+	</section>
+	<section>
+		<title>Kafka 日志</title>
+		<para>查看 server 日志</para>
+		<screen>
+tailf /srv/kafka/logs/server.log
+		</screen>
+	</section>
+	<section>
+		<title>测试 Kafka</title>
+		
+		<screen>
+$ cd /srv/kafka		
+		</screen>
+		<para>创建Topic</para>
+		<screen>
+$ bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test	
+Created topic "test".
+		</screen>
+		<para>查看Topic</para>
+		<screen>
+$ bin/kafka-topics.sh --list --zookeeper localhost:2181
+test
+		</screen>
+		<para>启动Producer 生产消息</para>
+		<screen>
+$ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
+This is a message
+This is another message
+		</screen>
+		<para>启动Consumer 消费消息</para>
+		<screen>
+$ bin/kafka-console-consumer.sh --zookeeper localhost:2181 --topic test --from-beginning
+This is a message
+This is another message
+		</screen>
+	</section>
+	<section>
+		<title>配置 Kafka</title>
+		<section>
+			<title>外网访问</title>
+			<para>默认 kafka对localhost提供访问，如果开放外面的IP进来你需要配置 config/server.properties</para>
+			<screen>
+listeners = PLAINTEXT://147.189.135.55:9092
+			</screen>
+			<para>以及</para>
+			<screen>
+advertised.host.name=147.189.135.55
+			</screen>
+		</section>
+		<section>
+			<title>group.id</title>
+			<para>查看 group.id 配置</para>
+			<screen>
+# cat config/consumer.properties  | grep "group\.id"
+group.id=test-consumer-group
+			</screen>			
+		</section>
+	</section>
+	<section>
+		<title>管理 Kafka</title>
+		<para>进入控制台</para>
+		<screen>
+bin/zookeeper-shell.sh localhost:2181
+		</screen>
+		<para>删除Topic</para>
+		<screen>
+$ /srv/kafka/bin/kafka-run-class.sh kafka.admin.TopicCommand --delete --topic kafkatopic --zookeeper localhost:2181
+		</screen>
+		<para>查看Topic 的 offset</para>
+		<screen>
+$ /srv/kafka/bin/kafka-consumer-offset-checker.sh  --zookeeper localhost:2181 --topic kafkatopic --group consumer	
+		</screen>
+	</section>
+	<section>
+		<title>FAQ</title>
+		<section>
+			<title>WARN Error while fetching metadata with correlation id 1 : {test=LEADER_NOT_AVAILABLE} (org.apache.kafka.clients.NetworkClient)</title>
+			<para>解决方法</para>
+			<screen>
+			<![CDATA[
+echo "advertised.host.name=localhost" >> /srv/kafka/config/server.properties
+			]]>
+			</screen>
+		</section>
+	</section>
+</section>

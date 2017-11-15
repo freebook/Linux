@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="zeromq">
+	<title>ZeroMQ</title>
+	<para><ulink url="http://www.zeromq.org/">ZeroMQ</ulink></para>
+<!--
+    http://nichol.as/zeromq-an-introduction
+-->
+	<screen>
+$ sudo apt-get install zeromq-bin libzmq0 libzmq-dev libzmq-dbg
+	</screen>
+    <section>
+        <title>python-zeromq</title>
+        <screen>
+sudo add-apt-repository ppa:chris-lea/zeromq
+sudo apt-get update
+        </screen>
+        <screen>
+sudo apt-get install python-zeromq
+        </screen>
+
+	    <section>
+		    <title>pyzmq</title>
+            <para><ulink url="http://zeromq.github.com/pyzmq/">http://zeromq.github.com/pyzmq/</ulink></para>
+		    <screen>
+$ sudo apt-get install autoconf automake
+$ sudo pip install pyzmq
+		    </screen>
+            <screen>
+$ git clone git://github.com/zeromq/pyzmq.git
+$ cd pyzmq
+$ python setup.py configure --zmq=/path/to/zmq/prefix
+$ python setup.py install
+            </screen>
+            <screen>
+easy_install pyzmq
+            </screen>
+	    </section>
+        <section>
+            <title>example</title>
+            <example>
+                <title>server.py</title>
+                <screen>
+$ cat server.py
+import zmq
+context = zmq.Context()
+socket = context.socket(zmq.REP)
+socket.bind("tcp://127.0.0.1:5000")
+
+while True:
+    msg = socket.recv()
+    print "Got", msg
+    socket.send(msg)
+                </screen>
+            </example>
+            <example>
+                <title>client.py</title>
+                <screen>
+$ cat client.py
+import zmq
+context = zmq.Context()
+socket = context.socket(zmq.REQ)
+socket.connect("tcp://127.0.0.1:5000")
+
+for i in range(10):
+    msg = "msg %s" % i
+    socket.send(msg)
+    print "Sending", msg
+    msg_in = socket.recv()
+                </screen>
+            </example>
+        </section>
+    </section>
+
+    <section>
+        <title>ruby zmq</title>
+        <screen>
+sudo gem install zmq
+        </screen>
+    </section>
+</section>
+
+<section id="nanomsg">
+	<title>nanomsg</title>
+	<para><ulink url="http://nanomsg.org/" /></para>
+	<para>nanomsg 是zeromq的C实现，zeromq使用C++语言开发，作者意识到有很多问题与设计缺陷，决定使用C重新实现。</para>
+</section>

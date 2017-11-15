@@ -1,4 +1,0 @@
-CentOS
-======
-
-CentOS Cookbook

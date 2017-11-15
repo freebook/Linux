@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!ENTITY chapter.queuing.xml		   	SYSTEM "chapter.queuing.xml">
+<!ENTITY chapter.queuing.rabbitmq.xml	SYSTEM "chapter.queuing.rabbitmq.xml">
+<!ENTITY chapter.queuing.zeromq.xml	    SYSTEM "chapter.queuing.zeromq.xml">
+<!ENTITY chapter.queuing.gearman.xml	SYSTEM "chapter.queuing.gearman.xml">
+<!ENTITY chapter.kafka.xml				SYSTEM "chapter.kafka.xml">

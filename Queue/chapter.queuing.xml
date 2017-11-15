@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="mqueue" ?>
+	<title>Message Queuing &amp; RPC</title>
+	<chapterinfo>
+		<keywordset>
+			<keyword>rabbitmq, zeromq, ActiveMQ, Kafka, Gearman</keyword>
+		</keywordset>
+	</chapterinfo>
+
+    &chapter.queuing.rabbitmq.xml;
+    &chapter.queuing.zeromq.xml;
+	&chapter.queuing.gearman.xml;
+	&chapter.kafka.xml;
+	
+	<section id="celery">
+		<title>Celery</title>
+		<para>http://www.celeryproject.org/</para>
+	</section>
+	<section id="ActiveMQ">
+		<title>ActiveMQ</title>
+		<para><ulink url="http://activemq.apache.org/">Apache ActiveMQ</ulink></para>
+	</section>
+    <section id="beanstalkd">
+    	<title>http://kr.github.io/beanstalkd/</title>
+    </section>
+    <section>
+    	<title>gRPC</title>
+    	<para>http://www.grpc.io/</para>
+    </section>
+</chapter>
