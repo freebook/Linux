@@ -921,8 +921,16 @@ rpmbuild -ba SPECS/bacula.spec --define "build_su110 1" --define "build_mysql4 1
 			</screen>
 			<para>注意：当两种同时使用时，外部--define无法替代%define 的定义。</para>
 		</section>
-		<section>
-			<title></title>
+		<section id="defattr">
+			<title>defattr</title>
+			<screen>
+			<![CDATA[
+%defattr(-,root,root,-)		
+			]]>
+			</screen>
+		</section>
+		<section id="rpmbuild.gpg">
+			<title>GPG 签名</title>
 			<para>查看GPG证书</para>
 			<screen>
 			<![CDATA[
@@ -953,6 +961,51 @@ rpmbuild --define "_topdir /path/to/macrodir" -bb --sign spec
 			<screen>
 Enter pass phrase:
 Pass phrase is good.
+			</screen>
+		</section>
+		<section id="rpmbuild.cmake3">
+			<title>使用 CMake3 编译并创建RPM包 </title>
+			<screen>
+			<![CDATA[
+root@VM_7_221_centos ~/mysql-outfile-plugin % cat Outfile.spec 
+Name: mysql-outfile-plugin		
+Version: 1.0
+Release:	1%{?dist}
+Summary: MySQL outfile plugin	
+
+Group: MySQL Database server
+License: CC 3.0
+URL: http://www.netkiller.cn	
+Source0: https://github.com/netkiller/mysql-outfile-plugin/archive/v1.0.tar.gz
+
+BuildRequires: cmake3 mysql-community-devel	
+Requires: gcc	
+
+%description
+
+
+%prep
+%setup -q
+
+
+%build
+cmake3 .
+make %{?_smp_mflags}
+
+
+%install
+make install DESTDIR=%{buildroot}
+
+
+%files
+/usr/lib64/mysql/plugin/liboutfile.so
+%doc
+
+
+
+%changelog
+			
+			]]>
 			</screen>
 		</section>
 		<section>
