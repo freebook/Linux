@@ -2,10 +2,14 @@
 <section id="kafka">
 	<title>Apache Kafka is a distributed publish-subscribe messaging system</title>
 	<para>http://kafka.apache.org/</para>
-	<section>
-		<title>安装 Kafka用于开发与测试环境</title>
-		<para>如果你是开发或测试环境使用，可以使用内置 zookeeper</para>
-		<screen>
+	<section id="kafka.setup">
+		<title>安装 Kafka</title>
+		<section>
+			<title>安装 Kafka用于开发与测试环境</title>
+			<para>如果你是开发或测试环境使用，可以使用内置 zookeeper</para>
+			<screen>
+			<![CDATA[
+			
 cd /usr/local/src
 wget http://apache.communilink.net/kafka/0.10.2.0/kafka_2.12-0.10.2.0.tgz
 tar zxvf kafka_2.12-0.10.2.0.tgz
@@ -14,24 +18,28 @@ cp /srv/kafka_2.12-0.10.2.0/config/server.properties{,.original}
 echo "advertised.host.name=localhost" >> /srv/kafka_2.12-0.10.2.0/config/server.properties
 ln -s /srv/kafka_2.12-0.10.2.0 /srv/kafka
 /srv/kafka/bin/zookeeper-server-start.sh config/zookeeper.properties
-/srv/kafka/bin/kafka-server-start.sh /srv/kafka/config/server.properties		
-		</screen>
-		<para>启动 Kafka 服务</para>
-		<screen>
-/srv/kafka/bin/zookeeper-server-start.sh -daemon config/zookeeper.properties
+/srv/kafka/bin/kafka-server-start.sh /srv/kafka/config/server.properties
+			]]>		
+			</screen>
+			<para>启动 Kafka 服务</para>
+			<screen>
+			<![CDATA[
+/srv/kafka/bin/zookeeper-server-start.sh -daemon /srv/kafka/config/zookeeper.properties
 /srv/kafka/bin/kafka-server-start.sh -daemon /srv/kafka/config/server.properties
-		</screen>
-		<para>-daemon 表示守护进程方式在后台启动</para>
-		<para>停止 Kafka 服务</para>
-		<screen>
+			]]>
+			</screen>
+			<para>-daemon 表示守护进程方式在后台启动</para>
+			<para>停止 Kafka 服务</para>
+			<screen>
 /srv/kafka/bin/kafka-server-stop.sh
 /srv/kafka/bin/zookeeper-server-stop.sh
-		</screen>
-	</section>
-	<section>
-		<title>安装 Kafka 适用于 IDC </title>
-		<para>如果是生产环境安装脚本如下，独立安装zookeeper.</para>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>安装 Kafka 适用于 IDC </title>
+			<para>如果是生产环境安装脚本如下，独立安装zookeeper.</para>
+			<screen>
+			<![CDATA[
 #!/bin/bash
 
 cd /usr/local/src
@@ -52,26 +60,44 @@ cp /srv/kafka_2.12-0.10.2.0/config/server.properties{,.original}
 echo "advertised.host.name=localhost" >> /srv/kafka_2.12-0.10.2.0/config/server.properties
 ln -s /srv/kafka_2.12-0.10.2.0 /srv/kafka
 /srv/kafka/bin/kafka-server-start.sh /srv/kafka/config/server.properties
-		</screen>
+			]]>
+			</screen>
 		
-		<para>启动 zookeeper</para>
-		<screen>
-$ /srv/zookeeper/bin/zkServer.sh start		
-		</screen>
-		<para>停止 zookeeper</para>
-		<screen>
+			<para>启动 zookeeper</para>
+			<screen>
+			<![CDATA[
+$ /srv/zookeeper/bin/zkServer.sh start
+			]]>		
+			</screen>
+			<para>停止 zookeeper</para>
+			<screen>
+			<![CDATA[
 $ /srv/zookeeper/bin/zkServer.sh stop
 ZooKeeper JMX enabled by default
 Using config: /srv/zookeeper/bin/../conf/zoo.cfg
-Stopping zookeeper ... STOPPED			
-		</screen>
-	</section>
-	<section>
-		<title>Kafka 日志</title>
-		<para>查看 server 日志</para>
-		<screen>
-tailf /srv/kafka/logs/server.log
-		</screen>
+Stopping zookeeper ... STOPPED
+			]]>			
+			</screen>
+		</section>
+		<section>
+			<title>Kafka 日志</title>
+			<para>查看 server 日志</para>
+			<screen>
+			<![CDATA[
+tailf /srv/kafka/logs/server.log			
+			]]>
+			</screen>
+		</section>
+		<section id="">
+			<title>检查 Kafka 线程</title>
+			<para>使用 jps 命令监控 Kafka 线程是否正确启动。</para>
+			<screen>
+			<![CDATA[
+root@netkiller /srv/kafka/logs % jps | grep Kafka
+32246 Kafka			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section>
 		<title>测试 Kafka</title>
@@ -139,7 +165,7 @@ $ /srv/kafka/bin/kafka-run-class.sh kafka.admin.TopicCommand --delete --topic ka
 $ /srv/kafka/bin/kafka-consumer-offset-checker.sh  --zookeeper localhost:2181 --topic kafkatopic --group consumer	
 		</screen>
 	</section>
-	<section>
+	<section id="kafka.faq">
 		<title>FAQ</title>
 		<section>
 			<title>WARN Error while fetching metadata with correlation id 1 : {test=LEADER_NOT_AVAILABLE} (org.apache.kafka.clients.NetworkClient)</title>
@@ -147,6 +173,24 @@ $ /srv/kafka/bin/kafka-consumer-offset-checker.sh  --zookeeper localhost:2181 --
 			<screen>
 			<![CDATA[
 echo "advertised.host.name=localhost" >> /srv/kafka/config/server.properties
+			]]>
+			</screen>
+		</section>
+		<section id="brokers">
+			<title>Error while executing topic command : Replication factor: 1 larger than available brokers: 0.</title>
+			<screen>
+			<![CDATA[
+root@VM_7_221_centos /srv/kafka % bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
+Error while executing topic command : Replication factor: 1 larger than available brokers: 0.
+[2017-11-26 10:55:11,532] ERROR org.apache.kafka.common.errors.InvalidReplicationFactorException: Replication factor: 1 larger than available brokers: 0.
+ (kafka.admin.TopicCommand$)			
+			]]>
+			</screen>
+			<para>检查 broker.id 配置 broker.id 必须大于 0</para>
+			<screen>
+			<![CDATA[
+root@netkiller /srv/kafka % cat config/server.properties | grep broker.id
+broker.id=1			
 			]]>
 			</screen>
 		</section>
