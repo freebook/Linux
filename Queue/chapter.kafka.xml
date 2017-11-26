@@ -194,5 +194,17 @@ broker.id=1
 			]]>
 			</screen>
 		</section>
+		<section id="bind">
+			<title>WARN Connection to node -1 could not be established. Broker may not be available. (org.apache.kafka.clients.NetworkClient)</title>
+			<para>Kafka 在防火墙后面，防火墙上面配置 NAT 规则映射到服务器</para>
+			<screen>
+			<![CDATA[
+# bind 任何IP地址
+listeners=PLAINTEXT://:9092
+# Wan IP 地址ß
+advertised.host.name=223.207.161.225
+			]]>
+			</screen>
+		</section>
 	</section>
 </section>
