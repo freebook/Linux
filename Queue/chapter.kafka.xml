@@ -201,8 +201,14 @@ broker.id=1
 			<![CDATA[
 # bind 任何IP地址
 listeners=PLAINTEXT://:9092
-# Wan IP 地址ß
+# Wan IP 地址
 advertised.host.name=223.207.161.225
+			]]>
+			</screen>
+			<tip><para>修改 advertised.host.name 后要删除 /tmp/kafka-logs 中的日志文件，否则无论如何你你都难以配置成功</para></tip>
+			<screen>
+			<![CDATA[
+rm -rf /tmp/kafka-logs			
 			]]>
 			</screen>
 		</section>
