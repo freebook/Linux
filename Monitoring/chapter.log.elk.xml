@@ -48,7 +48,7 @@ curl -s https://raw.githubusercontent.com/oscm/shell/master/log/beats/beats-5.x.
 	<section id="logstash.cli">
 		<title>logstash 命令简单应用</title>
 		<section>
-			<title>命令行运行</title>
+			<title>-e 命令行运行</title>
 			<para>logstash -e "input {stdin{}} output {stdout{}}"</para>
 			<screen>
 			<![CDATA[
@@ -58,11 +58,35 @@ curl -s https://raw.githubusercontent.com/oscm/shell/master/log/beats/beats-5.x.
 		</section>
 		
 		<section>
-			<title>指定配置文件</title>
+			<title>-f 指定配置文件</title>
 			<para></para>
 			<screen>
 			<![CDATA[
 logstash -f stdin.conf			
+			]]>
+			</screen>
+		</section>
+		<section id="configuration">
+			<title>-t：测试配置文件是否正确，然后退出。</title>
+			<screen>
+			<![CDATA[
+root@netkiller ~/logstash % /usr/share/logstash/bin/logstash -t -f test.conf
+WARNING: Default JAVA_OPTS will be overridden by the JAVA_OPTS defined in the environment. Environment JAVA_OPTS are -server -Xms2048m -Xmx4096m
+WARNING: Could not find logstash.yml which is typically located in $LS_HOME/config or /etc/logstash. You can specify the path using --path.settings. Continuing using the defaults
+Could not find log4j2 configuration at path /usr/share/logstash/config/log4j2.properties. Using default config which logs errors to the console
+Configuration OK
+			]]>
+			</screen>
+		</section>
+		<section id="output">
+			<title>-l：日志输出的地址</title>
+			<para>默认就是stdout直接在控制台中输出</para>
+		</section>
+		<section id="log.level">
+			<title>log.level 启动Debug模式</title>
+			<screen>
+			<![CDATA[
+% /usr/share/logstash/bin/logstash -f nginx.conf --path.settings /etc/logstash --log.level debug			
 			]]>
 			</screen>
 		</section>
@@ -221,6 +245,37 @@ output {
 				]]>
 				</screen>
 				<para>start_position => "beginning" 从头开始读，如果没有这个选项，只会读取最后更新的数据。</para>
+				<section id="input.type">
+					<title>指定文件类型</title>
+					<screen>
+					<![CDATA[
+input { 
+ file { path =>"/var/log/messages" type =>"syslog"} 
+ file { path =>"/var/log/apache/access.log" type =>"apache"} 
+}					 
+					]]>
+					</screen>
+					<section id="type.nginx">
+						<title>Nginx</title>
+						<screen>
+						<![CDATA[
+input {
+        file {
+                type => "nginx_access"
+                path => ["/usr/share/nginx/logs/test.access.log"]
+        }
+}
+output {
+        redis {
+                host => "localhost"
+                data_type => "list"
+                key => "logstash:redis"
+        }
+}						
+						]]>
+						</screen>
+					</section>
+				</section>
 			</section>
 			<section id="socket">
 				<title>TCP/UDP</title>
@@ -365,6 +420,156 @@ output {
 		</section>
 		<section id="filter">
 			<title>filter</title>
+			<section id="filter.patterns">
+				<title>patterns</title>
+				<para>创建匹配文件 /usr/share/logstash/patterns</para>
+				<screen>
+				<![CDATA[
+mkdir /usr/share/logstash/patterns
+vim /usr/share/logstash/patterns
+
+NGUSERNAME [a-zA-Z\.\@\-\+_%]+
+NGUSER %{NGUSERNAME}
+NGINXACCESS %{IPORHOST:clientip} %{NGUSER:ident} %{NGUSER:auth} \[%{HTTPDATE:timestamp}\] "%{WORD:verb} %{URIPATHPARAM:request} HTTP/%{NUMBER:httpversion}" %{NUMBER:response} (?:%{NUMBER:bytes}|-) (?:"(?:%{URI:referrer}|-)"|%{QS:referrer}) %{QS:agent}
+				]]>
+				</screen>
+				<screen>
+				<![CDATA[
+filter {
+  if [type] == "nginx-access" {
+    grok {
+      match => { "message" => "%{NGINXACCESS}" }
+    }
+  }
+}
+				]]>
+				</screen>
+			</section>
+			<section id="syslog">
+				<title>syslog</title>
+				<screen>
+				<![CDATA[
+input {
+  file {
+    type => "syslog" 
+    path => [ "/var/log/*.log", "/var/log/messages", "/var/log/syslog" ]
+    sincedb_path => "/opt/logstash/sincedb-access"
+  }
+  syslog {
+    type => "syslog"
+    port => "5544"
+  }
+}
+ 
+filter {
+  grok {
+    type => "syslog"
+    match => [ "message", "%{SYSLOGBASE2}" ]
+    add_tag => [ "syslog", "grokked" ]
+  }
+}
+ 
+output {
+ elasticsearch { host => "elk.netkiller.cn" }
+}				
+				]]>
+				</screen>
+			</section>
+			<section id="csv">
+				<title>csv</title>
+				<screen>
+				<![CDATA[
+input {
+    file {
+        type => "SSRCode"
+        path => "/SD/2015*/01*/*.csv"
+        start_position => "beginning"
+    }
+}
+ 
+filter {
+	csv {
+		columns => ["Code","Source"]
+		separator => ","
+	}
+	kv {
+		source => "uri"
+		field_split => "&?"
+		value_split => "="
+	}
+ 
+}
+ 
+# output logs to console and to elasticsearch
+output {
+    stdout {}
+    elasticsearch {
+        hosts => ["172.16.1.1:9200"]
+    }
+}				
+				]]>
+				</screen>
+			</section>
+			<section id="">
+				<title>使用ruby 处理 CSV文件</title>
+				<screen>
+				<![CDATA[
+input {
+    stdin {}
+}
+filter {
+    ruby {
+        init => "
+            begin
+                @@csv_file    = 'output.csv'
+                @@csv_headers = ['A','B','C']
+                if File.zero?(@@csv_file) || !File.exist?(@@csv_file)
+                    CSV.open(@@csv_file, 'w') do |csv|
+                        csv << @@csv_headers
+                    end
+                end
+            end
+        "
+        code => "
+            begin
+                event['@metadata']['csv_file']    = @@csv_file
+                event['@metadata']['csv_headers'] = @@csv_headers
+            end
+        "
+    }
+    csv {
+        columns => ["a", "b", "c"]
+    }
+}
+output {
+    csv {
+        fields => ["a", "b", "c"]
+        path   => "%{[@metadata][csv_file]}"
+    }
+    stdout {
+        codec => rubydebug {
+            metadata => true
+        }
+    }
+}				
+				]]>
+				</screen>
+				<para>测试</para>
+				<screen>
+				<![CDATA[
+echo "1,2,3\n4,5,6\n7,8,9" | ./bin/logstash -f csv-headers.conf				
+				]]>
+				</screen>
+				<para>输出结果</para>
+				<screen>
+				<![CDATA[
+A,B,C
+1,2,3
+4,5,6
+7,8,9
+				]]>
+				</screen>
+			</section>
 			<section>
 				<title>执行 ruby 代码</title>
 				<para>日期格式化, 将ISO 8601日期格式转换为 %Y-%m-%d %H:%M:%S</para>
@@ -394,7 +599,11 @@ output {
 				]]>
 				</screen>
 				<para>/usr/share/logstash/bin/logstash -f date.conf</para>
-			</section>			
+			</section>
+			<section id="">
+				<title>grok debug 工具</title>
+				<para>http://grokdebug.herokuapp.com</para>
+			</section>
 		</section>
 		<section id="output">
 			<title>output</title>
@@ -625,6 +834,37 @@ output {
 				]]>
 				</screen>
 			</example>
+		</section>
+		<section id="">
+			<title></title>
+			<section>
+			<![CDATA[
+			
+input {
+    file {
+        path => ["/home/test/data.csv"]
+        start_position => "beginning" #从什么位置读取，beginnig时导入原有数据
+        sincedb_path => "/test/111"
+                type => "csv"
+                tags => ["optical", "gather"]
+    }
+}
+
+
+filter {
+        if [type] == "csv" { #多个配置文件同时执行的区分
+        csv {
+            columns =>["name","device_id"]
+            separator => "^"
+			quote_char => "‰"
+			remove_field => ["device_id","branch_id","area_type"]
+       }
+   }
+output{
+}			
+			
+			]]>
+			</section>
 		</section>
 	</section>
 	<section id="faq">
