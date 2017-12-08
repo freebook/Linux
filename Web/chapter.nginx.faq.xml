@@ -92,6 +92,7 @@ location ~ \.php$ {
 	
 	<section id="413">
 		<title>413 Request Entity Too Large</title>
+		<subtitle>上传文件大小限制</subtitle>
 		<qandaset>
 			<qandaentry>
 				<question>
