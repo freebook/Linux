@@ -1,53 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="rabbitmq">
 	<title>RabbitMQ</title>
-	<para><ulink url="http://www.rabbitmq.com/">RabbitMQ</ulink></para>
+	<para>
+		<ulink url="http://www.rabbitmq.com/">RabbitMQ</ulink>
+	</para>
 	<section id="install">
 		<title>安装 RabbitMQ</title>
 		<para>running on 127.0.0.1 (localhost) on port 5672 (standard AMQP port).</para>
 		<section>
 			<title>Ubuntu</title>
 			<screen>
-$ sudo apt-get install rabbitmq-server
+			<![CDATA[
+$ sudo apt-get install rabbitmq-server			
+			]]>
+
 			</screen>
 		</section>
 		<section>
 			<title>CentOS</title>
 			<screen>
+			<![CDATA[
 # yum install -y rabbitmq-server
 # chkconfig rabbitmq-server on
-# service rabbitmq-server start
+# service rabbitmq-server start			
+			]]>
+
 			</screen>
 			<para>添加用户, 添加权限, 删除guest用户</para>
 			<screen>
+			<![CDATA[
 # rabbitmqctl add_user rabbit password
 # rabbitmqctl set_permissions -p "/" rabbit ".*" ".*" ".*"
-# rabbitmqctl delete_user guest
+# rabbitmqctl delete_user guest			
+			]]>
+
 			</screen>
 		</section>
 		<section>
 			<title>OSCM 一键安装</title>
 			<screen>
+			<![CDATA[
 curl -s https://raw.githubusercontent.com/oscm/shell/master/mq/rabbitmq/rabbitmq-server-3.6.10.sh | bash
 
 rabbitmqctl add_user admin admin123
 rabbitmqctl set_user_tags admin administrator
-rabbitmqctl set_permissions -p "/" admin ".*" ".*" ".*"
+rabbitmqctl set_permissions -p "/" admin ".*" ".*" ".*"			
+			]]>
 			</screen>
 		</section>
 		<section>
 			<title>检查端口</title>
 			<screen>
+			<![CDATA[
 [root@netkiller ~]# ss -lnt | grep 5672
-LISTEN     0      128          *:25672                    *:*                  
-LISTEN     0      128         :::5672                    :::*
+LISTEN 0 128 *:25672 *:*
+LISTEN 0 128 :::5672 :::*			
+			]]>			
 			</screen>
 		</section>
+	</section>
+	<section id="rabbitmq.config">
+		<title>配置 RabbitMQ</title>
+		<para>创建配置文件，默认情况/etc/rabbitmq/下面什么都没有。你需要从共享文档中复制一份配置文件过去。</para>
+		<screen>
+		<![CDATA[
+cp /usr/share/doc/rabbitmq-server-3.6.10/rabbitmq.config.example /etc/rabbitmq/rabbitmq.config
+		]]>
+		</screen>
+		<section id="tcp_listeners">
+			<title>监听所有适配器地址</title>
+			<para>默认 RabbitMQ 监听 localhost 如果你需要让外部机器连接进来，需要配置 tcp_listeners 0.0.0.0</para>
+			<screen>
+			<![CDATA[
+ {tcp_listeners, [{"0.0.0.0",5672}]}		
+			]]>
+			</screen>
+		</section>
+
 	</section>
 	<section id="rabbitmqctl">
 		<title>rabbitmqctl - command line tool for managing a RabbitMQ broker</title>
 		<screen>
-rabbitmqctl status
+			rabbitmqctl status
 		</screen>
 		<section id="change_password">
 			<title>change_password</title>
@@ -60,60 +94,68 @@ rabbitmqctl change_password admin <new_password>
 		<section id="list_users">
 			<title>list_users</title>
 			<screen>
+			<![CDATA[
 # rabbitmqctl list_users
 Listing users ...
-guest	[administrator]
-...done.
+guest [administrator]
+...done.			
+			]]>
 			</screen>
 		</section>
 		<section id="add_vhost">
 			<title>虚拟机管理</title>
 			<screen>
+			<![CDATA[
 $ rabbitmqctl add_vhost test
 $ rabbitmqctl add_user testuser password
 $ rabbitmqctl set_permissions -p test testuser ".*" ".*" ".*"			
+			]]>			
 			</screen>
 		</section>
-		
+
 		<section id="list_queues">
 			<title>list_queues</title>
 			<screen>
+			<![CDATA[
 # rabbitmqctl list_queues
 Listing queues ...
-amq.gen-RhBwbb9EdZ8Fgk_heGZQ2w	0
-bb	0
-customer	276930
-demo	0
-email	0
-example	0
-hello	1
-members_id	282
-new_members_id	0
-q_linvo	0
-real	0
+amq.gen-RhBwbb9EdZ8Fgk_heGZQ2w 0
+bb 0
+customer 276930
+demo 0
+email 0
+example 0
+hello 1
+members_id 282
+new_members_id 0
+q_linvo 0
+real 0
 ...done.
+				]]>
 			</screen>
 			<screen>
 
 			</screen>
 			<screen>
 			</screen>
-		</section>		
+		</section>
 		<section id="list_exchanges">
 			<title>list_exchanges</title>
 			<screen>
+			<![CDATA[
 # rabbitmqctl list_exchanges
 Listing exchanges ...
-	direct
-amq.direct	direct
-amq.fanout	fanout
-amq.headers	headers
-amq.match	headers
-amq.rabbitmq.log	topic
-amq.rabbitmq.trace	topic
-amq.topic	topic
-email	direct
+direct
+amq.direct direct
+amq.fanout fanout
+amq.headers headers
+amq.match headers
+amq.rabbitmq.log topic
+amq.rabbitmq.trace topic
+amq.topic topic
+email direct
 ...done.
+			]]>
 			</screen>
 		</section>
 	</section>
@@ -121,24 +163,36 @@ email	direct
 		<title>rabbitmq-plugins - command line tool for managing RabbitMQ broker plugins</title>
 		<para>启用插件</para>
 		<screen>
+		<![CDATA[
 rabbitmq-plugins enable rabbitmq_management		
+		]]>
 		</screen>
 		<section>
 			<title>rabbitmq_management</title>
 			<para>RabbitMQ Management HTTP API (https://cdn.rawgit.com/rabbitmq/rabbitmq-management/rabbitmq_v3_6_0/priv/www/api/index.html)</para>
 			<para>启用插件 Management and Monitoring 插件</para>
 			<screen>
+			<![CDATA[			
 rabbitmq-plugins enable rabbitmq_management
-systemctl restart rabbitmq-server			
+systemctl restart rabbitmq-server
+				]]>
 			</screen>
 			<screen>
+			<![CDATA[
 # curl -u guest:guest http://localhost:15672/api/overview
-{"management_version":"3.3.5","statistics_level":"fine","exchange_types":[{"name":"topic","description":"AMQP topic exchange, as per the AMQP specification","enabled":true},{"name":"fanout","description":"AMQP fanout exchange, as per the AMQP specification","enabled":true},{"name":"direct","description":"AMQP direct exchange, as per the AMQP specification","enabled":true},{"name":"headers","description":"AMQP headers exchange, as per the AMQP specification","enabled":true}],"rabbitmq_version":"3.3.5","cluster_name":"rabbit@iZ623qr3xctZ","erlang_version":"R16B03-1","erlang_full_version":"Erlang R16B03-1 (erts-5.10.4) [source] [64-bit] [smp:8:8] [async-threads:30] [hipe] [kernel-poll:true]","message_stats":{},"queue_totals":{"messages":0,"messages_details":{"rate":0.0},"messages_ready":0,"messages_ready_details":{"rate":0.0},"messages_unacknowledged":0,"messages_unacknowledged_details":{"rate":0.0}},"object_totals":{"consumers":1,"queues":3,"exchanges":10,"connections":1,"channels":1},"node":"rabbit@iZ623qr3xctZ","statistics_db_node":"rabbit@iZ623qr3xctZ","listeners":[{"node":"rabbit@iZ623qr3xctZ","protocol":"amqp","ip_address":"::","port":5672},{"node":"rabbit@iZ623qr3xctZ","protocol":"clustering","ip_address":"::","port":25672}],"contexts":[{"node":"rabbit@iZ623qr3xctZ","description":"RabbitMQ Management","path":"/","port":15672}]}			
+{"management_version":"3.3.5","statistics_level":"fine","exchange_types":[{"name":"topic","description":"AMQP topic exchange, as per the AMQP specification","enabled":true},{"name":"fanout","description":"AMQP fanout exchange, as per the AMQP specification","enabled":true},{"name":"direct","description":"AMQP direct exchange, as per the AMQP specification","enabled":true},{"name":"headers","description":"AMQP headers exchange, as per the
+AMQP specification","enabled":true}],"rabbitmq_version":"3.3.5","cluster_name":"rabbit@iZ623qr3xctZ","erlang_version":"R16B03-1","erlang_full_version":"Erlang R16B03-1
+(erts-5.10.4) [source] [64-bit] [smp:8:8] [async-threads:30] [hipe]
+[kernel-poll:true]","message_stats":{},"queue_totals":{"messages":0,"messages_details":{"rate":0.0},"messages_ready":0,"messages_ready_details":{"rate":0.0},"messages_unacknowledged":0,"messages_unacknowledged_details":{"rate":0.0}},"object_totals":{"consumers":1,"queues":3,"exchanges":10,"connections":1,"channels":1},"node":"rabbit@iZ623qr3xctZ","statistics_db_node":"rabbit@iZ623qr3xctZ","listeners":[{"node":"rabbit@iZ623qr3xctZ","protocol":"amqp","ip_address":"::","port":5672},{"node":"rabbit@iZ623qr3xctZ","protocol":"clustering","ip_address":"::","port":25672}],"contexts":[{"node":"rabbit@iZ623qr3xctZ","description":"RabbitMQ
+Management","path":"/","port":15672}
+				]]>
 			</screen>
 			<para>vhosts</para>
 			<screen>
-# curl -u guest:guest http://localhost:15672/api/vhosts
-[{"messages":0,"messages_details":{"rate":0.0},"messages_ready":0,"messages_ready_details":{"rate":0.0},"messages_unacknowledged":0,"messages_unacknowledged_details":{"rate":0.0},"recv_oct":617,"recv_oct_details":{"rate":0.0},"send_oct":625,"send_oct_details":{"rate":0.0},"name":"/","tracing":false}]			
+			<![CDATA[
+	# curl -u guest:guest http://localhost:15672/api/vhosts
+				[{"messages":0,"messages_details":{"rate":0.0},"messages_ready":0,"messages_ready_details":{"rate":0.0},"messages_unacknowledged":0,"messages_unacknowledged_details":{"rate":0.0},"recv_oct":617,"recv_oct_details":{"rate":0.0},"send_oct":625,"send_oct_details":{"rate":0.0},"name":"/","tracing":false}]			
+			]]>
 			</screen>
 			<para>queues</para>
 			<screen>
@@ -220,63 +274,72 @@ systemctl restart rabbitmq-server
 "auto_delete":false,
 "arguments":{},
 "node":"rabbit@iZ623qr3xctZ"}		
-			]]>	
+			]]>
 			</screen>
 		</section>
 	</section>
 	<section id="rabbitmq.python.pika">
 		<title>Python - Pika</title>
-		<para><ulink url="http://pika.github.com/">http://pika.github.com/</ulink></para>
+		<para>
+			<ulink url="http://pika.github.com/">http://pika.github.com/</ulink>
+		</para>
 		<screen>
+		<![CDATA[
 sudo apt-get install python-setuptools python-pip git-core
 sudo pip install pika
 
-sudo easy_install pika
+sudo easy_install pika		
+		]]>
+			
 		</screen>
 	</section>
 	<section id="rabbitmq.ruby.amqp">
 		<title>Ruby amqp</title>
-<!--
-$ gem sources -a http://gems.github.com
-http://gems.github.com added to sources
--->
+		<!-- $ gem sources -a http://gems.github.com http://gems.github.com added to sources -->
 		<screen>
-$ sudo gem install amqp
+		<![CDATA[
+$ sudo gem install amqp		
+		]]>
 		</screen>
 		<example>
 			<title>Ruby on RabbitMQ</title>
 			<para>subscriber.rb</para>
 			<screen>
+			<![CDATA[
 $ cat subscriber.rb
 require 'rubygems'
 require 'amqp'
 
 EM.run {
-  amq = MQ.new
-  amq.queue("logins").subscribe do |login|
-    puts login
-  end
-}
+amq = MQ.new
+amq.queue("logins").subscribe do |login|
+puts login
+end
+}			
+			]]>
 			</screen>
 			<para>producer.rb</para>
 			<screen>
+			<![CDATA[
 $ cat producer.rb
 require 'rubygems'
 require 'amqp'
 
 EM.run {
-  amq = MQ.new
-  queue = amq.queue("logins")
-  %w[scott nic robi].each { |login|
-      queue.publish(login)
-  }
+amq = MQ.new
+queue = amq.queue("logins")
+%w[scott nic robi].each { |login|
+queue.publish(login)
 }
+}			
+			]]>
 			</screen>
 			<para>test</para>
 			<screen>
+			<![CDATA[
 $ ruby subscriber.rb
-
-$ ruby producer.rb
+$ ruby producer.rb			
+			]]>
 			</screen>
 		</example>
 	</section>

@@ -13,36 +13,56 @@
 	<para>Redis</para>
 	<para>ElasticSearch + Logstash + Kibana 均使用 5.2 版本</para>
 	<para>以下安装均使用 Netkiller OSCM 脚本一键安装</para>
+	
 	<section id="setup">
-		<title>ElasticSearch + Logstash + Kibana 安装</title>
-		<section>
-			<title>ElasticSearch 安装</title>
-			<para>粘贴下面命令到Linux控制台即可一键安装</para>
+		<title>安装</title>
+		<section id="6.x">
+			<title>6.x</title>
 			<screen>
 			<![CDATA[
-curl -s https://raw.githubusercontent.com/oscm/shell/master/search/elasticsearch/elasticsearch-5.x.sh | bash
+curl -s https://raw.githubusercontent.com/oscm/shell/master/search/elastic/elastic-6.x.sh | bash
 			]]>
 			</screen>
 		</section>
-		<section>
-			<title>Kibana 安装</title>
-			<screen>
-			<![CDATA[
+		<section id="5.x">
+			<title>ElasticSearch + Logstash + Kibana 安装</title>
+			<section>
+				<title>ElasticSearch 安装</title>
+				<para>粘贴下面命令到Linux控制台即可一键安装</para>
+				<screen>
+				<![CDATA[
+curl -s https://raw.githubusercontent.com/oscm/shell/master/search/elasticsearch/elasticsearch-5.x.sh | bash
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>Kibana 安装</title>
+				<screen>
+				<![CDATA[
 curl -s https://raw.githubusercontent.com/oscm/shell/master/log/kibana/kibana-5.x.sh | bash
-			]]>		
-			</screen>
-		</section>
-		<section id="logstash">
-			<title>Logstash 安装</title>
-			<screen>
+				]]>		
+				</screen>
+			</section>
+			<section id="logstash">
+				<title>Logstash 安装</title>
+				<screen>
 curl -s https://raw.githubusercontent.com/oscm/shell/master/log/kibana/logstash-5.x.sh | bash		
-			</screen>
-		</section>
-		<section id="beats">
-			<title>Beats 安装</title>
-			<screen>
-curl -s https://raw.githubusercontent.com/oscm/shell/master/log/beats/beats-5.x.sh | bash
-			</screen>
+				</screen>
+			</section>
+			<section>
+				<title>从 5.x 升级到 6.x</title>
+				<para>升级仓库</para>
+				<screen>
+				<![CDATA[
+curl -s https://raw.githubusercontent.com/oscm/shell/master/search/elastic/elastic-6.x.sh | bash		
+				]]>
+				</screen>
+				<screen>
+				<![CDATA[
+yum update logstash
+				]]>
+				</screen>
+			</section>
 		</section>
 	</section>
 	<section id="logstash.cli">
@@ -62,7 +82,9 @@ curl -s https://raw.githubusercontent.com/oscm/shell/master/log/beats/beats-5.x.
 			<para></para>
 			<screen>
 			<![CDATA[
-logstash -f stdin.conf			
+/usr/share/logstash/bin/logstash -f stdin.conf		
+
+/usr/share/logstash/bin/logstash -f jdbc.conf --path.settings /etc/logstash --path.data /tmp	
 			]]>
 			</screen>
 		</section>
@@ -420,6 +442,25 @@ output {
 		</section>
 		<section id="filter">
 			<title>filter</title>
+			<section id="date">
+				<title>日期格式化</title>
+				<para>系统默认是 ISO8601 如果需要转换为 yyyy-MM-dd-HH:mm:ss 参考：</para>
+				<programlisting>
+				<![CDATA[
+
+filter {
+  date {
+    match => [ "ctime", "yyyy-MM-dd HH:mm:ss" ]
+    locale => "cn"
+  }
+ date {
+    match => [ "mtime", "yyyy-MM-dd HH:mm:ss" ]
+    locale => "cn"
+  } 
+}				
+				]]>
+				</programlisting>
+			</section>
 			<section id="filter.patterns">
 				<title>patterns</title>
 				<para>创建匹配文件 /usr/share/logstash/patterns</para>
@@ -510,7 +551,7 @@ output {
 				]]>
 				</screen>
 			</section>
-			<section id="">
+			<section id="filter.ruby.csv">
 				<title>使用ruby 处理 CSV文件</title>
 				<screen>
 				<![CDATA[
@@ -570,7 +611,7 @@ A,B,C
 				]]>
 				</screen>
 			</section>
-			<section>
+			<section id="filter.ruby">
 				<title>执行 ruby 代码</title>
 				<para>日期格式化, 将ISO 8601日期格式转换为 %Y-%m-%d %H:%M:%S</para>
 				<para>保存下面内容到配置文件data.conf</para>
@@ -582,11 +623,13 @@ input {
 filter {
 
 	ruby {
-        code => "event.set('ctime', event.get('[ctime]').time.localtime.strftime('%Y-%m-%d %H:%M:%S'))"
+		init => "require 'time'"
+        code => "event.set('ctime', event.get('ctime').time.localtime.strftime('%Y-%m-%d %H:%M:%S'))"
     }
 
 	ruby {
-        code => "event.set('mtime', event.get('[mtime]').time.localtime.strftime('%Y-%m-%d %H:%M:%S'))"
+		init => "require 'time'"
+        code => "event.set('mtime', event.get('mtime').time.localtime.strftime('%Y-%m-%d %H:%M:%S'))"
     }
 }
 output {
@@ -600,13 +643,21 @@ output {
 				</screen>
 				<para>/usr/share/logstash/bin/logstash -f date.conf</para>
 			</section>
-			<section id="">
+			<section id="grok.debug">
 				<title>grok debug 工具</title>
 				<para>http://grokdebug.herokuapp.com</para>
 			</section>
 		</section>
 		<section id="output">
 			<title>output</title>
+			<section>
+				<title>stdout</title>
+				<screen>
+output {
+	stdout { codec => rubydebug }
+}
+				</screen>
+			</section>
 			<section id="file">
 				<title>file 写入文件</title>
 				<screen>
@@ -623,7 +674,6 @@ output {
 			</section>
 			<section id="elasticsearch">
 				<title>elasticsearch</title>
-				
 				<screen>
 				<![CDATA[
 output {
@@ -642,7 +692,6 @@ output {
 					<![CDATA[
 index => "logstash-%{+YYYY.MM.dd}"
 
-	
 "_index" : "logstash-2017.03.22"	
 					]]>
 					</screen>
@@ -692,14 +741,7 @@ output {
 				]]>
 				</screen>
 			</section>
-			<section>
-				<title>stdout</title>
-				<screen>
-output {
-	stdout { codec => rubydebug }
-}
-				</screen>
-			</section>
+			
 		</section>
 	</section>
 	<section id="logstash.example">
@@ -935,5 +977,33 @@ output {
 			]]>
 			</screen>
 		</section>
+		<section id="">
+			<title>5.x 升级至 6.x 的变化</title>
+			<para>5.x type类型如果是date，那么系统默认使用 ISO8601 格式。 6.x 修复了这个问题。"ctime": "2017-12-18 11:21:57"</para>
+		</section>
+	</section>
+</chapter>
+<chapter id="beta"><?dbhtml dir="elk" ?>
+	<title>Beta</title>
+	<section id="beta.setup">
+		<title>安装 Beta</title>
+		<section id="6.x">
+			<title>Beats 6.x 安装</title>
+			<screen>
+			<![CDATA[
+curl -s https://raw.githubusercontent.com/oscm/shell/master/search/elastic/elastic-6.x.sh | bash
+curl -s https://raw.githubusercontent.com/oscm/shell/master/search/elastic/beats/beats.sh | bash
+			]]>
+			</screen>
+		</section>
+		<section id="beats">
+			<title>Beats 5.x 安装</title>
+			<screen>
+curl -s https://raw.githubusercontent.com/oscm/shell/master/log/beats/beats-5.x.sh | bash
+			</screen>
+		</section>	
+	</section>	
+	<section id="filebeat">
+		<title>filebeat</title>
 	</section>
 </chapter>
