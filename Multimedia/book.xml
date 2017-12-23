@@ -3,10 +3,8 @@
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V5.0//EN"
 	"/usr/share/xml/docbook/schema/dtd/5.0/docbook.dtd" [
 
-	<!ENTITY book.info.legalnotice.xml	SYSTEM "../common/book.info.legalnotice.xml">
-	<!ENTITY book.info.abstract.xml		SYSTEM "../book.info.abstract.xml">
-	<!ENTITY about.me.xml				SYSTEM "../common/about.me.xml">
-	<!ENTITY book.dedication.xml       	SYSTEM "../common/book.dedication.xml">
+	<!ENTITY % common.doctype.entity.xml 		SYSTEM "../../common/doctype.entity.xml">
+	
 	<!ENTITY book.appendix.xml			SYSTEM "book.appendix.xml">
 
 	<!ENTITY % doctype.entity.xml 			SYSTEM "doctype.entity.xml">
