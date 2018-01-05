@@ -634,7 +634,7 @@ $ rpm -q --changelog openssl-1.0.1e | grep -B 1 CVE-2014-0160
 yum search rpm-build
 yum install -y rpm-build
 		</screen>
-		<para>Debian: sudo apt-get install rpm</para>
+		<para>Debian/Ubuntu: sudo apt-get install rpm</para>
 		<para>rpm 工作空间，默认是/usr/src/redhat/</para>
 		<screen>
 		<![CDATA[
@@ -835,7 +835,7 @@ License    : BSD
 Description:
            : description
 		</screen>
-		<section>
+		<section id="rpmbuild.macros">
 			<title>RPM_directory_macros</title>
 			<para>http://fedoraproject.org/wiki/Packaging/RPMMacros#RPM_directory_macros</para>
 			<screen>
@@ -907,7 +907,7 @@ Other macros
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="rpmbuild.define">
 			<title>--define 专递模板变量</title>
 			<para>spec 文件中定义宏默认值</para>
 			<screen>
@@ -931,6 +931,12 @@ rpmbuild -ba SPECS/bacula.spec --define "build_su110 1" --define "build_mysql4 1
 		</section>
 		<section id="rpmbuild.gpg">
 			<title>GPG 签名</title>
+			<para>创建证书</para>
+			<screen>
+			<![CDATA[
+$ % gpg --gen-key			
+			]]>
+			</screen>			
 			<para>查看GPG证书</para>
 			<screen>
 			<![CDATA[
