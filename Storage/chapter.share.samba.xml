@@ -5,9 +5,9 @@
 		<title>install</title>
 		<section>
 			<title>Ubuntu</title>
-			<para>环境 ubuntu 8.10</para>
+			<para>环境 ubuntu 17.10</para>
 			<screen>
-$ sudo apt-get install samba
+$ sudo apt install samba
 			</screen>
 			<para>查看Samba 服务器的端口</para>
 			<screen>
@@ -48,7 +48,7 @@ neo@shenzhen:~$
 			</screen>
 		</section>
 	
-		<section>
+		<section id="centos7">
 			<title>CentOS 7</title>
 			<screen>
 yum install -y samba
@@ -59,7 +59,7 @@ systemctl enable smb
 systemctl start smb
 			</screen>
 		</section>
-		<section>
+		<section id="samba.firewall">
 			<title>firewall</title>
 			<para>防火墙</para>
 			<screen>
@@ -73,7 +73,7 @@ firewall-cmd --reload
 			</screen>
 			<para>iptables -L</para>
 		</section>
-		<section>
+		<section id="samba.SELinux">
 			<title>SELinux Configuration</title>
 			<screen>
 setsebool -P samba_enable_home_dirs on

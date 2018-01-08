@@ -248,6 +248,43 @@ access.2010-10-01.log  access.2010-10-12.log  access.2010-10-25.log  access.2010
 		<para>*.zip</para>
 		<command>zip/unzip file[.zip]</command>
 	</section>
+	<section id="bzip2">
+		<title>bzip2, bunzip2 - a block-sorting file compressor</title>
+		<screen>
+		<![CDATA[
+[root@localhost src]# yum install bzip2		
+		]]>
+		</screen>
+		<para>查看RPM包所含文件</para>
+		<screen>
+		<![CDATA[
+[root@localhost src]# rpm -ql bzip2-1.0.6-13.el7
+/usr/bin/bunzip2
+/usr/bin/bzcat
+/usr/bin/bzcmp
+/usr/bin/bzdiff
+/usr/bin/bzgrep
+/usr/bin/bzip2
+/usr/bin/bzip2recover
+/usr/bin/bzless
+/usr/bin/bzmore
+/usr/share/doc/bzip2-1.0.6
+/usr/share/doc/bzip2-1.0.6/CHANGES
+/usr/share/doc/bzip2-1.0.6/LICENSE
+/usr/share/doc/bzip2-1.0.6/README
+/usr/share/man/man1/bunzip2.1.gz
+/usr/share/man/man1/bzcat.1.gz
+/usr/share/man/man1/bzcmp.1.gz
+/usr/share/man/man1/bzdiff.1.gz
+/usr/share/man/man1/bzgrep.1.gz
+/usr/share/man/man1/bzip2.1.gz
+/usr/share/man/man1/bzip2recover.1.gz
+/usr/share/man/man1/bzless.1.gz
+/usr/share/man/man1/bzmore.1.gz
+		
+		]]>
+		</screen>
+	</section>
 	<section id="rar">
 		<title>RAR</title>
 		<screen>
