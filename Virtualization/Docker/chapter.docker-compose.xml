@@ -22,6 +22,55 @@ curl -s https://raw.githubusercontent.com/oscm/shell/master/virtualization/docke
 			</screen>
 		</section>
 	</section>
+	<section id="docker-compose.yml">
+		<title>docker-compose.yml</title>
+		<para>本章节介绍如何定义 docker-compose.yml 文件</para>
+		<para>首先创建项目目录</para>
+		<screen>
+		<![CDATA[
+mkdir docker
+cd docker
+vim 	docker-compose.yml
+		]]>
+		</screen>
+		<section id="version">
+			<title>版本号</title>
+			<screen>
+			<![CDATA[
+version: '3'			
+			]]>
+			</screen>
+		</section>
+		<section id="image">
+			<title>镜像</title>
+			<para>image: mysql:5.7 表示使用 mysql:5.7 镜像, image: mysql:latest 表示 mysql 最新版</para>
+			<screen>
+			<![CDATA[
+services:
+   db:
+     image: mysql:5.7
+     volumes:
+       - db_data:/var/lib/mysql
+     restart: always
+     environment:
+       MYSQL_ROOT_PASSWORD: somewordpress
+       MYSQL_DATABASE: wordpress
+       MYSQL_USER: wordpress
+       MYSQL_PASSWORD: wordpress			
+			]]>
+			</screen>
+			<section id="volumes">
+				<title>挂在卷</title>
+				<screen>
+				<![CDATA[
+     volumes:
+       - db_data:/var/lib/mysql
+				]]>
+				</screen>
+				
+			</section>
+		</section>
+	</section>
 	<section id="up_down">
 		<title>启动/停止</title>
 		<section id="up">
