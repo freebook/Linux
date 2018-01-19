@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="docker-compose">
+	<title>docker-compose - Define and run multi-container applications with Docker.</title>
+	<subtitle></subtitle>
+	<section>
+		<title>安装 docker-compose</title>
+		<section>
+			<title>使用 pip 安装</title>
+			<screen>
+			<![CDATA[
+yum install -y python-pip
+pip install docker-compose
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>OSCM 安装</title>
+			<screen>
+			<![CDATA[
+curl -s https://raw.githubusercontent.com/oscm/shell/master/virtualization/docker/docker-compose.sh | bash
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section id="up_down">
+		<title>启动/停止</title>
+		<section id="up">
+			<title>启动</title>
+			<para>docker-compose up</para>
+			<screen>
+			<![CDATA[
+[root@localhost docker]# docker-compose up
+			]]>
+			</screen>
+			<para>守护进程</para>
+			<screen>
+			<![CDATA[
+docker-compose up -d			
+			]]>
+			</screen>
+		</section>
+		<section id="down">
+			<title>停止</title>
+			<para>docker-compose down</para>
+			<screen>
+			<![CDATA[
+[root@localhost docker]# docker-compose down
+Removing docker_membersrvc_1 ... done		
+			]]>
+			</screen>
+		</section>
+
+	</section>
+	<section>
+		<title>查看进程</title>
+		<para>docker-compose ps</para>
+		<screen>
+		<![CDATA[
+[root@localhost docker]# docker-compose ps 
+      Name                     Command               State                                   Ports                                  
+-----------------------------------------------------------------------------------------------------------------------------------
+test_membersrvc_1   membersrvc                       Up      0.0.0.0:7054->7054/tcp                                                 
+test_vp0_1          sh -c sleep 5; peer node s ...   Up      0.0.0.0:7050->7050/tcp, 0.0.0.0:7051->7051/tcp, 0.0.0.0:7053->7053/tcp			
+		]]>
+		</screen>
+	</section>
+	<section id="">
+		<title>查看日志</title>
+		<screen>
+		<![CDATA[
+docker-compose logs -f vp0		
+		]]>
+		</screen>
+	</section>
+	<section id="">
+		<title>执行命令</title>
+		<screen>
+		<![CDATA[
+docker-compose exec vp0 bash		
+		]]>
+		</screen>
+	</section>
+</section>
