@@ -149,8 +149,8 @@
 		</publisher>
 		<isbn>ISBN#</isbn>
 		<edition>User's Guide version 1.0 for Linux</edition>
-		<pubdate>2017-02-13</pubdate>
-		<releaseinfo></releaseinfo>
+		<pubdate>$Date$</pubdate>
+		<releaseinfo>2017-02-13</releaseinfo>
 
 		&book.info.legalnotice.xml;
 		&book.info.abstract.xml;
