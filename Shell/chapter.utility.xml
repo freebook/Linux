@@ -10,6 +10,7 @@
 	&chapter.klish.xml;
 	&chapter.utility.wget.xml;
 	&chapter.utility.tui.xml;
+	&chapter.utility.jq.xml;
 	<section id="parallel">
 		<title>parallel - build and execute shell command lines from standard input in parallel</title>
 		<subtitle>并行执行shell命令</subtitle>

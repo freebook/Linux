@@ -96,6 +96,12 @@ $ sudo docker load < ubuntu_14.10.tar
 $ sudo docker rmi ubuntu:12.04
 Untagged: ubuntu:12.04
 			</screen>
+			<para>强制删除所有镜像</para>
+			<screen>
+			<![CDATA[
+docker rmi -f $(docker images -q)			
+			]]>
+			</screen>
 		</section>
 		&chapter.docker.dockerfile.xml;
 	</section>
@@ -174,6 +180,15 @@ $ cat ubuntu.tar | sudo docker import - test/ubuntu:v1.0
 $sudo docker import http://example.com/exampleimage.tgz example/imagerepo			
 			</screen>
 		</section>
+		<section id="kill">
+			<title>kill</title>
+			<para>杀死所有正在运行的容器</para>
+			<screen>
+			<![CDATA[
+docker kill $(docker ps -a -q)			
+			]]>
+			</screen>
+		</section>
 		<section>
 			<title>删除容器</title>
 			<para>使用 docker rm 来删除一个处于终止状态的容器。</para>
@@ -194,7 +209,14 @@ f8c7b2afff14        ubuntu:14.10        "/bin/bash"         16 minutes ago      
 			<screen>
 $ docker rm 719f98391ecf1d6f1f153ffea1bbd84cd2dc9cf6d31d5a4f348c60d98392814c
 			</screen>
+			<para>删除所有已经停止的容器</para>
+			<screen>
+			<![CDATA[
+docker rm $(docker ps -a -q)			
+			]]>
+			</screen>
 		</section>
+		
 	</section>
 	<section id="repository">
 		<title>仓库</title>

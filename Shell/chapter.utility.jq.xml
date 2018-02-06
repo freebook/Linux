@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="jq">
+	<title>jq - Command-line JSON processor</title>
+	<ulink url="https://stedolan.github.io/jq/">https://stedolan.github.io/jq/</ulink>
+	<screen>
+	<![CDATA[
+[root@localhost ~]# curl -s https://api.github.com/repos/netkiller/netkiller.github.io/commits?per_page=5 | jq '[.[] | {message: .commit.message, name: .commit.committer.name, parents: [.parents[].html_url]}]'
+[
+  {
+    "message": "ethereum",
+    "name": "netkiller",
+    "parents": [
+      "https://github.com/netkiller/netkiller.github.io/commit/4aa0409b9049c4ff77d047e17514964617d23d26"
+    ]
+  },
+  {
+    "message": "ethereum",
+    "name": "netkiller",
+    "parents": [
+      "https://github.com/netkiller/netkiller.github.io/commit/939a62d6a8a0058025fca4a0226ded30c07f9178"
+    ]
+  },
+  {
+    "message": "ethereum",
+    "name": "netkiller",
+    "parents": [
+      "https://github.com/netkiller/netkiller.github.io/commit/111a7d09089d7a1950d9879239370ca198f0870a"
+    ]
+  },
+  {
+    "message": "hyperledger",
+    "name": "netkiller",
+    "parents": [
+      "https://github.com/netkiller/netkiller.github.io/commit/201b88ec4ad328268856ce6e894b860fa4bdd3a7"
+    ]
+  },
+  {
+    "message": "ethereum",
+    "name": "netkiller",
+    "parents": [
+      "https://github.com/netkiller/netkiller.github.io/commit/92a052d152ef1333565646c79f12ada2f701003f"
+    ]
+  }
+]
+
+	]]>
+	</screen>
+</section>
