@@ -219,6 +219,22 @@ id: ethereum: no such user
 echo 1 > /proc/sys/net/ipv4/ip_forward
 echo 1 | sudo tee /proc/sys/net/ipv4/ip_forward;
 			</screen>
+			
+			<section id="">
+				<title>重定向到文件</title>
+				<screen>
+				<![CDATA[
+sudo mkdir -p /etc/docker
+sudo tee /etc/docker/daemon.json <<-'EOF'
+{
+  "registry-mirrors": ["https://du8c1in9.mirror.aliyuncs.com"]
+}
+EOF
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+				]]>
+				</screen>	
+			</section>
 			<section id="nettee">
 				<title>nettee - a network "tee" program</title>
 				<screen>
