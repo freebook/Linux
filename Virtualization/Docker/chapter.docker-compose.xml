@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="docker-compose">
-	<title>docker-compose - Define and run multi-container applications with Docker.</title>
+	<title>docker-compose - Define and run multi-container applications
+		with Docker.</title>
 	<subtitle></subtitle>
 	<section>
 		<title>安装 docker-compose</title>
@@ -22,55 +23,7 @@ curl -s https://raw.githubusercontent.com/oscm/shell/master/virtualization/docke
 			</screen>
 		</section>
 	</section>
-	<section id="docker-compose.yml">
-		<title>docker-compose.yml</title>
-		<para>本章节介绍如何定义 docker-compose.yml 文件</para>
-		<para>首先创建项目目录</para>
-		<screen>
-		<![CDATA[
-mkdir docker
-cd docker
-vim 	docker-compose.yml
-		]]>
-		</screen>
-		<section id="version">
-			<title>版本号</title>
-			<screen>
-			<![CDATA[
-version: '3'			
-			]]>
-			</screen>
-		</section>
-		<section id="image">
-			<title>镜像</title>
-			<para>image: mysql:5.7 表示使用 mysql:5.7 镜像, image: mysql:latest 表示 mysql 最新版</para>
-			<screen>
-			<![CDATA[
-services:
-   db:
-     image: mysql:5.7
-     volumes:
-       - db_data:/var/lib/mysql
-     restart: always
-     environment:
-       MYSQL_ROOT_PASSWORD: somewordpress
-       MYSQL_DATABASE: wordpress
-       MYSQL_USER: wordpress
-       MYSQL_PASSWORD: wordpress			
-			]]>
-			</screen>
-			<section id="volumes">
-				<title>挂在卷</title>
-				<screen>
-				<![CDATA[
-     volumes:
-       - db_data:/var/lib/mysql
-				]]>
-				</screen>
-				
-			</section>
-		</section>
-	</section>
+	
 	<section id="up_down">
 		<title>启动/停止</title>
 		<section id="up">
@@ -100,7 +53,7 @@ Removing docker_membersrvc_1 ... done
 		</section>
 
 	</section>
-	<section>
+	<section id="docker-compose.ps">
 		<title>查看进程</title>
 		<para>docker-compose ps</para>
 		<screen>
@@ -113,7 +66,7 @@ test_vp0_1          sh -c sleep 5; peer node s ...   Up      0.0.0.0:7050->7050/
 		]]>
 		</screen>
 	</section>
-	<section id="">
+	<section id="docker-compose.logs">
 		<title>查看日志</title>
 		<screen>
 		<![CDATA[
@@ -121,12 +74,75 @@ docker-compose logs -f vp0
 		]]>
 		</screen>
 	</section>
-	<section id="">
+	<section id="docker-compose.exec">
 		<title>执行命令</title>
 		<screen>
 		<![CDATA[
 docker-compose exec vp0 bash		
 		]]>
 		</screen>
+	</section>
+	<section id="docker-compose.yml">
+		<title>docker-compose.yml</title>
+		<para>本章节介绍如何定义 docker-compose.yml 文件</para>
+		<para>首先创建项目目录</para>
+		<screen>
+		<![CDATA[
+mkdir docker
+cd docker
+vim 	docker-compose.yml
+		]]>
+		</screen>
+		<section id="docker-compose.yml.version">
+			<title>版本号</title>
+			<screen>
+			<![CDATA[
+version: '3'			
+			]]>
+			</screen>
+		</section>
+		<section id="docker-compose.yml.image">
+			<title>镜像</title>
+			<para>image: mysql:5.7 表示使用 mysql:5.7 镜像, image: mysql:latest 表示 mysql 最新版</para>
+			<screen>
+			<![CDATA[
+services:
+   db:
+     image: mysql:5.7
+     volumes:
+       - db_data:/var/lib/mysql
+     restart: always
+     environment:
+       MYSQL_ROOT_PASSWORD: somewordpress
+       MYSQL_DATABASE: wordpress
+       MYSQL_USER: wordpress
+       MYSQL_PASSWORD: wordpress			
+			]]>
+			</screen>
+			<section id="docker-compose.yml.volumes">
+				<title>挂在卷</title>
+				<screen>
+				<![CDATA[
+     volumes:
+       - db_data:/var/lib/mysql
+				]]>
+				</screen>
+				
+			</section>
+		</section>
+		<section id="docker-compose.yml.ports">
+			<title>映射端口的标签</title>
+			<para>将容器中的端口暴漏给宿主主机。</para>
+			<screen>
+			<![CDATA[
+ports:
+ - "3000"
+ - "80:80"
+ - "22:22"
+ - "127.0.0.1:8000:8000"
+			]]>
+			</screen>
+			<para>默认 "端口:端口" 将监听 127.0.0.1 主机。如果需要将端口暴漏出去，格式是"IP:PORT:PORT"，IP地址是宿主主机的网络适配器IP地址。</para>
+		</section>
 	</section>
 </section>

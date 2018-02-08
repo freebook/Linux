@@ -216,6 +216,14 @@ $ unset logfile
     </section>
 	<section id="variable.default">
    		<title>设置变量默认值</title>
+   		<para>如果 CHANNEL_NAME 没有被赋值，那么他的默认值是 "mychannel"</para>
+   		<screen>
+   		<![CDATA[
+CHANNEL_NAME=$1
+: ${CHANNEL_NAME:="mychannel"}
+echo $CHANNEL_NAME   		
+   		]]>
+   		</screen>
    		<para>如果 logfile 值已经存在侧不会覆盖</para>
    		<screen>
 $ logfile=/var/log/test.log
