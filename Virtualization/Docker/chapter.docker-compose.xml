@@ -97,7 +97,7 @@ vim 	docker-compose.yml
 			<title>版本号</title>
 			<screen>
 			<![CDATA[
-version: '3'			
+version: '3'	
 			]]>
 			</screen>
 		</section>
@@ -143,6 +143,69 @@ ports:
 			]]>
 			</screen>
 			<para>默认 "端口:端口" 将监听 127.0.0.1 主机。如果需要将端口暴漏出去，格式是"IP:PORT:PORT"，IP地址是宿主主机的网络适配器IP地址。</para>
+		</section>
+		<section id="docker-compose.yml.extra_hosts">
+			<title>添加 hosts 文件</title>
+			<para>往/etc/hosts文件中添加主机名，与Docker client的--add-host类似：</para>
+			<screen>
+			<![CDATA[
+	extra_hosts:
+		- "orderer.example.com:10.130.116.8"
+		- "peer0.org1.example.com:10.130.116.9"
+		- "peer1.org1.example.com:10.130.116.10"
+		- "peer0.org2.example.com:10.130.116.25"
+		- "peer1.org2.example.com:10.130.116.27"
+			]]>
+			</screen>
+		</section>
+		<section id="docker-compose.yml.environment">
+			<title>设置环境变量</title>
+			<para>environment 实现容器中环境变量的定义</para>
+			<screen>
+			<![CDATA[
+version: '3'
+
+networks:
+  basic:
+
+services:
+  tools:
+    container_name: tools 
+    image: hyperledger/fabric-tools
+    tty: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_LOGGING_LEVEL=DEBUG
+      - CORE_PEER_ID=cli
+      - CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+      - CORE_CHAINCODE_KEEPALIVE=10
+    # working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    working_dir: /root/netkiller
+    command: /bin/bash
+    volumes:
+        - /var/run/:/host/var/run/
+        - ~/netkiller:/root/netkiller
+        - ./chaincode/:/opt/gopath/src/github.com/
+        - ./crypto:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+    networks:
+        - basic
+			]]>
+			</screen>
+		</section>
+		<section id="docker-compose.yml.tmpfs">
+			<title>临时文件系统</title>
+			<para>挂载临时目录到容器：</para>
+			<screen>
+			<![CDATA[
+tmpfs: /run
+tmpfs:
+  - /run
+  - /tmp			
+			]]>
+			</screen>
 		</section>
 	</section>
 </section>
