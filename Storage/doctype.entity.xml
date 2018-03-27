@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!ENTITY chapter.lvm.xml				SYSTEM "chapter.lvm.xml">
 <!ENTITY chapter.storage.xml			SYSTEM "chapter.storage.xml">
-<!ENTITY chapter.transfer.ftp 		    SYSTEM "chapter.transfer.ftp.xml">
+<!ENTITY chapter.transfer.ftp 		SYSTEM "chapter.transfer.ftp.xml">
 
-<!ENTITY chapter.share.xml			    SYSTEM "chapter.share.xml">
+<!ENTITY chapter.share.xml			SYSTEM "chapter.share.xml">
 <!ENTITY chapter.share.nfs.xml	    	SYSTEM "chapter.share.nfs.xml">
-<!ENTITY chapter.share.samba 		    SYSTEM "chapter.share.samba.xml">
+<!ENTITY chapter.share.samba 		SYSTEM "chapter.share.samba.xml">
 
-<!ENTITY chapter.nas.xml		    	SYSTEM "chapter.nas.xml">
-<!ENTITY chapter.nas.openfiler.xml 	    SYSTEM "chapter.nas.openfiler.xml">
+<!ENTITY chapter.nas.xml		    		SYSTEM "chapter.nas.xml">
+<!ENTITY chapter.nas.openfiler.xml 	SYSTEM "chapter.nas.openfiler.xml">
 <!ENTITY chapter.nas.freenas.xml    	SYSTEM "chapter.nas.freenas.xml">
 
 <!ENTITY chapter.dfs.xml				SYSTEM "chapter.dfs.xml">
-<!ENTITY chapter.dfs.drbd.xml	        SYSTEM "chapter.dfs.drbd.xml">
-<!ENTITY chapter.dfs.mogilefs.xml	    SYSTEM "chapter.dfs.mogilefs.xml">
-<!ENTITY chapter.dfs.lustre.xml		    SYSTEM "chapter.dfs.lustre.xml">
-<!ENTITY chapter.dfs.moosefs.xml 	    SYSTEM "chapter.dfs.moosefs.xml">
+<!ENTITY chapter.dfs.drbd.xml	    SYSTEM "chapter.dfs.drbd.xml">
+<!ENTITY chapter.dfs.mogilefs.xml	SYSTEM "chapter.dfs.mogilefs.xml">
+<!ENTITY chapter.dfs.lustre.xml		SYSTEM "chapter.dfs.lustre.xml">
+<!ENTITY chapter.dfs.moosefs.xml 	SYSTEM "chapter.dfs.moosefs.xml">
 <!ENTITY chapter.dfs.gridfs.xml 	    SYSTEM "chapter.dfs.gridfs.xml">
-<!ENTITY chapter.dfs.ndb.xml     	    SYSTEM "chapter.dfs.ndb.xml">
-<!ENTITY chapter.dfs.ceph.xml     	    SYSTEM "chapter.dfs.ceph.xml">
-<!ENTITY chapter.dfs.kfs.xml     	    SYSTEM "chapter.dfs.kfs.xml">
-<!ENTITY chapter.dfs.disk.xml     	    SYSTEM "chapter.dfs.disk.xml">
-<!ENTITY chapter.dfs.ocfs.xml     	    SYSTEM "chapter.dfs.ocfs.xml">
-<!ENTITY chapter.dfs.gfs2.xml	 	    SYSTEM "chapter.dfs.gfs2.xml">
+<!ENTITY chapter.dfs.ndb.xml     	SYSTEM "chapter.dfs.ndb.xml">
+<!ENTITY chapter.dfs.ceph.xml     	SYSTEM "chapter.dfs.ceph.xml">
+<!ENTITY chapter.dfs.kfs.xml     	SYSTEM "chapter.dfs.kfs.xml">
+<!ENTITY chapter.dfs.disk.xml     	SYSTEM "chapter.dfs.disk.xml">
+<!ENTITY chapter.dfs.ocfs.xml     	SYSTEM "chapter.dfs.ocfs.xml">
+<!ENTITY chapter.dfs.gfs2.xml	 	SYSTEM "chapter.dfs.gfs2.xml">
 
-<!ENTITY chapter.backup.xml		 	    SYSTEM "chapter.backup.xml">
-<!ENTITY chapter.backup.attic.xml 	    SYSTEM "chapter.backup.attic.xml">
+<!ENTITY chapter.backup.xml		 	SYSTEM "chapter.backup.xml">
+<!ENTITY chapter.backup.attic.xml 	SYSTEM "chapter.backup.attic.xml">
 
 <!ENTITY chapter.synchronize.xml	 	SYSTEM "chapter.synchronize.xml">
 <!ENTITY chapter.sync.rsync.xml 	    SYSTEM "chapter.sync.rsync.xml">
-<!ENTITY chapter.sync.unison.xml 	    SYSTEM "chapter.sync.unison.xml">
+<!ENTITY chapter.sync.unison.xml 	SYSTEM "chapter.sync.unison.xml">
 <!ENTITY chapter.sync.csync.xml 	    SYSTEM "chapter.sync.csync.xml">
-<!ENTITY chapter.sync.synctool.xml	 	SYSTEM "chapter.sync.synctool.xml">
+<!ENTITY chapter.sync.synctool.xml	SYSTEM "chapter.sync.synctool.xml">
 
-<!ENTITY chapter.storage.inotify 	    SYSTEM "chapter.storage.inotify.xml">
+<!ENTITY chapter.storage.inotify 	SYSTEM "chapter.storage.inotify.xml">
