@@ -129,6 +129,22 @@ http: http://192.168.0.1/example.com/www.example.com.git
 ssh: git@192.168.0.1:example.com/www.example.com.git
 		</screen>
 	</section>
+	<section id="gitlab.ssl">
+		<title>绑定SSL证书</title>
+		<para>编辑 /etc/gitlab/gitlab.rb 文件</para>
+		<screen>
+		<![CDATA[
+external_url 'https://git.netkiller.cn'
+
+nginx['enable'] = true
+nginx['redirect_http_to_https'] = true
+nginx['ssl_certificate'] = "/etc/gitlab/ssl/git.netkiller.cn.crt"
+nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/git.netkiller.cn.key"
+nginx['listen_https'] = true
+nginx['http2_enabled'] = true
+		]]>
+		</screen>
+	</section>
 	<section id="gitlab.faq">
 		<title>FAQ</title>
 		<section>
