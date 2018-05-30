@@ -125,7 +125,10 @@ perl -MMIME::Base64 -e 'print decode_base64("bmV0a2lsbGVy");'
 	</section>
 	<section id="base64.java">
 		<title>Java Base64</title>
-		<screen>
+		
+		<section>
+			<title>Java 7</title>
+			<screen>
 import java.io.*;
 public class base64Test {
 
@@ -148,6 +151,64 @@ public class base64Test {
 	}
 }
 		</screen>
+		</section>
+		<section>
+			<title>Java 8</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.test;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+
+public class Base64Test {
+	public static void main(String[] args) {
+		final String text = "http://www.netkiller.cn/index.html";
+
+		final String encoded = Base64.getEncoder().encodeToString(text.getBytes(StandardCharsets.UTF_8));
+		System.out.println(encoded);
+
+		final String decoded = new String(Base64.getDecoder().decode(encoded), StandardCharsets.UTF_8);
+		System.out.println(decoded);
+	}
+}
+			]]>
+			</programlisting>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.security;
+
+import java.io.UnsupportedEncodingException;
+import java.util.Base64;
+
+public class Base64Test {
+
+	public Base64Test() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public static void main(String[] args) throws UnsupportedEncodingException {
+		// TODO Auto-generated method stub
+		String asB64 = Base64.getEncoder().encodeToString("some string".getBytes("utf-8"));
+		System.out.println(asB64); // 输出为: c29tZSBzdHJpbmc=
+
+		// 解码
+		byte[] asBytes = Base64.getDecoder().decode("c29tZSBzdHJpbmc=");
+		System.out.println(new String(asBytes, "utf-8")); // 输出为: some string
+
+		// 但由于URL对反斜线“/”有特殊的意义，因此URL编码需要替换掉它，使用下划线替换
+		String basicEncoded = Base64.getEncoder().encodeToString("subjects?abcd".getBytes("utf-8"));
+		System.out.println("Using Basic Alphabet: " + basicEncoded);
+
+		String urlEncoded = Base64.getUrlEncoder().encodeToString("subjects?abcd".getBytes("utf-8"));
+		System.out.println("Using URL Alphabet: " + urlEncoded);
+	}
+
+}
+
+			]]>
+			</programlisting>
+		</section>
 	</section>
 
 	<section id="base64.c">
