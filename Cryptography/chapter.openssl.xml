@@ -249,7 +249,7 @@ C:\GnuWin32\neo>echo SGVsbG8gV29ybGQhDQo= | openssl enc -base64 -d
 Hello World!
 				</screen>
 			</section>
-			<section>
+			<section id="enc.des">
 				<title>des</title>
 				<para>对称加密与解密</para>
 				<para>加密</para>
@@ -263,8 +263,14 @@ Verifying - enter des-cbc encryption password:
 # openssl enc -des -d -a -in file.txt.des -out file.txt.tmp
 enter des-cbc decryption password:
 				</screen>
+				<screen>
+				<![CDATA[
+% echo abc | openssl des-cbc -k 123 -base64         
+U2FsdGVkX1+atYQyhz7I1ktb5XtYasGk	
+				]]>
+				</screen>
 			</section>
-			<section>
+			<section id="enc.aes">
 				<title>aes</title>
 				<para>加密</para>
 				<screen>
@@ -273,6 +279,11 @@ openssl enc -aes-128-cbc -in filename -out filename.out
 				<para>解密</para>
 				<screen>
 openssl enc -d -aes-128-cbc -in filename.out -out filename
+				</screen>
+				<screen>
+				<![CDATA[
+echo abc | openssl aes-128-cbc -k 123 -base64				
+				]]>
 				</screen>
 			</section>
 		</section>
