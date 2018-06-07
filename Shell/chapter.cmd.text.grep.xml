@@ -69,6 +69,24 @@ neo@MacBook-Pro ~ % curl -s -X POST --user 'api:secret' -d 'grant_type=password&
 				]]>	
 				</screen>
 			</section>
+			<section>
+				<title>行列转换</title>
+				<screen>
+				<![CDATA[
+$ grep -o . <<< "Helloworld"
+H
+e
+l
+l
+o
+w
+o
+r
+l
+d
+				]]>
+				</screen>
+			</section>
 		</section>
 		<section>
 			<title>递归操作</title>

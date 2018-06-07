@@ -39,8 +39,11 @@ about/index.tpl: OK
 
 	<section id="sha.java">
 		<title>Java SHA</title>
-		<screen>
-<![CDATA[
+		
+		<section id="java.sha">
+			<title>SHA</title>
+			<screen>
+			<![CDATA[
 import java.security.*;
 
 public class shaTest {
@@ -78,9 +81,46 @@ public class shaTest {
 	}
 
 }
-]]>
-		</screen>
-		<para>编译运行,输入字符串:8a89798cf0878e37bb6589ae1c36b9d8a036275b</para>
+			]]>
+			</screen>
+			<para>编译运行,输入字符串:8a89798cf0878e37bb6589ae1c36b9d8a036275b</para>
+		</section>
+		<section id="java.sha256">
+			<title>SHA-256</title>
+			<programlisting>
+			<![CDATA[
+package cn.netkiller.security;
+
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+public class SHA256 {
+
+	public SHA256() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public static void main(String[] args) throws NoSuchAlgorithmException {
+		// TODO Auto-generated method stub
+		MessageDigest md = MessageDigest.getInstance("SHA-256");
+		String text = "Text to hash, cryptographically.";
+
+		// Change this to UTF-16 if needed
+		md.update(text.getBytes(StandardCharsets.UTF_8));
+		byte[] digest = md.digest();
+
+		String hex = String.format("%064x", new BigInteger(1, digest));
+		System.out.println(hex);
+
+	}
+
+}
+			
+			]]>
+			</programlisting>
+		</section>
 	</section>
 	<section id="sha.perl">
 		<title>Perl</title>
