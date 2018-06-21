@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.nginx.conf.xml 654 2013-07-30 07:30:20Z netkiller $ -->
 <section id="conf">
-	<title>nginx 配置文件</title>
+	<title>nginx.conf 配置文件</title>
 	<para>worker_processes = CPU 数量</para>
 	<screen>
 		user www;
@@ -126,6 +126,16 @@
 		<para>ssi_types 默认是ssi_types text/html，如果需要shtml支持，则需要设置：ssi_types text/shtml</para>
 		<para>ssi_value_length 默认值是 256，用于定义SSI参数的长度。</para>
 	</section>
+	
+	
+	
+	
+	
+	
+
+	&chapter.nginx.var.xml;
+</section>
+
 	<section id="server">
 		<title>server</title>
 		<section id="listen">
@@ -182,7 +192,8 @@
 				# proxy_pass http://127.0.0.1;
 				#}
 
-				# pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+				# pass the
+				PHP scripts to FastCGI server listening on 127.0.0.1:9000
 				#
 				#location ~ \.php$ {
 				# root html;
@@ -295,8 +306,51 @@ server {
 			]]>
 			</screen>
 		</section>
-		<section id="server.location">
-			<title></title>
+		<section id="http.server.location">
+			<title>location</title>
+			<screen>
+				location / {
+				root /www;
+				index index.html index.htm;
+				}
+			</screen>
+
+			<section id="">
+				<title>禁止访问特定目录</title>
+				<para>location 匹配到特定的 path 将拒绝用户访问。</para>
+				<screen>
+				<![CDATA[
+    location ~ /\.ht {
+        deny  all;
+    }
+    
+	location ~ ^/(config|include)/ {
+		deny all;
+		break;
+	}
+				]]>
+				</screen>
+			</section>
+			<section id="server.location">
+				<title>引用document_root之外的资源</title>
+				<para>引用document_root之外的资源需要 root 绝对路径指向目标文件夹</para>
+				<screen>
+				<![CDATA[
+	location / {
+		root /www/example.com/m.example.com;
+		try_files $uri $uri/ @proxy;
+	}
+	location ^~ /module/ {
+		root /www/example.com/www.example.com;
+	}
+
+	# 下面的写法是错误的，通过error_log 我们可以看到被定为到/www/example.com/m.example.com/module
+	location /module/ {
+		root /www/example.com/www.example.com;
+	}
+				]]>
+				</screen>
+			</section>
 			<section>
 				<title>处理扩展名</title>
 				<screen>
@@ -332,7 +386,9 @@ server {
 				</screen>
 			</section>
 
+
 		</section>
+
 		<section id="root">
 			<title>root 通过$host智能匹配目录</title>
 			<para>为每个host创建一个目录太麻烦，</para>
@@ -399,37 +455,7 @@ server {
 			</screen>
 
 		</section>
-		<section id="http.server.location">
-			<title>location</title>
-			<screen>
-				location / {
-				root /www;
-				index index.html index.htm;
-				}
-			</screen>
-			<screen>
-				location ~ ^/(config|include)/ {
-				deny all;
-				break;
-				}
-			</screen>
-			<para>引用document_root之外的资源</para>
-			<screen>
-				location / {
-				root /www/example.com/m.example.com;
-				try_files $uri $uri/ @proxy;
-				}
-				location ^~ /module/ {
-				root /www/example.com/www.example.com;
-				}
-
-				# 下面的写法是错误的，通过error_log 我们可以看到被定为到/www/example.com/m.example.com/module
-				location /module/ {
-				root /www/example.com/www.example.com;
-				}
-			</screen>
-
-		</section>
+		
 		<section id="expires">
 			<title>expires</title>
 			<para>expires 格式</para>
@@ -729,7 +755,155 @@ add_header     Nginx-Cache     "$upstream_cache_status  from  www.example.com";
 				</screen>
 			</section>
 		</section>
+		<section id="return">
+		<title>return</title>
+		<para>301 跳转</para>
+		<screen>
+		<![CDATA[
+	server {
+		listen 80;
+		server_name m.example.com;
+
+		location / {
+			return 301 $scheme://www.example.com$request_uri;
+		}
+	}
+
+	server {
+		listen 80;
+		listen 443 ssl;
+		server_name www.old-name.com;
+		return 301 $scheme://www.new-name.com$request_uri;
+	}
+		]]>
+		</screen>
 	</section>
+	</section>
+	
+	<section id="rewrite">
+		<title>rewrite</title>
+		<screen>
+		<![CDATA[
+Rewrite Flags
+last - 基本上都用这个Flag。
+break - 中止Rewirte，不在继续匹配
+redirect - 返回临时重定向的HTTP状态302
+permanent - 返回永久重定向的HTTP状态301
+
+文件及目录匹配，其中：
+-f和!-f用来判断是否存在文件
+-d和!-d用来判断是否存在目录
+-e和!-e用来判断是否存在文件或目录
+-x和!-x用来判断文件是否可执行
+
+正则表达式全部符号解释
+~ 为区分大小写匹配
+~* 为不区分大小写匹配
+!~和!~* 分别为区分大小写不匹配及不区分大小写不匹配
+(pattern) 匹配 pattern 并获取这一匹配。所获取的匹配可以从产生的 Matches 集合得到，在VBScript 中使用 SubMatches 集合，在JScript 中则使用 $0…$9 属性。要匹配圆括号字符，请使用 ‘\(’ 或 ‘\)’。
+^ 匹配输入字符串的开始位置。
+$ 匹配输入字符串的结束位置。		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+	server {
+		listen 80;
+		server_name www.example.com example.com ;
+		if ($host = "example.com" )
+		{
+			rewrite ^/(.*)$ http://www.example.com/$1 permanent;
+		}
+		if ($host != "www.example.com" )
+		{
+			rewrite ^/(.*)$ http://www.example.com/$1 permanent;
+		}
+	}		
+		]]>
+		
+		</screen>
+		<screen>
+		<![CDATA[
+	location ~* \.(js|css|jpg|jpeg|gif|png|swf)$ {
+		if (!-f $request_filename){
+			rewrite /(.*) http://images.example.com/$1;
+		}
+	}		
+		]]>
+		
+		</screen>
+		<screen>
+		<![CDATA[
+	if ($host ~ '(.*)\.static\.example\.com' ) {
+		set $subdomain $1;
+		rewrite "^/(.*)$" /$subdomain/$1;
+	}		
+		]]>
+		</screen>
+		<section>
+			<title>http get 参数处理</title>
+			<para>需求如下</para>
+			<screen>
+			<![CDATA[
+原理地址：
+http://www.netkiller.cn/redirect/index.html?skuid=133
+
+目的地址：
+http://www.netkiller.cn/to/133.html
+			]]>
+			</screen>
+			<para>注意：nginx rewrite 并不支持http get 参数处理，也就是说“?”之后的内容rewrite根部获取不到。</para>
+			<para>下面的例子是行不通的</para>
+			<screen>
+			<![CDATA[
+rewrite ^/redirect/index\.html\?skuid=(\d+)$ /to/$1.html permanent ;
+			]]>
+			</screen>
+			<para>我们需要通过正在查出参数，然后赋值一个变量，再将变量传递给rewrite。具体做法是：</para>
+			<screen>
+			<![CDATA[
+server {
+    listen       80;
+    server_name www.netkiller.cn;
+
+    #charset koi8-r;
+    access_log  /var/log/nginx/test.access.log  main;
+
+    location / {
+        root   /www/test;
+        index  index.html;
+
+		if ($request_uri ~* "^/redirect/index\.html\?skuid=([0-9]+)$") {
+                set $argv1 $1;
+                rewrite .* /to/$argv1.html? permanent;
+        }
+    }
+}
+			]]>
+			</screen>
+			<para>测试结果</para>
+			<screen>
+			<![CDATA[
+[neo@netkiller conf.d]$ curl -I http://www.netkiller.cn/redirect/index.html?skuid=133
+HTTP/1.1 301 Moved Permanently
+Server: nginx
+Date: Tue, 12 Apr 2016 06:59:33 GMT
+Content-Type: text/html
+Content-Length: 178
+Location: http://www.netkiller.cn/to/133.html
+Connection: keep-alive
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>正则取非</title>
+			<para>需求如下，除了2015年保留，其他所有页面重定向到新页面</para>
+			<screen>
+				rewrite ^/promotion/(?!2015\/)(.*) https://www.netkiller.cn/promotion.html permanent;
+			</screen>
+		</section>
+	</section>
+	
 	<section id="http2">
 		<title>HTTP2 配置 SSL证书</title>
 		<section>
@@ -1054,190 +1228,59 @@ curl --insecure --key client.key --cert ./client.crt:123456  https://api.netkill
 			</section>
 		</section>
 	</section>
-	<section id="rewrite">
-		<title>rewrite</title>
-		<screen>
-			Rewrite Flags
-			last - 基本上都用这个Flag。
-			break - 中止Rewirte，不在继续匹配
-			redirect - 返回临时重定向的HTTP状态302
-			permanent - 返回永久重定向的HTTP状态301
-
-			文件及目录匹配，其中：
-			-f和!-f用来判断是否存在文件
-			-d和!-d用来判断是否存在目录
-			-e和!-e用来判断是否存在文件或目录
-			-x和!-x用来判断文件是否可执行
-
-			正则表达式全部符号解释
-			~ 为区分大小写匹配
-			~* 为不区分大小写匹配
-			!~和!~* 分别为区分大小写不匹配及不区分大小写不匹配
-			(pattern) 匹配 pattern 并获取这一匹配。所获取的匹配可以从产生的 Matches 集合得到，在VBScript 中使用 SubMatches 集合，在JScript 中则使用 $0…$9 属性。要匹配圆括号字符，请使用 ‘\(’ 或 ‘\)’。
-			^ 匹配输入字符串的开始位置。
-			$ 匹配输入字符串的结束位置。
-		</screen>
-		<screen>
-			server {
-			listen 80;
-			server_name www.example.com example.com ;
-			if ($host = "example.com" )
-			{
-			rewrite ^/(.*)$ http://www.example.com/$1 permanent;
-			}
-			if ($host != "www.example.com" )
-			{
-			rewrite ^/(.*)$ http://www.example.com/$1 permanent;
-			}
-			}
-		</screen>
-		<screen>
-			location ~* \.(js|css|jpg|jpeg|gif|png|swf)$ {
-			if (!-f $request_filename){
-			rewrite /(.*) http://images.example.com/$1;
-			}
-			}
-		</screen>
-		<screen>
-			if ($host ~ '(.*)\.static\.example\.com' ) {
-			set $subdomain $1;
-			rewrite "^/(.*)$" /$subdomain/$1;
-			}
-		</screen>
-		<section>
-			<title>http get 参数处理</title>
-			<para>需求如下</para>
-			<screen>
-			<![CDATA[
-原理地址：
-http://www.netkiller.cn/redirect/index.html?skuid=133
-
-目的地址：
-http://www.netkiller.cn/to/133.html
-			]]>
-			</screen>
-			<para>注意：nginx rewrite 并不支持http get 参数处理，也就是说“?”之后的内容rewrite根部获取不到。</para>
-			<para>下面的例子是行不通的</para>
-			<screen>
-			<![CDATA[
-rewrite ^/redirect/index\.html\?skuid=(\d+)$ /to/$1.html permanent ;
-			]]>
-			</screen>
-			<para>我们需要通过正在查出参数，然后赋值一个变量，再将变量传递给rewrite。具体做法是：</para>
-			<screen>
-			<![CDATA[
-server {
-    listen       80;
-    server_name www.netkiller.cn;
-
-    #charset koi8-r;
-    access_log  /var/log/nginx/test.access.log  main;
-
-    location / {
-        root   /www/test;
-        index  index.html;
-
-		if ($request_uri ~* "^/redirect/index\.html\?skuid=([0-9]+)$") {
-                set $argv1 $1;
-                rewrite .* /to/$argv1.html? permanent;
-        }
-    }
-}
-			]]>
-			</screen>
-			<para>测试结果</para>
-			<screen>
-			<![CDATA[
-[neo@netkiller conf.d]$ curl -I http://www.netkiller.cn/redirect/index.html?skuid=133
-HTTP/1.1 301 Moved Permanently
-Server: nginx
-Date: Tue, 12 Apr 2016 06:59:33 GMT
-Content-Type: text/html
-Content-Length: 178
-Location: http://www.netkiller.cn/to/133.html
-Connection: keep-alive
-			]]>
-			</screen>
-		</section>
-		<section>
-			<title>正则取非</title>
-			<para>需求如下，除了2015年保留，其他所有页面重定向到新页面</para>
-			<screen>
-				rewrite ^/promotion/(?!2015\/)(.*) https://www.netkiller.cn/promotion.html permanent;
-			</screen>
-		</section>
-	</section>
 	<section id="upstream">
 		<title>upstream 负载均衡</title>
 		<screen>
-			http {
-			upstream myapp1 {
-			server srv1.example.com;
-			server srv2.example.com;
-			server srv3.example.com;
-			}
+		<![CDATA[
+http {
+	upstream myapp1 {
+		server srv1.example.com;
+		server srv2.example.com;
+		server srv3.example.com;
+	}
 
-			server {
-			listen 80;
-
-			location / {
+	server {
+		listen 80;
+		location / {
 			proxy_pass http://myapp1;
-			}
-			}
-			}
+		}
+	}
+}
+		]]>
 		</screen>
 		<section>
 			<title>weight 权重配置</title>
 			<screen>
-				upstream myapp1 {
-				server srv1.example.com weight=3;
-				server srv2.example.com;
-				server srv3.example.com;
-				}
+			<![CDATA[
+	upstream myapp1 {
+		server srv1.example.com weight=3;
+		server srv2.example.com;
+		server srv3.example.com;
+	}
+			]]>
 			</screen>
 		</section>
 		<section>
 			<title>backup 实现热备</title>
 			<screen>
-				upstream backend {
-				server backend1.example.com weight=5;
-				server backend2.example.com:8080;
-				server unix:/tmp/backend3;
+			<![CDATA[
+	upstream backend {
+		server backend1.example.com weight=5;
+		server backend2.example.com:8080;
+		server unix:/tmp/backend3;
 
-				server backup1.example.com:8080 backup;
-				server backup2.example.com:8080 backup;
-				}
+		server backup1.example.com:8080 backup;
+		server backup2.example.com:8080 backup;
+	}
 
-				server {
-				location / {
-				proxy_pass http://backend;
-				}
-				}
+	server {
+		location / {
+			proxy_pass http://backend;
+		}
+	}
+			]]>
 			</screen>
 		</section>
 	</section>
+	&chapter.nginx.proxy.xml;
 	&chapter.nginx.conf.fastcgi.xml;
-	<section id="return">
-		<title>return</title>
-		<para>301 跳转</para>
-		<screen>
-			server {
-			listen 80;
-			server_name m.example.com;
-
-			location / {
-			return 301 $scheme://www.example.com$request_uri;
-			}
-			}
-
-			server {
-			listen 80;
-			listen 443 ssl;
-			server_name www.old-name.com;
-			return 301 $scheme://www.new-name.com$request_uri;
-			}
-		</screen>
-	</section>
-
-	&chapter.nginx.var.xml;
-</section>

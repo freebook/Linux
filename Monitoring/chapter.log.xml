@@ -402,4 +402,9 @@ Feb 15 16:21:41 iZ623qr3xctZ sshd[19469]: Accepted publickey for root from 147.9
 		<para>https://code.google.com/p/eventlog-to-syslog/</para>
 	</section>
 	&chapter.log.flume.xml;
+	<section id="graylog">
+		<title>graylog - Enterprise Log Management for All</title>
+		<para><ulink url="https://www.graylog.org" /></para>
+		
+	</section>
 </chapter>
