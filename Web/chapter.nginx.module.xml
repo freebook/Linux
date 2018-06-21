@@ -4,15 +4,18 @@
 	<section id="stub_status">
 		<title>stub_status</title>
 		<screen>
+		<![CDATA[
 location /nginx_status {
 	stub_status on;
 	access_log  off;
 	allow 127.0.0.1;
 	deny all;
 }
+		]]>
 		</screen>
 		<para>php-fpm 状态</para>
 		<screen>
+		<![CDATA[
     location ~ ^/(status|ping)$ {
         access_log off;
         allow 202.82.21.12;
@@ -21,6 +24,7 @@ location /nginx_status {
 		fastcgi_param SCRIPT_FILENAME $fastcgi_script_name;
         include fastcgi_params;
     }
+    	]]>
 		</screen>
 	</section>
 	<section id="sub_filter">
@@ -37,6 +41,7 @@ location / {
 		</screen>
 		<para>替换掉proxy_pass页面中的内容</para>
 		<screen>
+		<![CDATA[
     location ~ ^/live800 {
         proxy_pass           http://218.23.24.53;
         rewrite              ^/live800/(.*)  /$1 break;
@@ -48,11 +53,13 @@ location / {
         sub_filter 'www.abc.com'  '$host';
         sub_filter_once off;
     }
+    	]]>
 		</screen>
 	</section>
 	<section id="auth_basic">
 		<title>auth_basic</title>
 		<screen>
+		<![CDATA[
 cd /usr/local/nginx/conf
 server {
 	listen 80;
@@ -62,26 +69,44 @@ server {
 
 	location / {
 		try_files $uri $uri/ /index.html;
-		auth_basic            "Login";
-        auth_basic_user_file  htpasswd;
+		auth_basic            "Administrator’s Area";
+        auth_basic_user_file  conf/htpasswd;
 	}
 }
+		]]>
 		</screen>
-		<para>生成密码文件</para>
-		<screen>
+		<section>
+			<title>使用 htpasswd 生几个密码文件</title>
+			<para>生成密码文件</para>
+			<screen>
+		<![CDATA[
 $ sudo apt-get install apache2-utils
 
 htpasswd -c -d htpasswd user_name
-		</screen>
-		<tip>
-			<para>必须使用 -d  Force CRYPT encryption of the password. 选项，</para>
-		</tip>
-	</section>	
+		]]>
+			</screen>
+			<tip>
+				<para>必须使用 -d Force CRYPT encryption of the password. 选项，</para>
+			</tip>
+		</section>
+		<section>
+			<title>使用 openssl 生成密码</title>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# openssl passwd
+Password: 
+Verifying - Password: 
+9/cEBEuF8T/xQ
+			]]>
+			</screen>
+		</section>
+	</section>
 	<section id="valid_referers">
 		<title>valid_referers</title>
 		<example>
 			<title>Example: valid_referers</title>
 			<screen>
+		<![CDATA[
 location /photos/ {
   valid_referers none blocked www.mydomain.com mydomain.com;
 
@@ -89,8 +114,10 @@ location /photos/ {
     return   403;
   }
 }
+			]]>
 			</screen>
 			<screen>
+		<![CDATA[
 location ~* \.(gif|jpg|jpeg|png|bmp|txt|zip|jar|swf)$ {
 	valid_referers none blocked *.mydomain.com;
 	if ($invalid_referer) {
@@ -107,21 +134,25 @@ location /images/ {
 		rewrite ^/  http://www.mydomain.com/default.gif;
 	}
 }
+			]]>
 			</screen>
 		</example>
-	</section>	
+	</section>
 	<section id="ngx_http_flv_module">
 		<title>ngx_http_flv_module</title>
 		<screen>
+		<![CDATA[
 location ~ \.flv$ {
     flv;
 }
+		]]>
 		</screen>
 	</section>
 
 	<section id="ngx_http_mp4_module">
 		<title>ngx_http_mp4_module</title>
 		<screen>
+		<![CDATA[
 location /video/ {
     mp4;
     mp4_buffer_size       1m;
@@ -129,22 +160,26 @@ location /video/ {
     mp4_limit_rate        on;
     mp4_limit_rate_after  30s;
 }
+		]]>
 		</screen>
 	</section>
 	<section id="limit_zone">
 		<title>limit_zone</title>
 		<screen>
+		<![CDATA[
 limit_zone   one  $binary_remote_addr  10m;
 
 server {
 	location /download/ {
 	limit_conn   one  1;
 }
+		]]>
 		</screen>
 	</section>
 	<section id="image_filter">
 		<title>image_filter</title>
 		<screen>
+		<![CDATA[
 image_filter 配置项:
 image_filter off;　　　　在所在location关闭模块处理。
 image_filter test;　　确保应答是JPEG，GIF或PNG格式的图像。否则错误 415 (Unsupported Media Type) 将被返回。
@@ -159,8 +194,10 @@ image_filter_jpeg_quality quality; 例如 image_filter_jpeg_quality 75;设置变
 image_filter_sharpen percent; image_filter_sharpen 0;　　增加最终图像的锐度。 锐度百分比可以超过100. 0为关闭锐化。 参数的值可以包含变量。
 image_filter_transparency on|off; image_filter_transparency on;定义当对PNG，或者GIF图像进行颜色变换时是否需要保留透明度。 损失透明度有可能可以获得更高的图像质量。 PNG图像中的alpha通道的透明度默认会一直被保留。
  		
+		]]>
 		</screen>
 		<screen>
+		<![CDATA[
 比如所有的图片并修改尺寸为 800x600
 
        location ~* \.(jpg|gif|png)$ {
@@ -219,6 +256,7 @@ location ~* ^/images/resize/([\d\-]+)_([\d\-]+)/(.+) { 
     image_filter_sharpen 90;
     expires 60d;
 }		
+		]]>
 		</screen>
 	</section>
 	<section id="ngx_stream_proxy_module">
@@ -250,11 +288,13 @@ server {
     listen [::1]:8000;
     proxy_pass unix:/tmp/stream.socket;
 }		
+		]]>
 		</screen>
 	</section>
 	<section id="ngx_http_mirror_module">
 		<title>ngx_http_mirror_module</title>
 		<screen>
+		<![CDATA[
 location / {
     mirror /mirror;
     proxy_pass http://backend;
@@ -267,27 +307,31 @@ location /mirror {
 		]]>
 		</screen>
 	</section>
-	
+
 	<section id="limit_except">
 		<title>limit_except</title>
 		<screen>
+		<![CDATA[
     location /api/ {
 
         limit_except PUT DELETE {
             proxy_pass http://127.0.0.1:9080;
         }
     }		
+		]]>
 		</screen>
 	</section>
 	<section id="proxy.geoip_country_code">
 		<title>geoip_country_code</title>
 		<screen>
+		<![CDATA[
 location /google {
     if ( $geoip_country_code ~ (RU|CN) ) {
         proxy_pass http://www.google.hk;
     }
 }
+		]]>
 		</screen>
 	</section>
-	
+
 </section>
