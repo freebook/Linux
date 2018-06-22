@@ -30,6 +30,7 @@
 	<!ENTITY chapter.code.xml 			SYSTEM "chapter.code.xml">
 	<!ENTITY chapter.code.base64.xml 		SYSTEM "chapter.code.base64.xml">
 	<!ENTITY chapter.code.uuencode.xml 		SYSTEM "chapter.code.uuencode.xml">
+	<!ENTITY chapter.base58.xml		 		SYSTEM "chapter.base58.xml">
 	<!ENTITY chapter.code.quoted-printable.xml	SYSTEM "chapter.code.quoted-printable.xml">
 	<!ENTITY chapter.certificate.xml		SYSTEM "chapter.certificate.xml">
 

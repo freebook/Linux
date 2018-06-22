@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="base58">
+	<title>BASE58</title>
+	<section id="base58.php">
+		<title>php</title>
+		<programlisting>
+		<![CDATA[
+<?php
+
+$number = '123456789009876543211234567890';
+$result = base58_encode($number);
+echo('Encoded: ' . $result . '<br>');
+echo('Decoded: ' . base58_decode($result) . '<br>');
+
+
+function base58_encode($input)
+{
+    $alphabet = '123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ';
+    $base_count = strval(strlen($alphabet));
+    $encoded = '';
+    while (floatval($input) >= floatval($base_count))
+    {
+        $div = bcdiv($input, $base_count);
+        $mod = bcmod($input, $base_count);
+        $encoded = substr($alphabet, intval($mod), 1) . $encoded;
+        $input = $div;
+    }
+    if (floatval($input) > 0)
+    {
+        $encoded = substr($alphabet, intval($input), 1) . $encoded;
+    }
+    return($encoded);
+}
+
+function base58_decode($input)
+{
+    $alphabet = '123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ';
+    $base_count = strval(strlen($alphabet));
+    $decoded = strval(0);
+    $multi = strval(1);
+    while (strlen($input) > 0)
+    {
+        $digit = substr($input, strlen($input) - 1);
+        $decoded = bcadd($decoded, bcmul($multi, strval(strpos($alphabet, $digit))));
+        $multi = bcmul($multi, $base_count);
+        $input = substr($input, 0, strlen($input) - 1);
+    }
+    return($decoded);
+}		
+		]]>
+		</programlisting>
+	</section>
+</section>
