@@ -312,6 +312,22 @@ ssh -D 7070 <远程主机地址>
 			<screen>
 ssh neo@www.example.com -D 1080
 			</screen>
+			<screen>
+			<![CDATA[
+ssh -D 1080 -f -C -q -N neo@example.com			
+			]]>
+			</screen>
+			<literallayout>
+			<![CDATA[
+Explanation of arguments
+
+-D: Tells SSH that we want a SOCKS tunnel on the specified port number (you can choose a number between 1025-65536)
+-f: Forks the process to the background
+-C: Compresses the data before sending it
+-q: Uses quiet mode
+-N: Tells SSH that no command will be sent once the tunnel is up			
+			]]>
+			</literallayout>
 		</section>
 	</section>
 
