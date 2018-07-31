@@ -46,6 +46,12 @@ curl --compressed http://www.example.com
 		<screen>
 curl -x 127.0.0.1:80 your.exmaple.com/index.php
 		</screen>
+		<para>socks5 服务器</para>
+		<screen>
+		<![CDATA[
+$ curl -v -x socks5://username:password@IP:1080 http://www.google.com/		
+		]]>
+		</screen>
 	</section>
 	<section id="curl.w">
 		<title>-w, --write-out &lt;format&gt; 输出格式定义</title>

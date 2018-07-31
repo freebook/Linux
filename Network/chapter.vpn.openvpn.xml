@@ -1,66 +1,81 @@
 <!-- $Id: chapter.network.vpn.openvpn.xml 618 2013-06-15 08:54:34Z netkiller $ -->
 <section id="openvpn">
 	<title>OpenVPN (openvpn - Virtual Private Network daemon)</title>
-	<graphic fileref="images/vpn/openvpn.png"/>
+	<graphic fileref="images/vpn/openvpn.png" />
 	<para>http://openvpn.net/</para>
 	<section id="openvpn.install">
-		<title>源码安装</title>
-		<procedure><title>OpenVPN 编译安装步骤</title>
-			<step>
-				<para>安装liblzo,libssl支持库</para>
-				<screen>
+		<title>安装 OpenVPN</title>
+		<section>
+			<title>源码安装</title>
+			<procedure>
+				<title>OpenVPN 编译安装步骤</title>
+				<step>
+					<para>安装liblzo,libssl支持库</para>
+					<screen>
+				<![CDATA[
 netkiller@neo:~$ sudo apt-get install liblzo-dev
 netkiller@neo:~$ sudo apt-get install libssl-dev
-				</screen>
-			</step>
-			<step><para>取得安装包</para>
-				<screen>
+				]]>
+					</screen>
+				</step>
+				<step>
+					<para>取得安装包</para>
+					<screen>
+				<![CDATA[
 netkiller@neo:/usr/local$ sudo chmod 777 /usr/local/src/
 netkiller@neo:~$ cd /usr/local/src/
 netkiller@neo:/usr/local/src$ wget http://openvpn.net/release/openvpn-2.0.9.tar.gz
 netkiller@neo:/usr/local/src$ tar zxvf openvpn-2.0.9.tar.gz
 netkiller@neo:/usr/local/src$ cd openvpn-2.0.9/
 netkiller@neo:/usr/local/src/openvpn-2.0.9$
-				</screen>
-			</step>
-			<step>
-				<para>编译安装</para>
-				<screen>
+				]]>
+					</screen>
+				</step>
+				<step>
+					<para>编译安装</para>
+					<screen>
+				<![CDATA[
 netkiller@neo:/usr/local/src/openvpn-2.0.9$ ./configure --prefix=/usr/local/openvpn-2.0.9 --enable-pthread
 netkiller@neo:/usr/local/src/openvpn-2.0.9$ make
 netkiller@neo:/usr/local/src/openvpn-2.0.9$ sudo make install
-				</screen>
-			</step>
-			<step>
-				<para>配置文件</para>
-				<screen>
+				]]>
+					</screen>
+				</step>
+				<step>
+					<para>配置文件</para>
+					<screen>
+				<![CDATA[
 netkiller@neo:/usr/local/src/openvpn-2.0.9$ sudo ln -s /usr/local/openvpn-2.0.9/ /usr/local/openvpn
 netkiller@neo:/usr/local/src/openvpn-2.0.9$ cd /usr/local/openvpn
 netkiller@neo:/usr/local/openvpn$ sudo mkdir etc
 netkiller@neo:/usr/local/openvpn$ sudo mkdir log
 netkiller@neo:/usr/local/openvpn$ sudo vi etc/openvpn.conf
-				</screen>
-				<example>
-					<title>openvpn.conf</title>
-					<screen>
-
+				]]>
 					</screen>
-					<para>sudo cp ca.crt dh1024.pem server.crt server.key /usr/local/openvpn/etc/</para>
-				</example>
-			</step>
-			<step>
-				<para>创建证书</para>
-				<para>修改vars文件的环境变量</para>
-				<screen>
+					<example>
+						<title>openvpn.conf</title>
+						<screen>
+
+						</screen>
+						<para>sudo cp ca.crt dh1024.pem server.crt server.key /usr/local/openvpn/etc/</para>
+					</example>
+				</step>
+				<step>
+					<para>创建证书</para>
+					<para>修改vars文件的环境变量</para>
+					<screen>
+				<![CDATA[
 netkiller@neo:/usr/share/openvpn$ sudo vi vars
 export KEY_COUNTRY=CN
 export KEY_PROVINCE=GD
 export KEY_CITY=Shenzhen
 export KEY_ORG=http://netkiller.sourceforge.net/
-export KEY_EMAIL=openunix@163.com
-				</screen>
+export KEY_EMAIL=netkiller@msn.com
+				]]>
+					</screen>
 
-				<screen>
+					<screen>
+				<![CDATA[
 netkiller@neo:/usr/local/openvpn$ cd /usr/share/openvpn/
 netkiller@neo:/usr/share/openvpn$
 
@@ -89,18 +104,21 @@ netkiller@neo:/etc/openvpn$ sudo cp /usr/share/openvpn/keys/ca.crt .
 
 root@neo:/home/netkiller/openvpn-2.1_rc1/sample-config-files# cp * /etc/openvpn/
 root@neo:/home/netkiller/openvpn-2.1_rc1/sample-config-files# cd /etc/openvpn/
-				</screen>
-			</step>
-			<step>
-				<para>启动</para>
-				<screen>
+				]]>
+					</screen>
+				</step>
+				<step>
+					<para>启动</para>
+					<screen>
+				<![CDATA[
 /usr/local/openvpn/sbin/openvpn --config /usr/local/openvpn/etc/openvpn.conf
-				</screen>
-			</step>
-			<step>
-				<para>Script</para>
-				<para>/etc/init.d/openvpn</para>
-				<screen>
+				]]>
+					</screen>
+				</step>
+				<step>
+					<para>Script</para>
+					<para>/etc/init.d/openvpn</para>
+					<screen>
 				<![CDATA[
 #!/bin/bash
 # vpn init file for OpenVPN
@@ -111,7 +129,7 @@ root@neo:/home/netkiller/openvpn-2.1_rc1/sample-config-files# cd /etc/openvpn/
 #				and enterprise-scale remote access solutions with load balancing, failover,
 #				and fine-grained access-controls
 #				as it is designed and optimized for high performance environments.
-# author: Neo Chen<openunix@163.com>
+# author: Neo Chen<netkiller@msn.com>
 #
 # processname: $PROG
 # config:
@@ -200,13 +218,16 @@ esac
 
 exit $RETVAL
 				]]>
-				</screen>
-				<para>添加x权限</para>
-				<screen>
+					</screen>
+					<para>添加x权限</para>
+					<screen>
+				<![CDATA[
 sudo chmod +x /etc/init.d/openvpn
-				</screen>
-			</step>
-		</procedure>
+				]]>
+					</screen>
+				</step>
+			</procedure>
+		</section>
 	</section>
 	<section id="openvpn.server">
 		<title>Openvpn Server</title>
@@ -216,6 +237,7 @@ sudo chmod +x /etc/init.d/openvpn
 			<step>
 				<para>相关软件包</para>
 				<screen>
+				<![CDATA[
 netkiller@shenzhen:~$ apt-cache search openvpn
 carpaltunnel - Configuration helper for OpenVPN
 kvpnc - vpn clients frontend for KDE
@@ -225,16 +247,30 @@ tunneldigger - Configures OpenVPN tunnel networks
 tunneldigger-utils - Utilities for TunnelDigger-configured OpenVPN tunnels
 You have new mail in /var/mail/netkiller
 netkiller@shenzhen:~$
+				]]>
 				</screen>
 				<para>This is for Dapper ubuntu and openvpn</para>
-				<screen>
+				<screen><![CDATA[
 netkiller@shenzhen:~$ sudo apt-get install openvpn
+				]]>
 				</screen>
 				<itemizedlist>
-					<listitem><para>config file</para><para>/etc/openvpn/</para></listitem>
-					<listitem><para>share</para><para>/usr/share/openvpn/</para></listitem>
-					<listitem><para>doc</para><para>/usr/share/doc/openvpn/</para></listitem>
-					<listitem><para>example</para><para>/usr/share/doc/openvpn/examples/</para></listitem>
+					<listitem>
+						<para>config file</para>
+						<para>/etc/openvpn/</para>
+					</listitem>
+					<listitem>
+						<para>share</para>
+						<para>/usr/share/openvpn/</para>
+					</listitem>
+					<listitem>
+						<para>doc</para>
+						<para>/usr/share/doc/openvpn/</para>
+					</listitem>
+					<listitem>
+						<para>example</para>
+						<para>/usr/share/doc/openvpn/examples/</para>
+					</listitem>
 				</itemizedlist>
 			</step>
 		</procedure>
@@ -244,45 +280,63 @@ netkiller@shenzhen:~$ sudo apt-get install openvpn
 				<title>CREATE KEYS FOR THE SERVER AND THE CLIENTS</title>
 				<step>
 					<para>Change to the directory /usr/share/doc/openvpn/examples/easy-rsa/2.0</para>
-					<screen>
+					<screen><![CDATA[
 netkiller@shenzhen:~$ cd /usr/share/doc/openvpn/examples/easy-rsa/2.0
 netkiller@shenzhen:/usr/share/doc/openvpn/examples/easy-rsa/2.0$ ls
 build-ca  build-dh  build-inter  build-key  build-key-pass  build-key-pkcs12  build-key-server  build-req  build-req-pass  clean-all  inherit-inter  list-crl  Makefile  openssl-0.9.6.cnf.gz  openssl.cnf  pkitool  README.gz  revoke-full  sign-req  vars  whichopensslcnf
+					]]>
 					</screen>
 					<para>backup vars to vars.original</para>
-					<screen>
+					<screen><![CDATA[
 sudo cp vars vars.original
+					]]>
 					</screen>
 					<para>vi vars and change with you</para>
-					<screen>
+					<screen><![CDATA[
 export KEY_COUNTRY="CN"
 export KEY_PROVINCE="GD"
 export KEY_CITY="Shenzhen"
 export KEY_ORG="http://netkiller.sourceforge.net/"
-export KEY_EMAIL="openunix@163.com"
+export KEY_EMAIL="netkiller@msn.com"
+					]]>
 					</screen>
 					<para>type the commands</para>
 					<itemizedlist>
-						<listitem><para>vars</para></listitem>
-						<listitem><para>clean-all</para></listitem>
-						<listitem><para>build-ca</para></listitem>
-						<listitem><para>build-key-server server</para></listitem>
-						<listitem><para>build-key client1</para></listitem>
-						<listitem><para>build-dh</para></listitem>
+						<listitem>
+							<para>vars</para>
+						</listitem>
+						<listitem>
+							<para>clean-all</para>
+						</listitem>
+						<listitem>
+							<para>build-ca</para>
+						</listitem>
+						<listitem>
+							<para>build-key-server server</para>
+						</listitem>
+						<listitem>
+							<para>build-key client1</para>
+						</listitem>
+						<listitem>
+							<para>build-dh</para>
+						</listitem>
 					</itemizedlist>
 				</step>
-				<step><para>vars and clean-all</para>
-					<screen>
+				<step>
+					<para>vars and clean-all</para>
+					<screen><![CDATA[
 netkiller@shenzhen:/usr/share/doc/openvpn/examples/easy-rsa/2.0$ source ./vars
 NOTE: If you run ./clean-all, I will be doing a rm -rf on /usr/share/doc/openvpn/examples/easy-rsa/2.0/keys
 netkiller@shenzhen:/usr/share/doc/openvpn/examples/easy-rsa/2.0$ ./clean-all
 
 $ sudo mkdir keys
 $ sudo chown neo.neo keys
+					]]>
 					</screen>
 				</step>
-				<step><para>build-ca</para>
-					<screen>
+				<step>
+					<para>build-ca</para>
+					<screen><![CDATA[
 netkiller@shenzhen:/usr/share/doc/openvpn/examples/easy-rsa/2.0$ ./build-ca
 Generating a 1024 bit RSA private key
 ..........................++++++
@@ -299,16 +353,17 @@ If you enter '.', the field will be left blank.
 Country Name (2 letter code) [CN]:
 State or Province Name (full name) [GD]:
 Locality Name (eg, city) [Shenzhen]:
-Organization Name (eg, company) [http://netkiller.8800.org]:
+Organization Name (eg, company) [http://vpn.netkiller.cn]:
 Organizational Unit Name (eg, section) []:
-Common Name (eg, your name or your server's hostname) [http://netkiller.8800.org CA]:
-Email Address [openunix@163.com]:
+Common Name (eg, your name or your server's hostname) [http://vpn.netkiller.cn CA]:
+Email Address [netkiller@msn.com]:
+					]]>
 					</screen>
 				</step>
 				<step>
 					<para>build-key-server server</para>
 					<para>You will have to answer the same questions above. It will ask you for a password, I suggest you don’t put a password when it ask.</para>
-					<screen>
+					<screen><![CDATA[
 netkiller@shenzhen:/usr/share/doc/openvpn/examples/easy-rsa/2.0$ ./build-key-server server
 Generating a 1024 bit RSA private key
 ...................................++++++
@@ -325,10 +380,10 @@ If you enter '.', the field will be left blank.
 Country Name (2 letter code) [CN]:
 State or Province Name (full name) [GD]:
 Locality Name (eg, city) [Shenzhen]:
-Organization Name (eg, company) [http://netkiller.8800.org]:
+Organization Name (eg, company) [http://vpn.netkiller.cn]:
 Organizational Unit Name (eg, section) []:
 Common Name (eg, your name or your server's hostname) [server]:
-Email Address [openunix@163.com]:
+Email Address [netkiller@msn.com]:
 
 Please enter the following 'extra' attributes
 to be sent with your certificate request
@@ -341,9 +396,9 @@ The Subject's Distinguished Name is as follows
 countryName           :PRINTABLE:'CN'
 stateOrProvinceName   :PRINTABLE:'GD'
 localityName          :PRINTABLE:'Shenzhen'
-organizationName      :PRINTABLE:'http://netkiller.8800.org'
+organizationName      :PRINTABLE:'http://vpn.netkiller.cn'
 commonName            :PRINTABLE:'server'
-emailAddress          :IA5STRING:'openunix@163.com'
+emailAddress          :IA5STRING:'netkiller@msn.com'
 Certificate is to be certified until Nov 10 18:09:52 2017 GMT (3650 days)
 Sign the certificate? [y/n]:y
 
@@ -351,16 +406,18 @@ Sign the certificate? [y/n]:y
 1 out of 1 certificate requests certified, commit? [y/n]y
 Write out database with 1 new entries
 Data Base Updated
+					]]>
 					</screen>
 					<para>enter yes to sign the certificate. </para>
 				</step>
 				<step>
 					<para>build-dh</para>
-					<screen>
+					<screen><![CDATA[
 # ./build-dh
 Generating DH parameters, 1024 bit long safe prime, generator 2
 This is going to take a long time
 .........................+..............................+....................................................+..........................................................................................+............................................................+..........................................+..........................+.............................................................................................................+....................+...................+...............................................+..+...........................................................+................+..........................................................+............................................................................+..........+..........................................................................+...........+.............................................................................................................................................................................+....+..........................................................+........+...................................+.........................................................+...........................................................................................+..............................................................................................+.................................++*++*++*
+					]]>
 					</screen>
 				</step>
 			</procedure>
@@ -372,7 +429,7 @@ This is going to take a long time
 				<step>
 					<para>build-key client1</para>
 					<para>Now to build the client files</para>
-					<screen>
+					<screen><![CDATA[
 netkiller@shenzhen:/usr/share/doc/openvpn/examples/easy-rsa/2.0$ ./build-key client1
 Generating a 1024 bit RSA private key
 .++++++
@@ -389,10 +446,10 @@ If you enter '.', the field will be left blank.
 Country Name (2 letter code) [CN]:
 State or Province Name (full name) [GD]:
 Locality Name (eg, city) [Shenzhen]:
-Organization Name (eg, company) [http://netkiller.8800.org]:
+Organization Name (eg, company) [http://vpn.netkiller.cn]:
 Organizational Unit Name (eg, section) []:
 Common Name (eg, your name or your server's hostname) [client1]:
-Email Address [openunix@163.com]:
+Email Address [netkiller@msn.com]:
 
 Please enter the following 'extra' attributes
 to be sent with your certificate request
@@ -405,9 +462,9 @@ The Subject's Distinguished Name is as follows
 countryName           :PRINTABLE:'CN'
 stateOrProvinceName   :PRINTABLE:'GD'
 localityName          :PRINTABLE:'Shenzhen'
-organizationName      :PRINTABLE:'http://netkiller.8800.org'
+organizationName      :PRINTABLE:'http://vpn.netkiller.cn'
 commonName            :PRINTABLE:'client1'
-emailAddress          :IA5STRING:'openunix@163.com'
+emailAddress          :IA5STRING:'netkiller@msn.com'
 Certificate is to be certified until Nov 10 18:15:39 2017 GMT (3650 days)
 Sign the certificate? [y/n]:y
 
@@ -415,39 +472,43 @@ Sign the certificate? [y/n]:y
 1 out of 1 certificate requests certified, commit? [y/n]y
 Write out database with 1 new entries
 Data Base Updated
-				</screen>
-				<para>And once again you will need to answer the questions above. I still don’t recommend you putting a password as it can cause problems when I have tried.</para>
-				<para>注意在进入 Common Name (eg, your name or your server's hostname) []: 的输入时, 每个证书输入的名字必须不同.</para>
-			</step>
-			<step>
-				<para>All the files you just generated are located in /usr/share/doc/openvpn/examples/easy-rsa/2.0/keys</para>
-				<para>If you do a list command in the keys folder you should have something like:</para>
-				<screen>
+				]]>
+					</screen>
+					<para>And once again you will need to answer the questions above. I still don’t recommend you putting a password as it can cause problems when I have tried.</para>
+					<para>注意在进入 Common Name (eg, your name or your server's hostname) []: 的输入时, 每个证书输入的名字必须不同.</para>
+				</step>
+				<step>
+					<para>All the files you just generated are located in /usr/share/doc/openvpn/examples/easy-rsa/2.0/keys</para>
+					<para>If you do a list command in the keys folder you should have something like:</para>
+					<screen><![CDATA[
 netkiller@shenzhen:/usr/share/doc/openvpn/examples/easy-rsa/2.0$ ls keys/
 01.pem  ca.crt  client1.crt  client1.key  index.txt       index.txt.attr.old  serial      server.crt  server.key
 02.pem  ca.key  client1.csr  dh1024.pem   index.txt.attr  index.txt.old       serial.old  server.csr
-			</screen>
-			<para>Copy the files ca.crt, ca.key, dh1024.pem, server.crt, and server.key to the /etc/openvpn/keys</para>
-			<screen>
+			]]>
+					</screen>
+					<para>Copy the files ca.crt, ca.key, dh1024.pem, server.crt, and server.key to the /etc/openvpn/keys</para>
+					<screen><![CDATA[
 netkiller@shenzhen:/usr/share/doc/openvpn/examples/easy-rsa/2.0$ cd keys/
 netkiller@shenzhen:/usr/share/doc/openvpn/examples/easy-rsa/2.0/keys$ sudo cp keys/ca.key keys/ca.crt keys/dh1024.pem keys/server.key keys/server.crt /etc/openvpn/
-				</screen>
-				<para>We will worry about the client files after we configure the client config file.</para>
-			</step>
-			<step>
-				<para>CONFIGURE THE SERVER</para>
-				<para>Change to the directory /usr/share/doc/openvpn/examples/sample-config-files</para>
-				<screen>
+				]]>
+					</screen>
+					<para>We will worry about the client files after we configure the client config file.</para>
+				</step>
+				<step>
+					<para>CONFIGURE THE SERVER</para>
+					<para>Change to the directory /usr/share/doc/openvpn/examples/sample-config-files</para>
+					<screen><![CDATA[
 netkiller@shenzhen:/usr/share/doc/openvpn/examples/sample-config-files$ sudo gunzip server.conf.gz
 netkiller@shenzhen:/usr/share/doc/openvpn/examples/sample-config-files$ sudo cp server.conf /etc/openvpn/
 netkiller@shenzhen:/usr/share/doc/openvpn/examples/sample-config-files$ cd /etc/openvpn/
 netkiller@shenzhen:/etc/openvpn$
-			</screen>
-			<para>为用户添加路由</para>
-			<para>push "route 192.168.1.0 255.255.255.0"</para>
-			<example>
-				<title>server.conf</title>
-				<screen>
+			]]>
+					</screen>
+					<para>为用户添加路由</para>
+					<para>push "route 192.168.1.0 255.255.255.0"</para>
+					<example>
+						<title>server.conf</title>
+						<screen>
 				<![CDATA[
 #################################################
 # Sample OpenVPN 2.0 config file for            #
@@ -745,10 +806,10 @@ verb 3
 # category will be output to the log.
 ;mute 20
 					]]>
-					</screen>
-				</example>
-				<para>test</para>
-				<screen>
+						</screen>
+					</example>
+					<para>test</para>
+					<screen><![CDATA[
 netkiller@shenzhen:/etc/openvpn$ sudo openvpn --config /etc/openvpn/server.conf
 Tue Nov 13 14:12:33 2007 OpenVPN 2.0.9 i486-pc-linux-gnu [SSL] [LZO] [EPOLL] built on Mar  2 2007
 Tue Nov 13 14:12:33 2007 Diffie-Hellman initialized with 1024 bit key
@@ -763,17 +824,19 @@ Tue Nov 13 14:12:33 2007 MULTI: multi_init called, r=256 v=256
 Tue Nov 13 14:12:33 2007 IFCONFIG POOL: base=10.8.0.4 size=62
 Tue Nov 13 14:12:33 2007 IFCONFIG POOL LIST
 Tue Nov 13 14:12:33 2007 Initialization Sequence Completed
-				</screen>
-			</step>
-			<step>
-				<para>firewall 配置</para>
-				<screen>
+				]]>
+					</screen>
+				</step>
+				<step>
+					<para>firewall 配置</para>
+					<screen><![CDATA[
 iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 iptables -A FORWARD -i eth0 -o tun+ -j ACCEPT
-				</screen>
-				<example>
-					<title>Openvpn 桥接模式服务器配置实例</title>
-					<screen>
+				]]>
+					</screen>
+					<example>
+						<title>Openvpn 桥接模式服务器配置实例</title>
+						<screen><![CDATA[
 # Generated by iptables-save v1.4.7 on Sat Jun 15 15:54:31 2013
 *nat
 :PREROUTING ACCEPT [40:5588]
@@ -799,11 +862,12 @@ COMMIT
 -A OUTPUT -j ACCEPT
 COMMIT
 # Completed on Sat Jun 15 15:54:31 2013
-					</screen>
-				</example>
-				<example>
-					<title>双网卡配置实例 </title>
-					<screen>
+					]]>
+						</screen>
+					</example>
+					<example>
+						<title>双网卡配置实例 </title>
+						<screen><![CDATA[
 iptables -P INPUT DROP
 iptables -P OUTPUT DROP
 iptables -P FORWARD DROP
@@ -818,31 +882,34 @@ iptables -A FORWARD -i tun+ -o eth1 -j ACCEPT
 iptables -A FORWARD -i eth1 -o tun+ -j ACCEPT
 
 iptables -t nat -A POSTROUTING -s 172.31.0.0/24 -o eth1 -j MASQUERADE
-					</screen>
-				</example>
-			</step>
-			<step>
-				<para>Start</para>
-				<screen>
+					]]>
+						</screen>
+					</example>
+				</step>
+				<step>
+					<para>Start</para>
+					<screen><![CDATA[
 netkiller@shenzhen:~$ sudo /etc/init.d/openvpn start
 Starting virtual private network daemon: server(OK).
-				</screen>
-			</step>
-		</procedure>
+				]]>
+					</screen>
+				</step>
+			</procedure>
 		</section>
 	</section>
-	
+
 	<section id="centos">
 		<title>openvpn - secure IP tunnel daemon.</title>
 		<para>安装环境CentOS 6.x</para>
 		<procedure>
 			<title>OpenVPN Server</title>
 			<step>
-				<screen>
+				<screen><![CDATA[
 # yum install openvpn easy-rsa
+				]]>
 				</screen>
 				<para>察看openvpn包中的文件</para>
-				<screen>
+				<screen><![CDATA[
 # rpm -ql openvpn
 /etc/openvpn
 /etc/rc.d/init.d/openvpn
@@ -971,11 +1038,12 @@ Starting virtual private network daemon: server(OK).
 /usr/share/easy-rsa/2.0/sign-req
 /usr/share/easy-rsa/2.0/vars
 /usr/share/easy-rsa/2.0/whichopensslcnf
+				]]>
 				</screen>
 			</step>
 			<step>
-				<screen>key</screen>
-				<screen>
+				<title>key</title>
+				<screen><![CDATA[
 # cd /usr/share/openvpn/easy-rsa/2.0/
 
 vim vars
@@ -996,59 +1064,68 @@ export KEY_EMAIL="neo.chen@example.com"
 ./build-key neo
 
 # cp keys/ca.key keys/ca.crt keys/dh1024.pem keys/server.key keys/server.crt /etc/openvpn/
+				]]>
 				</screen>
 			</step>
 			<step>
 				<para>server.conf</para>
-				<screen>
+				<screen><![CDATA[
 cp keys/ca.key keys/ca.crt keys/dh1024.pem keys/server.key keys/server.crt /etc/openvpn/
 vim /etc/openvpn/server.conf
+				]]>
 				</screen>
 			</step>
 			<step>
 				<para>启用IP转发</para>
-				<screen>
+				<screen><![CDATA[
 # vim /etc/sysctl.conf
 # Controls IP packet forwarding
 net.ipv4.ip_forward = 1
+				]]>
 				</screen>
 				<para>net.ipv4.ip_forward = 1 使IP转发生效</para>
-				<screen>
+				<screen><![CDATA[
 sysctl -w net.ipv4.ip_forward=1
+				]]>
 				</screen>
 			</step>
 			<step>
-				<screen>
+				<screen><![CDATA[
 # /etc/init.d/openvpn start
 Starting openvpn:                                          [  OK  ]
+				]]>
 				</screen>
 			</step>
 		</procedure>
 	</section>
-	
+
 	<section id="openvpn.revoke">
 		<title>吊销(revoke)用户证书</title>
-		<screen>
+		<screen><![CDATA[
 $ . vars
 $ ./revoke-full client1
 $ sudo cp keys/crl.pem /etc/openvpn/
+		]]>
 		</screen>
 		<para>命令执行完成之后， 会在 keys 目录下面， 生成一个 crl.pem 文件,这个文件中包含了吊销证书的名单。</para>
 		<para>确认成功注销某个证书，可以打开keys/index.txt 文件，可以看到前面已被标记为R的注销证书</para>
-		<screen>
+		<screen><![CDATA[
 $ grep ^R keys/index.txt
 R       200908052722Z   110218014133Z   04      unknown /C=CN/ST=GD/L=Shenzhen/O=EXAMPLE.COM/CN=client1/emailAddress=client1@EXAMPLE.com
+		]]>
 		</screen>
 		<para>在服务端的配置文件 server.conf 中，加入这样一行：</para>
-		<screen>
+		<screen><![CDATA[
 crl-verify crl.pem
+		]]>
 		</screen>
 	</section>
 	<section id="openvpn.client">
 		<title>Openvpn Client</title>
-		<screen>
+		<screen><![CDATA[
 $ cd /usr/share/doc/openvpn/examples/easy-rsa/2.0
 $ cp keys/ca.crt keys/client1.crt keys/client1.key /etc/openvpn/
+		]]>
 		</screen>
 		<procedure>
 			<title>Openvpn Client 安装步骤</title>
@@ -1057,7 +1134,7 @@ $ cp keys/ca.crt keys/client1.crt keys/client1.key /etc/openvpn/
 				<para>修改 remote my-server-1 1194</para>
 				<example>
 					<title>client.conf</title>
-					<screen>
+					<screen><![CDATA[
 <![CDATA[
 ##############################################
 # Sample client-side OpenVPN 2.0 config file #
@@ -1100,7 +1177,7 @@ proto udp
 # The hostname/IP and port of the server.
 # You can have multiple remote entries
 # to load balance between the servers.
-remote vpn.netkiller.8800.org 1194
+remote vpn.vpn.netkiller.cn 1194
 ;remote my-server-2 1194
 
 # Choose a random host from the remote
@@ -1188,8 +1265,9 @@ verb 3
 			</step>
 			<step>
 				<para>禁止Server端 redirect-gateway def1</para>
-				<screen>
+				<screen><![CDATA[
 redirect-gateway local
+				]]>
 				</screen>
 			</step>
 		</procedure>
@@ -1199,35 +1277,38 @@ redirect-gateway local
 		<title>OpenVPN GUI for Windows</title>
 		<section>
 			<title>Windows Server</title>
-		<procedure>
-			<title>For Windows Server</title>
-			<step>
-				<para>http://openvpn.se/</para>
-				<para>http://openvpn.se/files/install_packages/openvpn-2.0.9-gui-1.0.3-install.exe</para>
-				<para>下载安装后,会在系统托盘上显示图标.这时并不能使用,使用创建配置文件后托盘图标才会显示连接菜单</para>
-			</step>
-			<step>
-				<para>创建证书</para>
-				<screen>
+			<procedure>
+				<title>For Windows Server</title>
+				<step>
+					<para>http://openvpn.se/</para>
+					<para>http://openvpn.se/files/install_packages/openvpn-2.0.9-gui-1.0.3-install.exe</para>
+					<para>下载安装后,会在系统托盘上显示图标.这时并不能使用,使用创建配置文件后托盘图标才会显示连接菜单</para>
+				</step>
+				<step>
+					<para>创建证书</para>
+					<screen><![CDATA[
 C:\Documents and Settings\Neo>cd "\Program Files\OpenVPN\easy-rsa"
 C:\Program Files\OpenVPN\easy-rsa>
 C:\Program Files\OpenVPN\easy-rsa>init-config.bat
-				</screen>
-				<para>编辑vars.bat</para>
-				<screen>
+				]]>
+					</screen>
+					<para>编辑vars.bat</para>
+					<screen><![CDATA[
 set KEY_COUNTRY=CN
 set KEY_PROVINCE=GD
 set KEY_CITY=Shenzhen
-set KEY_ORG=netkiller.org.cn
-set KEY_EMAIL=openunix@163.com
-				</screen>
+set KEY_ORG=netkiller.cn
+set KEY_EMAIL=netkiller@msn.com
+				]]>
+					</screen>
 
-				<screen>
+					<screen><![CDATA[
 C:\Program Files\OpenVPN\easy-rsa>clean-all.bat
 C:\Program Files\OpenVPN\easy-rsa>vars.bat
-				</screen>
-				<para>创建CA证书</para>
-				<screen>
+				]]>
+					</screen>
+					<para>创建CA证书</para>
+					<screen>
 				<![CDATA[
 C:\Program Files\OpenVPN\easy-rsa>build-ca.bat
 Loading 'screen' into random state - done
@@ -1246,16 +1327,17 @@ If you enter '.', the field will be left blank.
 Country Name (2 letter code) [CN]:
 State or Province Name (full name) [GD]:
 Locality Name (eg, city) [Shenzhen]:
-Organization Name (eg, company) [netkiller.org.cn]:
+Organization Name (eg, company) [netkiller.cn]:
 Organizational Unit Name (eg, section) []:vpn
-Common Name (eg, your name or your server's hostname) []:netkiller.org.cn
-Email Address [openunix@163.com]:
+Common Name (eg, your name or your server's hostname) []:netkiller.cn
+Email Address [netkiller@msn.com]:
 
 C:\Program Files\OpenVPN\easy-rsa>
-				]]>
-				</screen>
-				<para>dh</para>
-				<screen>
+
+					]]>
+					</screen>
+					<para>dh</para>
+					<screen>
 				<![CDATA[
 C:\Program Files\OpenVPN\easy-rsa>build-dh.bat
 Loading 'screen' into random state - done
@@ -1288,9 +1370,9 @@ This is going to take a long time
 
 C:\Program Files\OpenVPN\easy-rsa>
 				]]>
-				</screen>
-				<para>server key</para>
-				<screen>
+					</screen>
+					<para>server key</para>
+					<screen>
 				<![CDATA[
 C:\Program Files\OpenVPN\easy-rsa>build-key-server.bat server
 Loading 'screen' into random state - done
@@ -1309,10 +1391,10 @@ If you enter '.', the field will be left blank.
 Country Name (2 letter code) [CN]:
 State or Province Name (full name) [GD]:
 Locality Name (eg, city) [Shenzhen]:
-Organization Name (eg, company) [netkiller.org.cn]:
+Organization Name (eg, company) [netkiller.cn]:
 Organizational Unit Name (eg, section) []:vpn
-Common Name (eg, your name or your server's hostname) []:netkiller.org.cn
-Email Address [openunix@163.com]:
+Common Name (eg, your name or your server's hostname) []:netkiller.cn
+Email Address [netkiller@msn.com]:
 
 Please enter the following 'extra' attributes
 to be sent with your certificate request
@@ -1326,10 +1408,10 @@ The Subject's Distinguished Name is as follows
 countryName           :PRINTABLE:'CN'
 stateOrProvinceName   :PRINTABLE:'GD'
 localityName          :PRINTABLE:'Shenzhen'
-organizationName      :PRINTABLE:'netkiller.org.cn'
+organizationName      :PRINTABLE:'netkiller.cn'
 organizationalUnitName:PRINTABLE:'vpn'
-commonName            :PRINTABLE:'netkiller.org.cn'
-emailAddress          :IA5STRING:'openunix@163.com'
+commonName            :PRINTABLE:'netkiller.cn'
+emailAddress          :IA5STRING:'netkiller@msn.com'
 Certificate is to be certified until Jun  9 03:14:55 2017 GMT (3650 days)
 Sign the certificate? [y/n]:y
 
@@ -1340,9 +1422,9 @@ Data Base Updated
 
 C:\Program Files\OpenVPN\easy-rsa>
 				]]>
-				</screen>
-				<para>client key</para>
-				<screen>
+					</screen>
+					<para>client key</para>
+					<screen>
 				<![CDATA[
 C:\Program Files\OpenVPN\easy-rsa>build-key.bat client
 Loading 'screen' into random state - done
@@ -1361,10 +1443,10 @@ If you enter '.', the field will be left blank.
 Country Name (2 letter code) [CN]:
 State or Province Name (full name) [GD]:
 Locality Name (eg, city) [Shenzhen]:
-Organization Name (eg, company) [netkiller.org.cn]:
+Organization Name (eg, company) [netkiller.cn]:
 Organizational Unit Name (eg, section) []:vpn
-Common Name (eg, your name or your server's hostname) []:netkiller.org.cn
-Email Address [openunix@163.com ]:
+Common Name (eg, your name or your server's hostname) []:netkiller.cn
+Email Address [netkiller@msn.com ]:
 
 Please enter the following 'extra' attributes
 to be sent with your certificate request
@@ -1379,10 +1461,10 @@ The Subject's Distinguished Name is as follows
 countryName           :PRINTABLE:'CN'
 stateOrProvinceName   :PRINTABLE:'GD'
 localityName          :PRINTABLE:'Shenzhen'
-organizationName      :PRINTABLE:'netkiller.org.cn'
+organizationName      :PRINTABLE:'netkiller.cn'
 organizationalUnitName:PRINTABLE:'vpn'
-commonName            :PRINTABLE:'netkiller.org.cn'
-emailAddress          :IA5STRING:'openunix@163.com^I'
+commonName            :PRINTABLE:'netkiller.cn'
+emailAddress          :IA5STRING:'netkiller@msn.com'
 Certificate is to be certified until Jun  9 03:17:55 2017 GMT (3650 days)
 Sign the certificate? [y/n]:y
 failed to update database
@@ -1390,13 +1472,13 @@ TXT_DB error number 2
 
 C:\Program Files\OpenVPN\easy-rsa>
 				]]>
-				</screen>
-			</step>
-			<step>
-				<para>配置</para>
-				<example>
-					<title>server.ovpn</title>
-					<screen>
+					</screen>
+				</step>
+				<step>
+					<para>配置</para>
+					<example>
+						<title>server.ovpn</title>
+						<screen><![CDATA[
 <![CDATA[
 #################################################
 # Sample OpenVPN 2.0 config file for            #
@@ -1691,11 +1773,11 @@ verb 3
 ;mute 20
 
 ]]>
-					</screen>
-				</example>
-			</step>
+						</screen>
+					</example>
+				</step>
 
-		</procedure>
+			</procedure>
 		</section>
 		<section>
 			<title>Windows Client</title>
@@ -1706,13 +1788,14 @@ verb 3
 					<para>将C:\Program Files\OpenVPN\sample-config目录下的client.ovpn复制到C:\Program Files\OpenVPN\config</para>
 					<para>ca.crt, client.crt, client.key 三个文件复制到 C:\Program Files\OpenVPN\config</para>
 					<para>修改;remote my-server-1 1194</para>
-					<screen>
-remote vpn.netkiller.8800.org 1194
+					<screen><![CDATA[
+remote vpn.vpn.netkiller.cn 1194
+					]]>
 					</screen>
 					<para>编辑client.ovpn文件</para>
 					<example>
 						<title>client.ovpn</title>
-						<screen>
+						<screen><![CDATA[
 ##############################################
 # Sample client-side OpenVPN 2.0 config file #
 # for connecting to multi-client server.     #
@@ -1754,7 +1837,7 @@ proto udp
 # The hostname/IP and port of the server.
 # You can have multiple remote entries
 # to load balance between the servers.
-remote netkiller.8800.org 1194
+remote vpn.netkiller.cn 1194
 ;remote my-server-2 1194
 
 # Choose a random host from the remote
@@ -1836,6 +1919,7 @@ verb 3
 
 # Silence repeating messages
 ;mute 20
+						]]>
 						</screen>
 					</example>
 				</step>
@@ -1847,10 +1931,11 @@ verb 3
 			<section>
 				<title>客户端路由设置</title>
 				<para>client.ovpn 中加入</para>
-				<screen>
+				<screen><![CDATA[
 # Silence repeating messages
 ;mute 20
 up client.ovpn_up.bat
+				]]>
 				</screen>
 				<para>client.ovpn_up.bat</para>
 				<screen>
@@ -1881,52 +1966,54 @@ rem route ADD 202.96.0.0 MASK 255.255.0.0 192.168.90.252
 			<title>This example demonstrates a bare-bones point-to-point OpenVPN configuration.</title>
 			<step>
 				<para>Generate a static key</para>
-				<screen>
+				<screen><![CDATA[
 $ cd /etc/openvpn/
 $ sudo openvpn --genkey --secret static.key
+				]]>
 				</screen>
 			</step>
 			<step>
 				<para>server configuration file</para>
-				<screen>
+				<screen><![CDATA[
 $ cd /usr/share/doc/openvpn/examples/sample-config-files
 $ sudo cp static-office.conf office.up /etc/openvpn/
+				]]>
 				</screen>
 				<para>static-office.conf</para>
-				<screen>
+				<screen><![CDATA[
 $ sudo vim static-office.conf
+				]]>
 				</screen>
 			</step>
 			<step>
 				<para>client configuration file</para>
-				<screen>
+				<screen><![CDATA[
 $ cd /usr/share/doc/openvpn/examples/sample-config-files
 $ sudo cp static-home.conf home.up /etc/openvpn/
 $ cd /etc/openvpn/
-$ scp user@netkiller.8800.org:/etc/openvpn/static.key .
+$ scp user@vpn.netkiller.cn:/etc/openvpn/static.key .
+				]]>
 				</screen>
 				<para>static-home.conf</para>
-				<screen>
-remote netkiller.8800.org
+				<screen><![CDATA[
+remote vpn.netkiller.cn
+				]]>
 				</screen>
 			</step>
 		</procedure>
 		<para>OpenVPN GUI for Windows</para>
-		<!--
-iptables -t nat -A POSTROUTING -s 10.1.0.0/24 -o eth0 -j MASQUERADE
-C:\>route delete 0.0.0.0
-C:\>route add 0.0.0.0 mask 0.0.0.0 10.8.0.1
-		 -->
-		<screen>
+		<!-- iptables -t nat -A POSTROUTING -s 10.1.0.0/24 -o eth0 -j MASQUERADE C:\>route delete 0.0.0.0 C:\>route add 0.0.0.0 mask 0.0.0.0 10.8.0.1 -->
+		<screen><![CDATA[
 copy C:\Program Files\OpenVPN\sample-config\sample.ovpn C:\Program Files\OpenVPN\config
+		]]>
 		</screen>
 	</section>
-<section id="openvpn.example">
-	<title>VPN 案例</title>
+	<section id="openvpn.example">
+		<title>VPN 案例</title>
 
-	<section>
-		<title>server and client vpn</title>
-		<screen>
+		<section>
+			<title>server and client vpn</title>
+			<screen><![CDATA[
 		<![CDATA[
 office (linux)                                   home (xp)
 --------------                                   ----------
@@ -1942,17 +2029,17 @@ ping 10.8.0.1 OK
 ping 172.16.0.1 OK
 ping 172.16.0.254 OK
 		]]>
-		</screen>
-		<example>
-			<title>office.conf</title>
-			<para>office</para>
-			<screen>
+			</screen>
+			<example>
+				<title>office.conf</title>
+				<para>office</para>
+				<screen><![CDATA[
 			<![CDATA[
 $ sudo sysctl -w net.ipv4.ip_forward=1
 $ sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 			]]>
-			</screen>
-			<screen>
+				</screen>
+				<screen>
 			<![CDATA[
 #################################################
 # Sample OpenVPN 2.0 config file for            #
@@ -2257,11 +2344,11 @@ verb 3
 # category will be output to the log.
 ;mute 20
 			]]>
-			</screen>
-		</example>
-		<example>
-			<title>home.ovpn</title>
-			<screen>
+				</screen>
+			</example>
+			<example>
+				<title>home.ovpn</title>
+				<screen>
 			<![CDATA[
 ##############################################
 # Sample client-side OpenVPN 2.0 config file #
@@ -2304,7 +2391,7 @@ proto udp
 # The hostname/IP and port of the server.
 # You can have multiple remote entries
 # to load balance between the servers.
-remote netkiller.8800.org 1194
+remote vpn.netkiller.cn 1194
 ;remote my-server-2 1194
 
 # Choose a random host from the remote
@@ -2387,82 +2474,90 @@ verb 3
 # Silence repeating messages
 ;mute 20
 			]]>
-			</screen>
-		</example>
-	</section>
-	<section>
-		<title>Ethernet Bridging Example</title>
-		<procedure>
-			<title>server</title>
-			<step>
-				<screen>
-yum -y install bridge-utils
 				</screen>
-			</step>
-			<step>
-				<para>server.conf</para>
-				<screen>
+			</example>
+		</section>
+		<section>
+			<title>Ethernet Bridging Example</title>
+			<procedure>
+				<title>server</title>
+				<step>
+					<screen><![CDATA[
+yum -y install bridge-utils
+				]]>
+					</screen>
+				</step>
+				<step>
+					<para>server.conf</para>
+					<screen><![CDATA[
 dev tap0
 server-bridge 192.168.3.5 255.255.255.0 192.168.3.200  192.168.3.250
 push "redirect-gateway local def1"
 push "dhcp-option DNS 208.67.222.222"
 push "dhcp-option DNS 208.67.220.220"
-				</screen>
-			</step>
-			<step>
-				<screen>
+				]]>
+					</screen>
+				</step>
+				<step>
+					<screen><![CDATA[
 cp /usr/share/doc/openvpn-2.1.1/sample-scripts/bridge-st* /etc/openvpn/
 chmod +x /etc/openvpn/bridge*
-				</screen>
-				<para>config bridge-start</para>
-				<screen>
+				]]>
+					</screen>
+					<para>config bridge-start</para>
+					<screen><![CDATA[
 vim /etc/openvpn/bridge-start
 eth="eth0"
 eth_ip="192.168.3.5"
 eth_netmask="255.255.255.0"
 eth_broadcast="192.168.3.255"
-				</screen>
-			</step>
-			<step>
-				<para>start</para>
-				<screen>
+				]]>
+					</screen>
+				</step>
+				<step>
+					<para>start</para>
+					<screen><![CDATA[
 /etc/openvpn/bridge-start
 /etc/init.d/openvpn start
-				</screen>
-			</step>
-			<step>
-				<para>stop</para>
-				<screen>
+				]]>
+					</screen>
+				</step>
+				<step>
+					<para>stop</para>
+					<screen><![CDATA[
 /etc/init.d/openvpn stop
 /etc/openvpn/bridge-stop
-				</screen>
-			</step>
-		</procedure>
-		<procedure>
-			<title>client</title>
-			<step>
-				<para>client.ovpn</para>
-				<screen>
+				]]>
+					</screen>
+				</step>
+			</procedure>
+			<procedure>
+				<title>client</title>
+				<step>
+					<para>client.ovpn</para>
+					<screen><![CDATA[
 dev tap
 dev-node tap-bridge
-				</screen>
-			</step>
-			<step>
-				<para>网上邻居右键，选择属性，TAP-Win32 Adapter V8 重命名为 tap-bridge</para>
-				<para>vista windows7 操作系统注意：</para>
-				<screen>
+				]]>
+					</screen>
+				</step>
+				<step>
+					<para>网上邻居右键，选择属性，TAP-Win32 Adapter V8 重命名为 tap-bridge</para>
+					<para>vista windows7 操作系统注意：</para>
+					<screen><![CDATA[
 OpenVPN GUI 右键“以管理员身份运行”
 
 client.ovpn 中加入
 route-method exe
 route-delay 2
-				</screen>
-			</step>
-		</procedure>
-	</section>
-	<section>
-		<title>IDC Example</title>
-		<screen>
+				]]>
+					</screen>
+				</step>
+			</procedure>
+		</section>
+		<section>
+			<title>IDC Example</title>
+			<screen><![CDATA[
 		Internet
 			|
 			V
@@ -2477,23 +2572,26 @@ Cisco Catalyst 3750 Switch
 			V
 	eth0 : 172.16.1.2
 	OpenVPN Server
-		</screen>
-		<para>VPN 拨通后不能正常访问172.16.1.0</para>
-		<para>/etc/openvpn/server.conf</para>
-		<screen>
+		]]>
+			</screen>
+			<para>VPN 拨通后不能正常访问172.16.1.0</para>
+			<para>/etc/openvpn/server.conf</para>
+			<screen><![CDATA[
 push "redirect-gateway def1 bypass-dhcp"
-		</screen>
-		<screen>
+		]]>
+			</screen>
+			<screen><![CDATA[
 $ sudo iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE
-		</screen>
+		]]>
+			</screen>
+		</section>
 	</section>
-</section>
 	<section>
 		<title>OpenVPN安全</title>
 		<para>OpenVPN 一旦拨通，即可访问LAN内所有资源。很多时候我们并不希望所有的电脑都被访问。有两种方法：</para>
 		<para>通过 push 是用户无法访问某些网段</para>
 		<para>通过iptables限制访问规则</para>
-		<screen>
+		<screen><![CDATA[
 # Generated by iptables-save v1.4.7 on Tue May 14 17:54:27 2013
 *nat
 :PREROUTING ACCEPT [223:25375]
@@ -2525,9 +2623,10 @@ COMMIT
 -A FORWARD -d 192.168.0.0/16 -i tun0 -j DROP
 COMMIT
 # Completed on Tue May 14 17:54:27 2013
+		]]>
 		</screen>
 		<para>查询生效规则</para>
-		<screen>
+		<screen><![CDATA[
 # iptables -L -v
 Chain INPUT (policy ACCEPT 226 packets, 17012 bytes)
  pkts bytes target     prot opt in     out     source               destination
@@ -2543,6 +2642,7 @@ Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
 
 Chain OUTPUT (policy ACCEPT 170 packets, 28112 bytes)
  pkts bytes target     prot opt in     out     source               destination
+		]]>
 		</screen>
 	</section>
 </section>
