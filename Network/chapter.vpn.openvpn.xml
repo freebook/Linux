@@ -4,7 +4,7 @@
 	<graphic fileref="images/vpn/openvpn.png" />
 	<para>http://openvpn.net/</para>
 	<section id="openvpn.install">
-		<title>安装 OpenVPN</title>
+		<title>安装 OpenVPN Server</title>
 		<section>
 			<title>源码安装</title>
 			<procedure>
@@ -21,14 +21,14 @@ netkiller@neo:~$ sudo apt-get install libssl-dev
 				<step>
 					<para>取得安装包</para>
 					<screen>
-				<![CDATA[
+					<![CDATA[
 netkiller@neo:/usr/local$ sudo chmod 777 /usr/local/src/
 netkiller@neo:~$ cd /usr/local/src/
 netkiller@neo:/usr/local/src$ wget http://openvpn.net/release/openvpn-2.0.9.tar.gz
 netkiller@neo:/usr/local/src$ tar zxvf openvpn-2.0.9.tar.gz
 netkiller@neo:/usr/local/src$ cd openvpn-2.0.9/
 netkiller@neo:/usr/local/src/openvpn-2.0.9$
-				]]>
+					]]>
 					</screen>
 				</step>
 				<step>
@@ -228,15 +228,14 @@ sudo chmod +x /etc/init.d/openvpn
 				</step>
 			</procedure>
 		</section>
-	</section>
-	<section id="openvpn.server">
-		<title>Openvpn Server</title>
-		<para>Ubuntu/Debian 环境安装</para>
-		<procedure>
-			<title>Openvpn Server 安装步骤</title>
-			<step>
-				<para>相关软件包</para>
-				<screen>
+		<section id="openvpn.ubuntu">
+			<title>Ubuntu</title>
+			<para>Ubuntu/Debian 环境安装</para>
+			<procedure>
+				<title>Openvpn Server 安装步骤</title>
+				<step>
+					<para>相关软件包</para>
+					<screen>
 				<![CDATA[
 netkiller@shenzhen:~$ apt-cache search openvpn
 carpaltunnel - Configuration helper for OpenVPN
@@ -248,83 +247,83 @@ tunneldigger-utils - Utilities for TunnelDigger-configured OpenVPN tunnels
 You have new mail in /var/mail/netkiller
 netkiller@shenzhen:~$
 				]]>
-				</screen>
-				<para>This is for Dapper ubuntu and openvpn</para>
-				<screen><![CDATA[
+					</screen>
+					<para>This is for Dapper ubuntu and openvpn</para>
+					<screen><![CDATA[
 netkiller@shenzhen:~$ sudo apt-get install openvpn
 				]]>
-				</screen>
-				<itemizedlist>
-					<listitem>
-						<para>config file</para>
-						<para>/etc/openvpn/</para>
-					</listitem>
-					<listitem>
-						<para>share</para>
-						<para>/usr/share/openvpn/</para>
-					</listitem>
-					<listitem>
-						<para>doc</para>
-						<para>/usr/share/doc/openvpn/</para>
-					</listitem>
-					<listitem>
-						<para>example</para>
-						<para>/usr/share/doc/openvpn/examples/</para>
-					</listitem>
-				</itemizedlist>
-			</step>
-		</procedure>
-		<section>
-			<title>create keys for the server</title>
-			<procedure>
-				<title>CREATE KEYS FOR THE SERVER AND THE CLIENTS</title>
-				<step>
-					<para>Change to the directory /usr/share/doc/openvpn/examples/easy-rsa/2.0</para>
-					<screen><![CDATA[
+					</screen>
+					<itemizedlist>
+						<listitem>
+							<para>config file</para>
+							<para>/etc/openvpn/</para>
+						</listitem>
+						<listitem>
+							<para>share</para>
+							<para>/usr/share/openvpn/</para>
+						</listitem>
+						<listitem>
+							<para>doc</para>
+							<para>/usr/share/doc/openvpn/</para>
+						</listitem>
+						<listitem>
+							<para>example</para>
+							<para>/usr/share/doc/openvpn/examples/</para>
+						</listitem>
+					</itemizedlist>
+				</step>
+			</procedure>
+			<section>
+				<title>create keys for the server</title>
+				<procedure>
+					<title>CREATE KEYS FOR THE SERVER AND THE CLIENTS</title>
+					<step>
+						<para>Change to the directory /usr/share/doc/openvpn/examples/easy-rsa/2.0</para>
+						<screen><![CDATA[
 netkiller@shenzhen:~$ cd /usr/share/doc/openvpn/examples/easy-rsa/2.0
 netkiller@shenzhen:/usr/share/doc/openvpn/examples/easy-rsa/2.0$ ls
 build-ca  build-dh  build-inter  build-key  build-key-pass  build-key-pkcs12  build-key-server  build-req  build-req-pass  clean-all  inherit-inter  list-crl  Makefile  openssl-0.9.6.cnf.gz  openssl.cnf  pkitool  README.gz  revoke-full  sign-req  vars  whichopensslcnf
 					]]>
-					</screen>
-					<para>backup vars to vars.original</para>
-					<screen><![CDATA[
+						</screen>
+						<para>backup vars to vars.original</para>
+						<screen><![CDATA[
 sudo cp vars vars.original
 					]]>
-					</screen>
-					<para>vi vars and change with you</para>
-					<screen><![CDATA[
+						</screen>
+						<para>vi vars and change with you</para>
+						<screen><![CDATA[
 export KEY_COUNTRY="CN"
 export KEY_PROVINCE="GD"
 export KEY_CITY="Shenzhen"
 export KEY_ORG="http://netkiller.sourceforge.net/"
 export KEY_EMAIL="netkiller@msn.com"
 					]]>
-					</screen>
-					<para>type the commands</para>
-					<itemizedlist>
-						<listitem>
-							<para>vars</para>
-						</listitem>
-						<listitem>
-							<para>clean-all</para>
-						</listitem>
-						<listitem>
-							<para>build-ca</para>
-						</listitem>
-						<listitem>
-							<para>build-key-server server</para>
-						</listitem>
-						<listitem>
-							<para>build-key client1</para>
-						</listitem>
-						<listitem>
-							<para>build-dh</para>
-						</listitem>
-					</itemizedlist>
-				</step>
-				<step>
-					<para>vars and clean-all</para>
-					<screen><![CDATA[
+						</screen>
+						<para>type the commands</para>
+						<itemizedlist>
+							<listitem>
+								<para>vars</para>
+							</listitem>
+							<listitem>
+								<para>clean-all</para>
+							</listitem>
+							<listitem>
+								<para>build-ca</para>
+							</listitem>
+							<listitem>
+								<para>build-key-server server</para>
+							</listitem>
+							<listitem>
+								<para>build-key client1</para>
+							</listitem>
+							<listitem>
+								<para>build-dh</para>
+							</listitem>
+						</itemizedlist>
+					</step>
+					<step>
+						<para>vars and clean-all</para>
+						<screen><![CDATA[
 netkiller@shenzhen:/usr/share/doc/openvpn/examples/easy-rsa/2.0$ source ./vars
 NOTE: If you run ./clean-all, I will be doing a rm -rf on /usr/share/doc/openvpn/examples/easy-rsa/2.0/keys
 netkiller@shenzhen:/usr/share/doc/openvpn/examples/easy-rsa/2.0$ ./clean-all
@@ -332,11 +331,11 @@ netkiller@shenzhen:/usr/share/doc/openvpn/examples/easy-rsa/2.0$ ./clean-all
 $ sudo mkdir keys
 $ sudo chown neo.neo keys
 					]]>
-					</screen>
-				</step>
-				<step>
-					<para>build-ca</para>
-					<screen><![CDATA[
+						</screen>
+					</step>
+					<step>
+						<para>build-ca</para>
+						<screen><![CDATA[
 netkiller@shenzhen:/usr/share/doc/openvpn/examples/easy-rsa/2.0$ ./build-ca
 Generating a 1024 bit RSA private key
 ..........................++++++
@@ -358,12 +357,12 @@ Organizational Unit Name (eg, section) []:
 Common Name (eg, your name or your server's hostname) [http://vpn.netkiller.cn CA]:
 Email Address [netkiller@msn.com]:
 					]]>
-					</screen>
-				</step>
-				<step>
-					<para>build-key-server server</para>
-					<para>You will have to answer the same questions above. It will ask you for a password, I suggest you don’t put a password when it ask.</para>
-					<screen><![CDATA[
+						</screen>
+					</step>
+					<step>
+						<para>build-key-server server</para>
+						<para>You will have to answer the same questions above. It will ask you for a password, I suggest you don’t put a password when it ask.</para>
+						<screen><![CDATA[
 netkiller@shenzhen:/usr/share/doc/openvpn/examples/easy-rsa/2.0$ ./build-key-server server
 Generating a 1024 bit RSA private key
 ...................................++++++
@@ -407,29 +406,29 @@ Sign the certificate? [y/n]:y
 Write out database with 1 new entries
 Data Base Updated
 					]]>
-					</screen>
-					<para>enter yes to sign the certificate. </para>
-				</step>
-				<step>
-					<para>build-dh</para>
-					<screen><![CDATA[
+						</screen>
+						<para>enter yes to sign the certificate. </para>
+					</step>
+					<step>
+						<para>build-dh</para>
+						<screen><![CDATA[
 # ./build-dh
 Generating DH parameters, 1024 bit long safe prime, generator 2
 This is going to take a long time
 .........................+..............................+....................................................+..........................................................................................+............................................................+..........................................+..........................+.............................................................................................................+....................+...................+...............................................+..+...........................................................+................+..........................................................+............................................................................+..........+..........................................................................+...........+.............................................................................................................................................................................+....+..........................................................+........+...................................+.........................................................+...........................................................................................+..............................................................................................+.................................++*++*++*
 					]]>
-					</screen>
-				</step>
-			</procedure>
-		</section>
-		<section>
-			<title>create keys for the clients</title>
-			<procedure>
+						</screen>
+					</step>
+				</procedure>
+			</section>
+			<section>
 				<title>create keys for the clients</title>
-				<step>
-					<para>build-key client1</para>
-					<para>Now to build the client files</para>
-					<screen><![CDATA[
+				<procedure>
+					<title>create keys for the clients</title>
+					<step>
+						<para>build-key client1</para>
+						<para>Now to build the client files</para>
+						<screen><![CDATA[
 netkiller@shenzhen:/usr/share/doc/openvpn/examples/easy-rsa/2.0$ ./build-key client1
 Generating a 1024 bit RSA private key
 .++++++
@@ -473,42 +472,42 @@ Sign the certificate? [y/n]:y
 Write out database with 1 new entries
 Data Base Updated
 				]]>
-					</screen>
-					<para>And once again you will need to answer the questions above. I still don’t recommend you putting a password as it can cause problems when I have tried.</para>
-					<para>注意在进入 Common Name (eg, your name or your server's hostname) []: 的输入时, 每个证书输入的名字必须不同.</para>
-				</step>
-				<step>
-					<para>All the files you just generated are located in /usr/share/doc/openvpn/examples/easy-rsa/2.0/keys</para>
-					<para>If you do a list command in the keys folder you should have something like:</para>
-					<screen><![CDATA[
+						</screen>
+						<para>And once again you will need to answer the questions above. I still don’t recommend you putting a password as it can cause problems when I have tried.</para>
+						<para>注意在进入 Common Name (eg, your name or your server's hostname) []: 的输入时, 每个证书输入的名字必须不同.</para>
+					</step>
+					<step>
+						<para>All the files you just generated are located in /usr/share/doc/openvpn/examples/easy-rsa/2.0/keys</para>
+						<para>If you do a list command in the keys folder you should have something like:</para>
+						<screen><![CDATA[
 netkiller@shenzhen:/usr/share/doc/openvpn/examples/easy-rsa/2.0$ ls keys/
 01.pem  ca.crt  client1.crt  client1.key  index.txt       index.txt.attr.old  serial      server.crt  server.key
 02.pem  ca.key  client1.csr  dh1024.pem   index.txt.attr  index.txt.old       serial.old  server.csr
 			]]>
-					</screen>
-					<para>Copy the files ca.crt, ca.key, dh1024.pem, server.crt, and server.key to the /etc/openvpn/keys</para>
-					<screen><![CDATA[
+						</screen>
+						<para>Copy the files ca.crt, ca.key, dh1024.pem, server.crt, and server.key to the /etc/openvpn/keys</para>
+						<screen><![CDATA[
 netkiller@shenzhen:/usr/share/doc/openvpn/examples/easy-rsa/2.0$ cd keys/
 netkiller@shenzhen:/usr/share/doc/openvpn/examples/easy-rsa/2.0/keys$ sudo cp keys/ca.key keys/ca.crt keys/dh1024.pem keys/server.key keys/server.crt /etc/openvpn/
 				]]>
-					</screen>
-					<para>We will worry about the client files after we configure the client config file.</para>
-				</step>
-				<step>
-					<para>CONFIGURE THE SERVER</para>
-					<para>Change to the directory /usr/share/doc/openvpn/examples/sample-config-files</para>
-					<screen><![CDATA[
+						</screen>
+						<para>We will worry about the client files after we configure the client config file.</para>
+					</step>
+					<step>
+						<para>CONFIGURE THE SERVER</para>
+						<para>Change to the directory /usr/share/doc/openvpn/examples/sample-config-files</para>
+						<screen><![CDATA[
 netkiller@shenzhen:/usr/share/doc/openvpn/examples/sample-config-files$ sudo gunzip server.conf.gz
 netkiller@shenzhen:/usr/share/doc/openvpn/examples/sample-config-files$ sudo cp server.conf /etc/openvpn/
 netkiller@shenzhen:/usr/share/doc/openvpn/examples/sample-config-files$ cd /etc/openvpn/
 netkiller@shenzhen:/etc/openvpn$
 			]]>
-					</screen>
-					<para>为用户添加路由</para>
-					<para>push "route 192.168.1.0 255.255.255.0"</para>
-					<example>
-						<title>server.conf</title>
-						<screen>
+						</screen>
+						<para>为用户添加路由</para>
+						<para>push "route 192.168.1.0 255.255.255.0"</para>
+						<example>
+							<title>server.conf</title>
+							<screen>
 				<![CDATA[
 #################################################
 # Sample OpenVPN 2.0 config file for            #
@@ -806,10 +805,10 @@ verb 3
 # category will be output to the log.
 ;mute 20
 					]]>
-						</screen>
-					</example>
-					<para>test</para>
-					<screen><![CDATA[
+							</screen>
+						</example>
+						<para>test</para>
+						<screen><![CDATA[
 netkiller@shenzhen:/etc/openvpn$ sudo openvpn --config /etc/openvpn/server.conf
 Tue Nov 13 14:12:33 2007 OpenVPN 2.0.9 i486-pc-linux-gnu [SSL] [LZO] [EPOLL] built on Mar  2 2007
 Tue Nov 13 14:12:33 2007 Diffie-Hellman initialized with 1024 bit key
@@ -825,18 +824,18 @@ Tue Nov 13 14:12:33 2007 IFCONFIG POOL: base=10.8.0.4 size=62
 Tue Nov 13 14:12:33 2007 IFCONFIG POOL LIST
 Tue Nov 13 14:12:33 2007 Initialization Sequence Completed
 				]]>
-					</screen>
-				</step>
-				<step>
-					<para>firewall 配置</para>
-					<screen><![CDATA[
+						</screen>
+					</step>
+					<step>
+						<para>firewall 配置</para>
+						<screen><![CDATA[
 iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 iptables -A FORWARD -i eth0 -o tun+ -j ACCEPT
 				]]>
-					</screen>
-					<example>
-						<title>Openvpn 桥接模式服务器配置实例</title>
-						<screen><![CDATA[
+						</screen>
+						<example>
+							<title>Openvpn 桥接模式服务器配置实例</title>
+							<screen><![CDATA[
 # Generated by iptables-save v1.4.7 on Sat Jun 15 15:54:31 2013
 *nat
 :PREROUTING ACCEPT [40:5588]
@@ -863,11 +862,11 @@ COMMIT
 COMMIT
 # Completed on Sat Jun 15 15:54:31 2013
 					]]>
-						</screen>
-					</example>
-					<example>
-						<title>双网卡配置实例 </title>
-						<screen><![CDATA[
+							</screen>
+						</example>
+						<example>
+							<title>双网卡配置实例 </title>
+							<screen><![CDATA[
 iptables -P INPUT DROP
 iptables -P OUTPUT DROP
 iptables -P FORWARD DROP
@@ -883,243 +882,885 @@ iptables -A FORWARD -i eth1 -o tun+ -j ACCEPT
 
 iptables -t nat -A POSTROUTING -s 172.31.0.0/24 -o eth1 -j MASQUERADE
 					]]>
-						</screen>
-					</example>
-				</step>
-				<step>
-					<para>Start</para>
-					<screen><![CDATA[
+							</screen>
+						</example>
+					</step>
+					<step>
+						<para>Start</para>
+						<screen><![CDATA[
 netkiller@shenzhen:~$ sudo /etc/init.d/openvpn start
 Starting virtual private network daemon: server(OK).
 				]]>
+						</screen>
+					</step>
+				</procedure>
+			</section>
+		</section>
+		<section id="openvpn.centos">
+			<title>CentOS</title>
+			<subtitle>openvpn - secure IP tunnel daemon.</subtitle>
+			<para>安装环境CentOS 7.4</para>
+			<procedure>
+				<title>OpenVPN Server</title>
+				<step>
+					<screen>
+					<![CDATA[
+# yum install openvpn easy-rsa
+					]]>
+					</screen>
+					<para>察看openvpn包中的文件</para>
+					<screen>
+					<![CDATA[
+[root@iZj6c39y62jl5b1wmfv6u8Z ~]# rpm -ql openvpn
+/etc/openvpn
+/etc/openvpn/client
+/etc/openvpn/server
+/run/openvpn-client
+/run/openvpn-server
+/usr/lib/systemd/system/openvpn-client@.service
+/usr/lib/systemd/system/openvpn-server@.service
+/usr/lib/systemd/system/openvpn@.service
+/usr/lib/tmpfiles.d/openvpn.conf
+/usr/lib64/openvpn
+/usr/lib64/openvpn/plugins
+/usr/lib64/openvpn/plugins/openvpn-plugin-auth-pam.so
+/usr/lib64/openvpn/plugins/openvpn-plugin-down-root.so
+/usr/sbin/openvpn
+/usr/share/doc/openvpn-2.4.6
+/usr/share/doc/openvpn-2.4.6/AUTHORS
+/usr/share/doc/openvpn-2.4.6/COPYING
+/usr/share/doc/openvpn-2.4.6/COPYRIGHT.GPL
+/usr/share/doc/openvpn-2.4.6/ChangeLog
+/usr/share/doc/openvpn-2.4.6/Changes.rst
+/usr/share/doc/openvpn-2.4.6/README
+/usr/share/doc/openvpn-2.4.6/README.auth-pam
+/usr/share/doc/openvpn-2.4.6/README.down-root
+/usr/share/doc/openvpn-2.4.6/README.systemd
+/usr/share/doc/openvpn-2.4.6/contrib
+/usr/share/doc/openvpn-2.4.6/contrib/OCSP_check
+/usr/share/doc/openvpn-2.4.6/contrib/OCSP_check/OCSP_check.sh
+/usr/share/doc/openvpn-2.4.6/contrib/README
+/usr/share/doc/openvpn-2.4.6/contrib/openvpn-fwmarkroute-1.00
+/usr/share/doc/openvpn-2.4.6/contrib/openvpn-fwmarkroute-1.00/README
+/usr/share/doc/openvpn-2.4.6/contrib/openvpn-fwmarkroute-1.00/fwmarkroute.down
+/usr/share/doc/openvpn-2.4.6/contrib/openvpn-fwmarkroute-1.00/fwmarkroute.up
+/usr/share/doc/openvpn-2.4.6/contrib/pull-resolv-conf
+/usr/share/doc/openvpn-2.4.6/contrib/pull-resolv-conf/client.down
+/usr/share/doc/openvpn-2.4.6/contrib/pull-resolv-conf/client.up
+/usr/share/doc/openvpn-2.4.6/management-notes.txt
+/usr/share/doc/openvpn-2.4.6/sample
+/usr/share/doc/openvpn-2.4.6/sample/sample-config-files
+/usr/share/doc/openvpn-2.4.6/sample/sample-config-files/README
+/usr/share/doc/openvpn-2.4.6/sample/sample-config-files/client.conf
+/usr/share/doc/openvpn-2.4.6/sample/sample-config-files/firewall.sh
+/usr/share/doc/openvpn-2.4.6/sample/sample-config-files/home.up
+/usr/share/doc/openvpn-2.4.6/sample/sample-config-files/loopback-client
+/usr/share/doc/openvpn-2.4.6/sample/sample-config-files/loopback-server
+/usr/share/doc/openvpn-2.4.6/sample/sample-config-files/office.up
+/usr/share/doc/openvpn-2.4.6/sample/sample-config-files/openvpn-shutdown.sh
+/usr/share/doc/openvpn-2.4.6/sample/sample-config-files/openvpn-startup.sh
+/usr/share/doc/openvpn-2.4.6/sample/sample-config-files/roadwarrior-client.conf
+/usr/share/doc/openvpn-2.4.6/sample/sample-config-files/roadwarrior-server.conf
+/usr/share/doc/openvpn-2.4.6/sample/sample-config-files/server.conf
+/usr/share/doc/openvpn-2.4.6/sample/sample-config-files/static-home.conf
+/usr/share/doc/openvpn-2.4.6/sample/sample-config-files/static-office.conf
+/usr/share/doc/openvpn-2.4.6/sample/sample-config-files/tls-home.conf
+/usr/share/doc/openvpn-2.4.6/sample/sample-config-files/tls-office.conf
+/usr/share/doc/openvpn-2.4.6/sample/sample-config-files/xinetd-client-config
+/usr/share/doc/openvpn-2.4.6/sample/sample-config-files/xinetd-server-config
+/usr/share/doc/openvpn-2.4.6/sample/sample-scripts
+/usr/share/doc/openvpn-2.4.6/sample/sample-scripts/auth-pam.pl
+/usr/share/doc/openvpn-2.4.6/sample/sample-scripts/bridge-start
+/usr/share/doc/openvpn-2.4.6/sample/sample-scripts/bridge-stop
+/usr/share/doc/openvpn-2.4.6/sample/sample-scripts/ucn.pl
+/usr/share/doc/openvpn-2.4.6/sample/sample-scripts/verify-cn
+/usr/share/doc/openvpn-2.4.6/sample/sample-windows
+/usr/share/doc/openvpn-2.4.6/sample/sample-windows/sample.ovpn
+/usr/share/man/man8/openvpn.8.gz
+/var/lib/openvpn
+
+[root@iZj6c39y62jl5b1wmfv6u8Z ~]# rpm -ql easy-rsa
+/usr/share/doc/easy-rsa-3.0.3
+/usr/share/doc/easy-rsa-3.0.3/COPYING.md
+/usr/share/doc/easy-rsa-3.0.3/ChangeLog
+/usr/share/doc/easy-rsa-3.0.3/README.quickstart.md
+/usr/share/doc/easy-rsa-3.0.3/vars.example
+/usr/share/easy-rsa
+/usr/share/easy-rsa/3
+/usr/share/easy-rsa/3.0
+/usr/share/easy-rsa/3.0.3
+/usr/share/easy-rsa/3.0.3/easyrsa
+/usr/share/easy-rsa/3.0.3/openssl-1.0.cnf
+/usr/share/easy-rsa/3.0.3/x509-types
+/usr/share/easy-rsa/3.0.3/x509-types/COMMON
+/usr/share/easy-rsa/3.0.3/x509-types/ca
+/usr/share/easy-rsa/3.0.3/x509-types/client
+/usr/share/easy-rsa/3.0.3/x509-types/san
+/usr/share/easy-rsa/3.0.3/x509-types/server
+/usr/share/licenses/easy-rsa-3.0.3
+/usr/share/licenses/easy-rsa-3.0.3/gpl-2.0.txt
+					]]>
+					</screen>
+				</step>
+				<step>
+					<title>key</title>
+					<para>创建 vars 文件，参数 https://github.com/OpenVPN/easy-rsa/blob/v3.0.5/easyrsa3/vars.example</para>
+					<screen>
+					<![CDATA[
+[root@iZj6c39y62jl5b1wmfv6u8Z ~]# cd /usr/share/easy-rsa/3.0.3/
+
+[root@iZj6c39y62jl5b1wmfv6u8Z 3.0.3]# cat > vars <<EOF
+> set_var EASYRSA                 "/usr/share/easy-rsa/3.0.3"
+> set_var EASYRSA_PKI             "/usr/share/easy-rsa/3.0.3/pki"
+> set_var EASYRSA_DN              "cn_only"
+> set_var EASYRSA_REQ_COUNTRY     "CN"
+> set_var EASYRSA_REQ_PROVINCE    "Guangdong"
+> set_var EASYRSA_REQ_CITY        "Shenzhen"
+> set_var EASYRSA_REQ_ORG         "Netkiller CERTIFICATE AUTHORITY"
+> set_var EASYRSA_REQ_EMAIL       "netkiller@msn.com"
+> set_var EASYRSA_REQ_OU          "Netkiller EASY CA"
+> set_var EASYRSA_KEY_SIZE        2048
+> set_var EASYRSA_ALGO            rsa
+> set_var EASYRSA_CA_EXPIRE       7500
+> set_var EASYRSA_CERT_EXPIRE     365
+> set_var EASYRSA_NS_SUPPORT      "no"
+> set_var EASYRSA_NS_COMMENT      "Netkiller CERTIFICATE AUTHORITY"
+> set_var EASYRSA_EXT_DIR         "/usr/share/easy-rsa/3.0.3/x509-types"
+> set_var EASYRSA_SSL_CONF        "/usr/share/easy-rsa/3.0.3/openssl-1.0.cnf"
+> set_var EASYRSA_DIGEST          "sha256"
+> EOF
+
+
+					]]>
+						<para>由于设置了 EASYRSA_DN 为 cn_only，所以创建CA时比较简单。果设置成 org 则会要求输入很多项目。</para>
+					</screen>
+					<para>初始化PKI，此时会创建 pki 目录</para>
+					<screen>
+					<![CDATA[
+[root@iZj6c39y62jl5b1wmfv6u8Z 3.0.3]# easyrsa init-pki
+
+init-pki complete; you may now create a CA or requests.
+Your newly created PKI dir is: /usr/share/easy-rsa/3.0.3/pki
+
+			
+					]]>
+					</screen>
+					<para>创建CA</para>
+					<screen>
+					<![CDATA[
+[root@iZj6c39y62jl5b1wmfv6u8Z 3.0.3]# easyrsa build-ca
+
+Note: using Easy-RSA configuration from: ./vars
+Generating a 2048 bit RSA private key
+..........+++
+..+++
+writing new private key to '/usr/share/easy-rsa/3.0.3/pki/private/ca.key.rWzzQ1HXvk'
+Enter PEM pass phrase:
+Verifying - Enter PEM pass phrase:
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Common Name (eg: your user, host, or server name) [Easy-RSA CA]:
+
+CA creation complete and you may now import and sign cert requests.
+Your new CA certificate file for publishing is at:
+/usr/share/easy-rsa/3.0.3/pki/ca.crt
+							
+					]]>
+					</screen>
+					<para>创建DH参数，Diffie hellman参数使用的是 openssl dhparam 创建</para>
+					<screen>
+					<![CDATA[
+[root@iZj6c39y62jl5b1wmfv6u8Z 3.0.3]# easyrsa gen-dh
+
+Note: using Easy-RSA configuration from: ./vars
+Generating DH parameters, 2048 bit long safe prime, generator 2
+This is going to take a long time
+.........................+..................................................................................................+......................................................+....................+.+...............................................................................................................................................+..............................................................+..................................................+...............................................+..........................+...............................................................................................................................................................................+.........................................+..................................................+.............................................................................................................................................................................................................................................................................................................................................................................................................................................................+.............................................+.................................................................................+...................................+..........+........................................................................................................................................................................................+..........................................................................................................................+...................................+........................................................................................................................+...........................................................................................................................................+.........+..................................................+....................................................................................++*++*
+
+DH parameters of size 2048 created at /usr/share/easy-rsa/3.0.3/pki/dh.pem
+
+					
+					]]>
+					</screen>
+					<para>生成证书，分为三个步骤 gen-req, build-client-full, build-server-full 可以使用 nopass 参数生成不加密的私钥。</para>
+					<screen>
+					<![CDATA[
+[root@iZj6c39y62jl5b1wmfv6u8Z 3.0.3]# easyrsa gen-req server 
+
+Note: using Easy-RSA configuration from: ./vars
+Generating a 2048 bit RSA private key
+...........................................................+++
+............................................................+++
+writing new private key to '/usr/share/easy-rsa/3.0.3/pki/private/server.key.Jm7mqy5rG2'
+Enter PEM pass phrase:
+Verifying - Enter PEM pass phrase:
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Common Name (eg: your user, host, or server name) [server]:
+
+Keypair and certificate request completed. Your files are:
+req: /usr/share/easy-rsa/3.0.3/pki/reqs/server.req
+key: /usr/share/easy-rsa/3.0.3/pki/private/server.key
+
+				
+					]]>
+					</screen>
+					<screen>
+					<![CDATA[
+[root@iZj6c39y62jl5b1wmfv6u8Z 3.0.3]# easyrsa sign-req server server
+
+Note: using Easy-RSA configuration from: ./vars
+
+
+You are about to sign the following certificate.
+Please check over the details shown below for accuracy. Note that this request
+has not been cryptographically verified. Please be sure it came from a trusted
+source or that you have verified the request checksum with the sender.
+
+Request subject, to be signed as a server certificate for 365 days:
+
+subject=
+    commonName                = server
+
+
+Type the word 'yes' to continue, or any other input to abort.
+  Confirm request details: yes
+Using configuration from /usr/share/easy-rsa/3.0.3/openssl-1.0.cnf
+Enter pass phrase for /usr/share/easy-rsa/3.0.3/pki/private/ca.key:
+Check that the request matches the signature
+Signature ok
+The Subject's Distinguished Name is as follows
+commonName            :ASN.1 12:'server'
+Certificate is to be certified until Jul 31 08:49:25 2019 GMT (365 days)
+
+Write out database with 1 new entries
+Data Base Updated
+
+Certificate created at: /usr/share/easy-rsa/3.0.3/pki/issued/server.crt
+
+
+						
+					]]>
+					</screen>
+
+					<screen>
+					<![CDATA[
+[root@iZj6c39y62jl5b1wmfv6u8Z 3.0.3]# easyrsa build-client-full client
+
+Note: using Easy-RSA configuration from: ./vars
+Generating a 2048 bit RSA private key
+..............................+++
+................+++
+writing new private key to '/usr/share/easy-rsa/3.0.3/pki/private/client.key.U2dMhl28xj'
+Enter PEM pass phrase:
+Verifying - Enter PEM pass phrase:
+-----
+Using configuration from /usr/share/easy-rsa/3.0.3/openssl-1.0.cnf
+Enter pass phrase for /usr/share/easy-rsa/3.0.3/pki/private/ca.key:
+Check that the request matches the signature
+Signature ok
+The Subject's Distinguished Name is as follows
+commonName            :ASN.1 12:'client'
+Certificate is to be certified until Jul 31 08:52:46 2019 GMT (365 days)
+
+Write out database with 1 new entries
+Data Base Updated
+
+
+						
+					]]>
+					</screen>
+					<screen>
+					<![CDATA[
+# cp pki/private/ca.key pki/ca.crt pki/dh.pem pki/private/server.key pki/issued/server.crt /etc/openvpn
+					]]>
+					</screen>
+					<screen>
+					<![CDATA[
+					]]>
+					</screen>
+				</step>
+				<step>
+					<para>编辑配置文件 server.conf</para>
+					<screen>
+					<![CDATA[
+[root@iZj6c39y62jl5b1wmfv6u8Z 3.0.3]# cp pki/private/ca.key pki/ca.crt pki/dh.pem pki/private/server.key pki/issued/server.crt /etc/openvpn/
+[root@iZj6c39y62jl5b1wmfv6u8Z 3.0.3]# vim /etc/openvpn/server.conf
+					]]>
+					</screen>
+					<para></para>
+					<screen>
+					<![CDATA[
+[root@iZj6c39y62jl5b1wmfv6u8Z 3.0.3]# cd /etc/openvpn/
+[root@iZj6c39y62jl5b1wmfv6u8Z server]# openvpn --genkey --secret ta.key
+					]]>
+					</screen>
+					<para>只需配置四处位置</para>
+					<screen>
+					<![CDATA[
+push "route 192.168.0.0 255.255.255.0"		192.168.0.0 是你的局域网网络
+push "redirect-gateway def1 bypass-dhcp"	VPN作为默认网关
+push "dhcp-option DNS 208.67.222.222"		DHCP 推送 OpenDNS 防止内地DNS封锁境外域名。
+push "dhcp-option DNS 208.67.220.220"
+					]]>
+					</screen>
+					<screen>
+					<![CDATA[
+#################################################
+# Sample OpenVPN 2.0 config file for            #
+# multi-client server.                          #
+#                                               #
+# This file is for the server side              #
+# of a many-clients <-> one-server              #
+# OpenVPN configuration.                        #
+#                                               #
+# OpenVPN also supports                         #
+# single-machine <-> single-machine             #
+# configurations (See the Examples page         #
+# on the web site for more info).               #
+#                                               #
+# This config should work on Windows            #
+# or Linux/BSD systems.  Remember on            #
+# Windows to quote pathnames and use            #
+# double backslashes, e.g.:                     #
+# "C:\\Program Files\\OpenVPN\\config\\foo.key" #
+#                                               #
+# Comments are preceded with '#' or ';'         #
+#################################################
+
+# Which local IP address should OpenVPN
+# listen on? (optional)
+;local a.b.c.d
+
+# Which TCP/UDP port should OpenVPN listen on?
+# If you want to run multiple OpenVPN instances
+# on the same machine, use a different port
+# number for each one.  You will need to
+# open up this port on your firewall.
+port 1194
+
+# TCP or UDP server?
+;proto tcp
+proto udp
+
+# "dev tun" will create a routed IP tunnel,
+# "dev tap" will create an ethernet tunnel.
+# Use "dev tap0" if you are ethernet bridging
+# and have precreated a tap0 virtual interface
+# and bridged it with your ethernet interface.
+# If you want to control access policies
+# over the VPN, you must create firewall
+# rules for the the TUN/TAP interface.
+# On non-Windows systems, you can give
+# an explicit unit number, such as tun0.
+# On Windows, use "dev-node" for this.
+# On most systems, the VPN will not function
+# unless you partially or fully disable
+# the firewall for the TUN/TAP interface.
+;dev tap
+dev tun
+
+# Windows needs the TAP-Win32 adapter name
+# from the Network Connections panel if you
+# have more than one.  On XP SP2 or higher,
+# you may need to selectively disable the
+# Windows firewall for the TAP adapter.
+# Non-Windows systems usually don't need this.
+;dev-node MyTap
+
+# SSL/TLS root certificate (ca), certificate
+# (cert), and private key (key).  Each client
+# and the server must have their own cert and
+# key file.  The server and all clients will
+# use the same ca file.
+#
+# See the "easy-rsa" directory for a series
+# of scripts for generating RSA certificates
+# and private keys.  Remember to use
+# a unique Common Name for the server
+# and each of the client certificates.
+#
+# Any X509 key management system can be used.
+# OpenVPN can also use a PKCS #12 formatted key file
+# (see "pkcs12" directive in man page).
+ca ca.crt
+cert server.crt
+key server.key  # This file should be kept secret
+
+# Diffie hellman parameters.
+# Generate your own with:
+#   openssl dhparam -out dh2048.pem 2048
+dh dh.pem
+
+# Network topology
+# Should be subnet (addressing via IP)
+# unless Windows clients v2.0.9 and lower have to
+# be supported (then net30, i.e. a /30 per client)
+# Defaults to net30 (not recommended)
+;topology subnet
+
+# Configure server mode and supply a VPN subnet
+# for OpenVPN to draw client addresses from.
+# The server will take 10.8.0.1 for itself,
+# the rest will be made available to clients.
+# Each client will be able to reach the server
+# on 10.8.0.1. Comment this line out if you are
+# ethernet bridging. See the man page for more info.
+server 10.8.0.0 255.255.255.0
+
+# Maintain a record of client <-> virtual IP address
+# associations in this file.  If OpenVPN goes down or
+# is restarted, reconnecting clients can be assigned
+# the same virtual IP address from the pool that was
+# previously assigned.
+ifconfig-pool-persist ipp.txt
+
+# Configure server mode for ethernet bridging.
+# You must first use your OS's bridging capability
+# to bridge the TAP interface with the ethernet
+# NIC interface.  Then you must manually set the
+# IP/netmask on the bridge interface, here we
+# assume 10.8.0.4/255.255.255.0.  Finally we
+# must set aside an IP range in this subnet
+# (start=10.8.0.50 end=10.8.0.100) to allocate
+# to connecting clients.  Leave this line commented
+# out unless you are ethernet bridging.
+;server-bridge 10.8.0.4 255.255.255.0 10.8.0.50 10.8.0.100
+
+# Configure server mode for ethernet bridging
+# using a DHCP-proxy, where clients talk
+# to the OpenVPN server-side DHCP server
+# to receive their IP address allocation
+# and DNS server addresses.  You must first use
+# your OS's bridging capability to bridge the TAP
+# interface with the ethernet NIC interface.
+# Note: this mode only works on clients (such as
+# Windows), where the client-side TAP adapter is
+# bound to a DHCP client.
+;server-bridge
+
+# Push routes to the client to allow it
+# to reach other private subnets behind
+# the server.  Remember that these
+# private subnets will also need
+# to know to route the OpenVPN client
+# address pool (10.8.0.0/255.255.255.0)
+# back to the OpenVPN server.
+;push "route 192.168.10.0 255.255.255.0"
+;push "route 192.168.20.0 255.255.255.0"
+push "route 192.168.0.0 255.255.255.0"
+
+# To assign specific IP addresses to specific
+# clients or if a connecting client has a private
+# subnet behind it that should also have VPN access,
+# use the subdirectory "ccd" for client-specific
+# configuration files (see man page for more info).
+
+# EXAMPLE: Suppose the client
+# having the certificate common name "Thelonious"
+# also has a small subnet behind his connecting
+# machine, such as 192.168.40.128/255.255.255.248.
+# First, uncomment out these lines:
+;client-config-dir ccd
+;route 192.168.40.128 255.255.255.248
+# Then create a file ccd/Thelonious with this line:
+#   iroute 192.168.40.128 255.255.255.248
+# This will allow Thelonious' private subnet to
+# access the VPN.  This example will only work
+# if you are routing, not bridging, i.e. you are
+# using "dev tun" and "server" directives.
+
+# EXAMPLE: Suppose you want to give
+# Thelonious a fixed VPN IP address of 10.9.0.1.
+# First uncomment out these lines:
+;client-config-dir ccd
+;route 10.9.0.0 255.255.255.252
+# Then add this line to ccd/Thelonious:
+#   ifconfig-push 10.9.0.1 10.9.0.2
+
+# Suppose that you want to enable different
+# firewall access policies for different groups
+# of clients.  There are two methods:
+# (1) Run multiple OpenVPN daemons, one for each
+#     group, and firewall the TUN/TAP interface
+#     for each group/daemon appropriately.
+# (2) (Advanced) Create a script to dynamically
+#     modify the firewall in response to access
+#     from different clients.  See man
+#     page for more info on learn-address script.
+;learn-address ./script
+
+# If enabled, this directive will configure
+# all clients to redirect their default
+# network gateway through the VPN, causing
+# all IP traffic such as web browsing and
+# and DNS lookups to go through the VPN
+# (The OpenVPN server machine may need to NAT
+# or bridge the TUN/TAP interface to the internet
+# in order for this to work properly).
+push "redirect-gateway def1 bypass-dhcp"
+
+# Certain Windows-specific network settings
+# can be pushed to clients, such as DNS
+# or WINS server addresses.  CAVEAT:
+# http://openvpn.net/faq.html#dhcpcaveats
+# The addresses below refer to the public
+# DNS servers provided by opendns.com.
+;push "dhcp-option DNS 208.67.222.222"
+;push "dhcp-option DNS 208.67.220.220"
+
+# Uncomment this directive to allow different
+# clients to be able to "see" each other.
+# By default, clients will only see the server.
+# To force clients to only see the server, you
+# will also need to appropriately firewall the
+# server's TUN/TAP interface.
+;client-to-client
+
+# Uncomment this directive if multiple clients
+# might connect with the same certificate/key
+# files or common names.  This is recommended
+# only for testing purposes.  For production use,
+# each client should have its own certificate/key
+# pair.
+#
+# IF YOU HAVE NOT GENERATED INDIVIDUAL
+# CERTIFICATE/KEY PAIRS FOR EACH CLIENT,
+# EACH HAVING ITS OWN UNIQUE "COMMON NAME",
+# UNCOMMENT THIS LINE OUT.
+;duplicate-cn
+
+# The keepalive directive causes ping-like
+# messages to be sent back and forth over
+# the link so that each side knows when
+# the other side has gone down.
+# Ping every 10 seconds, assume that remote
+# peer is down if no ping received during
+# a 120 second time period.
+keepalive 10 120
+
+# For extra security beyond that provided
+# by SSL/TLS, create an "HMAC firewall"
+# to help block DoS attacks and UDP port flooding.
+#
+# Generate with:
+#   openvpn --genkey --secret ta.key
+#
+# The server and each client must have
+# a copy of this key.
+# The second parameter should be '0'
+# on the server and '1' on the clients.
+tls-auth ta.key 0 # This file is secret
+
+# Select a cryptographic cipher.
+# This config item must be copied to
+# the client config file as well.
+# Note that v2.4 client/server will automatically
+# negotiate AES-256-GCM in TLS mode.
+# See also the ncp-cipher option in the manpage
+cipher AES-256-CBC
+
+# Enable compression on the VPN link and push the
+# option to the client (v2.4+ only, for earlier
+# versions see below)
+;compress lz4-v2
+;push "compress lz4-v2"
+
+# For compression compatible with older clients use comp-lzo
+# If you enable it here, you must also
+# enable it in the client config file.
+;comp-lzo
+
+# The maximum number of concurrently connected
+# clients we want to allow.
+;max-clients 100
+
+# It's a good idea to reduce the OpenVPN
+# daemon's privileges after initialization.
+#
+# You can uncomment this out on
+# non-Windows systems.
+;user nobody
+;group nobody
+
+# The persist options will try to avoid
+# accessing certain resources on restart
+# that may no longer be accessible because
+# of the privilege downgrade.
+persist-key
+persist-tun
+
+# Output a short status file showing
+# current connections, truncated
+# and rewritten every minute.
+status openvpn-status.log
+
+# By default, log messages will go to the syslog (or
+# on Windows, if running as a service, they will go to
+# the "\Program Files\OpenVPN\log" directory).
+# Use log or log-append to override this default.
+# "log" will truncate the log file on OpenVPN startup,
+# while "log-append" will append to it.  Use one
+# or the other (but not both).
+log         openvpn.log
+;log-append  openvpn.log
+
+# Set the appropriate level of log
+# file verbosity.
+#
+# 0 is silent, except for fatal errors
+# 4 is reasonable for general usage
+# 5 and 6 can help to debug connection problems
+# 9 is extremely verbose
+verb 3
+
+# Silence repeating messages.  At most 20
+# sequential messages of the same message
+# category will be output to the log.
+;mute 20
+
+# Notify the client that when the server restarts so it
+# can automatically reconnect.
+explicit-exit-notify 1
+					]]>
+					</screen>
+				</step>
+				<step>
+					<para>启用IP转发</para>
+					<screen>
+					<![CDATA[
+# vim /etc/sysctl.conf
+# Controls IP packet forwarding
+net.ipv4.ip_forward = 1
+					]]>
+					</screen>
+					<para>net.ipv4.ip_forward = 1 使IP转发生效</para>
+					<screen>
+					<![CDATA[
+sysctl -w net.ipv4.ip_forward=1
+					]]>
+					</screen>
+				</step>
+				<step>
+					<para>IP伪装</para>
+					<screen>
+					<![CDATA[
+iptables -A INPUT -p udp --dport 1194 -j ACCEPT
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE					
+					]]>
+					</screen>
+				</step>
+				<step>
+					<para>启动 OpenVPN</para>
+					<screen>
+					<![CDATA[
+systemctl enable openvpn@server.service
+systemctl start openvpn@server.service
+					]]>
 					</screen>
 				</step>
 			</procedure>
 		</section>
 	</section>
+	<section id="Easy-RSA.3">
+		<title>Easy-RSA 3</title>
+		<section>
+			<title>吊销用户证书</title>
+			<para>使用 revoke 撤销证书</para>
+			<screen>
+			<![CDATA[
+[root@iZj6c39y62jl5b1wmfv6u8Z 3.0.3]# easyrsa revoke netkiller
 
-	<section id="centos">
-		<title>openvpn - secure IP tunnel daemon.</title>
-		<para>安装环境CentOS 6.x</para>
-		<procedure>
-			<title>OpenVPN Server</title>
-			<step>
-				<screen><![CDATA[
-# yum install openvpn easy-rsa
-				]]>
-				</screen>
-				<para>察看openvpn包中的文件</para>
-				<screen><![CDATA[
-# rpm -ql openvpn
-/etc/openvpn
-/etc/rc.d/init.d/openvpn
-/usr/lib64/openvpn
-/usr/lib64/openvpn/plugin
-/usr/lib64/openvpn/plugin/lib
-/usr/lib64/openvpn/plugin/lib/openvpn-auth-pam.so
-/usr/lib64/openvpn/plugin/lib/openvpn-down-root.so
-/usr/lib64/openvpn/plugins
-/usr/lib64/openvpn/plugins/openvpn-plugin-auth-pam.so
-/usr/lib64/openvpn/plugins/openvpn-plugin-down-root.so
-/usr/sbin/openvpn
-/usr/share/doc/openvpn-2.3.2
-/usr/share/doc/openvpn-2.3.2/AUTHORS
-/usr/share/doc/openvpn-2.3.2/COPYING
-/usr/share/doc/openvpn-2.3.2/COPYRIGHT.GPL
-/usr/share/doc/openvpn-2.3.2/INSTALL
-/usr/share/doc/openvpn-2.3.2/PORTS
-/usr/share/doc/openvpn-2.3.2/README
-/usr/share/doc/openvpn-2.3.2/README.auth-pam
-/usr/share/doc/openvpn-2.3.2/README.down-root
-/usr/share/doc/openvpn-2.3.2/contrib
-/usr/share/doc/openvpn-2.3.2/contrib/OCSP_check
-/usr/share/doc/openvpn-2.3.2/contrib/OCSP_check/OCSP_check.sh
-/usr/share/doc/openvpn-2.3.2/contrib/README
-/usr/share/doc/openvpn-2.3.2/contrib/multilevel-init.patch
-/usr/share/doc/openvpn-2.3.2/contrib/openvpn-fwmarkroute-1.00
-/usr/share/doc/openvpn-2.3.2/contrib/openvpn-fwmarkroute-1.00/README
-/usr/share/doc/openvpn-2.3.2/contrib/openvpn-fwmarkroute-1.00/fwmarkroute.down
-/usr/share/doc/openvpn-2.3.2/contrib/openvpn-fwmarkroute-1.00/fwmarkroute.up
-/usr/share/doc/openvpn-2.3.2/contrib/pull-resolv-conf
-/usr/share/doc/openvpn-2.3.2/contrib/pull-resolv-conf/client.down
-/usr/share/doc/openvpn-2.3.2/contrib/pull-resolv-conf/client.up
-/usr/share/doc/openvpn-2.3.2/sample
-/usr/share/doc/openvpn-2.3.2/sample/Makefile
-/usr/share/doc/openvpn-2.3.2/sample/Makefile.am
-/usr/share/doc/openvpn-2.3.2/sample/Makefile.in
-/usr/share/doc/openvpn-2.3.2/sample/sample-config-files
-/usr/share/doc/openvpn-2.3.2/sample/sample-config-files/README
-/usr/share/doc/openvpn-2.3.2/sample/sample-config-files/client.conf
-/usr/share/doc/openvpn-2.3.2/sample/sample-config-files/firewall.sh
-/usr/share/doc/openvpn-2.3.2/sample/sample-config-files/home.up
-/usr/share/doc/openvpn-2.3.2/sample/sample-config-files/loopback-client
-/usr/share/doc/openvpn-2.3.2/sample/sample-config-files/loopback-server
-/usr/share/doc/openvpn-2.3.2/sample/sample-config-files/office.up
-/usr/share/doc/openvpn-2.3.2/sample/sample-config-files/openvpn-shutdown.sh
-/usr/share/doc/openvpn-2.3.2/sample/sample-config-files/openvpn-startup.sh
-/usr/share/doc/openvpn-2.3.2/sample/sample-config-files/roadwarrior-client.conf
-/usr/share/doc/openvpn-2.3.2/sample/sample-config-files/roadwarrior-server.conf
-/usr/share/doc/openvpn-2.3.2/sample/sample-config-files/server.conf
-/usr/share/doc/openvpn-2.3.2/sample/sample-config-files/static-home.conf
-/usr/share/doc/openvpn-2.3.2/sample/sample-config-files/static-office.conf
-/usr/share/doc/openvpn-2.3.2/sample/sample-config-files/tls-home.conf
-/usr/share/doc/openvpn-2.3.2/sample/sample-config-files/tls-office.conf
-/usr/share/doc/openvpn-2.3.2/sample/sample-config-files/xinetd-client-config
-/usr/share/doc/openvpn-2.3.2/sample/sample-config-files/xinetd-server-config
-/usr/share/doc/openvpn-2.3.2/sample/sample-keys
-/usr/share/doc/openvpn-2.3.2/sample/sample-keys/README
-/usr/share/doc/openvpn-2.3.2/sample/sample-keys/ca.crt
-/usr/share/doc/openvpn-2.3.2/sample/sample-keys/ca.key
-/usr/share/doc/openvpn-2.3.2/sample/sample-keys/client.crt
-/usr/share/doc/openvpn-2.3.2/sample/sample-keys/client.key
-/usr/share/doc/openvpn-2.3.2/sample/sample-keys/dh1024.pem
-/usr/share/doc/openvpn-2.3.2/sample/sample-keys/pass.crt
-/usr/share/doc/openvpn-2.3.2/sample/sample-keys/pass.key
-/usr/share/doc/openvpn-2.3.2/sample/sample-keys/pkcs12.p12
-/usr/share/doc/openvpn-2.3.2/sample/sample-keys/server.crt
-/usr/share/doc/openvpn-2.3.2/sample/sample-keys/server.key
-/usr/share/doc/openvpn-2.3.2/sample/sample-plugins
-/usr/share/doc/openvpn-2.3.2/sample/sample-plugins/defer
-/usr/share/doc/openvpn-2.3.2/sample/sample-plugins/defer/README
-/usr/share/doc/openvpn-2.3.2/sample/sample-plugins/defer/build
-/usr/share/doc/openvpn-2.3.2/sample/sample-plugins/defer/simple.c
-/usr/share/doc/openvpn-2.3.2/sample/sample-plugins/defer/simple.def
-/usr/share/doc/openvpn-2.3.2/sample/sample-plugins/defer/winbuild
-/usr/share/doc/openvpn-2.3.2/sample/sample-plugins/log
-/usr/share/doc/openvpn-2.3.2/sample/sample-plugins/log/build
-/usr/share/doc/openvpn-2.3.2/sample/sample-plugins/log/log.c
-/usr/share/doc/openvpn-2.3.2/sample/sample-plugins/log/log_v3.c
-/usr/share/doc/openvpn-2.3.2/sample/sample-plugins/log/winbuild
-/usr/share/doc/openvpn-2.3.2/sample/sample-plugins/simple
-/usr/share/doc/openvpn-2.3.2/sample/sample-plugins/simple/README
-/usr/share/doc/openvpn-2.3.2/sample/sample-plugins/simple/build
-/usr/share/doc/openvpn-2.3.2/sample/sample-plugins/simple/simple.c
-/usr/share/doc/openvpn-2.3.2/sample/sample-plugins/simple/simple.def
-/usr/share/doc/openvpn-2.3.2/sample/sample-plugins/simple/winbuild
-/usr/share/doc/openvpn-2.3.2/sample/sample-scripts
-/usr/share/doc/openvpn-2.3.2/sample/sample-scripts/auth-pam.pl
-/usr/share/doc/openvpn-2.3.2/sample/sample-scripts/bridge-start
-/usr/share/doc/openvpn-2.3.2/sample/sample-scripts/bridge-stop
-/usr/share/doc/openvpn-2.3.2/sample/sample-scripts/ucn.pl
-/usr/share/doc/openvpn-2.3.2/sample/sample-scripts/verify-cn
-/usr/share/doc/openvpn-2.3.2/sample/sample-windows
-/usr/share/doc/openvpn-2.3.2/sample/sample-windows/sample.ovpn
-/usr/share/man/man8/openvpn.8.gz
-/usr/share/openvpn
-/var/run/openvpn
+Note: using Easy-RSA configuration from: ./vars
 
-# rpm -ql easy-rsa
-/usr/share/doc/easy-rsa-2.2.0
-/usr/share/doc/easy-rsa-2.2.0/COPYING
-/usr/share/doc/easy-rsa-2.2.0/COPYRIGHT.GPL
-/usr/share/doc/easy-rsa-2.2.0/doc
-/usr/share/doc/easy-rsa-2.2.0/doc/Makefile.am
-/usr/share/doc/easy-rsa-2.2.0/doc/README-1.0
-/usr/share/doc/easy-rsa-2.2.0/doc/README-2.0
-/usr/share/easy-rsa
-/usr/share/easy-rsa/2.0
-/usr/share/easy-rsa/2.0/build-ca
-/usr/share/easy-rsa/2.0/build-dh
-/usr/share/easy-rsa/2.0/build-inter
-/usr/share/easy-rsa/2.0/build-key
-/usr/share/easy-rsa/2.0/build-key-pass
-/usr/share/easy-rsa/2.0/build-key-pkcs12
-/usr/share/easy-rsa/2.0/build-key-server
-/usr/share/easy-rsa/2.0/build-req
-/usr/share/easy-rsa/2.0/build-req-pass
-/usr/share/easy-rsa/2.0/clean-all
-/usr/share/easy-rsa/2.0/inherit-inter
-/usr/share/easy-rsa/2.0/list-crl
-/usr/share/easy-rsa/2.0/openssl-0.9.6.cnf
-/usr/share/easy-rsa/2.0/openssl-0.9.8.cnf
-/usr/share/easy-rsa/2.0/openssl-1.0.0.cnf
-/usr/share/easy-rsa/2.0/pkitool
-/usr/share/easy-rsa/2.0/revoke-full
-/usr/share/easy-rsa/2.0/sign-req
-/usr/share/easy-rsa/2.0/vars
-/usr/share/easy-rsa/2.0/whichopensslcnf
-				]]>
-				</screen>
-			</step>
-			<step>
-				<title>key</title>
-				<screen><![CDATA[
-# cd /usr/share/openvpn/easy-rsa/2.0/
 
-vim vars
-export KEY_COUNTRY="CN"
-export KEY_PROVINCE="GD"
-export KEY_CITY="Shenzhen"
-export KEY_ORG="http://www.example.com"
-export KEY_EMAIL="neo.chen@example.com"
+Please confirm you wish to revoke the certificate with the following subject:
 
-# chmod +x *
-# cp openssl-1.0.0.cnf openssl.cnf
+subject= 
+    commonName                = netkiller
 
-# source ./vars
-./clean-all
-./build-ca
-./build-key-server server
-./build-dh
-./build-key neo
 
-# cp keys/ca.key keys/ca.crt keys/dh1024.pem keys/server.key keys/server.crt /etc/openvpn/
-				]]>
-				</screen>
-			</step>
-			<step>
-				<para>server.conf</para>
-				<screen><![CDATA[
-cp keys/ca.key keys/ca.crt keys/dh1024.pem keys/server.key keys/server.crt /etc/openvpn/
-vim /etc/openvpn/server.conf
-				]]>
-				</screen>
-			</step>
-			<step>
-				<para>启用IP转发</para>
-				<screen><![CDATA[
-# vim /etc/sysctl.conf
-# Controls IP packet forwarding
-net.ipv4.ip_forward = 1
-				]]>
-				</screen>
-				<para>net.ipv4.ip_forward = 1 使IP转发生效</para>
-				<screen><![CDATA[
-sysctl -w net.ipv4.ip_forward=1
-				]]>
-				</screen>
-			</step>
-			<step>
-				<screen><![CDATA[
-# /etc/init.d/openvpn start
-Starting openvpn:                                          [  OK  ]
-				]]>
-				</screen>
-			</step>
-		</procedure>
-	</section>
+Type the word 'yes' to continue, or any other input to abort.
+  Continue with revocation: yes
+Using configuration from /usr/share/easy-rsa/3.0.3/openssl-1.0.cnf
+Enter pass phrase for /usr/share/easy-rsa/3.0.3/pki/private/ca.key:
+Revoking Certificate 0E359A14EAC019731B6E8B63E3E006B6.
+Data Base Updated
 
-	<section id="openvpn.revoke">
-		<title>吊销(revoke)用户证书</title>
-		<screen><![CDATA[
+IMPORTANT!!!
+
+Revocation was successful. You must run gen-crl and upload a CRL to your
+infrastructure in order to prevent the revoked cert from being accepted.			
+			]]>
+			</screen>
+			<para>生成证书撤销列表</para>
+			<screen>
+			<![CDATA[
+[root@iZj6c39y62jl5b1wmfv6u8Z 3.0.3]# easyrsa gen-crl
+
+Note: using Easy-RSA configuration from: ./vars
+Using configuration from /usr/share/easy-rsa/3.0.3/openssl-1.0.cnf
+Enter pass phrase for /usr/share/easy-rsa/3.0.3/pki/private/ca.key:
+
+An updated CRL has been created.
+CRL file: /usr/share/easy-rsa/3.0.3/pki/crl.pem			
+			]]>
+			</screen>
+		</section>
+		<section id="">
+			<title>导出 PKCS 7/PKCS 12 证书</title>
+			<para>可以使用 export-p7 和 export-p12 生成 PKCS 7/PKCS 12文件。支持两个参数：noca 和 nokey。</para>
+			<screen>
+			<![CDATA[
+[root@iZj6c39y62jl5b1wmfv6u8Z 3.0.3]# easyrsa export-p7 netkiller
+
+Note: using Easy-RSA configuration from: ./vars
+
+Successful export of p7 file. Your exported file is at the following
+location: /usr/share/easy-rsa/3.0.3/pki/issued/netkiller.p7b
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+[root@iZj6c39y62jl5b1wmfv6u8Z 3.0.3]# easyrsa export-p12 netkiller
+
+Note: using Easy-RSA configuration from: ./vars
+Enter pass phrase for /usr/share/easy-rsa/3.0.3/pki/private/netkiller.key:
+Enter Export Password:
+Verifying - Enter Export Password:
+
+Successful export of p12 file. Your exported file is at the following
+location: /usr/share/easy-rsa/3.0.3/pki/private/netkiller.p12
+			]]>
+			</screen>
+		</section>
+		<section id="">
+			<title>查看请求文件</title>
+			<screen>
+			<![CDATA[
+[root@iZj6c39y62jl5b1wmfv6u8Z 3.0.3]# easyrsa show-req netkiller
+
+Note: using Easy-RSA configuration from: ./vars
+
+Showing req details for 'netkiller'.
+This file is stored at:
+/usr/share/easy-rsa/3.0.3/pki/reqs/netkiller.req
+
+Certificate Request:
+    Data:
+        Version: 0 (0x0)
+        Subject:
+            commonName                = netkiller
+        Attributes:
+            a0:00
+			]]>
+			</screen>
+		</section>
+		<section id="">
+			<title>查看证书</title>
+			<screen>
+			<![CDATA[
+[root@iZj6c39y62jl5b1wmfv6u8Z 3.0.3]# easyrsa show-cert netkiller
+
+Note: using Easy-RSA configuration from: ./vars
+
+Showing cert details for 'netkiller'.
+This file is stored at:
+/usr/share/easy-rsa/3.0.3/pki/issued/netkiller.crt
+
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number:
+            0e:35:9a:14:ea:c0:19:73:1b:6e:8b:63:e3:e0:06:b6
+    Signature Algorithm: sha256WithRSAEncryption
+        Issuer:
+            commonName                = Easy-RSA CA
+        Validity
+            Not Before: Jul 31 08:49:25 2018 GMT
+            Not After : Jul 31 08:49:25 2019 GMT
+        Subject:
+            commonName                = netkiller
+        X509v3 extensions:
+            X509v3 Basic Constraints: 
+                CA:FALSE
+            X509v3 Subject Key Identifier: 
+                98:74:4D:E3:FC:56:B5:B1:67:71:16:48:92:86:44:AE:CB:D2:70:0D
+            X509v3 Authority Key Identifier: 
+                keyid:A3:92:2F:41:9C:3E:92:A8:70:C0:57:4B:5A:35:F0:28:CF:7A:CC:E7
+                DirName:/CN=Easy-RSA CA
+                serial:BB:05:A6:1E:5C:94:B2:0B
+
+            X509v3 Extended Key Usage: 
+                TLS Web Server Authentication
+            X509v3 Key Usage: 
+                Digital Signature, Key Encipherment
+            X509v3 Subject Alternative Name: 
+                DNS:netkiller
+			]]>
+			</screen>
+		</section>
+		<section id="">
+			<title>导入 req 文件</title>
+			<screen>
+			<![CDATA[
+./easyrsa import-req /tmp/path/to/import.req EntityName
+./easyrsa sign-req client EntityName		
+			]]>
+			</screen>
+		</section>
+		<section id="">
+			<title>更新数据库</title>
+			<screen>
+			<![CDATA[
+[root@iZj6c39y62jl5b1wmfv6u8Z 3.0.3]# easyrsa update-db
+
+Note: using Easy-RSA configuration from: ./vars
+Using configuration from /usr/share/easy-rsa/3.0.3/openssl-1.0.cnf
+Enter pass phrase for /usr/share/easy-rsa/3.0.3/pki/private/ca.key:			
+			]]>
+			</screen>
+
+		</section>
+
+		<section id="openvpn.revoke">
+			<title>Easy-RSA 2 吊销(revoke)用户证书</title>
+			<screen>
+			<![CDATA[
 $ . vars
 $ ./revoke-full client1
 $ sudo cp keys/crl.pem /etc/openvpn/
-		]]>
-		</screen>
-		<para>命令执行完成之后， 会在 keys 目录下面， 生成一个 crl.pem 文件,这个文件中包含了吊销证书的名单。</para>
-		<para>确认成功注销某个证书，可以打开keys/index.txt 文件，可以看到前面已被标记为R的注销证书</para>
-		<screen><![CDATA[
+			]]>
+			</screen>
+			<para>命令执行完成之后， 会在 keys 目录下面， 生成一个 crl.pem 文件,这个文件中包含了吊销证书的名单。</para>
+			<para>确认成功注销某个证书，可以打开keys/index.txt 文件，可以看到前面已被标记为R的注销证书</para>
+			<screen>
+			<![CDATA[
 $ grep ^R keys/index.txt
 R       200908052722Z   110218014133Z   04      unknown /C=CN/ST=GD/L=Shenzhen/O=EXAMPLE.COM/CN=client1/emailAddress=client1@EXAMPLE.com
-		]]>
-		</screen>
-		<para>在服务端的配置文件 server.conf 中，加入这样一行：</para>
-		<screen><![CDATA[
+			]]>
+			</screen>
+			<para>在服务端的配置文件 server.conf 中，加入这样一行：</para>
+			<screen>
+			<![CDATA[
 crl-verify crl.pem
-		]]>
-		</screen>
+			]]>
+			</screen>
+		</section>
 	</section>
+
 	<section id="openvpn.client">
 		<title>Openvpn Client</title>
 		<screen><![CDATA[
