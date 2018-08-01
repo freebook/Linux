@@ -911,7 +911,7 @@ Starting virtual private network daemon: server(OK).
 					<para>察看openvpn包中的文件</para>
 					<screen>
 					<![CDATA[
-[root@iZj6c39y62jl5b1wmfv6u8Z ~]# rpm -ql openvpn
+[root@netkiller ~]# rpm -ql openvpn
 /etc/openvpn
 /etc/openvpn/client
 /etc/openvpn/server
@@ -979,7 +979,7 @@ Starting virtual private network daemon: server(OK).
 /usr/share/man/man8/openvpn.8.gz
 /var/lib/openvpn
 
-[root@iZj6c39y62jl5b1wmfv6u8Z ~]# rpm -ql easy-rsa
+[root@netkiller ~]# rpm -ql easy-rsa
 /usr/share/doc/easy-rsa-3.0.3
 /usr/share/doc/easy-rsa-3.0.3/COPYING.md
 /usr/share/doc/easy-rsa-3.0.3/ChangeLog
@@ -1007,9 +1007,9 @@ Starting virtual private network daemon: server(OK).
 					<para>创建 vars 文件，参数 https://github.com/OpenVPN/easy-rsa/blob/v3.0.5/easyrsa3/vars.example</para>
 					<screen>
 					<![CDATA[
-[root@iZj6c39y62jl5b1wmfv6u8Z ~]# cd /usr/share/easy-rsa/3.0.3/
+[root@netkiller ~]# cd /usr/share/easy-rsa/3.0.3/
 
-[root@iZj6c39y62jl5b1wmfv6u8Z 3.0.3]# cat > vars <<EOF
+[root@netkiller 3.0.3]# cat > vars <<EOF
 > set_var EASYRSA                 "/usr/share/easy-rsa/3.0.3"
 > set_var EASYRSA_PKI             "/usr/share/easy-rsa/3.0.3/pki"
 > set_var EASYRSA_DN              "cn_only"
@@ -1037,7 +1037,7 @@ Starting virtual private network daemon: server(OK).
 					<para>初始化PKI，此时会创建 pki 目录</para>
 					<screen>
 					<![CDATA[
-[root@iZj6c39y62jl5b1wmfv6u8Z 3.0.3]# easyrsa init-pki
+[root@netkiller 3.0.3]# easyrsa init-pki
 
 init-pki complete; you may now create a CA or requests.
 Your newly created PKI dir is: /usr/share/easy-rsa/3.0.3/pki
@@ -1048,7 +1048,7 @@ Your newly created PKI dir is: /usr/share/easy-rsa/3.0.3/pki
 					<para>创建CA</para>
 					<screen>
 					<![CDATA[
-[root@iZj6c39y62jl5b1wmfv6u8Z 3.0.3]# easyrsa build-ca
+[root@netkiller 3.0.3]# easyrsa build-ca
 
 Note: using Easy-RSA configuration from: ./vars
 Generating a 2048 bit RSA private key
@@ -1076,7 +1076,7 @@ Your new CA certificate file for publishing is at:
 					<para>创建DH参数，Diffie hellman参数使用的是 openssl dhparam 创建</para>
 					<screen>
 					<![CDATA[
-[root@iZj6c39y62jl5b1wmfv6u8Z 3.0.3]# easyrsa gen-dh
+[root@netkiller 3.0.3]# easyrsa gen-dh
 
 Note: using Easy-RSA configuration from: ./vars
 Generating DH parameters, 2048 bit long safe prime, generator 2
@@ -1091,7 +1091,7 @@ DH parameters of size 2048 created at /usr/share/easy-rsa/3.0.3/pki/dh.pem
 					<para>生成证书，分为三个步骤 gen-req, build-client-full, build-server-full 可以使用 nopass 参数生成不加密的私钥。</para>
 					<screen>
 					<![CDATA[
-[root@iZj6c39y62jl5b1wmfv6u8Z 3.0.3]# easyrsa gen-req server 
+[root@netkiller 3.0.3]# easyrsa gen-req server 
 
 Note: using Easy-RSA configuration from: ./vars
 Generating a 2048 bit RSA private key
@@ -1119,7 +1119,7 @@ key: /usr/share/easy-rsa/3.0.3/pki/private/server.key
 					</screen>
 					<screen>
 					<![CDATA[
-[root@iZj6c39y62jl5b1wmfv6u8Z 3.0.3]# easyrsa sign-req server server
+[root@netkiller 3.0.3]# easyrsa sign-req server server
 
 Note: using Easy-RSA configuration from: ./vars
 
@@ -1157,7 +1157,7 @@ Certificate created at: /usr/share/easy-rsa/3.0.3/pki/issued/server.crt
 
 					<screen>
 					<![CDATA[
-[root@iZj6c39y62jl5b1wmfv6u8Z 3.0.3]# easyrsa build-client-full client
+[root@netkiller 3.0.3]# easyrsa build-client-full client
 
 Note: using Easy-RSA configuration from: ./vars
 Generating a 2048 bit RSA private key
@@ -1196,15 +1196,15 @@ Data Base Updated
 					<para>编辑配置文件 server.conf</para>
 					<screen>
 					<![CDATA[
-[root@iZj6c39y62jl5b1wmfv6u8Z 3.0.3]# cp pki/private/ca.key pki/ca.crt pki/dh.pem pki/private/server.key pki/issued/server.crt /etc/openvpn/
-[root@iZj6c39y62jl5b1wmfv6u8Z 3.0.3]# vim /etc/openvpn/server.conf
+[root@netkiller 3.0.3]# cp pki/private/ca.key pki/ca.crt pki/dh.pem pki/private/server.key pki/issued/server.crt /etc/openvpn/
+[root@netkiller 3.0.3]# vim /etc/openvpn/server.conf
 					]]>
 					</screen>
 					<para></para>
 					<screen>
 					<![CDATA[
-[root@iZj6c39y62jl5b1wmfv6u8Z 3.0.3]# cd /etc/openvpn/
-[root@iZj6c39y62jl5b1wmfv6u8Z server]# openvpn --genkey --secret ta.key
+[root@netkiller 3.0.3]# cd /etc/openvpn/
+[root@netkiller server]# openvpn --genkey --secret ta.key
 					]]>
 					</screen>
 					<para>只需配置四处位置</para>
@@ -1581,7 +1581,7 @@ systemctl start openvpn@server.service
 			<para>使用 revoke 撤销证书</para>
 			<screen>
 			<![CDATA[
-[root@iZj6c39y62jl5b1wmfv6u8Z 3.0.3]# easyrsa revoke netkiller
+[root@netkiller 3.0.3]# easyrsa revoke netkiller
 
 Note: using Easy-RSA configuration from: ./vars
 
@@ -1608,7 +1608,7 @@ infrastructure in order to prevent the revoked cert from being accepted.
 			<para>生成证书撤销列表</para>
 			<screen>
 			<![CDATA[
-[root@iZj6c39y62jl5b1wmfv6u8Z 3.0.3]# easyrsa gen-crl
+[root@netkiller 3.0.3]# easyrsa gen-crl
 
 Note: using Easy-RSA configuration from: ./vars
 Using configuration from /usr/share/easy-rsa/3.0.3/openssl-1.0.cnf
@@ -1624,7 +1624,7 @@ CRL file: /usr/share/easy-rsa/3.0.3/pki/crl.pem
 			<para>可以使用 export-p7 和 export-p12 生成 PKCS 7/PKCS 12文件。支持两个参数：noca 和 nokey。</para>
 			<screen>
 			<![CDATA[
-[root@iZj6c39y62jl5b1wmfv6u8Z 3.0.3]# easyrsa export-p7 netkiller
+[root@netkiller 3.0.3]# easyrsa export-p7 netkiller
 
 Note: using Easy-RSA configuration from: ./vars
 
@@ -1634,7 +1634,7 @@ location: /usr/share/easy-rsa/3.0.3/pki/issued/netkiller.p7b
 			</screen>
 			<screen>
 			<![CDATA[
-[root@iZj6c39y62jl5b1wmfv6u8Z 3.0.3]# easyrsa export-p12 netkiller
+[root@netkiller 3.0.3]# easyrsa export-p12 netkiller
 
 Note: using Easy-RSA configuration from: ./vars
 Enter pass phrase for /usr/share/easy-rsa/3.0.3/pki/private/netkiller.key:
@@ -1650,7 +1650,7 @@ location: /usr/share/easy-rsa/3.0.3/pki/private/netkiller.p12
 			<title>查看请求文件</title>
 			<screen>
 			<![CDATA[
-[root@iZj6c39y62jl5b1wmfv6u8Z 3.0.3]# easyrsa show-req netkiller
+[root@netkiller 3.0.3]# easyrsa show-req netkiller
 
 Note: using Easy-RSA configuration from: ./vars
 
@@ -1672,7 +1672,7 @@ Certificate Request:
 			<title>查看证书</title>
 			<screen>
 			<![CDATA[
-[root@iZj6c39y62jl5b1wmfv6u8Z 3.0.3]# easyrsa show-cert netkiller
+[root@netkiller 3.0.3]# easyrsa show-cert netkiller
 
 Note: using Easy-RSA configuration from: ./vars
 
@@ -1725,7 +1725,7 @@ Certificate:
 			<title>更新数据库</title>
 			<screen>
 			<![CDATA[
-[root@iZj6c39y62jl5b1wmfv6u8Z 3.0.3]# easyrsa update-db
+[root@netkiller 3.0.3]# easyrsa update-db
 
 Note: using Easy-RSA configuration from: ./vars
 Using configuration from /usr/share/easy-rsa/3.0.3/openssl-1.0.cnf
