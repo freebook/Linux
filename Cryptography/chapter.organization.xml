@@ -84,7 +84,7 @@ openssl rsa -in private.key -out netkiller.cn.key
 		]]>
 		</screen>
 	</section>
-	<section id="">
+	<section id="letsencrypt">
 		<title>Let’s Encrypt</title>
 		<screen>
 		<![CDATA[
