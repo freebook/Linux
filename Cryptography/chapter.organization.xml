@@ -84,4 +84,71 @@ openssl rsa -in private.key -out netkiller.cn.key
 		]]>
 		</screen>
 	</section>
+	<section id="">
+		<title>Let’s Encrypt</title>
+		<screen>
+		<![CDATA[
+git clone https://github.com/letsencrypt/letsencrypt
+cd letsencrypt
+./letsencrypt-auto
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+[root@netkiller letsencrypt]# ./letsencrypt-auto
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+Failed to find executable apachectl in PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin
+Plugins selected: Authenticator nginx, Installer nginx
+
+Which names would you like to activate HTTPS for?
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+1: netkiller.cn
+2: www.netkiller.cn
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Select the appropriate numbers separated by commas and/or spaces, or leave input
+blank to select all options shown (Enter 'c' to cancel): 2
+Obtaining a new certificate
+Performing the following challenges:
+http-01 challenge for www.netkiller.cn
+Waiting for verification...
+Cleaning up challenges
+Deploying Certificate to VirtualHost /etc/nginx/conf.d/www.netkiller.cn.conf
+
+Please choose whether or not to redirect HTTP traffic to HTTPS, removing HTTP access.
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+1: No redirect - Make no further changes to the webserver configuration.
+2: Redirect - Make all requests redirect to secure HTTPS access. Choose this for
+new sites, or if you're confident your site works on HTTPS. You can undo this
+change by editing your web server's configuration.
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Select the appropriate number [1-2] then [enter] (press 'c' to cancel): 2
+Redirecting all traffic on port 80 to ssl in /etc/nginx/conf.d/www.netkiller.cn.conf
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Congratulations! You have successfully enabled https://www.netkiller.cn
+
+You should test your configuration at:
+https://www.ssllabs.com/ssltest/analyze.html?d=www.netkiller.cn
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+IMPORTANT NOTES:
+ - Congratulations! Your certificate and chain have been saved at:
+   /etc/letsencrypt/live/www.netkiller.cn/fullchain.pem
+   Your key file has been saved at:
+   /etc/letsencrypt/live/www.netkiller.cn/privkey.pem
+   Your cert will expire on 2018-11-12. To obtain a new or tweaked
+   version of this certificate in the future, simply run
+   letsencrypt-auto again with the "certonly" option. To
+   non-interactively renew *all* of your certificates, run
+   "letsencrypt-auto renew"
+ - If you like Certbot, please consider supporting our work by:
+
+   Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
+   Donating to EFF:                    https://eff.org/donate-le		
+		
+		]]>
+		</screen>
+		<para>查看证书 <ulink url="https://www.ssllabs.com/ssltest/analyze.html?d=www.netkiller.cn" /></para>
+	</section>
 </chapter>
