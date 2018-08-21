@@ -1,6 +1,27 @@
 <!-- http://tldp.org/LDP/abs/html/index.html -->
 <chapter id="index"><?dbhtml dir="bash" ?>
 	<title>Bash Shell</title>
+	<section id="bash.key">
+		<title>快捷键</title>
+		<screen>
+		<![CDATA[
+Ctrl+p shell中上一个命令,或者 文本中移动到上一行
+Ctrl+n shell中下一个命令,或者 文本中移动到下一行
+Ctrl+r 往后搜索历史命令
+Ctrl+s 往前搜索历史命令
+Ctrl+f 光标前移
+Ctrl+b 光标后退
+Ctrl+a 到行首
+Ctrl+e 到行尾
+Ctrl+d 删除一个字符,删除一个字符，相当于通常的Delete键
+Ctrl+h 退格删除一个字符,相当于通常的Backspace键
+Ctrl+u 删除到行首
+Ctrl+k 删除到行尾
+Ctrl+l 类似 clear 命令效果
+Ctrl+y 粘贴		
+		]]>
+		</screen>
+	</section>
 	<section id="option">
 		<title>bash - GNU Bourne-Again SHell</title>
 		<section>
