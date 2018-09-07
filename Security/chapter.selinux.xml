@@ -204,37 +204,58 @@ xguest_use_bluetooth --> on
 xserver_object_manager --> off
 		</screen>
 
-		<screen>
-# /usr/sbin/getsebool -a | grep httpd
-allow_httpd_anon_write --> off
-allow_httpd_mod_auth_ntlm_winbind --> off
-allow_httpd_mod_auth_pam --> off
-allow_httpd_sys_script_anon_write --> off
+		<section>
+			<title>HTTP 相关配置</title>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# getsebool -a | grep httpd
+httpd_anon_write --> off
 httpd_builtin_scripting --> on
 httpd_can_check_spam --> off
+httpd_can_connect_ftp --> off
+httpd_can_connect_ldap --> off
+httpd_can_connect_mythtv --> off
+httpd_can_connect_zabbix --> off
 httpd_can_network_connect --> off
 httpd_can_network_connect_cobbler --> off
 httpd_can_network_connect_db --> off
 httpd_can_network_memcache --> off
 httpd_can_network_relay --> off
 httpd_can_sendmail --> off
-httpd_dbus_avahi --> on
+httpd_dbus_avahi --> off
+httpd_dbus_sssd --> off
+httpd_dontaudit_search_dirs --> off
 httpd_enable_cgi --> on
 httpd_enable_ftp_server --> off
 httpd_enable_homedirs --> off
 httpd_execmem --> off
+httpd_graceful_shutdown --> on
 httpd_manage_ipa --> off
+httpd_mod_auth_ntlm_winbind --> off
+httpd_mod_auth_pam --> off
 httpd_read_user_content --> off
+httpd_run_ipa --> off
+httpd_run_preupgrade --> off
+httpd_run_stickshift --> off
+httpd_serve_cobbler_files --> off
 httpd_setrlimit --> off
 httpd_ssi_exec --> off
+httpd_sys_script_anon_write --> off
 httpd_tmp_exec --> off
-httpd_tty_comm --> on
-httpd_unified --> on
+httpd_tty_comm --> off
+httpd_unified --> off
 httpd_use_cifs --> off
+httpd_use_fusefs --> off
 httpd_use_gpg --> off
 httpd_use_nfs --> off
 httpd_use_openstack --> off
-		</screen>
+httpd_use_sasl --> off
+httpd_verify_dns --> off
+			
+			]]>
+			</screen>
+		</section>
+		
 	</section>
 	<section id="sestatus">
 		<title>sestatus - SELinux status tool</title>
@@ -287,5 +308,16 @@ setsebool -P allow_rsync_anon_write on
  取消SElinux对rsync的保护.
 setsebool -P rsync_disable_trans off
 		</screen>
+	</section>
+	<section>
+		<title>查找被SELINUX禁用服务</title>
+		<section id="">
+			<title>Nginx</title>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# cat /var/log/audit/audit.log | grep nginx | grep denied | more		
+			]]>
+			</screen>
+		</section>
 	</section>
 </chapter>

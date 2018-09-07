@@ -288,4 +288,38 @@ server {
 		<title>nginx: [warn] duplicate MIME type "text/html" in /etc/nginx/nginx.conf</title>
 		<para><para>text/html 是 gzip_types 默认值，所以不要将text/html加入到gzip_types列表内</para></para>
 	</section>
+	<section>
+		<title>127.0.0.1:8080 failed</title>
+		<para>链接本地端口失败，已经关闭防火墙，同时使用 curl http://127.0.0.1:8080 一切正常</para>
+		<para>日志片段</para>
+		<screen>
+		<![CDATA[
+2018/09/07 12:31:27 [crit] 10202#10202: *4 connect() to [::1]:8080 failed (13: Permission denied) while connecting to upstream, client: 47.90.97.183, server: www.api.netkiller.cn, request: "GET /api/ HTTP/2.0", upstream: "http://[::1]:8080/api/", host: "api.netkiller.cn"
+2018/09/07 12:31:27 [warn] 10202#10202: *4 upstream server temporarily disabled while connecting to upstream, client: 47.90.97.183, server: www.api.netkiller.cn, request: "GET /api/ HTTP/2.0", upstream: "http://[::1]:8080/api/", host: "api.netkiller.cn"
+2018/09/07 12:31:27 [crit] 10202#10202: *4 connect() to 127.0.0.1:8080 failed (13: Permission denied) while connecting to upstream, client: 47.90.97.183, server: www.api.netkiller.cn, request: "GET /api/ HTTP/2.0", upstream: "http://127.0.0.1:8080/api/", host: "api.netkiller.cn"
+2018/09/07 12:31:27 [warn] 10202#10202: *4 upstream server temporarily disabled while connecting to upstream, client: 47.90.97.183, server: www.api.netkiller.cn, request: "GET /api/ HTTP/2.0", upstream: "http://127.0.0.1:8080/api/", host: "api.netkiller.cn"
+		]]>
+		</screen>
+		<para>问题出现在 AWS 亚马逊云主机。经过筛查发现是 SELINUX 问题</para>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# cat /var/log/audit/audit.log | grep nginx | grep denied | more
+
+type=AVC msg=audit(1536320093.274:345): avc:  denied  { sys_resource } for  pid=9544 comm="nginx" capability=24  scontext=system_u:system_r:httpd_t:s0 tcontext=system_u:system_r:httpd_t:s0 tclass=capabi
+lity
+type=AVC msg=audit(1536320093.274:346): avc:  denied  { sys_resource } for  pid=9545 comm="nginx" capability=24  scontext=system_u:system_r:httpd_t:s0 tcontext=system_u:system_r:httpd_t:s0 tclass=capabi
+lity
+type=AVC msg=audit(1536320093.275:347): avc:  denied  { sys_resource } for  pid=9546 comm="nginx" capability=24  scontext=system_u:system_r:httpd_t:s0 tcontext=system_u:system_r:httpd_t:s0 tclass=capabi
+lity
+type=AVC msg=audit(1536321850.706:459): avc:  denied  { sys_resource } for  pid=9798 comm="nginx" capability=24  scontext=system_u:system_r:httpd_t:s0 tcontext=system_u:system_r:httpd_t:s0 tclass=capabi
+lity
+type=AVC msg=audit(1536321850.707:460): avc:  denied  { sys_resource } for  pid=9799 comm="nginx" capability=24  scontext=system_u:system_r:httpd_t:s0 tcontext=system_u:system_r:httpd_t:s0 tclass=capabi
+lity
+type=AVC msg=audit(1536321920.108:461): avc:  denied  { name_connect } for  pid=9796 comm="nginx" dest=8080 scontext=system_u:system_r:httpd_t:s0 tcontext=system_u:object_r:http_cache_port_t:s0 tclass=t
+cp_socket
+type=AVC msg=audit(1536321920.109:462): avc:  denied  { name_connect } for  pid=9796 comm="nginx" dest=8080 scontext=system_u:system_r:httpd_t:s0 tcontext=system_u:object_r:http_cache_port_t:s0 tclass=t
+cp_socket		
+		]]>
+		</screen>
+	</section>
 </section>
