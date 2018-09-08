@@ -535,6 +535,21 @@ proxy_set_header User-Agent "Mozilla/5.0 (compatible; MSIE 10.6; Windows NT 6.1;
 proxy_set_header X-Forwarded-URI $request_uri;
 		</screen>
 	</section>
+	<section id="">
+		<title>proxy_pass_request_headers 透传 Header</title>
+		<para>有时用户会设置自定义的 HTTP 头信息，这些不符合 HTTP 的头信息如果需要会被 proxy_pass 过滤并丢弃。</para>
+		<screen>
+		<![CDATA[
+proxy_pass_request_headers off;
+		]]>
+		</screen>
+		<para>默认系统是开启的</para>
+		<screen>
+		<![CDATA[
+proxy_pass_request_headers on;		
+		]]>
+		</screen>
+	</section>
 	<section id="proxy.timeout">
 		<title>timeout 超时时间</title>
 		<para>proxy_connect_timeout: 链接超时设置，后端服务器连接的超时时间，发起握手等候响应超时时间。</para>
