@@ -4,5 +4,5 @@
 	&chapter.code.base64.xml;
 	&chapter.code.uuencode.xml;
 	&chapter.code.quoted-printable.xml;
-	&chapter.base58.xml;
+	&chapter.code.base58.xml;
 </chapter>
