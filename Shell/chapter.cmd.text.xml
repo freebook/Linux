@@ -129,15 +129,6 @@ $ nl /etc/issue
 		</screen>
 	</section>
 
-	<section id="od">
-		<title>od - dump files in octal and other formats</title>
-		<section>
-			<title>16进制</title>
-			<screen>
-$ echo "helloworld" | od -x
-			</screen>
-		</section>
-	</section>
 	<section id="tr">
 		<title>tr - translate or delete characters</title>
 		<para>":"替换为"\n"</para>
