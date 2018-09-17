@@ -5,7 +5,9 @@
 	<section id="url">
 		<title>基本用法</title>
 		<screen>
-			curl http://www.google.com/
+		<![CDATA[
+curl http://www.google.com/		
+		]]>
 		</screen>
 	</section>
 	<section id="curl.d">
@@ -15,15 +17,29 @@
 		<![CDATA[
 curl -d "user=neo&password=chen" http://www.example.com/login.php
 curl --data "user=neo&password=chen" http://www.example.com/login.php
-
-curl  -F "upload=@card.txt;type=text/plain"  "http://www.example.com/upload.php"
+		]]>
+		</screen>
+	</section>
+	<section id="curl.upload">
+		<title>上传文件</title>
+		<screen>
+		<![CDATA[
+curl  -F "upload=@card.txt;type=text/plain"  "http://www.example.com/upload.php"		
+		]]>
+		</screen>
+		<para>使用 CURL 上传 Oauth2 + Jwt 认证的 Restful 接口</para>
+		<screen>
+		<![CDATA[
+curl -s  -H "Authorization: Bearer ${TOKEN}" -X POST -F "file=@/etc/hosts" http://localhost:8080/upload/single		
 		]]>
 		</screen>
 	</section>
 	<section id="curl.connect-timeout">
 		<title>connect-timeout</title>
 		<screen>
-			curl -o /dev/null --connect-timeout 30 -m 30 -s -w %{http_code} http://www.google.com/
+		<![CDATA[
+curl -o /dev/null --connect-timeout 30 -m 30 -s -w %{http_code} http://www.google.com/		
+		]]>
 		</screen>
 	</section>
 	<section id="curl.max-time">
@@ -361,7 +377,9 @@ curl -s  -X POST --user 'api:secret' -d 'grant_type=password&username=netkiller@
 		<para>Error in TLS handshake, trying SSLv3...</para>
 		<para>解决方案</para>
 		<screen>
-			curl -v --cipher rsa_rc4_128_sha https://www.mpaymall.com/MPay/MerchantPay.do
+		<![CDATA[
+curl -v --cipher rsa_rc4_128_sha https://www.mpaymall.com/MPay/MerchantPay.do		
+		]]>
 		</screen>
 	</section>
 </section>
