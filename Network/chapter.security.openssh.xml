@@ -13,7 +13,7 @@
 		<para>使用下面命令安装OpenSSH</para>
 		<para>sudo apt-get install ssh</para>
 	</section>
-	<section id="config">
+	<section id="ssh.config">
 		<title>/etc/ssh/</title>
 		<section id="sshd_config">
 			<title>sshd_config</title>
@@ -289,7 +289,7 @@ root@192.168.2.18's password:
 			</screen>
 		</section>
 	</section>
-	<section id="tunnel">
+	<section id="ssh.tunnel">
 		<title>OpenSSH Tunnel</title>
 		<para>mysql tunnel</para>
 		<screen>
@@ -328,7 +328,17 @@ Explanation of arguments
 -N: Tells SSH that no command will be sent once the tunnel is up			
 			]]>
 			</literallayout>
+			<para>脚本</para>
+			<screen>
+			<![CDATA[
+ssh -D 1080 -f -C -q -N neo@vpn.netkiller.cn
+pkill ping
+ping -i 30 8.8.8.8 > /dev/null &			
+			]]>
+			</screen>
+			<para>ping 是保持隧道活跃，每个 30秒 ping 访问一次外部主机以保持 ssh 不会退出。</para>
 		</section>
+		
 	</section>
 
 	<section id="ssh-keygen">
