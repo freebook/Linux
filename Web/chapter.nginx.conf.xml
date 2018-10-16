@@ -2,139 +2,176 @@
 <!-- $Id: chapter.nginx.conf.xml 654 2013-07-30 07:30:20Z netkiller $ -->
 <section id="conf">
 	<title>nginx.conf 配置文件</title>
-	<para>worker_processes = CPU 数量</para>
-	<screen>
-		user www;
-		worker_processes 1;
+	<section id="worker_processes">
+		<title>处理器配置</title>
+		<para>worker_processes = CPU 数量</para>
+		<screen>
+		<![CDATA[
+user www;
+worker_processes 1;
 
-		error_log /var/log/nginx/error.log warn;
-		pid /var/run/nginx.pid;
-	</screen>
-
+error_log /var/log/nginx/error.log warn;
+pid /var/run/nginx.pid;
+		]]>
+		</screen>
+	</section>
+	<section id="events">
+		<title>events 配置</title>
+		<para>连接数配置</para>
+		<screen>
+		<![CDATA[
+events {
+    worker_connections  4096;
+}		
+		]]>
+		</screen>
+	</section>
 	<section id="http">
 		<title>http 配置</title>
-		<para>自定义缓冲区相关设置</para>
-		<screen>
-			client_body_buffer_size 1K;
-			client_header_buffer_size 1k;
-			client_max_body_size 1k;
-			large_client_header_buffers 2 1k;
-		</screen>
-		<para>超时相关设置</para>
-		<screen>
-			client_body_timeout 10;
-			client_header_timeout 10;
-			keepalive_timeout 65;
-			send_timeout 10;
-		</screen>
-	</section>
-
-	<section id="events">
-		<title>events</title>
-		<screen>
-			events {
-			worker_connections 4096;
-			}
-		</screen>
-	</section>
-	<section id="gzip">
-		<title>gzip</title>
-		<screen>
-			gzip on;
-			gzip_min_length 1000;
-			gzip_buffers 4 8k;
-			gzip_types text/plain text/css application/json application/x-javascript application/xml;
-
-
-			gzip on;
-			gzip_http_version 1.0;
-			gzip_disable "MSIE [1-6].";
-			gzip_types text/plain application/x-javascript text/css text/javascript;
-		</screen>
-		<para>gzip_types 压缩类型</para>
-		<screen>
-			gzip_types text/plain text/css application/javascript text/javascript application/x-javascript text/xml application/xml application/xml+rss application/json;
-		</screen>
-		<para>text/html 是 gzip_types 默认值，所以不要将text/html加入到gzip_types</para>
-
-		<para>测试，验证 gzip 正常工作</para>
-		<screen>
-			neo@netkiller:~/workspace$ curl -s -I -H 'Accept-Encoding: gzip,deflate' http://img.netkiller.cn/js/react.js | grep gzip
-			Content-Encoding: gzip
-		</screen>
-		<para>如果提示 Content-Encoding: gzip 便是配置正确</para>
-		<para>不仅仅只能压缩html,js,css还能压缩json</para>
-		<screen>
-			neo@netkiller:~$ curl -s -I -H 'Accept-Encoding: gzip,deflate' http://inf.netkiller.cn/list/json/2.json
-			HTTP/1.1 200 OK
-			Server: nginx
-			Date: Thu, 15 Dec 2016 03:36:31 GMT
-			Content-Type: application/json; charset=utf-8
-			Connection: keep-alive
-			Cache-Control: max-age=60
-			Access-Control-Allow-Origin: *
-			Access-Control-Allow-Headers: Content-Type,Origin
-			Access-Control-Allow-Methods: GET,OPTIONS
-			Content-Encoding: gzip
-		</screen>
 		<section>
-			<title>CDN支持</title>
-			<para>配置 gzip_proxied any; 后CDN才能识别 gzip</para>
+			<title>缓冲区相关设置</title>
+			<para>自定义缓冲区相关设置</para>
 			<screen>
-				server_tokens off;
-				gzip on;
-				gzip_types text/plain text/css application/javascript text/javascript application/x-javascript text/xml application/xml application/xml+rss application/json;
-				gzip_proxied any;
+			<![CDATA[
+client_body_buffer_size 1K;
+client_header_buffer_size 1k;
+client_max_body_size 1k;
+large_client_header_buffers 2 1k;
+			]]>
+			</screen>
+			<para>上传文件提示 client intended to send too large body，配置下面参数可以解决。</para>
+			<screen>
+			<![CDATA[
+server {
+  ...
+  client_max_body_size 200M;
+}
+			]]>
 			</screen>
 		</section>
-	</section>
-	<section id="server_tokens">
-		<title>server_tokens</title>
-		<para>隐藏nginx版本号</para>
-		<screen>
-			http {
-			...
-			server_tokens off;
-			...
-			}
-		</screen>
-	</section>
-	<section id="ssi">
-		<title>ssi</title>
-		<screen>
-			http {
-			ssi on;
-			}
+		<section id="timeout">
+			<title>超时设置</title>
+			<para>超时相关设置</para>
+			<screen>
+			<![CDATA[
+	client_body_timeout 10;
+	client_header_timeout 10;
+	keepalive_timeout 65;
+	send_timeout 10;
+			]]>
+			</screen>
+		</section>
 
-			location / {
-			ssi on;
-			ssi_silent_errors on;
-			ssi_types text/shtml;
-			}
-		</screen>
-		<screen>
-			ssi on;
-			ssi_silent_errors on;
-			ssi_types text/shtml;
-			ssi_value_length 256;
-			server_names_hash_bucket_size 128;
-			client_header_buffer_size 32k;
-			large_client_header_buffers 4 32k;
-			client_max_body_size 8m;
-		</screen>
-		<para>ssi_silent_errors 默认值是off，开启后在处理SSI文件出错时不输出错误提示:"[an error occurred while processing the directive] "</para>
-		<para>ssi_types 默认是ssi_types text/html，如果需要shtml支持，则需要设置：ssi_types text/shtml</para>
-		<para>ssi_value_length 默认值是 256，用于定义SSI参数的长度。</para>
+		<section id="gzip">
+			<title>gzip</title>
+			<screen>
+			<![CDATA[
+	gzip on;
+	gzip_min_length 1000;
+	gzip_buffers 4 8k;
+	gzip_types text/plain text/css application/json application/x-javascript application/xml;
+
+
+	gzip on;
+	gzip_http_version 1.0;
+	gzip_disable "MSIE [1-6].";
+	gzip_types text/plain application/x-javascript text/css text/javascript;
+			]]>
+			</screen>
+			<para>gzip_types 压缩类型</para>
+			<screen>
+			<![CDATA[
+	gzip_types text/plain text/css application/javascript text/javascript application/x-javascript text/xml application/xml application/xml+rss application/json;
+			]]>
+			</screen>
+			<para>text/html 是 gzip_types 默认值，所以不要将text/html加入到gzip_types</para>
+
+			<para>测试，验证 gzip 正常工作</para>
+			<screen>
+			<![CDATA[
+neo@netkiller:~/workspace$ curl -s -I -H 'Accept-Encoding: gzip,deflate' http://img.netkiller.cn/js/react.js | grep gzip
+Content-Encoding: gzip
+			]]>
+			</screen>
+			<para>如果提示 Content-Encoding: gzip 便是配置正确</para>
+			<para>不仅仅只能压缩html,js,css还能压缩json</para>
+			<screen>
+			<![CDATA[
+neo@netkiller:~$ curl -s -I -H 'Accept-Encoding: gzip,deflate' http://inf.netkiller.cn/list/json/2.json
+HTTP/1.1 200 OK
+Server: nginx
+Date: Thu, 15 Dec 2016 03:36:31 GMT
+Content-Type: application/json; charset=utf-8
+Connection: keep-alive
+Cache-Control: max-age=60
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Headers: Content-Type,Origin
+Access-Control-Allow-Methods: GET,OPTIONS
+Content-Encoding: gzip
+			]]>
+			</screen>
+			<section>
+				<title>CDN支持</title>
+				<para>配置 gzip_proxied any; 后CDN才能识别 gzip</para>
+				<screen>
+				<![CDATA[
+server_tokens off;
+gzip on;
+gzip_types text/plain text/css application/javascript text/javascript application/x-javascript text/xml application/xml application/xml+rss application/json;
+gzip_proxied any;
+				]]>
+				</screen>
+			</section>
+		</section>
+		<section id="server_tokens">
+			<title>server_tokens</title>
+			<para>隐藏nginx版本号</para>
+			<screen>
+			<![CDATA[
+http {
+...
+server_tokens off;
+...
+}
+			]]>
+			</screen>
+		</section>
+		<section id="ssi">
+			<title>ssi</title>
+			<screen>
+			<![CDATA[
+http {
+	ssi on;
+}
+
+location / {
+	ssi on;
+	ssi_silent_errors on;
+	ssi_types text/shtml;
+}
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+	ssi on;
+	ssi_silent_errors on;
+	ssi_types text/shtml;
+	ssi_value_length 256;
+	
+	server_names_hash_bucket_size 128;
+	client_header_buffer_size 32k;
+	large_client_header_buffers 4 32k;
+	client_max_body_size 8m;
+			]]>
+			</screen>
+			<para>ssi_silent_errors 默认值是off，开启后在处理SSI文件出错时不输出错误提示:"[an error occurred while processing the directive] "</para>
+			<para>ssi_types 默认是ssi_types text/html，如果需要shtml支持，则需要设置：ssi_types text/shtml</para>
+			<para>ssi_value_length 默认值是 256，用于定义SSI参数的长度。</para>
+		</section>
+
 	</section>
 	
-	
-	
-	
-	
-	
-
 	&chapter.nginx.var.xml;
-</section>
 
 	<section id="server">
 		<title>server</title>
@@ -142,132 +179,152 @@
 			<title>listen</title>
 			<para>绑定IP地址</para>
 			<screen>
-				listen 80; 相当于0.0.0.0:80监听所有接口上的IP地址
-				listen 192.168.0.1 80;
-				listen 192.168.0.1:80;
+			<![CDATA[
+		listen 80; 相当于0.0.0.0:80监听所有接口上的IP地址
+		listen 192.168.0.1 80;
+		listen 192.168.0.1:80;
+			]]>
 			</screen>
 			<para>配置默认主机 default_server</para>
 			<screen>
-				server {
-				listen 80;
-				server_name acc.example.net;
-				...
-				}
+			<![CDATA[
+	server {
+		listen 80;
+		server_name acc.example.net;
+		...
+	}
 
-				server {
-				listen 80 default_server;
-				server_name www.example.org;
-				...
-				}
+	server {
+		listen 80 default_server;
+		server_name www.example.org;
+		...
+	}
+			]]>
 			</screen>
 		</section>
 		<section id="http.server.example">
 			<title>单域名虚拟主机</title>
 			<screen>
-				# cat /etc/nginx/conf.d/images.conf
-				server {
-				listen 80;
-				server_name images.example.com;
-
-				#charset koi8-r;
-				access_log /var/log/nginx/images.access.log main;
-
-				location / {
-				root /www/images;
-				index index.html index.htm;
-				}
-
-				#error_page 404 /404.html;
-
-				# redirect server error pages to the static page /50x.html
-				#
-				error_page 500 502 503 504 /50x.html;
-				location = /50x.html {
-				root /usr/share/nginx/html;
-				}
-
-				# proxy the PHP scripts to Apache listening on 127.0.0.1:80
-				#
-				#location ~ \.php$ {
-				# proxy_pass http://127.0.0.1;
-				#}
-
-				# pass the
-				PHP scripts to FastCGI server listening on 127.0.0.1:9000
-				#
-				#location ~ \.php$ {
-				# root html;
-				# fastcgi_pass 127.0.0.1:9000;
-				# fastcgi_index index.php;
-				# fastcgi_param SCRIPT_FILENAME /scripts$fastcgi_script_name;
-				# include fastcgi_params;
-				#}
-
-				# deny access to .htaccess files, if Apache's document root
-				# concurs with nginx's one
-				#
-				#location ~ /\.ht {
-				# deny all;
-				#}
-				}
+			<![CDATA[
+# cat /etc/nginx/conf.d/images.conf
+server {
+	listen 80;
+	server_name images.example.com;
+	
+	#charset koi8-r;
+	access_log /var/log/nginx/images.access.log main;
+	
+	location / {
+		root /www/images;
+		index index.html index.htm;
+	}
+	
+	#error_page 404 /404.html;
+	
+	# redirect server error pages to the static page /50x.html
+	#
+	error_page 500 502 503 504 /50x.html;
+		location = /50x.html {
+		root /usr/share/nginx/html;
+	}
+	
+	# proxy the PHP scripts to Apache listening on 127.0.0.1:80
+	#
+	#location ~ \.php$ {
+	# proxy_pass http://127.0.0.1;
+	#}
+	
+	# pass the
+	PHP scripts to FastCGI server listening on 127.0.0.1:9000
+	#
+	#location ~ \.php$ {
+	# root html;
+	# fastcgi_pass 127.0.0.1:9000;
+	# fastcgi_index index.php;
+	# fastcgi_param SCRIPT_FILENAME /scripts$fastcgi_script_name;
+	# include fastcgi_params;
+	#}
+	
+	# deny access to .htaccess files, if Apache's document root
+	# concurs with nginx's one
+	#
+	#location ~ /\.ht {
+	# deny all;
+	#}
+}
+			]]>
 			</screen>
 
 			<para>绑定多个域名</para>
 			<screen>
-				server_name images.example.com img1.example.com img2.example.com;
+			<![CDATA[
+	server_name images.example.com img1.example.com img2.example.com;
+			]]>
 			</screen>
 			<para>使用通配符匹配</para>
 			<screen>
-				server_name *.example.com
-				server_name www.*;
+			<![CDATA[
+	server_name *.example.com
+	server_name www.*;
+			]]>
 			</screen>
 			<para>正则匹配</para>
 			<screen>
-				server_name ~^(.+)\.example\.com$;
-				server_name ~^(www\.)?(.+)$;
+			<![CDATA[
+	server_name ~^(.+)\.example\.com$;
+	server_name ~^(www\.)?(.+)$;
+			]]>
 			</screen>
 		</section>
 
 		<section id="http.server.ssl">
 			<title>ssl 虚拟主机</title>
 			<screen>
+			<![CDATA[
 				mkdir /etc/nginx/ssl
+			]]>
 			</screen>
 			<para>cp your_ssl_certificate to /etc/nginx/ssl</para>
 			<screen>
-				# HTTPS server
-				#
-				server {
-				listen 443;
-				server_name localhost;
-
-				root html;
-				index index.html index.htm;
-
-				ssl on;
-				#ssl_certificate cert.pem;
-				ssl_certificate ssl/example.com.pem;
-				ssl_certificate_key ssl/example.com.key;
-
-				ssl_session_timeout 5m;
-
-				ssl_protocols SSLv3 TLSv1;
-				ssl_ciphers ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv3:+EXP;
-				ssl_prefer_server_ciphers on;
-
-				location / {
-				try_files $uri $uri/ /index.html;
-				}
-				}
+			<![CDATA[
+# HTTPS server
+#
+server {
+	listen 443;
+	server_name localhost;
+	
+	root html;
+	index index.html index.htm;
+	
+	ssl on;
+	#ssl_certificate cert.pem;
+	ssl_certificate ssl/example.com.pem;
+	ssl_certificate_key ssl/example.com.key;
+	
+	ssl_session_timeout 5m;
+	
+	ssl_protocols SSLv3 TLSv1;
+	ssl_ciphers ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv3:+EXP;
+	ssl_prefer_server_ciphers on;
+	
+	location / {
+		try_files $uri $uri/ /index.html;
+	}
+}
+			]]>
 			</screen>
 			<para>configtest</para>
 			<screen>
-				$ sudo service nginx configtest
-				Testing nginx configuration: nginx.
+			<![CDATA[
+$ sudo service nginx configtest
+Testing nginx configuration: nginx.
+			]]>
 			</screen>
 			<para>443 port test</para>
 			<screen>
-				$ openssl s_client -connect www.example.com:443
+			<![CDATA[
+$ openssl s_client -connect www.example.com:443
+			]]>
 			</screen>
 		</section>
 
@@ -275,7 +332,9 @@
 			<title>server_name 配置</title>
 			<para>匹配所有域名</para>
 			<screen>
-				server_name _;
+			<![CDATA[
+	server_name _;
+			]]>
 			</screen>
 			<para>泛解析主机</para>
 			<screen>
@@ -455,7 +514,7 @@ server {
 			</screen>
 
 		</section>
-		
+
 		<section id="expires">
 			<title>expires</title>
 			<para>expires 格式</para>
@@ -756,9 +815,9 @@ add_header     Nginx-Cache     "$upstream_cache_status  from  www.example.com";
 			</section>
 		</section>
 		<section id="return">
-		<title>return</title>
-		<para>301 跳转</para>
-		<screen>
+			<title>return</title>
+			<para>301 跳转</para>
+			<screen>
 		<![CDATA[
 	server {
 		listen 80;
@@ -776,10 +835,10 @@ add_header     Nginx-Cache     "$upstream_cache_status  from  www.example.com";
 		return 301 $scheme://www.new-name.com$request_uri;
 	}
 		]]>
-		</screen>
+			</screen>
+		</section>
 	</section>
-	</section>
-	
+
 	<section id="rewrite">
 		<title>rewrite</title>
 		<screen>
@@ -820,7 +879,7 @@ $ 匹配输入字符串的结束位置。
 		}
 	}		
 		]]>
-		
+
 		</screen>
 		<screen>
 		<![CDATA[
@@ -830,7 +889,7 @@ $ 匹配输入字符串的结束位置。
 		}
 	}		
 		]]>
-		
+
 		</screen>
 		<screen>
 		<![CDATA[
@@ -903,7 +962,7 @@ Connection: keep-alive
 			</screen>
 		</section>
 	</section>
-	
+
 	<section id="http2">
 		<title>HTTP2 配置 SSL证书</title>
 		<section>
@@ -964,7 +1023,8 @@ Email Address []:netkiller@msn.com
 				error_log /var/log/nginx/api.netkiller.cn.error.log;
 
 				location / {
-				proxy_pass http://api.netkiller.cn;
+				proxy_pass
+				http://api.netkiller.cn;
 				proxy_http_version 1.1;
 				proxy_set_header Host $host;
 				proxy_set_header X-Real-IP $remote_addr;
@@ -1284,3 +1344,4 @@ http {
 	</section>
 	&chapter.nginx.proxy.xml;
 	&chapter.nginx.conf.fastcgi.xml;
+</section>	
