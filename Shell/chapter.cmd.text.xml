@@ -131,10 +131,102 @@ $ nl /etc/issue
 
 	<section id="tr">
 		<title>tr - translate or delete characters</title>
-		<para>":"替换为"\n"</para>
 		<screen>
-$ cat /etc/passwd |tr ":" "\n"
+		<![CDATA[
+[:alnum:] ：所有字母字符与数字
+[:alpha:] ：所有字母字符
+[:blank:] ：所有水平空格
+[:cntrl:] ：所有控制字符
+[:digit:] ：所有数字
+[:graph:] ：所有可打印的字符(不包含空格符)
+[:lower:] ：所有小写字母
+[:print:] ：所有可打印的字符(包含空格符)
+[:punct:] ：所有标点字符
+[:space:] ：所有水平与垂直空格符
+[:upper:] ：所有大写字母
+[:xdigit:] ：所有 16 进位制的数字		
+		]]>
 		</screen>
+		<section>
+			<title>替换字符</title>
+			<para>":"替换为"\n"</para>
+			<screen>
+			<![CDATA[
+$ cat /etc/passwd |tr ":" "\n"
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>英文大小写转换</title>
+			<para>使用 tr '[:lower:]' '[:upper:]' 将小写字母替换成大写字母</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# echo "Helloworld" | tr '[:lower:]' '[:upper:]'
+HELLOWORLD			
+			]]>
+			</screen>
+			<para>替换整段文字</para>
+			<screen>
+			<![CDATA[			
+[root@localhost ~]# cat /etc/redhat-release 
+CentOS Linux release 7.5.1804 (Core) 
+
+[root@localhost ~]# cat /etc/redhat-release | tr '[:lower:]' '[:upper:]'
+CENTOS LINUX RELEASE 7.5.1804 (CORE) 
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# echo "Netkiller" |  tr ‘a-z’ ‘A-Z’
+NETKILLER			
+			]]>
+			</screen>
+			
+		</section>
+		<section>
+			<title>[CHAR*] 和 [CHAR*REPEAT]</title>
+			<para></para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# echo "1234567890" | tr ‘1-5′ ‘[A*]‘ 
+AAAAA67890
+
+[root@localhost ~]# echo "1234567890" | tr ‘1-9′ ‘[A*5]BCDE’
+AAAAABCDE0			
+			]]>
+			</screen>
+		</section>
+		<section id="tr.squeeze">
+			<title>-s, --squeeze-repeats replace each input sequence of a repeated character that is listed in SET1 with a single occurrence of that character</title>
+			<para>删除重复的字符</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# echo "My      nickname  is      netkiller." | tr -s ' '
+My nickname is netkiller.	
+
+[root@localhost ~]# echo "aaaabbbbccccdddd." | tr -s 'a'
+abbbbccccdddd.
+
+[root@localhost ~]# echo "aaaabbbbccccdddd." | tr -s 'a-z'
+abcd.		
+			]]>
+			</screen>
+		</section>
+		<section id="tr.delete">
+			<title>-d, --delete
+              delete characters in SET1, do not translate</title>
+            <para>删除字符</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# echo "My nickname is netkiller" | tr -d ' '
+Mynicknameisnetkiller
+			
+[root@localhost ~]# md5sum /etc/issue | tr -d [0-9] 
+ffedfcfbdcaebdec  /etc/issue			
+			]]>
+			</screen>
+		</section>
 	</section>
     <section id="cut">
         <title>cut - remove sections from each line of files</title>
