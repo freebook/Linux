@@ -1,5 +1,5 @@
 <chapter id="index"><?dbhtml dir="harddisk" ?>
-	<title>Harddisk</title>
+	<title>Harddisk 磁盘管理</title>
 	<para>主分区最多4个</para>
 	<para>逻辑分区:</para>
 	<itemizedlist>

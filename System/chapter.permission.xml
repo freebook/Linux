@@ -1,5 +1,5 @@
 <chapter id="index"><?dbhtml dir="permission" ?>
-	<title>Permission</title>
+	<title>Permission 权限管理</title>
 	<section id="adduser">
 		<title>User</title>
 		<section>

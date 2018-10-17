@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.system.device.info.xml 428 2012-06-16 11:12:06Z netkiller $ -->
 <chapter id="index"><?dbhtml dir="device" ?>
-	<title>Device information</title>
+	<title>Device information 设备信息</title>
 	<chapterinfo>
 		<keywordset>
 			<keyword>lscpu, chcpu</keyword>

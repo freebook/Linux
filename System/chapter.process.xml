@@ -1,5 +1,5 @@
 <chapter id="index"><?dbhtml dir="process" ?>
-	<title>Process</title>
+	<title>Process 进程管理</title>
 	<section id="top">
 		<title>top - display Linux tasks</title>
 		<para>top命令算是最直观、好用的查看服务器负载的命令了。它实时动态刷新显示服务器状态信息，且可以通过交互式命令自定义显示内容，非常强大。</para>

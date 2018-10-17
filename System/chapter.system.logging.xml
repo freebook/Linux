@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="log">
-	<title>Logging</title>
+	<title>Logging 日志</title>
 	<section id="rsyslog">
 	    <title>rsyslog</title>
 	    <para>www.rsyslog.com</para>
