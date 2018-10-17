@@ -247,6 +247,18 @@ aaa=xxx
 		]]>
 		</screen>
 	</section>
+	<section id="sed.tolowcase">
+		<title>字母大小写转换</title>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# echo "netkiller" | sed 's/[a-z]/\u&/g'
+NETKILLER
+
+[root@localhost ~]# echo "NETKILLER" | sed 's/[A-Z]/\l&/g'
+netkiller
+		]]>
+		</screen>
+	</section>
 	<section id="sed.perl">
 		<title>perl</title>
 		<programlisting>

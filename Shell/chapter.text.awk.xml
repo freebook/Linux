@@ -2,6 +2,22 @@
 <!-- $Id: chapter.cmd.text.awk.xml 418 2012-05-25 14:17:16Z netkiller $ -->
 <section id="awk">
 	<title>awk</title>
+	<para>内置变量</para>
+	<screen>
+	<![CDATA[
+ARGC               命令行参数个数
+ARGV               命令行参数排列
+ENVIRON            支持队列中系统环境变量的使用
+FILENAME           awk浏览的文件名
+FNR                浏览文件的记录数
+FS                 设置输入域分隔符，等价于命令行 -F选项
+NF                 浏览记录的域的个数
+NR                 已读的记录数
+OFS                输出域分隔符
+ORS                输出记录分隔符
+RS                 控制记录分隔符	
+	]]>
+	</screen>
 	<section>
 		<title>处理列</title>
 		<screen>
@@ -277,7 +293,7 @@ GET 188573
 	</section>
 	<section id="awk.function">
 		<title>Built-in Functions</title>
-		<section>
+		<section id="awk.length">
 			<title>length</title>
 			<screen>
 			<![CDATA[
@@ -289,6 +305,50 @@ GET 188573
 20 ntp
 22 rpc
 25 www
+			]]>
+			</screen>
+		</section>
+		<section id="awk.toupper">
+			<title>toupper() 转为大写字母</title>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# awk '{print toupper($1)}' /etc/passwd
+ROOT:X:0:0:ROOT:/ROOT:/BIN/BASH
+BIN:X:1:1:BIN:/BIN:/SBIN/NOLOGIN
+DAEMON:X:2:2:DAEMON:/SBIN:/SBIN/NOLOGIN
+ADM:X:3:4:ADM:/VAR/ADM:/SBIN/NOLOGIN
+LP:X:4:7:LP:/VAR/SPOOL/LPD:/SBIN/NOLOGIN
+SYNC:X:5:0:SYNC:/SBIN:/BIN/SYNC
+SHUTDOWN:X:6:0:SHUTDOWN:/SBIN:/SBIN/SHUTDOWN
+HALT:X:7:0:HALT:/SBIN:/SBIN/HALT
+MAIL:X:8:12:MAIL:/VAR/SPOOL/MAIL:/SBIN/NOLOGIN
+OPERATOR:X:11:0:OPERATOR:/ROOT:/SBIN/NOLOGIN
+GAMES:X:12:100:GAMES:/USR/GAMES:/SBIN/NOLOGIN
+FTP:X:14:50:FTP
+NOBODY:X:99:99:NOBODY:/:/SBIN/NOLOGIN
+SYSTEMD-NETWORK:X:192:192:SYSTEMD
+DBUS:X:81:81:SYSTEM
+POLKITD:X:999:997:USER
+POSTFIX:X:89:89::/VAR/SPOOL/POSTFIX:/SBIN/NOLOGIN
+CHRONY:X:998:996::/VAR/LIB/CHRONY:/SBIN/NOLOGIN
+SSHD:X:74:74:PRIVILEGE-SEPARATED
+NTP:X:38:38::/ETC/NTP:/SBIN/NOLOGIN
+DHCPD:X:177:177:DHCP
+WWW:X:80:80:WEB
+NGINX:X:997:995:NGINX
+MYSQL:X:27:27:MYSQL
+REDIS:X:1000:1000::/VAR/LIB/REDIS:/BIN/FALSE
+ETHEREUM:X:1001:1001::/HOME/ETHEREUM:/BIN/BASH
+MONGOD:X:996:991:MONGOD:/VAR/LIB/MONGO:/BIN/FALSE			
+			]]>
+			</screen>
+		</section>
+		<section id="awk.tolower">
+			<title>tolower() 转为小写字母</title>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# awk -F '\n' '{print tolower($1)}' /etc/redhat-release 
+centos linux release 7.5.1804 (core) 			
 			]]>
 			</screen>
 		</section>
@@ -307,6 +367,40 @@ awk '! a[$1]++' 1.txt >2.txt
 
 awk '! a[$1,$2]++' 1.txt >2.txt
 删除文件中第一，二列都重复的记录
+		</screen>
+	</section>
+	<section id="awk.array">
+		<title>数组演示</title>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# awk -F ':' 'BEGIN {count=1;} {name[count] = $1;count++;}; END{for (i = 1; i < NR; i++) print i, name[i]}' /etc/passwd
+1 root
+2 bin
+3 daemon
+4 adm
+5 lp
+6 sync
+7 shutdown
+8 halt
+9 mail
+10 operator
+11 games
+12 ftp
+13 nobody
+14 systemd-network
+15 dbus
+16 polkitd
+17 postfix
+18 chrony
+19 sshd
+20 ntp
+21 dhcpd
+22 www
+23 nginx
+24 mysql
+25 redis
+26 ethereum		
+		]]>
 		</screen>
 	</section>
 </section>

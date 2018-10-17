@@ -691,5 +691,43 @@ $ eval echo $"a_$i"
 Neo Chen
 		</screen>
 	</section>
+	<section id="typeset">
+		<title>typeset</title>
+		<para>有两个选项 -l 代表小写 -u 代表大写。</para>
+		<screen>
+		<![CDATA[
+typeset -u name
+name='neo'
+echo $name
+
+typeset -l nickname
+nickname='netkiller'
+echo $nickname
+
+typeset -l nickname
+nickname='NETKILLER'
+echo $nickname
+		]]>
+		</screen>
+		<para>操作演示</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# typeset -u name
+[root@localhost ~]# name='neo'
+[root@localhost ~]# echo $name
+NEO
+[root@localhost ~]# 
+[root@localhost ~]# typeset -l nickname
+[root@localhost ~]# nickname='netkiller'
+[root@localhost ~]# echo $nickname
+netkiller
+[root@localhost ~]# 
+[root@localhost ~]# typeset -l nickname
+[root@localhost ~]# nickname='NETKILLER'
+[root@localhost ~]# echo $nickname
+netkiller		
+		]]>
+		</screen>
+	</section>
 </section>
 
