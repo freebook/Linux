@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?xml-stylesheet type="text/xsl" href="../stylesheet/docbook-article.xsl"?>
-<!--
-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V5.0//EN"
-	"http://www.oasis-open.org/docbook/xml/5.0b5/dtd/docbook.dtd" [
--->
+<!-- <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V5.0//EN" "http://www.oasis-open.org/docbook/xml/5.0b5/dtd/docbook.dtd" [ -->
 <!DOCTYPE book SYSTEM "/usr/share/xml/docbook/schema/dtd/5.0/docbook.dtd" [
 
 	<!ENTITY % common.doctype.entity.xml 		SYSTEM "../../common/doctype.entity.xml">
@@ -15,11 +12,10 @@
 	<!ENTITY % doctype.entity.xml	SYSTEM "doctype.entity.xml">
 	%doctype.entity.xml;
 ]>
-<book xml:base="http://netkiller.mooo.com/book/publish/"
-	xmlns="http://docbook.org/ns/docbook" xml:lang="zh-cn">
+<book xml:base="http://netkiller.mooo.com/book/publish/" xmlns="http://docbook.org/ns/docbook" xml:lang="zh-cn">
 	<info>
-		<title>Netkiller Linux Shell 手札</title>
-
+		<title>Netkiller Shell 手札</title>
+		<subtitle>Unix, Linux, FreeBSD &amp; Mac Shell</subtitle>
 		&book.info.author.xml;
 
 		<copyright>

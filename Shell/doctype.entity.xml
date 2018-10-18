@@ -23,6 +23,7 @@
 	<!ENTITY chapter.cmd.text.sort.xml			SYSTEM "chapter.cmd.text.sort.xml">
 	<!ENTITY chapter.cmd.table.xml				SYSTEM "chapter.cmd.table.xml">
 	<!ENTITY chapter.cmd.io.xml					SYSTEM "chapter.cmd.io.xml">
+	<!ENTITY chapter.cmd.binary.xml				SYSTEM "chapter.cmd.binary.xml">
 	
 	<!ENTITY chapter.text.vim.xml	 		SYSTEM "chapter.text.vim.xml">
 	<!ENTITY chapter.text.awk.xml			SYSTEM "chapter.text.awk.xml">

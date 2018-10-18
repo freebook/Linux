@@ -14,6 +14,7 @@
 	&chapter.cmd.text.sort.xml;
 	&chapter.cmd.table.xml;
 	&chapter.cmd.io.xml;
+	&chapter.cmd.binary.xml;
 
 <section id="log">
 	<title>Logging</title>
@@ -148,19 +149,6 @@ jam:jampass
 		<para>passwd 命令实现相同功能</para>
 		<screen>
 echo "mypasword" | passwd –stdin neo
-		</screen>
-	</section>
-</section>
-
-<section id="binutils">
-	<title>binutils</title>
-	<screen>
-$ sudo apt-get install binutils
-	</screen>
-	<section id="strings">
-		<title>strings - print the strings of printable characters in files.</title>
-		<screen>
-tcpdump -i eth0 -s 0 -l -w - dst port 80 | strings
 		</screen>
 	</section>
 </section>
