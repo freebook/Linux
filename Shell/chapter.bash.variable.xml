@@ -85,6 +85,16 @@ PING 172.16.1.100 (172.16.1.100) 56(84) bytes of data.
 1			
 			]]>
 			</screen>
+			<para>如果 redis 用户不存，就创建一个名为 redis 的用户。</para>
+			<screen>
+			<![CDATA[
+id redis
+if [ $? -eq 1 ] 
+then
+	adduser -s /bin/false -d /var/lib/redis redis
+fi		
+			]]>
+			</screen>
 		</section>
 		<section id="shift">
 			<title>shift 移位</title>
