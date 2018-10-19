@@ -1045,6 +1045,19 @@ nohup command &>/dev/null
 			<para>You may using 'jobs' to display task.</para>
 			<para>and using 'fg %n' to close that.</para>
 		</section>
+		<section id="wait">
+			<title>wait 等待后台任务运行结束</title>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro ~ % sleep 10 &
+[1] 2967
+
+neo@MacBook-Pro ~ % wait
+[1]  + 2967 done       sleep 10			
+			]]>
+			</screen>
+			<para>wait 将一只停留，等待 sleep 10 运行完毕。</para>
+		</section>
 	</section>
 	<section id="ionice">
 		<title>ionice - get/set program io scheduling class and priority</title>
