@@ -329,7 +329,7 @@ if ($invalid_referer) {
 }
 		</screen>
 	</section>
-	<section>
+	<section id="request_body">
 		<title>$request_body - HTTP POST 数据</title>
 		<section>
 			<title>用户日志</title>

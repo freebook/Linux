@@ -814,6 +814,14 @@ add_header     Nginx-Cache     "$upstream_cache_status  from  www.example.com";
 				</screen>
 			</section>
 		</section>
+		<section id="client_max_body_size">
+			<title>client_max_body_size 上传文件尺寸限制</title>
+			<programlisting>
+			<![CDATA[
+client_max_body_size 2M;			
+			]]>
+			</programlisting>
+		</section>
 		<section id="return">
 			<title>return</title>
 			<para>301 跳转</para>
