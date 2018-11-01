@@ -244,7 +244,16 @@ add 增加路由
 del 删除路由
 via 网关出口 IP地址
 dev 网关出口 物理设备名
-		</screen>		
+		</screen>
+		<section>
+			<title></title>
+			<screen>
+			<![CDATA[
+sudo ip link set eth0 down
+sudo ip link set eth0 up			
+			]]>
+			</screen>
+		</section>
 		<section>
 			<title>添加路由</title>
 			<screen>

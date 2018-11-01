@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="RaspberryPi">
+	<title>Raspberry Pi</title>
+	<para><ulink url="https://www.raspberrypi.org/" /></para>
+	<section id="">
+		<title>配置工具</title>
+		<section id="rpi-update">
+			<title>rpi-update</title>
+			<screen>
+			<![CDATA[
+sudo rpi-update			
+			]]>
+			</screen>
+		</section>
+	</section>
+	&chapter.raspberry.network.xml;
+</chapter>
