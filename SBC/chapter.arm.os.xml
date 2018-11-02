@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="ARMLinux">
+	<title>ARM Linux</title>
+	<section id="DietPi">
+		<title>DietPi</title>
+		<para><ulink url="https://dietpi.com/" /></para>
+	</section>
+	<section id="armbian">
+		<title>armbian</title>
+		<para><ulink url="https://www.armbian.com" /></para>
+	</section>
+</chapter>
