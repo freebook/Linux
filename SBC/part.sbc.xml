@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <part id=""><?dbhtml dir="sbc" ?>
 	<title>SBC - Single-board computers</title>
+	&chapter.raspberry.xml;
+	&chapter.pi-star.xml;
 </part>

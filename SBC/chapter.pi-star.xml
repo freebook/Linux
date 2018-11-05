@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="pi-star">
+	<title>Pi-Star Digital Voice Software</title>
+	<para>Web UI 地址 http://pi-star/</para>
+	<para>用户：pi-star</para>
+	<para>密码：raspberry</para>
+	<section>
+		<title>释放TF卡空间</title>
+		<para>首次使用 dd 烧录 TF 启动后，pi-star 不是使用所有的 TF 空间，需要把卡上不用空间全给树莓派</para>
+		<screen>
+		<![CDATA[
+sudo pistar-expand
+sudo reboot
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>更新系统</title>
+		<screen>
+		<![CDATA[
+sudo pistar-update && pistar-upgrade -y
+		]]>
+		</screen>
+	</section>
+	<section id="">
+		<title>修改权限从 ro 到 rw </title>
+		<screen>
+		<![CDATA[
+rpi-rw		
+		]]>
+		</screen>
+	</section>
+</chapter>

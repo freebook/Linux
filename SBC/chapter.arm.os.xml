@@ -9,4 +9,12 @@
 		<title>armbian</title>
 		<para><ulink url="https://www.armbian.com" /></para>
 	</section>
+	<section id="Volumio">
+		<title>Volumio</title>
+		<para><ulink url="https://volumio.org/" /></para>
+	</section>
+	<section id="RuneAudio">
+		<title>RuneAudio</title>
+		<para>RuneAudio is a free and open source software that turns embedded hardware into Hi-Fi music players.</para>
+	</section>
 </chapter>
