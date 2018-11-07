@@ -91,6 +91,9 @@
 	<!ENTITY % graphics.doctype.entity.xml 	SYSTEM "Graphics/doctype.entity.xml">
 	%graphics.doctype.entity.xml;
 	
+	<!ENTITY % sbc.doctype.entity.xml 	SYSTEM "SBC/doctype.entity.xml">
+	%sbc.doctype.entity.xml;
+	
 	<!ENTITY part.im 			SYSTEM "part.im.xml">
 	<!ENTITY chapter.gps 		SYSTEM "chapter.gps.xml">
 	
@@ -212,6 +215,7 @@ a2p,ab,aclocal,aclocal-1.11,addftinfo,addr2line,airdaemon,apropos,ar,as,attr,aul
 	&part.multimedia.xml;
 	&chapter.x.xml;
 	&chapter.faq.xml;
+	&part.sbc.xml;
 <!-- =========================================================================== -->
 	&book.appendix.xml;
 	&book.history.xml;
