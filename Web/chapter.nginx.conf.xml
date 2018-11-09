@@ -889,24 +889,30 @@ $ 匹配输入字符串的结束位置。
 		]]>
 
 		</screen>
-		<screen>
-		<![CDATA[
+		<section>
+			<title>处理泛解析</title>
+			<screen>
+			<![CDATA[
+	if ($host ~ '(.*)\.example\.com' ) {
+		set $subdomain $1;
+		rewrite "^/(.*)$" /$subdomain/$1;
+	}		
+			]]>
+			</screen>	
+		</section>
+		<section>
+			<title>处理扩展名</title>
+			<screen>
+			<![CDATA[
 	location ~* \.(js|css|jpg|jpeg|gif|png|swf)$ {
 		if (!-f $request_filename){
 			rewrite /(.*) http://images.example.com/$1;
 		}
 	}		
-		]]>
+			]]>
 
-		</screen>
-		<screen>
-		<![CDATA[
-	if ($host ~ '(.*)\.static\.example\.com' ) {
-		set $subdomain $1;
-		rewrite "^/(.*)$" /$subdomain/$1;
-	}		
-		]]>
-		</screen>
+			</screen>
+		</section>
 		<section>
 			<title>http get 参数处理</title>
 			<para>需求如下</para>
@@ -967,6 +973,43 @@ Connection: keep-alive
 			<para>需求如下，除了2015年保留，其他所有页面重定向到新页面</para>
 			<screen>
 				rewrite ^/promotion/(?!2015\/)(.*) https://www.netkiller.cn/promotion.html permanent;
+			</screen>
+		</section>
+		<section>
+			<title>去掉扩展名</title>
+			<para>需求</para>
+			<screen>
+			<![CDATA[
+http://www.example.com/article/10	=>	http://www.example.com/article/10.html			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+location / {
+    if (!-e $request_filename){
+        rewrite ^(.*)$ /$1.html last;
+        break;
+    }
+}			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>添加扩展名</title>
+			<para></para>
+			<screen>
+			<![CDATA[
+原地址 http://ipfs.netkiller.cn/ipfs/QmcA1Fsrt6jGTVqAUNZBqaprMEdFaFkmkzA5s2M6mF85UC
+目标地址： http://ipfs.netkiller.cn/ipfs/QmcA1Fsrt6jGTVqAUNZBqaprMEdFaFkmkzA5s2M6mF85UC.mp4
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+    location / {
+        rewrite ^/(.*)\.mp4$ /$1 last;
+        proxy_pass      http://127.0.0.1:8080;
+    }
+			]]>
 			</screen>
 		</section>
 	</section>

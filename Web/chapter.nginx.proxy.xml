@@ -945,6 +945,61 @@ server {
 }
 			]]>
 			</screen>
-		</section>		
+		</section>	
+		<section id="nginx.ipfs">
+			<title>IPFS</title>
+			<screen>
+			<![CDATA[
+mkdir -p /var/cache/nginx/ipfs
+chown nginx:root /var/cache/nginx/ipfs			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+proxy_cache_path /var/cache/nginx/ipfs keys_zone=ipfs:4096m;
+server {
+    listen       80;
+    server_name  localhost;
+
+    #charset koi8-r;
+    access_log  /var/log/nginx/ipfs.access.log;
+
+    location / {
+	proxy_pass      http://127.0.0.1:8080;
+        proxy_cache ipfs;
+        proxy_cache_valid  200 30d;
+	    expires max;
+    }
+
+    location ~* .+.(mp4)$ {
+        rewrite ^/(.*)\.mp4$ /$1 last;
+        proxy_pass      http://127.0.0.1:8080;
+        proxy_cache ipfs;
+        proxy_cache_valid  200 30d;
+        expires max;
+        mp4;
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+}			
+			]]>
+			</screen>
+			<para>查看缓存情况</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# find /var/cache/nginx/ipfs/
+/var/cache/nginx/ipfs/
+/var/cache/nginx/ipfs/47c3015c7a497f26f650a817f5a179ab			
+			]]>
+			</screen>
+		</section>	
 	</section>
 </section>
