@@ -5,6 +5,16 @@
 	<para>用户：pi-star</para>
 	<para>密码：raspberry</para>
 	<section>
+		<title>烧录img镜像文件</title>
+		<para>下载镜像文件 http://www.pistar.uk/downloads/</para>
+		<para>树莓派 3B+ 目前还没有release，可以使用 beta 版本 http://www.pistar.uk/beta/</para>
+		<screen>
+		<![CDATA[
+		
+		]]>
+		</screen>
+	</section>
+	<section>
 		<title>释放TF卡空间</title>
 		<para>首次使用 dd 烧录 TF 启动后，pi-star 不是使用所有的 TF 空间，需要把卡上不用空间全给树莓派</para>
 		<screen>
@@ -22,7 +32,7 @@ sudo pistar-update && pistar-upgrade -y
 		]]>
 		</screen>
 	</section>
-	<section id="">
+	<section>
 		<title>修改权限从 ro 到 rw </title>
 		<screen>
 		<![CDATA[

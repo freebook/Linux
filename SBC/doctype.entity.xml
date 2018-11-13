@@ -1,3 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!ENTITY part.sbc.xml					SYSTEM "part.sbc.xml">
 <!ENTITY chapter.raspberry.xml			SYSTEM "chapter.raspberry.xml">
 <!ENTITY chapter.pi-star.xml			SYSTEM "chapter.pi-star.xml">
