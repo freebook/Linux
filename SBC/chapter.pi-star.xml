@@ -8,11 +8,28 @@
 		<title>烧录img镜像文件</title>
 		<para>下载镜像文件 http://www.pistar.uk/downloads/</para>
 		<para>树莓派 3B+ 目前还没有release，可以使用 beta 版本 http://www.pistar.uk/beta/</para>
-		<screen>
-		<![CDATA[
-		
-		]]>
-		</screen>
+		<section>
+			<title>Mac</title>
+			<para>执行 diskutil list 查看SD卡设备文件名</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro ~/Downloads/Pi-Star_RPiB+_V3 % diskutil list			
+			]]>
+			</screen>
+			<para>我的 SD Card 设备文件是 /dev/disk2，卸载 SD Card</para>
+			<screen>
+			<![CDATA[
+diskutil unmountDisk /dev/disk2			
+			]]>
+			</screen>
+			<para>将镜像文件写入 SD Card</para>
+			<screen>
+			<![CDATA[
+sudo dd bs=4m if=Pi-Star_RPiB+_V3.4.16_10-Aug-2018.img of=/dev/disk2		
+			]]>
+			</screen>
+		</section>
+
 	</section>
 	<section>
 		<title>释放TF卡空间</title>
@@ -39,5 +56,38 @@ sudo pistar-update && pistar-upgrade -y
 rpi-rw		
 		]]>
 		</screen>
+	</section>
+	<section id="MMDVMHost">
+		<title>MMDVMHost</title>
+		<section>
+			<title>启动和停止</title>
+			<screen>
+			<![CDATA[
+pi-star@netkiller(ro):pi-star$ systemctl enable mmdvmhost
+pi-star@netkiller(ro):pi-star$ systemctl disable mmdvmhost			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+pi-star@netkiller(ro):pi-star$ systemctl start mmdvmhost
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+pi-star@netkiller(ro):pi-star$ systemctl stop mmdvmhost
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+pi-star@netkiller(ro):pi-star$ systemctl restart mmdvmhost
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+pi-star@netkiller(ro):pi-star$ systemctl status mmdvmhost			
+			]]>
+			</screen>
+		</section>
+		
 	</section>
 </chapter>
