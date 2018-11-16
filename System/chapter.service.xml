@@ -1,6 +1,395 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="service" ?>
 	<title>服务管理</title>
+	<section id="systemd.service">
+		<title>systemctl</title>
+		<screen>
+		<![CDATA[
+# systemctl stop postfix
+# systemctl stop avahi-daemon
+# systemctl disable postfix
+# systemctl disable avahi-daemon
+		]]>
+		</screen>
+		<section>
+			<title>rc.local</title>
+			<screen>
+			<![CDATA[
+$ chmod +x /etc/rc.d/rc.local
+$ systemctl enable rc-local
+$ systemctl start rc-local
+$ systemctl status rc-local
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>is-enabled 查看当前服务的启用状态</title>
+			<screen>
+			<![CDATA[
+[root@www.netkiller.cn ~]# systemctl is-enabled mongod
+enabled
+[root@www.netkiller.cn ~]# systemctl is-enabled spring
+disabled
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>重载 systemd</title>
+			<screen>
+			<![CDATA[
+systemctl daemon-reload
+			]]>
+			</screen>
+		</section>
+
+		<section>
+			<title>列出启动失败的服务</title>
+			<screen>
+			<![CDATA[
+# systemctl --failed
+  UNIT           LOAD   ACTIVE SUB    DESCRIPTION
+● spring.service loaded failed failed Spring Boot Application
+
+LOAD   = Reflects whether the unit definition was properly loaded.
+ACTIVE = The high-level unit activation state, i.e. generalization of SUB.
+SUB    = The low-level unit activation state, values depend on unit type.
+
+1 loaded units listed. Pass --all to see loaded but inactive units, too.
+To show all installed unit files use 'systemctl list-unit-files'.	
+			]]>
+			</screen>
+		</section>
+		<section id="list-units">
+			<title>list-units</title>
+			<screen>
+			<![CDATA[
+# systemctl list-unit-files
+UNIT FILE                                   STATE   
+proc-sys-fs-binfmt_misc.automount           static  
+dev-hugepages.mount                         static  
+dev-mqueue.mount                            static  
+proc-sys-fs-binfmt_misc.mount               static  
+sys-fs-fuse-connections.mount               static  
+sys-kernel-config.mount                     static  
+sys-kernel-debug.mount                      static  
+tmp.mount                                   disabled
+brandbot.path                               disabled
+systemd-ask-password-console.path           static  
+systemd-ask-password-plymouth.path          static  
+systemd-ask-password-wall.path              static  
+session-1.scope                             static  
+session-2.scope                             static  
+session-3.scope                             static  
+session-4.scope                             static  
+auditd.service                              enabled 
+autovt@.service                             disabled
+avahi-daemon.service                        enabled 
+blk-availability.service                    disabled
+brandbot.service                            static  
+console-getty.service                       disabled
+console-shell.service                       disabled
+cpupower.service                            disabled
+crond.service                               enabled 
+dbus-org.fedoraproject.FirewallD1.service   enabled 
+dbus-org.freedesktop.Avahi.service          enabled 
+dbus-org.freedesktop.hostname1.service      static  
+dbus-org.freedesktop.locale1.service        static  
+dbus-org.freedesktop.login1.service         static  
+dbus-org.freedesktop.machine1.service       static  
+dbus-org.freedesktop.NetworkManager.service enabled 
+dbus-org.freedesktop.nm-dispatcher.service  enabled 
+dbus-org.freedesktop.timedate1.service      static  
+dbus.service                                static  
+debug-shell.service                         disabled
+dm-event.service                            disabled
+dnsmasq.service                             disabled
+dracut-cmdline.service                      static  
+dracut-initqueue.service                    static  
+dracut-mount.service                        static  
+dracut-pre-mount.service                    static  
+dracut-pre-pivot.service                    static  
+dracut-pre-trigger.service                  static  
+dracut-pre-udev.service                     static  
+dracut-shutdown.service                     static  
+ebtables.service                            disabled
+emergency.service                           static  
+firewalld.service                           enabled 
+getty@.service                              enabled 
+halt-local.service                          static  
+initrd-cleanup.service                      static  
+initrd-parse-etc.service                    static  
+initrd-switch-root.service                  static  
+initrd-udevadm-cleanup-db.service           static  
+irqbalance.service                          enabled 
+kdump.service                               enabled 
+kmod-static-nodes.service                   static  
+lvm2-lvmetad.service                        disabled
+lvm2-monitor.service                        enabled 
+lvm2-pvscan@.service                        static  
+messagebus.service                          static  
+microcode.service                           enabled 
+NetworkManager-dispatcher.service           enabled 
+NetworkManager-wait-online.service          disabled
+NetworkManager.service                      enabled 
+plymouth-halt.service                       disabled
+plymouth-kexec.service                      disabled
+plymouth-poweroff.service                   disabled
+plymouth-quit-wait.service                  disabled
+plymouth-quit.service                       disabled
+plymouth-read-write.service                 disabled
+plymouth-reboot.service                     disabled
+plymouth-start.service                      disabled
+plymouth-switch-root.service                static  
+polkit.service                              static  
+postfix.service                             enabled 
+quotaon.service                             static  
+rc-local.service                            static  
+rdisc.service                               disabled
+rescue.service                              static  
+rhel-autorelabel-mark.service               static  
+rhel-autorelabel.service                    static  
+rhel-configure.service                      static  
+rhel-dmesg.service                          disabled
+rhel-domainname.service                     disabled
+rhel-import-state.service                   static  
+rhel-loadmodules.service                    static  
+rhel-readonly.service                       static  
+rsyslog.service                             enabled 
+serial-getty@.service                       disabled
+sshd-keygen.service                         static  
+sshd.service                                enabled 
+sshd@.service                               static  
+systemd-ask-password-console.service        static  
+systemd-ask-password-plymouth.service       static  
+systemd-ask-password-wall.service           static  
+systemd-backlight@.service                  static  
+systemd-binfmt.service                      static  
+systemd-fsck-root.service                   static  
+systemd-fsck@.service                       static  
+systemd-halt.service                        static  
+systemd-hibernate.service                   static  
+systemd-hostnamed.service                   static  
+systemd-hybrid-sleep.service                static  
+systemd-initctl.service                     static  
+systemd-journal-flush.service               static  
+systemd-journald.service                    static  
+systemd-kexec.service                       static  
+systemd-localed.service                     static  
+systemd-logind.service                      static  
+systemd-machined.service                    static  
+systemd-modules-load.service                static  
+systemd-nspawn@.service                     disabled
+systemd-poweroff.service                    static  
+systemd-quotacheck.service                  static  
+systemd-random-seed.service                 static  
+systemd-readahead-collect.service           enabled 
+systemd-readahead-done.service              static  
+systemd-readahead-drop.service              enabled 
+systemd-readahead-replay.service            enabled 
+systemd-reboot.service                      static  
+systemd-remount-fs.service                  static  
+systemd-shutdownd.service                   static  
+systemd-suspend.service                     static  
+systemd-sysctl.service                      static  
+systemd-timedated.service                   static  
+systemd-tmpfiles-clean.service              static  
+systemd-tmpfiles-setup-dev.service          static  
+systemd-tmpfiles-setup.service              static  
+systemd-udev-settle.service                 static  
+systemd-udev-trigger.service                static  
+systemd-udevd.service                       static  
+systemd-update-utmp-runlevel.service        static  
+systemd-update-utmp.service                 static  
+systemd-user-sessions.service               static  
+systemd-vconsole-setup.service              static  
+teamd@.service                              static  
+tuned.service                               enabled 
+wpa_supplicant.service                      disabled
+-.slice                                     static  
+machine.slice                               static  
+system.slice                                static  
+user.slice                                  static  
+avahi-daemon.socket                         enabled 
+dbus.socket                                 static  
+dm-event.socket                             enabled 
+lvm2-lvmetad.socket                         enabled 
+sshd.socket                                 disabled
+syslog.socket                               static  
+systemd-initctl.socket                      static  
+systemd-journald.socket                     static  
+systemd-shutdownd.socket                    static  
+systemd-udevd-control.socket                static  
+systemd-udevd-kernel.socket                 static  
+basic.target                                static  
+bluetooth.target                            static  
+cryptsetup.target                           static  
+ctrl-alt-del.target                         disabled
+default.target                              enabled 
+emergency.target                            static  
+final.target                                static  
+getty.target                                static  
+graphical.target                            disabled
+halt.target                                 disabled
+hibernate.target                            static  
+hybrid-sleep.target                         static  
+initrd-fs.target                            static  
+initrd-root-fs.target                       static  
+initrd-switch-root.target                   static  
+initrd.target                               static  
+kexec.target                                disabled
+local-fs-pre.target                         static  
+local-fs.target                             static  
+multi-user.target                           enabled 
+network-online.target                       static  
+network.target                              static  
+nss-lookup.target                           static  
+nss-user-lookup.target                      static  
+paths.target                                static  
+poweroff.target                             disabled
+printer.target                              static  
+reboot.target                               disabled
+remote-fs-pre.target                        static  
+remote-fs.target                            enabled 
+rescue.target                               disabled
+rpcbind.target                              static  
+runlevel0.target                            disabled
+runlevel1.target                            disabled
+runlevel2.target                            disabled
+runlevel3.target                            disabled
+runlevel4.target                            disabled
+runlevel5.target                            disabled
+runlevel6.target                            disabled
+shutdown.target                             static  
+sigpwr.target                               static  
+sleep.target                                static  
+slices.target                               static  
+smartcard.target                            static  
+sockets.target                              static  
+sound.target                                static  
+suspend.target                              static  
+swap.target                                 static  
+sysinit.target                              static  
+system-update.target                        static  
+time-sync.target                            static  
+timers.target                               static  
+umount.target                               static  
+systemd-readahead-done.timer                static  
+systemd-tmpfiles-clean.timer                static  
+
+210 unit files listed.	
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+$ systemctl list-units --type=target
+UNIT                  LOAD   ACTIVE SUB    DESCRIPTION
+basic.target          loaded active active Basic System
+cryptsetup.target     loaded active active Encrypted Volumes
+getty.target          loaded active active Login Prompts
+local-fs-pre.target   loaded active active Local File Systems (Pre)
+local-fs.target       loaded active active Local File Systems
+multi-user.target     loaded active active Multi-User System
+network-online.target loaded active active Network is Online
+network.target        loaded active active Network
+paths.target          loaded active active Paths
+slices.target         loaded active active Slices
+sockets.target        loaded active active Sockets
+swap.target           loaded active active Swap
+sysinit.target        loaded active active System Initialization
+timers.target         loaded active active Timers
+
+LOAD   = Reflects whether the unit definition was properly loaded.
+ACTIVE = The high-level unit activation state, i.e. generalization of SUB.
+SUB    = The low-level unit activation state, values depend on unit type.
+
+14 loaded units listed. Pass --all to see loaded but inactive units, too.
+To show all installed unit files use 'systemctl list-unit-files'.
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+$ systemctl list-units | more
+UNIT                                             LOAD   ACTIVE SUB       DESCRIPTION
+proc-sys-fs-binfmt_misc.automount                loaded active running   Arbitrary Executable File Formats File System Automount Point
+sys-devices-platform-serial8250-tty-ttyS0.device loaded active plugged   /sys/devices/platform/serial8250/tty/ttyS0
+sys-devices-platform-serial8250-tty-ttyS1.device loaded active plugged   /sys/devices/platform/serial8250/tty/ttyS1
+sys-devices-platform-serial8250-tty-ttyS2.device loaded active plugged   /sys/devices/platform/serial8250/tty/ttyS2
+sys-devices-platform-serial8250-tty-ttyS3.device loaded active plugged   /sys/devices/platform/serial8250/tty/ttyS3
+sys-devices-vbd\x2d51728-block-xvdb-xvdb1.device loaded active plugged   /sys/devices/vbd-51728/block/xvdb/xvdb1
+sys-devices-vbd\x2d51728-block-xvdb.device       loaded active plugged   /sys/devices/vbd-51728/block/xvdb
+sys-devices-vbd\x2d768-block-xvda-xvda1.device   loaded active plugged   /sys/devices/vbd-768/block/xvda/xvda1
+sys-devices-vbd\x2d768-block-xvda.device         loaded active plugged   /sys/devices/vbd-768/block/xvda
+sys-devices-vif\x2d0-net-eth0.device             loaded active plugged   /sys/devices/vif-0/net/eth0
+sys-devices-vif\x2d1-net-eth1.device             loaded active plugged   /sys/devices/vif-1/net/eth1
+sys-devices-virtual-net-tun0.device              loaded active plugged   /sys/devices/virtual/net/tun0
+sys-module-configfs.device                       loaded active plugged   /sys/module/configfs
+sys-subsystem-net-devices-eth0.device            loaded active plugged   /sys/subsystem/net/devices/eth0
+sys-subsystem-net-devices-eth1.device            loaded active plugged   /sys/subsystem/net/devices/eth1
+sys-subsystem-net-devices-tun0.device            loaded active plugged   /sys/subsystem/net/devices/tun0
+-.mount                                          loaded active mounted   /
+dev-hugepages.mount                              loaded active mounted   Huge Pages File System
+dev-mqueue.mount                                 loaded active mounted   POSIX Message Queue File System
+opt.mount                                        loaded active mounted   /opt
+proc-sys-fs-binfmt_misc.mount                    loaded active mounted   Arbitrary Executable File Formats File System
+proc-xen.mount                                   loaded active mounted   /proc/xen
+run-user-0.mount                                 loaded active mounted   /run/user/0
+sys-kernel-config.mount                          loaded active mounted   Configuration File System
+sys-kernel-debug.mount                           loaded active mounted   Debug File System
+brandbot.path                                    loaded active waiting   Flexible branding
+systemd-ask-password-plymouth.path               loaded active waiting   Forward Password Requests to Plymouth Directory Watch
+systemd-ask-password-wall.path                   loaded active waiting   Forward Password Requests to Wall Directory Watch
+session-231.scope                                loaded active running   Session 231 of user root
+session-571.scope                                loaded active running   Session 571 of user root
+aegis.service                                    loaded active running   LSB: aegis update.
+agentwatch.service                               loaded active running   SYSV: Starts and stops guest agent
+cloudmonitor.service                             loaded active running   LSB: @app.long.name@
+crond.service                                    loaded active running   Command Scheduler
+dbus.service                                     loaded active running   D-Bus System Message Bus
+exim.service                                     loaded active running   Exim Mail Transport Agent
+getty@tty1.service                               loaded active running   Getty on tty1
+gitlab-runsvdir.service                          loaded active running   GitLab Runit supervision process
+iptables.service                                 loaded active exited    IPv4 firewall with iptables
+jexec.service                                    loaded active exited    LSB: Supports the direct execution of binary formats.
+kmod-static-nodes.service                        loaded active exited    Create list of required static device nodes for the current kernel
+lvm2-lvmetad.service                             loaded active running   LVM2 metadata daemon
+lvm2-monitor.service                             loaded active exited    Monitoring of LVM2 mirrors, snapshots etc. using dmeventd or progress polling
+mysqld.service                                   loaded active running   MySQL Server
+network.service                                  loaded active exited    LSB: Bring up/down networking
+nscd.service                                     loaded active running   Name Service Cache Daemon
+ntpd.service                                     loaded active running   Network Time Service
+openvpn@server.service                           loaded active running   OpenVPN Robust And Highly Flexible Tunneling Application On server
+rhel-dmesg.service                               loaded active exited    Dump dmesg to /var/log/dmesg
+rhel-import-state.service                        loaded active exited    Import network configuration from initramfs
+rhel-readonly.service                            loaded active exited    Configure read-only root support
+rsyslog.service                                  loaded active running   System Logging Service
+--More--
+			]]>
+			</screen>
+		</section>
+
+	</section>
+
+	<section id="systemd.timer">
+		<title>定时器单元</title>
+		<screen>
+		<![CDATA[
+neo@netkiller ~ % systemctl list-timers
+NEXT                         LEFT          LAST                         PASSED       UNIT                         
+Wed 2018-11-14 20:43:46 HST  4min 47s left Wed 2018-11-14 16:31:32 HST  4h 7min ago  motd-news.timer              
+Wed 2018-11-14 22:07:11 HST  1h 28min left Wed 2018-11-14 15:04:00 HST  5h 34min ago apt-daily.timer              
+Thu 2018-11-15 00:00:00 HST  3h 21min left Wed 2018-11-14 17:33:09 HST  3h 5min ago  logrotate.timer              
+Thu 2018-11-15 06:19:21 HST  9h left       Wed 2018-11-14 15:04:00 HST  5h 34min ago apt-daily-upgrade.timer      
+Thu 2018-11-15 20:01:56 HST  23h left      Wed 2018-11-14 20:01:56 HST  37min ago    systemd-tmpfiles-clean.timer 
+Mon 2018-11-19 00:00:00 HST  4 days left   Mon 2018-11-12 01:31:25 HST  2 days ago   fstrim.timer                 
+n/a                          n/a           Wed 2018-11-14 19:49:46 HST  49min ago    ureadahead-stop.timer        
+
+7 timers listed.
+Pass --all to see loaded but inactive timers, too.
+lines 1-11/11 (END)
+		]]>
+		</screen>
+	</section>
+	
 	&chapter.service.ubuntu.xml;
 	&chapter.service.centos.xml;
 </chapter>
