@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	<!ENTITY chapter.network				SYSTEM "chapter.network.xml">
+	<!ENTITY chapter.network.xml			SYSTEM "chapter.network.xml">
 	<!ENTITY chapter.network.ntpd.xml		SYSTEM "chapter.network.ntpd.xml">
 	<!ENTITY chapter.network.dhcp			SYSTEM "chapter.network.dhcp.xml">
 	<!ENTITY chapter.network.bind 			SYSTEM "chapter.network.bind.xml">
@@ -20,7 +20,7 @@
 	<!ENTITY chapter.firewalld.xml	 		SYSTEM "chapter.firewalld.xml">
 	<!ENTITY chapter.security.stunnel 		SYSTEM "chapter.security.stunnel.xml">
 	<!ENTITY chapter.security.openssh 		SYSTEM "chapter.security.openssh.xml">	
-	
+	<!ENTITY chapter.network.tc.xml 		SYSTEM "chapter.network.tc.xml">
 
 	<!ENTITY chapter.vpn.xml 				SYSTEM "chapter.vpn.xml">
 	<!ENTITY chapter.vpn.openvpn.xml		SYSTEM "chapter.vpn.openvpn.xml">

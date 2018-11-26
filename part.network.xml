@@ -1,6 +1,6 @@
 <part id="index"><?dbhtml dir="network" ?>
 	<title>Network Application</title>
-	&chapter.network;
+	&chapter.network.xml;
 	&chapter.network.ntpd.xml;
 	&chapter.network.dhcp;
 	&chapter.network.bind;
@@ -11,8 +11,9 @@
 	&chapter.network.jabber;
 	&chapter.network.proxy;
 	&chapter.firewall.xml;
+	&chapter.network.tc.xml;
 	&chapter.security.stunnel;
 	&chapter.security.openssh;
 	&chapter.vpn.xml;
-	&chapter.network.p2p;	
+	&chapter.network.p2p;
 </part>

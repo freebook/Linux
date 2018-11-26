@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="tc">
+	<title>tc - show / manipulate traffic control settings</title>
+	<section id="tc.loss">
+		<title>模拟网络丢包</title>
+		<screen>
+		<![CDATA[
+tc qdisc add dev eth0 root netem corrupt 0.2% loss 10%		
+		]]>
+		</screen>
+	</section>
+</section>

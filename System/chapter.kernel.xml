@@ -2,7 +2,7 @@
 	<title>Kernel</title>
 	<chapterinfo>
 		<abstract>
-		  <para></para>
+			<para></para>
 		</abstract>
 		<keywordset>
 			<keyword>sys</keyword>
@@ -13,6 +13,7 @@
 	<section id="sys.proc">
 		<title>编译安装内核</title>
 		<screen>
+		<![CDATA[
 wget -q -c http://www.kernel.org/pub/linux/kernel/v3.0/linux-3.0.1.tar.bz2
 tar jxvf linux-3.0.1.tar.bz2
 
@@ -23,6 +24,7 @@ make menuconfig
 make
 make modules_install
 make install
+		]]>
 		</screen>
 	</section>
 	<section id="sysctl">
@@ -30,27 +32,80 @@ make install
 		<section>
 			<title>sysctl.d</title>
 			<screen>
+			<![CDATA[
 $ ls /etc/sysctl.d/		
 $ cat /etc/sysctl.d/30-postgresql-shm.conf
+			]]>
 			</screen>
-		</section>		
+		</section>
 		<section id="vm.overcommit_memory">
 			<title>vm.overcommit_memory</title>
 			<para>内存与交换分区分配相关</para>
 			<para>https://access.redhat.com/site/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Performance_Tuning_Guide/s-memory-captun.html</para>
 			<screen>
+			<![CDATA[
 vm.overcommit_memory = 1
+			]]>
 			</screen>
 		</section>
+		<section id="net.ipv4.tcp_congestion_control">
+			<title>TCP 拥塞控制算法</title>
+			<para>https://github.com/google/bbr</para>
+			<para>2017 年之后已经集成近 linux 内核</para>
+			<para>查看当前算法</para>
+			<screen>
+			<![CDATA[
+neo@netkiller ~ % sudo sysctl -a | egrep "net.ipv4.tcp_congestion_control|net.core.default_qdisc"
+net.core.default_qdisc = fq_codel
+net.ipv4.tcp_congestion_control = cubic
 
+neo@netkiller ~ % cat /proc/sys/net/ipv4/tcp_congestion_control
+cubic
+			]]>
+			</screen>
+			<para>确认内核已经含有 tcp_bbr 模块</para>
+			<screen>
+			<![CDATA[
+root@netkiller ~ % lsmod | grep tcp_bbr
+tcp_bbr                20480  1			
+			]]>
+			</screen>
+			<para>切换到bbr算法</para>
+			<screen>
+			<![CDATA[：
+sudo -s
+sysctl -w "net.core.default_qdisc=fq"
+sysctl -w "net.ipv4.tcp_congestion_control=bbr"
+			]]>
+			</screen>
+			<para>切回cubic</para>
+			<screen>
+			<![CDATA[
+sysctl -w "net.core.default_qdisc=fq_codel"
+sysctl -w "net.ipv4.tcp_congestion_control=cubic"
+			]]>
+			</screen>
+			<para>写入 /etc/sysctl.conf 文件</para>
+			<screen>
+			<![CDATA[
+echo "net.core.default_qdisc=fq" | sudo tee -a /etc/sysctl.conf
+
+echo "net.ipv4.tcp_congestion_control=bbr" | sudo tee -a /etc/sysctl.conf
+
+sudo sysctl -p			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="sys">
 		<title>/sys</title>
 		<section>
 			<title>/sys/class/net/</title>
 			<screen>
+			<![CDATA[
 $ cat /sys/class/net/eth0/statistics/rx_bytes
 $ cat /sys/class/net/eth0/statistics/tx_bytes
+			]]>
 			</screen>
 		</section>
 	</section>
@@ -60,18 +115,23 @@ $ cat /sys/class/net/eth0/statistics/tx_bytes
 			<title>进程内存监控</title>
 			<para>/proc/进程id/smaps</para>
 			<screen>
+			<![CDATA[
 # cat /proc/1/smaps
+			]]>
 			</screen>
 			<para>查看进程使用交换分区的情况</para>
 			<screen>
+			<![CDATA[
 # awk '/^Swap:/ {SWAP+=$2}END{print SWAP" KB"}' /proc/25020/smaps
 532 KB
+			]]>
 			</screen>
 		</section>
 		<section>
 			<title>ulimit 状态</title>
 			<para>通过下面命令查看ulimit是否对进程起作用。/proc/{pid}/limits pid是进程ID</para>
 			<screen>
+			<![CDATA[
 # cat /proc/25810/limits
 
 Limit                     Soft Limit           Hard Limit           Units     
@@ -91,6 +151,7 @@ Max msgqueue size         819200               819200               bytes
 Max nice priority         0                    0                    
 Max realtime priority     0                    0                    
 Max realtime timeout      unlimited            unlimited            us  
+			]]>
 			</screen>
 		</section>
 	</section>
