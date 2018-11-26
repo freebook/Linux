@@ -114,32 +114,7 @@
 		<subtitle>Netkiller Linux Cookbook</subtitle>
 
 		<authorgroup>
-		<author>
-			<personname>
-				<honorific>Mr</honorific>
-				<firstname>Neo</firstname>
-				<othername></othername>
-				<surname>Chan</surname>
-				<lineage>陈景峰 (BG7NYT)</lineage>
-
-			</personname>
-
-			<contrib> </contrib>
-			<authorblurb><title>hi</title>
-				<para> hi </para>
-			</authorblurb>
-
-			<affiliation>
-				<address>
-					<country>中国</country><state>广东省</state><city>深圳市</city><street>宝安区龙华镇</street>
-					<postcode>518109</postcode>
-					<phone>+86 755 29812080</phone>
-					<fax>+86 755 29812080</fax>
-					<email>netkiller@msn.com</email>
-				</address>
-
-			</affiliation>
-		</author>
+			&book.info.author.xml;
 		</authorgroup>
 
 		<copyright>
