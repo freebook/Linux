@@ -1,6 +1,173 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="jenkins">
 	<title>Jenkins</title>
+	<section id="jenkins.setup">
+		<title>安装 Jenkins</title>
+		<section id="">
+			<title>Mac</title>
+
+			<screen>
+		<![CDATA[
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_92.jdk/Contents/Home
+java -jar jenkins.war --httpPort=8080
+		]]>
+			</screen>
+			<para>浏览器访问：http://localhost:8080</para>
+			<para>查看默认密码 /Users/neo/.jenkins/secrets/initialAdminPassword </para>
+			<screen>
+		<![CDATA[
+neo@MacBook-Pro ~ % cat /Users/neo/.jenkins/secrets/initialAdminPassword
+6c7369afc6c1414586b6644657dd655a		
+		]]>
+			</screen>
+			<para>复制上面的密码，粘贴到浏览器中。</para>
+			<para>由于我的Mac 模式是 JDK 11，所以需要制定 JAVA_HOME 到 JDK 1.8，否则提示</para>
+			<screen>
+		<![CDATA[
+Dec 27, 2018 9:20:33 AM Main main
+SEVERE: Running with Java class version 55.0, but 52.0 is required.Run with the --enable-future-java flag to enable such behavior. See https://jenkins.io/redirect/java-support/
+java.lang.UnsupportedClassVersionError: 55.0
+	at Main.main(Main.java:139)
+
+Jenkins requires Java 8, but you are running 11+28 from /Library/Java/JavaVirtualMachines/jdk-11.jdk/Contents/Home
+java.lang.UnsupportedClassVersionError: 55.0
+	at Main.main(Main.java:139)		
+		]]>
+			</screen>
+		</section>
+		<section id="">
+			<title>CentOS</title>
+			<screen>
+			<![CDATA[
+wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+
+yum install jenkins			
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section id="Jenkinsfile">
+		<title>Jenkinsfile</title>
+		<section id="pipeline.agent">
+			<title>agent</title>
+			<section id="agent.label">
+				<title>label</title>
+				<screen>
+				<![CDATA[
+	agent {
+        // java-8,python-2.7,python-3.5,build-essential,ruby-2.3,go-1.10
+        label "java-8"
+    }
+				]]>
+				</screen>
+			</section>
+			<section id="agent.docker">
+				<title>docker</title>
+				<screen>
+				<![CDATA[
+pipeline {
+    agent { docker { image 'maven:3.3.3' } }
+    stages {
+        stage('build') {
+            steps {
+                sh 'mvn --version'
+            }
+        }
+    }
+}
+				]]>
+				</screen>
+				<screen>
+				<![CDATA[
+pipeline {
+    agent { docker { image 'php' } }
+    stages {
+        stage('build') {
+            steps {
+                sh 'php --version'
+            }
+        }
+    }
+}				
+				]]>
+				</screen>
+			</section>
+		</section>
+		<section id="pipeline.stages">
+			<title>stages</title>
+			<screen>
+			<![CDATA[
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building..'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing..'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying....'
+            }
+        }
+    }
+}			
+			]]>
+			</screen>
+		</section>
+
+		<section id="">
+			<title></title>
+			<screen>
+			<![CDATA[
+// Jenkinsfile (Scripted Pipeline)
+node {
+    stage('Build') {
+        echo 'Building....'
+    }
+    stage('Test') {
+        echo 'Building....'
+    }
+    stage('Deploy') {
+        echo 'Deploying....'
+    }
+}			
+			]]>
+			</screen>
+		</section>
+		<section id="pipeline.echo">
+			<title>echo</title>
+			<screen>
+			<![CDATA[
+    stage('Deploy') {
+        echo 'Deploying....'
+    }
+			]]>
+			</screen>
+		</section>
+		<section id="pipeline.sh">
+			<title>sh</title>
+			<screen>
+			<![CDATA[
+		stage("build") {
+            steps {
+                sh "mvn package -Dmaven.test.skip=true"
+            }
+        }
+			]]>
+			</screen>
+		</section>
+		<section id="pipeline.junit">
+			<title>junit</title>
+		</section>
+	</section>
 </chapter>
 <chapter id="teamcity">
 	<title>TeamCity</title>

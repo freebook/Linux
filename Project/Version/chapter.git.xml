@@ -384,6 +384,16 @@ git push origin master
 
 <section id="git.command">
 	<title>command</title>
+	<section id="hash-object">
+		<title>hash-object</title>
+		<para>使用git命令计算文件的 sha-1 值</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro ~ % echo 'test content' | git hash-object --stdin
+d670460b4b4aece5915caf5c68d12f560a9fe3e4		
+		]]>
+		</screen>
+	</section>
 	<section id="git-add">
 		<title>git-add - Add file contents to the index</title>
 		<screen>
