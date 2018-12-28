@@ -308,7 +308,7 @@ external_url 'http://172.16.0.1'
 			</step>
 		</procedure>
 	</section>
-	<section>
+	<section id="issue">
 		<title>Issue</title>
 		<para>Issues 任务</para>
 		<section>
@@ -328,5 +328,75 @@ external_url 'http://172.16.0.1'
 	</section>
 	<section id="webhook">
 		<title>WebHook</title>
+	</section>
+	<section id="cicd">
+		<title>CI / CD</title>
+		<para>https://gitlab.com/gitlab-examples</para>
+		<section id="gitlab.pipeline">
+			<title>Pipeline</title>
+			<section id="before_script">
+				<title>before_script</title>
+			</section>
+			<section id="stages">
+				<title>stages</title>
+				<screen>
+				<![CDATA[
+				
+				]]>
+				</screen>
+			</section>
+			<section id="services">
+				<title>services</title>
+				<screen>
+				<![CDATA[
+services:
+- mysql
+
+variables:
+  # Configure mysql service (https://hub.docker.com/_/mysql/)
+  MYSQL_DATABASE: hello_world_test
+  MYSQL_ROOT_PASSWORD: mysql
+
+connect:
+  image: mysql
+  script:
+  - echo "SELECT 'OK';" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mysql "$MYSQL_DATABASE"
+				
+				]]>
+				</screen>
+			</section>
+		</section>
+		<section>
+			<title>Java</title>
+			<screen>
+			<![CDATA[
+#image: java:8
+#image: maven:latest
+image: maven:3.5.0-jdk-8
+
+stages:
+  - build
+  - test
+  - package
+
+build:
+  stage: build
+  script: mvn compile
+
+unittest:
+  stage: test
+  script: mvn test
+  
+  
+package:
+  stage: package
+  script: mvn package
+  artifacts:
+    paths:
+      - target/java-project-0.0.1-SNAPSHOT.jar
+
+			]]>
+			</screen>
+		</section>
 	</section>
 </section>

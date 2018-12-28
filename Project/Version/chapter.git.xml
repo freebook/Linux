@@ -380,6 +380,22 @@ git push origin master
 		<para>replace REMOTE_SERVER with your server name or IP</para>
 
 	</section>
+	<section id="git.remote.rename">
+		<title>修改 origin</title>
+		<screen>
+		<![CDATA[
+git remote rename origin old-origin
+		]]>
+		</screen>
+	</section>
+	<section id="git.remote.remove">
+		<title>删除 origin</title>
+		<screen>
+		<![CDATA[
+git remote remove origin		
+		]]>
+		</screen>
+	</section>
 </section>
 
 <section id="git.command">
