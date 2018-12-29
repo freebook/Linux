@@ -334,6 +334,45 @@ external_url 'http://172.16.0.1'
 		<para>https://gitlab.com/gitlab-examples</para>
 		<section id="gitlab.pipeline">
 			<title>Pipeline</title>
+			<section id="pipeline.cache">
+				<title>cache</title>
+				<para></para>
+				<screen>
+				<![CDATA[
+image: maven:3.5.0-jdk-8
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+
+cache:
+  paths:
+    - .m2/repository/
+    - target/
+
+stages:
+  - build
+  - test
+  - package
+
+build:
+  stage: build
+  script: mvn compile
+
+unittest:
+  stage: test
+  script: mvn test
+  
+  
+package:
+  stage: package
+  script: mvn package
+  artifacts:
+    paths:
+      - target/java-project-0.0.1-SNAPSHOT.jar
+				
+				]]>
+				</screen>
+			</section>
 			<section id="before_script">
 				<title>before_script</title>
 			</section>
@@ -341,6 +380,45 @@ external_url 'http://172.16.0.1'
 				<title>stages</title>
 				<screen>
 				<![CDATA[
+image: mileschou/php-testing-base:7.0
+
+stages:
+  - build
+  - test
+  - deploy
+
+build_job:
+  stage: build
+  script:
+    - composer install
+  cache:
+    untracked: true
+  artifacts:
+    paths:
+      - vendor/
+
+test_job:
+  stage: test
+  script:
+    - php vendor/bin/codecept run
+  dependencies:
+    - build_job
+
+deploy_job:
+  stage: deploy
+  script:
+    - echo Deploy OK
+  only:
+    - release
+  when: manual
+				]]>
+				</screen>
+				<screen>
+				<![CDATA[
+  only: 
+    - master
+  tags:
+    - ansible
 				
 				]]>
 				</screen>
@@ -395,6 +473,65 @@ package:
     paths:
       - target/java-project-0.0.1-SNAPSHOT.jar
 
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+before_script:
+ - echo "Execute scripts which are required to bootstrap the application. !"
+
+after_script:
+ - echo "Clean up activity can be done here !."
+
+stages:
+ - build
+ - test
+ - package
+ - deploy
+
+variables:
+ MAVEN_CLI_OPTS: "--batch-mode"
+ MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+
+cache:
+ paths:
+  - .m2/repository/
+  - target/
+
+build:
+ stage: build
+ image: maven:latest
+ script:
+  - mvn $MAVEN_CLI_OPTS clean compile
+
+test:
+ stage: test
+ image: maven:latest
+ script:
+  - mvn $MAVEN_CLI_OPTS test
+
+package:
+ stage: package
+ image: maven:latest
+ script:
+  - mvn $MAVEN_CLI_OPTS package
+ artifacts:
+  paths: [target/test-0.0.1.war]
+
+
+deploy_test:
+ stage: deploy
+ script:
+  - echo "########   To be defined   ########"
+ environment: staging
+
+deploy_prod:
+ stage: deploy
+ script:
+  - echo "########   To be defined   ########"
+ only:
+  - master
+ environment: production			
 			]]>
 			</screen>
 		</section>
