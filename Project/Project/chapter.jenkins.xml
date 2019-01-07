@@ -3,27 +3,50 @@
 	<title>Jenkins</title>
 	<section id="jenkins.setup">
 		<title>安装 Jenkins</title>
-		<section id="">
+		<section>
 			<title>Mac</title>
-
+			<para>使用 pkg 方式安装，默认路径是 /Applications/Jenkins/jenkins.war</para>
 			<screen>
-		<![CDATA[
+			<![CDATA[
 export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_92.jdk/Contents/Home
 java -jar jenkins.war --httpPort=8080
-		]]>
+			]]>
 			</screen>
 			<para>浏览器访问：http://localhost:8080</para>
 			<para>查看默认密码 /Users/neo/.jenkins/secrets/initialAdminPassword </para>
 			<screen>
-		<![CDATA[
+			<![CDATA[
 neo@MacBook-Pro ~ % cat /Users/neo/.jenkins/secrets/initialAdminPassword
 6c7369afc6c1414586b6644657dd655a		
-		]]>
+			]]>
 			</screen>
+			<para>下载 cloudbees 插件</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro ~ % cd ~/.jenkins/plugins
+neo@MacBook-Pro ~/.jenkins/plugins % wget ftp://ftp.icm.edu.pl/packages/jenkins/plugins/cloudbees-folder//6.7/cloudbees-folder.hpi			
+			]]>
+			</screen>
+			<para>重启 Jenkens http://localhost:8080/restart</para>
 			<para>复制上面的密码，粘贴到浏览器中。</para>
+			<para>卸载 Jenkens </para>
+			<screen>
+			<![CDATA[
+sudo rm -rf /var/root/.jenkins ~/.jenkins
+sudo launchctl unload /Library/LaunchDaemons/org.jenkins-ci.plist
+sudo rm /Library/LaunchDaemons/org.jenkins-ci.plist
+sudo rm -rf /Applications/Jenkins "/Library/Application Support/Jenkins" /Library/Documentation/Jenkins
+
+sudo rm -rf /Users/Shared/Jenkins
+sudo dscl . -delete /Users/jenkins
+sudo dscl . -delete /Groups/jenkins
+sudo rm -f /etc/newsyslog.d/jenkins.conf
+pkgutil --pkgs | grep 'org\.jenkins-ci\.' | xargs -n 1 sudo pkgutil --forget			
+			]]>
+			</screen>
 			<para>由于我的Mac 模式是 JDK 11，所以需要制定 JAVA_HOME 到 JDK 1.8，否则提示</para>
 			<screen>
-		<![CDATA[
+			<![CDATA[
 Dec 27, 2018 9:20:33 AM Main main
 SEVERE: Running with Java class version 55.0, but 52.0 is required.Run with the --enable-future-java flag to enable such behavior. See https://jenkins.io/redirect/java-support/
 java.lang.UnsupportedClassVersionError: 55.0
@@ -32,10 +55,10 @@ java.lang.UnsupportedClassVersionError: 55.0
 Jenkins requires Java 8, but you are running 11+28 from /Library/Java/JavaVirtualMachines/jdk-11.jdk/Contents/Home
 java.lang.UnsupportedClassVersionError: 55.0
 	at Main.main(Main.java:139)		
-		]]>
+			]]>
 			</screen>
 		</section>
-		<section id="">
+		<section>
 			<title>CentOS</title>
 			<screen>
 			<![CDATA[
@@ -191,301 +214,52 @@ JENKINS_HANDLER_IDLE="20"
 # Full option list: java -jar jenkins.war --help
 #
 JENKINS_ARGS=""
-[root@izj6c3vsekthy9wajyijewz ~]# cat /etc/sysconfig/jenkins 
-## Path:        Development/Jenkins
-## Description: Jenkins Automation Server
-## Type:        string
-## Default:     "/var/lib/jenkins"
-## ServiceRestart: jenkins
-#
-# Directory where Jenkins store its configuration and working
-# files (checkouts, build reports, artifacts, ...).
-#
-JENKINS_HOME="/var/lib/jenkins"
+			]]>
+			</screen>
+			<para>Nginx 配置</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# cat /etc/nginx/conf.d/jk.netkiller.cn.conf 
+server {
+    listen       80;
+    server_name  jk.netkiller.cn;
 
-## Type:        string
-## Default:     ""
-## ServiceRestart: jenkins
-#
-# Java executable to run Jenkins
-# When left empty, we'll try to find the suitable Java.
-#
-JENKINS_JAVA_CMD=""
+    charset utf-8;
 
-## Type:        string
-## Default:     "jenkins"
-## ServiceRestart: jenkins
-#
-# Unix user account that runs the Jenkins daemon
-# Be careful when you change this, as you need to update
-# permissions of $JENKINS_HOME and /var/log/jenkins.
-#
-JENKINS_USER="jenkins"
+    location / {
+    	proxy_pass   http://127.0.0.1:8080;
+    }
 
-## Type:        string
-## Default: "false"
-## ServiceRestart: jenkins
-#
-# Whether to skip potentially long-running chown at the
-# $JENKINS_HOME location. Do not enable this, "true", unless
-# you know what you're doing. See JENKINS-23273.
-#
-#JENKINS_INSTALL_SKIP_CHOWN="false"
+    #error_page  404              /404.html;
 
-## Type: string
-## Default:     "-Djava.awt.headless=true"
-## ServiceRestart: jenkins
-#
-# Options to pass to java when running Jenkins.
-#
-JENKINS_JAVA_OPTIONS="-Djava.awt.headless=true"
-
-## Type:        integer(0:65535)
-## Default:     8080
-## ServiceRestart: jenkins
-#
-# Port Jenkins is listening on.
-# Set to -1 to disable
-#
-JENKINS_PORT="8080"
-
-## Type:        string
-## Default:     ""
-## ServiceRestart: jenkins
-#
-# IP address Jenkins listens on for HTTP requests.
-# Default is all interfaces (0.0.0.0).
-#
-JENKINS_LISTEN_ADDRESS=""
-
-## Type:        integer(0:65535)
-## Default:     ""
-## ServiceRestart: jenkins
-#
-# HTTPS port Jenkins is listening on.
-# Default is disabled.
-#
-JENKINS_HTTPS_PORT=""
-
-## Type:        string
-## Default:     ""
-## ServiceRestart: jenkins
-#
-# Path to the keystore in JKS format (as created by the JDK 'keytool').
-# Default is disabled.
-#
-JENKINS_HTTPS_KEYSTORE=""
-
-## Type:        string
-## Default:     ""
-## ServiceRestart: jenkins
-#
-# Password to access the keystore defined in JENKINS_HTTPS_KEYSTORE.
-# Default is disabled.
-#
-JENKINS_HTTPS_KEYSTORE_PASSWORD=""
-
-## Type:        string
-## Default:     ""
-## ServiceRestart: jenkins
-#
-# IP address Jenkins listens on for HTTPS requests.
-# Default is disabled.
-#
-JENKINS_HTTPS_LISTEN_ADDRESS=""
-
-
-## Type:        integer(1:9)
-## Default:     5
-## ServiceRestart: jenkins
-#
-# Debug level for logs -- the higher the value, the more verbose.
-# 5 is INFO.
-#
-JENKINS_DEBUG_LEVEL="5"
-
-## Type:        yesno
-## Default:     no
-## ServiceRestart: jenkins
-#
-# Whether to enable access logging or not.
-#
-JENKINS_ENABLE_ACCESS_LOG="no"
-
-## Type:        integer
-## Default:     100
-## ServiceRestart: jenkins
-#
-# Maximum number of HTTP worker threads.
-#
-JENKINS_HANDLER_MAX="100"
-
-## Type:        integer
-## Default:     20
-## ServiceRestart: jenkins
-#
-# Maximum number of idle HTTP worker threads.
-#
-JENKINS_HANDLER_IDLE="20"
-
-## Type:        string
-## Default:     ""
-## ServiceRestart: jenkins
-#
-# Pass arbitrary arguments to Jenkins.
-# Full option list: java -jar jenkins.war --help
-#
-JENKINS_ARGS=""
-[root@izj6c3vsekthy9wajyijewz ~]# 
-[root@izj6c3vsekthy9wajyijewz ~]# vim /etc/sysconfig/jenkins 
-[root@izj6c3vsekthy9wajyijewz ~]# cat /etc/sysconfig/jenkins 
-## Path:        Development/Jenkins
-## Description: Jenkins Automation Server
-## Type:        string
-## Default:     "/var/lib/jenkins"
-## ServiceRestart: jenkins
-#
-# Directory where Jenkins store its configuration and working
-# files (checkouts, build reports, artifacts, ...).
-#
-JENKINS_HOME="/var/lib/jenkins"
-
-## Type:        string
-## Default:     ""
-## ServiceRestart: jenkins
-#
-# Java executable to run Jenkins
-# When left empty, we'll try to find the suitable Java.
-#
-JENKINS_JAVA_CMD=""
-
-## Type:        string
-## Default:     "jenkins"
-## ServiceRestart: jenkins
-#
-# Unix user account that runs the Jenkins daemon
-# Be careful when you change this, as you need to update
-# permissions of $JENKINS_HOME and /var/log/jenkins.
-#
-JENKINS_USER="jenkins"
-
-## Type:        string
-## Default: "false"
-## ServiceRestart: jenkins
-#
-# Whether to skip potentially long-running chown at the
-# $JENKINS_HOME location. Do not enable this, "true", unless
-# you know what you're doing. See JENKINS-23273.
-#
-#JENKINS_INSTALL_SKIP_CHOWN="false"
-
-## Type: string
-## Default:     "-Djava.awt.headless=true"
-## ServiceRestart: jenkins
-#
-# Options to pass to java when running Jenkins.
-#
-JENKINS_JAVA_OPTIONS="-Djava.awt.headless=true"
-
-## Type:        integer(0:65535)
-## Default:     8080
-## ServiceRestart: jenkins
-#
-# Port Jenkins is listening on.
-# Set to -1 to disable
-#
-JENKINS_PORT="8080"
-
-## Type:        string
-## Default:     ""
-## ServiceRestart: jenkins
-#
-# IP address Jenkins listens on for HTTP requests.
-# Default is all interfaces (0.0.0.0).
-#
-JENKINS_LISTEN_ADDRESS=""
-
-## Type:        integer(0:65535)
-## Default:     ""
-## ServiceRestart: jenkins
-#
-# HTTPS port Jenkins is listening on.
-# Default is disabled.
-#
-JENKINS_HTTPS_PORT=""
-
-## Type:        string
-## Default:     ""
-## ServiceRestart: jenkins
-#
-# Path to the keystore in JKS format (as created by the JDK 'keytool').
-# Default is disabled.
-#
-JENKINS_HTTPS_KEYSTORE=""
-
-## Type:        string
-## Default:     ""
-## ServiceRestart: jenkins
-#
-# Password to access the keystore defined in JENKINS_HTTPS_KEYSTORE.
-# Default is disabled.
-#
-JENKINS_HTTPS_KEYSTORE_PASSWORD=""
-
-## Type:        string
-## Default:     ""
-## ServiceRestart: jenkins
-#
-# IP address Jenkins listens on for HTTPS requests.
-# Default is disabled.
-#
-JENKINS_HTTPS_LISTEN_ADDRESS=""
-
-
-## Type:        integer(1:9)
-## Default:     5
-## ServiceRestart: jenkins
-#
-# Debug level for logs -- the higher the value, the more verbose.
-# 5 is INFO.
-#
-JENKINS_DEBUG_LEVEL="5"
-
-## Type:        yesno
-## Default:     no
-## ServiceRestart: jenkins
-#
-# Whether to enable access logging or not.
-#
-JENKINS_ENABLE_ACCESS_LOG="no"
-
-## Type:        integer
-## Default:     100
-## ServiceRestart: jenkins
-#
-# Maximum number of HTTP worker threads.
-#
-JENKINS_HANDLER_MAX="100"
-
-## Type:        integer
-## Default:     20
-## ServiceRestart: jenkins
-#
-# Maximum number of idle HTTP worker threads.
-#
-JENKINS_HANDLER_IDLE="20"
-
-## Type:        string
-## Default:     ""
-## ServiceRestart: jenkins
-#
-# Pass arbitrary arguments to Jenkins.
-# Full option list: java -jar jenkins.war --help
-#
-JENKINS_ARGS=""			
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+}
+			]]>
+			</screen>
+			<para>查看管理员密码</para>
+			<screen>
+			<![CDATA[
+cat /var/lib/jenkins/secrets/initialAdminPassword			
 			]]>
 			</screen>
 		</section>
+	</section>
+	<section id="jenkens.config">
+		<title>配置 Jenkens</title>
+		
+		<graphic format="png" fileref="images/jenkens/Getting-Started-1.png" width="" srccredit="neo" />
+		<graphic format="png" fileref="images/jenkens/Getting-Started-2.png" width="" srccredit="neo" />
+		<graphic format="png" fileref="images/jenkens/Getting-Started-3.png" width="" srccredit="neo" />
+		<graphic format="png" fileref="images/jenkens/Getting-Started-4.png" width="" srccredit="neo" />
+		<graphic format="png" fileref="images/jenkens/Getting-Started-5.png" width="" srccredit="neo" />
+		<graphic format="png" fileref="images/jenkens/Getting-Started-6.png" width="" srccredit="neo" />
+		<graphic format="png" fileref="images/jenkens/Getting-Started-7.png" width="" srccredit="neo" />
+		
 	</section>
 	<section id="Jenkinsfile">
 		<title>Jenkinsfile</title>
@@ -563,7 +337,7 @@ pipeline {
 			</screen>
 		</section>
 
-		<section id="">
+		<section>
 			<title></title>
 			<screen>
 			<![CDATA[
