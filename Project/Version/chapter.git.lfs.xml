@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="git.lfs">
+	<title>Git Large File Storage</title>
+	<para>https://git-lfs.github.com/</para>
+	<para>Git Large File Storage | Git Large File Storage (LFS) replaces large files such as audio samples, videos, datasets, and graphics with text pointers inside Git, while storing the file contents on a remote server like GitHub.com or GitHub Enterprise.</para>
+	<para></para>
+	<screen>
+	<![CDATA[
+brew install git-lfs	
+	]]>
+	</screen>
+	<screen>
+	<![CDATA[
+git lfs install
+git lfs track "*.psd"
+git add .gitattributes
+
+git add file.psd
+git commit -m "Add design file"
+git push origin master	
+	]]>
+	</screen>
+	<section id="lfs.lock">
+		<title>LFS lock</title>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro ~/workspace/java-project % git lfs lock test.psd  
+Locked test.psd
+
+neo@MacBook-Pro ~/workspace/java-project % git lfs locks
+test.psd	bg7nyt	ID:55777		
+		]]>
+		</screen>
+		<para>如果Push被锁的文件，提示 Remote "origin" does not support the LFS locking API</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro /tmp/java % git commit -a -m 'aaa'
+[master b832eb3] aaa
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+neo@MacBook-Pro /tmp/java % git push
+Remote "origin" does not support the LFS locking API. Consider disabling it with:
+  $ git config 'lfs.https://github.com/bg7nyt/java.git/info/lfs.locksverify' false
+Post https://github.com/bg7nyt/java.git/info/lfs/locks/verify: EOF
+error: failed to push some refs to 'https://github.com/bg7nyt/java.git'		
+		]]>
+		</screen>
+		<para>解锁后Push成功</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro ~/workspace/java-project % git lfs unlock test.psd    
+Unlocked test.psd
+
+neo@MacBook-Pro /tmp/java % git push
+Git LFS: (1 of 1 files) 9 B / 9 B                                                                                                                                                                        
+Counting objects: 3, done.
+Delta compression using up to 8 threads.
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (3/3), 352 bytes | 352.00 KiB/s, done.
+Total 3 (delta 1), reused 0 (delta 0)
+remote: Resolving deltas: 100% (1/1), completed with 1 local object.
+To https://github.com/bg7nyt/java.git
+   b29f474..b832eb3  master -> master		
+		]]>
+		</screen>
+	</section>
+</section>

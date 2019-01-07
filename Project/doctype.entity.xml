@@ -6,6 +6,7 @@
 <!ENTITY chapter.git.dotfiles.xml 	SYSTEM "Version/chapter.git.dotfiles.xml">
 <!ENTITY chapter.git.gitolite.xml 	SYSTEM "Version/chapter.git.gitolite.xml">
 <!ENTITY chapter.git.web.xml	 		SYSTEM "Version/chapter.git.web.xml">
+<!ENTITY chapter.git.lfs.xml	 		SYSTEM "Version/chapter.git.lfs.xml">
 
 <!ENTITY part.project.xml			SYSTEM "part.project.xml">
 <!ENTITY chapter.trac.xml			SYSTEM "Project/chapter.trac.xml">

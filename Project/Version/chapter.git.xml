@@ -834,7 +834,7 @@ Receiving objects: 100% (3/3), done.
 		</screen>
 	</section>
 </section>
-
+	&chapter.git.lfs.xml;
 	<section id="git-svn">
 		<title>git-svn - Bidirectional operation between a single Subversion branch and git</title>
 		<screen>

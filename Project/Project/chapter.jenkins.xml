@@ -382,6 +382,69 @@ node {
 			<title>junit</title>
 		</section>
 	</section>
+	<section id="github-plugin">
+		<title>github-plugin 插件</title>
+		<para><ulink url="https://github.com/jenkinsci/github-plugin" /></para>
+		<para></para>
+		<screen>
+		<![CDATA[
+git clone https://github.com/jenkinsci/github-plugin.git
+mkdir target/classes
+		]]>
+		</screen>
+		<para>修改 rest-assured 去掉 exclusions 配置项</para>
+		<screen>
+		<![CDATA[
+        <dependency>
+            <groupId>com.jayway.restassured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <!--1.7.2 is the last version that use a compatible groovy version-->
+            <version>1.7.2</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>		
+		]]>
+		</screen>
+		<para> 编译插件 </para>
+		<screen>
+		<![CDATA[
+[root@netkiller github-plugin]# mvn hpi:hpi
+[INFO] Scanning for projects...
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building GitHub plugin 1.29.4-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-hpi-plugin:1.120:hpi (default-cli) @ github ---
+[INFO] Generating /srv/github-plugin/target/github/META-INF/MANIFEST.MF
+[INFO] Checking for attached .jar artifact ...
+[INFO] Generating jar /srv/github-plugin/target/github.jar
+[INFO] Building jar: /srv/github-plugin/target/github.jar
+[INFO] Exploding webapp...
+[INFO] Copy webapp webResources to /srv/github-plugin/target/github
+[INFO] Assembling webapp github in /srv/github-plugin/target/github
+[INFO] Generating hpi /srv/github-plugin/target/github.hpi
+[INFO] Building jar: /srv/github-plugin/target/github.hpi
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 4.161s
+[INFO] Finished at: Mon Jan 07 12:03:45 CST 2019
+[INFO] Final Memory: 29M/290M
+[INFO] ------------------------------------------------------------------------
+
+		]]>
+		</screen>
+		<para>进入 github --> Settings --> Developer settings --> Personal Access Token --> Generate new token</para>
+		<para>repo 和 admin:repo_hook</para>
+		<para>Settings -> Webhooks -> Add webhook</para>
+		<para>系统管理 --> 系统设置 --> GitHub --> Add GitHub Sever</para>		
+	</section>
 </chapter>
 <chapter id="teamcity">
 	<title>TeamCity</title>
