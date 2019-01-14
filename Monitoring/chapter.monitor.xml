@@ -16,3 +16,4 @@
 	&chapter.network.graphite.xml;
 	&chapter.icinga.xml;
 	&chapter.varnish.xml;
+	&chapter.zipkin.xml;

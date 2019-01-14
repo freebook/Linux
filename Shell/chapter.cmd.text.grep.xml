@@ -54,6 +54,21 @@ $ cat file.html | grep -o -E 'href="([^"#]+)"'
 $ cat sss.html | grep -o -E 'thunder://([^<]+)'
 			]]>
 			</screen>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro ~/project % cat WikiTest.java  | grep '@Api'
+    @Api(method = GET, uri = "/project/:projectName/wikis/page")
+    @Api(method = POST, uri = "/project/:projectName/wiki")
+    @Api(method = POST, uri = "/project/:projectName/wiki")
+    @Api(method = POST, uri = "/project/:projectName/wiki")
+
+neo@MacBook-Pro ~/project % cat WikiTest.java  | egrep -o 'method\s=\s.+,\suri\s=\s.+"'
+method = GET, uri = "/project/:projectName/wikis/page"
+method = POST, uri = "/project/:projectName/wiki"
+method = POST, uri = "/project/:projectName/wiki"
+method = POST, uri = "/project/:projectName/wiki"
+			]]>
+			</screen>
 			<section>
 				<title>IP 地址</title>
 				<screen>
