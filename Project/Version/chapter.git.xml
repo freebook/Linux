@@ -933,5 +933,20 @@ git push --force --progress "origin" master:master
 			]]>
 			</screen>
 		</section>
+		<section id="">
+			<title>忽略 SSL 检查</title>
+			<para>使用自颁发 ssl 证书时需要开启，否则无法 clone 和 push</para>
+			<screen>
+			<![CDATA[
+export GIT_SSL_NO_VERIFY=true			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+git config http.sslVerify "false"  			
+			]]>
+			</screen>
+		</section>
 	</section>
 </chapter>

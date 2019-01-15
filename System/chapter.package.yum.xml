@@ -4,9 +4,20 @@
 	<title>yum - Yellowdog Updater Modified 包管理</title>
 	<section id="mirror">
 		<title>Yum Resource &amp; Yum Mirror</title>
-		<screen>
+		<section id="fastestmirror">
+			<title>fastestmirror</title>
+			<screen>
+			<![CDATA[
+yum install yum-plugin-fastestmirror	
+			]]>
+			</screen>
+			<para>CentOS 5:</para>
+			<screen>
+			<![CDATA[
 yum install yum-fastestmirror -y
-		</screen>
+			]]>
+			</screen>
+		</section>
 		<section>
 			<title>Fedora resource</title>
 			<para>http://fedoraproject.org/wiki/EPEL</para>

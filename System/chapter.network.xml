@@ -692,16 +692,6 @@ more /proc/net/bonding/bond0
 # ifconfig br0 192.168.0.1
 			</screen>
 		</section>
-		
-		<section id="nmtui">
-			<title>nmtui - Text User Interface for controlling NetworkManager</title>
-			<screen>
-# nmtui
-# nmtui edit eno16777736
-# nmtui connect eno16777736
-			</screen>
-		</section>
-		
 	</section>
 	<section id="network.check">
 		<title>网络检查命令</title>

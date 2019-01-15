@@ -377,6 +377,15 @@ node {
         }
 			]]>
 			</screen>
+			<screen>
+			<![CDATA[
+		steps {
+        	script{
+            	sh 'find /etc/'
+			}
+		}
+			]]>
+			</screen>
 		</section>
 		<section id="pipeline.junit">
 			<title>junit</title>
