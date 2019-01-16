@@ -971,6 +971,7 @@ git push --force --progress "origin" master:master
 		</section>
 		<section>
 			<title>每个项目一个证书</title>
+			<para>方法一</para>
 			<screen>
 			<![CDATA[
 [root@localhost ~]# cat .ssh/config 
@@ -984,6 +985,12 @@ host github.com
  HostName github.com
  IdentityFile ~/.ssh/id_rsa_github
  User git    
+			]]>
+			</screen>
+			<para>方法二</para>
+			<screen>
+			<![CDATA[
+$ ssh-agent sh -c 'ssh-add ~/.ssh/id_rsa; git fetch user@host'			
 			]]>
 			</screen>
 		</section>
