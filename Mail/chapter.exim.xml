@@ -47,6 +47,39 @@ Enter to keep the current selection[+], or type selection number:
 	</section>
 	<section id="exim">
 		<title>exim 命令</title>
+		<section >
+			<title>帮助信息</title>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# exim -bV
+Exim version 4.91 #2 built 22-Aug-2018 14:16:00
+Copyright (c) University of Cambridge, 1995 - 2018
+(c) The Exim Maintainers and contributors in ACKNOWLEDGMENTS file, 2007 - 2018
+Berkeley DB: Berkeley DB 5.3.21: (May 11, 2012)
+Support for: crypteq iconv() IPv6 PAM Perl Expand_dlfunc OpenSSL Content_Scanning DKIM DNSSEC Event OCSP PRDR TCP_Fast_Open
+Lookups (built-in): lsearch wildlsearch nwildlsearch iplsearch cdb dbm dbmjz dbmnz dnsdb dsearch ldap ldapdn ldapm nis nis0 nisplus passwd sqlite
+Authenticators: cram_md5 cyrus_sasl dovecot gsasl plaintext spa tls
+Routers: accept dnslookup ipliteral manualroute queryprogram redirect
+Transports: appendfile/maildir/mailstore/mbx autoreply lmtp pipe smtp
+Malware: f-protd f-prot6d drweb fsecure sophie clamd avast sock cmdline
+Fixed never_users: 0
+Configure owner: 0:0
+Size of off_t: 8
+Configuration file is /etc/exim/exim.conf			
+			]]>
+			</screen>
+		</section>
+		<section id="">
+			<title>测试发送邮件</title>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# exim -v root
+This is a test message
+Ctrl + D 结束			
+			]]>
+			</screen>
+		</section>
+		
 		<section>
 			<title>刷新邮件队列</title>		
 			<screen>

@@ -72,6 +72,22 @@ macro compose A "<attach-message>?<toggle-mailboxes>" "attach message(s) to this
 mutt -s "helloworld" user@example.com -a /opt/backup/file.tar.gz
 			</screen>
 		</section>
+		<section>
+			<title>设置自定义 From</title>
+			<screen>
+			<![CDATA[
+#设置邮件编码方式
+set charset="utf-8" 
+
+#自定义发件人信息 
+set envelope_from=yes
+set use_from=yes 
+set from=netkiller@netkiller.cn
+set realname="Neo Chen"			
+			]]>
+			</screen>
+		</section>
+		
 	</section>
 	<section id="alpine">
 		<title>alpine - Text-based email client, friendly for novices but powerful</title>
