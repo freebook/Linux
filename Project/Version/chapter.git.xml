@@ -834,6 +834,51 @@ Receiving objects: 100% (3/3), done.
 		</screen>
 	</section>
 </section>
+	<section id="git.config">
+		<title>git config</title>
+		<section id="core.sshCommand">
+			<title>core.sshCommand</title>
+			<para>git 默认使用 id_rsa，指定私钥方法是：</para>
+			<screen>
+			<![CDATA[
+git config core.sshCommand "ssh -i ~/.ssh/id_rsa_example -F /dev/null"
+git pull
+git push
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+GIT_SSH_COMMAND="ssh -i ~/.ssh/id_rsa_example -F /dev/null" git clone git@github.com:netkiller/netkiller.github.io.git		
+			]]>
+			</screen>
+		</section>
+		<section id="http.postBuffer">
+			<title>fatal: The remote end hung up unexpectedly</title>
+			<screen>
+error: RPC failed; result=22, HTTP code = 413 | 18.24 MiB/s
+fatal: The remote end hung up unexpectedly
+			</screen>
+			<screen>
+git config http.postBuffer 524288000
+			</screen>
+		</section>		
+		<section id="http.sslVerify">
+			<title>忽略 SSL 检查</title>
+			<para>使用自颁发 ssl 证书时需要开启，否则无法 clone 和 push</para>
+			<screen>
+			<![CDATA[
+export GIT_SSL_NO_VERIFY=true			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+git config http.sslVerify "false"  			
+			]]>
+			</screen>
+		</section>
+	</section>
 	&chapter.git.lfs.xml;
 	<section id="git-svn">
 		<title>git-svn - Bidirectional operation between a single Subversion branch and git</title>
@@ -905,16 +950,7 @@ Date:   Wed Oct 14 17:27:15 2015 +0800
 $ git archive -o update2.zip HEAD $(git diff --name-only b111c253321fb4b9c5858302a0707ba0adc3cd07)
 			</screen>
 		</section>
-		<section id="config">
-			<title>fatal: The remote end hung up unexpectedly</title>
-			<screen>
-error: RPC failed; result=22, HTTP code = 413 | 18.24 MiB/s
-fatal: The remote end hung up unexpectedly
-			</screen>
-			<screen>
-git config http.postBuffer 524288000
-			</screen>
-		</section>
+		
 		<section>
 			<title>回撤提交</title>
 			<para>首先 reset 到指定的版本，根据实际情况选择 --mixed 还是 --hard</para>
@@ -933,18 +969,21 @@ git push --force --progress "origin" master:master
 			]]>
 			</screen>
 		</section>
-		<section id="">
-			<title>忽略 SSL 检查</title>
-			<para>使用自颁发 ssl 证书时需要开启，否则无法 clone 和 push</para>
+		<section>
+			<title>每个项目一个证书</title>
 			<screen>
 			<![CDATA[
-export GIT_SSL_NO_VERIFY=true			
-			]]>
-			</screen>
-			<para></para>
-			<screen>
-			<![CDATA[
-git config http.sslVerify "false"  			
+[root@localhost ~]# cat .ssh/config 
+host git.netkiller.cn
+    user git
+    hostname git.netkiller.cn
+    port 22
+    identityfile ~/.ssh/netkiller
+    
+host github.com
+ HostName github.com
+ IdentityFile ~/.ssh/id_rsa_github
+ User git    
 			]]>
 			</screen>
 		</section>

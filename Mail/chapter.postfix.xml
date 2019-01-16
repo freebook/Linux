@@ -900,5 +900,16 @@ Aug 25 01:56:10 localhost systemd: opendkim.service failed.
 KeyFile	/etc/opendkim/keys/default.private			
 			</screen>
 		</section>
+		<section>
+			<title>fatal: parameter inet_interfaces: no local interface found for ::1</title>
+			<screen>
+			<![CDATA[
+# Enable IPv4, and IPv6 if supported
+inet_protocols = all
+# 改为
+inet_protocols = ipv4
+			]]>
+			</screen>
+		</section>
 	</section>
 </chapter>
