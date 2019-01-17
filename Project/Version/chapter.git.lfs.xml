@@ -6,11 +6,15 @@
 	<para></para>
 	<screen>
 	<![CDATA[
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
 brew install git-lfs	
 	]]>
 	</screen>
-	<screen>
-	<![CDATA[
+	<section id="">
+		<title>安装 LFS 支持</title>
+		<screen>
+		<![CDATA[
 git lfs install
 git lfs track "*.psd"
 git add .gitattributes
@@ -18,10 +22,12 @@ git add .gitattributes
 git add file.psd
 git commit -m "Add design file"
 git push origin master	
-	]]>
-	</screen>
+		]]>
+		</screen>
+	</section>
 	<section id="lfs.lock">
 		<title>LFS lock</title>
+		<para>文件锁的用途是用户可以对一个文件进行加锁，阻止其他用户同一时间对该文件进行修改操作。因为在GIT仓库中同时编辑一个文件，会发生冲突，然而解决二进制大文件的冲突，合并操作极其困难。</para>
 		<screen>
 		<![CDATA[
 neo@MacBook-Pro ~/workspace/java-project % git lfs lock test.psd  

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.utility.wget.xml 382 2012-04-05 10:11:58Z netkiller $ -->
 <section id="utility.wget">
-	<title>wget - retrieves files from the web</title>
+	<title>Wget - The non-interactive network downloader.</title>
 	<para>wget各种选项分类列表</para>
 	<screen>
 * 启动
@@ -170,6 +170,7 @@ Logging in as ftp ... Logged in!
 		</screen>
 		<para>程序一直停留在 PASV 处</para>
 		<screen>
+		<![CDATA[
 $ wget --no-passive-ftp ftp://ftp:26d9a0dd@42.120.45.123/test.zip
 --2012-04-05 15:50:15--  ftp://ftp:*password*@42.120.45.123/test.zip
            => `test.zip'
@@ -184,8 +185,26 @@ Length: 42023258 (40M) (unauthoritative)
 100%[=====================================================================================================================>] 42,023,258   691K/s   in 62s     
 
 2012-04-05 15:51:18 (657 KB/s) - `test.zip' saved [42023258]
-
+		]]>
 		</screen>
 	</section>
-	
+	<section>
+		<title>下载一组连续的文件名</title>
+		<para>地址如下</para>
+		<screen>
+		<![CDATA[
+http://news.netkiller.cn/2018/1/index.html
+http://news.netkiller.cn/2018/2/index.html
+...
+...
+http://news.netkiller.cn/2018/12/index.html		
+		]]>
+		</screen>
+		<para>下载方法</para>
+		<screen>
+		<![CDATA[
+wget -c http://news.netkiller.cn/2018/{1..12}/index.html
+		]]>
+		</screen>
+	</section>
 </section>
