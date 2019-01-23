@@ -4,7 +4,7 @@
 	<para>
 		<ulink url="https://www.raspberrypi.org/" />
 	</para>
-	<section id="">
+	<section>
 		<title>配置工具</title>
 		<section id="rpi-update">
 			<title>rpi-update</title>

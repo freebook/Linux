@@ -14,3 +14,6 @@
 <!ENTITY chapter.docker.redis.xml		SYSTEM "Docker/chapter.docker.redis.xml">
 <!ENTITY chapter.docker.nginx.xml		SYSTEM "Docker/chapter.docker.nginx.xml">
 <!ENTITY chapter.docker-compose.xml		SYSTEM "Docker/chapter.docker-compose.xml">
+
+<!ENTITY chapter.kubernetes.xml			SYSTEM "Kubernetes/chapter.kubernetes.xml">
+<!ENTITY chapter.minikube.xml			SYSTEM "Kubernetes/chapter.minikube.xml">
