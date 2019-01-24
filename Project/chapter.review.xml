@@ -8,3 +8,6 @@
 	<title>Gerrit</title>
 	<para>Gerrit 是 Google 开发的Code Review 工具</para>
 </chapter>
+<chapter id="teamcity">
+	<title>TeamCity</title>
+</chapter>

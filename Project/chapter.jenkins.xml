@@ -482,7 +482,5 @@ mkdir target/classes
 		<para>Settings -> Webhooks -> Add webhook</para>
 		<para>系统管理 --> 系统设置 --> GitHub --> Add GitHub Sever</para>		
 	</section>
-</chapter>
-<chapter id="teamcity">
-	<title>TeamCity</title>
+	&section.jenkins.plugins.xml;
 </chapter>
