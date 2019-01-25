@@ -2,6 +2,19 @@
 <!-- $Id: section.miscellaneous.xml 385 2012-04-10 10:40:06Z netkiller $ -->
 <chapter id="miscellaneous">
 	<title>Miscellaneous</title>
+	<para>建模工具</para>
+	<itemizedlist>
+		<listitem>FreeMind</listitem>
+		<listitem>ArgoUML,StarUML</listitem>
+	</itemizedlist>
+
+	<para>常用的项目管理工具</para>
+	<itemizedlist>
+		<listitem><para>TRAC</para></listitem>
+		<listitem><para>Subversion</para></listitem>
+		<listitem><para>Bugzilla</para></listitem>
+		<listitem><para>TWiki</para></listitem>
+	</itemizedlist>
 <section id="codehost">
 	<title>代码托管</title>
 	<section id="sourceforge">

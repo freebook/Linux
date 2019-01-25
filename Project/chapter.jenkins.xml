@@ -4,6 +4,15 @@
 	<section id="jenkins.setup">
 		<title>安装 Jenkins</title>
 		<section>
+			<title>OSCM 一键安装</title>
+			<screen>
+			<![CDATA[
+yum install -y java-1.8.0-openjdk			
+curl -s https://raw.githubusercontent.com/oscm/shell/master/project/jenkins/jenkins.sh | bash
+			]]>
+			</screen>
+		</section>
+		<section>
 			<title>Mac</title>
 			<para>使用 pkg 方式安装，默认路径是 /Applications/Jenkins/jenkins.war</para>
 			<screen>
@@ -41,7 +50,7 @@ sudo rm -rf /Users/Shared/Jenkins
 sudo dscl . -delete /Users/jenkins
 sudo dscl . -delete /Groups/jenkins
 sudo rm -f /etc/newsyslog.d/jenkins.conf
-pkgutil --pkgs | grep 'org\.jenkins-ci\.' | xargs -n 1 sudo pkgutil --forget			
+pkgutil --pkgs | grep 'org\.jenkins-ci\.' | xargs -n 1 sudo pkgutil --forget
 			]]>
 			</screen>
 			<para>由于我的Mac 模式是 JDK 11，所以需要制定 JAVA_HOME 到 JDK 1.8，否则提示</para>
@@ -68,6 +77,7 @@ rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
 yum install -y jenkins			
 			]]>
 			</screen>
+			<para>cat /etc/sysconfig/jenkins</para>
 			<screen>
 			<![CDATA[
 ## Path:        Development/Jenkins
@@ -263,6 +273,7 @@ cat /var/lib/jenkins/secrets/initialAdminPassword
 	</section>
 	<section id="Jenkinsfile">
 		<title>Jenkinsfile</title>
+		<para><ulink url="https://jenkins.io/doc/pipeline/examples/" /></para>
 		<section id="pipeline.agent">
 			<title>agent</title>
 			<section id="agent.label">
@@ -418,6 +429,59 @@ node {
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>切换 JDK 版本</title>
+			<screen>
+			<![CDATA[
+node('vagrant-slave') {
+    env.JAVA_HOME="${tool 'jdk-8u45'}"
+    env.PATH="${env.JAVA_HOME}/bin:${env.PATH}"
+    sh 'java -version'
+}			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Ansi Color</title>
+			<screen>
+			<![CDATA[
+// This shows a simple build wrapper example, using the AnsiColor plugin.
+node {
+    // This displays colors using the 'xterm' ansi color map.
+    ansiColor('xterm') {
+        // Just some echoes to show the ANSI color.
+        stage "\u001B[31mI'm Red\u001B[0m Now not"
+    }
+}	
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>写文件操作</title>
+			<screen>
+			<![CDATA[
+// This shows a simple example of how to archive the build output artifacts.
+node {
+    stage "Create build output"
+    
+    // Make the output directory.
+    sh "mkdir -p output"
+
+    // Write an useful file, which is needed to be archived.
+    writeFile file: "output/usefulfile.txt", text: "This file is useful, need to archive it."
+
+    // Write an useless file, which is not needed to be archived.
+    writeFile file: "output/uselessfile.md", text: "This file is useless, no need to archive it."
+
+    stage "Archive build output"
+    
+    // Archive the build output artifacts.
+    archiveArtifacts artifacts: 'output/*.txt', excludes: 'output/*.md'
+}			
+			]]>
+			</screen>
+		</section>
+		
 	</section>
 	<section id="github-plugin">
 		<title>github-plugin 插件</title>

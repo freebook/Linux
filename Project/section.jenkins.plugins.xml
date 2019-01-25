@@ -1,1 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<section id="jenkins.Docker">
+	<title>Docker</title>
+	<subtitle>This plugin integrates Jenkins with Docker</subtitle>
+	<section id="">
+		<title>设置 Docker 主机和代理</title>
+		<graphic format="png" fileref="images/jenkens/docker/docker-add.png" width="" srccredit="neo" />
+		<graphic format="png" fileref="images/jenkens/docker/docker-host.png" width="" srccredit="neo" />
+		<graphic format="png" fileref="images/jenkens/docker/ddocker-name.png" width="" srccredit="neo" />
+		<graphic format="png" fileref="images/jenkens/docker/ddocker-test.png" width="" srccredit="neo" />
+		<graphic format="png" fileref="images/jenkens/docker/docker-agent.png" width="" srccredit="neo" />
+	</section>
+	
+</section>
+<section id="JaCoCo">
+	<title>JaCoCo</title>
+	<subtitle>This plugin integrates JaCoCo code coverage reports to Jenkins.</subtitle>
+</section>

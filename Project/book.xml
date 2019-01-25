@@ -75,7 +75,7 @@ git,git-add,git-add--interactive,git-am,git-annotate,git-apply,git-archive,git-b
 
 	&book.dedication.xml;
 	&book.preface.xml;
-	&part.project.xml;
+	&chapter.project.xml;
 	&part.version.xml;
 	
 </book>

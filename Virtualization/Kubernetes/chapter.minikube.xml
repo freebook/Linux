@@ -61,7 +61,11 @@ Use "minikube [command] --help" for more information about a command.
 			]]>
 			</screen>
 		</section>
-
-
+	</section>
+	<section id="Quickstart">
+		<title>Quickstart</title>
+		<screen>
+		<![CDATA[]]>
+		</screen>
 	</section>
 </section>

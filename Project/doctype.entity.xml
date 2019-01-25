@@ -9,6 +9,7 @@
 <!ENTITY chapter.git.lfs.xml	 	SYSTEM "Version/chapter.git.lfs.xml">
 
 <!ENTITY part.project.xml			SYSTEM "part.project.xml">
+<!ENTITY chapter.project.xml		SYSTEM "chapter.project.xml">
 <!ENTITY chapter.trac.xml			SYSTEM "chapter.trac.xml">
 <!ENTITY chapter.gitlab.xml 		SYSTEM "chapter.gitlab.xml">
 <!ENTITY chapter.redmine.xml 		SYSTEM "chapter.redmine.xml">
