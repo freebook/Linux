@@ -277,6 +277,25 @@ find /data/ \( -path /data/data_backup -o -path /data/mysql \) -prune -o -name "
 		</screen>
 		<para>ps 要么都是绝对路径 要么都是相对路径 /data/ 必须有"/" path 后面的路径必须没有"/"</para>
 	</section>
+	<section id="">
+		<title>目录深度控制</title>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro ~/workspace/Linux % find */images -type d -d 0 -exec echo {} \;
+Cryptography/images
+Monitoring/images
+OpenLDAP/images
+Project/images
+Web/images
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+find */images -type d -d 0 -exec rsync -au {}/* $(PUBLIC_HTML)/linux/images \; 		
+		]]>
+		</screen>
+	</section>
+	
 	<section id="find.maxdepth">
 		<title>-maxdepth</title>
 		<para>-maxdepth和-mindepth，最大深度，最小深度搜索，搜索当前目录下最大深度为1的所以文件</para>

@@ -2,15 +2,22 @@
 <section id="jenkins.Docker">
 	<title>Docker</title>
 	<subtitle>This plugin integrates Jenkins with Docker</subtitle>
-	<section id="">
+	<section>
 		<title>设置 Docker 主机和代理</title>
 		<graphic format="png" fileref="images/jenkens/docker/docker-add.png" width="" srccredit="neo" />
 		<graphic format="png" fileref="images/jenkens/docker/docker-host.png" width="" srccredit="neo" />
-		<graphic format="png" fileref="images/jenkens/docker/ddocker-name.png" width="" srccredit="neo" />
-		<graphic format="png" fileref="images/jenkens/docker/ddocker-test.png" width="" srccredit="neo" />
+		<graphic format="png" fileref="images/jenkens/docker/docker-name.png" width="" srccredit="neo" />
+		<graphic format="png" fileref="images/jenkens/docker/docker-test.png" width="" srccredit="neo" />
 		<graphic format="png" fileref="images/jenkens/docker/docker-agent.png" width="" srccredit="neo" />
 	</section>
-	
+	<section>
+		<title>持久化</title>
+		<para>例如持续集成过程中，我们不希望每次都从 maven 镜像下载编译依赖的包，或者构建物我们需要永久保留等等，这时就需要做持久化</para>
+		<graphic format="png" fileref="images/jenkens/docker/container.png" width="" srccredit="neo" />
+		<para>例如我们将宿主主机的 /opt/maven 挂载到 Docker 容器的 /root/.m2 目录。这样就实现了 maven 的持久化。</para>
+		<graphic format="png" fileref="images/jenkens/docker/volumes.png" width="" srccredit="neo" />
+		<para>当持续机构运行完毕 docker 容器被清理，但是 /opt/maven 并不会被清理，下次构建时，在将它挂载到 /root/.m2 即可。</para>
+	</section>
 </section>
 <section id="JaCoCo">
 	<title>JaCoCo</title>
