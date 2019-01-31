@@ -6,7 +6,7 @@ PROJECT=Cryptography
 DOCBOOK=cryptography
 PUBLIC_HTML=~/public_html
 HTML=$(PUBLIC_HTML)/$(DOCBOOK)
-HTMLHELP=$(PUBLIC_HTML)/htmlhelp/${DOCBOOK}/chm
+HTMLHELP=~/htmlhelp/${DOCBOOK}/htmlhelp
 
 all: html htmlhelp
 
@@ -19,7 +19,8 @@ html:
 	@$(shell test -d images && rsync -au --exclude=.svn images $(HTML)/)
 
 htmlhelp:
-	${XSLTPROC} -o $(HTMLHELP)/ --stringparam htmlhelp.chm ../$(PROJECT).chm ../docbook-xsl/htmlhelp/template.xsl $(WORKSPACE)/${PROJECT}/book.xml
+	@rm -rf $(HTMLHELP) && mkdir -p $(HTMLHELP)
+	${XSLTPROC} -o $(HTMLHELP)/ --stringparam htmlhelp.chm ../Netkiller$(PROJECT).chm ../../docbook-xsl/htmlhelp/template.xsl book.xml
 	@../../common/chm.sh $(HTMLHELP)
 	@iconv -f UTF-8 -t GB18030 -o $(HTMLHELP)/htmlhelp.hhp < $(HTMLHELP)/htmlhelp.hhp
 	@iconv -f UTF-8 -t GB18030 -o $(HTMLHELP)/toc.hhc < $(HTMLHELP)/toc.hhc
