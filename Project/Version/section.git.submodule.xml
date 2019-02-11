@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="submodule">
+	<title>Submodule 子模块</title>
+	<section id="submodule.add">
+		<title>添加模块</title>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro ~ % cd workspace/Linux
+		
+neo@MacBook-Pro ~/workspace/Linux % git submodule add https://github.com/netkiller/common.git common 
+Cloning into '/Users/neo/workspace/Linux/common'...
+remote: Enumerating objects: 9, done.
+remote: Counting objects: 100% (9/9), done.
+remote: Compressing objects: 100% (8/8), done.
+remote: Total 185 (delta 2), reused 6 (delta 1), pack-reused 176
+Receiving objects: 100% (185/185), 56.49 KiB | 163.00 KiB/s, done.
+Resolving deltas: 100% (105/105), done.		
+		]]>
+		</screen>
+		<para>模块信息存储在 .gitmodules 文件中</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro ~/workspace/Linux % cat .gitmodules  
+[submodule "common"]
+	path = common
+	url = https://github.com/netkiller/common.git		
+		]]>
+		</screen>
+		<para>同时也添加到 .git/config 文件中</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro ~/workspace/Linux % cat .git/config | tail -n 3
+[submodule "common"]
+	url = https://github.com/netkiller/common.git
+	active = true		
+		]]>
+		</screen>
+	</section>
+	
+</section>

@@ -13,7 +13,7 @@
 	</para>
 	<para>我的系列文档:</para>
 	<para>操作系统</para>
-	<simplelist type='horiz' columns='1'>
+	<simplelist type='horiz' columns='3'>
 		<title>操作系统</title>
 		<member>
 			<ulink url="../linux/index.html">Netkiller Linux 手札</ulink>
