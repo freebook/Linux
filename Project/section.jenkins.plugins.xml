@@ -2,9 +2,71 @@
 <section id="jenkins.Docker">
 	<title>Docker</title>
 	<subtitle>This plugin integrates Jenkins with Docker</subtitle>
+	<screen>
+	<![CDATA[
+vim /lib/systemd/system/docker.service
+
+ExecStart=/usr/bin/dockerd -H fd://
+
+改为
+
+ExecStart=/usr/bin/dockerd -H fd:// -H unix:///var/run/docker.sock -H tcp://0.0.0.0:2375
+	]]>
+	</screen>
+	<para>重启 docker</para>
+	<screen>
+	<![CDATA[
+systemctl daemon-reload
+systemctl restart docker
+
+如果是 Docker 方式运行 Jenkins 需要启动 jenkins
+docker start jenkins	
+	]]>
+	</screen>
+	<para>参考例子</para>
+	<programlisting>
+	<![CDATA[
+root@ubuntu:~# cat /lib/systemd/system/docker.service
+[Unit]
+Description=Docker Application Container Engine
+Documentation=https://docs.docker.com
+After=network-online.target docker.socket firewalld.service
+Wants=network-online.target
+Requires=docker.socket
+
+[Service]
+Type=notify
+# the default is not to use systemd for cgroups because the delegate issues still
+# exists and systemd currently does not support the cgroup feature set required
+# for containers run by docker
+ExecStart=/usr/bin/dockerd -H fd:// -H unix:///var/run/docker.sock -H tcp://0.0.0.0:2375
+ExecReload=/bin/kill -s HUP $MAINPID
+LimitNOFILE=1048576
+# Having non-zero Limit*s causes performance problems due to accounting overhead
+# in the kernel. We recommend using cgroups to do container-local accounting.
+LimitNPROC=infinity
+LimitCORE=infinity
+# Uncomment TasksMax if your systemd version supports it.
+# Only systemd 226 and above support this version.
+TasksMax=infinity
+TimeoutStartSec=0
+# set delegate yes so that systemd does not reset the cgroups of docker containers
+Delegate=yes
+# kill only the docker process, not all processes in the cgroup
+KillMode=process
+# restart the docker process if it exits prematurely
+Restart=on-failure
+StartLimitBurst=3
+StartLimitInterval=60s
+
+[Install]
+WantedBy=multi-user.target	
+	]]>
+	</programlisting>
 	<section>
 		<title>设置 Docker 主机和代理</title>
 		<graphic format="png" fileref="images/jenkens/docker/docker-add.png" width="" srccredit="neo" />
+		<para>输入 Docker 主机的IP地址，类似 tcp://172.16.0.10:2375</para>
 		<graphic format="png" fileref="images/jenkens/docker/docker-host.png" width="" srccredit="neo" />
 		<graphic format="png" fileref="images/jenkens/docker/docker-name.png" width="" srccredit="neo" />
 		<graphic format="png" fileref="images/jenkens/docker/docker-test.png" width="" srccredit="neo" />
@@ -14,7 +76,7 @@
 		<title>持久化</title>
 		<para>例如持续集成过程中，我们不希望每次都从 maven 镜像下载编译依赖的包，或者构建物我们需要永久保留等等，这时就需要做持久化</para>
 		<graphic format="png" fileref="images/jenkens/docker/container.png" width="" srccredit="neo" />
-		<para>例如我们将宿主主机的 /opt/maven 挂载到 Docker 容器的 /root/.m2 目录。这样就实现了 maven 的持久化。</para>
+		<para>例如我们将宿主主机的 /opt/maven 挂载到 Docker 容器的 /root/.m2 目录。这样就实现了 maven 的持久化。只需写入 /opt/maven:/root/.m2 即可</para>
 		<graphic format="png" fileref="images/jenkens/docker/volumes.png" width="" srccredit="neo" />
 		<para>当持续机构运行完毕 docker 容器被清理，但是 /opt/maven 并不会被清理，下次构建时，在将它挂载到 /root/.m2 即可。</para>
 	</section>

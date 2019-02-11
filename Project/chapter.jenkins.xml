@@ -284,15 +284,21 @@ docker run -p 8080:8080 -p 50000:50000 --name jenkins jenkins/jenkins:lts
 		</section>
 	</section>
 	<section id="jenkins.config">
-		<title>配置 Jenkens</title>
-
-		<graphic format="png" fileref="images/jenkins/Getting-Started-1.png" width="" srccredit="neo" />
-		<graphic format="png" fileref="images/jenkins/Getting-Started-2.png" width="" srccredit="neo" />
-		<graphic format="png" fileref="images/jenkins/Getting-Started-3.png" width="" srccredit="neo" />
-		<graphic format="png" fileref="images/jenkins/Getting-Started-4.png" width="" srccredit="neo" />
-		<graphic format="png" fileref="images/jenkins/Getting-Started-5.png" width="" srccredit="neo" />
-		<graphic format="png" fileref="images/jenkins/Getting-Started-6.png" width="" srccredit="neo" />
-		<graphic format="png" fileref="images/jenkins/Getting-Started-7.png" width="" srccredit="neo" />
+		<title>配置 Jenkins</title>
+		<para>配置 Jenkins</para>
+		<graphic format="png" fileref="images/jenkins/Getting-Started-1.png" width="1024" srccredit="neo" />
+		<para>输入管理员密码</para>
+		<graphic format="png" fileref="images/jenkins/Getting-Started-2.png" width="1024" srccredit="neo" />
+		<para>安装插件</para>
+		<graphic format="png" fileref="images/jenkins/Getting-Started-3.png" width="1024" srccredit="neo" />
+		<para>创建用户</para>
+		<graphic format="png" fileref="images/jenkins/Getting-Started-4.png" width="1024" srccredit="neo" />
+		<para>设置域名</para>
+		<graphic format="png" fileref="images/jenkins/Getting-Started-5.png" width="1024" srccredit="neo" />
+		<para>开始使用 Jenkins</para>
+		<graphic format="png" fileref="images/jenkins/Getting-Started-6.png" width="1024" srccredit="neo" />
+		<para>Jenkins 界面</para>
+		<graphic format="png" fileref="images/jenkins/Getting-Started-7.png" width="1024" srccredit="neo" />
 
 	</section>
 	<section id="Jenkinsfile.pipeline">
@@ -710,7 +716,89 @@ pipeline {
 			</screen>
 		</section>
 		
+		<section id=pipeline.sshpass">
+			<title>Jenkins pipeline 中使用 sshpass 实现 scp, ssh 远程运行</title>
+			<screen>
+			<![CDATA[
+pipeline {
+    agent {
+        label "java-8"
+    }
+    stages  {
 
+     	stage("环境") {
+            steps {
+                parallel "Maven": {
+                  	script{
+                      	sh 'mvn -version'
+                  	}
+                }, "Java": {
+                    sh 'java -version'
+                }, "sshpass": {
+                  	sh 'apt install -y sshpass'
+                    sh 'sshpass -v'
+                }
+            }
+          
+        }
+        
+        stage("检出") {
+            steps {
+                checkout(
+                  [$class: 'GitSCM', branches: [[name: env.GIT_BUILD_REF]], 
+                  userRemoteConfigs: [[url: env.GIT_REPO_URL]]]
+                )
+            }
+        }
+
+        stage("构建") {
+            steps {
+                echo "构建中..."
+              	sh 'mvn package -Dmaven.test.skip=true'
+                archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
+                echo "构建完成."
+            }
+        }
+
+        stage("测试") {
+            steps {
+                parallel "单元测试": {
+                    echo "单元测试中..."
+                    sh 'mvn test'
+                    echo "单元测试完成."
+                    junit 'target/surefire-reports/*.xml'
+                }, "接口测试": {
+                    echo "接口测试中..."
+                    // 请在这里放置您项目代码的单元测试调用过程，例如 mvn test
+                    echo "接口测试完成."
+                }, "测试敏感词":{
+                    echo "Username: ${env.username}"
+            		echo "Password: ${env.password}"
+                }
+
+            }
+          
+        }
+      	stage("运行"){
+      		steps {
+            	sh 'java -jar target/java-0.0.1-SNAPSHOT.jar'
+    	    }
+    	}
+      	stage("部署"){
+      		steps {
+              parallel "上传": {
+                    sh 'sshpass -p Passw0rd scp target/*.jar root@dev.netkiller.cn:/root/'
+                }, "运行": {
+                    sh 'sshpass -p Passw0rd ssh root@dev.netkiller.cn java -jar /root/java-0.0.1-SNAPSHOT.jar'
+                }
+            	
+    	    }
+    	}
+    }
+}			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="Jenkinsfile.node">
 		<title>Jenkinsfile - Scripted Pipeline</title>
