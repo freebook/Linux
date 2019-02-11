@@ -151,6 +151,40 @@ jam:jampass
 echo "mypasword" | passwd –stdin neo
 		</screen>
 	</section>
+	<section id="sshpass">
+		<title>sshpass - noninteractive ssh password provider</title>
+		<screen>
+		<![CDATA[
+sudo apt install -y sshpass
+
+root@ubuntu:~# sshpass -v
+Usage: sshpass [-f|-d|-p|-e] [-hV] command parameters
+   -f filename   Take password to use from file
+   -d number     Use number as file descriptor for getting password
+   -p password   Provide password as argument (security unwise)
+   -e            Password is passed as env-var "SSHPASS"
+   With no parameters - password will be taken from stdin
+
+   -P prompt     Which string should sshpass search for to detect a password prompt
+   -v            Be verbose about what you're doing
+   -h            Show help (this screen)
+   -V            Print version information
+At most one of -f, -d, -p or -e should be used
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+sshpass -p Password scp target/*.jar root@dev.netkiller.cn:/root/		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+sshpass -p Password ssh root@dev.netkiller.cn java -jar /root/java-0.0.1-SNAPSHOT.jar		
+		]]>
+		</screen>
+	</section>
 </section>
 
 	&section.cmd.sum.xml;
