@@ -153,6 +153,7 @@ echo "mypasword" | passwd –stdin neo
 	</section>
 </section>
 
+	&section.cmd.sum.xml;
 	&chapter.miscellaneous.xml;
 
 </chapter>

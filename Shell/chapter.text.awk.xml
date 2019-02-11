@@ -352,6 +352,19 @@ centos linux release 7.5.1804 (core)
 			]]>
 			</screen>
 		</section>
+		<section id="awk.rand()">
+			<title>rand() 随机数生成</title>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro ~ % awk 'BEGIN{print rand()*1000000}' 
+840188			
+neo@MacBook-Pro ~ % awk 'BEGIN{srand(); print rand()}'
+0.0334342
+neo@MacBook-Pro ~ % awk 'BEGIN{srand(); print rand()*1000000}'
+759412	
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section>
 		<title>过滤相同的行</title>

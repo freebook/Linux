@@ -200,6 +200,24 @@ a9  b9  c9  d9  e9  f9  g9  h9  i9  j9  k9  l9  m9  n9  o9  p9  q9  r9  s9  t9  
 	<section id="environment">
 		<title>Internal Environment Variables</title>
 		<ulink url="http://tldp.org/LDP/abs/html/internalvariables.html" />
+		<section id="env.RANDOM">
+			<title>$RANDOM 随机数</title>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro ~ % echo $RANDOM
+15254			
+			]]>
+			</screen>
+			<para>$RANDOM 的范围是 0 ~ 32767</para>
+			<screen>
+			<![CDATA[
+    for i in {1..10};
+    do
+        echo -e "$i \t $RANDOM"
+    done			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="variable.set">
 		<title>set 设置变量</title>

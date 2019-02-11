@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+	<title>信息摘要</title>
+	<section id="cksum">
+		<title>cksum, sum -- display file checksums and block counts</title>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro ~ % head -20 /dev/urandom | cksum | cut -f1 -d " "
+1705222024		
+		]]>
+		</screen>
+	</section>
+	<section id="md5sum">
+		<title>md5sum - compute and check MD5 message digest</title>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# md5sum /etc/hosts
+54fb6627dbaa37721048e4549db3224d  /etc/hosts
+		]]>
+		</screen>
+	</section>
+	<section id="">
+		<title></title>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# sha1sum /etc/hosts
+7335999eb54c15c67566186bdfc46f64e0d5a1aa  /etc/hosts		
+		]]>
+		</screen>
+	</section>
+</section>
