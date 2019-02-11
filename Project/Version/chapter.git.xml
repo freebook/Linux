@@ -397,7 +397,8 @@ git remote remove origin
 		</screen>
 	</section>
 </section>
-
+	&section.git.submodule.xml;
+	&section.git.lfs.xml;
 <section id="git.command">
 	<title>command</title>
 	<section id="hash-object">
@@ -879,7 +880,7 @@ git config http.sslVerify "false"
 			</screen>
 		</section>
 	</section>
-	&chapter.git.lfs.xml;
+	
 	<section id="git-svn">
 		<title>git-svn - Bidirectional operation between a single Subversion branch and git</title>
 		<screen>

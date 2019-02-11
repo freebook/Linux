@@ -36,5 +36,37 @@ neo@MacBook-Pro ~/workspace/Linux % cat .git/config | tail -n 3
 		]]>
 		</screen>
 	</section>
-	
+	<section id="submodule.checkout">
+		<title>checkout 子模块</title>
+		<para>clone 项目，然后进入目录</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro /tmp/test % git clone https://github.com/netkiller/Linux.git
+neo@MacBook-Pro /tmp/test % cd Linux
+		]]>
+		</screen>
+		<para>初始化子模块</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro /tmp/test/Linux % git submodule init
+Submodule 'common' (https://github.com/netkiller/common.git) registered for path 'common'
+		]]>
+		</screen>
+		<para>更新模块</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro /tmp/test/Linux % git submodule update
+Cloning into '/private/tmp/test/Linux/common'...
+Submodule path 'common': checked out 'cdf61a1de34590bcc80b895fdf0e90b62cfd729f'			
+		]]>
+		</screen>
+	</section>
+	<section id="submodule.rm">
+		<title>删除子模块</title>
+		<screen>
+		<![CDATA[
+git rm --cached <module>
+		]]>
+		</screen>
+	</section>
 </section>
