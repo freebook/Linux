@@ -50,6 +50,16 @@ $ ./boinc --attach_project http://setiathome.berkeley.edu/ 3d996959b1f88df43048f
 	<section id="boinc.ubuntu">
 		<title>ubuntu apt-get 安装</title>
 		<screen>
+		<![CDATA[
+sudo apt install boinctui boinc-client
+sudo systemctl enable boinc-client
+sudo systemctl start boinc-client
+
+sudo boinctui		
+		]]>
+		</screen>
+		<para>Ubuntu 早起版本</para>
+		<screen>
 netkiller@shenzhen:~/BOINC$ apt-cache search boinc
 boinc-app-seti - SETI@home application for the BOINC client
 boinc-client - core client for the BOINC distributed computing infrastructure

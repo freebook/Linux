@@ -258,17 +258,41 @@ cat /var/lib/jenkins/secrets/initialAdminPassword
 			]]>
 			</screen>
 		</section>
+		<section id="ubuntu">
+			<title>Ubuntu</title>
+			<screen>
+			<![CDATA[
+wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
+deb https://pkg.jenkins.io/debian-stable binary/
+
+sudo apt-get update
+sudo apt-get install jenkins			
+			]]>
+			</screen>
+		</section>
+		<section id="jenkins.docker">
+			<title>Docker</title>
+			<para><ulink url="https://github.com/jenkinsci/docker/blob/master/README.md" /></para>
+			<para>8080端口是jenkins的端口，5000端口是master和slave通信端口</para>
+			<screen>
+			<![CDATA[
+docker pull jenkins/jenkins:lts			
+docker run -p 8080:8080 -p 50000:50000 --name jenkins jenkins/jenkins:lts
+			]]>
+			</screen>
+			<para>首次启动，不要使用 -d 参数，如果使用了 -d 参数可以通过docker logs -f jenkins查看控制台的密码</para>
+		</section>
 	</section>
-	<section id="jenkens.config">
+	<section id="jenkins.config">
 		<title>配置 Jenkens</title>
 
-		<graphic format="png" fileref="images/jenkens/Getting-Started-1.png" width="" srccredit="neo" />
-		<graphic format="png" fileref="images/jenkens/Getting-Started-2.png" width="" srccredit="neo" />
-		<graphic format="png" fileref="images/jenkens/Getting-Started-3.png" width="" srccredit="neo" />
-		<graphic format="png" fileref="images/jenkens/Getting-Started-4.png" width="" srccredit="neo" />
-		<graphic format="png" fileref="images/jenkens/Getting-Started-5.png" width="" srccredit="neo" />
-		<graphic format="png" fileref="images/jenkens/Getting-Started-6.png" width="" srccredit="neo" />
-		<graphic format="png" fileref="images/jenkens/Getting-Started-7.png" width="" srccredit="neo" />
+		<graphic format="png" fileref="images/jenkins/Getting-Started-1.png" width="" srccredit="neo" />
+		<graphic format="png" fileref="images/jenkins/Getting-Started-2.png" width="" srccredit="neo" />
+		<graphic format="png" fileref="images/jenkins/Getting-Started-3.png" width="" srccredit="neo" />
+		<graphic format="png" fileref="images/jenkins/Getting-Started-4.png" width="" srccredit="neo" />
+		<graphic format="png" fileref="images/jenkins/Getting-Started-5.png" width="" srccredit="neo" />
+		<graphic format="png" fileref="images/jenkins/Getting-Started-6.png" width="" srccredit="neo" />
+		<graphic format="png" fileref="images/jenkins/Getting-Started-7.png" width="" srccredit="neo" />
 
 	</section>
 	<section id="Jenkinsfile.pipeline">
