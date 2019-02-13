@@ -1,8 +1,85 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="jenkins.Docker">
-	<title>Docker</title>
-	<subtitle>This plugin integrates Jenkins with Docker</subtitle>
-	<screen>
+<section id="jenkins.plugins">
+	<title>Jenkins Plugin</title>
+	<section id="BlueOcean">
+		<title>Blue Ocean</title>
+		<para>
+			<ulink url="https://jenkins.io/doc/book/blueocean/getting-started/" />
+		</para>
+		<para>
+			<ulink url="http://jk.netkiller.cn/blue/" />
+		</para>
+	</section>
+	<section id="github-plugin">
+		<title>github-plugin 插件</title>
+		<para>
+			<ulink url="https://github.com/jenkinsci/github-plugin" />
+		</para>
+		<para></para>
+		<screen>
+		<![CDATA[
+git clone https://github.com/jenkinsci/github-plugin.git
+mkdir target/classes
+		]]>
+		</screen>
+		<para>修改 rest-assured 去掉 exclusions 配置项</para>
+		<screen>
+		<![CDATA[
+        <dependency>
+            <groupId>com.jayway.restassured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <!--1.7.2 is the last version that use a compatible groovy version-->
+            <version>1.7.2</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>		
+		]]>
+		</screen>
+		<para> 编译插件 </para>
+		<screen>
+		<![CDATA[
+[root@netkiller github-plugin]# mvn hpi:hpi
+[INFO] Scanning for projects...
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building GitHub plugin 1.29.4-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-hpi-plugin:1.120:hpi (default-cli) @ github ---
+[INFO] Generating /srv/github-plugin/target/github/META-INF/MANIFEST.MF
+[INFO] Checking for attached .jar artifact ...
+[INFO] Generating jar /srv/github-plugin/target/github.jar
+[INFO] Building jar: /srv/github-plugin/target/github.jar
+[INFO] Exploding webapp...
+[INFO] Copy webapp webResources to /srv/github-plugin/target/github
+[INFO] Assembling webapp github in /srv/github-plugin/target/github
+[INFO] Generating hpi /srv/github-plugin/target/github.hpi
+[INFO] Building jar: /srv/github-plugin/target/github.hpi
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 4.161s
+[INFO] Finished at: Mon Jan 07 12:03:45 CST 2019
+[INFO] Final Memory: 29M/290M
+[INFO] ------------------------------------------------------------------------
+
+		]]>
+		</screen>
+		<para>进入 github --> Settings --> Developer settings --> Personal Access Token --> Generate new token</para>
+		<para>repo 和 admin:repo_hook</para>
+		<para>Settings -> Webhooks -> Add webhook</para>
+		<para>系统管理 --> 系统设置 --> GitHub --> Add GitHub Sever</para>
+	</section>
+
+	<section id="jenkins.Docker">
+		<title>Docker</title>
+		<subtitle>This plugin integrates Jenkins with Docker</subtitle>
+		<screen>
 	<![CDATA[
 vim /lib/systemd/system/docker.service
 
@@ -12,9 +89,9 @@ ExecStart=/usr/bin/dockerd -H fd://
 
 ExecStart=/usr/bin/dockerd -H fd:// -H unix:///var/run/docker.sock -H tcp://0.0.0.0:2375
 	]]>
-	</screen>
-	<para>重启 docker</para>
-	<screen>
+		</screen>
+		<para>重启 docker</para>
+		<screen>
 	<![CDATA[
 systemctl daemon-reload
 systemctl restart docker
@@ -22,9 +99,9 @@ systemctl restart docker
 如果是 Docker 方式运行 Jenkins 需要启动 jenkins
 docker start jenkins	
 	]]>
-	</screen>
-	<para>参考例子</para>
-	<programlisting>
+		</screen>
+		<para>参考例子</para>
+		<programlisting>
 	<![CDATA[
 root@ubuntu:~# cat /lib/systemd/system/docker.service
 [Unit]
@@ -62,26 +139,28 @@ StartLimitInterval=60s
 [Install]
 WantedBy=multi-user.target	
 	]]>
-	</programlisting>
-	<section>
-		<title>设置 Docker 主机和代理</title>
-		<graphic format="png" fileref="images/jenkens/docker/docker-add.png" width="" srccredit="neo" />
-		<para>输入 Docker 主机的IP地址，类似 tcp://172.16.0.10:2375</para>
-		<graphic format="png" fileref="images/jenkens/docker/docker-host.png" width="" srccredit="neo" />
-		<graphic format="png" fileref="images/jenkens/docker/docker-name.png" width="" srccredit="neo" />
-		<graphic format="png" fileref="images/jenkens/docker/docker-test.png" width="" srccredit="neo" />
-		<graphic format="png" fileref="images/jenkens/docker/docker-agent.png" width="" srccredit="neo" />
+		</programlisting>
+		<section>
+			<title>设置 Docker 主机和代理</title>
+			<graphic format="png" fileref="images/jenkins/docker/docker-add.png" width="" srccredit="neo" />
+			<para>输入 Docker 主机的IP地址，类似 tcp://172.16.0.10:2375</para>
+			<graphic format="png" fileref="images/jenkins/docker/docker-host.png" width="" srccredit="neo" />
+			<graphic format="png" fileref="images/jenkins/docker/docker-name.png" width="" srccredit="neo" />
+			<graphic format="png" fileref="images/jenkins/docker/docker-test.png" width="" srccredit="neo" />
+			<graphic format="png" fileref="images/jenkins/docker/docker-agent.png" width="" srccredit="neo" />
+		</section>
+		<section>
+			<title>持久化</title>
+			<para>例如持续集成过程中，我们不希望每次都从 maven 镜像下载编译依赖的包，或者构建物我们需要永久保留等等，这时就需要做持久化</para>
+			<graphic format="png" fileref="images/jenkins/docker/container.png" width="" srccredit="neo" />
+			<para>例如我们将宿主主机的 /opt/maven 挂载到 Docker 容器的 /root/.m2 目录。这样就实现了 maven 的持久化。只需写入 /opt/maven:/root/.m2 即可</para>
+			<graphic format="png" fileref="images/jenkins/docker/volumes.png" width="" srccredit="neo" />
+			<para>当持续机构运行完毕 docker 容器被清理，但是 /opt/maven 并不会被清理，下次构建时，在将它挂载到 /root/.m2 即可。</para>
+		</section>
 	</section>
-	<section>
-		<title>持久化</title>
-		<para>例如持续集成过程中，我们不希望每次都从 maven 镜像下载编译依赖的包，或者构建物我们需要永久保留等等，这时就需要做持久化</para>
-		<graphic format="png" fileref="images/jenkens/docker/container.png" width="" srccredit="neo" />
-		<para>例如我们将宿主主机的 /opt/maven 挂载到 Docker 容器的 /root/.m2 目录。这样就实现了 maven 的持久化。只需写入 /opt/maven:/root/.m2 即可</para>
-		<graphic format="png" fileref="images/jenkens/docker/volumes.png" width="" srccredit="neo" />
-		<para>当持续机构运行完毕 docker 容器被清理，但是 /opt/maven 并不会被清理，下次构建时，在将它挂载到 /root/.m2 即可。</para>
+	<section id="JaCoCo">
+		<title>JaCoCo</title>
+		<subtitle>This plugin integrates JaCoCo code coverage reports to Jenkins.</subtitle>
 	</section>
-</section>
-<section id="JaCoCo">
-	<title>JaCoCo</title>
-	<subtitle>This plugin integrates JaCoCo code coverage reports to Jenkins.</subtitle>
+
 </section>
