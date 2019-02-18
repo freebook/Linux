@@ -161,6 +161,66 @@ WantedBy=multi-user.target
 	<section id="JaCoCo">
 		<title>JaCoCo</title>
 		<subtitle>This plugin integrates JaCoCo code coverage reports to Jenkins.</subtitle>
+		<para>https://jenkins.io/doc/pipeline/steps/jacoco/</para>
+		<section id="jacoco.pipeline">
+			<title>Pipeline</title>
+			<screen>
+			<![CDATA[
+stage('Build') {
+     steps {
+        sh 'mvn test'
+        junit '*/build/test-results/*.xml'
+        step( [ $class: 'JacocoPublisher' ] )
+     }
+}
+			]]>
+			</screen>
+			<para>配置jacoco</para>
+			<screen>
+			<![CDATA[
+The jacoco pipeline step configuration uses this format:
+
+step([$class: 'JacocoPublisher', 
+      execPattern: 'target/*.exec',
+      classPattern: 'target/classes',
+      sourcePattern: 'src/main/java',
+      exclusionPattern: 'src/test*'
+])
+Or with a simpler syntax for declarative pipeline:
+
+jacoco( 
+      execPattern: 'target/*.exec',
+      classPattern: 'target/classes',
+      sourcePattern: 'src/main/java',
+      exclusionPattern: 'src/test*'
+)			
+			]]>
+			</screen>
+			<para>完整的例子</para>
+			<screen>
+			<![CDATA[
+node {
+    stage('Checkout') {
+        git 'https://github.com/bg7nyt/junit4-jacoco.git'
+    }
+    stage('Build') {
+        sh "mvn -Dmaven.test.failure.ignore clean package"
+    }
+    stage('Test') {
+        sh "mvn test"
+    }
+    stage('Results') {
+        junit '**/target/surefire-reports/TEST-*.xml'
+        archive 'target/*.jar'
+        step( [ $class: 'JacocoPublisher' ] )
+    }
+}			
+			]]>
+			</screen>
+				
+			
+			
+		</section>
 	</section>
 
 </section>

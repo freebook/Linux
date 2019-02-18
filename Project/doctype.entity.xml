@@ -19,6 +19,7 @@
 <!ENTITY chapter.integration.xml		SYSTEM "chapter.integration.xml">
 <!ENTITY chapter.jenkins.xml			SYSTEM "chapter.jenkins.xml">
 <!ENTITY section.jenkins.plugins.xml	SYSTEM "section.jenkins.plugins.xml">
+<!ENTITY section.jenkins.jenkinsfile.xml	SYSTEM "section.jenkins.jenkinsfile.xml">
 <!ENTITY chapter.sonarqube.xml			SYSTEM "chapter.sonarqube.xml">
 <!ENTITY chapter.review.xml			SYSTEM "chapter.review.xml">
 
