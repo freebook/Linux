@@ -94,63 +94,14 @@ pipeline {
 		</section>
 
 
-		<section id="pipeline.echo">
-			<title>echo</title>
-			<screen>
-			<![CDATA[
-    stage('Deploy') {
-        echo 'Deploying....'
-    }
-			]]>
-			</screen>
-		</section>
+		
 
-		<section id="pipeline.git">
-			<title>Git</title>
-			<screen>
-			<![CDATA[
-		stage('Git') {
-          	steps {
-            	git(url: 'https://git.dev.tencent.com/netkiller/java.git', branch: 'master', changelog: true, poll: true)
-          	}
-    	}
-			]]>
-			</screen>
-		</section>
+		
 
-		<section id="pipeline.sh">
-			<title>sh</title>
-			<screen>
-			<![CDATA[
-		stage("build") {
-            steps {
-                sh "mvn package -Dmaven.test.skip=true"
-            }
-        }
-			]]>
-			</screen>
-			<screen>
-			<![CDATA[
-		steps {
-        	script{
-            	sh 'find /etc/'
-			}
-		}
-			]]>
-			</screen>
-		</section>
-		<section id="pipeline.bat">
-			<title>Windows 批处理脚本</title>
-			<screen>
-			<![CDATA[
-	stage('bat') {
-        steps {
-            bat(returnStatus: true, returnStdout: true, label: 'aa', encoding: 'utf-8', script: 'dir')
-    	}
-    }			
-			]]>
-			</screen>
-		</section>
+
+
+
+
 		<section id="pipeline.script">
 			<title>script</title>
 			<screen>
@@ -212,25 +163,10 @@ pipeline {
         }
 			]]>
 			</screen>
-		</section>
+</section>
 
 
-		<section id="pipeline.sleep">
-			<title>睡眠</title>
-			<screen>
-			<![CDATA[
-node {
-    sleep 10
-    echo 'Hello World'
-}			
-			]]>
-			</screen>
-			<screen>
-			<![CDATA[
-sleep(time:3,unit:"SECONDS")			
-			]]>
-			</screen>
-		</section>
+		
 
 		<section id="pipeline.parallel">
 			<title>parallel 平行执行</title>
@@ -338,39 +274,8 @@ pipeline {
 			]]>
 			</screen>
 		</section>
-		<section id="pipeline.fileExists">
-			<title></title>
-			<screen>
-			<![CDATA[
-	stage('exists') {
-          steps {
-            fileExists '/sss'
-          }
-    }	
-			]]>
-			</screen>
-			<screen>
-			<![CDATA[
-def exists = fileExists 'file'
-
-if (exists) {
-    echo 'Yes'
-} else {
-    echo 'No'
-}
-			]]>
-			</screen>
-			<screen>
-			<![CDATA[
-if (fileExists('file')) {
-    echo 'Yes'
-} else {
-    echo 'No'
-}			
-			]]>
-			</screen>
-		</section>
-
+		
+		
 		<section id="pipeline.options">
 			<title>options</title>
 			<para>还能定义一些管道特定的选项，介绍几个常用的：</para>
@@ -382,7 +287,7 @@ retry - 直到成功的重试次数options { retry(3) }
 timestamps - 控制台输出前面加时间戳options { timestamps() }			
 			]]>
 			</screen>
-		</section>
+	</section>
 		<section id="pipeline.triggers">
 			<title>triggers</title>
 			<para>触发器指令定义了这个管道何时该执行，就可以定义两种cron和pollSCM</para>
@@ -502,6 +407,16 @@ pipeline {
 }			
 			]]>
 			</screen>
+		</section>
+
+		<section id="pipeline.error">
+			<title>跑出错误</title>
+			<screen>
+			<![CDATA[
+error '执行出错'
+			]]>
+			</screen>
+
 		</section>
 
 
@@ -1113,4 +1028,225 @@ node('master') {
 			</screen>
 		</section>
 	</section>
+	<section id="pipeline.steps">
+		<title>Steps</title>
+		<section id="pipeline.echo">
+			<title>echo</title>
+			<screen>
+			<![CDATA[
+    stage('Deploy') {
+        echo 'Deploying....'
+    }
+			]]>
+			</screen>
+		</section>
+		<section id="steps.catchError">
+			<title>catchError 捕获错误</title>
+			<screen>
+			<![CDATA[
+node {
+    catchError {
+        sh 'might fail'
+    }
+    step([$class: 'Mailer', recipients: 'admin@somewhere'])
+}
+
+			
+	stage('teatA') {
+      steps {
+        catchError() {
+          sh 'make'
+        }
+
+        mail(subject: 'Test', body: 'aaaa', to: 'netkiller@msn.com')
+      }
+    }
+			
+			]]>
+			</screen>
+		</section>
+		<section id="pipeline.sleep">
+			<title>睡眠</title>
+			<screen>
+			<![CDATA[
+node {
+    sleep 10
+    echo 'Hello World'
+}			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+sleep(time:3,unit:"SECONDS")			
+			]]>
+			</screen>
+		</section>
+		<section id="steps.timeout">
+			<title></title>
+			<screen>
+			<![CDATA[
+		stage('enforce') {
+          steps {
+            timeout(activity: true, time: 1) {
+              echo 'test'
+            }
+
+          }
+        }
+			]]>
+			</screen>
+		</section>
+		
+		
+	</section>
+	<section id="pipeline.scm">
+		<title>版本控制</title>
+	
+		<section id="steps.checkout">
+			<title>checkout</title>
+			<para>https://github.com/jenkinsci/workflow-scm-step-plugin/blob/master/README.md</para>
+			<screen>
+			<![CDATA[
+	stage('checkout') {
+      steps {
+        checkout(scm: [$class: 'GitSCM', branches: [[name: env.GIT_BUILD_REF]], 
+                          userRemoteConfigs: [[url: env.GIT_REPO_URL]]], changelog: true, poll: true)
+      }
+    }			
+			]]>
+			</screen>
+		</section>
+		<section id="pipeline.git">
+			<title>Git</title>
+			<screen>
+			<![CDATA[
+		stage('Git') {
+          	steps {
+            	git(url: 'https://git.dev.tencent.com/netkiller/java.git', branch: 'master', changelog: true, poll: true)
+          	}
+    	}
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section id="Nodes and Processes">
+		<title>节点与过程</title>
+		<section id="pipeline.sh">
+			<title>sh</title>
+			<screen>
+			<![CDATA[
+		stage("build") {
+            steps {
+                sh "mvn package -Dmaven.test.skip=true"
+            }
+        }
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+		steps {
+        	script{
+            	sh 'find /etc/'
+			}
+		}
+			]]>
+			</screen>
+		</section>
+		<section id="pipeline.bat">
+			<title>Windows 批处理脚本</title>
+			<screen>
+			<![CDATA[
+	stage('bat') {
+        steps {
+            bat(returnStatus: true, returnStdout: true, label: 'aa', encoding: 'utf-8', script: 'dir')
+    	}
+    }			
+			]]>
+			</screen>
+		</section>
+		<section id="steps.ws">
+			<title>分配工作空间</title>
+			<screen>
+			<![CDATA[
+	stage('alocate') {
+        steps {
+            ws(dir: 'src') {
+                echo 'aaa'
+            }
+
+    	}
+    }
+			]]>
+			</screen>
+		</section>
+		<section id="steps.node">
+			<title>node</title>
+			<screen>
+			<![CDATA[
+	stage('node') {
+    	steps {
+            node(label: 'java-8') {
+              sh 'mvn package'
+            }
+
+        }
+	}				
+			]]>
+			</screen>
+		</section>
+
+	</section>
+	<section id="pipeline.workspace">
+		<title>工作区</title>
+		
+		<section id="pipeline.dir">
+			<title>变更目录</title>
+			<screen>
+			<![CDATA[
+	stage('subtask') {
+        steps {
+            dir(path: '/src') {
+             	echo 'begin'
+              	sh '''mvn test'''
+            	echo 'end'
+        	}
+		}
+	}			
+			]]>
+			</screen>
+		</section>
+		<section id="pipeline.fileExists">
+			<title></title>
+			<screen>
+			<![CDATA[
+	stage('exists') {
+          steps {
+            fileExists '/sss'
+          }
+    }	
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+def exists = fileExists 'file'
+
+if (exists) {
+    echo 'Yes'
+} else {
+    echo 'No'
+}
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+if (fileExists('file')) {
+    echo 'Yes'
+} else {
+    echo 'No'
+}			
+			]]>
+			</screen>
+		</section>
+	</section>
+	
 </section>	
