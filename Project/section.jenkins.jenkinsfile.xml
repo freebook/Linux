@@ -168,34 +168,7 @@ pipeline {
 
 		
 
-		<section id="pipeline.parallel">
-			<title>parallel 平行执行</title>
-			<screen>
-			<![CDATA[
-	stage('test') {
-      parallel {
-        stage('test') {
-          steps {
-            echo 'hello'
-          }
-        }
-        stage('test1') {
-          steps {
-            sleep 1
-          }
-        }
-        stage('test2') {
-          steps {
-            retry(count: 5) {
-              echo 'hello'
-            }
-
-          }
-        }
-      }			
-			]]>
-			</screen>
-		</section>
+		
 
 		<section id="pipeline.environment">
 			<title>设置环境变量</title>
@@ -1030,6 +1003,34 @@ node('master') {
 	</section>
 	<section id="pipeline.steps">
 		<title>Steps</title>
+		<section id="pipeline.parallel">
+			<title>parallel 平行执行</title>
+			<screen>
+			<![CDATA[
+	stage('test') {
+      parallel {
+        stage('test') {
+          steps {
+            echo 'hello'
+          }
+        }
+        stage('test1') {
+          steps {
+            sleep 1
+          }
+        }
+        stage('test2') {
+          steps {
+            retry(count: 5) {
+              echo 'hello'
+            }
+
+          }
+        }
+      }			
+			]]>
+			</screen>
+		</section>
 		<section id="pipeline.echo">
 			<title>echo</title>
 			<screen>
@@ -1096,6 +1097,21 @@ sleep(time:3,unit:"SECONDS")
 			]]>
 			</screen>
 		</section>
+		<section id="steps.timestamps">
+			<title>时间截</title>
+			<screen>
+			<![CDATA[
+	stage('timestamps') {
+          steps {
+            timestamps() {
+              echo 'test'
+            }
+          }
+    }			
+			]]>
+			</screen>
+		</section>
+		
 		
 		
 	</section>
@@ -1247,6 +1263,74 @@ if (fileExists('file')) {
 			]]>
 			</screen>
 		</section>
+		<section id="steps.ws">
+			<title>分配工作区</title>
+			<screen>
+			<![CDATA[
+    stage('alocate') {
+        steps {
+            ws(dir: 'src') {
+                echo 'aaa'
+            }
+
+    	}
+    }			
+			]]>
+			</screen>
+		</section>
+		
+		<section id="steps.cleanWs">
+			<title>清理工作区</title>
+			<screen>
+			<![CDATA[
+	stage('test') {
+        steps {
+            cleanWs(cleanWhenAborted: true, cleanWhenFailure: true, cleanWhenNotBuilt: true, cleanWhenSuccess: true, cleanWhenUnstable: true, cleanupMatrixParent: true, deleteDirs: true, disableDeferredWipeout: true, notFailBuild: true, skipWhenFailed: true, externalDelete: '/aa')
+    	}
+    }			
+			]]>
+			</screen>
+		</section>
+		<section id="steps.deleteDir">
+			<title>递归删除目录</title>
+			<screen>
+			<![CDATA[
+	stage('deldir') {
+          steps {
+            deleteDir()
+          }
+    }			
+			]]>
+			</screen>
+		</section>
+		<section id="steps.writeFile">
+			<title>写文件</title>
+			<screen>
+			<![CDATA[
+		stage('write') {
+          steps {
+            writeFile(file: 'hello.txt', text: 'Helloworld')
+          }
+        }
+		
+			]]>
+			</screen>
+		</section>
+		<section id="steps.readFile">
+			<title>读文件</title>
+			<screen>
+			<![CDATA[
+        stage('read') {
+          steps {
+            readFile 'hello.txt'
+          }
+        }				
+			]]>
+			</screen>
+			
+		</section>
+		
+		
 	</section>
 	
 </section>	
