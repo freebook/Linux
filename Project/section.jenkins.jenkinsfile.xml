@@ -463,18 +463,45 @@ pipeline {
     	}
       	stage("部署"){
       		steps {
-              parallel "上传": {
-                    sh 'sshpass -p Passw0rd scp target/*.jar root@dev.netkiller.cn:/root/'
-                }, "运行": {
-                    sh 'sshpass -p Passw0rd ssh root@dev.netkiller.cn java -jar /root/java-0.0.1-SNAPSHOT.jar'
-                }
-            	
+              echo "上传"
+              sh 'sshpass -p Passw0rd scp target/*.jar root@dev.netkiller.cn:/root/'
+              echo "运行"
+              sh 'sshpass -p Passw0rd ssh root@dev.netkiller.cn java -jar /root/java-0.0.1-SNAPSHOT.jar'
+                         	
     	    }
     	}
     }
 }			
 			]]>
 			</screen>
+			<section id="">
+				<title></title>
+				<screen>
+				<![CDATA[
+		stage("部署"){
+            parallel{
+	            stage("sshpass") {
+		        	steps{
+		        	    sh 'apt install -y sshpass'
+		                sh 'sshpass -v'
+		        	}
+		        }
+            	stage('stop') {
+			         steps {
+			            sh 'sshpass -p passw0rd ssh -f dev.netkiller.cn pkill -f java-project-0.0.2-SNAPSHOT'
+			         }
+			    }
+			    stage('start') {
+			         steps {
+			            sh 'sshpass -p passw0rd scp target/*.jar dev.netkiller.cn:/root/'
+                	    sh 'sshpass -p passw0rd ssh -f dev.netkiller.cn java -jar /root/java-project-0.0.2-SNAPSHOT.jar'
+			          }
+			    }	                
+    	    }
+    	}				
+				]]>
+				</screen>
+			</section>
 		</section>
 	</section>
 	<section id="Jenkinsfile.node">
