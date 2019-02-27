@@ -1027,6 +1027,69 @@ node('master') {
 			]]>
 			</screen>
 		</section>
+		<section id="stage">
+			<title>input</title>
+			<screen>
+			<![CDATA[
+node {
+    stage('Git') {
+        def branch = input message: 'input branch name for this job', ok: 'ok', parameters: [string(defaultValue: 'master', description: 'branch name', name: 'branch')]
+        echo branch
+    }
+}			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+node {
+    stage('Git') {
+        def result = input message: 'input branch name for this job', ok: 'ok', parameters: [string(defaultValue: 'master', description: 'branch name', name: 'branch'), string(defaultValue: '', description: 'commit to switch', name: 'commit')]
+
+        echo result.branch
+        echo result.commit
+    }
+}
+
+node {
+    stage('Git') {
+        def result = input message: 'input branch name for this job', ok: 'ok', parameters: [string(defaultValue: 'master', description: 'branch name', name: 'branch'), string(defaultValue: '', description: 'commit to switch', name: 'commit')]
+
+        sh "echo ${result.branch}"
+        sh "echo ${result.commit}"
+    }
+}
+			]]>
+			</screen>
+		</section>
+		<section id="stage.if">
+			<title>if 条件判断</title>
+			<screen>
+			<![CDATA[
+node {
+    dir('/var/www') {
+        stage('Git') {
+            if(fileExists('project')) {
+                dir('project') {
+                    sh 'git fetch origin'
+                    sh 'git checkout master'
+                    sh 'git pull'
+                }
+            } else {
+                sh 'git clone git@git.netkiller.cn:neo/project.git project'
+            }
+        }
+    }
+}			
+			]]>
+			</screen>
+			
+			<screen>
+			<![CDATA[	
+			
+			]]>
+			</screen>
+		</section>
+
 	</section>
 	<section id="pipeline.steps">
 		<title>Steps</title>
@@ -1148,6 +1211,7 @@ sleep(time:3,unit:"SECONDS")
 		<section id="steps.checkout">
 			<title>checkout</title>
 			<para>https://github.com/jenkinsci/workflow-scm-step-plugin/blob/master/README.md</para>
+			<para>下面配置适用与 Webhook 方式</para>
 			<screen>
 			<![CDATA[
 	stage('checkout') {
@@ -1156,6 +1220,14 @@ sleep(time:3,unit:"SECONDS")
                           userRemoteConfigs: [[url: env.GIT_REPO_URL]]], changelog: true, poll: true)
       }
     }			
+			]]>
+			</screen>
+			<para>从 URL 获取代码</para>
+			<screen>
+			<![CDATA[
+node {
+   checkout ([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '', url: 'https://github.com/bg7nyt/java.git']]])   
+}			
 			]]>
 			</screen>
 		</section>

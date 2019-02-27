@@ -217,10 +217,16 @@ node {
 }			
 			]]>
 			</screen>
-				
-			
-			
 		</section>
 	</section>
-
+	<section id="jenkins.kubernetes">
+		<title>Kubernetes 插件</title>
+		<para><ulink url="https://github.com/jenkinsci/kubernetes-plugin"></ulink></para>
+		
+		<section id="Kubernetes Cli">
+			<title>Kubernetes Cli</title>
+			<para>: <ulink url="" /></para>
+		</section>
+		
+	</section>
 </section>
