@@ -176,6 +176,24 @@ neo@netkiller:~$ sudo screen -r 1955
 			</screen>
 		</section>
 	</section>
+	<section id="sources.list">
+		<title>更换 api 源镜像</title>
+		<para>备份 /etc/apt/sources.list 文件，然后覆盖即可</para>
+		<screen>
+		<![CDATA[
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic main restricted universe multiverse
+deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse
+deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-backports main restricted universe multiverse
+deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-backports main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-security main restricted universe multiverse
+deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-security main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-proposed main restricted universe multiverse
+deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-proposed main restricted universe multiverse		
+		]]>
+		</screen>
+	</section>
 	<section id="dpkg">
 		<title>dpkg</title>
 		<section>
@@ -414,8 +432,6 @@ $ sudo apt-get install checkinstall
 			<title>control</title>
 			<para>Architecture: any | amd64 | i386 The generated binary package is an architecture dependent one usually in a compiled language.</para>
 			<para>Architecture: all The generated binary package is an architecture independent one usually consisting of text, images, or scripts in an interpreted language.</para>
-		</section>
-
-		
+		</section>		
 	</section>
 </chapter>
