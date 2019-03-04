@@ -480,7 +480,16 @@ jam zheng
     		<title>计算字符串长度</title>
     		<para>计算字符串长度</para>
     		<screen>
+    		<![CDATA[
 echo ${#PATH}
+    		]]>
+    		</screen>
+    		<screen>
+    		<![CDATA[
+$ VAR="This string is stored in a variable VAR"
+$ echo ${#VAR}
+39    		
+    		]]>
     		</screen>
     	</section>
     	<section>

@@ -34,6 +34,18 @@ dockerfile - 使用源码根目录下面的Dockerfile构建容器来运行
 			</section>
 			<section id="agent.docker">
 				<title>docker</title>
+				<para><ulink url="https://jenkins.io/doc/book/pipeline/docker/" /></para>
+				<para>添加 jenkins 用户到 docker 组</para>
+				<screen>
+				<![CDATA[
+[root@localhost ~]# gpasswd -a jenkins docker
+Adding user jenkins to group docker
+
+[root@localhost ~]# cat /etc/group | grep ^docker
+docker:x:993:jenkins	
+				]]>
+				</screen>
+
 				<screen>
 				<![CDATA[
 pipeline {
@@ -59,9 +71,22 @@ pipeline {
             }
         }
     }
-}				
+}
+
+pipeline {
+    agent {
+        docker { image 'php:latest' }
+    }
+    stages {
+        stage('Test') {
+            steps {
+                sh 'php --version'
+            }
+        }
+    }
+}
 				]]>
-				</screen>
+				</screen>				
 			</section>
 		</section>
 		<section id="pipeline.stages">

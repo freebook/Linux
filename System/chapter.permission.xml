@@ -112,7 +112,7 @@ $ groupadd newgroup
 			<title>Add a user to the group</title>
 			<screen>
 $ groupadd mygroup
-$ sudo usermod -a -G mygroup user		
+$ sudo usermod -a -G mygroup user
 			</screen>
 		</section>
 		<section>
@@ -163,6 +163,27 @@ avahi-autoipd:x:102:
 neo:x:500:
 mysql:x:501:
 			</screen>
+		</section>
+		<section id="gpasswd">
+			<title>gpasswd - administer /etc/group and /etc/gshadow</title>
+			<para>当前用户添加到 docker 组</para>
+			<screen>
+			<![CDATA[
+# sudo gpasswd -a ${USER} docker
+			]]>
+			</screen>
+			<para>添加 jenkins 用户到 docker 组</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# gpasswd -a jenkins docker
+Adding user jenkins to group docker
+
+
+[root@localhost ~]# cat /etc/group | grep ^docker
+docker:x:993:jenkins			
+			]]>
+			</screen>
+			
 		</section>
 	</section>	
 	<section id="umask">
