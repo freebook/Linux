@@ -94,9 +94,9 @@ pipeline {
 		</section>
 
 
-		
 
-		
+
+
 
 
 
@@ -163,12 +163,12 @@ pipeline {
         }
 			]]>
 			</screen>
-</section>
+		</section>
 
 
-		
 
-		
+
+
 
 		<section id="pipeline.environment">
 			<title>设置环境变量</title>
@@ -247,8 +247,8 @@ pipeline {
 			]]>
 			</screen>
 		</section>
-		
-		
+
+
 		<section id="pipeline.options">
 			<title>options</title>
 			<para>还能定义一些管道特定的选项，介绍几个常用的：</para>
@@ -260,7 +260,7 @@ retry - 直到成功的重试次数options { retry(3) }
 timestamps - 控制台输出前面加时间戳options { timestamps() }			
 			]]>
 			</screen>
-	</section>
+		</section>
 		<section id="pipeline.triggers">
 			<title>triggers</title>
 			<para>触发器指令定义了这个管道何时该执行，就可以定义两种cron和pollSCM</para>
@@ -1082,7 +1082,7 @@ node {
 }			
 			]]>
 			</screen>
-			
+
 			<screen>
 			<![CDATA[	
 			
@@ -1201,13 +1201,13 @@ sleep(time:3,unit:"SECONDS")
 			]]>
 			</screen>
 		</section>
-		
-		
-		
+
+
+
 	</section>
 	<section id="pipeline.scm">
 		<title>版本控制</title>
-	
+
 		<section id="steps.checkout">
 			<title>checkout</title>
 			<para>https://github.com/jenkinsci/workflow-scm-step-plugin/blob/master/README.md</para>
@@ -1313,7 +1313,7 @@ node {
 	</section>
 	<section id="pipeline.workspace">
 		<title>工作区</title>
-		
+
 		<section id="pipeline.dir">
 			<title>变更目录</title>
 			<screen>
@@ -1377,7 +1377,7 @@ if (fileExists('file')) {
 			]]>
 			</screen>
 		</section>
-		
+
 		<section id="steps.cleanWs">
 			<title>清理工作区</title>
 			<screen>
@@ -1426,10 +1426,192 @@ if (fileExists('file')) {
         }				
 			]]>
 			</screen>
-			
+
 		</section>
-		
-		
+
+
 	</section>
-	
+	<section id="Jenkinsfile.example">
+		<title>Jenkinsfile Pipeline Example ()</title>
+		<section>
+			<title>Maven 子模块范例</title>
+			<para>
+				Maven 子模块创建方法
+				<ulink url="https://www.netkiller.cn/java/build/maven.html#maven.module" />
+			</para>
+			<para>目录结构</para>
+			<screen>
+			<![CDATA[
+Project
+    |
+    |--- common (Shared)
+    |     | ---pom.xml
+    |--- project1 (depend common)
+    |     |--- pom.xml
+    |--- project2 (depend common)
+    |     |--- pom.xml
+    |---pom.xml	
+					
+			]]>
+			</screen>
+			<para>构建 父项目</para>
+			<screen>
+			<![CDATA[
+pipeline {
+    agent {
+        label "default"
+    }
+    stages  {
+        
+        stage("检出") {
+            steps {
+                checkout(
+                  [$class: 'GitSCM', branches: [[name: env.GIT_BUILD_REF]], 
+                  userRemoteConfigs: [[url: env.GIT_REPO_URL]]]
+                )
+            }
+        }
+
+        stage("构建") {
+            steps {
+                echo "构建中..."
+              	sh 'mvn package -Dmaven.test.skip=true' // mvn 示例
+                archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true // 收集构建产物              	
+                echo "构建完成."
+            }
+        }
+
+        stage("测试") {
+            steps {
+                echo "单元测试中..."
+                // 请在这里放置您项目代码的单元测试调用过程，例如:
+                sh 'mvn test' // mvn 示例
+                echo "单元测试完成."
+                junit '**/target/surefire-reports/*.xml' // 收集单元测试报告的调用过程
+            }
+        }
+
+        stage("部署") {
+            steps {
+                echo "部署中..."
+                echo "部署完成"
+            }
+        }
+    }
+}
+			]]>
+			</screen>
+			<para>构建共享项目</para>
+			<screen>
+			<![CDATA[
+pipeline {
+    agent {
+        label "default"
+    }
+    stages  {
+        
+        stage("检出") {
+            steps {
+                checkout(
+                  [$class: 'GitSCM', branches: [[name: env.GIT_BUILD_REF]], 
+                  userRemoteConfigs: [[url: env.GIT_REPO_URL]]]
+                )
+            }
+        }
+
+        stage("构建") {
+            steps {
+                echo "构建中..."
+                dir(path: 'common') {
+              		sh 'mvn package -Dmaven.test.skip=true' // mvn 示例
+              		archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true // 收集构建产物
+              	}
+                echo "构建完成."
+            }
+        }
+
+        stage("测试") {
+            steps {
+                echo "单元测试中..."
+                sh 'mvn test' // mvn 示例
+                echo "单元测试完成."
+                junit 'target/surefire-reports/*.xml' // 收集单元测试报告的调用过程
+            }
+        }
+
+        stage("部署") {
+            steps {
+                echo "部署中..."
+                dir(path: 'common') {
+                	sh 'mvn install'
+                }
+                echo "部署完成"
+            }
+        }
+    }
+}			
+			]]>
+			</screen>
+			<para>构建 project1 和 project2</para>
+			<screen>
+			<![CDATA[
+pipeline {
+    agent {
+        label "default"
+    }
+    stages  {
+        
+        stage("检出") {
+            steps {
+                checkout(
+                  [$class: 'GitSCM', branches: [[name: env.GIT_BUILD_REF]], 
+                  userRemoteConfigs: [[url: env.GIT_REPO_URL]]]
+                )
+            }
+        }
+		stage("共享库") {
+            steps {
+                echo "构建中..."
+                dir(path: 'common') {
+              		sh 'mvn install -Dmaven.test.skip=true' // mvn 示例
+              		archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true // 收集构建产物
+              	}
+                echo "构建完成."
+            }
+        }
+        stage("构建") {
+            steps {
+                echo "构建中..."
+	            dir(path: 'project1') {
+    	            sh 'mvn package -Dmaven.test.skip=true' // mvn 示例
+   		            archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true // 收集构建产物
+                }
+                echo "构建完成."
+                
+            }
+        }
+
+        stage("测试") {
+            steps {
+                echo "单元测试中..."
+                sh 'mvn test' // mvn 示例
+                echo "单元测试完成."
+                junit 'target/surefire-reports/*.xml' // 收集单元测试报告的调用过程
+            }
+        }
+
+        stage("部署") {
+            steps {
+                echo "部署中..."
+                // 部署脚本
+                echo "部署完成"
+            }
+        }
+    }
+}			
+			]]>
+			</screen>
+		</section>
+
+	</section>
 </section>	
