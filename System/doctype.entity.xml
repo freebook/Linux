@@ -4,8 +4,12 @@
 	<!ENTITY chapter.system.xml	 			SYSTEM "chapter.system.xml">
 	<!ENTITY chapter.system.utilities.xml	SYSTEM "chapter.system.utilities.xml">
 	<!ENTITY chapter.locale.xml				SYSTEM "chapter.locale.xml">
+	
 	<!ENTITY chapter.package.xml 			SYSTEM "chapter.package.xml">
-	<!ENTITY chapter.package.yum.xml 		SYSTEM "chapter.package.yum.xml">
+	<!ENTITY section.package.apt.xml 		SYSTEM "section.package.apt.xml">
+	<!ENTITY section.package.yum.xml 		SYSTEM "section.package.yum.xml">
+	<!ENTITY section.package.snap.xml 		SYSTEM "section.package.snap.xml">
+	
 	<!ENTITY chapter.device.xml 			SYSTEM "chapter.device.xml">
 	<!ENTITY chapter.device.cpu.xml			SYSTEM "chapter.device.cpu.xml">
 	<!ENTITY chapter.console.xml			SYSTEM "chapter.console.xml">

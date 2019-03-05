@@ -281,6 +281,22 @@ docker run -p 8080:8080 -p 50000:50000 --name jenkins jenkins/jenkins:lts
 			]]>
 			</screen>
 			<para>首次启动，不要使用 -d 参数，如果使用了 -d 参数可以通过docker logs -f jenkins查看控制台的密码</para>
+			<para>docker-compose 配置文件</para>
+			<screen>
+			<![CDATA[
+version: '2'
+
+services:
+  jenkins:
+    container_name: jenkins-lts
+    ports: # 端口映射，9001为宿主机上的端口，相应的8080是容器运行起来时候jenkins服务的端口
+      - 9001:8080
+      - 50000:50000
+    image: jenkins/jenkins:lts # 指定运行用哪一个镜像来运行容器
+    volumes:
+      - /home/jenkins/jenkins_home:/var/jenkins_home # 挂载指令，目的在于销毁容器时，并不影响jenkins数据			
+			]]>
+			</screen>
 		</section>
 	</section>
 	<section id="jenkins.config">

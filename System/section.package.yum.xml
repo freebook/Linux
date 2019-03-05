@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.system.package.xml 605 2013-05-29 09:48:16Z netkiller $ -->
-<chapter id="index"><?dbhtml dir="package" ?>
+<section id="index"><?dbhtml dir="package" ?>
 	<title>yum - Yellowdog Updater Modified 包管理</title>
 	<section id="mirror">
 		<title>Yum Resource &amp; Yum Mirror</title>
@@ -1032,4 +1032,4 @@ make install DESTDIR=%{buildroot}
 			<para>Source 定义的文件不存在，如果你需要忽略Source可以使用  %setup -T</para>
 		</section>
 	</section>
-</chapter>
+</section>

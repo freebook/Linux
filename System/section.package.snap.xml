@@ -1,0 +1,77 @@
+<section id="ubuntu.snap">
+	<title>snap - Tool to interact with snaps</title>
+	<para>
+		<ulink url="" />
+	</para>
+	<section id="snap.list">
+		<title>列出已经安装的snap包</title>
+		<para></para>
+		<screen>
+		<![CDATA[
+neo@ubuntu:~$ snap list
+Name  Version    Rev   Tracking  Publisher   Notes
+core  16-2.37.2  6405  stable    canonical✓  core
+go    1.12       3318  stable    mwhudson    classic		
+		]]>
+		</screen>
+	</section>
+	<section id="snap.find">
+		<title>搜索要安装的snap包</title>
+		<screen>
+		<![CDATA[
+sudo snap find <text to search>		
+		]]>
+		</screen>
+	</section>
+	<section id="snap.install">
+		<title>安装snap包</title>
+		<screen>
+		<![CDATA[
+sudo snap install <snap name>
+		]]>
+		</screen>
+	</section>
+	<section id="snap.refresh">
+		<title>更新snap包</title>
+		<para>更新snap包，如果你后面不加包的名字的话那就是更新所有的snap包</para>
+		<screen>
+		<![CDATA[
+sudo snap refresh <snap name>		
+		]]>
+		</screen>
+	</section>
+	<section id="snap.revert">
+		<title>把一个包还原到以前安装的版本</title>
+		<screen>
+		<![CDATA[
+sudo snap revert <snap name>		
+		]]>
+		</screen>
+	</section>
+	<section id="snap.remove">
+		<title>删除snap包</title>
+		<para>删除一个snap包</para>
+		<screen>
+		<![CDATA[
+sudo snap remove <snap name>
+		]]>
+		</screen>
+	</section>
+	<section id="snap.changes">
+		<title>查询最近做的操作日志</title>
+		<para></para>
+		<screen>
+		<![CDATA[
+$ snap changes		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+neo@ubuntu:~$ snap changes
+ID   Status  Spawn               Ready               Summary
+2    Done    today at 11:11 CST  today at 12:15 CST  Install "go" snap
+3    Done    today at 11:11 CST  today at 11:11 CST  Initialize device		
+		]]>
+		</screen>
+	</section>
+</section>

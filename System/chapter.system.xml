@@ -67,7 +67,6 @@ $ chsh /bin/bash
 	&chapter.kernel.module.xml;
 <!-- =========================================================================== -->
 	&chapter.package.xml;
-	&chapter.package.yum.xml;	
 	&chapter.device.xml;
 	&chapter.locale.xml;
 	&chapter.console.xml;

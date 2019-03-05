@@ -34,7 +34,9 @@ dockerfile - 使用源码根目录下面的Dockerfile构建容器来运行
 			</section>
 			<section id="agent.docker">
 				<title>docker</title>
-				<para><ulink url="https://jenkins.io/doc/book/pipeline/docker/" /></para>
+				<para>
+					<ulink url="https://jenkins.io/doc/book/pipeline/docker/" />
+				</para>
 				<para>添加 jenkins 用户到 docker 组</para>
 				<screen>
 				<![CDATA[
@@ -86,7 +88,7 @@ pipeline {
     }
 }
 				]]>
-				</screen>				
+				</screen>
 			</section>
 		</section>
 		<section id="pipeline.stages">
@@ -190,11 +192,6 @@ pipeline {
 			</screen>
 		</section>
 
-
-
-
-
-
 		<section id="pipeline.environment">
 			<title>设置环境变量</title>
 			<para>environment定义键值对的环境变量</para>
@@ -246,15 +243,41 @@ pipeline {
 			]]>
 			</screen>
 		</section>
+		<section id="pipeline.withEnv">
+			<title>withEnv</title>
+			<screen>
+			<![CDATA[
+env.PROJECT_DIR='src/netkiller'			
+node {
+    withEnv(["GOPATH=$WORKSPACE"]) {
+        stage('Init gopath') {
+            sh 'mkdir -p $GOPATH/{bin,pkg,src}'
+        }
+        
+        stage('Build go proejct') {      
+            sh 'cd ${PROJECT_DIR}; go test && go build && go install'
+        }
+    }
+}
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+node {
+     git 'https://github.com/netkiller/api.git'
+     withEnv(["PATH+MAVEN=${tool 'm3'}/bin"]) {
+          sh "mvn -B –Dmaven.test.failure.ignore=true clean package"
+     }
+     stash excludes: 'target/', includes: '**', name: 'source'
+}			
+			]]>
+			</screen>
+		</section>
 		<section id="pipeline.parameters">
 			<title>parameters</title>
 			<para>参数指令，触发这个管道需要用户指定的参数，然后在step中通过params对象访问这些参数。</para>
 			<screen>
 			<![CDATA[
-
-
-
-
 // Declarative //
 pipeline {
     agent any
