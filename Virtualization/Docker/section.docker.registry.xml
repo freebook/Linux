@@ -116,8 +116,8 @@ neo@ubuntu:~$ curl -XGET http://localhost:5000/v2/_catalog
 		<screen>
 		<![CDATA[
 docker pull busybox
-docker tag busybox 192.168.0.157:5000/busybox
-docker push 192.168.0.157:5000/busybox
+docker tag busybox docker.netkiller.cn:5000/busybox
+docker push docker.netkiller.cn:5000/busybox
 		]]>
 		</screen>
 		<para>操作演示</para>
@@ -129,15 +129,32 @@ latest: Pulling from library/busybox
 697743189b6d: Pull complete 
 Digest: sha256:061ca9704a714ee3e8b80523ec720c64f6209ad3f97c0ff7cb9ec7d19f15149f
 Status: Downloaded newer image for busybox:latest
-[root@localhost ~]# docker tag busybox 192.168.0.157:5000/busybox
+
+[root@localhost ~]# docker tag busybox docker.netkiller.cn:5000/busybox
+
+[root@localhost ~]# docker push docker.netkiller.cn:5000/busybox
+The push refers to repository [docker.netkiller.cn:5000/busybox]
+adab5d09ba79: Pushed 
+latest: digest: sha256:4415a904b1aca178c2450fd54928ab362825e863c0ad5452fd020e92f7a6a47e size: 527
         ]]>
+		</screen>
+		<para>查看远程私有仓库</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# curl -XGET http://docker.netkiller.cn:5000/v2/_catalog
+{"repositories":["busybox"]}
+
+[root@localhost ~]# curl -XGET http://docker.netkiller.cn:5000/v2/busybox/tags/list
+{"name":"busybox","tags":["latest"]}
+		]]>
 		</screen>
 		<para>从私有仓库拉镜像</para>
 		<screen>
 		<![CDATA[
-docker pull 192.168.0.157:5000/busybox
+docker pull docker.netkiller.cn:5000/busybox
 		]]>
 		</screen>
+		
 	</section>
 	<section>
 		<title>查询镜像</title>
@@ -157,7 +174,11 @@ docker search registry_ipaddr:5000/account/
 		<para>操作演示</para>
 		<screen>
 		<![CDATA[
-		
+[root@localhost ~]# curl -XGET http://docker.netkiller.cn:5000/v2/_catalog
+{"repositories":["busybox"]}
+
+[root@localhost ~]# curl -XGET http://docker.netkiller.cn:5000/v2/busybox/tags/list
+{"name":"busybox","tags":["latest"]}		
 		]]>
 		</screen>
 	</section>
