@@ -7,90 +7,7 @@
 		<para>
 			<ulink url="https://jenkins.io/doc/pipeline/examples/" />
 		</para>
-		<section id="pipeline.agent">
-			<title>agent</title>
-			<para>agent 指令指定整个管道或某个特定的stage的执行环境。它的参数可用使用：</para>
-			<screen>
-			<![CDATA[
-agent: 
-any - 任意一个可用的agent
-none - 如果放在pipeline顶层，那么每一个stage都需要定义自己的agent指令
-label - 在jenkins环境中指定标签的agent上面执行，比如agent { label 'my-defined-label' }
-node - agent { node { label 'labelName' } } 和 label一样，但是可用定义更多可选项
-docker - 指定在docker容器中运行
-dockerfile - 使用源码根目录下面的Dockerfile构建容器来运行				
-			]]>
-			</screen>
-			<section id="agent.label">
-				<title>label</title>
-
-				<screen>
-				<![CDATA[
-	agent {
-        label "java-8"
-    }
-				]]>
-				</screen>
-			</section>
-			<section id="agent.docker">
-				<title>docker</title>
-				<para>
-					<ulink url="https://jenkins.io/doc/book/pipeline/docker/" />
-				</para>
-				<para>添加 jenkins 用户到 docker 组</para>
-				<screen>
-				<![CDATA[
-[root@localhost ~]# gpasswd -a jenkins docker
-Adding user jenkins to group docker
-
-[root@localhost ~]# cat /etc/group | grep ^docker
-docker:x:993:jenkins	
-				]]>
-				</screen>
-
-				<screen>
-				<![CDATA[
-pipeline {
-    agent { docker { image 'maven:3.3.3' } }
-    stages {
-        stage('build') {
-            steps {
-                sh 'mvn --version'
-            }
-        }
-    }
-}
-				]]>
-				</screen>
-				<screen>
-				<![CDATA[
-pipeline {
-    agent { docker { image 'php' } }
-    stages {
-        stage('build') {
-            steps {
-                sh 'php --version'
-            }
-        }
-    }
-}
-
-pipeline {
-    agent {
-        docker { image 'php:latest' }
-    }
-    stages {
-        stage('Test') {
-            steps {
-                sh 'php --version'
-            }
-        }
-    }
-}
-				]]>
-				</screen>
-			</section>
-		</section>
+		
 		<section id="pipeline.stages">
 			<title>stages</title>
 			<screen>
@@ -1154,6 +1071,144 @@ node {
 			</screen>
 		</section>
 
+	</section>
+	<section id="pipeline.agent">
+		<title>agent</title>
+		<para>agent 指令指定整个管道或某个特定的stage的执行环境。它的参数可用使用：</para>
+		<screen>
+		<![CDATA[
+agent: 
+any - 任意一个可用的agent
+none - 如果放在pipeline顶层，那么每一个stage都需要定义自己的agent指令
+label - 在jenkins环境中指定标签的agent上面执行，比如agent { label 'my-defined-label' }
+node - agent { node { label 'labelName' } } 和 label一样，但是可用定义更多可选项
+docker - 指定在docker容器中运行
+dockerfile - 使用源码根目录下面的Dockerfile构建容器来运行				
+		]]>
+		</screen>
+		<section id="agent.label">
+			<title>label</title>
+
+			<screen>
+			<![CDATA[
+	agent {
+        label "java-8"
+    }
+			]]>
+			</screen>
+		</section>
+		<section id="agent.docker">
+			<title>docker</title>
+			<para>
+				<ulink url="https://jenkins.io/doc/book/pipeline/docker/" />
+			</para>
+			<para>添加 jenkins 用户到 docker 组</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# gpasswd -a jenkins docker
+Adding user jenkins to group docker
+
+[root@localhost ~]# cat /etc/group | grep ^docker
+docker:x:993:jenkins	
+			]]>
+			</screen>
+			<section>
+				<title>指定docker 镜像</title>
+			<screen>
+			<![CDATA[
+pipeline {
+    agent { docker { image 'maven:3.3.3' } }
+    stages {
+        stage('build') {
+            steps {
+                sh 'mvn --version'
+            }
+        }
+    }
+}
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+pipeline {
+    agent { docker { image 'php' } }
+    stages {
+        stage('build') {
+            steps {
+                sh 'php --version'
+            }
+        }
+    }
+}
+
+pipeline {
+    agent {
+        docker { image 'php:latest' }
+    }
+    stages {
+        stage('Test') {
+            steps {
+                sh 'php --version'
+            }
+        }
+    }
+}
+			]]>
+			</screen>
+			</section>
+		<section id="docker.args">
+			<title>args 参数</title>
+			<para>挂在 /root/.m2 目录</para>
+			<screen>
+			<![CDATA[
+pipeline {
+    agent {
+        docker {
+            image 'maven:latest'
+            args '-v $HOME/.m2:/root/.m2'
+        }
+    }
+    stages {
+        stage('Build') {
+            steps {
+                sh 'mvn -B'
+            }
+        }
+    }
+}			
+			]]>
+			</screen>
+			</section>
+			
+		</section>
+		<section id="agent.dockerfile">
+			<title></title>
+			<para>创建 Dockerfile 文件</para>
+			<screen>
+			<![CDATA[
+FROM node:7-alpine
+
+RUN apk add -U subversion
+			]]>
+			</screen>
+			<para>创建 Jenkinsfile 文件</para>
+			<screen>
+			<![CDATA[
+// Jenkinsfile (Declarative Pipeline)
+pipeline {
+    agent { dockerfile true }
+    stages {
+        stage('Test') {
+            steps {
+                sh 'node --version'
+                sh 'svn --version'
+            }
+        }
+    }
+}
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="pipeline.steps">
 		<title>Steps</title>

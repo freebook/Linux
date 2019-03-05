@@ -61,6 +61,14 @@ Use "minikube [command] --help" for more information about a command.
 			]]>
 			</screen>
 		</section>
+		<section id="microk8s">
+			<title>Ubuntu</title>
+			<screen>
+			<![CDATA[
+snap install microk8s --channel=1.14/beta --classic			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="Quickstart">
 		<title>Quickstart</title>
