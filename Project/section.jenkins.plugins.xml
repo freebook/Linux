@@ -10,6 +10,17 @@
 			<ulink url="http://jk.netkiller.cn/blue/" />
 		</para>
 	</section>
+	<section id="">
+		<title>Locale Plugin (国际化插件)</title>
+		<para>安装Locale Plugin, 重启生效。</para>
+		<screen>
+		<![CDATA[
+配置【Manage Jenkins】>【Configure System】> 【Locale】		
+		]]>
+		</screen>
+		<graphic format="png" fileref="images/jenkins/locale/locale.png" width="" srccredit="neo" />
+		<para>Default Language 填写 zh_CN，勾选忽略浏览器设置强制设置语言</para>
+	</section>
 	<section id="github-plugin">
 		<title>github-plugin 插件</title>
 		<para>
@@ -221,12 +232,17 @@ node {
 	</section>
 	<section id="jenkins.kubernetes">
 		<title>Kubernetes 插件</title>
-		<para><ulink url="https://github.com/jenkinsci/kubernetes-plugin"></ulink></para>
-		
+		<para>
+			<ulink url="https://github.com/jenkinsci/kubernetes-plugin"></ulink>
+		</para>
+
 		<section id="Kubernetes Cli">
 			<title>Kubernetes Cli</title>
-			<para>: <ulink url="" /></para>
+			<para>
+				:
+				<ulink url="" />
+			</para>
 		</section>
-		
+
 	</section>
 </section>

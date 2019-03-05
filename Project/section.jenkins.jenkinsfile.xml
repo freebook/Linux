@@ -417,6 +417,22 @@ error '执行出错'
 
 		</section>
 
+		<section id="">
+			<title></title>
+			<subtitle>withCredentials: Bind credentials to variables</subtitle>
+			<section id="">
+				<title></title>
+				<screen>
+				<![CDATA[
+node {
+   withCredentials([string(credentialsId: 'token', variable: 'TOKEN')]) {
+        sh('echo $TOKEN')
+   }
+}				
+				]]>
+				</screen>
+			</section>
+		</section>
 
 		<section id="pipeline.sshpass">
 			<title>Jenkins pipeline 中使用 sshpass 实现 scp, ssh 远程运行</title>
