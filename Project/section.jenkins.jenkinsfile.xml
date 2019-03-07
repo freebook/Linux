@@ -1179,10 +1179,57 @@ pipeline {
 			]]>
 			</screen>
 			</section>
-			
+			<section id="docker.withRegistry">
+				<title>构建镜像</title>
+				<screen>
+				<![CDATA[
+node {
+    checkout scm
+
+    docker.withRegistry('http://hub.netkiller.cn:5000') {
+
+        def customImage = docker.build("project/api:1.0")
+
+        /* Push the container to the custom Registry */
+        customImage.push()
+    }
+}				
+				]]>
+				</screen>
+				<para>容器内运行脚本</para>
+				<screen>
+				<![CDATA[
+node {
+    checkout scm
+
+    def customImage = docker.build("my-image:${env.BUILD_ID}")
+
+    customImage.inside {
+        sh 'make test'
+    }
+}
+				]]>
+				</screen>
+				
+				<screen>
+				<![CDATA[
+		dir ('example') {
+            /* 构建镜像 */
+            def customImage = docker.build("example-group/example:${params.VERSION}")
+
+            /* hub.netkiller.cn是你的Docker Registry */
+            docker.withRegistry('https://hub.netkiller.cn/', 'docker-registry') {
+                /* Push the container to the custom Registry */
+                // push 指定版本
+                customImage.push('latest')
+            }
+        }				
+				]]>
+				</screen>
+			</section>
 		</section>
 		<section id="agent.dockerfile">
-			<title></title>
+			<title>Dockerfile</title>
 			<para>创建 Dockerfile 文件</para>
 			<screen>
 			<![CDATA[

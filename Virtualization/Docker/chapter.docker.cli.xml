@@ -216,4 +216,38 @@ docker images -aq | xargs docker rmi -f
 		]]>
 		</screen>
 	</section>
+	<section id="docker.cli.registry">
+		<title>仓库操作</title>
+		<para><ulink url="https://docs.docker.com/engine/reference/commandline/login/" /></para>
+		<para>登陆到一个Docker镜像仓库，如果未指定镜像仓库地址，默认为官方仓库 Docker Hub</para>
+		<section>
+			<title>登陆</title>
+			<screen>
+			<![CDATA[
+docker login -u 用户名 -p 密码			
+			]]>
+			</screen>
+			<para>登陆到私有仓库</para>
+			<screen>
+			<![CDATA[
+$ docker login localhost:8080			
+			]]>
+			</screen>
+			<para>从标准输出传递密码</para>
+			<screen>
+			<![CDATA[
+$ cat ~/my_password.txt | docker login --username foo --password-stdin			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>注销</title>
+			<screen>
+			<![CDATA[
+docker logout			
+			]]>
+			</screen>			
+		</section>
+	</section>
+	
 </section>
