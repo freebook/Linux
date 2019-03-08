@@ -4,6 +4,16 @@
 	<section id="minikube.install">
 		<title>安装 </title>
 		<section>
+			<title>BIOS 设置</title>
+			<para>执行下面命令检查服务器是否开启虚拟化技术</para>
+			<screen>
+			<![CDATA[
+egrep --color 'vmx|svm' /proc/cpuinfo			
+			]]>
+			</screen>
+			<para>如果没有任何输出，请重启服务器进入 BIOS 启用 VT-X 或 AMD-v</para>
+		</section>
+		<section>
 			<title>CentOS</title>
 			<screen>
 			<![CDATA[
@@ -65,9 +75,17 @@ Use "minikube [command] --help" for more information about a command.
 			<title>Ubuntu</title>
 			<screen>
 			<![CDATA[
-snap install microk8s --channel=1.14/beta --classic			
+snap install kubectl --classic			
+snap install microk8s --channel=1.14/beta --classic	
 			]]>
 			</screen>
+			<para>安装 VirtualBox</para>
+			<screen>
+			<![CDATA[
+neo@ubuntu:~$ sudo apt install -y virtualbox			
+			]]>
+			</screen>
+			
 		</section>
 	</section>
 	<section id="Quickstart">
@@ -76,4 +94,52 @@ snap install microk8s --channel=1.14/beta --classic
 		<![CDATA[]]>
 		</screen>
 	</section>
+	<section id="minikube.command">
+		<title>minikube 命令</title>
+		<section>
+			<title>指定 registry-mirror 镜像</title>
+			<screen>
+			<![CDATA[
+minikube start --registry-mirror=https://registry.docker-cn.com
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>启动 minikube</title>
+			<para>指定日志输出级别</para>
+			<screen>
+			<![CDATA[
+minikube start --v=7			
+			]]>
+			</screen>
+		</section>
+		
+		<section>
+			<title>清理 minikube</title>
+			<screen>
+			<![CDATA[
+minikube delete
+rm ~/.minikube 
+minikube start
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Kubernetes 控制面板</title>
+			<screen>
+			<![CDATA[
+minikube dashboard
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>查看日志</title>
+			<screen>
+			<![CDATA[
+minikube logs -v10			
+			]]>
+			</screen>
+		</section>
+	</section>
+	
 </section>

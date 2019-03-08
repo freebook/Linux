@@ -1328,6 +1328,23 @@ sr0          11:0    1  1024M  0 rom
 # kudzu --class=network -p
 		</screen>
 	</section>
+	<section id="numactl">
+		<title>numactl - Control NUMA policy for processes or shared memory</title>
+		<screen>
+		<![CDATA[
+neo@ubuntu:~$ sudo apt install numactl
+		
+neo@ubuntu:~$ numactl --hardware
+available: 1 nodes (0)
+node 0 cpus: 0 1 2 3 4 5 6 7
+node 0 size: 16039 MB
+node 0 free: 10675 MB
+node distances:
+node   0 
+  0:  10 
+		]]>
+		</screen>
+	</section>
 	<section id="udev">
 		<title>udev - Linux dynamic device management</title>
 		<screen>
