@@ -2,4 +2,5 @@
 <chapter id="index"><?dbhtml dir="kubernetes" ?>
 	<title>Kubernetes</title>
 	&chapter.minikube.xml;
+	&section.kubectl.xml;
 </chapter>

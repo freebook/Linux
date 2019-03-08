@@ -17,12 +17,122 @@ egrep --color 'vmx|svm' /proc/cpuinfo
 			<title>CentOS</title>
 			<screen>
 			<![CDATA[
+curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.13.2/bin/linux/amd64/kubectl && chmod +x kubectl && sudo cp kubectl /usr/local/bin/ && rm kubectl			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
 curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 \
   && install minikube-linux-amd64 /usr/local/bin/minikube			
 			]]>
 			</screen>
 			<para>尝试运行 minikube 如果输出帮助信息表示安装成功</para>
 			<screen>
+			<![CDATA[
+minikube version
+minikube version: v0.33.1			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+echo "1" > /proc/sys/net/bridge/bridge-nf-call-iptables			
+			]]>
+			</screen>
+		</section>
+		<section id="microk8s">
+			<title>Ubuntu</title>
+			<screen>
+			<![CDATA[
+snap install kubectl --classic			
+snap install microk8s --channel=1.14/beta --classic	
+			]]>
+			</screen>
+			<para>安装 VirtualBox</para>
+			<screen>
+			<![CDATA[
+neo@ubuntu:~$ sudo apt install -y virtualbox			
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section id="Quickstart">
+		<title>Quickstart</title>
+		<para>启动</para>
+		<screen>
+		<![CDATA[
+minikube start
+		]]>
+		</screen>
+		<para>运行一个 echoserver 镜像</para>
+		<screen>
+		<![CDATA[
+kubectl run hello-minikube --image=k8s.gcr.io/echoserver:1.4 --port=8080
+kubectl expose deployment hello-minikube --type=NodePort
+minikube service hello-minikube
+		]]>
+		</screen>
+		<para>查询 echoserver 访问地址</para>
+		<screen>
+		<![CDATA[
+minikube service hello-minikube --url		
+		]]>
+		</screen>
+		<para>在浏览器中访问查询到的网址</para>
+		<para>停止并删除镜像</para>
+		<screen>
+		<![CDATA[
+minikube stop
+minikube delete		
+		]]>
+		</screen>
+		<example>
+			<title>minikube 操作演示</title>
+			<para>快速开始使用 minikube 运行一个镜像</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# kubectl run hello-minikube --image=k8s.gcr.io/echoserver:1.4 --port=8080
+kubectl run --generator=deployment/apps.v1 is DEPRECATED and will be removed in a future version. Use kubectl run --generator=run-pod/v1 or kubectl create instead.
+deployment.apps/hello-minikube created
+
+[root@localhost ~]# kubectl expose deployment hello-minikube --type=NodePort
+service/hello-minikube exposed
+
+[root@localhost ~]# minikube service hello-minikube
+Opening kubernetes service default/hello-minikube in default browser...		
+
+[root@localhost ~]# kubectl get pod
+NAME                              READY   STATUS    RESTARTS   AGE
+hello-minikube-5c856cbf98-6vfvp   1/1     Running   0          6m59s
+
+[root@localhost ~]# minikube service hello-minikube --url
+http://172.16.0.121:30436
+
+[root@localhost ~]# curl http://172.16.0.121:30436
+CLIENT VALUES:
+client_address=172.17.0.1
+command=GET
+real path=/
+query=nil
+request_version=1.1
+request_uri=http://172.16.0.121:8080/
+
+SERVER VALUES:
+server_version=nginx: 1.10.0 - lua: 10001
+
+HEADERS RECEIVED:
+accept=*/*
+host=172.16.0.121:30436
+user-agent=curl/7.29.0
+BODY:
+-no body in request-
+			]]>
+			</screen>
+		</example>
+	</section>
+	<section id="minikube.command">
+		<title>minikube 命令</title>
+		<screen>
 			<![CDATA[
 [root@localhost ~]# minikube
 Minikube is a CLI tool that provisions and manages single-node Kubernetes clusters optimized for development workflows.
@@ -70,50 +180,64 @@ Flags:
 Use "minikube [command] --help" for more information about a command.			
 			]]>
 			</screen>
-		</section>
-		<section id="microk8s">
-			<title>Ubuntu</title>
-			<screen>
-			<![CDATA[
-snap install kubectl --classic			
-snap install microk8s --channel=1.14/beta --classic	
-			]]>
-			</screen>
-			<para>安装 VirtualBox</para>
-			<screen>
-			<![CDATA[
-neo@ubuntu:~$ sudo apt install -y virtualbox			
-			]]>
-			</screen>
-			
-		</section>
-	</section>
-	<section id="Quickstart">
-		<title>Quickstart</title>
-		<screen>
-		<![CDATA[]]>
-		</screen>
-	</section>
-	<section id="minikube.command">
-		<title>minikube 命令</title>
-		<section>
-			<title>指定 registry-mirror 镜像</title>
-			<screen>
-			<![CDATA[
-minikube start --registry-mirror=https://registry.docker-cn.com
-			]]>
-			</screen>
-		</section>
+		
 		<section>
 			<title>启动 minikube</title>
-			<para>指定日志输出级别</para>
+			<section>
+				<title>虚拟机驱动</title>
+				<para>--vm-driver=none</para>
+				<screen>
+				<![CDATA[
+minikube start --vm-driver=none
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>指定 registry-mirror 镜像</title>
+				<screen>
+				<![CDATA[
+minikube start --registry-mirror=https://registry.docker-cn.com
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>开启 </title>
+				<screen>
+				<![CDATA[
+minikube start --vm-driver kvm2 --gpu				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>日志输出级别</title>
+				<para>指定日志输出级别</para>
+				<screen>
+				<![CDATA[
+minikube start --v=7			
+				]]>
+				</screen>
+			</section>
+			
+		</section>
+		<section>
+			<title>缓存镜像</title>
 			<screen>
 			<![CDATA[
-minikube start --v=7			
+# cache a image into $HOME/.minikube/cache/images
+$ minikube cache add ubuntu:16.04
+$ minikube cache add redis:3
+
+# list cached images
+$ minikube cache list
+redis:3
+ubuntu:16.04
+
+# delete cached images
+$ minikube cache delete ubuntu:16.04
+$ minikube cache delete $(minikube cache list)
 			]]>
 			</screen>
 		</section>
-		
 		<section>
 			<title>清理 minikube</title>
 			<screen>
@@ -126,9 +250,27 @@ minikube start
 		</section>
 		<section>
 			<title>Kubernetes 控制面板</title>
+			<para>Dashboard是基于Web的Kubernetes管理界面。使用下面的命令启动：</para>
 			<screen>
 			<![CDATA[
 minikube dashboard
+			]]>
+			</screen>
+			<para>查询控制面板访问地址</para>
+			<screen>
+			<![CDATA[
+$ minikube dashboard --url
+http://192.168.3.14:30000			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>service</title>
+			<para></para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# minikube service hello-minikube --url
+http://172.16.0.121:30436			
 			]]>
 			</screen>
 		</section>
@@ -140,6 +282,72 @@ minikube logs -v10
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>查看 Docker 环境变量</title>
+			<screen>
+			<![CDATA[
+minikube docker-env
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>addons</title>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# minikube addons list
+- addon-manager: enabled
+- dashboard: enabled
+- default-storageclass: enabled
+- efk: disabled
+- freshpod: disabled
+- gvisor: disabled
+- heapster: disabled
+- ingress: disabled
+- kube-dns: disabled
+- metrics-server: disabled
+- nvidia-driver-installer: disabled
+- nvidia-gpu-device-plugin: disabled
+- registry: disabled
+- registry-creds: disabled
+- storage-provisioner: enabled
+- storage-provisioner-gluster: disabled			
+			]]>
+			</screen>
+		</section>
+		
 	</section>
-	
+	<section>
+		<title>FAQ</title>
+		<section>
+			<title>This computer doesn't have VT-X/AMD-v enabled. Enabling it in the BIOS is mandatory</title>
+			<para>检查一下 BIOS 是否开启 VT-X/AMD-v</para>
+			<para>如果在虚拟机安装 Minikube 也会遇到这个问题。 可以使用 --vm-driver=none 参数启动。</para>
+			<screen>
+			<![CDATA[
+neo@ubuntu:~$ sudo minikube start --vm-driver=none
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>ERROR FileContent--proc-sys-net-bridge-bridge-nf-call-iptables</title>
+			<para>解决方法</para>
+			<screen>
+			<![CDATA[
+echo "1" > /proc/sys/net/bridge/bridge-nf-call-iptables
+			]]>
+			</screen>
+			<para>然后在 minikube start</para>
+		</section>
+		<section>
+			<title>ERROR ImagePull</title>
+			<para>[ERROR ImagePull]: failed to pull image k8s.gcr.io/pause:3.1: output: 3.1: Pulling from pause
+Get https://k8s.gcr.io/v2/pause/manifests/sha256:59eec8837a4d942cc19a52b8c09ea75121acc38114a2c68b98983ce9356b8610: net/http: TLS handshake timeout</para>
+			<para>更换镜像再重试</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# minikube start --vm-driver=none --registry-mirror=https://registry.docker-cn.com			
+			]]>
+			</screen>
+		</section>
+	</section>
 </section>

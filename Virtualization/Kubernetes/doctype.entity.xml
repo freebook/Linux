@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<!ENTITY chapter.test.management.xml 	SYSTEM "chapter.test.management.xml">
+	
+	<!ENTITY chapter.watir.xml				SYSTEM "chapter.watir.xml">
+	<!ENTITY chapter.selenium.xml			SYSTEM "chapter.selenium.xml">
+	<!ENTITY chapter.test.io.xml     		SYSTEM "chapter.test.io.xml">
+	<!ENTITY chapter.testing.data.xml  		SYSTEM "chapter.testing.data.xml">
+	<!ENTITY chapter.miscellaneous.xml 		SYSTEM "chapter.miscellaneous.xml">

@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="kubectl">
+	<title>kubectl - controls the Kubernetes cluster manager. </title>
+	<para>kubectl是Kubernetes的命令行管理工具</para>
+	<screen>
+	<![CDATA[
+kubectl controls the Kubernetes cluster manager. 
+
+Find more information at: https://kubernetes.io/docs/reference/kubectl/overview/
+
+Basic Commands (Beginner):
+  create         Create a resource from a file or from stdin.
+  expose         Take a replication controller, service, deployment or pod and expose it as a new Kubernetes Service
+  run            Run a particular image on the cluster
+  set            Set specific features on objects
+
+Basic Commands (Intermediate):
+  explain        Documentation of resources
+  get            Display one or many resources
+  edit           Edit a resource on the server
+  delete         Delete resources by filenames, stdin, resources and names, or by resources and label selector
+
+Deploy Commands:
+  rollout        Manage the rollout of a resource
+  scale          Set a new size for a Deployment, ReplicaSet, Replication Controller, or Job
+  autoscale      Auto-scale a Deployment, ReplicaSet, or ReplicationController
+
+Cluster Management Commands:
+  certificate    Modify certificate resources.
+  cluster-info   Display cluster info
+  top            Display Resource (CPU/Memory/Storage) usage.
+  cordon         Mark node as unschedulable
+  uncordon       Mark node as schedulable
+  drain          Drain node in preparation for maintenance
+  taint          Update the taints on one or more nodes
+
+Troubleshooting and Debugging Commands:
+  describe       Show details of a specific resource or group of resources
+  logs           Print the logs for a container in a pod
+  attach         Attach to a running container
+  exec           Execute a command in a container
+  port-forward   Forward one or more local ports to a pod
+  proxy          Run a proxy to the Kubernetes API server
+  cp             Copy files and directories to and from containers.
+  auth           Inspect authorization
+
+Advanced Commands:
+  diff           Diff live version against would-be applied version
+  apply          Apply a configuration to a resource by filename or stdin
+  patch          Update field(s) of a resource using strategic merge patch
+  replace        Replace a resource by filename or stdin
+  wait           Experimental: Wait for a specific condition on one or many resources.
+  convert        Convert config files between different API versions
+
+Settings Commands:
+  label          Update the labels on a resource
+  annotate       Update the annotations on a resource
+  completion     Output shell completion code for the specified shell (bash or zsh)
+
+Other Commands:
+  api-resources  Print the supported API resources on the server
+  api-versions   Print the supported API versions on the server, in the form of "group/version"
+  config         Modify kubeconfig files
+  plugin         Provides utilities for interacting with plugins.
+  version        Print the client and server version information
+
+Usage:
+  kubectl [flags] [options]
+
+Use "kubectl <command> --help" for more information about a given command.
+Use "kubectl options" for a list of global command-line options (applies to all commands).	
+	]]>
+	</screen>
+	<section>
+		<title>节点</title>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# kubectl get nodes
+NAME       STATUS   ROLES    AGE   VERSION
+minikube   Ready    master   23m   v1.13.2		
+		]]>
+		</screen>
+
+	</section>
+	<section id="get.pod">
+		<title>pod</title>
+		<para></para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# kubectl get pod
+NAME                              READY   STATUS    RESTARTS   AGE
+hello-minikube-5c856cbf98-6vfvp   1/1     Running   0          6m59s
+		]]>
+		</screen>
+		<para>指定命名空间</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# kubectl get pod --namespace=kube-system
+NAME                                   READY   STATUS    RESTARTS   AGE
+coredns-86c58d9df4-2rfqf               1/1     Running   0          40m
+coredns-86c58d9df4-wkb7l               1/1     Running   0          40m
+etcd-minikube                          1/1     Running   0          40m
+kube-addon-manager-minikube            1/1     Running   0          41m
+kube-apiserver-minikube                1/1     Running   2          40m
+kube-controller-manager-minikube       1/1     Running   6          40m
+kube-proxy-brrdd                       1/1     Running   0          40m
+kube-scheduler-minikube                1/1     Running   5          41m
+kubernetes-dashboard-ccc79bfc9-dxcq2   1/1     Running   5          16m
+storage-provisioner                    1/1     Running   0          39m		
+		]]>
+		</screen>
+	</section>
+	<section id="get.pods">
+		<title>pods</title>
+		<para></para>
+		<screen>
+		<![CDATA[
+kubectl get pods --all-namespaces
+		]]>
+		</screen>
+	</section>
+	<section id="get.cs">
+		<title>查询集群状态</title>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# kubectl get cs
+NAME                 STATUS    MESSAGE              ERROR
+controller-manager   Healthy   ok                   
+scheduler            Healthy   ok                   
+etcd-0               Healthy   {"health": "true"}   		
+		]]>
+		</screen>
+	</section>
+	<section id="cluster-info">
+		<title>cluster-info</title>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# kubectl cluster-info
+Kubernetes master is running at https://172.16.0.121:8443
+KubeDNS is running at https://172.16.0.121:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.		
+		]]>
+		</screen>
+	</section>
+	<section id="kubectl.create">
+		<title>create</title>
+		<screen>
+		<![CDATA[
+kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
+kubectl get pods --namespace=kube-system		
+		]]>
+		</screen>
+	</section>
+	<section id="kubectl.edit">
+		<title>edit</title>
+		<screen>
+		<![CDATA[
+kubectl edit --namespace=kube-system rc kubernetes-dashboard		
+		]]>
+		</screen>
+	</section>
+	<section id="kubectl.config">
+		<title>config</title>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# kubectl config view
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority: /root/.minikube/ca.crt
+    server: https://172.16.0.121:8443
+  name: minikube
+contexts:
+- context:
+    cluster: minikube
+    user: minikube
+  name: minikube
+current-context: minikube
+kind: Config
+preferences: {}
+users:
+- name: minikube
+  user:
+    client-certificate: /root/.minikube/client.crt
+    client-key: /root/.minikube/client.key		
+		]]>
+		</screen>
+	</section>
+	<section id="get.nodes">
+		<title>nodes</title>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# kubectl get nodes
+NAME       STATUS   ROLES    AGE    VERSION
+minikube   Ready    master   119m   v1.13.2		
+		]]>
+		</screen>
+	</section>
+	<section id="get.service">
+		<title>service</title>
+		<section>
+			<title>列出服务</title>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# kubectl get service
+NAME             TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
+hello-minikube   NodePort    10.109.33.86   <none>        8080:30436/TCP   134m
+kubernetes       ClusterIP   10.96.0.1      <none>        443/TCP          147m		
+			]]>
+			</screen>	
+		</section>
+		
+		<section>
+			<title>删除服务</title>
+			<screen>
+			<![CDATA[
+kubectl delete service hello-minikube			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>删除 pod</title>
+			<screen>
+			<![CDATA[
+kubectl delete deployment hello-minikube			
+			]]>
+			</screen>
+		</section>
+	</section>
+</section>
+

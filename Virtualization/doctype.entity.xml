@@ -18,4 +18,6 @@
 
 <!ENTITY chapter.kubernetes.xml			SYSTEM "Kubernetes/chapter.kubernetes.xml">
 <!ENTITY chapter.minikube.xml			SYSTEM "Kubernetes/chapter.minikube.xml">
+<!ENTITY section.kubectl.xml			SYSTEM "Kubernetes/section.kubectl.xml">
+
 <!ENTITY chapter.proxmox.xml			SYSTEM "chapter.proxmox.xml">
