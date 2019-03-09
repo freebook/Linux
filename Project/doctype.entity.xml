@@ -16,12 +16,13 @@
 <!ENTITY chapter.redmine.xml 		SYSTEM "chapter.redmine.xml">
 <!ENTITY chapter.tutos.xml			SYSTEM "chapter.tutos.xml">
 
-<!ENTITY chapter.integration.xml		SYSTEM "chapter.integration.xml">
-<!ENTITY chapter.jenkins.xml			SYSTEM "chapter.jenkins.xml">
-<!ENTITY section.jenkins.plugins.xml	SYSTEM "section.jenkins.plugins.xml">
+<!ENTITY chapter.integration.xml			SYSTEM "chapter.integration.xml">
+<!ENTITY chapter.jenkins.xml				SYSTEM "chapter.jenkins.xml">
+<!ENTITY section.jenkins.plugins.xml		SYSTEM "section.jenkins.plugins.xml">
 <!ENTITY section.jenkins.jenkinsfile.xml	SYSTEM "section.jenkins.jenkinsfile.xml">
-<!ENTITY section.jenkins.job-dsl.xml	SYSTEM "section.jenkins.job-dsl.xml">
-<!ENTITY chapter.sonarqube.xml			SYSTEM "chapter.sonarqube.xml">
-<!ENTITY chapter.review.xml			SYSTEM "chapter.review.xml">
+<!ENTITY section.jenkins.job-dsl.xml		SYSTEM "section.jenkins.job-dsl.xml">
+<!ENTITY section.jenkins.example.xml		SYSTEM "section.jenkins.example.xml">
+<!ENTITY chapter.sonarqube.xml				SYSTEM "chapter.sonarqube.xml">
+<!ENTITY chapter.review.xml					SYSTEM "chapter.review.xml">
 
-<!ENTITY chapter.miscellaneous.xml 	SYSTEM "chapter.miscellaneous.xml">
+<!ENTITY chapter.miscellaneous.xml 			SYSTEM "chapter.miscellaneous.xml">

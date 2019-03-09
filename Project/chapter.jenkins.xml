@@ -323,4 +323,6 @@ services:
 	&section.jenkins.job-dsl.xml;
 	
 	&section.jenkins.plugins.xml;
+	
+	&section.jenkins.example.xml;
 </chapter>
