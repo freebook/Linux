@@ -348,7 +348,7 @@ pipeline {
 		</section>
 
 		<section id="pipeline.error">
-			<title>跑出错误</title>
+			<title>抛出错误</title>
 			<screen>
 			<![CDATA[
 error '执行出错'
@@ -357,11 +357,11 @@ error '执行出错'
 
 		</section>
 
-		<section id="">
-			<title></title>
+		<section id="withCredentials">
+			<title>withCredentials</title>
 			<subtitle>withCredentials: Bind credentials to variables</subtitle>
-			<section id="">
-				<title></title>
+			<section>
+				<title>token</title>
 				<screen>
 				<![CDATA[
 node {
@@ -455,8 +455,8 @@ pipeline {
 }			
 			]]>
 			</screen>
-			<section id="">
-				<title></title>
+			<section>
+				<title>后台运行</title>
 				<screen>
 				<![CDATA[
 		stage("部署"){
