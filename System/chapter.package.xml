@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.system.package.xml 353 2012-02-22 06:31:52Z netkiller $ -->
-<chapter id="package">
+<chapter id="index"><?dbhtml dir="package" ?>
 	<title>Package Management</title>
 	&section.package.apt.xml;
 	&section.package.snap.xml;

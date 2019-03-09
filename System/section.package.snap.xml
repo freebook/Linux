@@ -3,6 +3,42 @@
 	<para>
 		<ulink url="" />
 	</para>
+	<section>
+		<title>安装 snap</title>
+		<screen>
+		<![CDATA[
+[root@netkiller test]# yum info snapd
+Loaded plugins: fastestmirror
+Loading mirror speeds from cached hostfile
+Available Packages
+Name        : snapd
+Arch        : x86_64
+Version     : 2.37.4
+Release     : 2.el7
+Size        : 14 M
+Repo        : epel/x86_64
+Summary     : A transactional software package manager
+URL         : https://github.com/snapcore/snapd
+License     : GPLv3
+Description : Snappy is a modern, cross-distribution, transactional package manager
+            : designed for working with self-contained, immutable packages.
+
+[root@netkiller ~]# yum install -y snapd		
+[root@netkiller ~]# systemctl enable --now snapd.socket
+Created symlink from /etc/systemd/system/sockets.target.wants/snapd.socket to /usr/lib/systemd/system/snapd.socket.
+[root@netkiller ~]# systemctl start snapd
+
+[root@netkiller ~]# snap install hello-world
+2019-03-09T11:44:14+08:00 INFO Waiting for restart...
+hello-world 6.3 from Canonical✓ installed
+
+[root@netkiller ~]# snap list
+Name         Version    Rev   Tracking  Publisher   Notes
+core         16-2.37.2  6405  stable    canonical✓  core
+hello-world  6.3        27    stable    canonical✓  -
+		]]>
+		</screen>
+	</section>
 	<section id="snap.list">
 		<title>列出已经安装的snap包</title>
 		<para></para>
