@@ -18,7 +18,7 @@
 配置【Manage Jenkins】>【Configure System】> 【Locale】		
 		]]>
 		</screen>
-		<graphic format="png" fileref="images/jenkins/locale/locale.png" width="" srccredit="neo" />
+		<graphic format="png" fileref="../images/jenkins/locale/locale.png" width="" srccredit="neo" />
 		<para>Default Language 填写 zh_CN，勾选忽略浏览器设置强制设置语言</para>
 	</section>
 	<section id="github-plugin">
@@ -153,19 +153,19 @@ WantedBy=multi-user.target
 		</programlisting>
 		<section>
 			<title>设置 Docker 主机和代理</title>
-			<graphic format="png" fileref="images/jenkins/docker/docker-add.png" width="" srccredit="neo" />
+			<graphic format="png" fileref="../images/jenkins/docker/docker-add.png" width="" srccredit="neo" />
 			<para>输入 Docker 主机的IP地址，类似 tcp://172.16.0.10:2375</para>
-			<graphic format="png" fileref="images/jenkins/docker/docker-host.png" width="" srccredit="neo" />
-			<graphic format="png" fileref="images/jenkins/docker/docker-name.png" width="" srccredit="neo" />
-			<graphic format="png" fileref="images/jenkins/docker/docker-test.png" width="" srccredit="neo" />
-			<graphic format="png" fileref="images/jenkins/docker/docker-agent.png" width="" srccredit="neo" />
+			<graphic format="png" fileref="../images/jenkins/docker/docker-host.png" width="" srccredit="neo" />
+			<graphic format="png" fileref="../images/jenkins/docker/docker-name.png" width="" srccredit="neo" />
+			<graphic format="png" fileref="../images/jenkins/docker/docker-test.png" width="" srccredit="neo" />
+			<graphic format="png" fileref="../images/jenkins/docker/docker-agent.png" width="" srccredit="neo" />
 		</section>
 		<section>
 			<title>持久化</title>
 			<para>例如持续集成过程中，我们不希望每次都从 maven 镜像下载编译依赖的包，或者构建物我们需要永久保留等等，这时就需要做持久化</para>
-			<graphic format="png" fileref="images/jenkins/docker/container.png" width="" srccredit="neo" />
+			<graphic format="png" fileref="../images/jenkins/docker/container.png" width="" srccredit="neo" />
 			<para>例如我们将宿主主机的 /opt/maven 挂载到 Docker 容器的 /root/.m2 目录。这样就实现了 maven 的持久化。只需写入 /opt/maven:/root/.m2 即可</para>
-			<graphic format="png" fileref="images/jenkins/docker/volumes.png" width="" srccredit="neo" />
+			<graphic format="png" fileref="../images/jenkins/docker/volumes.png" width="" srccredit="neo" />
 			<para>当持续机构运行完毕 docker 容器被清理，但是 /opt/maven 并不会被清理，下次构建时，在将它挂载到 /root/.m2 即可。</para>
 		</section>
 	</section>
