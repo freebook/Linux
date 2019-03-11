@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+	<title>Nexus Repository OSS</title>
+	<para><ulink url="https://www.sonatype.com/download-oss-sonatype" /></para>
+	<screen>
+	<![CDATA[
+wget https://www.sonatype.com/oss-thank-you-tar.gz	
+	]]>
+	</screen>
+	<section>
+		<title>安装 Nexus</title>
+		<section>
+			<title>Docker</title>
+			<screen>
+			<![CDATA[
+docker run -d -p 8081:8081 --restart=always --name nexus sonatype/nexus3			
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>Nexus UI</title>
+		<para>http://localhost:8081/ 登陆用户名 admin 默认密码 admin123</para>
+	</section>
+	<section>
+		<title>maven 设置</title>
+		<para>maven在settings.xml中配置如下，下次maven就会通过访问电脑上的私服来获取jar包</para>
+		<screen>
+		<![CDATA[
+<mirrors>
+    <mirror>
+      <id>nexus</id>
+      <mirrorOf>*</mirrorOf>
+      <url>http://localhost:8081/repository/maven-public/</url>
+    </mirror>
+</mirrors>
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>Node.js</title>
+		<para>输入命令登陆远程仓库</para>
+		<screen>
+		<![CDATA[
+npm login --registry=http://nexus.netkiller.cn/repository/npm/		
+		]]>
+		</screen>
+		<para>在项目中输入</para>
+		<screen>
+		<![CDATA[
+npm pack	
+		]]>
+		</screen>
+		<para>上传</para>
+		<screen>
+		<![CDATA[
+npm publish --registry=http://nexus.netkiller.cn/repository/npm/		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>Ruby</title>
+		<para>安装 nexus 包</para>
+		<screen>
+		<![CDATA[
+$ gem install nexus		
+		]]>
+		</screen>
+		<para>打包</para>
+		<screen>
+		<![CDATA[
+gem build project.gemspec
+		]]>
+		</screen>
+		<para>上传，系统会提示上传URL</para>
+		<screen>
+		<![CDATA[
+gem nexus project-1.0.0.gem
+		]]>
+		</screen>
+	</section>
+</section>

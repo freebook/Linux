@@ -3,5 +3,5 @@
 	&chapter.gitlab.xml;
 	&chapter.redmine.xml;
 	&chapter.tutos.xml;
-	
+	&chapter.nexus.xml;
 	&chapter.integration.xml;

@@ -180,5 +180,97 @@ pipeline {
 			]]>
 		</screen>
 	</section>
+	<section>
+		<title>使用指定镜像构建</title>
+		<screen>
+		<![CDATA[
+pipeline {
+    agent any
+    stages {
+        stage("Checkout") {
+            steps {
+                sh 'ci-init'
+                checkout(
+                        [$class           : 'GitSCM', branches: [[name: env.GIT_BUILD_REF]],
+                         userRemoteConfigs: [[url: env.GIT_REPO_URL]]]
+                )
+            }
+        }
 
+
+        stage("Compile") {
+
+            // 构建的 docker 镜像
+            agent {
+                docker { image 'maven' }
+            }
+
+            steps {
+                echo "构建中..."
+                sh 'mvn -v'
+                sh 'mvn compile'
+            }
+        }
+
+
+        stage('Test') {
+
+            agent {
+                docker { image 'maven' }
+            }
+
+            steps {
+                echo '单元测试...'
+                sh 'mvn test'
+                junit 'target/surefire-reports/*.xml'
+            }
+
+        }
+
+        stage("Deploy") {
+            steps {
+                echo "部署中..."
+                echo "部署完成"
+            }
+        }
+    }
+}		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>命令行制作 Docker 镜像</title>
+		<screen>
+		<![CDATA[
+pipeline {
+    agent any
+    stages {
+
+        stage('Build') {
+
+            steps {
+                echo '编译中...'
+                // 编译 docker 镜像
+                sh "docker build $tag $contextPath"
+            }
+
+        }
+
+        stage('Push Image') {
+
+            steps {
+
+                sh "echo ${REGISTRY_PASS} | docker login -u ${REGISTRY_USER} --password-stdin ${REGISTRY_URL}"
+                sh "docker tag ${image} ${registry_image}"
+                sh "docker push ${registry_image}"
+                
+            }
+
+        }
+     
+    }
+}		
+		]]>
+		</screen>
+	</section>
 </section>

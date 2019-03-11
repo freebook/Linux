@@ -7,7 +7,7 @@
 		<para>
 			<ulink url="https://jenkins.io/doc/pipeline/examples/" />
 		</para>
-		
+
 		<section id="pipeline.stages">
 			<title>stages</title>
 			<screen>
@@ -485,6 +485,7 @@ pipeline {
 			</section>
 		</section>
 	</section>
+
 	<section id="Jenkinsfile.node">
 		<title>Jenkinsfile - Scripted Pipeline</title>
 		<screen>
@@ -1064,15 +1065,56 @@ node {
 			]]>
 			</screen>
 
+		</section>
+		<section>
+			<title>Docker</title>
 			<screen>
 			<![CDATA[	
-			
+node {
+	stage("Checkout") {
+		checkout([$class: 'GitSCM', branches: [[name: env.GIT_BUILD_REF]],userRemoteConfigs: [[url: env.GIT_REPO_URL]]])
+	}
+        
+	docker.image('ruby').inside {
+		stage("Init") {
+			sh 'pwd && ls'		
+			sh 'gem install rails'
+			// sh 'gem install ...'		
+		}	
+		stage("Test") {
+			sh 'ruby tc_simple_number.rb'
+		}
+		stage("Build") {
+			sh 'ruby --version'
+			archiveArtifacts artifacts: 'bin/*', fingerprint: true
+		}
+		stage("Deploy") {
+			sh 'rsync -auzv --delete * www@host.netkiller.cn:/path/to/dir'
+		}
+	}
+}			
 			]]>
 			</screen>
 		</section>
-
-	</section>
-	<section id="pipeline.agent">
+		<section>
+			<title>nexus</title>
+			<screen>
+			<![CDATA[
+stage("Deploy") {
+    nexusArtifactUploader artifacts: [
+        [artifactId: 'java11', type: 'jar', file: 'target/java11.jar']
+    ],
+    groupId: 'org.springframework.samples',
+    nexusUrl: 'netkiller.cn/repository/maven/',
+    nexusVersion: 'nexus3',
+    protocol: 'http',
+    repository: 'maven',
+    version: '2.0.0.BUILD'
+}			
+			]]>
+			</screen>
+		</section>
+	</section><section id="pipeline.agent">
 		<title>agent</title>
 		<para>agent 指令指定整个管道或某个特定的stage的执行环境。它的参数可用使用：</para>
 		<screen>
@@ -1114,7 +1156,7 @@ docker:x:993:jenkins
 			</screen>
 			<section>
 				<title>指定docker 镜像</title>
-			<screen>
+				<screen>
 			<![CDATA[
 pipeline {
     agent { docker { image 'maven:3.3.3' } }
@@ -1127,8 +1169,8 @@ pipeline {
     }
 }
 			]]>
-			</screen>
-			<screen>
+				</screen>
+				<screen>
 			<![CDATA[
 pipeline {
     agent { docker { image 'php' } }
@@ -1154,12 +1196,12 @@ pipeline {
     }
 }
 			]]>
-			</screen>
+				</screen>
 			</section>
-		<section id="docker.args">
-			<title>args 参数</title>
-			<para>挂在 /root/.m2 目录</para>
-			<screen>
+			<section id="docker.args">
+				<title>args 参数</title>
+				<para>挂在 /root/.m2 目录</para>
+				<screen>
 			<![CDATA[
 pipeline {
     agent {
@@ -1177,7 +1219,46 @@ pipeline {
     }
 }			
 			]]>
-			</screen>
+				</screen>
+			</section>
+			<section id="Docker outside of Docker (DooD)">
+				<title>Docker outside of Docker (DooD)</title>
+				<screen>
+				<![CDATA[
+	docker.image('maven').inside("-v /var/run/docker.sock:/var/run/docker.sock -v /usr/bin/docker:/usr/bin/docker") {
+		sh 'docker images'
+	}				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>挂在宿主主机目录</title>
+				<screen>
+				<![CDATA[
+node {
+    stage("Checkout") {
+        checkout(
+          [$class: 'GitSCM', branches: [[name: env.GIT_BUILD_REF]], userRemoteConfigs: [[url: env.GIT_REPO_URL]]]
+        )
+		sh 'pwd'
+    }
+	docker.image('maven:latest').inside("-v /root/.m2:/root/.m2") {
+        stage("Build") {
+                sh 'java -version'
+                sh 'mvn package -Dmaven.test.failure.ignore -Dmaven.test.skip=true'
+                archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
+        }
+
+        stage("Test") {
+                sh 'java -jar target/webflux-0.0.1-SNAPSHOT.jar &'
+                sleep 20
+                sh 'mvn test -Dmaven.test.failure.ignore'
+                junit 'target/surefire-reports/*.xml'
+        }
+    }
+}				
+				]]>
+				</screen>
 			</section>
 			<section id="docker.withRegistry">
 				<title>构建镜像</title>
@@ -1210,7 +1291,7 @@ node {
 }
 				]]>
 				</screen>
-				
+
 				<screen>
 				<![CDATA[
 		dir ('example') {
@@ -1477,6 +1558,8 @@ node {
 		</section>
 
 	</section>
+	
+
 	<section id="pipeline.workspace">
 		<title>工作区</title>
 
@@ -1492,7 +1575,7 @@ node {
             	echo 'end'
         	}
 		}
-	}			
+	}
 			]]>
 			</screen>
 		</section>
@@ -1597,5 +1680,5 @@ if (fileExists('file')) {
 
 
 	</section>
-	
+
 </section>	

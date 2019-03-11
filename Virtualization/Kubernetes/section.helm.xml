@@ -5,7 +5,18 @@
 	<para>https://helm.sh</para>
 	<section id="helm.setup">
 		<title></title>
-
+		<para></para>
+		<screen>
+		<![CDATA[
+snap install helm --classic		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+brew install kubernetes-helm		
+		]]>
+		</screen>
 	</section>
 	<section id="helm.command">
 		<title></title>
