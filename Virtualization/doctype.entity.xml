@@ -21,3 +21,4 @@
 <!ENTITY section.kubectl.xml			SYSTEM "Kubernetes/section.kubectl.xml">
 
 <!ENTITY chapter.proxmox.xml			SYSTEM "chapter.proxmox.xml">
+<!ENTITY chapter.harbor.xml				SYSTEM "chapter.harbor.xml">

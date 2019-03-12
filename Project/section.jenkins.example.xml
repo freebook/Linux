@@ -238,7 +238,7 @@ pipeline {
 		]]>
 		</screen>
 	</section>
-	<section>
+	<section id="exampel.docker">
 		<title>命令行制作 Docker 镜像</title>
 		<screen>
 		<![CDATA[
@@ -268,6 +268,58 @@ pipeline {
 
         }
      
+    }
+}		
+		]]>
+		</screen>
+	</section>
+	<section id="example.yarn">
+		<title>Yarn</title>
+		<screen>
+		<![CDATA[
+pipeline {
+    agent {
+        label "default"
+    }
+    stages  {
+        
+        stage("检出") {
+            steps {
+                checkout(
+                  [$class: 'GitSCM', branches: [[name: env.GIT_BUILD_REF]], 
+                  userRemoteConfigs: [[url: env.GIT_REPO_URL]]]
+                )
+            }
+        }
+		stage("环境") {
+          	steps {
+              	sh 'apt install -y apt-transport-https'
+              	sh "curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -"
+              	sh 'echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list'
+              	sh 'cat /etc/apt/sources.list.d/yarn.list'
+              	sh 'apt update && apt install -y yarn'
+              	sh 'yarn --version'
+            }
+        }
+        stage("构建") {
+            steps {
+                echo "构建中..."
+                sh 'yarn add webpack'
+                sh 'node -v'
+            }
+        }
+
+        stage("测试") {
+            steps {
+                echo "单元测试中..."
+            }
+        }
+
+        stage("部署") {
+            steps {
+                // sh './deploy.sh'
+            }
+        }
     }
 }		
 		]]>
