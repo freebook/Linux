@@ -232,10 +232,39 @@ node {
 	</section>
 	<section id="jenkins.kubernetes">
 		<title>Kubernetes 插件</title>
-		<para>
-			<ulink url="https://github.com/jenkinsci/kubernetes-plugin"></ulink>
-		</para>
-
+		<section>
+			<title>Kubernetes</title>
+			<para>
+				<ulink url="https://plugins.jenkins.io/kubernetes" />
+			</para>
+			<para>
+				<ulink url="https://github.com/jenkinsci/kubernetes-plugin"></ulink>
+			</para>
+			<screen>
+			<![CDATA[
+def label = "mypod-${UUID.randomUUID().toString()}"
+podTemplate(label: label) {
+    node(label) {
+        stage('Run shell') {
+            sh 'echo hello world'
+        }
+    }
+}			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Kubernetes :: Pipeline :: Kubernetes Steps</title>
+			<screen>
+			<![CDATA[
+			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Kubernetes Continuous Deploy</title>
+			<para><ulink url="https://plugins.jenkins.io/kubernetes-cd" /></para>
+		</section>
 		<section id="Kubernetes Cli">
 			<title>Kubernetes Cli</title>
 			<para>

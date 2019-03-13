@@ -12,6 +12,13 @@
 # cat /etc/hostname
 web1.example.com
 			</screen>
+			<para>查看IP地址</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# hostname --ip-address
+::1 127.0.0.1			
+			]]>
+			</screen>
 		</section>
 		<section>
 			<title>hostnamectl - Control the system hostname</title>

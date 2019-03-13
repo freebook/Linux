@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+	<title></title>
+	<section>
+		<title></title>
+		<screen>
+		<![CDATA[
+kubectl run mongodb  --image=docker.io/mongo  --env="p='27017:27017'" --env="v='/opt/mongodb:/data'" 
+kubectl expose deployment mongodb --port=27017 --target-port=27017
+		]]>
+		</screen>
+	</section>
+</section>

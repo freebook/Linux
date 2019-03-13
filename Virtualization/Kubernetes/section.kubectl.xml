@@ -72,6 +72,50 @@ Use "kubectl options" for a list of global command-line options (applies to all 
 	]]>
 	</screen>
 	<section>
+		<title>如何从 docker 过渡到 kubectl 命令</title>
+		<para>docker run 命令</para>
+		<screen>
+		<![CDATA[
+$ docker run -d --restart=always -e DOMAIN=cluster --name nginx -p 80:80 nginx		
+		]]>
+		</screen>
+		<para>kubectl 命令</para>
+		<screen>
+		<![CDATA[
+$ kubectl run --image=nginx nginx-app --port=80 --env="DOMAIN=cluster"
+$ kubectl expose deployment nginx-app --port=80 --name=nginx-http	
+		]]>
+		</screen>
+		<para>docker exec 命令</para>
+		<screen>
+		<![CDATA[
+$ docker run -t -i ubuntu:14.10 /bin/bash
+		]]>
+		</screen>
+		<para>kubectl 命令</para>
+		<screen>
+		<![CDATA[
+$ kubectl exec -ti nginx-app-5jyvm -- /bin/sh	
+		]]>
+		</screen>
+		<para>docker ps 命令</para>
+		<screen>
+		<![CDATA[
+$ docker ps
+		]]>
+		</screen>
+		<para>kubectl 命令</para>
+		<screen>
+		<![CDATA[
+$ kubectl get pods
+NAME                        READY   STATUS    RESTARTS   AGE
+mongodba-6d5d6ddf64-jw4fv   1/1     Running   0          16h
+
+# kubectl exec -it mongodba-6d5d6ddf64-jw4fv bash		
+		]]>
+		</screen>
+	</section>
+	<section id="get.nodes">
 		<title>节点</title>
 		<screen>
 		<![CDATA[
@@ -115,7 +159,25 @@ storage-provisioner                    1/1     Running   0          39m
 		<para></para>
 		<screen>
 		<![CDATA[
+kubectl get pod <pod-name> -o wide		
 kubectl get pods --all-namespaces
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# kubectl get pods --all-namespaces
+NAMESPACE     NAME                                   READY   STATUS    RESTARTS   AGE
+default       hello-minikube-5c856cbf98-6vfvp        1/1     Running   1          4d18h
+kube-system   coredns-86c58d9df4-2rfqf               1/1     Running   51         4d18h
+kube-system   coredns-86c58d9df4-wkb7l               1/1     Running   49         4d18h
+kube-system   etcd-minikube                          1/1     Running   12         4d18h
+kube-system   kube-addon-manager-minikube            1/1     Running   11         4d18h
+kube-system   kube-apiserver-minikube                1/1     Running   74         4d18h
+kube-system   kube-controller-manager-minikube       1/1     Running   31         4d18h
+kube-system   kube-proxy-brrdd                       1/1     Running   1          4d18h
+kube-system   kube-scheduler-minikube                1/1     Running   31         4d18h
+kube-system   kubernetes-dashboard-ccc79bfc9-dxcq2   1/1     Running   7          4d17h
+kube-system   storage-provisioner                    1/1     Running   2          4d18h		
 		]]>
 		</screen>
 	</section>
@@ -151,6 +213,24 @@ kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/
 kubectl get pods --namespace=kube-system		
 		]]>
 		</screen>
+		<section>
+			<title>创建命名空间</title>
+			<para> 创建 jenkins-namespace.yaml</para>
+			<screen>
+			<![CDATA[
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: jenkins-project
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+$ kubectl create -f jenkins-namespace.yaml
+namespace ”jenkins-project“ created			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="kubectl.edit">
 		<title>edit</title>
@@ -228,5 +308,36 @@ kubectl delete deployment hello-minikube
 			</screen>
 		</section>
 	</section>
+	<section id="kubectl.logs">
+		<title>查看 pod 日志</title>
+		<screen>
+		<![CDATA[
+kubectl logs <pod-name>
+kubectl logs --previous <pod-name>		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>查看 Pod 的事件</title>
+		<screen>
+		<![CDATA[
+kubectl describe pod <pod-name> 		
+		]]>
+		</screen>
+	</section>
+	<section id="kubectl.exec">
+		<title>执行 Shell</title>
+		<para>进入容器内部.</para>
+		<screen>
+		<![CDATA[
+$ kubectl get pods
+NAME                        READY   STATUS    RESTARTS   AGE
+mongodba-6d5d6ddf64-jw4fv   1/1     Running   0          16h
+
+$ kubectl exec -it mongodba-6d5d6ddf64-jw4fv bash		
+		]]>
+		</screen>
+	</section>
+	
 </section>
 

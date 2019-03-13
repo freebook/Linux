@@ -55,8 +55,25 @@ neo@ubuntu:~$ sudo apt install -y virtualbox
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>Mac OS</title>
+			<screen>
+			<![CDATA[
+$ brew cask install virtualbox
+$ brew cask install minikube
+$ brew install kubectl
+$ brew install kubernetes-helm
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+$ minikube start —vm-driver=virtualbox
+$ minikube dashboard			
+			]]>
+			</screen>
+		</section>
 	</section>
-	<section id="Quickstart">
+	<section id="minikube.Quickstart">
 		<title>Quickstart</title>
 		<para>启动</para>
 		<screen>
@@ -179,9 +196,9 @@ Flags:
 
 Use "minikube [command] --help" for more information about a command.			
 			]]>
-			</screen>
-		
-		<section>
+		</screen>
+
+		<section id="minikube.start">
 			<title>启动 minikube</title>
 			<section>
 				<title>虚拟机驱动</title>
@@ -201,7 +218,7 @@ minikube start --registry-mirror=https://registry.docker-cn.com
 				</screen>
 			</section>
 			<section>
-				<title>开启 </title>
+				<title>开启GPU</title>
 				<screen>
 				<![CDATA[
 minikube start --vm-driver kvm2 --gpu				
@@ -217,13 +234,47 @@ minikube start --v=7
 				]]>
 				</screen>
 			</section>
-			
+			<section>
+				<title>CPU 和 内存分配</title>
+				<screen>
+				<![CDATA[
+minikube start --memory 8000 --cpus 2			
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>指定 kubernetes 版本</title>
+				<screen>
+				<![CDATA[
+minikube start --memory 8000 --cpus 2 --kubernetes-version v1.6.0					
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>配置启动项</title>
+				<screen>
+				<![CDATA[
+minikube start --extra-config=apiserver.v=10 --extra-config=kubelet.max-pods=100				
+				]]>
+				</screen>
+			</section>
+		</section>
+		<section id="minikube.stop">
+			<title>停止 minikube</title>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# minikube stop
+Stopping local Kubernetes cluster...
+Machine stopped.			
+			]]>
+			</screen>
 		</section>
 		<section>
 			<title>缓存镜像</title>
 			<screen>
 			<![CDATA[
 # cache a image into $HOME/.minikube/cache/images
+
 $ minikube cache add ubuntu:16.04
 $ minikube cache add redis:3
 
@@ -290,10 +341,30 @@ minikube docker-env
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="minikube.addons">
 			<title>addons</title>
-			<screen>
-			<![CDATA[
+			<section>
+				<title>启用 addons</title>
+				<screen>
+				<![CDATA[
+minikube addons enable heapster
+minikube addons enable ingress		
+				]]>
+				</screen>
+				<para>启用 WebUI</para>
+				<screen>
+				<![CDATA[
+[root@localhost ~]# minikube addons enable dashboard
+dashboard was successfully enabled
+[root@localhost ~]# minikube addons list | grep dashboard
+- dashboard: enabled				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>查看 addons 列表</title>
+				<screen>
+				<![CDATA[
 [root@localhost ~]# minikube addons list
 - addon-manager: enabled
 - dashboard: enabled
@@ -311,12 +382,31 @@ minikube docker-env
 - registry-creds: disabled
 - storage-provisioner: enabled
 - storage-provisioner-gluster: disabled			
+				]]>
+				</screen>
+			</section>
+		</section>
+		<section id="minikube.ssh">
+			<title>SSH</title>
+			<para>--vm-driver=none 不支持 ssh</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# minikube ssh
+'none' driver does not support 'minikube ssh' command			
 			]]>
 			</screen>
 		</section>
-		
+		<section id="minikube.ip">
+			<title>查看IP地址</title>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# minikube ip
+172.16.0.121			
+			]]>
+			</screen>
+		</section>
 	</section>
-	<section>
+	<section id="minikube.faq">
 		<title>FAQ</title>
 		<section>
 			<title>This computer doesn't have VT-X/AMD-v enabled. Enabling it in the BIOS is mandatory</title>
@@ -341,11 +431,71 @@ echo "1" > /proc/sys/net/bridge/bridge-nf-call-iptables
 		<section>
 			<title>ERROR ImagePull</title>
 			<para>[ERROR ImagePull]: failed to pull image k8s.gcr.io/pause:3.1: output: 3.1: Pulling from pause
-Get https://k8s.gcr.io/v2/pause/manifests/sha256:59eec8837a4d942cc19a52b8c09ea75121acc38114a2c68b98983ce9356b8610: net/http: TLS handshake timeout</para>
+				Get https://k8s.gcr.io/v2/pause/manifests/sha256:59eec8837a4d942cc19a52b8c09ea75121acc38114a2c68b98983ce9356b8610: net/http: TLS handshake timeout
+			</para>
 			<para>更换镜像再重试</para>
 			<screen>
 			<![CDATA[
 [root@localhost ~]# minikube start --vm-driver=none --registry-mirror=https://registry.docker-cn.com			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>证书已存在错误</title>
+			<para>启动提示如下错误，一般出现这种错误是因为 minikube stop, minikube delete 后再重启 minikube start</para>
+			<screen>
+			<![CDATA[
+error execution phase kubeconfig/admin: a kubeconfig file "/etc/kubernetes/admin.conf" exists already but has got the wrong CA cert	
+error execution phase kubeconfig/kubelet: a kubeconfig file "/etc/kubernetes/kubelet.conf" exists already but has got the wrong CA cert
+error execution phase kubeconfig/controller-manager: a kubeconfig file "/etc/kubernetes/controller-manager.conf" exists already but has got the wrong CA cert
+error execution phase kubeconfig/scheduler: a kubeconfig file "/etc/kubernetes/scheduler.conf" exists already but has got the wrong CA cert
+			]]>
+			</screen>
+			<para>解决方法</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# mv /etc/kubernetes/admin.conf /etc/kubernetes/admin.conf.backup
+[root@localhost ~]# mv /etc/kubernetes/kubelet.conf /etc/kubernetes/kubelet.conf.backup
+[root@localhost ~]# mv /etc/kubernetes/controller-manager.conf /etc/kubernetes/controller-manager.conf.backup
+[root@localhost ~]# mv /etc/kubernetes/scheduler.conf /etc/kubernetes/scheduler.conf.backup
+			]]>
+			</screen>
+			<para>现在启动 minikube start 不会再出错</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# minikube start --vm-driver=none
+Starting local Kubernetes v1.13.2 cluster...
+Starting VM...
+Getting VM IP address...
+Moving files into cluster...
+Setting up certs...
+Connecting to cluster...
+Setting up kubeconfig...
+Stopping extra container runtimes...
+Starting cluster components...
+Verifying kubelet health ...
+Verifying apiserver health ...
+Kubectl is now configured to use the cluster.
+===================
+WARNING: IT IS RECOMMENDED NOT TO RUN THE NONE DRIVER ON PERSONAL WORKSTATIONS
+	The 'none' driver will run an insecure kubernetes apiserver as root that may leave the host vulnerable to CSRF attacks
+
+When using the none driver, the kubectl config and credentials generated will be root owned and will appear in the root home directory.
+You will need to move the files to the appropriate location and then set the correct permissions.  An example of this is below:
+
+	sudo mv /root/.kube $HOME/.kube # this will write over any previous configuration
+	sudo chown -R $USER $HOME/.kube
+	sudo chgrp -R $USER $HOME/.kube
+
+	sudo mv /root/.minikube $HOME/.minikube # this will write over any previous configuration
+	sudo chown -R $USER $HOME/.minikube
+	sudo chgrp -R $USER $HOME/.minikube
+
+This can also be done automatically by setting the env var CHANGE_MINIKUBE_NONE_USER=true
+Loading cached images from config file.
+
+
+Everything looks great. Please enjoy minikube!
 			]]>
 			</screen>
 		</section>

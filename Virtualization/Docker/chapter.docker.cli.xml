@@ -26,6 +26,19 @@ silly_bohr
 		<section id="ps">
 			<title>ps</title>
 			<screen>
+			<![CDATA[
+OPTIONS说明：
+-a :显示所有的容器，包括未运行的。
+-f :根据条件过滤显示的内容。
+--format :指定返回值的模板文件。
+-l :显示最近创建的容器。
+-n :列出最近创建的n个容器。
+--no-trunc :不截断输出。
+-q :静默模式，只显示容器编号。
+-s :显示总的文件大小。			
+			]]>
+			</screen>
+			<screen>
 sudo docker ps
 			</screen>
 			<screen>

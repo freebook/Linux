@@ -196,5 +196,22 @@ end script
 		</screen>
 		
 	</section>
+	<section>
+		<title>切换仓库镜像</title>
+		<para>临时选择镜像, 您可以在 Docker 守护进程启动时传入 --registry-mirror 参数：</para>
+		<screen>
+		<![CDATA[
+$ docker --registry-mirror=https://registry.docker-cn.com daemon
+		]]>
+		</screen>
+		<para>设置默认镜像，修改 /etc/docker/daemon.json 文件，并添加上 registry-mirrors 键值。</para>
+		<screen>
+		<![CDATA[
+{
+  "registry-mirrors": ["https://registry.docker-cn.com"]
+}
+		]]>
+		</screen>
+	</section>
 </section>
 <!-- </part> -->

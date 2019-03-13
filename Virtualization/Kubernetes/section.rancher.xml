@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="rancher">
+	<title>Rancher - Multi-Cluster Kubernetes Management</title>
+	<subtitle>Rancher is open-source software for delivering Kubernetes-as-a-Service.</subtitle>
+	<section>
+		<title>安装</title>
+		<para>如果只是学习，可以安装最新版</para>
+		<screen>
+		<![CDATA[
+docker run -d --restart=unless-stopped -p 80:80 -p 443:443 rancher/rancher:latest --name=rancher
+		]]>
+		</screen>
+		<para>稳定版</para>
+		<screen>
+		<![CDATA[
+docker run -d --restart=unless-stopped -p 80:80 -p 443:443 -v /var/lib/rancher/:/var/lib/rancher/ --name=rancher rancher/rancher:stable
+		]]>
+		</screen>
+		<para>安装完，浏览器输入 https://your-ip-address 即可进入WebUI</para>
+		<para>防火墙放行 etcd </para>
+		<screen>
+		<![CDATA[
+iptables -I INPUT -s 172.16.0.0/0 -p tcp --dport 2379 -j ACCEPT
+iptables -I INPUT -s 172.16.0.0/0 -p tcp --dport 2380 -j ACCEPT		
+		]]>		
+		</screen>
+	</section>
+	<section>
+		<title>Rancher Kubernetes Engine (RKE)</title>
+		<para><ulink url="https://github.com/rancher/rke/releases" /></para>
+		<para>https://rancher.com/an-introduction-to-rke/</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# wget https://github.com/rancher/rke/releases/download/v0.1.17/rke
+[root@localhost ~]# chmod +x rke 
+[root@localhost ~]# ./rke --version
+rke version v0.1.17		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>快速入门</title>
+		<para><ulink url="https://www.cnrancher.com/docs/rancher/v2.x/cn/overview/quick-start-guide/" /></para>
+	</section>
+	
+	
+	<section>
+		<title>调试</title>
+		<screen>
+		<![CDATA[
+neo@ubuntu:~$ docker logs -f rancher		
+		]]>
+		</screen>
+		
+		<screen>
+		<![CDATA[
+$ curl -L http://127.0.0.1:2379/health
+
+{"health": "true"}
+		
+		]]>
+		</screen>
+	</section>
+	
+</section>

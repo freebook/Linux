@@ -3,4 +3,5 @@
 	<title>Kubernetes</title>
 	&chapter.minikube.xml;
 	&section.kubectl.xml;
+	&section.rancher.xml;
 </chapter>
