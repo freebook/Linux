@@ -197,6 +197,18 @@ end script
 		
 	</section>
 	<section>
+		<title>检查 Docker 是否可用</title>
+		<screen>
+		<![CDATA[
+docker -v
+docker run ubuntu /bin/echo hello world
+docker stop $(docker ps -a -q)
+docker rm $(docker ps -a -q)
+docker rmi $(docker images -q)		
+		]]>
+		</screen>
+	</section>
+	<section>
 		<title>切换仓库镜像</title>
 		<para>临时选择镜像, 您可以在 Docker 守护进程启动时传入 --registry-mirror 参数：</para>
 		<screen>
@@ -210,6 +222,17 @@ $ docker --registry-mirror=https://registry.docker-cn.com daemon
 {
   "registry-mirrors": ["https://registry.docker-cn.com"]
 }
+		]]>
+		</screen>
+	</section>
+	<section id="docker.reset">
+		<title>重置 Docker</title>
+		<screen>
+		<![CDATA[
+docker stop $(docker ps -a -q)
+docker rm $(docker ps -a -q)
+docker rmi $(docker images -q)
+docker volume rm $(docker volume ls -q)	
 		]]>
 		</screen>
 	</section>

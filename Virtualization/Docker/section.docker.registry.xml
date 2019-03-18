@@ -32,7 +32,16 @@ neo@ubuntu:~$ docker ps | grep registry
 38a6d3b5e18e        registry              "/entrypoint.sh /etc…"   35 seconds ago      Up 33 seconds       0.0.0.0:5000->5000/tcp
 		]]>
 		</screen>
-		<para>/etc/default/docker 中加入下面内容</para>
+		<para>设置允许http协议访问，有两种方式，一种是修改 /etc/docker/daemon.json并添加 “insecure-registries” 项</para>
+		<screen>
+		<![CDATA[
+{
+    "registry-mirrors": ["https://registry.docker-cn.com"],
+    "insecure-registries": ["127.0.0.1:5000"]
+}
+		]]>
+		</screen>				
+		<para>另一种方式是修改 /etc/default/docker 中加入下面内容</para>
 		<screen>
 		<![CDATA[
 neo@ubuntu:~$ sudo vim /etc/default/docker

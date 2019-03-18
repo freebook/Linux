@@ -32,6 +32,16 @@ tcpdump:
 
 			</screen>
 		</section>
+		<section>
+			<title>查看所属镜像</title>
+			<screen>
+			<![CDATA[
+neo@m-1d41c853af58:~$ apt-cache madison docker
+    docker |      1.5-2 | http://mirrors.ustc.edu.cn/ubuntu cosmic/universe amd64 Packages
+    docker |      1.5-2 | http://mirrors.ustc.edu.cn/ubuntu cosmic/universe i386 Packages			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="apt-get">
 		<title>Apt-Get</title>
@@ -194,6 +204,28 @@ deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-proposed main restricted
 deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-proposed main restricted universe multiverse		
 		]]>
 		</screen>
+		<section>
+			<title>Ubuntu 18.04</title>
+			<screen>
+			<![CDATA[
+sudo cp /etc/apt/sources.list /etc/apt/sources.list.backup
+cat > /etc/apt/sources.list << EOF 
+deb http://mirrors.aliyun.com/ubuntu/ xenial main 
+deb-src http://mirrors.aliyun.com/ubuntu/ xenial main 
+deb http://mirrors.aliyun.com/ubuntu/ xenial-updates main 
+deb-src http://mirrors.aliyun.com/ubuntu/ xenial-updates main 
+deb http://mirrors.aliyun.com/ubuntu/ xenial universe 
+deb-src http://mirrors.aliyun.com/ubuntu/ xenial universe 
+deb http://mirrors.aliyun.com/ubuntu/ xenial-updates universe 
+deb-src http://mirrors.aliyun.com/ubuntu/ xenial-updates universe 
+deb http://mirrors.aliyun.com/ubuntu/ xenial-security main 
+deb-src http://mirrors.aliyun.com/ubuntu/ xenial-security main 
+deb http://mirrors.aliyun.com/ubuntu/ xenial-security universe 
+deb-src http://mirrors.aliyun.com/ubuntu/ xenial-security universe 
+EOF			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="dpkg">
 		<title>dpkg</title>

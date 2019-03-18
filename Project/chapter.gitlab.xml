@@ -22,7 +22,7 @@
 	<para>它拥有与Github类似的功能，能够浏览源代码，管理缺陷和注释。可以管理团队对仓库的访问，它非常易于浏览提交过的版本并提供一个文件历史库。团队成员可以利用内置的简单聊天程序(Wall)进行交流。它还提供一个代码片段收集功能可以轻松实现代码复用，便于日后有需要的时候进行查找。</para>
 	<para>GitLab 5.0以前版本要求服务器端采用 Gitolite 搭建，5.0版本以后不再使用 Gitolite ，采用自己开发的 gitlab-shell 来实现。如果你觉得安装麻烦可以使用 GitLab Installers 一键安装程序。</para>
 	<section id="install">
-		<title>安装 GitLab</title>
+		<title>Yum 安装 GitLab</title>
 		<screen>
 yum localinstall -y https://downloads-packages.s3.amazonaws.com/centos-6.6/gitlab-ce-7.10.0~omnibus.2-1.x86_64.rpm
 
@@ -74,6 +74,58 @@ gitlab_rails['smtp_authentication'] = "login"
 		<screen>
 # Username: root 
 # Password: 5iveL!fe		
+		</screen>
+	</section>
+	<section>
+		<title>Docker 方式安装 Gitlab</title>
+		<screen>
+		<![CDATA[
+docker pull gitlab/gitlab-ce:latest		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+docker run \
+    -d \
+    -p 443:443 \
+    -p 80:80 \
+    --name gitlab-ce \
+    --restart unless-stopped \
+    -v /opt/gitlab/etc:/etc/gitlab \
+    -v /opt/gitlab/log:/var/log/gitlab \
+    -v /opt/gitlab/data:/var/opt/gitlab \
+    gitlab/gitlab-ce		
+		]]>
+		</screen>
+		<para>配置对外url，域名或者ip，公网能访问即可</para>
+		<screen>
+		<![CDATA[
+vim /mnt/gitlab/etc/gitlab.rb
+添加一下配置：
+external_url	'http://127.0.0.1' （你的域名或者ip地址）	
+		]]>
+		</screen>
+		<para>配置邮箱</para>
+		<screen>
+		<![CDATA[
+vim /mnt/gitlab/etc/gitlab.rb
+gitlab_rails['smtp_enable'] = true
+gitlab_rails['smtp_address'] = "smtp.qq.com"
+gitlab_rails['smtp_port'] = 465
+gitlab_rails['smtp_user_name'] = "13721218@qq.com"    (替换成自己的QQ邮箱)
+gitlab_rails['smtp_password'] = "xxxxx"
+gitlab_rails['smtp_domain'] = "smtp.qq.com"
+gitlab_rails['smtp_authentication'] = "login"
+gitlab_rails['smtp_enable_starttls_auto'] = true
+gitlab_rails['smtp_tls'] = true
+gitlab_rails['gitlab_email_from'] = '13721218@qq.com'  (替换成自己的QQ邮箱，且与smtp_user_name一致)		
+		]]>
+		</screen>
+		<para>重新启动gitlab</para>
+		<screen>
+		<![CDATA[
+docker restart gitlab-ce	
+		]]>
 		</screen>
 	</section>
 	<section id="gitlab.runner">

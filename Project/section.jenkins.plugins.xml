@@ -10,7 +10,7 @@
 			<ulink url="http://jk.netkiller.cn/blue/" />
 		</para>
 	</section>
-	<section id="">
+	<section id="jenkins.locale">
 		<title>Locale Plugin (国际化插件)</title>
 		<para>安装Locale Plugin, 重启生效。</para>
 		<screen>
@@ -90,8 +90,9 @@ mkdir target/classes
 	<section id="jenkins.Docker">
 		<title>Docker</title>
 		<subtitle>This plugin integrates Jenkins with Docker</subtitle>
+		<para><ulink url="https://jenkins.io/doc/book/pipeline/docker/" /></para>
 		<screen>
-	<![CDATA[
+		<![CDATA[
 vim /lib/systemd/system/docker.service
 
 ExecStart=/usr/bin/dockerd -H fd://
@@ -99,17 +100,23 @@ ExecStart=/usr/bin/dockerd -H fd://
 改为
 
 ExecStart=/usr/bin/dockerd -H fd:// -H unix:///var/run/docker.sock -H tcp://0.0.0.0:2375
-	]]>
+		]]>
+		</screen>
+		<para>吧 jenkins 用户添加到 docker 组</para>
+		<screen>
+		<![CDATA[
+gpasswd -a jenkins docker		
+		]]>
 		</screen>
 		<para>重启 docker</para>
 		<screen>
-	<![CDATA[
+		<![CDATA[		
 systemctl daemon-reload
 systemctl restart docker
 
 如果是 Docker 方式运行 Jenkins 需要启动 jenkins
 docker start jenkins	
-	]]>
+		]]>
 		</screen>
 		<para>参考例子</para>
 		<programlisting>
@@ -169,7 +176,7 @@ WantedBy=multi-user.target
 			<para>当持续机构运行完毕 docker 容器被清理，但是 /opt/maven 并不会被清理，下次构建时，在将它挂载到 /root/.m2 即可。</para>
 		</section>
 	</section>
-	<section id="JaCoCo">
+	<section id="jenkins.JaCoCo">
 		<title>JaCoCo</title>
 		<subtitle>This plugin integrates JaCoCo code coverage reports to Jenkins.</subtitle>
 		<para>https://jenkins.io/doc/pipeline/steps/jacoco/</para>
@@ -230,6 +237,143 @@ node {
 			</screen>
 		</section>
 	</section>
+	<section>
+		<title>SSH Pipeline Steps</title>
+		<para>使用说明: https://github.com/jenkinsci/ssh-steps-plugin#pipeline-steps</para>
+		<screen>
+		<![CDATA[
+!groovy
+def getHost(){
+    def remote = [:]
+    remote.name = 'mysql'
+    remote.host = '192.168.8.108'
+    remote.user = 'root'
+    remote.port = 22
+    remote.password = 'qweasd'
+    remote.allowAnyHosts = true
+    return remote
+}
+pipeline {
+    agent {label 'master'}
+    environment{
+        def server = ''
+    }   
+    stages {
+        stage('init-server'){
+            steps {
+                script {                 
+                   server = getHost()                                   
+                }
+            }
+        }
+        stage('use'){
+            steps {
+                script {
+                  sshCommand remote: server, command: """                 
+                  if test ! -d aaa/ccc ;then mkdir -p aaa/ccc;fi;cd aaa/ccc;rm -rf ./*;echo 'aa' > aa.log
+                  """
+                }
+            }
+        }
+    }
+}
+####################################
+node {
+  def remote = [:]
+  remote.name = 'test'
+  remote.host = 'test.domain.com'
+  remote.user = 'root'
+  remote.password = 'password'
+  remote.allowAnyHosts = true
+  stage('Remote SSH') {
+    sshCommand remote: remote, command: "ls -lrt"
+    sshCommand remote: remote, command: "for i in {1..5}; do echo -n \"Loop \$i \"; date ; sleep 1; done"
+  }
+}
+node {
+  def remote = [:]
+  remote.name = 'test'
+  remote.host = 'test.domain.com'
+  remote.user = 'root'
+  remote.password = 'password'
+  remote.allowAnyHosts = true
+  stage('Remote SSH') {
+    writeFile file: 'abc.sh', text: 'ls -lrt'
+    sshScript remote: remote, script: "abc.sh"
+  }
+}
+node {
+  def remote = [:]
+  remote.name = 'test'
+  remote.host = 'test.domain.com'
+  remote.user = 'root'
+  remote.password = 'password'
+  remote.allowAnyHosts = true
+  stage('Remote SSH') {
+    writeFile file: 'abc.sh', text: 'ls -lrt'
+    sshPut remote: remote, from: 'abc.sh', into: '.'
+  }
+}
+node {
+  def remote = [:]
+  remote.name = 'test'
+  remote.host = 'test.domain.com'
+  remote.user = 'root'
+  remote.password = 'password'
+  remote.allowAnyHosts = true
+  stage('Remote SSH') {
+    sshGet remote: remote, from: 'abc.sh', into: 'abc_get.sh', override: true
+  }
+}
+node {
+  def remote = [:]
+  remote.name = 'test'
+  remote.host = 'test.domain.com'
+  remote.user = 'root'
+  remote.password = 'password'
+  remote.allowAnyHosts = true
+  stage('Remote SSH') {
+    sshRemove remote: remote, path: "abc.sh"
+  }
+}
+def remote = [:]
+remote.name = "node-1"
+remote.host = "10.000.000.153"
+remote.allowAnyHosts = true
+node {
+    withCredentials([sshUserPrivateKey(credentialsId: 'sshUser', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
+        remote.user = userName
+        remote.identityFile = identity
+        stage("SSH Steps Rocks!") {
+            writeFile file: 'abc.sh', text: 'ls'
+            sshCommand remote: remote, command: 'for i in {1..5}; do echo -n \"Loop \$i \"; date ; sleep 1; done'
+            sshPut remote: remote, from: 'abc.sh', into: '.'
+            sshGet remote: remote, from: 'abc.sh', into: 'bac.sh', override: true
+            sshScript remote: remote, script: 'abc.sh'
+            sshRemove remote: remote, path: 'abc.sh'
+        }
+    }
+}
+################################		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>Rancher</title>
+		<para><ulink url="https://plugins.jenkins.io/rancher" /></para>
+		<para><ulink url="https://jenkins.io/doc/pipeline/steps/rancher/" /></para>
+		<para>创建 Rancher API</para>
+		<para>在Jenkins的Credentials中添加一个类型为Username with password的认证，username和password分别对应于上一步生成的Access Key和Secret Key，如下图</para>
+		<para>然后在语法生成器中，找到rancher进行如下图的配置：</para>
+		<para>设置 environmentId ，找到你的集群，点击进入，看到URL https://rancher.netkiller.cn/v3/clusters/c-mx88f，“c-mx88f” 就是 environmentId</para>
+		<screen>
+		<![CDATA[
+stage('Rancher') {
+    rancher confirm: false, credentialId: 'b56bd9b2-3277-4072-baae-08d73aa26549', endpoint: 'https://rancher.netkiller.cn/v2', environmentId: 'test', environments: '', image: '*/demo:1.0.0', ports: '', service: 'jenkins/demo', timeout: 50
+}		
+		]]>
+		</screen>
+	</section>
 	<section id="jenkins.kubernetes">
 		<title>Kubernetes 插件</title>
 		<section>
@@ -273,5 +417,54 @@ podTemplate(label: label) {
 			</para>
 		</section>
 
+	</section>
+	<section>
+		<title>HTTP Request Plugin</title>
+		<screen>
+		<![CDATA[
+GET https://<rancher_server>/v3/project/<project_id>/workloads/deployment:<rancher_namespace>:<rancher_service> # 获取一个服务的详细信息
+GET https://<rancher_server>/v3/project/<project_id>/pods/?workloadId=deployment:<rancher_namespace>:<rancher_service> # 获取服务的所有容器信息
+DELETE https://<rancher_server>/v3/project/<project_id>/pods/<rancher_namespace>:<container_name> # 根据容器名删除容器
+PUT https://<rancher_server>/v3/project/<project_id>/workloads/deployment:<rancher_namespace>:<rancher_service> # 更新服务	
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+// 查询服务信息
+def response = httpRequest acceptType: 'APPLICATION_JSON', authentication: "${RANCHER_API_KEY}", contentType: 'APPLICATION_JSON', httpMode: 'GET', responseHandle: 'LEAVE_OPEN', timeout: 10, url: "${rancherUrl}/workloads/deployment:${rancherNamespace}:${rancherService}"
+def serviceInfo = new JsonSlurperClassic().parseText(response.content)
+response.close()
+
+def dockerImage = imageName+":"+imageTag
+if (dockerImage.equals(serviceInfo.containers[0].image)) {
+    // 如果镜像名未改变，直接删除原容器
+    // 查询容器名称
+    response = httpRequest acceptType: 'APPLICATION_JSON', authentication: "${RANCHER_API_KEY}", contentType: 'APPLICATION_JSON', httpMode: 'GET', responseHandle: 'LEAVE_OPEN', timeout: 10, url: "${rancherUrl}/pods/?workloadId=deployment:${rancherNamespace}:${rancherService}"
+    def podsInfo = new JsonSlurperClassic().parseText(response.content)
+    def containerName = podsInfo.data[0].name
+    response.close()
+    // 删除容器
+    httpRequest acceptType: 'APPLICATION_JSON', authentication: "${RANCHER_API_KEY}", contentType: 'APPLICATION_JSON', httpMode: 'DELETE', responseHandle: 'NONE', timeout: 10, url: "${rancherUrl}/pods/${rancherNamespace}:${containerName}"
+    
+} else {
+    // 如果镜像名改变，使用新镜像名更新容器
+    serviceInfo.containers[0].image = dockerImage
+    // 更新
+    def updateJson = new JsonOutput().toJson(serviceInfo)
+    httpRequest acceptType: 'APPLICATION_JSON', authentication: "${RANCHER_API_KEY}", contentType: 'APPLICATION_JSON', httpMode: 'PUT', requestBody: "${updateJson}", responseHandle: 'NONE', timeout: 10, url: "${rancherUrl}/workloads/deployment:${rancherNamespace}:${rancherService}"
+}		
+		]]>
+		</screen>
+	</section>
+	<section id="skip-certificate-check">
+		<title>Skip Certificate Check plugin</title>
+		<para><ulink url="https://wiki.jenkins.io/display/JENKINS/Skip+Certificate+Check+plugin" /></para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# tail -f /var/log/jenkins/jenkins.log
+
+javax.net.ssl.SSLPeerUnverifiedException: peer not authenticated
+		]]>
+		</screen>
 	</section>
 </section>

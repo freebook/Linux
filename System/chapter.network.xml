@@ -2,10 +2,19 @@
 <!-- $Id: chapter.system.network.xml 515 2013-01-15 06:34:09Z netkiller $ -->
 <chapter id="index"><?dbhtml dir="network" ?>
 	<title>Networking 网络管理</title>
-		
-	
 	<section id="hosts">
 		<title>hosts</title>
+		<screen>
+		<![CDATA[
+# cat -n /etc/hosts
+     1  # Do not remove the following line, or various programs
+     2  # that require network functionality will fail.
+     3  127.0.0.1               development.domain.org development netkiller.localdomain netkiller
+     4  ::1             localhost6.localdomain6 localhost6
+
+		]]>
+		</screen>
+		
 		<section>
 			<title>/etc/hostname</title>
 			<screen>
@@ -41,17 +50,7 @@ web1.example.com
 			]]>
 			</screen>
 		</section>		
-			
-		<screen>
-		<![CDATA[
-# cat -n /etc/hosts
-     1  # Do not remove the following line, or various programs
-     2  # that require network functionality will fail.
-     3  127.0.0.1               development.domain.org development netkiller.localdomain netkiller
-     4  ::1             localhost6.localdomain6 localhost6
 
-		]]>
-		</screen>
 		<section>
 			<title>/etc/host.conf</title>
 			<para>解析顺序配置文件</para>

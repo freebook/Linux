@@ -7,7 +7,7 @@
 		<para>如果只是学习，可以安装最新版</para>
 		<screen>
 		<![CDATA[
-docker run -d --restart=unless-stopped -p 80:80 -p 443:443 rancher/rancher:latest --name=rancher
+docker run -d --restart=unless-stopped -p 80:80 -p 443:443 --name=rancher rancher/rancher:latest
 		]]>
 		</screen>
 		<para>稳定版</para>
@@ -24,6 +24,45 @@ iptables -I INPUT -s 172.16.0.0/0 -p tcp --dport 2379 -j ACCEPT
 iptables -I INPUT -s 172.16.0.0/0 -p tcp --dport 2380 -j ACCEPT		
 		]]>		
 		</screen>
+		<screen>
+		<![CDATA[
+systemctl restart firewalld
+systemctl enable firewalld
+
+iptables -A INPUT -p tcp --dport 6443 -j ACCEPT
+iptables -A INPUT -p tcp --dport 2379 -j ACCEPT
+iptables -A INPUT -p tcp --dport 2380 -j ACCEPT
+iptables -A INPUT -p tcp --dport 10250 -j ACCEPT
+
+firewall-cmd --zone=public --add-port=6443/tcp --permanent
+firewall-cmd --zone=public --add-port=2379/tcp --permanent
+firewall-cmd --zone=public --add-port=2380/tcp --permanent
+firewall-cmd --zone=public --add-port=10250/tcp --permanent
+firewall-cmd --reload
+		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+hostnamectl set-hostname m-1d41c853af58
+		]]>
+		</screen>
+		<section>
+			<title>Ubuntu</title>
+			<screen>
+			<![CDATA[
+$ sudo ufw disable			
+			]]>
+			</screen>
+		</section>
+		<section id="rancher-compose">
+			<title>rancher-compose</title>
+			<screen>
+			<![CDATA[
+			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section>
 		<title>Rancher Kubernetes Engine (RKE)</title>
@@ -49,6 +88,14 @@ rke version v0.1.17
 		<para><ulink url="https://www.cnrancher.com/docs/rancher/v2.x/cn/overview/quick-start-guide/" /></para>
 	</section>
 	
+	<section id="rancher.cli">
+		<title>rancher</title>
+		<screen>
+		<![CDATA[
+rancher export project && cd project &&  rancher up -p --force-upgrade --batch-size 99 -u -c -d && cd .. && rm -rf project		
+		]]>
+		</screen>
+	</section>
 	
 	<section>
 		<title>调试</title>
@@ -67,5 +114,42 @@ $ curl -L http://127.0.0.1:2379/health
 		]]>
 		</screen>
 	</section>
-	
+	<section>
+		<title>FAQ</title>
+		<section>
+			<title>	[network] Host [192.168.0.157] is not able to connect to the following ports: [192.168.0.157:2379]. Please check network policies and firewall rules</title>
+			<para>提示错误</para>
+			<para>	[network] Host [192.168.0.157] is not able to connect to the following ports: [192.168.0.157:2379]. Please check network policies and firewall rules</para>
+			<para>排查</para>
+			<screen>
+			<![CDATA[
+$ docker logs -f share-mnt
+
+Error response from daemon: {"message":"No such container: kubelet"}
+Error: failed to start containers: kubelet
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+neo@m-1d41c853af58:~$ snap list
+Name      Version         Rev    Tracking   Publisher   Notes
+core      16-2.37.4       6531   stable     canonical✓  core
+go        1.12            3318   stable     mwhudson    classic
+kubectl   1.13.4          780    stable     canonical✓  classic
+lxd       3.11            10343  stable/…   canonical✓  -
+microk8s  v1.14.0-beta.1  442    1.14/beta  canonical✓  classic
+
+neo@m-1d41c853af58:~$ snap remove microk8s kubectl lxd
+error: access denied (try with sudo)
+
+neo@m-1d41c853af58:~$ sudo snap remove microk8s kubectl lxd
+sudo: unable to resolve host m-1d41c853af58: Invalid argument
+microk8s removed
+kubectl removed
+lxd removed
+			
+			]]>
+			</screen>
+		</section>
+	</section>
 </section>

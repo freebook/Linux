@@ -373,7 +373,17 @@ node {
 				</screen>
 			</section>
 		</section>
-
+		<section id="withMaven">
+			<title>withMaven</title>
+			<screen>
+			<![CDATA[
+		withMaven(
+            maven: 'M3') {
+                sh "mvn test"
+        }			
+			]]>
+			</screen>
+		</section>
 		<section id="pipeline.sshpass">
 			<title>Jenkins pipeline 中使用 sshpass 实现 scp, ssh 远程运行</title>
 			<screen>
@@ -1307,6 +1317,22 @@ node {
         }				
 				]]>
 				</screen>
+				
+				<screen>
+				<![CDATA[
+stage('DockerBuild') {
+    sh """
+    rm -f src/docker/*.jar
+    cp target/*.jar src/docker/*.jar
+    """
+    
+    dir ("src/docker/") {
+        def image = docker.build("your/demo:1.0.0")
+        image.push()
+    }
+}				
+				]]>
+				</screen>
 			</section>
 		</section>
 		<section id="agent.dockerfile">
@@ -1513,6 +1539,74 @@ node {
 		}
 			]]>
 			</screen>
+			<example>
+				<title>Shell Docker 示例</title>
+				<para>Shell Docker 使用 docker 命令完成构建过程</para>
+				<screen>
+				<![CDATA[
+registryUrl='127.0.0.1:5000'	    # 私有镜像仓库地址
+imageName='netkiller/project'	# 镜像名称
+imageTag=$BRANCH	            # 上面设置Branch分支，这里可以当做环境变量使用
+
+echo ' >>> [INFO] enter workspace ...'
+
+cd $WORKSPACE/				# 进入到jenkins的工作区，jenkins会将gitlab仓库代码pull到这里，用于制作镜像文件
+
+# 根据不同的Branch生成不同的swoft的配置文件，区分测试还是生成等 
+echo ' >>> [INFO] create startup.sh ...'
+(
+cat << EOF
+
+# 启动 Shell 写在此处
+
+EOF
+) > ./entrypoint.sh
+
+# 生成 Dockerfile
+echo ' >>> [INFO] begin create Dockerfile ...'
+rm -f ./Dockerfile
+(
+cat << EOF
+FROM netkiller/base
+LABEL maintainer=netkiller@msn.com
+
+COPY . /var/www/project
+WORKDIR /var/www/project
+EXPOSE 80
+ENV PHP_ENVIRONMENT $BRANCH
+ENTRYPOINT [ "bash", "/var/www/project/entrypoint.sh" ]
+EOF
+) > ./Dockerfile
+
+
+#删除无用镜像
+echo ' >>> [INFO] begin cleaning image ...'
+for image in `docker images | grep -w $imageName | grep -i -w $imageTag | awk '{print $3}'`
+do
+    docker rmi $image -f
+done
+
+#制作镜像
+echo ' >>> [INFO] begin building image ...'
+docker build --tag $imageName:$imageTag --rm .
+
+#给镜像打标签
+img=`docker images | grep -w $imageName | grep -i -w $imageTag | awk '{print $3}'`
+docker tag $img $registryUrl/$imageName:$imageTag
+
+#push到私有镜像仓库
+echo ' >>> [INFO] begin publishing image ...'
+docker push $registryUrl/$imageName:$imageTag
+
+#删除刚刚制作的镜像, 释放存储空间
+echo ' >>> [INFO] cleaning temporary building ...'
+docker rmi -f $imageName:$imageTag
+docker rmi -f $registryUrl/$imageName:$imageTag	
+				]]>
+				</screen>
+				
+			</example>
+			
 		</section>
 		<section id="pipeline.bat">
 			<title>Windows 批处理脚本</title>
