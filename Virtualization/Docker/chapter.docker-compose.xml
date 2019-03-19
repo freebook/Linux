@@ -23,7 +23,80 @@ curl -s https://raw.githubusercontent.com/oscm/shell/master/virtualization/docke
 			</screen>
 		</section>
 	</section>
-	
+	<section>
+		<title>快速入门</title>
+		<screen>
+		<![CDATA[
+[root@localhost tmp]# cat app.py 
+import time
+
+import redis
+from flask import Flask
+
+
+app = Flask(__name__)
+cache = redis.Redis(host='redis', port=6379)
+
+
+def get_hit_count():
+    retries = 5
+    while True:
+        try:
+            return cache.incr('hits')
+        except redis.exceptions.ConnectionError as exc:
+            if retries == 0:
+                raise exc
+            retries -= 1
+            time.sleep(0.5)
+
+
+@app.route('/')
+def hello():
+    count = get_hit_count()
+    return 'Hello World! I have been seen {} times.\n'.format(count)
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", debug=True)
+		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+[root@localhost tmp]# cat requirements.txt 
+flask
+redis		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+[root@localhost tmp]# cat Dockerfile 
+FROM python:3.4-alpine
+ADD . /code
+WORKDIR /code
+RUN pip install -r requirements.txt
+CMD ["python", "app.py"]
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+[root@localhost tmp]# cat docker-compose.yml 
+version: '2'
+services:
+  web:
+    build: .
+    ports:
+     - "5000:5000"
+  redis:
+    image: "redis:alpine"
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+
+		]]>
+		</screen>
+	</section>
 	<section id="up_down">
 		<title>启动/停止</title>
 		<section id="up">
@@ -204,6 +277,20 @@ tmpfs: /run
 tmpfs:
   - /run
   - /tmp			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>编译 Dockerfile</title>
+			<para>编译当前目录下的 Dockerfile 使用 build: .</para>
+			<screen>
+			<![CDATA[
+version: '3'
+services:
+  web:
+    build: .
+    ports:
+     - "5000:5000"			
 			]]>
 			</screen>
 		</section>

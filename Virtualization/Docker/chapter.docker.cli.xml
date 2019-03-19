@@ -262,5 +262,12 @@ docker logout
 			</screen>			
 		</section>
 	</section>
-	
+	<section id="docker.build">
+		<title>build</title>
+		<screen>
+		<![CDATA[
+$ docker build -f /path/to/a/Dockerfile .
+		]]>
+		</screen>
+	</section>
 </section>

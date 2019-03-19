@@ -48,7 +48,14 @@ tar -Zxvf foo.tar.Z
        extract compress foo.tar.Z
       		</screen>
 		</section>
-
+		<section>
+			<title>.xz 文件</title>
+			<screen>
+			<![CDATA[
+tar -Jxf file.pkg.tar.xz
+			]]>
+			</screen>
+		</section>
 		<section id="tar.list">
 			<title>-t, --list</title>
 			<para>-t, --list	list the contents of an archive</para>
@@ -336,6 +343,38 @@ $ 7z e test.7z
 		</section>
 	</section>
 	<section id="unrar">
-$ unrar test.rar
+		<title>RAR</title>
+		<screen>
+		<![CDATA[
+$ unrar test.rar		
+		]]>
+		</screen>
+	</section>
+	<section id="xz">
+		<title>xz, unxz, xzcat, lzma, unlzma, lzcat - Compress or decompress .xz and .lzma files</title>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# echo "Hello" > test		
+[root@localhost ~]# xz -z test
+[root@localhost ~]# ll test.xz 
+-rw------- 1 root root 1436 2019-01-16 06:13 test.xz
+[root@localhost ~]# xz -d test.xz 
+[root@localhost ~]# cat test
+Hello
+		]]>
+		</screen>
+		<para>tar 用法</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# tar Jcvf test.tar.xz test
+test
+[root@localhost ~]# ll test.tar.xz 
+-rw-r--r-- 1 root root 1528 2019-03-19 04:32 test.tar.xz
+
+[root@localhost ~]# tar Jxvf test.tar.xz 
+test		
+		]]>
+		</screen>
+		
 	</section>
 </section>

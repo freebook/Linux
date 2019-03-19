@@ -384,6 +384,30 @@ node {
 			]]>
 			</screen>
 		</section>
+		<section id="isUnix">
+			<title>isUnix() 判断操作系统类型</title>
+			<screen>
+			<![CDATA[
+pipeline{
+	
+	agent any
+	stages{
+		stage("isUnix") {
+			steps{
+				script {
+					if(isUnix() == true) {
+						echo("this jenkins job running on a linux-like system")
+					}else {
+						error("the jenkins job running on a windows system")
+					}
+				}
+			}
+		}
+	}
+}			
+			]]>
+			</screen>
+		</section>
 		<section id="pipeline.sshpass">
 			<title>Jenkins pipeline 中使用 sshpass 实现 scp, ssh 远程运行</title>
 			<screen>
@@ -1107,6 +1131,30 @@ node {
 			</screen>
 		</section>
 		<section>
+			<title>conditionalSteps</title>
+			<screen>
+			<![CDATA[
+def projectName = 'myProject'
+
+def jobClosure = {
+  steps {
+    conditionalSteps {
+      condition {
+        fileExists(projectName+'/target/test.jar', BaseDir.WORKSPACE)
+      }
+      runner('Fail')
+      steps {
+        batchFile('echo Found some tests')
+      }
+    }
+  }
+}
+
+freeStyleJob('AAA-Test', jobClosure)			
+			]]>
+			</screen>
+		</section>
+		<section>
 			<title>nexus</title>
 			<screen>
 			<![CDATA[
@@ -1124,7 +1172,38 @@ stage("Deploy") {
 			]]>
 			</screen>
 		</section>
-	</section><section id="pipeline.agent">
+	</section>
+	<section>
+		<title>系统环境变量</title>
+		<screen>
+		<![CDATA[
+${env.WORKSPACE}	
+println env.JOB_NAME
+println env.BUILD_NUMBER	
+		]]>
+		</screen>
+		<para>打印所有环境变量</para>
+		<screen>
+		<![CDATA[
+node {
+    echo sh(returnStdout: true, script: 'env')
+    echo sh(script: 'env|sort', returnStdout: true)
+    // ...
+}		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+def envs = sh(returnStdout: true, script: 'env').split('\n')
+envs.each { name  ->
+    println "Name: $name"
+}		
+		]]>
+		</screen>
+		
+	</section>
+	
+	<section id="pipeline.agent">
 		<title>agent</title>
 		<para>agent 指令指定整个管道或某个特定的stage的执行环境。它的参数可用使用：</para>
 		<screen>
@@ -1702,6 +1781,42 @@ if (fileExists('file')) {
 } else {
     echo 'No'
 }			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+
+ 
+pipeline{
+	agent any
+	stages{
+      stage("Checkout") {
+            steps {
+                checkout(
+                  [$class: 'GitSCM', branches: [[name: env.GIT_BUILD_REF]], 
+                  userRemoteConfigs: [[url: env.GIT_REPO_URL]]]
+                )
+            }
+        }
+      
+		stage("fileExists") {
+			steps{
+              	echo pwd()
+              	sh 'ls -1'
+				script {
+					def exists = fileExists 'README.md'
+                    if (exists) {
+                        echo 'Yes'
+                    } else {
+                        echo 'No'
+                    }
+				}
+			}
+		}
+	}
+}
+
+			
 			]]>
 			</screen>
 		</section>

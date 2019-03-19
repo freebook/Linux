@@ -272,6 +272,84 @@ pipeline {
 }		
 		]]>
 		</screen>
+		<screen>
+		<![CDATA[
+pipeline {
+
+    agent any
+    
+    stages {
+        stage("Checkout") {
+          steps {
+            checkout([
+              $class: 'GitSCM',
+              branches: [[name: env.GIT_COMMIT]],
+              extensions: [[$class: 'PruneStaleBranch']],
+              userRemoteConfigs: [[
+                url: env.GIT_REPO_URL,
+                refspec: "+refs/heads/*:refs/remotes/origin/*"
+              ]]
+            ])
+
+            sh '''
+                #!/bin/bash
+                echo ${GIT_COMMIT}
+                echo ${REF}
+                echo ${GIT_LOCAL_BRANCH}
+            '''
+          }
+        }
+
+        stage('Build') {
+            steps{
+                echo "Building begin"
+                script{
+                    // 设置镜像名                
+                    env.BUILD_MODULE = "common"
+                    env.DOCKER_IMAGE_TAG = env.BUILD_MODULE + ':' + env.GIT_COMMIT
+                    env.DOCKER_REMOTE_IMAGE_TAG = "${env.REGISTRY_URL}/${env.DOCKER_IMAGE_TAG}"
+
+                    sh "docker login ${DOCKER_REGISTER_URL} -u ${DOCKER_REPOSITORY_USERNAME} -p ${DOCKER_REPOSITORY_PASSWORD}"
+
+                    def statusCode = sh(script:"docker pull ${DOCKER_REMOTE_IMAGE_TAG}", returnStatus:true)
+                    
+					// 判断该镜像在仓库是否存在
+                    if (statusCode != 0) {
+
+                        sh '''
+                        #!/bin/bash
+
+                        # build docker image
+                        docker build . -f Dockerfile -t ${DOCKER_IMAGE_TAG}
+
+                        # tag docker image
+                        docker tag ${DOCKER_IMAGE_TAG} ${DOCKER_REMOTE_IMAGE_TAG}
+
+                    }
+                }
+                echo "Build end"
+            }
+        }
+
+        stage('Deploy') {
+            steps{
+                echo "Deploying begin"
+                script{
+                        # push to
+                        docker push ${DOCKER_REMOTE_IMAGE_TAG}
+
+                        # rm
+                        docker rmi ${DOCKER_IMAGE_TAG}
+                        docker rmi ${DOCKER_REMOTE_IMAGE_TAG}
+                        '''
+                }
+                echo "Deploy end"
+            }
+        }
+    }
+}		
+		]]>
+		</screen>
 	</section>
 	<section id="example.yarn">
 		<title>Yarn</title>

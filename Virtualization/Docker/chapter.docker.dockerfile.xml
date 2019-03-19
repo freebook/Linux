@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="Dockerfile">
 	<title>基于 Dockerfile 创建镜像</title>
-	<screen>
-	<![CDATA[
-$ docker build -f /path/to/a/Dockerfile .
-	]]>
-	</screen>
 	<para>为什么要自己创建镜像呢？ 因为官方提供的镜像无法满足我们的需求，例如 nginx 镜像你会发现 ps, top 等等很多命令缺失。</para>
 	<section>
 		<title>创建 Dockerfile 文件</title>
@@ -199,5 +194,31 @@ dc1e2dcdc7b6: Mounted from library/centos
 nginx: digest: sha256:ad9bd1ae3a3e17dac70f32afc14baf90932949d3eaa8bebbe907726aca3ea336 size: 2205
 		]]>
 		</screen>
+	</section>
+	<section>
+		<title>Dockerfile 语法</title>
+		<section>
+			<title>COPY</title>
+			<para>跨容器拷贝</para>
+			<screen>
+			<![CDATA[
+FROM demo/test:latest as netkiller
+
+MAINTAINER Netkiller <netkiller@msn.com>
+
+RUN mkdir /www
+
+COPY some/path/to/ /www/
+
+
+
+FROM nginx:1.13-alpine
+
+RUN rm -rf /usr/share/nginx/html/*
+COPY --from=netkiller /www/ /usr/share/nginx/html/
+			]]>
+			</screen>
+		</section>
+		
 	</section>
 </section>

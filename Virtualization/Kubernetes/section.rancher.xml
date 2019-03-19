@@ -16,13 +16,20 @@ docker run -d --restart=unless-stopped -p 80:80 -p 443:443 --name=rancher ranche
 docker run -d --restart=unless-stopped -p 80:80 -p 443:443 -v /var/lib/rancher/:/var/lib/rancher/ --name=rancher rancher/rancher:stable
 		]]>
 		</screen>
+		<para>审计日志</para>
+		<screen>
+		<![CDATA[
+docker run -d --restart=unless-stopped -p 80:80 -p 443:443 -v /var/lib/rancher/:/var/lib/rancher/ -v /var/log/auditlog:/var/log/auditlog --name=rancher rancher/rancher:stable		
+		
+		]]>
+		</screen>
 		<para>安装完，浏览器输入 https://your-ip-address 即可进入WebUI</para>
 		<para>防火墙放行 etcd </para>
 		<screen>
 		<![CDATA[
 iptables -I INPUT -s 172.16.0.0/0 -p tcp --dport 2379 -j ACCEPT
 iptables -I INPUT -s 172.16.0.0/0 -p tcp --dport 2380 -j ACCEPT		
-		]]>		
+		]]>
 		</screen>
 		<screen>
 		<![CDATA[
@@ -55,18 +62,143 @@ $ sudo ufw disable
 			]]>
 			</screen>
 		</section>
-		<section id="rancher-compose">
-			<title>rancher-compose</title>
+		<section>
+			<title>SSL 证书</title>
+			<para>第一种方式</para>
 			<screen>
 			<![CDATA[
-			
+docker run -d -p 80:80 -p 443:443 -v /home/rancher/cacerts.pem:/etc/rancher/ssl/cacerts.pem -v /home/rancher/key.pem:/etc/rancher/ssl/key.pem -v /home/rancher/cert.pem:/etc/rancher/ssl/cert.pem rancher/rancher:latest			
+			]]>
+			</screen>
+			<para>第二种方式</para>
+			<screen>
+			<![CDATA[
+docker run -d --name rancher-server rancher/rancher:latest			
+docker run -d --name=nginx --restart=unless-stopped -p 80:80 -p 443:443 -v /your_certificates:/your_certificates -v /etc/nginx.conf:/etc/nginx/conf.d/default.conf --link=rancher-server nginx:1.11			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>进入容器</title>
+			<screen>
+			<![CDATA[
+$ docker exec -it rancher /bin/bash 			
+			]]>
+			</screen>
+		</section>
+		<section id="rancher-compose">
+			<title>rancher-compose</title>
+			<para>Rancher Compose是一个多主机版本的Docker Compose</para>
+			<para>
+				下载地址：
+				<ulink url="https://github.com/rancher/rancher-compose/releases" />
+			</para>
+			<screen>
+			<![CDATA[
+cd /tmp
+
+wget https://github.com/rancher/rancher-compose/releases/download/v0.12.5/rancher-compose-linux-amd64-v0.12.5.tar.xz
+tar Jxvf rancher-compose-linux-amd64-v0.12.5.tar.xz
+mv ./rancher-compose-v0.12.5/rancher-compose /usr/local/bin/
+
+cd
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>快速入门</title>
+		<para>
+			<ulink url="https://www.cnrancher.com/docs/rancher/v2.x/cn/overview/quick-start-guide/" />
+		</para>
+		<graphic format="png" fileref="../images/rancher/password.png" width="800" srccredit="neo" />
+		<graphic format="png" fileref="../images/rancher/url.png" width="800" srccredit="neo" />
+		<graphic format="png" fileref="../images/rancher/webui.png" width="800" srccredit="neo" />
+		<section>
+			<title>API</title>
+			<graphic format="png" fileref="../images/rancher/api1.png" width="800" srccredit="neo" />
+			<graphic format="png" fileref="../images/rancher/api2.png" width="800" srccredit="neo" />
+			<graphic format="png" fileref="../images/rancher/api3.png" width="800" srccredit="neo" />
+			<graphic format="png" fileref="../images/rancher/api4.png" width="800" srccredit="neo" />
+			<graphic format="png" fileref="../images/rancher/api5.png" width="800" srccredit="neo" />
+		</section>
+	</section>
+	<section>
+		<title>Rancher Compose</title>
+		<para>Rancher Compose 工具的工作方式是跟 Docker Compose 的工作方式是相似的，Docker Compose 不能远程部署，Rancher Compose 可以部署到指定URL的 Rancher 上。</para>
+		<section>
+			<title>Rancher Compose 命令</title>
+			<tip>Rancher Compose 目前不支持 V3 版的 Docker Compose</tip>
+			<para>为 RANCHER COMPOSE 设置 RANCHER SERVER</para>
+			<screen>
+			<![CDATA[
+# Set the url that Rancher is on
+$ export RANCHER_URL=http://server_ip/
+# Set the access key, i.e. username
+$ export RANCHER_ACCESS_KEY=<username_of_environment_api_key>
+# Set the secret key, i.e. password
+$ export RANCHER_SECRET_KEY=<password_of_environment_api_key>				
+			]]>
+			</screen>
+			<para>如果你不想设置环境变量，那么你需要在Rancher Compose 命令中手动送入这些变量：</para>
+			<screen>
+			<![CDATA[
+$ rancher-compose --url http://server_ip --access-key <username_of_environment_api_key> --secret-key <password_of_environment_api_key> up		
+			]]>
+			</screen>
+			<para>Rancher Compose 支持所有 Docker Compose 支持的命令。</para>
+			<screen>
+			<![CDATA[
+Name	Description
+create	创建所有服务但不启动
+up		启动所有服务
+start	启动服务
+logs	输出服务日志
+restart	重启服务
+stop, down	停止服务
+scale	缩放服务
+rm		删除服务
+pull	拉取所有服务的镜像
+upgrade	服务之间进行滚动升级
+help, h	输出命令列表或者指定命令的帮助列表
+			]]>
+			</screen>
+			<para>RANCHER COMPOSE 选项</para>
+			<screen>
+			<![CDATA[
+无论何时你使用 Rancher Compose 命令，这些不同的选项你都可以使用
+
+Name	Description
+--verbose, --debug	 
+--file, -f [–file option –file option]	指定一个compose 文件 (默认: docker-compose.yml) [$COMPOSE_FILE]
+--project-name, -p	指定一个项目名称 (默认: directory name)
+--url	执行 Rancher API接口 URL [$RANCHER_URL]
+--access-key	指定 Rancher API access key [$RANCHER_ACCESS_KEY]
+--secret-key	指定 Rancher API secret key [$RANCHER_SECRET_KEY]
+--rancher-file, -r	指定一个 Rancher Compose 文件 (默认: rancher-compose.yml)
+--env-file, -e	指定一个环境变量配置文件
+--help, -h	输出帮助文本
+--version, -v	输出 Rancher Compose 版本			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>操作演示</title>
+			<para>API</para>
+			<graphic format="png" fileref="../images/rancher/api5.png" width="800" srccredit="neo" />
+			<para>准备 docker-compose.yml 文件</para>
+			<screen>
+			<![CDATA[
+rancher-compose --url https://rancher.netkiller.cn/v3 --access-key token-pk9n2 --secret-key p2twn42xps9nmh74qm5k5fhfn8rxqhlwv7q9hzcvbvqk5tsqwdh4tc up
 			]]>
 			</screen>
 		</section>
 	</section>
 	<section>
 		<title>Rancher Kubernetes Engine (RKE)</title>
-		<para><ulink url="https://github.com/rancher/rke/releases" /></para>
+		<para>
+			<ulink url="https://github.com/rancher/rke/releases" />
+		</para>
 		<para>https://rancher.com/an-introduction-to-rke/</para>
 		<screen>
 		<![CDATA[
@@ -83,20 +215,17 @@ rke version v0.1.17
 		]]>
 		</screen>
 	</section>
-	<section>
-		<title>快速入门</title>
-		<para><ulink url="https://www.cnrancher.com/docs/rancher/v2.x/cn/overview/quick-start-guide/" /></para>
-	</section>
-	
+
+
 	<section id="rancher.cli">
-		<title>rancher</title>
+		<title>Rancher CLI</title>
 		<screen>
 		<![CDATA[
-rancher export project && cd project &&  rancher up -p --force-upgrade --batch-size 99 -u -c -d && cd .. && rm -rf project		
+rancher export project && cd project &&  rancher up -p --force-upgrade --batch-size 99 -u -c -d && cd .. && rm -rf project
 		]]>
 		</screen>
 	</section>
-	
+
 	<section>
 		<title>调试</title>
 		<screen>
@@ -104,7 +233,7 @@ rancher export project && cd project &&  rancher up -p --force-upgrade --batch-s
 neo@ubuntu:~$ docker logs -f rancher		
 		]]>
 		</screen>
-		
+
 		<screen>
 		<![CDATA[
 $ curl -L http://127.0.0.1:2379/health
@@ -117,9 +246,9 @@ $ curl -L http://127.0.0.1:2379/health
 	<section>
 		<title>FAQ</title>
 		<section>
-			<title>	[network] Host [192.168.0.157] is not able to connect to the following ports: [192.168.0.157:2379]. Please check network policies and firewall rules</title>
+			<title> [network] Host [rancher.netkiller.cn] is not able to connect to the following ports: [rancher.netkiller.cn:2379]. Please check network policies and firewall rules</title>
 			<para>提示错误</para>
-			<para>	[network] Host [192.168.0.157] is not able to connect to the following ports: [192.168.0.157:2379]. Please check network policies and firewall rules</para>
+			<para> [network] Host [rancher.netkiller.cn] is not able to connect to the following ports: [rancher.netkiller.cn:2379]. Please check network policies and firewall rules</para>
 			<para>排查</para>
 			<screen>
 			<![CDATA[
