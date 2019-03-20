@@ -109,57 +109,7 @@ pipeline {
 			</screen>
 		</section>
 
-		<section id="pipeline.environment">
-			<title>设置环境变量</title>
-			<para>environment定义键值对的环境变量</para>
-			<screen>
-			<![CDATA[
-echo "Running ${env.BUILD_ID} on ${env.JENKINS_URL}"			
-			]]>
-			</screen>
-			<screen>
-			<![CDATA[
-// Declarative //
-pipeline {
-    agent any
-    environment {
-        CC = 'clang'
-    }
-    stages {
-        stage('Example') {
-            environment {
-                DEBUG_FLAGS = '-g'
-            }
-            steps {
-                sh 'printenv'
-            }
-        }
-    }
-}			
-			]]>
-			</screen>
-			<screen>
-			<![CDATA[
-// Declarative //
-pipeline {
-    agent any
-    environment {
-        CC = 'clang'
-    }
-    stages {
-        stage('Example') {
-            environment { 
-                AN_ACCESS_KEY = credentials('my-prefined-secret-text') ③
-            }
-            steps {
-                sh 'printenv'
-            }
-        }
-    }
-}			
-			]]>
-			</screen>
-		</section>
+		
 		<section id="pipeline.withEnv">
 			<title>withEnv</title>
 			<screen>
@@ -205,6 +155,42 @@ pipeline {
         stage('Example') {
             steps {
                 echo "Hello ${params.PERSON}"
+            }
+        }
+    }
+}			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+Jenkinsfile (Declarative Pipeline)
+pipeline {
+    agent any
+    parameters {
+        string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
+
+        text(name: 'BIOGRAPHY', defaultValue: '', description: 'Enter some information about the person')
+
+        booleanParam(name: 'TOGGLE', defaultValue: true, description: 'Toggle this value')
+
+        choice(name: 'CHOICE', choices: ['One', 'Two', 'Three'], description: 'Pick something')
+
+        password(name: 'PASSWORD', defaultValue: 'SECRET', description: 'Enter a password')
+
+        file(name: "FILE", description: "Choose a file to upload")
+    }
+    stages {
+        stage('Example') {
+            steps {
+                echo "Hello ${params.PERSON}"
+
+                echo "Biography: ${params.BIOGRAPHY}"
+
+                echo "Toggle: ${params.TOGGLE}"
+
+                echo "Choice: ${params.CHOICE}"
+
+                echo "Password: ${params.PASSWORD}"
             }
         }
     }
@@ -1173,8 +1159,59 @@ stage("Deploy") {
 			</screen>
 		</section>
 	</section>
-	<section>
+	<section id="pipeline.environment">
+		<title>设置环境变量</title>
+		<para>environment定义键值对的环境变量</para>
+		
+		<screen>
+		<![CDATA[
+// Declarative //
+pipeline {
+    agent any
+    environment {
+        CC = 'clang'
+    }
+    stages {
+        stage('Example') {
+            environment {
+                DEBUG_FLAGS = '-g'
+            }
+            steps {
+                sh 'printenv'
+            }
+        }
+    }
+}			
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+// Declarative //
+pipeline {
+    agent any
+    environment {
+        CC = 'clang'
+    }
+    stages {
+        stage('Example') {
+            environment { 
+                AN_ACCESS_KEY = credentials('my-prefined-secret-text') ③
+            }
+            steps {
+                sh 'printenv'
+            }
+        }
+    }
+}			
+		]]>
+		</screen>
+		<section>
 		<title>系统环境变量</title>
+		<screen>
+		<![CDATA[
+echo "Running ${env.BUILD_ID} on ${env.JENKINS_URL}"			
+		]]>
+		</screen>
 		<screen>
 		<![CDATA[
 ${env.WORKSPACE}	
@@ -1190,17 +1227,29 @@ node {
     echo sh(script: 'env|sort', returnStdout: true)
     // ...
 }		
-		]]>
-		</screen>
-		<screen>
-		<![CDATA[
-def envs = sh(returnStdout: true, script: 'env').split('\n')
-envs.each { name  ->
-    println "Name: $name"
-}		
-		]]>
-		</screen>
-		
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+pipeline {
+  	agent any
+    stages {
+        stage('Environment Example') {
+            steps {
+              script{
+              	def envs = sh(returnStdout: true, script: 'env').split('\n')
+				envs.each { name  ->
+    				println "Name: $name"
+				}	
+              }
+            }
+        }
+    }
+}	
+			]]>
+			</screen>
+			
+		</section>
 	</section>
 	
 	<section id="pipeline.agent">
@@ -1814,9 +1863,7 @@ pipeline{
 			}
 		}
 	}
-}
-
-			
+}			
 			]]>
 			</screen>
 		</section>

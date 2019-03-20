@@ -97,13 +97,7 @@ su - $USER -c "$PROG & echo \$! > $PIDFILE"
 		]]>
 		</screen>
 	</section>
-	<section id="test">
-		<title>test 命令</title>
-		<screen>
-test -x $HAPROXY || exit 0
-test -f "$CONFIG" || exit 0
-		</screen>
-	</section>
+
 	<section id="stdin-stdout-stderr">
 		<title>I/O 重定向</title>
 		<screen>

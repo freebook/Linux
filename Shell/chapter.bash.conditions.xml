@@ -199,14 +199,21 @@
 
 	<section id="if">
 		<title>if</title>
+		<screen>
+		<![CDATA[
+if [ ! -d /directory/to/check ]; then
+    mkdir -p /directory/toc/check
+fi		
+		]]>
+		</screen>
 		<example>
 			<title>Basic conditional example if .. then</title>
 			<programlisting>
 			<![CDATA[
-               #!/bin/bash
-               if [ "foo" = "foo" ]; then
-                  echo expression evaluated as true
-               fi
+#!/bin/bash
+if [ "foo" = "foo" ]; then
+   echo expression evaluated as true
+fi
 			]]>
 			</programlisting>
 		</example>
@@ -214,14 +221,14 @@
 			<title>Conditionals with variables</title>
 			<programlisting>
 			<![CDATA[
-               #!/bin/bash
-               T1="foo"
-               T2="bar"
-               if [ "$T1" = "$T2" ]; then
-                   echo expression evaluated as true
-               else
-                   echo expression evaluated as false
-               fi
+#!/bin/bash
+T1="foo"
+T2="bar"
+if [ "$T1" = "$T2" ]; then
+    echo expression evaluated as true
+else
+    echo expression evaluated as false
+fi
 			]]>
 			</programlisting>
 		</example>

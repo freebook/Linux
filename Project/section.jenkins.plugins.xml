@@ -467,4 +467,42 @@ javax.net.ssl.SSLPeerUnverifiedException: peer not authenticated
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>Android Sign Plugin</title>
+		<para>Android Sign Plugin 依赖 Credentials Plugin，因为 Credentials Plugin 只支持 PKCS#12 格式的证书，所以先需要将生成好的 JKS 证书转换为 PKCS#12 格式：</para>
+		<screen>
+		<![CDATA[
+keytool -importkeystore -srckeystore netkiller.jks -srcstoretype JKS -deststoretype PKCS12 -destkeystore netkiller.p12
+		]]>
+		</screen>
+		<para>复制代码添加类型为 credential，选择上传证书文件，将 PKCS#12 证书上传到并配置好 ID，本项目中使用了 ANDROID_SIGN_KEY_STORE 作为 ID。</para>
+		<screen>
+		<![CDATA[
+pipeline {
+    ...
+
+    stages {
+        ...
+
+        stage("Sign APK") {
+            steps {
+                echo 'Sign APK'
+                signAndroidApks(
+                    keyStoreId: "ANDROID_SIGN_KEY_STORE",
+                    keyAlias: "tomczhen",
+                    apksToSign: "**/*-prod-release-unsigned.apk",
+                    archiveSignedApks: false,
+                    archiveUnsignedApks: false
+                )
+            }
+        }
+
+        ...
+    }
+
+    ...
+}		
+		]]>
+		</screen>
+	</section>
 </section>

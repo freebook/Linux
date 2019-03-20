@@ -403,4 +403,89 @@ pipeline {
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>Android</title>
+		<screen>
+		<![CDATA[
+pipeline {
+  	agent any
+    stages  {
+        
+        stage("Checkout") {
+            steps {
+                checkout(
+                  [$class: 'GitSCM', branches: [[name: env.GIT_BUILD_REF]], 
+                  userRemoteConfigs: [[url: env.GIT_REPO_URL]]]
+                )
+            }
+        }
+		
+      	stage("Android SDK") {
+            steps {
+              	script{
+	                if (fileExists('sdk-tools-linux-4333796.zip')) {
+	    				echo 'Android SDK 已安装'
+					} else {
+	    				echo '安装 Android SDK'
+
+                		sh '''
+# rm -rf sdk-tools-linux-4333796.* tools platforms platform-tools
+wget https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip
+unzip sdk-tools-linux-4333796.zip
+         				'''
+              	
+              			sh 'yes|tools/bin/sdkmanager --licenses'
+              			//sh 'yes|tools/bin/sdkmanager "platform-tools" "platforms;android-26"'	// andorid 8.0	
+	              		//sh 'yes|tools/bin/sdkmanager "platform-tools" "platforms;android-27"' 	// andorid 8.1
+	              		sh 'yes|tools/bin/sdkmanager "platform-tools" "platforms;android-28"'	// andorid 9.0
+	              		sh '(while sleep 3; do echo "y"; done) | tools/android update sdk -u'
+	              
+	              		sh 'tools/bin/sdkmanager --list'
+                	}
+               	}	
+              	echo '安装 Android SDK License'
+              	writeFile(file: 'platforms/licenses/android-sdk-license', text: '''
+8933bad161af4178b1185d1a37fbf41ea5269c55
+d56f5187479451eabf01fb78af6dfcb131a6481e
+24333f8a63b6825ea9c5514f83c2829b004d1fee
+ 					''')
+				sh 'ls -1 platforms'
+            }
+        }
+
+        stage("Build") {
+            steps {
+              	echo "构建中..."
+                sh './gradlew'
+              	echo "构建完成."
+            }
+        }
+        stage("Test") {
+            steps {
+                echo "单元测试中..."
+                sh './gradlew test'
+                echo "单元测试完成."
+                //junit 'app/build/test-results/*/*.xml'
+            }
+        }      
+      	stage("Package") {
+            steps {
+                sh './gradlew assemble'
+                // 收集构建产物
+                archiveArtifacts artifacts: 'app/build/outputs/apk/*/*.apk', fingerprint: true 
+            }
+        }
+
+        stage("Deploy") {
+            steps {
+                echo "部署中..."
+                // sh './deploy.sh' // 自研部署脚本
+                echo "部署完成"
+            }
+        }
+    }
+}		
+		]]>
+		</screen>
+	</section>
 </section>
