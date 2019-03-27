@@ -405,27 +405,27 @@ $ export RANCHER_ACCESS_KEY=<username_of_environment_api_key>
 $ export RANCHER_SECRET_KEY=<password_of_environment_api_key>				
 			]]>
 			</screen>
-			<para>如果你不想设置环境变量，那么你需要在Rancher Compose 命令中手动送入这些变量：</para>
+			<para>如果你不想设置环境变量，那么你需要在Rancher Compose 命令中手动送入这些变量:</para>
 			<screen>
 			<![CDATA[
 $ rancher-compose --url http://server_ip --access-key <username_of_environment_api_key> --secret-key <password_of_environment_api_key> up		
 			]]>
 			</screen>
-			<para>Rancher Compose 支持所有 Docker Compose 支持的命令。</para>
+			<para>Rancher Compose 支持所有 Docker Compose 支持的命令</para>
 			<screen>
 			<![CDATA[
-Name	Description
-create	创建所有服务但不启动
+Name		Description
+create		创建所有服务但不启动
 up		启动所有服务
-start	启动服务
-logs	输出服务日志
-restart	重启服务
-stop, down	停止服务
-scale	缩放服务
+start		启动服务
+logs		输出服务日志
+restart		重启服务
+stop, down	停止服务
+scale		缩放服务
 rm		删除服务
-pull	拉取所有服务的镜像
-upgrade	服务之间进行滚动升级
-help, h	输出命令列表或者指定命令的帮助列表
+pull		拉取所有服务的镜像
+upgrade		服务之间进行滚动升级
+help, h		输出命令列表或者指定命令的帮助列表
 			]]>
 			</screen>
 			<para>RANCHER COMPOSE 选项</para>
@@ -437,13 +437,13 @@ Name	Description
 --verbose, --debug	 
 --file, -f [–file option –file option]	指定一个compose 文件 (默认: docker-compose.yml) [$COMPOSE_FILE]
 --project-name, -p	指定一个项目名称 (默认: directory name)
---url	执行 Rancher API接口 URL [$RANCHER_URL]
---access-key	指定 Rancher API access key [$RANCHER_ACCESS_KEY]
---secret-key	指定 Rancher API secret key [$RANCHER_SECRET_KEY]
+--url				执行 Rancher API接口 URL [$RANCHER_URL]
+--access-key		指定 Rancher API access key [$RANCHER_ACCESS_KEY]
+--secret-key		指定 Rancher API secret key [$RANCHER_SECRET_KEY]
 --rancher-file, -r	指定一个 Rancher Compose 文件 (默认: rancher-compose.yml)
---env-file, -e	指定一个环境变量配置文件
---help, -h	输出帮助文本
---version, -v	输出 Rancher Compose 版本			
+--env-file, -e		指定一个环境变量配置文件
+--help, -h			输出帮助文本
+--version, -v		输出 Rancher Compose 版本	
 			]]>
 			</screen>
 		</section>
