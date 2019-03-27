@@ -405,7 +405,7 @@ $ export RANCHER_ACCESS_KEY=<username_of_environment_api_key>
 $ export RANCHER_SECRET_KEY=<password_of_environment_api_key>				
 			]]>
 			</screen>
-			<para>如果你不想设置环境变量，那么你需要在Rancher Compose 命令中手动送入这些变量：</para>
+			<para>如果你不想设置环境变量，那么你需要在Rancher Compose 命令中手动送入这些变量：</para>
 			<screen>
 			<![CDATA[
 $ rancher-compose --url http://server_ip --access-key <username_of_environment_api_key> --secret-key <password_of_environment_api_key> up		
