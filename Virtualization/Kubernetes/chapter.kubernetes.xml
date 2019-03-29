@@ -2,6 +2,7 @@
 <chapter id="index"><?dbhtml dir="kubernetes" ?>
 	<title>Kubernetes</title>
 	&chapter.minikube.xml;
+	&section.microk8s.xml;
 	&section.kubectl.xml;
 	&section.rancher.xml;
 </chapter>

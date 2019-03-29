@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="microk8s">
+	<title>microk8s</title>
+	<para>https://microk8s.io</para>
+	<para>更多配置参考官网 https://github.com/ubuntu/microk8s</para>
+	<section>
+		<title>安装 microk8s</title>
+		<screen>
+		<![CDATA[
+snap install kubectl --classic			
+snap install microk8s --channel=1.14/beta --classic	
+		]]>
+		</screen>
+		<para>安装 VirtualBox</para>
+		<screen>
+		<![CDATA[
+neo@ubuntu:~$ sudo apt install -y virtualbox			
+		]]>
+		</screen>
+		<para>启用或禁用 microk8s</para>
+		<screen>
+		<![CDATA[
+snap disable microk8s   # 禁用
+snap enable microk8s    # 启用
+		]]>
+		</screen>
+		<para>卸载</para>
+		<screen>
+		<![CDATA[
+microk8s.reset
+snap remove microk8s
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>kubectl</title>
+		<para>为了不和已经安装的 kubectl 产生冲突，microk8s 有自己的 microk8s.kubectl 命令</para>
+		<screen>
+		<![CDATA[
+microk8s.kubectl get services			
+		]]>
+		</screen>
+		<para>如果本地没有 kubectl 命令可以增加一个别名</para>
+		<screen>
+		<![CDATA[
+snap alias microk8s.kubectl kubectl
+		]]>
+		</screen>
+		<para>取消别名</para>
+		<screen>
+		<![CDATA[
+snap unalias kubectl
+		]]>
+		</screen>
+		<para>API 服务监听 8080 端口</para>
+		<screen>
+		<![CDATA[
+microk8s.kubectl config view
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>Kubernetes Addons</title>
+		<para>microk8s 只是最精简的安装，所以只有 api-server, controller-manager, scheduler, kubelet, cni, kube-proxy 被安装运行。额外的服务比如 kube-dns, dashboard 可以通过 microk8s.enable 启动</para>
+		<para>可用的扩展</para>
+		<screen>
+		<![CDATA[
+dns
+dashboard
+storage
+ingress
+gpu
+istio
+registry
+metrics-server		
+		]]>
+		</screen>
+		<section>
+			<title>dashboard</title>
+			<screen>
+			<![CDATA[
+microk8s.enable dns dashboard
+禁用
+microk8s.disable dns dashboard
+			]]>
+			</screen>
+		</section>
+	</section>
+</section>

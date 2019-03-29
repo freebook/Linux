@@ -40,21 +40,7 @@ echo "1" > /proc/sys/net/bridge/bridge-nf-call-iptables
 			]]>
 			</screen>
 		</section>
-		<section id="microk8s">
-			<title>Ubuntu</title>
-			<screen>
-			<![CDATA[
-snap install kubectl --classic			
-snap install microk8s --channel=1.14/beta --classic	
-			]]>
-			</screen>
-			<para>安装 VirtualBox</para>
-			<screen>
-			<![CDATA[
-neo@ubuntu:~$ sudo apt install -y virtualbox			
-			]]>
-			</screen>
-		</section>
+		
 		<section>
 			<title>Mac OS</title>
 			<screen>

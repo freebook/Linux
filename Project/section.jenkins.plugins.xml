@@ -358,7 +358,7 @@ node {
 		]]>
 		</screen>
 	</section>
-	<section>
+	<section id="jenkins.plugin.Rancher">
 		<title>Rancher</title>
 		<para><ulink url="https://plugins.jenkins.io/rancher" /></para>
 		<para><ulink url="https://jenkins.io/doc/pipeline/steps/rancher/" /></para>
