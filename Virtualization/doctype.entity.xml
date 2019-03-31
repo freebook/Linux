@@ -16,6 +16,7 @@
 <!ENTITY chapter.docker-compose.xml		SYSTEM "Docker/chapter.docker-compose.xml">
 <!ENTITY section.docker.registry.xml	SYSTEM "Docker/section.docker.registry.xml">
 <!ENTITY section.docker.swarms.xml 		SYSTEM "Docker/section.docker.swarms.xml">
+<!ENTITY section.docker.stack.xml 		SYSTEM "Docker/section.docker.stack.xml">
 <!ENTITY section.docker.faq.xml    		SYSTEM "Docker/section.docker.faq.xml">
 
 <!ENTITY chapter.kubernetes.xml			SYSTEM "Kubernetes/chapter.kubernetes.xml">
