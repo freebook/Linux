@@ -1,29 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id$ -->
 <section id="helm">
-	<title>helm</title>
+	<title>Helm - The package manager for Kubernetes</title>
 	<para>https://helm.sh</para>
 	<section id="helm.setup">
-		<title></title>
-		<para></para>
-		<screen>
-		<![CDATA[
+		<title>安装 Helm</title>
+		<section>
+			<title>Ubuntu</title>
+			<para></para>
+			<screen>
+			<![CDATA[
 snap install helm --classic		
-		]]>
-		</screen>
-		<para></para>
-		<screen>
-		<![CDATA[
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Mac</title>
+			<para>homebrew 安装 Helm</para>
+			<screen>
+			<![CDATA[
 brew install kubernetes-helm		
-		]]>
-		</screen>
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+$ brew install kubernetes-helm			
+			]]>
+			</screen>
+		</section>
+
 	</section>
 	<section id="helm.command">
-		<title></title>
+		<title>Helm 命令</title>
+		<screen>
+		<![CDATA[
+# 初始化本地 CLI 并 将 Tiller 安装到 Kubernetes cluster
+$ helm init
 
+# 更新本地 charts repo
+$ helm repo update
+
+# 安装 mysql chart
+$ helm install --name my-mysql stable/mysql
+
+# 删除 mysql
+$ helm delete my-mysql
+
+# 删除 mysql 并释放该名字以便后续使用
+$ helm delete --purge my-mysql		
+		]]>
+		</screen>
+		<section>
+			<title>删除</title>
+			<screen>
+			<![CDATA[
+helm ls --all
+helm del --purge redis-ha			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>升级</title>
+			<screen>
+			<![CDATA[
+helm upgrade -f redis-ha-values-upgrade.yaml redis-ha stable/redis-ha			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>回滚</title>
+			<screen>
+			<![CDATA[
+helm rollback redis-ha 1			
+			]]>
+			</screen>
+		</section>
 	</section>
 
 	<section id="helm.faq">
-		<title></title>
+		<title>Helm Faq</title>
 	</section>
 </section>

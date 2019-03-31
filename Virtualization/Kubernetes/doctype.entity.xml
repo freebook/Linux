@@ -3,5 +3,4 @@
 	
 	<!ENTITY chapter.watir.xml				SYSTEM "chapter.watir.xml">
 	<!ENTITY chapter.selenium.xml			SYSTEM "chapter.selenium.xml">
-	<!ENTITY chapter.test.io.xml     		SYSTEM "chapter.test.io.xml">
 	<!ENTITY chapter.miscellaneous.xml 		SYSTEM "chapter.miscellaneous.xml">

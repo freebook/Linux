@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="docker.swarms">
+	<title>Swarms</title>
+	<section>
+		<title>初始化 Swarms</title>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro ~/workspace/docker/docker-compose % docker swarm init
+Swarm initialized: current node (t8gqr7wfyeis9n8wuegy4j6gn) is now a manager.
+
+To add a worker to this swarm, run the following command:
+
+    docker swarm join --token SWMTKN-1-5w5joob510ug74m9vfn2j1a41nox3ddh6eiyrpgonm38zaoj5c-bo2q6tdem9ihd68gryue1b42x 192.168.65.3:2377
+
+To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>离线</title>
+		<screen>
+		<![CDATA[
+docker swarm leave --force		
+		]]>
+		</screen>
+	</section>
+</section>

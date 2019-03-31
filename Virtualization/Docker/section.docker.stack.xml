@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="docker.stack">
+	<title>Stack</title>
+	<screen>
+	<![CDATA[
+version: "3"
+services:
+  web:
+    # replace username/repo:tag with your name and image details
+    image: nginx
+    deploy:
+      replicas: 5
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 50M
+    ports:
+      - "80:80"
+    networks:
+      - webnet
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - webnet
+networks:
+  webnet:    		
+			]]>
+	</screen>
+
+	<para></para>
+	<screen>
+	<![CDATA[
+neo@MacBook-Pro ~ % docker stack deploy -c visualizer.yml visualizer
+Creating service visualizer_web
+Creating service visualizer_visualizer	
+	]]>
+	</screen>
+	<para></para>
+	<screen>
+	<![CDATA[
+neo@MacBook-Pro ~ % docker stack ls
+NAME                SERVICES            ORCHESTRATOR
+visualizer          2                   Swarm	
+	]]>
+	</screen>
+	<para></para>
+	<screen>
+	<![CDATA[
+neo@MacBook-Pro ~ % docker stack services visualizer
+ID                  NAME                    MODE                REPLICAS            IMAGE                             PORTS
+h6vpdk8wqr8w        visualizer_visualizer   replicated          1/1                 dockersamples/visualizer:stable   *:8080->8080/tcp
+tm5rre8d4kni        visualizer_web          replicated          5/5                 nginx:latest                      *:80->80/tcp	
+	]]>
+	</screen>
+	<para></para>
+	<screen>
+	<![CDATA[
+neo@MacBook-Pro ~ % docker stack ps visualizer
+ID                  NAME                          IMAGE                             NODE                    DESIRED STATE       CURRENT STATE             ERROR                              PORTS
+rnkgapj5oozr        visualizer_visualizer.1       dockersamples/visualizer:stable   linuxkit-025000000001   Running             Running 24 minutes ago                                       
+msstp0uavxpf         \_ visualizer_visualizer.1   dockersamples/visualizer:stable   linuxkit-025000000001   Shutdown            Rejected 31 minutes ago   "No such image: dockersamples/…"   
+1jmhrzmlsy0j         \_ visualizer_visualizer.1   dockersamples/visualizer:stable   linuxkit-025000000001   Shutdown            Rejected 31 minutes ago   "No such image: dockersamples/…"   
+p7iyq0147oh0         \_ visualizer_visualizer.1   dockersamples/visualizer:stable   linuxkit-025000000001   Shutdown            Rejected 31 minutes ago   "No such image: dockersamples/…"   
+jdc7cx00a994         \_ visualizer_visualizer.1   dockersamples/visualizer:stable   linuxkit-025000000001   Shutdown            Rejected 32 minutes ago   "No such image: dockersamples/…"   
+pttqpa4z21id        visualizer_web.1              nginx:latest                      linuxkit-025000000001   Running             Running 30 minutes ago                                       
+rappf97c8dtb        visualizer_web.2              nginx:latest                      linuxkit-025000000001   Running             Running 30 minutes ago                                       
+t3dcjqf0fsly        visualizer_web.3              nginx:latest                      linuxkit-025000000001   Running             Running 30 minutes ago                                       
+jtztvsqccb5d        visualizer_web.4              nginx:latest                      linuxkit-025000000001   Running             Running 30 minutes ago                                       
+ldb92uky85oc        visualizer_web.5              nginx:latest                      linuxkit-025000000001   Running             Running 30 minutes ago   	
+	]]>
+	</screen>
+	<para></para>
+	<screen>
+	<![CDATA[
+neo@MacBook-Pro ~ % docker service ls
+ID                  NAME                    MODE                REPLICAS            IMAGE                             PORTS
+h6vpdk8wqr8w        visualizer_visualizer   replicated          1/1                 dockersamples/visualizer:stable   *:8080->8080/tcp
+tm5rre8d4kni        visualizer_web          replicated          5/5                 nginx:latest                      *:80->80/tcp
+	]]>
+	</screen>	
+</section>

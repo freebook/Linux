@@ -527,9 +527,12 @@ Total reclaimed space: 11 B
 			</screen>
 		</section>
 	</section>
+	&section.docker.swarms.xml;
+	&section.docker.stack.xml;
 	&chapter.docker.system.xml;
-	&chapter.docker.cli.xml;	
+	&chapter.docker.cli.xml;
 	&chapter.docker-compose.xml;
 	&section.docker.registry.xml;
 	&chapter.docker.example.xml;
+	&section.docker.faq.xml;
 </chapter>

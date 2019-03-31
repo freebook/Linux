@@ -5,4 +5,5 @@
 	&section.microk8s.xml;
 	&section.kubectl.xml;
 	&section.rancher.xml;
+	&section.helm.xml;
 </chapter>

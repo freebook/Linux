@@ -266,6 +266,17 @@ users:
     client-key: /root/.minikube/client.key		
 		]]>
 		</screen>
+
+		<section>
+			<title>use-context</title>
+			<para>如果之前用其他方式运行Kubernetes，如 minikube, mircok8s 等等，可以使用下面命令切换。</para>
+			<screen>
+			<![CDATA[
+$ kubectl config use-context docker-for-desktop		
+			]]>
+			</screen>
+		</section>
+
 	</section>
 	<section id="get.nodes">
 		<title>nodes</title>
@@ -288,9 +299,9 @@ NAME             TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
 hello-minikube   NodePort    10.109.33.86   <none>        8080:30436/TCP   134m
 kubernetes       ClusterIP   10.96.0.1      <none>        443/TCP          147m		
 			]]>
-			</screen>	
+			</screen>
 		</section>
-		
+
 		<section>
 			<title>删除服务</title>
 			<screen>
@@ -317,7 +328,7 @@ kubectl logs --previous <pod-name>
 		]]>
 		</screen>
 	</section>
-	<section>
+	<section id="kubectl.describe">
 		<title>查看 Pod 的事件</title>
 		<screen>
 		<![CDATA[
@@ -338,6 +349,6 @@ $ kubectl exec -it mongodba-6d5d6ddf64-jw4fv bash
 		]]>
 		</screen>
 	</section>
-	
+
 </section>
 

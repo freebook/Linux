@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="docker.faq">
+	<title>Docker FAQ</title>
+	<section>
+		<title>检查 Docker 是否可用</title>
+		<screen>
+		<![CDATA[
+docker -v
+docker run ubuntu /bin/echo hello world
+docker stop $(docker ps -a -q)
+docker rm $(docker ps -a -q)
+docker rmi $(docker images -q)		
+		]]>
+		</screen>
+	</section>
+</section>
