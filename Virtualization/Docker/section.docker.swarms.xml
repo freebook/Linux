@@ -1,6 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="docker.swarms">
 	<title>Swarms</title>
+	<para>Swarm 是一组运行着Docker的机器。经过这些配置后，将节点加入到一个集群中，你仍然像之前那样运行Docker命令一样管理集群上的容器。这些命令由swarm manager在集群上执行。这些机器可以是真实的机器，也可以是虚拟机。机器加入到一个swarm后，可以称这些机器为节点(node)。</para>
+	<para>帮助命令</para>
+	<screen>
+	<![CDATA[
+neo@MacBook-Pro ~ % docker-machine   
+Usage: docker-machine [OPTIONS] COMMAND [arg...]
+
+Create and manage machines running Docker.
+
+Version: 0.16.1, build cce350d7
+
+Author:
+  Docker Machine Contributors - <https://github.com/docker/machine>
+
+Options:
+  --debug, -D						Enable debug mode
+  --storage-path, -s "/Users/neo/.docker/machine"	Configures storage path [$MACHINE_STORAGE_PATH]
+  --tls-ca-cert 					CA to verify remotes against [$MACHINE_TLS_CA_CERT]
+  --tls-ca-key 						Private key to generate certificates [$MACHINE_TLS_CA_KEY]
+  --tls-client-cert 					Client cert to use for TLS [$MACHINE_TLS_CLIENT_CERT]
+  --tls-client-key 					Private key used in client TLS auth [$MACHINE_TLS_CLIENT_KEY]
+  --github-api-token 					Token to use for requests to the Github API [$MACHINE_GITHUB_API_TOKEN]
+  --native-ssh						Use the native (Go-based) SSH implementation. [$MACHINE_NATIVE_SSH]
+  --bugsnag-api-token 					BugSnag API token for crash reporting [$MACHINE_BUGSNAG_API_TOKEN]
+  --help, -h						show help
+  --version, -v						print the version
+  
+Commands:
+  active		Print which machine is active
+  config		Print the connection config for machine
+  create		Create a machine
+  env			Display the commands to set up the environment for the Docker client
+  inspect		Inspect information about a machine
+  ip			Get the IP address of a machine
+  kill			Kill a machine
+  ls			List machines
+  provision		Re-provision existing machines
+  regenerate-certs	Regenerate TLS Certificates for a machine
+  restart		Restart a machine
+  rm			Remove a machine
+  ssh			Log into or run a command on a machine with SSH.
+  scp			Copy files between machines
+  mount			Mount or unmount a directory from a machine with SSHFS.
+  start			Start a machine
+  status		Get the status of a machine
+  stop			Stop a machine
+  upgrade		Upgrade a machine to the latest version of Docker
+  url			Get the URL of a machine
+  version		Show the Docker Machine version or a machine docker version
+  help			Shows a list of commands or help for one command
+  
+Run 'docker-machine COMMAND --help' for more information on a command.	
+	]]>
+	</screen>
+	<section>
+		<title>查看 Swarms 版本</title>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro ~ % docker-machine version
+docker-machine version 0.16.1, build cce350d7		
+		]]>
+		</screen>
+	</section>
 	<section>
 		<title>初始化 Swarms</title>
 		<screen>
@@ -16,6 +79,100 @@ To add a manager to this swarm, run 'docker swarm join-token manager' and follow
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>创建虚拟机</title>
+		<para>使用VirtualBox驱动，创建虚拟机：</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro ~ % docker-machine create --driver virtualbox vm1
+neo@MacBook-Pro ~ % docker-machine create --driver virtualbox vm2	
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>显示虚拟机列表</title>
+		<screen>
+		<![CDATA[
+$ docker-machine ls		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>设置管理节点</title>
+		<para>配置虚拟机作为manager节点，用以执行管理命令并准许其他worker加入到swarm中。</para>
+		<screen>
+		<![CDATA[
+$ docker-machine ssh vm1 "docker swarm init --advertise-addr <ip_address>"		
+		]]>
+		</screen>
+		<para>加入到管理节点</para>
+		<screen>
+		<![CDATA[
+$ docker-machine ssh vm2 "docker swarm join \
+--token <token> \
+<ip>:2377"		
+		]]>
+		</screen>
+		<para>查看节点列表</para>
+		<screen>
+		<![CDATA[
+$ docker-machine ssh vm1 "docker node ls"		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>环境变量</title>
+		<screen>
+		<![CDATA[
+$ docker-machine env vm1		
+		]]>
+		</screen>
+		<para>现在运行docker-machine ls来验证vm1就是当前的活跃机器，会有星号标识：</para>
+		<screen>
+		<![CDATA[
+$ docker-machine ls		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>切换节点</title>
+		<screen>
+		<![CDATA[
+eval $(docker-machine env vm1)		
+		]]>
+		</screen>
+		<para>重置 shell 环境</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro ~ % docker-machine env -u
+unset DOCKER_TLS_VERIFY
+unset DOCKER_HOST
+unset DOCKER_CERT_PATH
+unset DOCKER_MACHINE_NAME
+# Run this command to configure your shell: 
+# eval $(docker-machine env -u)		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+eval $(docker-machine env -u)		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>启动/停止节点</title>
+		<screen>
+		<![CDATA[
+$ docker-machine start vm1
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+$ docker-machine stop vm1		
+		]]>
+		</screen>
+	</section>
+	
 	<section>
 		<title>离线</title>
 		<screen>

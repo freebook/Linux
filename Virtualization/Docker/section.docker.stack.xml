@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="docker.stack">
 	<title>Stack</title>
+	<para>stack 是一组相互关联的services，这些services之间相互依赖，并能够一起进行编排和scale。单个stack就能够定义和协调整个应用程序的功能.</para>
+	<para>创建 docker-compose.yml</para>
 	<screen>
 	<![CDATA[
 version: "3"
@@ -36,15 +38,15 @@ networks:
 			]]>
 	</screen>
 
-	<para></para>
+	<para>部署 docker-compose.yml</para>
 	<screen>
 	<![CDATA[
-neo@MacBook-Pro ~ % docker stack deploy -c visualizer.yml visualizer
+neo@MacBook-Pro ~ % docker stack deploy -c docker-compose.yml visualizer
 Creating service visualizer_web
 Creating service visualizer_visualizer	
 	]]>
 	</screen>
-	<para></para>
+	<para>查看部署</para>
 	<screen>
 	<![CDATA[
 neo@MacBook-Pro ~ % docker stack ls
@@ -81,10 +83,27 @@ ldb92uky85oc        visualizer_web.5              nginx:latest                  
 	<para></para>
 	<screen>
 	<![CDATA[
+neo@MacBook-Pro ~ % docker node ls
+ID                            HOSTNAME                STATUS              AVAILABILITY        MANAGER STATUS      ENGINE VERSION
+t8gqr7wfyeis9n8wuegy4j6gn *   linuxkit-025000000001   Ready               Active              Leader              18.09.2	
+	]]>
+	</screen>
+	<para></para>
+	<screen>
+	<![CDATA[
 neo@MacBook-Pro ~ % docker service ls
 ID                  NAME                    MODE                REPLICAS            IMAGE                             PORTS
 h6vpdk8wqr8w        visualizer_visualizer   replicated          1/1                 dockersamples/visualizer:stable   *:8080->8080/tcp
 tm5rre8d4kni        visualizer_web          replicated          5/5                 nginx:latest                      *:80->80/tcp
 	]]>
-	</screen>	
+	</screen>
+	<para></para>
+	<screen>
+	<![CDATA[
+neo@MacBook-Pro ~ % docker stack rm visualizer   
+Removing service visualizer_visualizer
+Removing service visualizer_web
+Removing network visualizer_webnet	
+	]]>
+	</screen>
 </section>

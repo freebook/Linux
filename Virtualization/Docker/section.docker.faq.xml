@@ -13,4 +13,9 @@ docker rmi $(docker images -q)
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>Bitnami</title>
+		<para><ulink url="https://github.com/bitnami" /></para>
+	</section>
+	
 </section>

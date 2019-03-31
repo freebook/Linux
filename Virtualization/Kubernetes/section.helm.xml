@@ -30,11 +30,11 @@ $ brew install kubernetes-helm
 		</section>
 
 	</section>
-	<section id="helm.command">
-		<title>Helm 命令</title>
+	<section>
+		<title>快速开始</title>
 		<screen>
-		<![CDATA[
-# 初始化本地 CLI 并 将 Tiller 安装到 Kubernetes cluster
+			<![CDATA[
+# 初始化本地，并将 Tiller 安装到 Kubernetes cluster
 $ helm init
 
 # 更新本地 charts repo
@@ -47,9 +47,164 @@ $ helm install --name my-mysql stable/mysql
 $ helm delete my-mysql
 
 # 删除 mysql 并释放该名字以便后续使用
-$ helm delete --purge my-mysql		
-		]]>
+$ helm delete --purge my-mysql
+			]]>
 		</screen>
+	</section>
+	<section id="helm.command">
+		<title>Helm 命令</title>
+		<section>
+			<title>初始化 Helm</title>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro ~ % helm init   
+Creating /Users/neo/.helm 
+Creating /Users/neo/.helm/repository 
+Creating /Users/neo/.helm/repository/cache 
+Creating /Users/neo/.helm/repository/local 
+Creating /Users/neo/.helm/plugins 
+Creating /Users/neo/.helm/starters 
+Creating /Users/neo/.helm/cache/archive 
+Creating /Users/neo/.helm/repository/repositories.yaml 
+Adding stable repo with URL: https://kubernetes-charts.storage.googleapis.com 
+Adding local repo with URL: http://127.0.0.1:8879/charts 
+$HELM_HOME has been configured at /Users/neo/.helm.
+Warning: Tiller is already installed in the cluster.
+(Use --client-only to suppress this message, or --upgrade to upgrade Tiller to the current version.)
+Happy Helming!			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>查看仓库列表</title>
+			<para>查看当前的 Charts 包仓库</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro ~ % helm repo list
+NAME  	URL                                             
+stable	https://kubernetes-charts.storage.googleapis.com
+local 	http://127.0.0.1:8879/charts			
+			]]>
+			</screen>
+			<para>更新仓库</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro ~ % helm repo update
+Hang tight while we grab the latest from your chart repositories...
+...Skip local chart repository
+...Unable to get an update from the "stable" chart repository (https://kubernetes-charts.storage.googleapis.com):
+	unexpected EOF
+Update Complete. ⎈ Happy Helming!⎈			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>搜索</title>
+			<para>在stable仓库搜索 redis应用</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro ~ % helm search stable/redis
+NAME           	CHART VERSION	APP VERSION	DESCRIPTION                                                 
+stable/redis   	6.4.3        	4.0.14     	Open source, advanced key-value store. It is often referr...
+stable/redis-ha	3.3.3        	5.0.3      	Highly available Kubernetes implementation of Redis 			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>查看包信息</title>
+			<para>查看包详细信息与帮助手册</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro ~ % helm inspect stable/redis			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>安装</title>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro ~ % helm install stable/redis
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro ~ % helm install stable/redis
+NAME:   vested-termite
+LAST DEPLOYED: Sun Mar 31 17:46:02 2019
+NAMESPACE: default
+STATUS: DEPLOYED
+
+RESOURCES:
+==> v1/ConfigMap
+NAME                         DATA  AGE
+vested-termite-redis         3     0s
+vested-termite-redis-health  3     0s
+
+==> v1/Pod(related)
+NAME                                        READY  STATUS             RESTARTS  AGE
+vested-termite-redis-master-0               0/1    Pending            0         0s
+vested-termite-redis-slave-57584f877-8njkc  0/1    ContainerCreating  0         0s
+
+==> v1/Secret
+NAME                  TYPE    DATA  AGE
+vested-termite-redis  Opaque  1     0s
+
+==> v1/Service
+NAME                         TYPE       CLUSTER-IP     EXTERNAL-IP  PORT(S)   AGE
+vested-termite-redis-master  ClusterIP  10.98.194.187  <none>       6379/TCP  0s
+vested-termite-redis-slave   ClusterIP  10.111.85.208  <none>       6379/TCP  0s
+
+==> v1beta1/Deployment
+NAME                        READY  UP-TO-DATE  AVAILABLE  AGE
+vested-termite-redis-slave  0/1    1           0          0s
+
+==> v1beta2/StatefulSet
+NAME                         READY  AGE
+vested-termite-redis-master  0/1    0s
+
+
+NOTES:
+** Please be patient while the chart is being deployed **
+Redis can be accessed via port 6379 on the following DNS names from within your cluster:
+
+vested-termite-redis-master.default.svc.cluster.local for read/write operations
+vested-termite-redis-slave.default.svc.cluster.local for read-only operations
+
+
+To get your password run:
+
+    export REDIS_PASSWORD=$(kubectl get secret --namespace default vested-termite-redis -o jsonpath="{.data.redis-password}" | base64 --decode)
+
+To connect to your Redis server:
+
+1. Run a Redis pod that you can use as a client:
+
+   kubectl run --namespace default vested-termite-redis-client --rm --tty -i --restart='Never' \
+    --env REDIS_PASSWORD=$REDIS_PASSWORD \
+   --image docker.io/bitnami/redis:4.0.14 -- bash
+
+2. Connect using the Redis CLI:
+   redis-cli -h vested-termite-redis-master -a $REDIS_PASSWORD
+   redis-cli -h vested-termite-redis-slave -a $REDIS_PASSWORD
+
+To connect to your database from outside the cluster execute the following commands:
+
+    kubectl port-forward --namespace default svc/vested-termite-redis 6379:6379 &
+    redis-cli -h 127.0.0.1 -p 6379 -a $REDIS_PASSWORD
+			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>列表</title>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro ~ % helm list
+NAME          	REVISION	UPDATED                 	STATUS  	CHART      	APP VERSION	NAMESPACE
+vested-termite	1       	Sun Mar 31 17:46:02 2019	DEPLOYED	redis-6.4.3	4.0.14     	default 			
+			]]>
+			</screen>
+		</section>
 		<section>
 			<title>删除</title>
 			<screen>
@@ -74,6 +229,10 @@ helm upgrade -f redis-ha-values-upgrade.yaml redis-ha stable/redis-ha
 helm rollback redis-ha 1			
 			]]>
 			</screen>
+		</section>
+		<section>
+			<title>升级</title>
+
 		</section>
 	</section>
 
