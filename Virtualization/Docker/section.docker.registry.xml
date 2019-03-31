@@ -286,5 +286,5 @@ curl -I -X DELETE http://registry:5000/v2/netkiller/manifests/sha256:6a67ba482a8
 		]]>
 		</screen>
 	</section>
-
+	&section.harbor.xml;
 </section>

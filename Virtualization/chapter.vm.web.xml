@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="vm.ui">
+	<title>虚拟机界面</title>
+
+	<section id="openstack">
+		<title>OpenStack</title>
+	</section>
+	<section id="cloudstack">
+		<title>CloudStack</title>
+	</section>
+	<section id="opennode">
+		<title>OpenNode</title>
+	</section>
+	<section id="opennebula">
+		<title>OpenNEbula</title>
+	</section>
+	&section.proxmox.xml;
+</chapter>

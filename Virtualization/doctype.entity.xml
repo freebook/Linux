@@ -19,6 +19,8 @@
 <!ENTITY section.docker.stack.xml 		SYSTEM "Docker/section.docker.stack.xml">
 <!ENTITY section.docker.faq.xml    		SYSTEM "Docker/section.docker.faq.xml">
 
+<!ENTITY section.harbor.xml				SYSTEM "Docker/section.harbor.xml">
+
 <!ENTITY chapter.kubernetes.xml			SYSTEM "Kubernetes/chapter.kubernetes.xml">
 <!ENTITY chapter.minikube.xml			SYSTEM "Kubernetes/chapter.minikube.xml">
 <!ENTITY section.kubectl.xml			SYSTEM "Kubernetes/section.kubectl.xml">
@@ -27,5 +29,5 @@
 <!ENTITY section.helm.xml	  			SYSTEM "Kubernetes/section.helm.xml">
 <!ENTITY section.kubeapps.xml			SYSTEM "Kubernetes/section.kubeapps.xml">
 
-<!ENTITY chapter.proxmox.xml			SYSTEM "chapter.proxmox.xml">
-<!ENTITY chapter.harbor.xml				SYSTEM "chapter.harbor.xml">
+<!ENTITY section.proxmox.xml			SYSTEM "section.proxmox.xml">
+<!ENTITY chapter.vm.web.xml				SYSTEM "chapter.vm.web.xml">

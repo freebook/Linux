@@ -4,4 +4,4 @@
 	&chapter.kvm.xml;
 	&chapter.xen.xml;
 	&chapter.vagrant.xml;
-	&chapter.proxmox.xml;
+	&chapter.vm.web.xml;

@@ -320,19 +320,3 @@ vzyum 100 install yum
 		<para>另外,如果vzctl enter进入节点时出现错误，或无法ssh节点，需要运行以下命令： vzctl exec 112 "cd /dev; /sbin/MAKEDEV pty; /sbin/MAKEDEV tty; /sbin/MAKEDEV generic"</para>
 	</section>
 </chapter>
-<chapter id="vm.ui">
-	<title>虚拟机界面</title>
-
-	<section id="openstack">
-		<title>OpenStack</title>
-	</section>
-	<section id="cloudstack">
-		<title>CloudStack</title>
-	</section>
-	<section id="opennode">
-		<title>OpenNode</title>
-	</section>
-	<section id="opennebula">
-		<title>OpenNEbula</title>
-	</section>
-</chapter>
