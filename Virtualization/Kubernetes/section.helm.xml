@@ -123,7 +123,8 @@ neo@MacBook-Pro ~ % helm inspect stable/redis
 			<title>安装</title>
 			<screen>
 			<![CDATA[
-neo@MacBook-Pro ~ % helm install stable/redis
+$ helm install stable/redis
+$ helm install --name=redis stable/redis
 			]]>
 			</screen>
 			<screen>
@@ -210,7 +211,7 @@ vested-termite	1       	Sun Mar 31 17:46:02 2019	DEPLOYED	redis-6.4.3	4.0.14    
 			<screen>
 			<![CDATA[
 helm ls --all
-helm del --purge redis-ha			
+helm delete --purge redis	
 			]]>
 			</screen>
 		</section>
@@ -231,8 +232,78 @@ helm rollback redis-ha 1
 			</screen>
 		</section>
 		<section>
-			<title>升级</title>
+			<title>查看状态</title>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro ~ % helm list               
+NAME          	REVISION	UPDATED                 	STATUS  	CHART      	APP VERSION	NAMESPACE
+vested-termite	1       	Sun Mar 31 17:46:02 2019	DEPLOYED	redis-6.4.3	4.0.14     	default  
 
+
+neo@MacBook-Pro ~ % helm status vested-termite
+LAST DEPLOYED: Sun Mar 31 17:46:02 2019
+NAMESPACE: default
+STATUS: DEPLOYED
+
+RESOURCES:
+==> v1/ConfigMap
+NAME                         DATA  AGE
+vested-termite-redis         3     111m
+vested-termite-redis-health  3     111m
+
+==> v1/Pod(related)
+NAME                                        READY  STATUS   RESTARTS  AGE
+vested-termite-redis-master-0               1/1    Running  0         111m
+vested-termite-redis-slave-57584f877-8njkc  1/1    Running  0         111m
+
+==> v1/Secret
+NAME                  TYPE    DATA  AGE
+vested-termite-redis  Opaque  1     111m
+
+==> v1/Service
+NAME                         TYPE       CLUSTER-IP     EXTERNAL-IP  PORT(S)   AGE
+vested-termite-redis-master  ClusterIP  10.98.194.187  <none>       6379/TCP  111m
+vested-termite-redis-slave   ClusterIP  10.111.85.208  <none>       6379/TCP  111m
+
+==> v1beta1/Deployment
+NAME                        READY  UP-TO-DATE  AVAILABLE  AGE
+vested-termite-redis-slave  1/1    1           1          111m
+
+==> v1beta2/StatefulSet
+NAME                         READY  AGE
+vested-termite-redis-master  1/1    111m
+
+
+NOTES:
+** Please be patient while the chart is being deployed **
+Redis can be accessed via port 6379 on the following DNS names from within your cluster:
+
+vested-termite-redis-master.default.svc.cluster.local for read/write operations
+vested-termite-redis-slave.default.svc.cluster.local for read-only operations
+
+
+To get your password run:
+
+    export REDIS_PASSWORD=$(kubectl get secret --namespace default vested-termite-redis -o jsonpath="{.data.redis-password}" | base64 --decode)
+
+To connect to your Redis server:
+
+1. Run a Redis pod that you can use as a client:
+
+   kubectl run --namespace default vested-termite-redis-client --rm --tty -i --restart='Never' \
+    --env REDIS_PASSWORD=$REDIS_PASSWORD \
+   --image docker.io/bitnami/redis:4.0.14 -- bash
+
+2. Connect using the Redis CLI:
+   redis-cli -h vested-termite-redis-master -a $REDIS_PASSWORD
+   redis-cli -h vested-termite-redis-slave -a $REDIS_PASSWORD
+
+To connect to your database from outside the cluster execute the following commands:
+
+    kubectl port-forward --namespace default svc/vested-termite-redis 6379:6379 &
+    redis-cli -h 127.0.0.1 -p 6379 -a $REDIS_PASSWORD			
+			]]>
+			</screen>
 		</section>
 	</section>
 

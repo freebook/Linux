@@ -342,23 +342,5 @@ docker run -d -v /usr/local/etc/redis/redis.conf:/usr/local/etc/redis/redis.conf
 		]]>
 		</screen>
 	</section>
-	<section id="docker.stack">
-		<title>stack</title>
-		<section>
-			<title>deploy</title>
-			<screen>
-			<![CDATA[
-docker stack deploy --compose-file=docker-compose.yml		
-			]]>
-			</screen>
-		</section>
-		<section>
-			<title>rm</title>
-			<screen>
-			<![CDATA[
-docker stack rm			
-			]]>
-			</screen>
-		</section>
-	</section>
+	
 </section>
