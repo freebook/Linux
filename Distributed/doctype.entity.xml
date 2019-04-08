@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!ENTITY chapter.boinc.xml			SYSTEM "chapter.boinc.xml">
 <!ENTITY part.distributed.xml		SYSTEM "part.distributed.xml">
-<!ENTITY chapter.storm.xml		    SYSTEM "chapter.storm.xml">
 <!ENTITY chapter.hpc.xml		    SYSTEM "chapter.hpc.xml">
-<!ENTITY chapter.spark.xml		    SYSTEM "chapter.spark.xml">
 <!ENTITY chapter.tachyon.xml		SYSTEM "chapter.tachyon.xml">
 <!ENTITY chapter.zookeeper.xml		SYSTEM "chapter.zookeeper.xml">
-<!ENTITY chapter.hadoop.xml			SYSTEM "chapter.hadoop.xml">
-<!ENTITY chapter.hadoop.hdfs.xml	SYSTEM "chapter.hadoop.hdfs.xml">

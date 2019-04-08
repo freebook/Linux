@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!ENTITY chapter.flink.xml		    SYSTEM "chapter.flink.xml">
+<!ENTITY chapter.storm.xml		    SYSTEM "chapter.storm.xml">
+<!ENTITY chapter.spark.xml		    SYSTEM "chapter.spark.xml">
+<!ENTITY chapter.hadoop.xml			SYSTEM "chapter.hadoop.xml">
+<!ENTITY chapter.hadoop.hdfs.xml	SYSTEM "chapter.hadoop.hdfs.xml">
