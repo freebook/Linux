@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="docker.nginx">
+	<title>Nginx</title>
+	<para>本例子使用 alpine 版本</para>
+	<section>
+		<title>nginx:latest</title>
+		<procedure>
+			<title></title>
+			<step>
+				<para></para>
+				<screen>
+[root@iZj6ciilv2rcpgauqg2uuwZ]~# docker pull nginx
+Using default tag: latest
+latest: Pulling from library/nginx
+Digest: sha256:41ad9967ea448d7c2b203c699b429abe1ed5af331cd92533900c6d77490e0268
+Status: Image is up to date for nginx:latest
+				</screen>
+			</step>
+			<step>
+				<para>启动容器</para>
+				<screen>
+docker run --name my-nginx-container -p 80:80 -d nginx
+				</screen>
+				<para>上面不能满足生产环境的需求，通常不会将数据放在容器中，我的做法如下。</para>
+				<screen>
+docker rm my-nginx-container -f
+docker run --name my-nginx-container \
+	-v /srv/nginx/nginx.conf:/etc/nginx/nginx.conf:ro \
+	-v /srv/nginx/conf.d:/etc/nginx/conf.d:ro \
+	-v /var/log/nginx:/var/log/nginx:rw \
+	-v /www:/www:ro \
+	-p 80:80 -d nginx
+docker ps
+				</screen>
+			</step>
+		</procedure>
+	</section>	
+	<section id="alpine">
+		<title>安装 Docker Nginx alpine</title>
+		<procedure>
+			<title>Docker nginx</title>
+			<step>
+				<para>获取镜像</para>
+				<screen>
+# docker pull nginx:alpine
+				</screen>
+			</step>
+			<step>
+				<para>运行容器</para>
+				<screen>
+				<![CDATA[
+docker run --name my-nginx-container -v /srv/nginx:/etc/nginx:ro -v /www:/www:ro -p 80:80 -d nginx:alpine
+				]]>
+				</screen>
+			</step>
+			<step>
+				<screen>
+docker exec -it my-nginx-container /bin/bash
+				</screen>
+			</step>			
+		</procedure>
+		<para></para>
+		
+		<para></para>
+	</section>
+</section>

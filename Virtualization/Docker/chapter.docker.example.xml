@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="docker.example">
 	<title>Docker Example</title>
-	&chapter.docker.java.xml;
-	&chapter.docker.redis.xml;
-	&chapter.docker.nginx.xml;
+	&section.docker.java.xml;
+	&section.docker.redis.xml;
+	&section.docker.nginx.xml;
 </section>

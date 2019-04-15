@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="example.java">
+	<title>Example Java - Spring boot with Docker</title>
+	<section>
+		<title>获取 CentOS 7 镜像</title>
+		<para>docker pull centos:7</para>
+		<screen>
+		<![CDATA[
+# docker pull centos:7
+7: Pulling from library/centos
+343b09361036: Pull complete 
+Digest: sha256:bba1de7c9d900a898e3cadbae040dfe8a633c06bc104a0df76ae24483e03c077
+Status: Downloaded newer image for centos:7
+		]]>
+		</screen>
+		<para>基于 CentOS 7 运行一个容器</para>
+		<para><![CDATA[docker run -it --name mycentos docker.io/centos:7 /bin/bash]]></para>
+		<screen>
+		<![CDATA[
+# docker run -it --name mycentos docker.io/centos:7 /bin/bash
+		]]>
+		</screen>
+		<para>运行后直接进入了容器的shell控制台默认是bash</para>
+	</section>
+	<section>
+		<title>安装 openjdk</title>
+		<screen>
+		<![CDATA[
+# yum install -y java-1.8.0-openjdk
+
+# cat >> /etc/profile.d/java.sh <<'EOF'
+export JAVA_HOME=/usr/java/default
+export JAVA_OPTS="-server -Xms2048m -Xmx4096m -Djava.io.tmpdir=/tmp -Djava.security.egd=file:/dev/./urandom -Dfile.encoding=UTF8 -Duser.timezone=GMT+08"
+export CLASSPATH=$JAVA_HOME/lib:$JAVA_HOME/jre/lib:.
+export PATH=$PATH:$JAVA_HOME/bin:$JAVA_HOME/jre/bin:
+EOF
+
+# source /etc/profile.d/java.sh
+		]]>
+		</screen>
+		<para>检查Java是否安装成功</para>
+		<screen>
+		<![CDATA[
+# whereis java
+java: /usr/bin/java /usr/lib/java /etc/java /usr/share/java /usr/share/man/man1/java.1.gz
+
+# java -version
+openjdk version "1.8.0_131"
+OpenJDK Runtime Environment (build 1.8.0_131-b11)
+OpenJDK 64-Bit Server VM (build 25.131-b11, mixed mode)
+		]]>
+		</screen>
+		<para>创建应用程序目录</para>
+		<screen>
+# mkdir -p /www/netkiller.cn/www.netkiller.cn/		
+		</screen>
+		<para>推出当前容器</para>
+		<screen>
+# exit
+		</screen>
+	</section>
+	<section>
+		<title>Spring boot 包</title>
+		<para>复制 jar 文件到Docker容器</para> 
+		<screen>
+		<![CDATA[
+docker cp /www/netkiller.cn/www.netkiller.cn/www.netkiller.cn-0.0.1.war mycentos:/usr/local/libexec
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>启动 Spring boot 项目</title>
+		<para>启动容器</para>
+		<screen>
+		<![CDATA[
+# docker start mycentos
+mycentos		
+		]]>
+		</screen>
+		<para>进入容器</para>
+		<screen>
+		<![CDATA[
+# docker exec -it mycentos /bin/bash
+		]]>
+		</screen>
+		<para>如果仅仅是测试可以手动启动 Srping boot 项目</para>
+		<screen>
+		<![CDATA[
+# cat >> /root/run.sh <<EOF
+java -server -Xms2048m -Xmx8192m -jar /usr/local/libexec/www.netkiller.cn-0.0.1.war
+EOF
+
+chmod u+x /root/run.sh
+		]]>
+		</screen>
+		<para>生产环境请使用启动脚本</para>
+		<screen>
+		<![CDATA[		
+# curl -s https://raw.githubusercontent.com/oscm/build/master/Application/Spring/service/springbootd -o /etc/init.d/springbootd
+# chmod +x /etc/init.d/springbootd
+		]]>
+		</screen>
+		<para>编辑启动脚本 /etc/init.d/springbootd 修改下面配置项</para>
+		<screen>
+		<![CDATA[
+##############################################
+BASEDIR="/www/netkiller.cn/api.netkiller.cn"
+JAVA_HOME=/srv/java
+JAVA_OPTS="-server -Xms2048m -Xmx8192m -Djava.security.egd=file:/dev/./urandom"
+PACKAGE="api.netkiller.cn-0.0.2-release.jar"
+CONFIG="--spring.config.location=$BASEDIR/application.properties"
+USER=www
+##############################################
+NAME=springbootd
+PROG="$JAVA_HOME/bin/java $JAVA_OPTS -jar $BASEDIR/$PACKAGE $CONFIG"
+LOGFILE=/var/tmp/$NAME.log
+PIDFILE=/var/tmp/$NAME.pid
+ACCESS_LOG=/var/tmp/$NAME.access.log
+##############################################
+		]]>
+		</screen>
+		<para>你也可以使用 systemd 启动脚本，详见《Netkiller Java 手札》</para>
+	</section>
+	<section>
+		<title>基于 CentOS 7 制作 spring 镜像</title>
+		<para>docker commit mycentos springboot:1</para>
+		<screen>
+		<![CDATA[
+# docker commit mycentos springboot:1
+sha256:757d92d642d1b5a7b244f6ddf89f24a8d463d154438651c83ba51a644b401782		
+		]]>
+		</screen>
+		<para>启动 spring boot 容器</para>
+		<screen>
+		<![CDATA[
+# docker run -d --name springboot -p 80:8080 springboot:1 /root/run.sh
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+-d: 以守护进程方式启动 
+--name：指定容器的名称 
+-p：映射容器8080端口到宿主机的80端口 
+springboot:1 ：上一步制作好的springboot镜像,版本号为1	
+		]]>
+		</screen>
+		<para>启动容器</para>
+		<screen>
+		<![CDATA[
+# docker start springboot		
+		]]>
+		</screen>
+		<para>停止容器</para>
+		<screen>
+		<![CDATA[
+# docker stop springboot		
+		]]>
+		</screen>
+	</section>
+</section>
