@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+	<title>envsubst - substitutes environment variables in shell format strings</title>
+	<subtitle>替代品在shell环境变量的格式字符串，类似模版替换操作</subtitle>
+	<para></para>
+	<screen>
+	<![CDATA[
+[root@localhost tmp]# echo "welcome $HOME ${USER:=a8m}" | envsubst
+welcome /root root	
+	]]>
+	</screen>
+	<screen>
+	<![CDATA[
+[root@localhost tmp]# cat config.template 
+HOME=${HOME}
+USER=${USER}
+
+[root@localhost tmp]# envsubst < config.template > config.conf
+
+[root@localhost tmp]# cat config.conf 
+HOME=/root
+USER=root
+	]]>
+	</screen>
+	<para>只替换 ${USER} 变量</para>
+	<screen>
+	<![CDATA[
+[root@localhost tmp]# envsubst '${USER}' < config.template > config.conf
+[root@localhost tmp]# cat config.conf 
+HOME=${HOME}
+USER=root	
+	]]>
+	</screen>
+	<para>模版变量</para>
+	<screen>
+	<![CDATA[
+${var}				var值( 与 $var 相同)
+${var-$DEFAULT}		如果未设置 var，则将表达式计算为 $DEFAULT
+${var:-$DEFAULT}	如果未设置var或者为空，则将表达式计算为 $DEFAULT
+${var=$DEFAULT}		如果未设置 var，则将表达式计算为 $DEFAULT
+${var:=$DEFAULT}	如果未设置var或者为空，则将表达式计算为 $DEFAULT
+${var+$OTHER}		如果为 var，则将表达式计算为 $OTHER,，否则为空字符串
+${var:+$OTHER}		如果为 var，则将表达式计算为 $OTHER,，否则为空字符串	
+	]]>
+	</screen>
+</section>

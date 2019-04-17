@@ -280,7 +280,7 @@ tmpfs:
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="docker-compose.yml.Dockerfile">
 			<title>编译 Dockerfile</title>
 			<para>编译当前目录下的 Dockerfile 使用 build: .</para>
 			<screen>
@@ -293,8 +293,84 @@ services:
      - "5000:5000"			
 			]]>
 			</screen>
+			<para>指定镜像名称</para>
+			<screen>
+			<![CDATA[
+version: "3.7"
+services:
+  redis-image:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - node=master
+    image: netkiller/redis:latest
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - redis
+    privileged: true
+    sysctls:
+      net.core.somaxconn: '511'
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 65535
+        hard: 65535			
+			]]>
+			</screen>
+			<para>docker-compose build redis-image 构建镜像</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro ~/workspace/docker/docker-compose/redis/cluster % docker-compose build redis-image
+Building redis-image
+Step 1/12 : FROM redis:latest
+ ---> a55fbf438dfd
+Step 2/12 : ARG node
+ ---> Using cache
+ ---> 4deb8fc1e1df
+Step 3/12 : ENV REDIS_PORT 6379
+ ---> Using cache
+ ---> 5723ff2fe55c
+Step 4/12 : COPY redis.conf /etc/redis/redis.conf
+ ---> Using cache
+ ---> daf496f8c342
+Step 5/12 : COPY docker-entrypoint.sh /usr/local/bin/
+ ---> Using cache
+ ---> 600ae3b0c059
+Step 6/12 : RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+ ---> Using cache
+ ---> 630e3813bc8f
+Step 7/12 : RUN echo 'Asia/Shanghai' >/etc/timezone
+ ---> Using cache
+ ---> 7d48350d6621
+Step 8/12 : RUN echo 'echo never > /sys/kernel/mm/transparent_hugepage/enabled' > /etc/rc.local
+ ---> Using cache
+ ---> c096dc75da72
+Step 9/12 : RUN chmod +rw /etc/redis/redis.conf
+ ---> Using cache
+ ---> 25d8b0ac8893
+Step 10/12 : EXPOSE $REDIS_PORT
+ ---> Using cache
+ ---> 99f31a88d2ff
+Step 11/12 : ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+ ---> Using cache
+ ---> ef98f89610ae
+Step 12/12 : CMD [ "redis-server", "/etc/redis/redis.conf" ]
+ ---> Using cache
+ ---> 095823650068
+
+Successfully built 095823650068
+Successfully tagged netkiller/redis:latest
+
+neo@MacBook-Pro ~/workspace/docker/docker-compose/redis/cluster % docker images | grep netkiller/redis
+netkiller/redis                            latest              095823650068        8 minutes ago       95MB
+			]]>
+			</screen>
 		</section>
-		<section>
+		<section id="docker-compose.resources">
 			<title>resources 硬件资源分配</title>
 			<screen>
 			<![CDATA[

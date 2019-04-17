@@ -80,6 +80,17 @@ To add a manager to this swarm, run 'docker swarm join-token manager' and follow
 		</screen>
 	</section>
 	<section>
+		<title>显示 join-token</title>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro ~ % docker swarm join-token manager
+To add a manager to this swarm, run the following command:
+
+    docker swarm join --token SWMTKN-1-200v95u6lkow6wyxne1ll44rhhwy1zfvawnrqo39i44sqay8vp-1vltkdz94y79mgech56wtnj9n 192.168.65.3:2377		
+		]]>
+		</screen>
+	</section>
+	<section>
 		<title>创建虚拟机</title>
 		<para>使用VirtualBox驱动，创建虚拟机：</para>
 		<screen>

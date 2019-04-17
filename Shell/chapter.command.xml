@@ -188,6 +188,7 @@ sshpass -p Password ssh root@dev.netkiller.cn java -jar /root/java-0.0.1-SNAPSHO
 </section>
 
 	&section.cmd.sum.xml;
+	&section.cmd.template.xml;
 	&chapter.miscellaneous.xml;
 
 </chapter>
