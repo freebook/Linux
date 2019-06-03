@@ -260,8 +260,8 @@ $ docker --registry-mirror=https://registry.docker-cn.com daemon
 		<screen>
 		<![CDATA[
 docker stop $(docker ps -a -q)
-docker rm $(docker ps -a -q)
-docker rmi $(docker images -q)
+docker rm -f $(docker ps -a -q)
+docker rmi -f $(docker images -q)
 docker volume rm $(docker volume ls -q)	
 		]]>
 		</screen>
