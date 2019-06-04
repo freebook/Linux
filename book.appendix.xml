@@ -12,27 +12,42 @@
 	<section id="cve">
 		<title>Red Hat 漏洞</title>
 		<para>下面链接是Red Hat公布的漏洞，你需要格外留意这些漏洞。</para>
-		<para><ulink url="https://access.redhat.com/security/cve/">Red Hat vulnerabilities by CVE name</ulink></para>
+		<para>
+			<ulink url="https://access.redhat.com/security/cve/">Red Hat vulnerabilities by CVE name</ulink>
+		</para>
 		<para>不一定每个漏洞都威胁到你的安全，所以升级要试情况而定，每次升级都存在一定风险，尤其是对于你手工编译的软件。</para>
 	</section>
 	<section id="nvd">
 		<title>National Vulnerability Database (NVD)</title>
 		<para>美国国家漏洞数据库</para>
-		<para><ulink url="https://web.nvd.nist.gov/view/vuln/search-results">点击进入</ulink></para>
+		<para>
+			<ulink url="https://web.nvd.nist.gov/view/vuln/search-results">点击进入</ulink>
+		</para>
 	</section>
+	<section>
+		<title>Common Vulnerabilities and Exposures</title>
+		<para>
+			<ulink url="https://cve.mitre.org/index.html" />
+		</para>
+	</section>
+
 	<section id="bugzilla">
 		<title>Red Hat Bug平台</title>
-		<para><ulink url="https://bugzilla.redhat.com/" /></para>
+		<para>
+			<ulink url="https://bugzilla.redhat.com/" />
+		</para>
 	</section>
 	<section>
 		<title>Redhat Doc</title>
-		<para><ulink url="http://docs.redhat.com/docs/zh-CN/index.html">http://docs.redhat.com/docs/zh-CN/index.html</ulink></para>
+		<para>
+			<ulink url="http://docs.redhat.com/docs/zh-CN/index.html">http://docs.redhat.com/docs/zh-CN/index.html</ulink>
+		</para>
 	</section>
 	<section>
 		<title>System reduce</title>
 		<para>采用最小化安装后仍有很多不必要的软件</para>
 		<screen>
-	[root@dev1 ~]# yum remove cups
+			[root@dev1 ~]# yum remove cups
 		</screen>
-	</section>	
+	</section>
 </appendix>
