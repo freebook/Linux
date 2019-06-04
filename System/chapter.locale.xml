@@ -6,12 +6,13 @@
 	<screen>
 	</screen>
 
-<section id="ubuntu">
-	<title>Ubuntu</title>
-	<section id="system.clock">
-		<title>time zone</title>
-		<para>选择用户时区</para>
-		<screen>
+	<section id="ubuntu">
+		<title>Ubuntu</title>
+		<section id="system.clock">
+			<title>time zone</title>
+			<para>选择用户时区</para>
+			<screen>
+		<![CDATA[
 $ tzselect
 Please identify a location so that time zone rules can be set correctly.
 Please select a continent or ocean.
@@ -27,9 +28,11 @@ Please select a continent or ocean.
 10) Pacific Ocean
 11) none - I want to specify the time zone using the Posix TZ format.
 #?
-		</screen>
-		<command>tzconfig</command>
-		<screen>
+		]]>
+			</screen>
+			<command>tzconfig</command>
+			<screen>
+		<![CDATA[
 netkiller@shenzhen:~$ tzconfig
 Your current time zone is set to US/Eastern
 Do you want to change that? [n]: y
@@ -74,83 +77,102 @@ Name: [] Harbin
 Your default time zone is set to 'Asia/Harbin'.
 Local time is now:      Tue Mar 11 10:46:46 CST 2008.
 Universal Time is now:  Tue Mar 11 02:46:46 UTC 2008.
-
-		</screen>
-		<para>tzdata</para>
-		<command>dpkg-reconfigure tzdata</command>
-		<screen>
-$ sudo dpkg-reconfigure tzdata
-		</screen>
-	</section>
-	<section id="system.date">
-		<title>to change system date/time</title>
-		<para>date</para>
-		<para>e.g. date -s month/day/year</para>
-		<screen>
-# date -s 1/18/2008
-		</screen>
-		<para>time</para>
-		<para>e.g. date -s hour:minute:second</para>
-		<screen>
-# date -s 11:12:00
-		</screen>
-		<para>writing CMOS</para>
-		<screen>
-# clock -w
-		</screen>
-		<section>
-			<title>NTP Server</title>
-			<para>更新网络时间</para>
-			<para>ntpdate - client for setting system time from NTP servers</para>
+		]]>
+			</screen>
+			<para>tzdata</para>
+			<command>dpkg-reconfigure tzdata</command>
 			<screen>
+		<![CDATA[
+$ sudo dpkg-reconfigure tzdata
+		]]>
+			</screen>
+		</section>
+		<section id="system.date">
+			<title>to change system date/time</title>
+			<para>date</para>
+			<para>e.g. date -s month/day/year</para>
+			<screen>
+		<![CDATA[
+# date -s 1/18/2008
+		]]>
+			</screen>
+			<para>time</para>
+			<para>e.g. date -s hour:minute:second</para>
+			<screen>
+		<![CDATA[
+# date -s 11:12:00
+		]]>
+			</screen>
+			<para>writing CMOS</para>
+			<screen>
+		<![CDATA[
+# clock -w
+		]]>
+			</screen>
+			<section>
+				<title>NTP Server</title>
+				<para>更新网络时间</para>
+				<para>ntpdate - client for setting system time from NTP servers</para>
+				<screen>
+			<![CDATA[
 $ sudo ntpdate asia.pool.ntp.org
 21 May 10:34:18 ntpdate[6687]: adjust time server 203.185.69.60 offset 0.031079 sec		
 $ sudo hwclock -w
-			</screen>
+			]]>
+				</screen>
+			</section>
 		</section>
-	</section>
-	<section id="language">
-		<title>Language</title>
-		<para>默认语言</para>
-		<screen>
+		<section id="language">
+			<title>Language</title>
+			<para>默认语言</para>
+			<screen>
+		<![CDATA[
 export LANG=en_US
 export LC_ALL=en_US		
-		</screen>
-		<para>永久更改</para>
-		<screen>
+		]]>
+			</screen>
+			<para>永久更改</para>
+			<screen>
+		<![CDATA[
 sudo vi /etc/default/locale
 
 LANG="en_US.UTF-8"
 LANGUAGE="en_US:en"
-		</screen>
-		<para>改为中文环境</para>
-		<screen>
+		]]>
+			</screen>
+			<para>改为中文环境</para>
+			<screen>
+		<![CDATA[
 sudo apt-get install language-support-zh
 LANG="zh_CN.UTF-8"
 LANGUAGE="zh_CN:zh"
-		</screen>		
+		]]>
+			</screen>
+		</section>
 	</section>
-</section>	
 
 
-<section id="centos">
-	<title>CentOS 区域设置</title>
-	<section id="time.zone">
-		<title>时区设置 CentOS 6</title>
-		<para>timeconfig</para>
-		<para>system-config-date</para>
-		<section>
-			<title>查看当前时区 /etc/sysconfig/clock</title>
-			<screen>
+	<section id="centos">
+		<title>CentOS 区域设置</title>
+		<section id="time.zone">
+			<title>时区设置 CentOS 6</title>
+			<para>timeconfig</para>
+			<para>system-config-date</para>
+			<section>
+				<title>查看当前时区 /etc/sysconfig/clock</title>
+				<screen>
+			<![CDATA[
 [root@ntp ~]# cat /etc/sysconfig/clock
 ZONE="Asia/Harbin"
 UTC=true
 ARC=false
-			</screen>
-		</section>
-		<section id="tzselect">
-			<title>tzselect - select a timezone</title>
-			<screen>
+			]]>
+				</screen>
+			</section>
+			<section id="tzselect">
+				<title>tzselect - select a timezone</title>
+				<screen>
+			<![CDATA[
 # tzselect
 Please identify a location so that time zone rules can be set correctly.
 Please select a continent or ocean.
@@ -166,41 +188,33 @@ Please select a continent or ocean.
 10) Pacific Ocean
 11) none - I want to specify the time zone using the Posix TZ format.
 #?
-			</screen>
-			<para>重新启动后生效</para>
-		</section>
-		<section>
-			<title>时区设置 CentOS 7</title>
-			<para>列出时区</para>
-			<screen>
-# timedatectl list-timezones
-			</screen>
-			<para>设置时区</para>
-			<screen>
-# timedatectl set-timezone Asia/Hong_Kong
-			</screen>
-			<para>查看时区</para>
-			<screen>
-# timedatectl
-			</screen>
-		</section>
-		<section>
-			<title>修改时区并立即生效</title>
-			<para>可用时区 /usr/share/zoneinfo</para>
-			<screen>
+			]]>
+				</screen>
+				<para>重新启动后生效</para>
+			</section>
+
+			<section>
+				<title>修改时区并立即生效</title>
+				<para>可用时区 /usr/share/zoneinfo</para>
+				<screen>
+			<![CDATA[
 [root@ntp ~]# ls /usr/share/zoneinfo
 Africa      Asia       Canada   Cuba   EST      Factory  GMT0       Hongkong  Iran         Japan      Mexico   Navajo   Poland      PRC      ROK        Universal  W-SU
 America     Atlantic   CET      EET    EST5EDT  GB       GMT-0      HST       iso3166.tab  Kwajalein  Mideast  NZ       Portugal    PST8PDT  Singapore  US         zone.tab
 Antarctica  Australia  Chile    Egypt  Etc      GB-Eire  GMT+0      Iceland   Israel       Libya      MST      NZ-CHAT  posix       right    Turkey     UTC        Zulu
 Arctic      Brazil     CST6CDT  Eire   Europe   GMT      Greenwich  Indian    Jamaica      MET        MST7MDT  Pacific  posixrules  ROC      UCT        WET
-			</screen>
-			<para>执行 hwclock 后会立即生效</para>
-			<screen>
+			]]>
+				</screen>
+				<para>执行 hwclock 后会立即生效</para>
+				<screen>
+			<![CDATA[
 # cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 # hwclock
-			</screen>
-			<para>演示如下，你可以看到时区从 EDT 变为 CST</para>
-			<screen>
+			]]>
+				</screen>
+				<para>演示如下，你可以看到时区从 EDT 变为 CST</para>
+				<screen>
+			<![CDATA[
 # cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 # date
 Fri Jul  4 05:57:25 EDT 2014
@@ -210,35 +224,67 @@ Fri 04 Jul 2014 06:12:14 PM CST  -0.219192 seconds
 
 # date
 Fri Jul  4 18:12:17 CST 2014
+			]]>
+				</screen>
+			</section>
+		</section>
+		<section>
+			<title>时区设置 CentOS 7</title>
+			<para>列出时区</para>
+			<screen>
+			<![CDATA[
+# timedatectl list-timezones
+			]]>
+			</screen>
+			<para>设置时区</para>
+			<screen>
+			<![CDATA[
+# timedatectl set-timezone Asia/Hong_Kong
+			]]>
+			</screen>
+			<para>查看时区</para>
+			<screen>
+			<![CDATA[
+# timedatectl
+			]]>
 			</screen>
 		</section>
-	</section>
-	<section id="datatime">
-		<title>日期、时间</title>
-		<screen>
+		<section id="datatime">
+			<title>日期、时间</title>
+			<screen>
+		<![CDATA[
 # date -s "2008-7-19"
 # date -s 18:10
-		</screen>
-		<section id="rdate">
-			<title>rdate - get the time via the network</title>
-			<screen>
+		]]>
+			</screen>
+			<section id="rdate">
+				<title>rdate - get the time via the network</title>
+				<screen>
+			<![CDATA[
 # rdate time-a.nist.gov 查看
 # rdate -s time-a.nist.gov 设置
+			]]>
+				</screen>
+			</section>
+		</section>
+		<section id="language">
+			<title>语言</title>
+			<para>
+				<command>system-config-language</command>
+			</para>
+			<screen>
+		<![CDATA[
+vim /etc/sysconfig/i18n
+LANG="en_US.UTF-8"
+		]]>
+			</screen>
+			<para>查看语言</para>
+			<screen>
+		<![CDATA[
+locale -a
+		]]>
 			</screen>
 		</section>
 	</section>
-	<section id="language">
-		<title>语言</title>
-		<para><command>system-config-language</command></para>
-		<screen>
-vim /etc/sysconfig/i18n
-LANG="en_US.UTF-8"
-		</screen>
-		<para>查看语言</para>
-		<screen>
-locale -a
-		</screen>
-	</section>
-</section>
 
 </chapter>

@@ -218,6 +218,33 @@ neo@MacBook-Pro ~ % echo $RANDOM
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>与 history 有关的环境变量</title>
+			<para>HISTSIZE 将最后多少条历史记录保存到文件中</para>
+			<para>HISTFILESIZE 定义 ~/.bash_history 的行数</para>
+			<para>HISTTIMEFORMAT 历史记录格式</para>
+			<screen>
+			<![CDATA[
+export HISTSIZE=10000
+export HISTFILESIZE=10000
+export HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S "
+export TIME_STYLE=long-iso			
+			]]>
+			</screen>
+			<para>格式如下</para>
+			<screen>
+			<![CDATA[
+  903  2019-06-03 00:48:46 docker ps
+  904  2019-06-03 00:48:49 docker images
+  905  2019-06-03 00:48:53 docker rmi -f $(docker images -q)
+  906  2019-06-03 00:48:56 docker stop $(docker ps -a -q)
+  907  2019-06-03 00:48:57 docker rm -f $(docker ps -a -q)
+  908  2019-06-03 00:48:57 docker rmi -f $(docker images -q)
+  909  2019-06-03 00:48:57 docker volume rm $(docker volume ls -q)
+  910  2019-06-03 00:49:00 docker
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="variable.set">
 		<title>set 设置变量</title>

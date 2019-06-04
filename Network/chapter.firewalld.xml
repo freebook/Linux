@@ -1,36 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="firewalld">
-	<title>Firewalld</title>
-	<section>
-		<title>firewalld</title>
-		<screen>
-# systemctl start firewalld
-# systemctl stop firewalld
-# systemctl enable firewalld
-# systemctl disable firewalld
-		</screen>
-		<section>
-			<title>firewall-cmd</title>
-			<screen>
-# firewall-cmd --state
-# firewall-cmd --list-all
-# firewall-cmd --list-interfaces
-# firewall-cmd --get-service
-# firewall-cmd --query-service service_name
-# firewall-cmd --add-port=8080/tcp
-			</screen>
-			<para>开放服务 --permanent 表示永久生效</para>
-			<screen>
-# firewall-cmd --add-service=http
-# firewall-cmd --permanent --add-service=http
-# systemctl restart firewalld			
-			</screen>
-		</section>
-	</section>
+	<title>CentOS 7 Firewalld</title>
 	<section id="iptables-services">
 		<title>如果你不习惯使用firewalld想用回Iptables</title>
 		<para>安装iptables</para>
 		<screen>
+		<![CDATA[
 # yum install iptables-services
 
 # vim /etc/sysconfig/iptables
@@ -46,9 +21,11 @@
 -A INPUT -j REJECT --reject-with icmp-host-prohibited
 -A FORWARD -j REJECT --reject-with icmp-host-prohibited
 COMMIT
+		]]>
 		</screen>
 		<para>默认firewall作为防火墙的设置</para>
 		<screen>
+		<![CDATA[
 #禁止firewall开机启动
 
 # systemctl disable firewalld.service
@@ -64,17 +41,502 @@ COMMIT
 #重启防火墙使配置生效
 
 # systemctl restart iptables.service		
-		
-# chkconfig --level 345 iptables on
-# service iptables start
+		]]>
 		</screen>
-		<para>Saving and Restoring IPTables Rules</para>
-		<screen>
-# service iptables save
-		</screen>
-		<para>Firewall Policies</para>
-		<screen>
 
-		</screen>
 	</section>
+	<section>
+		<title>firewalld 启动/停止/启用/禁用</title>
+		<screen>
+		<![CDATA[
+# systemctl start firewalld
+# systemctl stop firewalld
+# systemctl enable firewalld
+# systemctl disable firewalld
+# systemctl restart firewalld
+		]]>
+		</screen>
+		<para>查看运行状态</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# systemctl status firewalld 
+● firewalld.service - firewalld - dynamic firewall daemon
+   Loaded: loaded (/usr/lib/systemd/system/firewalld.service; enabled; vendor preset: enabled)
+   Active: active (running) since Tue 2019-06-04 11:47:00 CST; 5h 16min ago
+     Docs: man:firewalld(1)
+ Main PID: 2928 (firewalld)
+   CGroup: /system.slice/firewalld.service
+           └─2928 /usr/bin/python -Es /usr/sbin/firewalld --nofork --nopid
+
+Jun 04 11:47:00 localhost.localdomain systemd[1]: Starting firewalld - dynamic firewall daemon...
+Jun 04 11:47:00 localhost.localdomain systemd[1]: Started firewalld - dynamic firewall daemon.
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+查看服务是否开机启动：systemctl is-enabled firewalld.service
+查看已启动的服务列表：systemctl list-unit-files|grep enabled
+查看启动失败的服务列表：systemctl --failed		
+		]]>
+		</screen>
+
+	</section>
+	<section id="firewall.config">
+		<title>firewalld 配置文件</title>
+		<section>
+			<title>规则配置文件</title>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# cat /etc/firewalld/zones/public.xml
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+  <short>Public</short>
+  <description>For use in public areas. You do not trust the other computers on networks to not harm your computer. Only selected incoming connections are accepted.</description>
+  <service name="ssh"/>
+  <service name="dhcpv6-client"/>
+  <port protocol="tcp" port="80"/>
+</zone>			
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>firewall-cmd</title>
+		<screen>
+			<![CDATA[
+拒绝所有包：firewall-cmd --panic-on
+取消拒绝状态： firewall-cmd --panic-off
+查看是否拒绝： firewall-cmd --query-panic			
+			]]>
+		</screen>
+		<section>
+			<title>查看版本号</title>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# firewall-cmd --version
+0.5.3			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>查看帮助</title>
+			<para>
+				<para>查看帮助： firewall-cmd --help</para>
+			</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# firewall-cmd --help			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>显示状态</title>
+			<para>显示状态： firewall-cmd --state</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# firewall-cmd --state
+running			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>重新载入防火墙规则</title>
+			<screen>
+			<![CDATA[
+firewall-cmd --reload			
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section id="firewall.interface">
+		<title>接口</title>
+		<section>
+			<title>接口列表</title>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# firewall-cmd --list-interfaces
+enp0s3		
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>查询接口所在区域</title>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# firewall-cmd --get-zone-of-interface=eth0
+no zone
+[root@localhost ~]# firewall-cmd --get-zone-of-interface=enp0s3
+public			
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section id="firewall.port">
+		<title>端口操作</title>
+		<section>
+			<title>开放端口</title>
+			<para>开放端口 firewall-cmd --zone=public --add-port=80/tcp --permanent</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# firewall-cmd --zone=public --add-port=80/tcp --permanent
+success
+			]]>
+			</screen>
+			<para>--permanent永久生效，没有此参数重启后失效</para>
+		</section>
+		<section>
+			<title>查看端口状态</title>
+			<para>查看端口，使用 firewall-cmd --zone=public --query-port=80/tcp</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# firewall-cmd --zone=public --query-port=80/tcp
+no			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>禁用端口</title>
+			<para>删除端口</para>
+			<screen>
+			<![CDATA[
+firewall-cmd --zone=public --remove-port=80/tcp --permanent
+			]]>
+			</screen>
+			<para>--permanent 表示永久生效</para>
+		</section>
+		<section>
+			<title>端口转发</title>
+			<para>将 80 端口的流量转发到 8080 端口</para>
+			<screen>
+			<![CDATA[
+firewall-cmd --zone="public" --add-forward-port=port=80:proto=tcp:toport=8080			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>IP 转发</title>
+			<para>开启IP伪装</para>
+			<screen>
+			<![CDATA[
+firewall-cmd --zone=public --add-masquerade
+			]]>
+			</screen>
+			<para>将 80 端口转发到 172.16.0.10:8080 主机</para>
+			<screen>
+			<![CDATA[
+firewall-cmd --zone="public" --add-forward-port=port=80:proto=tcp:toport=8080:toaddr=172.16.0.10
+			]]>
+			</screen>
+		</section>
+
+	</section>
+
+	<section id="firewall.zone">
+		<title>区域</title>
+		<section>
+			<title>查看默认区域</title>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# firewall-cmd --get-default-zone
+public			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>设置默认区域</title>
+			<screen>
+			<![CDATA[
+firewall-cmd --set-default-zone=inside			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>查看区域对应的网络接口</title>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# firewall-cmd --get-active-zones
+public
+  interfaces: enp0s3			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>查看指定区域的所有配置</title>
+			<programlisting>
+			<![CDATA[
+[root@localhost ~]# firewall-cmd --zone=public --list-all
+public (active)
+  target: default
+  icmp-block-inversion: no
+  interfaces: enp0s3
+  sources: 
+  services: ssh dhcpv6-client
+  ports: 
+  protocols: 
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>查看所有区域的配置信息</title>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# firewall-cmd --list-all-zones
+block
+  target: %%REJECT%%
+  icmp-block-inversion: no
+  interfaces: 
+  sources: 
+  services: 
+  ports: 
+  protocols: 
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+	
+
+dmz
+  target: default
+  icmp-block-inversion: no
+  interfaces: 
+  sources: 
+  services: ssh
+  ports: 
+  protocols: 
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+	
+
+drop
+  target: DROP
+  icmp-block-inversion: no
+  interfaces: 
+  sources: 
+  services: 
+  ports: 
+  protocols: 
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+	
+
+external
+  target: default
+  icmp-block-inversion: no
+  interfaces: 
+  sources: 
+  services: ssh
+  ports: 
+  protocols: 
+  masquerade: yes
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+	
+
+home
+  target: default
+  icmp-block-inversion: no
+  interfaces: 
+  sources: 
+  services: ssh mdns samba-client dhcpv6-client
+  ports: 
+  protocols: 
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+	
+
+internal
+  target: default
+  icmp-block-inversion: no
+  interfaces: 
+  sources: 
+  services: ssh mdns samba-client dhcpv6-client
+  ports: 
+  protocols: 
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+	
+
+public (active)
+  target: default
+  icmp-block-inversion: no
+  interfaces: enp0s3
+  sources: 
+  services: ssh dhcpv6-client
+  ports: 
+  protocols: 
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+	
+
+trusted
+  target: ACCEPT
+  icmp-block-inversion: no
+  interfaces: 
+  sources: 
+  services: 
+  ports: 
+  protocols: 
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+	
+
+work
+  target: default
+  icmp-block-inversion: no
+  interfaces: 
+  sources: 
+  services: ssh dhcpv6-client
+  ports: 
+  protocols: 
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>设置区域接口</title>
+			<screen>
+			<![CDATA[
+firewall-cmd --set-default-zone=dmz
+firewall-cmd --zone=dmz --add-interface=eth0			
+			]]>
+			</screen>
+		</section>
+
+	</section>
+	<section id="firewall.service">
+		<title>服务</title>
+		<section>
+			<title>查看可用的服务器</title>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# firewall-cmd --get-services
+RH-Satellite-6 amanda-client amanda-k5-client bacula bacula-client bgp bitcoin bitcoin-rpc bitcoin-testnet bitcoin-testnet-rpc ceph ceph-mon cfengine condor-collector ctdb dhcp dhcpv6 dhcpv6-client dns docker-registry docker-swarm dropbox-lansync elasticsearch freeipa-ldap freeipa-ldaps freeipa-replication freeipa-trust ftp ganglia-client ganglia-master git gre high-availability http https imap imaps ipp ipp-client ipsec irc ircs iscsi-target jenkins kadmin kerberos kibana klogin kpasswd kprop kshell ldap ldaps libvirt libvirt-tls managesieve mdns minidlna mongodb mosh mountd ms-wbt mssql murmur mysql nfs nfs3 nmea-0183 nrpe ntp openvpn ovirt-imageio ovirt-storageconsole ovirt-vmconsole pmcd pmproxy pmwebapi pmwebapis pop3 pop3s postgresql privoxy proxy-dhcp ptp pulseaudio puppetmaster quassel radius redis rpc-bind rsh rsyncd samba samba-client sane sip sips smtp smtp-submission smtps snmp snmptrap spideroak-lansync squid ssh syncthing syncthing-gui synergy syslog syslog-tls telnet tftp tftp-client tinc tor-socks transmission-client upnp-client vdsm vnc-server wbem-https xmpp-bosh xmpp-client xmpp-local xmpp-server zabbix-agent zabbix-server			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>启用服务</title>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# firewall-cmd --zone=public --add-service=mysql --permanent
+success			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>禁用服务</title>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# firewall-cmd --zone=public --remove-service=mysql --permanent
+success			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>指定区域添加服务</title>
+			<screen>
+			<![CDATA[
+firewall-cmd --zone=dmz --add-service=http --permanent
+firewall-cmd --zone=dmz --add-service=https --permanent			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>查询服务状态</title>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# firewall-cmd --query-service mysql
+no			
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section id="firewall.masquerade">
+		<title>IP 伪装</title>
+		<section>
+			<title>开启 IP 伪装</title>
+			<screen>
+			<![CDATA[
+firewall-cmd --zone=public --add-masquerade
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>关闭 IP 伪装</title>
+			<screen>
+			<![CDATA[
+firewall-cmd --zone=public --remove-masquerade			
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section id="firewall.rich-rules">
+		<title>富规则</title>
+		<para>使用 --add-rich-rule, --list-rich-rules, --remove-rich-rule 命令来管理富规则</para>
+		<para>允许来自主机 192.168.0.14 的所有 IPv4 流量。</para>
+		<screen>
+			<![CDATA[
+
+sudo firewall-cmd --zone=public --add-rich-rule 'rule family="ipv4" source address=192.168.0.14 accept'			
+			]]>
+		</screen>
+		<para>拒绝来自主机 192.168.1.10 到 22 端口的 IPv4 的 TCP 流量。</para>
+		<screen>
+		<![CDATA[
+firewall-cmd --zone=public --add-rich-rule 'rule family="ipv4" source address="192.168.1.10" port port=22 protocol=tcp reject'		
+		]]>
+		</screen>
+		<para>允许来自主机 172.16.0.5 到 80 端口的 IPv4 的 TCP 流量，并将流量转发到 6532 端口上。</para>
+		<screen>
+		<![CDATA[
+firewall-cmd --zone=public --add-rich-rule 'rule family=ipv4 source address=172.16.0.5 forward-port port=80 protocol=tcp to-port=8080'		
+		]]>
+		</screen>
+		<para>将主机 172.16.0.2 上 80 端口的 IPv4 流量转发到 8080 端口（需要在区域上激活 masquerade）</para>
+		<screen>
+		<![CDATA[
+firewall-cmd --zone=public --add-rich-rule 'rule family=ipv4 forward-port port=80 protocol=tcp to-port=8080 to-addr=172.16.0.2'
+		]]>
+		</screen>
+		<para>列出你目前的丰富规则</para>
+		<screen>
+		<![CDATA[
+firewall-cmd --list-rich-rules	
+		]]>
+		</screen>
+
+	</section>
+
+	
 </section>
