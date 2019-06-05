@@ -111,6 +111,16 @@ $ cat /sys/class/net/eth0/statistics/tx_bytes
 	</section>
 	<section id="proc">
 		<title>/proc</title>
+		<section>
+			<title>查看系统版本</title>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# cat /proc/version
+Linux version 3.10.0-693.el7.x86_64 (builder@kbuilder.dev.centos.org) (gcc version 4.8.5 20150623 (Red Hat 4.8.5-16) (GCC) ) #1 SMP Tue Aug 22 21:09:27 UTC 2017
+			]]>
+			</screen>
+		</section>
+		
 		<section id="smaps">
 			<title>进程内存监控</title>
 			<para>/proc/进程id/smaps</para>

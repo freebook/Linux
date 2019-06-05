@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="firewalld">
 	<title>CentOS 7 Firewalld</title>
+	<para>
+		<ulink url="http://www.firewalld.org" />
+	</para>
 	<section id="iptables-services">
 		<title>如果你不习惯使用firewalld想用回Iptables</title>
 		<para>安装iptables</para>
@@ -46,7 +49,20 @@ COMMIT
 
 	</section>
 	<section>
-		<title>firewalld 启动/停止/启用/禁用</title>
+		<title>安装 firewalld</title>
+		<para>安装firewalld</para>
+		<screen>
+		<![CDATA[
+yum install firewalld	
+		]]>
+		</screen>
+		<para>firewall-config 图形界面</para>
+		<screen>
+		<![CDATA[
+yum install firewall-config			
+		]]>
+		</screen>
+		<para>启动/停止/启用/禁用</para>
 		<screen>
 		<![CDATA[
 # systemctl start firewalld
@@ -99,16 +115,160 @@ Jun 04 11:47:00 localhost.localdomain systemd[1]: Started firewalld - dynamic fi
 			]]>
 			</screen>
 		</section>
-	</section>
-	<section>
-		<title>firewall-cmd</title>
-		<screen>
+		<section>
+			<title>服务配置文件</title>
+			<screen>
 			<![CDATA[
-拒绝所有包：firewall-cmd --panic-on
-取消拒绝状态： firewall-cmd --panic-off
-查看是否拒绝： firewall-cmd --query-panic			
+[root@localhost ~]# ls -1 /usr/lib/firewalld/services/
+amanda-client.xml
+amanda-k5-client.xml
+bacula-client.xml
+bacula.xml
+bgp.xml
+bitcoin-rpc.xml
+bitcoin-testnet-rpc.xml
+bitcoin-testnet.xml
+bitcoin.xml
+ceph-mon.xml
+ceph.xml
+cfengine.xml
+condor-collector.xml
+ctdb.xml
+dhcpv6-client.xml
+dhcpv6.xml
+dhcp.xml
+dns.xml
+docker-registry.xml
+docker-swarm.xml
+dropbox-lansync.xml
+elasticsearch.xml
+freeipa-ldaps.xml
+freeipa-ldap.xml
+freeipa-replication.xml
+freeipa-trust.xml
+ftp.xml
+ganglia-client.xml
+ganglia-master.xml
+git.xml
+gre.xml
+high-availability.xml
+https.xml
+http.xml
+imaps.xml
+imap.xml
+ipp-client.xml
+ipp.xml
+ipsec.xml
+ircs.xml
+irc.xml
+iscsi-target.xml
+jenkins.xml
+kadmin.xml
+kerberos.xml
+kibana.xml
+klogin.xml
+kpasswd.xml
+kprop.xml
+kshell.xml
+ldaps.xml
+ldap.xml
+libvirt-tls.xml
+libvirt.xml
+managesieve.xml
+mdns.xml
+minidlna.xml
+mongodb.xml
+mosh.xml
+mountd.xml
+mssql.xml
+ms-wbt.xml
+murmur.xml
+mysql.xml
+nfs3.xml
+nfs.xml
+nmea-0183.xml
+nrpe.xml
+ntp.xml
+openvpn.xml
+ovirt-imageio.xml
+ovirt-storageconsole.xml
+ovirt-vmconsole.xml
+pmcd.xml
+pmproxy.xml
+pmwebapis.xml
+pmwebapi.xml
+pop3s.xml
+pop3.xml
+postgresql.xml
+privoxy.xml
+proxy-dhcp.xml
+ptp.xml
+pulseaudio.xml
+puppetmaster.xml
+quassel.xml
+radius.xml
+redis.xml
+RH-Satellite-6.xml
+rpc-bind.xml
+rsh.xml
+rsyncd.xml
+samba-client.xml
+samba.xml
+sane.xml
+sips.xml
+sip.xml
+smtp-submission.xml
+smtps.xml
+smtp.xml
+snmptrap.xml
+snmp.xml
+spideroak-lansync.xml
+squid.xml
+ssh.xml
+syncthing-gui.xml
+syncthing.xml
+synergy.xml
+syslog-tls.xml
+syslog.xml
+telnet.xml
+tftp-client.xml
+tftp.xml
+tinc.xml
+tor-socks.xml
+transmission-client.xml
+upnp-client.xml
+vdsm.xml
+vnc-server.xml
+wbem-https.xml
+xmpp-bosh.xml
+xmpp-client.xml
+xmpp-local.xml
+xmpp-server.xml
+zabbix-agent.xml
+zabbix-server.xml			
 			]]>
-		</screen>
+			</screen>
+		</section>
+		<section>
+			<title>区域配置文件</title>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# ls -1 /usr/lib/firewalld/zones/
+block.xml
+dmz.xml
+drop.xml
+external.xml
+home.xml
+internal.xml
+public.xml
+trusted.xml
+work.xml			
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section id="firewall-cmd">
+		<title>firewall-cmd</title>
 		<section>
 			<title>查看版本号</title>
 			<screen>
@@ -147,92 +307,80 @@ firewall-cmd --reload
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>持久化</title>
+			<para>将当前防火墙的规则永久保存</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# firewall-cmd --runtime-to-permanent
+success			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>检查配置正确性</title>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# firewall-cmd --check-config 
+success			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>日志选项</title>
+			<screen>
+			<![CDATA[
+--get-log-denied         # 获取记录被拒绝的日志；
+--set-log-denied=<value> # 设置记录被拒绝的日志，只能为 'all','unicast','broadcast','multicast','off' 其中的一个；			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>拒绝所有包</title>
+			<screen>
+			<![CDATA[
+拒绝所有包：firewall-cmd --panic-on
+取消拒绝状态： firewall-cmd --panic-off
+查看是否拒绝： firewall-cmd --query-panic			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>直接模式</title>
+			<screen>
+			<![CDATA[
+firewall-cmd --direct -add-rule ipv4 filter INPUT 0 -p tcp --dport 9000 -j ACCEPT
+firewall-cmd --reload			
+			]]>
+			</screen>
+		</section>
 	</section>
-	<section id="firewall.interface">
-		<title>接口</title>
-		<section>
-			<title>接口列表</title>
-			<screen>
-			<![CDATA[
-[root@localhost ~]# firewall-cmd --list-interfaces
-enp0s3		
-			]]>
-			</screen>
-		</section>
-		<section>
-			<title>查询接口所在区域</title>
-			<screen>
-			<![CDATA[
-[root@localhost ~]# firewall-cmd --get-zone-of-interface=eth0
-no zone
-[root@localhost ~]# firewall-cmd --get-zone-of-interface=enp0s3
-public			
-			]]>
-			</screen>
-		</section>
-	</section>
-	<section id="firewall.port">
-		<title>端口操作</title>
-		<section>
-			<title>开放端口</title>
-			<para>开放端口 firewall-cmd --zone=public --add-port=80/tcp --permanent</para>
-			<screen>
-			<![CDATA[
-[root@localhost ~]# firewall-cmd --zone=public --add-port=80/tcp --permanent
-success
-			]]>
-			</screen>
-			<para>--permanent永久生效，没有此参数重启后失效</para>
-		</section>
-		<section>
-			<title>查看端口状态</title>
-			<para>查看端口，使用 firewall-cmd --zone=public --query-port=80/tcp</para>
-			<screen>
-			<![CDATA[
-[root@localhost ~]# firewall-cmd --zone=public --query-port=80/tcp
-no			
-			]]>
-			</screen>
-		</section>
-		<section>
-			<title>禁用端口</title>
-			<para>删除端口</para>
-			<screen>
-			<![CDATA[
-firewall-cmd --zone=public --remove-port=80/tcp --permanent
-			]]>
-			</screen>
-			<para>--permanent 表示永久生效</para>
-		</section>
-		<section>
-			<title>端口转发</title>
-			<para>将 80 端口的流量转发到 8080 端口</para>
-			<screen>
-			<![CDATA[
-firewall-cmd --zone="public" --add-forward-port=port=80:proto=tcp:toport=8080			
-			]]>
-			</screen>
-		</section>
-		<section>
-			<title>IP 转发</title>
-			<para>开启IP伪装</para>
-			<screen>
-			<![CDATA[
-firewall-cmd --zone=public --add-masquerade
-			]]>
-			</screen>
-			<para>将 80 端口转发到 172.16.0.10:8080 主机</para>
-			<screen>
-			<![CDATA[
-firewall-cmd --zone="public" --add-forward-port=port=80:proto=tcp:toport=8080:toaddr=172.16.0.10
-			]]>
-			</screen>
-		</section>
-
-	</section>
-
 	<section id="firewall.zone">
 		<title>区域</title>
+		<para>Firewall 能将不同的网络连接归类到不同的信任级别，Zone 提供了以下几个级别</para>
+		<screen>
+		<![CDATA[
+drop: 		丢弃所有进入的包，而不给出任何响应
+block: 		拒绝所有外部发起的连接，允许内部发起的连接
+public: 	允许指定的进入连接
+internal: 	范围针对所有互联网用户
+external: 	对伪装的进入连接，一般用于路由转发
+dmz: 		允许受限制的进入连接
+work: 		允许受信任的计算机被限制的进入连接，类似 workgroup
+home: 		类似 homegroup
+trusted: 	信任所有连接		
+		]]>
+		</screen>
+		<section>
+			<title>查看区域</title>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# firewall-cmd --get-zones
+block dmz drop external home internal public trusted work			
+			]]>
+			</screen>
+		</section>
+
 		<section>
 			<title>查看默认区域</title>
 			<screen>
@@ -260,6 +408,8 @@ public
 			]]>
 			</screen>
 		</section>
+
+
 		<section>
 			<title>查看指定区域的所有配置</title>
 			<programlisting>
@@ -424,16 +574,129 @@ work
 			</screen>
 		</section>
 		<section>
-			<title>设置区域接口</title>
+			<title>删除区域</title>
 			<screen>
+			<![CDATA[
+[root@localhost ~]# firewall-cmd --delete-zone=your_zone --permanent			
+			]]>
+			</screen>
+		</section>
+
+		<section id="firewall.interface">
+			<title>区域接口</title>
+			<section>
+				<title>接口列表</title>
+				<screen>
+			<![CDATA[
+[root@localhost ~]# firewall-cmd --list-interfaces
+enp0s3		
+
+[root@localhost ~]# firewall-cmd --list-interfaces
+wlp5s0
+			]]>
+				</screen>
+			</section>
+			<section>
+				<title>查询接口所在区域</title>
+				<screen>
+			<![CDATA[
+[root@localhost ~]# firewall-cmd --get-zone-of-interface=eth0
+no zone
+[root@localhost ~]# firewall-cmd --get-zone-of-interface=enp0s3
+public			
+			]]>
+				</screen>
+			</section>
+			<section>
+				<title>设置区域接口</title>
+				<screen>
 			<![CDATA[
 firewall-cmd --set-default-zone=dmz
 firewall-cmd --zone=dmz --add-interface=eth0			
+			]]>
+				</screen>
+			</section>
+		</section>
+		<section>
+			<title>更在区域接口</title>
+			<screen>
+			<![CDATA[
+firewall-cmd --permanent --zone=internal --change-interface=enp03s			
+			]]>
+			</screen>
+		</section>
+	</section>
+
+	<section id="firewall.port">
+		<title>端口操作</title>
+		<section>
+			<title>开放端口</title>
+			<para>开放端口 firewall-cmd --zone=public --add-port=80/tcp --permanent</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# firewall-cmd --zone=public --add-port=80/tcp --permanent
+success
+			]]>
+			</screen>
+			<para>--permanent永久生效，没有此参数重启后失效</para>
+		</section>
+		<section>
+			<title>查看端口状态</title>
+			<para>查看端口，使用 firewall-cmd --zone=public --query-port=80/tcp</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# firewall-cmd --zone=public --query-port=80/tcp
+no			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>禁用端口</title>
+			<para>删除端口</para>
+			<screen>
+			<![CDATA[
+firewall-cmd --zone=public --remove-port=80/tcp --permanent
+			]]>
+			</screen>
+			<para>--permanent 表示永久生效</para>
+		</section>
+		<section>
+			<title>指定端口协议</title>
+			<screen>
+			<![CDATA[
+firewall-cmd --zome=public --add-port=5060-5059/udp --permanent			
+			]]>
+			</screen>
+		</section>
+
+		<section>
+			<title>端口转发</title>
+			<para>将 80 端口的流量转发到 8080 端口</para>
+			<screen>
+			<![CDATA[
+firewall-cmd --zone="public" --add-forward-port=port=80:proto=tcp:toport=8080			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>IP 转发</title>
+			<para>开启IP伪装</para>
+			<screen>
+			<![CDATA[
+firewall-cmd --zone=public --add-masquerade
+			]]>
+			</screen>
+			<para>将 80 端口转发到 172.16.0.10:8080 主机</para>
+			<screen>
+			<![CDATA[
+firewall-cmd --zone="public" --add-forward-port=port=80:proto=tcp:toport=8080:toaddr=172.16.0.10
 			]]>
 			</screen>
 		</section>
 
 	</section>
+
+	
 	<section id="firewall.service">
 		<title>服务</title>
 		<section>
@@ -481,6 +744,16 @@ no
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>查看持久化服务</title>
+			<para>查看重启后所有 Zones 级别中被允许的服务，即永久放行的服务</para>
+			<screen>
+			<![CDATA[
+firewall-cmd --get-service --permanent			
+			]]>
+			</screen>
+		</section>
+		
 	</section>
 	<section id="firewall.masquerade">
 		<title>IP 伪装</title>
@@ -492,6 +765,15 @@ firewall-cmd --zone=public --add-masquerade
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>查看 IP 伪装</title>
+			<screen>
+			<![CDATA[
+firewall-cmd --zone=external --query-masquerade			
+			]]>
+			</screen>
+		</section>
+		
 		<section>
 			<title>关闭 IP 伪装</title>
 			<screen>
