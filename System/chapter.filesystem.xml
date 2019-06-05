@@ -177,14 +177,14 @@ neo@netkiller:~# mkfs.ext2 /dev/sdb1
 		</screen>
 		<para>ext2 是早期Linux使用的文件系统存在很多缺陷，建议不要在使用。</para>
 	</section>		
-	<section>
+	<section id="ext3">
 		<title>ext3</title>
 		<para>format /dev/sdb1</para>
 		<screen>
 neo@netkiller:~$ sudo mkfs.ext3 /dev/sdb1
 		</screen>
 	</section>
-	<section>
+	<section id="reiserfs">
 		<title>ReiserFS</title>
 		<para>you also can using other file system</para>
 		<para>reiserfs</para>
