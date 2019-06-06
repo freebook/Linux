@@ -384,6 +384,58 @@ external_url 'http://172.16.0.1'
 	<section id="cicd">
 		<title>CI / CD</title>
 		<para>https://gitlab.com/gitlab-examples</para>
+		<section>
+			<title>GitLab Runner</title>
+			<section>
+				<title>Install GitLab Runner</title>
+				<screen>
+				<![CDATA[
+[root@localhost ~]# wget -O /usr/local/bin/gitlab-runner https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-amd64
+--2019-06-06 16:19:31--  https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-amd64
+Resolving gitlab-runner-downloads.s3.amazonaws.com (gitlab-runner-downloads.s3.amazonaws.com)... 52.216.10.19
+Connecting to gitlab-runner-downloads.s3.amazonaws.com (gitlab-runner-downloads.s3.amazonaws.com)|52.216.10.19|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 30832000 (29M) [application/octet-stream]
+Saving to: '/usr/local/bin/gitlab-runner'
+
+100%[==================================================================================================================================================================================================>] 30,832,000   113KB/s   in 7m 11s 
+
+2019-06-06 16:26:44 (69.8 KB/s) - '/usr/local/bin/gitlab-runner' saved [30832000/30832000]
+
+
+[root@localhost ~]# chmod +x /usr/local/bin/gitlab-runner
+[root@localhost ~]# useradd --comment 'GitLab Runner' --create-home gitlab-runner --shell /bin/bash
+[root@localhost ~]# gitlab-runner install --user=gitlab-runner --working-directory=/home/gitlab-runner
+Runtime platform                                    arch=amd64 os=linux pid=113531 revision=ac2a293c version=11.11.2
+[root@localhost ~]# gitlab-runner start
+Runtime platform                                    arch=amd64 os=linux pid=113576 revision=ac2a293c version=11.11.2				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>Registering Runners</title>
+				<screen>
+				<![CDATA[
+[root@localhost ~]# gitlab-runner register
+Runtime platform                                    arch=amd64 os=linux pid=114182 revision=ac2a293c version=11.11.2
+Running in system-mode.                            
+                                                   
+Please enter the gitlab-ci coordinator URL (e.g. https://gitlab.com/):
+http://192.168.1.229/
+Please enter the gitlab-ci token for this runner:
+5iF88xJLfFgpvRJySam2
+Please enter the gitlab-ci description for this runner:
+[localhost.localdomain]: 
+Please enter the gitlab-ci tags for this runner (comma separated):
+my-tag,another-tag
+Registering runner... succeeded                     runner=5iF88xJL
+Please enter the executor: docker, docker-ssh, parallels, ssh, virtualbox, kubernetes, shell, docker+machine, docker-ssh+machine:
+shell
+Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded! 				
+				]]>
+				</screen>
+			</section>
+		</section>
 		<section id="gitlab.pipeline">
 			<title>Pipeline</title>
 			<section id="pipeline.cache">
