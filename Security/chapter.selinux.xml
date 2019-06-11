@@ -5,8 +5,8 @@
 	<info>
 	<keywordset>
 			<keyword>getsebool</keyword>
-			<keyword>Piranha</keyword>
-			<keyword>NFS</keyword>
+			<keyword>setsebool</keyword>
+			<keyword>sestatus</keyword>
 			<keyword></keyword>
 			<keyword></keyword>
 		</keywordset>
