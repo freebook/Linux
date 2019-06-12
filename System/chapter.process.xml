@@ -50,8 +50,10 @@ q：退出
 shift + > 或 shift + < 可以向右或左改变排序列
 
 f键，可以进入编辑要显示字段的视图，有 号的字段会显示，无 号不显示，可根据页面提示选择或取消字段。		
+		]]>
 		</screen>
 		<screen>
+		<![CDATA[
 $ top
 top - 22:30:02 up 14:24,  1 user,  load average: 0.17, 0.15, 0.10
 Tasks: 240 total,   2 running, 238 sleeping,   0 stopped,   0 zombie
@@ -624,17 +626,23 @@ www-data 18750  0.0  0.2 240904  4296 ?        S<   11:18   0:00      \_ /usr/bi
 		<section>
 			<title>ps axef</title>
 			<screen>
+			<![CDATA[
 [root@development ~]# ps -ef
 UID        PID  PPID  C STIME TTY          TIME CMD
+			]]>
 			</screen>
 			<screen>
+			<![CDATA[
 # ps axef
+			]]>
 			</screen>
 		</section>
 		<section>
 			<title>ps -eo pid,cmd</title>
 			<screen>
+			<![CDATA[
 $ ps -eo pid,cmd
+			]]>
 			</screen>
 		</section>
 		<section>
@@ -838,15 +846,19 @@ $ ps -eo pid,cmd
 			</screen>
 		</section>
 		<section>
-			<title>zombie process</title>
+			<title>僵尸进程</title>
+			<para>zombie process</para>
 			<screen>
+			<![CDATA[
 ps aux | awk '{ print $8 " " $2 }' | grep -w Z
+			]]>
 			</screen>
 		</section>
 	</section>
 	<section id="mpstat">
 		<title>mpstat</title>
 		<screen>
+		<![CDATA[
 # mpstat -P ALL 60
 Linux 2.6.18-194.el5 (localhost)        09/20/2010
 
@@ -882,72 +894,30 @@ Linux 2.6.18-194.el5 (localhost)        09/20/2010
 05:51:55 PM    5   10.72    0.00    0.37    0.17    0.00    0.12    0.00   88.63      0.00
 05:51:55 PM    6   40.83    0.00    0.48    0.05    0.03    0.35    0.00   58.25    111.15
 05:51:55 PM    7   81.11    0.00    0.63    0.02    0.42    3.57    0.00   14.25   2438.40
+		]]>
 		</screen>
 	</section>
-	<section id="pstree">
-		<title>pstree - display a tree of processes</title>
-		<screen>
-$ pstree
-init─┬─NetworkManager
-     ├─NetworkManagerD
-     ├─acpid
-     ├─atd
-     ├─avahi-daemon───avahi-daemon
-     ├─console-kit-dae───61*[{console-kit-dae}]
-     ├─cron
-     ├─cupsd
-     ├─dbus-daemon
-     ├─dd
-     ├─dhcdbd
-     ├─dhclient3
-     ├─exim4
-     ├─gconfd-2
-     ├─gdm───gdm───kill
-     ├─5*[getty]
-     ├─gnump3d
-     ├─hald───hald-runner─┬─hald-addon-acpi
-     │                    └─hald-addon-inpu
-     ├─hcid───2*[bluetoothd-serv]
-     ├─klogd
-     ├─lighttpd───2*[php-cgi───4*[php-cgi]]
-     ├─login───bash───pstree
-     ├─nmbd
-     ├─postgres───4*[postgres]
-     ├─rsync
-     ├─smbd───2*[smbd]
-     ├─sshd
-     ├─syslogd
-     ├─system-tools-ba
-     ├─udevd
-     ├─xinetd
-     └─xinit─┬─Xorg
-             └─sh───gksu───xfailsafedialog
-		</screen>
-		<para>查看PID</para>
-		<screen>
-# pstree -p 3158
-sshd(3158)─┬─sshd(9409)───bash(9411)
-           ├─sshd(15241)───bash(15247)
-           ├─sshd(15243)───bash(15275)
-           ├─sshd(15245)───bash(15303)───pstree(30050)
-           └─sshd(22786)───bash(22788)
-		</screen>
-	</section>
+
 	<section id="pid">
 		<title>pid</title>
 		<section id="pgrep">
 			<title>pgrep, pkill - look up or signal processes based on name and other attributes</title>
 			<para>pgrep</para>
 			<screen>
+			<![CDATA[
 $ pgrep lighttpd
 6045
+			]]>
 			</screen>
 			<para>pkill</para>
 			<screen>
+			<![CDATA[
 $ sudo pkill lighttpd
+			]]>
 			</screen>
 			<para>kill TTY</para>
 			<screen>
+			<![CDATA[
 [root@development ~]# w
  16:07:37 up 1 day,  6:23,  6 users,  load average: 0.00, 0.06, 0.26
 USER     TTY      FROM              LOGIN@   IDLE   JCPU   PCPU WHAT
@@ -958,16 +928,19 @@ develope pts/3    192.168.3.31     16:03    4:33   0.00s  0.00s -bash
 root     pts/5    172.16.0.1       14:55    1:03m  0.01s  0.01s -bash
 root     pts/6    172.16.0.1       15:47    0.00s  0.03s  0.00s w
 [root@development ~]# pkill -kill -t pts/3
+			]]>
 			</screen>
 		</section>
 		<section id="pidof">
 			<title>pidof -- find the process ID of a running program.</title>
 			<screen>
+			<![CDATA[
 # pidof httpd
 31935 21542 15010 15009 15008 15007 15006 15005 15004 15003 6068 6042 6041 6040 3284
 
 # pidof -s httpd
 31935
+			]]>
 			</screen>
 		</section>
 	</section>
@@ -987,6 +960,7 @@ $ grep -r 'neo' / > result &
 		<section>
 			<title>Ctrl + Z</title>
 			<screen>
+			<![CDATA[
 vim
 
 $ vim
@@ -999,6 +973,7 @@ mutt
 $ mutt
 
 [3]+  Stopped                 mutt
+			]]>
 			</screen>
 		</section>
 		<section>
@@ -1016,7 +991,9 @@ $ jobs
 			<title>fg / bg</title>
 			<para>usage: fg [job_spec]</para>
 			<screen>
+			<![CDATA[
 $ fg 2
+			]]>
 			</screen>
 			<para>usage: bg [job_spec ...]</para>
 			<screen>
@@ -1062,6 +1039,7 @@ neo@MacBook-Pro ~ % wait
 	<section id="ionice">
 		<title>ionice - get/set program io scheduling class and priority</title>
 		<screen>
+		<![CDATA[
 EXAMPLES
        # ionice -c3 -p89
 
@@ -1074,12 +1052,92 @@ EXAMPLES
        # ionice -p89
 
        Returns the class and priority of the process with PID 89.
+		]]>
 		</screen>
+	</section>
+	<section id="psmisc">
+		<title>Utilities for managing processes on your system</title>
+		<para>CentOS 7 默认没有安装 psmisc</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# yum install -y psmisc
+[root@localhost ~]# rpm -ql psmisc
+/usr/bin/killall
+/usr/bin/peekfd
+/usr/bin/prtstat
+/usr/bin/pstree
+/usr/bin/pstree.x11
+/usr/sbin/fuser
+		]]>
+			</screen>
+		<section>
+			<title>pstree - display a tree of processes</title>
+			<screen>
+		<![CDATA[
+$ pstree
+init─┬─NetworkManager
+     ├─NetworkManagerD
+     ├─acpid
+     ├─atd
+     ├─avahi-daemon───avahi-daemon
+     ├─console-kit-dae───61*[{console-kit-dae}]
+     ├─cron
+     ├─cupsd
+     ├─dbus-daemon
+     ├─dd
+     ├─dhcdbd
+     ├─dhclient3
+     ├─exim4
+     ├─gconfd-2
+     ├─gdm───gdm───kill
+     ├─5*[getty]
+     ├─gnump3d
+     ├─hald───hald-runner─┬─hald-addon-acpi
+     │                    └─hald-addon-inpu
+     ├─hcid───2*[bluetoothd-serv]
+     ├─klogd
+     ├─lighttpd───2*[php-cgi───4*[php-cgi]]
+     ├─login───bash───pstree
+     ├─nmbd
+     ├─postgres───4*[postgres]
+     ├─rsync
+     ├─smbd───2*[smbd]
+     ├─sshd
+     ├─syslogd
+     ├─system-tools-ba
+     ├─udevd
+     ├─xinetd
+     └─xinit─┬─Xorg
+             └─sh───gksu───xfailsafedialog
+		]]>
+			</screen>
+			<para>查看PID</para>
+			<screen>
+		<![CDATA[
+# pstree -p 3158
+sshd(3158)─┬─sshd(9409)───bash(9411)
+           ├─sshd(15241)───bash(15247)
+           ├─sshd(15243)───bash(15275)
+           ├─sshd(15245)───bash(15303)───pstree(30050)
+           └─sshd(22786)───bash(22788)
+		]]>
+			</screen>
+		</section>
+		<section>
+			<title>fuser - identify processes using files or sockets</title>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# fuser -u /usr/sbin/sshd
+/usr/sbin/sshd:       3549e(root) 13275e(root) 13426e(root) 13721e(root) 13919e(root) 32616e(root)			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="system.process.proc">
 		<title>/proc 目录与进程的关系</title>
 		<para>每个进程会对应一个/proc下的一个目录: /proc/进程ID</para>
 		<screen>
+		<![CDATA[
 [root@www.netkiller.cn ~]# ls /proc/
 1     122   1449  18    1891  1942  20    2306  2507  36    44   63   75  96           ioports       schedstat
 10    123   1450  180   19    1943  2015  2308  2509  37    45   631  76  97           ipmi          scsi
@@ -1104,11 +1162,13 @@ EXAMPLES
 116   1446  17    1886  1939  1985  2267  2503  3387  437   60   721  93  fs           pagetypeinfo
 117   1447  177   1887  1940  1986  2293  2505  34    438   61   73   94  interrupts   partitions
 12    1448  1786  189   1941  2     23    2506  35    439   62   74   95  iomem        sched_debug
+		]]>
 		</screen>
 		<section>
 			<title>/proc/*/fd/ 进程所打开的文件</title>
 			<para>查看进程所打开的文件</para>
 			<screen>
+			<![CDATA[
 [root@www.netkiller.cn ~]# ps ax | grep rsyslogd
  2076 ?        Sl     0:00 /sbin/rsyslogd -i /var/run/syslogd.pid -c 5
 12774 pts/0    S+     0:00 grep rsyslogd
@@ -1120,6 +1180,7 @@ l-wx------ 1 root root 64 May  9 18:02 1 -> /var/log/messages
 l-wx------ 1 root root 64 May  9 18:02 2 -> /var/log/cron
 lr-x------ 1 root root 64 May  9 18:02 3 -> /proc/kmsg
 l-wx------ 1 root root 64 May  9 18:02 4 -> /var/log/secure
+			]]>
 			</screen>
 		</section>
 	</section>
