@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="">
+	<title></title>
+	<section>
+		<title>安装</title>
+		<para>Ubuntu</para>
+		<screen>
+		<![CDATA[
+apt install lsyncd		
+		]]>
+		</screen>
+		<para>CentOS</para>
+		<screen>
+		<![CDATA[
+yum install lsyncd		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>配置 lsyncd.conf</title>
+		<screen>
+		<![CDATA[
+vi etc/lsyncd.conf
+settings {
+    logfile      ="/var/log/lsyncd/lsyncd.log",
+    statusFile   ="/var/log/lsyncd/lsyncd.status",
+    inotifyMode  = "CloseWrite",
+    maxProcesses = 7,
+    -- nodaemon =true,
+    }
+
+sync {
+    default.rsync,
+    source    = "/tmp/src",
+    target    = "/tmp/dest",
+    -- excludeFrom = "/etc/rsyncd.d/rsync_exclude.lst",
+    rsync     = {
+        binary    = "/usr/bin/rsync",
+        archive   = true,
+        compress  = true,
+        verbose   = true
+        }
+    }		
+		]]>
+		</screen>
+		<section>
+			<title>lsyncd.conf 配置项说明</title>
+			<section>
+				<title>settings 全局设置</title>
+				<screen>
+				<![CDATA[
+logfile 定义日志文件
+stausFile 定义状态文件
+nodaemon=true 表示不启用守护模式，默认
+statusInterval 将lsyncd的状态写入上面的statusFile的间隔，默认10秒
+inotifyMode 指定inotify监控的事件，默认是CloseWrite，还可以是Modify或CloseWrite or Modify
+maxProcesses 同步进程的最大个数。假如同时有20个文件需要同步，而maxProcesses = 8，则最大能看到有8个rysnc进程
+maxDelays 累计到多少所监控的事件激活一次同步，即使后面的delay延迟时间还未到
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>sync 定义同步参数</title>
+				<para>可以继续使用maxDelays来重写settings的全局变量。一般第一个参数指定lsyncd以什么模式运行：rsync、rsyncssh、direct三种模式：</para>
+				<screen>
+				<![CDATA[
+default.rsync ：本地目录间同步，使用rsync，也可以达到使用ssh形式的远程rsync效果，或daemon方式连接远程rsyncd进程；
+default.direct ：本地目录间同步，使用cp、rm等命令完成差异文件备份；
+default.rsyncssh ：同步到远程主机目录，rsync的ssh模式，需要使用key来认证
+
+source 同步的源目录，使用绝对路径。
+target 定义目的地址，三种模式写法:
+	/tmp/dest ：本地目录同步，可用于direct和rsync模式
+	172.16.0.1:/tmp/dest ：同步到远程服务器目录，可用于rsync和rsyncssh模式
+	172.16.0.1::module ：同步到远程服务器目录，用于rsync模式
+
+init 这是一个优化选项，当init = false，只同步进程启动以后发生改动事件的文件，原有的目录即使有差异也不会同步。默认是true
+
+delay 累计事件，等待rsync同步延时时间，默认15秒（最大累计到1000个不可合并的事件）。也就是15s内监控目录下发生的改动，会累积到一次rsync同步，避免过于频繁的同步。（可合并的意思是，15s内两次修改了同一文件，最后只同步最新的文件）
+
+excludeFrom 排除选项，后面指定排除的列表文件，如excludeFrom = "/etc/lsyncd.exclude"，如果是简单的排除，可以使用exclude = LIST。
+这里的排除规则写法与原生rsync有点不同，更为简单：
+监控路径里的任何部分匹配到一个文本，都会被排除，例如/bin/foo/bar可以匹配规则foo
+如果规则以斜线/开头，则从头开始要匹配全部
+如果规则以/结尾，则要匹配监控路径的末尾
+?匹配任何字符，但不包括/
+*匹配0或多个字符，但不包括/
+**匹配0或多个字符，可以是/
+delete 为了保持target与souce完全同步，Lsyncd默认会delete = true来允许同步删除。它除了false，还有startup、running值
+
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>rsync</title>
+				<screen>
+				<![CDATA[
+bwlimit 限速，单位kb/s，与rsync相同（这么重要的选项在文档里竟然没有标出）
+compress 压缩传输默认为true。在带宽与cpu负载之间权衡，本地目录同步可以考虑把它设为false
+perms 默认保留文件权限。
+				]]>
+				</screen>
+			</section>
+		</section>
+	</section>
+	<section>
+		<title>配置演示</title>
+		<screen>
+		<![CDATA[
+settings {
+    logfile ="/var/log/lsyncd.log",
+    statusFile ="/var/log/lsyncd.status",
+    inotifyMode = "CloseWrite",
+    maxProcesses = 8,
+    }
+
+
+-- 本地目录同步，direct：cp/rm/mv。 适用：500+万文件，变动不大
+sync {
+    default.direct,
+    source    = "/tmp/src",
+    target    = "/tmp/dest",
+    delay = 1
+    maxProcesses = 1
+    }
+
+-- 本地目录同步，rsync模式：rsync
+sync {
+    default.rsync,
+    source    = "/tmp/src",
+    target    = "/tmp/dest1",
+    excludeFrom = "/etc/rsyncd.d/rsync_exclude.lst",
+    rsync     = {
+        binary = "/usr/bin/rsync",
+        archive = true,
+        compress = true,
+        bwlimit   = 2000
+        } 
+    }
+
+-- 远程目录同步，rsync模式 + rsyncd daemon
+sync {
+    default.rsync,
+    source    = "/tmp/src",
+    target    = "www@192.168.0.1::module",
+    delete="running",
+    exclude = { ".*", ".tmp" },
+    delay = 30,
+    init = false,
+    rsync     = {
+        binary = "/usr/bin/rsync",
+        archive = true,
+        compress = true,
+        verbose   = true,
+        password_file = "/etc/rsyncd.d/rsync.pwd",
+        _extra    = {"--bwlimit=200"}
+        }
+    }
+
+-- 远程目录同步，rsync模式 + ssh shell
+sync {
+    default.rsync,
+    source    = "/tmp/src",
+    target    = "www.netkiller.cn:/tmp/dest",
+    -- target    = "root@www.netkiller.cn:/www/netkiller.cn/www.netkiller.cn",
+    maxDelays = 5,
+    delay = 30,
+    -- init = true,
+    rsync     = {
+        binary = "/usr/bin/rsync",
+        archive = true,
+        compress = true,
+        bwlimit   = 2000
+        -- rsh = "/usr/bin/ssh -p 22 -o StrictHostKeyChecking=no"
+        -- 如果要指定其它端口，请用上面的rsh
+        }
+    }
+
+-- 远程目录同步，rsync模式 + rsyncssh，效果与上面相同
+sync {
+    default.rsyncssh,
+    source    = "/tmp/src",
+    host      = "www.netkiller.cn",
+    targetdir = "/remote/dir",
+    excludeFrom = "/etc/rsyncd.d/rsync_exclude.lst",
+    -- maxDelays = 5,
+    delay = 0,
+    -- init = false,
+    rsync    = {
+        binary = "/usr/bin/rsync",
+        archive = true,
+        compress = true,
+        verbose   = true,
+        _extra = {"--bwlimit=2000"},
+        },
+    ssh      = {
+        port  =  1234
+        }
+    }		
+		]]>
+		</screen>
+	</section>
+</section>

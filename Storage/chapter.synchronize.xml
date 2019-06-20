@@ -1,6 +1,7 @@
 <chapter id="index"><?dbhtml dir="synchronize" ?>
 	<title>File Synchronize</title>
 	&chapter.sync.rsync.xml;
+	&section.sync.lsyncd.xml;
 	&chapter.sync.unison.xml;
 	&chapter.sync.csync.xml;
 	&chapter.sync.synctool.xml;

@@ -27,10 +27,11 @@
 <!ENTITY chapter.backup.xml		 	SYSTEM "chapter.backup.xml">
 <!ENTITY chapter.backup.attic.xml 	SYSTEM "chapter.backup.attic.xml">
 
-<!ENTITY chapter.synchronize.xml	 	SYSTEM "chapter.synchronize.xml">
-<!ENTITY chapter.sync.rsync.xml 	    SYSTEM "chapter.sync.rsync.xml">
+<!ENTITY chapter.synchronize.xml	SYSTEM "chapter.synchronize.xml">
+<!ENTITY chapter.sync.rsync.xml 	SYSTEM "chapter.sync.rsync.xml">
 <!ENTITY chapter.sync.unison.xml 	SYSTEM "chapter.sync.unison.xml">
-<!ENTITY chapter.sync.csync.xml 	    SYSTEM "chapter.sync.csync.xml">
+<!ENTITY chapter.sync.csync.xml 	SYSTEM "chapter.sync.csync.xml">
 <!ENTITY chapter.sync.synctool.xml	SYSTEM "chapter.sync.synctool.xml">
+<!ENTITY section.sync.lsyncd.xml	SYSTEM "section.sync.lsyncd.xml">
 
 <!ENTITY chapter.storage.inotify 	SYSTEM "chapter.storage.inotify.xml">
