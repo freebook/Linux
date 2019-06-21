@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="">
-	<title></title>
+<section id="lsyncd">
+	<title>lsyncd</title>
 	<section>
 		<title>安装</title>
 		<para>Ubuntu</para>
