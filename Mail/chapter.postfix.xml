@@ -1,121 +1,120 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.mail.postfix.xml 457 2012-08-24 11:38:17Z netkiller $ -->
-<!-- 
-<part id="mail.server.postfix">
-	<title>Postfix</title>
-</part>
- -->
+<!-- <part id="mail.server.postfix"> <title>Postfix</title> </part> -->
 <chapter id="index"><?dbhtml dir="postfix" ?>
 	<title>postfix - High-performance mail transport agent</title>
-	<para><ulink url="http://www.postfix.org/">Postfix 主页</ulink></para>
+	<para>
+		<ulink url="http://www.postfix.org/">Postfix 主页</ulink>
+	</para>
 	<section id="install">
 		<title>install</title>
 		<section id="ubuntu">
 			<title>Ubuntu</title>
 			<screen>
-$ sudo apt-get install postfix
+				$ sudo apt install postfix
 			</screen>
 			<para>configure</para>
 			<screen>
-$ sudo dpkg-reconfigure postfix-config
+				$ sudo dpkg-reconfigure postfix-config
 			</screen>
 		</section>
 		<section id="centos">
 			<title>CentOS</title>
 			<screen>
-# yum install -y postfix			
+				# yum install -y postfix
 			</screen>
 			<screen>
-myhostname = mail.example.com
-mydomain = example.com
-myorigin = $mydomain
-inet_interfaces = all
-mydestination = $myhostname, localhost.$mydomain, localhost, $mydomain
-#mynetworks = 192.168.0.0/24, 127.0.0.0/8
-#relay_domains =
-home_mailbox = Maildir/
+				myhostname = mail.example.com
+				mydomain = example.com
+				myorigin = $mydomain
+				inet_interfaces = all
+				mydestination = $myhostname, localhost.$mydomain, localhost, $mydomain
+				#mynetworks = 192.168.0.0/24, 127.0.0.0/8
+				#relay_domains =
+				home_mailbox = Maildir/
 			</screen>
 		</section>
 		<section>
 			<title>OSCM 通过配置管理脚本安装</title>
 			<screen>
-Postfix Install
+				Postfix Install
 
-# Centos Init
-curl -s https://raw.githubusercontent.com/oscm/shell/master/os/centos7.sh | bash
-curl -s https://raw.githubusercontent.com/oscm/shell/master/os/selinux.sh | bash
-curl -s https://raw.githubusercontent.com/oscm/shell/master/os/iptables/iptables.sh | bash
-curl -s https://raw.githubusercontent.com/oscm/shell/master/os/ntpd/ntp.sh | bash
-curl -s https://raw.githubusercontent.com/oscm/shell/master/os/ssh/sshd_config.sh | bash
+				# Centos Init
+				curl -s https://raw.githubusercontent.com/oscm/shell/master/os/centos7.sh | bash
+				curl -s https://raw.githubusercontent.com/oscm/shell/master/os/selinux.sh | bash
+				curl -s https://raw.githubusercontent.com/oscm/shell/master/os/iptables/iptables.sh | bash
+				curl -s https://raw.githubusercontent.com/oscm/shell/master/os/ntpd/ntp.sh | bash
+				curl -s https://raw.githubusercontent.com/oscm/shell/master/os/ssh/sshd_config.sh | bash
 
-# Install Postfix
-curl -s https://raw.githubusercontent.com/oscm/shell/master/mail/postfix/postfix.sh | bash
+				# Install Postfix
+				curl -s
+				https://raw.githubusercontent.com/oscm/shell/master/mail/postfix/postfix.sh | bash
 			</screen>
 		</section>
 	</section>
- 	<section id="conf">
- 		<title>配置 Postfix</title>
+	<section id="conf">
+		<title>配置 Postfix</title>
 		<section id="transport_maps">
 			<title>转发配置</title>
 			<para>修改配置文件</para>
 			<screen>
-vim /etc/postfix/main.cf
+				vim /etc/postfix/main.cf
 
-inet_interfaces = all
+				inet_interfaces = all
 
-mydestination = 
+				mydestination =
 
-mydomain = example.com
+				mydomain = example.com
 
-myhostname = mail.example.com
+				myhostname = mail.example.com
 
-mynetworks = 0.0.0.0/0
+				mynetworks = 0.0.0.0/0
 
-mynetworks_style = subnet
+				mynetworks_style = subnet
 
-smtpd_reject_unlisted_recipient = no
+				smtpd_reject_unlisted_recipient = no
 
-transport_maps = hash:/etc/postfix/transport
+				transport_maps = hash:/etc/postfix/transport
 			</screen>
 			<para>转发配置，设置域名和地址的关系：</para>
 			<screen>
-vim transport：
+				vim transport：
 
-your.com relay: [10.10.0.1]		
+				your.com relay: [10.10.0.1]
 			</screen>
 			<para>生成相应的db文件</para>
 			<screen>
-postmap transport		
+				postmap transport
 			</screen>
 			<para>例如当收件人为users@your.com时，postfix会将邮件转发到指定的服务器</para>
 		</section>
 		<section id="smtpd_recipient_restrictions">
 			<title>拒收垃圾邮件</title>
-			
+
 			<para>编辑/etc/postfix/main.cf文件,在文件中添加下面一行文字，你可以把它插入到文件末尾。</para>
 			<screen>
-sudo vim /etc/postfix/main.cf
+				sudo vim /etc/postfix/main.cf
 
-smtpd_recipient_restrictions = check_sender_access hash:/etc/postfix/check_sender_access
+				smtpd_recipient_restrictions = check_sender_access hash:/etc/postfix/check_sender_access
 			</screen>
 			<para>然后在/etc/postfix/目录下创建一个check_sender_access文件，内容如下</para>
 			<screen>
-example.com            REJECT
-your.com              OK
+				example.com REJECT
+				your.com OK
 
-.example.com            REJECT
-.your.com              OK
+				.example.com REJECT
+				.your.com OK
 
-user@example.com      REJECT
+				user@example.com REJECT
 			</screen>
 			<para>将域名的特定邮箱地址添加到黑名单,也可以将某个二级域名添加到黑名单或白名单，只要在域名前面加上一个小数点就行了。邮箱与域名后面输入OK表示将这个域名添加到白名单，域名后面添加REJECT表示将这个域名添加到黑名单。</para>
 			<para>使用postmap命令创建/etc/postfix/sender_checks.db数据库文件</para>
 			<screen>
-postmap /etc/postfix/check_sender_access
+				postmap /etc/postfix/check_sender_access
 			</screen>
-			<para>最后重新加载Postfix配置文件</para> 
+			<para>最后重新加载Postfix配置文件</para>
 			<screen>
-sudo /etc/init.d/postfix reload		
+				sudo /etc/init.d/postfix reload
 			</screen>
 		</section>
 		<section id="mailbox">
@@ -125,22 +124,22 @@ sudo /etc/init.d/postfix reload
 			<section>
 				<title>Mailbox 配置</title>
 				<screen>
-home_mailbox = Mailbox
+					home_mailbox = Mailbox
 				</screen>
 			</section>
 			<section>
 				<title>Maildir 配置</title>
 				<screen>
-home_mailbox = Maildir/
+					home_mailbox = Maildir/
 				</screen>
 			</section>
 			<section>
 				<title>传统Unix风格邮箱配置</title>
 				<screen>
-mail_spool_directory = /var/mail
+					mail_spool_directory = /var/mail
 				</screen>
 				<screen>
-mail_spool_directory = /var/spool/mail
+					mail_spool_directory = /var/spool/mail
 				</screen>
 			</section>
 		</section>
@@ -149,68 +148,79 @@ mail_spool_directory = /var/spool/mail
 			<para>邮件投递是指从你的Postfix服务器将邮件投到目的地邮件服务器，即 SMTP对SMTP，而非用户到的SMTP配置。</para>
 			<para>配置主要涉及邮件投递频率，如果过高，会被退回也可能被封锁一段时间。</para>
 			<screen>
-* initial_destination_concurrency：到目标主机的初始化并发连接数。
-* default_destination_concurrency_limit：初始化连接后对同一目标主机的最大并发连接数目。
-* local_destination_concurrency_limit：控制对同一本地收件人的最大同时投递的邮件数目。
+				* initial_destination_concurrency：到目标主机的初始化并发连接数。
+				* default_destination_concurrency_limit：初始化连接后对同一目标主机的最大并发连接数目。
+				* local_destination_concurrency_limit：控制对同一本地收件人的最大同时投递的邮件数目。
 			</screen>
 			<para>默认值可以通过 $ postconf | grep local_destination_concurrency_limit 命令查看</para>
 			<screen>
-initial_destination_concurrency = 5
-default_destination_concurrency_limit = 20
-local_destination_concurrency_limit = 2
+				initial_destination_concurrency = 5
+				default_destination_concurrency_limit = 20
+				local_destination_concurrency_limit = 2
 			</screen>
 		</section>
 		<section id="queue">
 			<title>队列配置</title>
 			<para>queue_run_delay 配置间隔多长时间重新发送一次deferred队列的邮件</para>
 			<screen>
-# postconf | grep queue_run_delay
-queue_run_delay = 300s
+				# postconf | grep queue_run_delay
+				queue_run_delay = 300s
 			</screen>
 			<para>deferred邮件队列中的生存时间</para>
 			<screen>
-# postconf | grep maximal_queue_lifetime
-maximal_queue_lifetime = 5d
+				# postconf | grep maximal_queue_lifetime
+				maximal_queue_lifetime = 5d
 			</screen>
 			<para>队列尺寸</para>
 			<screen>
-# postconf  | grep qmgr_
-qmgr_clog_warn_time = 300s
-qmgr_daemon_timeout = 1000s
-qmgr_fudge_factor = 100
-qmgr_ipc_timeout = 60s
-qmgr_message_active_limit = 20000
-qmgr_message_recipient_limit = 20000
-qmgr_message_recipient_minimum = 10
+				# postconf | grep qmgr_
+				qmgr_clog_warn_time = 300s
+				qmgr_daemon_timeout = 1000s
+				qmgr_fudge_factor = 100
+				qmgr_ipc_timeout = 60s
+				qmgr_message_active_limit = 20000
+				qmgr_message_recipient_limit = 20000
+				qmgr_message_recipient_minimum = 10
 			</screen>
 		</section>
 		<section id="client">
 			<title>客户端</title>
 			<para>smtpd_client_connection_count_limit 配置邮件客户端链接数，例如 Outlook 用户数量</para>
 			<screen>
-# postconf | grep smtpd_client_connection_count_limit 
-postscreen_client_connection_count_limit = $smtpd_client_connection_count_limit
-smtpd_client_connection_count_limit = 50
+				# postconf | grep smtpd_client_connection_count_limit
+				postscreen_client_connection_count_limit = $smtpd_client_connection_count_limit
+				smtpd_client_connection_count_limit = 50
 			</screen>
 			<para>控制接收邮件频率</para>
 			<screen>
-# postconf | grep smtpd_client_connection_rate_limit 
-smtpd_client_connection_rate_limit = 0
+				# postconf | grep smtpd_client_connection_rate_limit
+				smtpd_client_connection_rate_limit = 0
 			</screen>
 		</section>
+		<section>
+			<title>SMTP 发送权限相关配置</title>
+			<screen>
+			<![CDATA[
+neo@netkiller ~ % postconf -n|egrep 'smtpd_recipient_restrictions|smtpd_relay_restrictions'
+smtpd_recipient_restrictions = permit_mynetworks
+smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination permit_inet_interfaces			
+			]]>
+			</screen>
+		</section>
+		
 	</section>
-	<section>
+	<section id="aliases">
 		<title>aliases</title>
 		<para>查找别名文件地址</para>
 		<screen>
-# postconf alias_maps
-alias_maps = hash:/etc/aliases
+			# postconf alias_maps
+			alias_maps = hash:/etc/aliases
 		</screen>
 		<para>增加别名</para>
 		<screen>
-# vim /etc/aliases
+			# vim /etc/aliases
 
-neo:		netkiller@msn.com
+			neo: netkiller@msn.com
 		</screen>
 		<para>newaliases - rebuild the data base for the mail aliases file</para>
 		<screen>
@@ -222,112 +232,113 @@ neo:		netkiller@msn.com
 		<para>DKIM(DomainKeys Identified Mail) 是一种电子邮件的验证技术，使用密码学的基础提供了签名与验证的功能。DKIM 能增加你邮件的信任度。</para>
 		<para>安装 OpenDKIM 环境是CentOS 7</para>
 		<screen>
-yum install -y opendkim
+			yum install -y opendkim
 		</screen>
 		<para>查看配置文件</para>
 		<screen>
-[root@mail.netkiller.cn ~]# egrep -v "^#|^$"  /etc/opendkim.conf
-PidFile	/var/run/opendkim/opendkim.pid
-Mode	sv
-Syslog	yes
-SyslogSuccess	yes
-LogWhy	yes
-UserID	opendkim:opendkim
-Socket	inet:8891@localhost
-Umask	002
-SendReports	yes
-SoftwareHeader	yes
-Canonicalization	relaxed/relaxed
-Selector	default
-MinimumKeyBits	1024
-KeyFile	/etc/opendkim/keys/default.private
-KeyTable	/etc/opendkim/KeyTable
-SigningTable	refile:/etc/opendkim/SigningTable
-InternalHosts	refile:/etc/opendkim/TrustedHosts
-OversignHeaders	From
+			[root@mail.netkiller.cn ~]# egrep -v "^#|^$" /etc/opendkim.conf
+			PidFile /var/run/opendkim/opendkim.pid
+			Mode sv
+			Syslog yes
+			SyslogSuccess yes
+			LogWhy yes
+			UserID opendkim:opendkim
+			Socket inet:8891@localhost
+			Umask 002
+			SendReports yes
+			SoftwareHeader yes
+			Canonicalization relaxed/relaxed
+			Selector default
+			MinimumKeyBits 1024
+			KeyFile /etc/opendkim/keys/default.private
+			KeyTable /etc/opendkim/KeyTable
+			SigningTable refile:/etc/opendkim/SigningTable
+			InternalHosts refile:/etc/opendkim/TrustedHosts
+			OversignHeaders From
 		</screen>
 		<para>生成公钥和私钥example.com 替换成你的域名</para>
 		<screen>
-mkdir /etc/opendkim/keys/example.com
-opendkim-genkey -D /etc/opendkim/keys/example.com/ -d example.com -s default
-chown -R opendkim: /etc/opendkim/keys/example.com
-ln -s /etc/opendkim/keys/example.com/default.private /etc/opendkim/keys/default.private
+			mkdir /etc/opendkim/keys/example.com
+			opendkim-genkey -D /etc/opendkim/keys/example.com/ -d example.com -s default
+			chown -R opendkim: /etc/opendkim/keys/example.com
+			ln -s /etc/opendkim/keys/example.com/default.private /etc/opendkim/keys/default.private
 		</screen>
 		<para>将你域名example.com添加到/etc/opendkim/KeyTable格式如下：</para>
 		<screen>
-default._domainkey.example.com example.com:default:/etc/opendkim/keys/example.com/default.private
+			default._domainkey.example.com example.com:default:/etc/opendkim/keys/example.com/default.private
 		</screen>
 		<para>接下来修改 /etc/opendkim/SigningTable 并添加如下记录</para>
 		<screen>
-*@example.com default._domainkey.example.com
+			*@example.com default._domainkey.example.com
 		</screen>
 		<para>添加信任主机到/etc/opendkim/TrustedHosts，通常是 example.com / mail.example.com</para>
 		<screen>
-example.com
-mail.example.com	
+			example.com
+			mail.example.com
 		</screen>
 		<para>注意：TrustedHosts 是发送邮件机器的IP，不是邮件服务器的IP，例如你的WEB服务器连接到邮件服务器发送电子邮件，那么TrustedHosts 就是你的WEB服务器IP地址。</para>
 		<para>至此 opendkim 已经配置完毕。</para>
 		<para>现在需要配置域名TXT记录解析，开打文件 /etc/opendkim/keys/example.com/default.txt 参照下面配置</para>
 		<screen>
-cat /etc/opendkim/keys/example.com/default.txt 
-default._domainkey	IN	TXT	( "v=DKIM1; k=rsa; "
-	  "p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC5anjIUkTgJT8DSBL2tiydi6DZLIMnPnveFBcyKshwIuGeRzIN2PwQW5F/bvQWdatPLGuw0w5mKXtATJtarbWXy89BgjcJgAGrPSr8GdzsNH0RXRqTy1A21BQyGER3Mx2Fbr6J62reTG2i7jY0w3/cxzuFIGlSn/RP/KrlMze4zQIDAQAB" )  ; ----- DKIM key default for example.com		
+			cat /etc/opendkim/keys/example.com/default.txt
+			default._domainkey IN TXT ( "v=DKIM1; k=rsa; "
+			"p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC5anjIUkTgJT8DSBL2tiydi6DZLIMnPnveFBcyKshwIuGeRzIN2PwQW5F/bvQWdatPLGuw0w5mKXtATJtarbWXy89BgjcJgAGrPSr8GdzsNH0RXRqTy1A21BQyGER3Mx2Fbr6J62reTG2i7jY0w3/cxzuFIGlSn/RP/KrlMze4zQIDAQAB" ) ; ----- DKIM key default for example.com
 		</screen>
 		<para>接下来配置postfix把OpenDKIM整合到Postfix修改/etc/postfix/main.cf</para>
 		<screen>
-smtpd_milters           = inet:127.0.0.1:8891
-non_smtpd_milters       = $smtpd_milters
-milter_default_action   = accept
-milter_protocol         = 2
+			smtpd_milters = inet:127.0.0.1:8891
+			non_smtpd_milters = $smtpd_milters
+			milter_default_action = accept
+			milter_protocol = 2
 		</screen>
 		<para>启动 opendkim，重启 postfix</para>
 		<screen>
-systemctl enable opendkim.service
-systemctl start opendkim.service		
-systemctl restart postfix.service
+			systemctl enable opendkim.service
+			systemctl start opendkim.service
+			systemctl restart postfix.service
 		</screen>
-		<para>检查opendkim状态与端口</para>		
+		<para>检查opendkim状态与端口</para>
 		<screen>
-# systemctl status opendkim.service
-● opendkim.service - DomainKeys Identified Mail (DKIM) Milter
-   Loaded: loaded (/usr/lib/systemd/system/opendkim.service; enabled; vendor preset: disabled)
-   Active: active (running) since Thu 2016-08-25 02:07:42 EDT; 6s ago
-     Docs: man:opendkim(8)
-           man:opendkim.conf(5)
-           man:opendkim-genkey(8)
-           man:opendkim-genzone(8)
-           man:opendkim-testadsp(8)
-           man:opendkim-testkey
-           http://www.opendkim.org/docs.html
-  Process: 12577 ExecStart=/usr/sbin/opendkim $OPTIONS (code=exited, status=0/SUCCESS)
- Main PID: 12578 (opendkim)
-   CGroup: /system.slice/opendkim.service
-           └─12578 /usr/sbin/opendkim -x /etc/opendkim.conf -P /var/run/opendkim/opendkim.pid
+			# systemctl status opendkim.service
+			● opendkim.service - DomainKeys Identified Mail (DKIM) Milter
+			Loaded: loaded (/usr/lib/systemd/system/opendkim.service; enabled; vendor preset: disabled)
+			Active: active (running) since Thu 2016-08-25 02:07:42 EDT; 6s ago
+			Docs: man:opendkim(8)
+			man:opendkim.conf(5)
+			man:opendkim-genkey(8)
+			man:opendkim-genzone(8)
+			man:opendkim-testadsp(8)
+			man:opendkim-testkey
+			http://www.opendkim.org/docs.html
+			Process: 12577 ExecStart=/usr/sbin/opendkim $OPTIONS (code=exited, status=0/SUCCESS)
+			Main PID: 12578 (opendkim)
+			CGroup: /system.slice/opendkim.service
+			└─12578 /usr/sbin/opendkim -x /etc/opendkim.conf -P /var/run/opendkim/opendkim.pid
 
-Aug 25 02:07:42 localhost.localdomain systemd[1]: Starting DomainKeys Identified Mail (DKIM) Milter...
-Aug 25 02:07:42 localhost.localdomain systemd[1]: Started DomainKeys Identified Mail (DKIM) Milter.
-Aug 25 02:07:42 localhost.localdomain opendkim[12578]: OpenDKIM Filter v2.10.3 starting (args: -x /etc/opendkim.conf -P /var/run/opendkim/opendkim.pid)
+			Aug 25 02:07:42 localhost.localdomain systemd[1]: Starting DomainKeys Identified Mail (DKIM) Milter...
+			Aug 25 02:07:42 localhost.localdomain systemd[1]: Started DomainKeys Identified Mail (DKIM) Milter.
+			Aug 25 02:07:42 localhost.localdomain opendkim[12578]: OpenDKIM Filter v2.10.3 starting (args: -x /etc/opendkim.conf -P /var/run/opendkim/opendkim.pid)
 
 
-# ss -lnt | grep 8891
-LISTEN     0      128    127.0.0.1:8891                     *:*		
+			# ss -lnt |
+			grep 8891
+			LISTEN 0 128 127.0.0.1:8891 *:*
 		</screen>
 		<section>
 			<title>增加域名</title>
 			<para>创建证书</para>
 			<screen>
-mkdir /etc/opendkim/keys/mydomain.com
-opendkim-genkey -D /etc/opendkim/keys/mydomain.com/ -r -d mydomain.com
-chown -R opendkim: /etc/opendkim/keys/mydomain.com
+				mkdir /etc/opendkim/keys/mydomain.com
+				opendkim-genkey -D /etc/opendkim/keys/mydomain.com/ -r -d mydomain.com
+				chown -R opendkim: /etc/opendkim/keys/mydomain.com
 			</screen>
 			<para>配置 KeyTable</para>
 			<screen>
-default._domainkey.mydomain.com mydomain.com:default:/etc/opendkim/keys/mydomain.com/default.private
+				default._domainkey.mydomain.com mydomain.com:default:/etc/opendkim/keys/mydomain.com/default.private
 			</screen>
 			<para>配置 SigningTable</para>
 			<screen>
-*@mydomain.com default._domainkey.mydomain.com			
+				*@mydomain.com default._domainkey.mydomain.com
 			</screen>
 		</section>
 		<section>
@@ -441,11 +452,11 @@ Nov  2 16:32:21 smtp2.example.com postfix/smtp[7732]: 1DCD811F940: to=<160801427
 			<title>计算每分钟发送数量日志统计</title>
 			<para>计算每分钟发送数量</para>
 			<screen>
-# grep 'to='  maillog | grep '15:25:' | wc -l
-592
+				# grep 'to=' maillog | grep '15:25:' | wc -l
+				592
 			</screen>
 		</section>
-		
+
 		<section>
 			<title>虚假地址统计</title>
 			<para>计算每分钟发送数量</para>
@@ -455,41 +466,41 @@ Nov  2 16:32:21 smtp2.example.com postfix/smtp[7732]: 1DCD811F940: to=<160801427
 			]]>
 			</screen>
 		</section>
-		
+
 	</section>
 	<section id="cmd">
 		<title>Post 命令</title>
-	
+
 		<section id="postconf">
- 			<title>postconf - Postfix configuration utility</title>
- 			<para>Postfix 提供了postconf配置工具,配置Postfix有两种方法，第一种方法是使用文本编辑工具修改 main.cf和master.cf两个配置文件，第二种方法就是使用postconf命令</para>
- 			<para>修改配置项</para>
- 			<screen>
-postconf -e "myhostname=mail.netkiller.cn"
+			<title>postconf - Postfix configuration utility</title>
+			<para>Postfix 提供了postconf配置工具,配置Postfix有两种方法，第一种方法是使用文本编辑工具修改 main.cf和master.cf两个配置文件，第二种方法就是使用postconf命令</para>
+			<para>修改配置项</para>
+			<screen>
+				postconf -e "myhostname=mail.netkiller.cn"
 			</screen>
 		</section>
 		<section id="postsuper">
 			<title>postsuper</title>
 			<para>删除队列中待发邮件</para>
 			<screen>
-# mailq
--Queue ID- --Size-- ----Arrival Time---- -Sender/Recipient-------
-CB71F8022974     3038 Wed Oct 19 01:57:03  MAILER-DAEMON
-(connect to example.com[2606:2800:220:1:248:1893:25c8:1946]:25: Network is unreachable)
-                                         root@example.com
+				# mailq
+				-Queue ID- --Size-- ----Arrival Time---- -Sender/Recipient-------
+				CB71F8022974 3038 Wed Oct 19 01:57:03 MAILER-DAEMON
+				(connect to example.com[2606:2800:220:1:248:1893:25c8:1946]:25: Network is unreachable)
+				root@example.com
 
--- 3 Kbytes in 1 Request.
+				-- 3 Kbytes in 1 Request.
 
-# postsuper -d CB71F8022974 deferred
-postsuper: CB71F8022974: removed
-postsuper: Deleted: 1 message
+				# postsuper -d CB71F8022974 deferred
+				postsuper: CB71F8022974: removed
+				postsuper: Deleted: 1 message
 
-# mailq
-Mail queue is empty
+				# mailq
+				Mail queue is empty
 			</screen>
 			<para>删除队列中所有待发邮件</para>
 			<screen>
-postsuper -d ALL deferred
+				postsuper -d ALL deferred
 			</screen>
 		</section>
 		<section>
@@ -498,17 +509,17 @@ postsuper -d ALL deferred
 				<title>列出队列</title>
 				<para>列出队列,等效 mailq</para>
 				<screen>
-# postqueue -p
+					# postqueue -p
 				</screen>
 			</section>
 			<section>
 				<title>刷新队列</title>
-				<para>-f     Flush the queue: attempt to deliver all queued mail.</para>
+				<para>-f Flush the queue: attempt to deliver all queued mail.</para>
 				<screen>
-postqueue -f
+					postqueue -f
 				</screen>
 			</section>
-			
+
 		</section>
 		<section id="postmulti">
 			<title>postmulti - Postfix multi-instance manager</title>
@@ -516,35 +527,35 @@ postqueue -f
 				<title>绑定IP地址</title>
 				<para>将所有IP地址绑定到服务器上</para>
 				<screen>
-cd /etc/sysconfig/network-scripts
+					cd /etc/sysconfig/network-scripts
 
-vim ifcfg-enp2s0
+					vim ifcfg-enp2s0
 				</screen>
 				<screen>
-# cat ifcfg-enp2s0  
-TYPE="Ethernet"
-BOOTPROTO="none"
-DEFROUTE="yes"
-IPV4_FAILURE_FATAL="no"
-IPV6INIT="yes"
-IPV6_AUTOCONF="yes"
-IPV6_DEFROUTE="yes"
-IPV6_FAILURE_FATAL="no"
-NAME="enp2s0"
-UUID="c27c6ef8-ab82-4019-af0a-9f3a70b2d230"
-DEVICE="enp2s0"
-ONBOOT="yes"
-DNS1="8.8.8.8"
-IPADDR="192.168.0.1"
-...
-...
-IPADDR247="192.168.0.250"
-PREFIX="26"
-PERFIX0="24"
-GATEWAY="192.168.0.254"
-IPV6_PEERDNS="yes"
-IPV6_PEERROUTES="yes"
-IPV6_PRIVACY="no"
+					# cat ifcfg-enp2s0
+					TYPE="Ethernet"
+					BOOTPROTO="none"
+					DEFROUTE="yes"
+					IPV4_FAILURE_FATAL="no"
+					IPV6INIT="yes"
+					IPV6_AUTOCONF="yes"
+					IPV6_DEFROUTE="yes"
+					IPV6_FAILURE_FATAL="no"
+					NAME="enp2s0"
+					UUID="c27c6ef8-ab82-4019-af0a-9f3a70b2d230"
+					DEVICE="enp2s0"
+					ONBOOT="yes"
+					DNS1="8.8.8.8"
+					IPADDR="192.168.0.1"
+					...
+					...
+					IPADDR247="192.168.0.250"
+					PREFIX="26"
+					PERFIX0="24"
+					GATEWAY="192.168.0.254"
+					IPV6_PEERDNS="yes"
+					IPV6_PEERROUTES="yes"
+					IPV6_PRIVACY="no"
 				</screen>
 				<para>IP范围 192.168.0.1-192.168.0.250，接口是enp2s0，enp2s0:1 ~ enp2s0:250 </para>
 			</section>
@@ -552,85 +563,87 @@ IPV6_PRIVACY="no"
 				<title>postfix 多实例配置</title>
 				<para>初始化postfix 多实例</para>
 				<screen>
-postmulti -e init			
+					postmulti -e init
 				</screen>
 				<para>创建postfix实例</para>
 				<screen>
-postmulti -I postfix-1 -G mta -e create
-...
-...
-postmulti -I postfix-250 -G mta -e create			
+					postmulti -I postfix-1 -G mta -e create
+					...
+					...
+					postmulti -I postfix-250 -G mta -e create
 				</screen>
 				<para>启用postfix 实例</para>
 				<screen>
-postmulti -i postfix-1 -e enable
-...
-...
-postmulti -i postfix-250 -e enable
+					postmulti -i postfix-1 -e enable
+					...
+					...
+					postmulti -i postfix-250 -e enable
 				</screen>
 				<para>配置postfix实例</para>
 				<screen>
-postmulti -i postfix-1 -x postconf -e "master_service_disable =" "authorized_submit_users = root" "minimal_backoff_time= 30d" "maximal_backoff_time = 300d" "mynetworks = 127.0.0.0/8,192.168.0.0/24" "inet_interfaces = \$myhostname" "mailbox_size_limit = 0" "message_size_limit = 0" "myhostname =  mail.example.com" "myorigin =  mail.example.com" "mydomain =  example.com" "smtp_bind_address =  192.168.0.1"
-...
-...
-postmulti -i postfix-250 -x postconf -e "master_service_disable =" "authorized_submit_users = root" "minimal_backoff_time= 30d" "maximal_backoff_time = 300d" "mynetworks = 127.0.0.0/8,192.168.0.0/24" "inet_interfaces = \$myhostname" "mailbox_size_limit = 0" "message_size_limit = 0" "myhostname =  mail.example.com" "myorigin =  mail.example.com" "mydomain =  example.com" "smtp_bind_address =  192.168.0.250"
+					postmulti -i postfix-1 -x postconf -e "master_service_disable =" "authorized_submit_users = root" "minimal_backoff_time= 30d" "maximal_backoff_time = 300d" "mynetworks = 127.0.0.0/8,192.168.0.0/24" "inet_interfaces = \$myhostname" "mailbox_size_limit = 0" "message_size_limit = 0" "myhostname = mail.example.com" "myorigin = mail.example.com" "mydomain = example.com" "smtp_bind_address = 192.168.0.1"
+					...
+					...
+					postmulti -i postfix-250 -x postconf -e "master_service_disable =" "authorized_submit_users =
+					root" "minimal_backoff_time= 30d" "maximal_backoff_time = 300d" "mynetworks = 127.0.0.0/8,192.168.0.0/24" "inet_interfaces = \$myhostname" "mailbox_size_limit = 0" "message_size_limit = 0" "myhostname = mail.example.com" "myorigin = mail.example.com" "mydomain = example.com" "smtp_bind_address = 192.168.0.250"
 				</screen>
 			</section>
 			<section>
 				<title>配置 iptables 让SMTPD发送邮件时依次轮询外发IP地址，这样就不会被封锁。</title>
 				<screen>
-iptables -t nat -I POSTROUTING -m state --state NEW -p tcp --dport 25 -o eth0 -m statistic --mode nth --every 250 -j SNAT --to-source 192.168.0.1
-...
-...
-iptables -t nat -I POSTROUTING -m state --state NEW -p tcp --dport 25 -o eth0 -m statistic --mode nth --every 250 -j SNAT --to-source 192.168.0.250
+					iptables -t nat -I POSTROUTING -m state --state NEW -p tcp --dport 25 -o eth0 -m statistic --mode nth --every 250 -j SNAT --to-source 192.168.0.1
+					...
+					...
+					iptables -t nat -I POSTROUTING -m state --state NEW -p tcp --dport 25 -o eth0 -m statistic --mode nth --every 250 -j SNAT --to-source 192.168.0.250
 				</screen>
 				<para>注意，不要使用下面的方式配置iptables，经过测试这种192.168.0.1-192.168.0.250方式，不会轮换IP地址。</para>
 				<screen>
-iptables -t nat -I POSTROUTING -o enp2s0f0 -p tcp -m state --state NEW -m tcp -m statistic --mode nth --every 5 --packet 0 -j SNAT --to-source 192.168.0.1-192.168.0.250
+					iptables -t nat -I POSTROUTING -o enp2s0f0 -p tcp -m state --state NEW -m tcp -m statistic --mode nth --every 5 --packet 0 -j SNAT --to-source 192.168.0.1-192.168.0.250
 				</screen>
 				<para>测试 iptables使用 curl每次请求你将看到一个全新的IP地址。</para>
 				<screen>
-[root@www.netkiller.cn ~]# curl http://ip.cn
-当前 IP：173.254.223.57 来自：美国 QuadraNet
-[root@www.netkiller.cn ~]# curl http://ip.cn
-当前 IP：173.254.223.54 来自：美国 QuadraNet
-[root@www.netkiller.cn ~]# curl http://ip.cn
-当前 IP：107.167.40.137 来自：美国 
-[root@www.netkiller.cn ~]# curl http://ip.cn
-当前 IP：173.254.223.55 来自：美国 QuadraNet
-[root@www.netkiller.cn ~]# curl http://ip.cn
-当前 IP：107.167.40.134 来自：美国 
-[root@www.netkiller.cn ~]# curl http://ip.cn
-当前 IP：173.254.223.56 来自：美国 QuadraNet
-[root@www.netkiller.cn ~]# curl http://ip.cn
-当前 IP：173.254.223.54 来自：美国 QuadraNet
-[root@www.netkiller.cn ~]# curl http://ip.cn
-当前 IP：107.167.40.132 来自：美国 
-[root@www.netkiller.cn ~]# curl http://ip.cn
-当前 IP：173.254.223.53 来自：美国 QuadraNet
+					[root@www.netkiller.cn ~]# curl http://ip.cn
+					当前 IP：173.254.223.57 来自：美国 QuadraNet
+					[root@www.netkiller.cn ~]# curl http://ip.cn
+					当前 IP：173.254.223.54 来自：美国 QuadraNet
+					[root@www.netkiller.cn ~]# curl http://ip.cn
+					当前 IP：107.167.40.137 来自：美国
+					[root@www.netkiller.cn ~]# curl http://ip.cn
+					当前 IP：173.254.223.55 来自：美国 QuadraNet
+					[root@www.netkiller.cn ~]# curl http://ip.cn
+					当前 IP：107.167.40.134 来自：美国
+					[root@www.netkiller.cn ~]# curl http://ip.cn
+					当前 IP：173.254.223.56 来自：美国 QuadraNet
+					[root@www.netkiller.cn ~]# curl
+					http://ip.cn
+					当前 IP：173.254.223.54 来自：美国 QuadraNet
+					[root@www.netkiller.cn ~]# curl http://ip.cn
+					当前 IP：107.167.40.132 来自：美国
+					[root@www.netkiller.cn ~]# curl http://ip.cn
+					当前 IP：173.254.223.53 来自：美国 QuadraNet
 				</screen>
 				<para>使用netkiller-firewall 替代原来的iptables，传统的iptables规则不容易书写，也不容易阅读。</para>
 				<screen>
-# unzip firewall-master.zip
-# yum install -y python34
-# bash install.sh
-# /etc/init.d/firewall 
-Usage: /etc/init.d/firewall {start|stop|status|restart}
+					# unzip firewall-master.zip
+					# yum install -y python34
+					# bash install.sh
+					# /etc/init.d/firewall
+					Usage: /etc/init.d/firewall {start|stop|status|restart}
 				</screen>
 				<screen>
-				
-RULE=www
-改为
-RULE=smtp
 
-# cat /etc/init.d/firewall | grep RULE
-RULE=smtp
+					RULE=www
+					改为
+					RULE=smtp
+
+					# cat /etc/init.d/firewall | grep RULE
+					RULE=smtp
 
 
-# cat /etc/sysconfig/firewall
-LIBEXEC=/srv/firewall/libexec
-RULE=smtp
-				
+					# cat /etc/sysconfig/firewall
+					LIBEXEC=/srv/firewall/libexec
+					RULE=smtp
+
 				</screen>
 				<para>编辑ACL规则</para>
 				<screen>
@@ -715,8 +728,8 @@ if __name__ == '__main__':
 				</screen>
 				<para>启动firewall</para>
 				<screen>
-systemctl enable firewall
-systemctl start firewall
+					systemctl enable firewall
+					systemctl start firewall
 				</screen>
 				<para>CentOS 6.x 之前的版本请使用 /etc/init.d/firewall 脚本</para>
 			</section>
@@ -769,16 +782,47 @@ unknown_local_recipient_reject_code = 550
 			<title>EDM 服务器</title>
 			<para>EDM服务器建议配置</para>
 			<screen>
-postconf -e "default_destination_concurrency_limit=5"
-postconf -e "queue_run_delay = 12h"
-postconf -e "maximal_queue_lifetime = 1d"
+				postconf -e "default_destination_concurrency_limit=5"
+				postconf -e "queue_run_delay = 12h"
+				postconf -e "maximal_queue_lifetime = 1d"
 			</screen>
 			<para>首先投递目的主机不能并发太多，发送失败的邮件一天只需要重发一次就可以，隔天是吧队列直接抛弃无需保留。</para>
+		</section>
+		<section>
+			<title>SMTP 邮件发送服务器</title>
+			<screen>
+			<![CDATA[
+neo@netkiller ~ % postconf -n
+alias_database = hash:/etc/aliases
+alias_maps = hash:/etc/aliases
+append_dot_mydomain = no
+biff = no
+compatibility_level = 2
+inet_interfaces = all
+inet_protocols = all
+mailbox_size_limit = 0
+message_size_limit = 1024000000
+mydestination = $myhostname, netkiller.cn, netkiller.netkiller.com, localhost.netkiller.com, localhost
+myhostname = netkiller.netkiller.com
+mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
+myorigin = /etc/mailname
+readme_directory = no
+recipient_delimiter = +
+relayhost =
+smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+smtpd_banner = $myhostname ESMTP $mail_name (Ubuntu)
+smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
+smtpd_tls_cert_file = /etc/ssl/certs/ssl-cert-snakeoil.pem
+smtpd_tls_key_file = /etc/ssl/private/ssl-cert-snakeoil.key
+smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
+smtpd_use_tls = yes			
+			]]>
+			</screen>
 		</section>
 	</section>
 	<section id="faq">
 		<title>FAQ</title>
-		<section>
+		<section id="501">
 			<title>SMTP ERROR: RCPT TO command failed: 501 5.1.3 Bad recipient address syntax</title>
 			<para>客户端反馈</para>
 			<screen>
@@ -792,39 +836,39 @@ SMTP ERROR: RCPT TO command failed: 501 5.1.3 Bad recipient address syntax
 			<screen>
 			<![CDATA[
 Sep 23 16:12:00 smtp1 postfix/smtpd[982]: NOQUEUE: reject: RCPT from unknown[202.130.101.34]: 554 5.7.1 <netkiller@msn.com>: Relay access denied; from=<root@mail.example.com> to=<netkiller@msn.com> proto=ESMTP helo=<localhost.localdomain>
-			]]>			
+			]]>
 			</screen>
 			<para>问题原因是 mynetworks 配置项没有放行客户端</para>
 			<screen>
-[root@netkiller.github.io ~]# postconf | grep permit_mynetworks
-smtpd_recipient_restrictions = permit_mynetworks, reject_unauth_destination
+				[root@netkiller.github.io ~]# postconf | grep permit_mynetworks
+				smtpd_recipient_restrictions = permit_mynetworks, reject_unauth_destination
 			</screen>
 			<para>设置mynetworks配置项，允许IP使用SMTP发送邮件</para>
 			<screen>
-[root@netkiller.github.io ~]# postconf -n | grep mynetworks
-mynetworks = 202.130.101.34
+				[root@netkiller.github.io ~]# postconf -n | grep mynetworks
+				mynetworks = 202.130.101.34
 			</screen>
 		</section>
-		<section>
+		<section id="faq.network">
 			<title>connect to gmail-smtp-in.l.google.com[2607:f8b0:400e:c00::1a]:25: Network is unreachable</title>
 			<para>问题分析，上面2607:f8b0:400e:c00::1a是IPv6地址，在google默认是ipv6，但大陆机房几乎不支持ipv6.</para>
 			<screen>
-Aug 26 03:19:52 localhost postfix/smtp[6468]: connect to gmail-smtp-in.l.google.com[2607:f8b0:400e:c00::1a]:25: Network is unreachable
-Aug 26 03:19:53 localhost postfix/smtpd[6151]: connect from unknown[175.43.242.13]
+				Aug 26 03:19:52 localhost postfix/smtp[6468]: connect to gmail-smtp-in.l.google.com[2607:f8b0:400e:c00::1a]:25: Network is unreachable
+				Aug 26 03:19:53 localhost postfix/smtpd[6151]: connect from unknown[175.43.242.13]
 			</screen>
 			<para>解决方法禁用ipv6</para>
 			<screen>
-postconf -e "inet_protocols = ipv4"
-systemctl reload postfix
+				postconf -e "inet_protocols = ipv4"
+				systemctl reload postfix
 			</screen>
 		</section>
 		<section>
 			<title>opendkim[5762]: 3012A802C1DD: [49.213.11.18] [49.213.11.18] not internal</title>
 			<para>发送电子邮件并进行DKIM签名的前提是你邮件客户端的IP地址在 TrustedHosts 列表中</para>
 			<screen>
-Aug 26 03:52:36 localhost opendkim[5762]: 3012A802C1DD: [49.213.11.18] [49.213.11.18] not internal
-Aug 26 03:52:36 localhost opendkim[5762]: 3012A802C1DD: not authenticated
-Aug 26 03:52:36 localhost opendkim[5762]: 3012A802C1DD: no signature data			
+				Aug 26 03:52:36 localhost opendkim[5762]: 3012A802C1DD: [49.213.11.18] [49.213.11.18] not internal
+				Aug 26 03:52:36 localhost opendkim[5762]: 3012A802C1DD: not authenticated
+				Aug 26 03:52:36 localhost opendkim[5762]: 3012A802C1DD: no signature data
 			</screen>
 			<para>解决方法</para>
 			<para>添加 not internal IP地址到 /etc/opendkim/TrustedHosts 文件中，然后reload opendkim 进程。</para>
@@ -844,60 +888,62 @@ Aug 26 02:46:53 localhost postfix/smtpd[5441]: disconnect from unknown[202.130.1
 Aug 26 02:46:54 localhost postfix/smtp[5446]: connect to gmail-smtp-in.l.google.com[2607:f8b0:400e:c00::1b]:25: Network is unreachable
 Aug 26 02:46:54 localhost postfix/smtp[5446]: 4CC5C802C382: to=<netkiller@msn.com>, relay=gmail-smtp-in.l.google.com[74.125.25.27]:25, delay=1.3, delays=0.57/0.01/0.41/0.27, dsn=2.0.0, status=sent (250 2.0.0 OK 1472194014 m185si19680934pfc.265 - gsmtp)
 Aug 26 02:46:54 localhost postfix/qmgr[4605]: 4CC5C802C382: removed
-			]]>			
+			]]>
 			</screen>
 			<para>解决方案</para>
 			<screen>
-[root@localhost ~]# egrep -v "^#|^$"  /etc/opendkim.conf
-PidFile	/var/run/opendkim/opendkim.pid
-Mode	sv
-Syslog	yes
-SyslogSuccess	yes
-LogWhy	yes
-UserID	opendkim:opendkim
-Socket	inet:8891@localhost
-Umask	002
-SendReports	yes
-SoftwareHeader	yes
-Canonicalization	relaxed/relaxed
-Selector	default
-MinimumKeyBits	1024
-KeyFile	/etc/opendkim/keys/default.private
-KeyTable	/etc/opendkim/KeyTable
-SigningTable	refile:/etc/opendkim/SigningTable
-InternalHosts	refile:/etc/opendkim/TrustedHosts
-OversignHeaders	From
+				[root@localhost ~]# egrep -v "^#|^$" /etc/opendkim.conf
+				PidFile /var/run/opendkim/opendkim.pid
+				Mode sv
+				Syslog yes
+				SyslogSuccess yes
+				LogWhy yes
+				UserID opendkim:opendkim
+				Socket inet:8891@localhost
+				Umask 002
+				SendReports yes
+				SoftwareHeader yes
+				Canonicalization relaxed/relaxed
+				Selector default
+				MinimumKeyBits 1024
+				KeyFile /etc/opendkim/keys/default.private
+				KeyTable /etc/opendkim/KeyTable
+				SigningTable refile:/etc/opendkim/SigningTable
+				InternalHosts refile:/etc/opendkim/TrustedHosts
+				OversignHeaders From
 			</screen>
 			<para>注意下面几项配置</para>
 			<screen>
-Mode	sv (这里默认是v便是校验邮件但不签名，s表示签名邮件)
-KeyFile	/etc/opendkim/keys/default.private
-KeyTable	/etc/opendkim/KeyTable
-SigningTable	refile:/etc/opendkim/SigningTable
-InternalHosts	refile:/etc/opendkim/TrustedHosts			
+				Mode sv (这里默认是v便是校验邮件但不签名，s表示签名邮件)
+				KeyFile /etc/opendkim/keys/default.private
+				KeyTable /etc/opendkim/KeyTable
+				SigningTable refile:/etc/opendkim/SigningTable
+				InternalHosts refile:/etc/opendkim/TrustedHosts
 			</screen>
 		</section>
 		<section>
 			<title>/etc/opendkim/keys/default.private: open(): No such file or directory</title>
 			<para>如果无法启动请查看启动日志</para>
 			<screen>
-# grep opendkim  /var/log/messages
-Aug 25 01:24:57 localhost yum[10052]: Installed: libopendkim-2.10.3-7.el7.x86_64
-Aug 25 01:25:00 localhost yum[10052]: Installed: opendkim-2.10.3-7.el7.x86_64
-Aug 25 01:55:08 localhost opendkim: /etc/opendkim/keys/default.private: open(): No such file or directory
-Aug 25 01:55:08 localhost opendkim: opendkim: /etc/opendkim.conf: /etc/opendkim/keys/default.private: open(): No such file or directory
-Aug 25 01:55:08 localhost systemd: opendkim.service: control process exited, code=exited status=78
-Aug 25 01:55:08 localhost systemd: Unit opendkim.service entered failed state.
-Aug 25 01:55:08 localhost systemd: opendkim.service failed.
-Aug 25 01:56:10 localhost opendkim: /etc/opendkim/keys/default.private: open(): No such file or directory
-Aug 25 01:56:10 localhost opendkim: opendkim: /etc/opendkim.conf: /etc/opendkim/keys/default.private: open(): No such file or directory
-Aug 25 01:56:10 localhost systemd: opendkim.service: control process exited, code=exited status=78
-Aug 25 01:56:10 localhost systemd: Unit opendkim.service entered failed state.
-Aug 25 01:56:10 localhost systemd: opendkim.service failed.		
+				# grep opendkim /var/log/messages
+				Aug 25 01:24:57 localhost yum[10052]: Installed: libopendkim-2.10.3-7.el7.x86_64
+				Aug 25 01:25:00 localhost yum[10052]: Installed: opendkim-2.10.3-7.el7.x86_64
+				Aug 25 01:55:08 localhost opendkim: /etc/opendkim/keys/default.private: open(): No such file or directory
+				Aug 25 01:55:08 localhost opendkim: opendkim: /etc/opendkim.conf: /etc/opendkim/keys/default.private: open(): No such file or directory
+				Aug 25 01:55:08 localhost systemd: opendkim.service: control process
+				exited, code=exited status=78
+				Aug 25 01:55:08 localhost systemd: Unit opendkim.service entered failed state.
+				Aug 25 01:55:08 localhost systemd: opendkim.service failed.
+				Aug 25 01:56:10 localhost opendkim: /etc/opendkim/keys/default.private: open(): No such file or directory
+				Aug 25 01:56:10 localhost opendkim: opendkim: /etc/opendkim.conf: /etc/opendkim/keys/default.private: open(): No such file or directory
+				Aug 25 01:56:10 localhost systemd: opendkim.service: control process exited, code=exited status=78
+				Aug
+				25 01:56:10 localhost systemd: Unit opendkim.service entered failed state.
+				Aug 25 01:56:10 localhost systemd: opendkim.service failed.
 			</screen>
 			<para>修改配置文件，指向你的密钥文件</para>
 			<screen>
-KeyFile	/etc/opendkim/keys/default.private			
+				KeyFile /etc/opendkim/keys/default.private
 			</screen>
 		</section>
 		<section>
@@ -910,6 +956,89 @@ inet_protocols = all
 inet_protocols = ipv4
 			]]>
 			</screen>
+		</section>
+		<section id="552">
+			<title>NOQUEUE: reject: MAIL from unknown[192.168.3.31]: 552 5.3.4 Message size exceeds fixed limit;</title>
+			<screen>
+			<![CDATA[
+NOQUEUE: reject: MAIL from unknown[192.168.3.31]: 552 5.3.4 Message size exceeds fixed limit;			
+			]]>
+			</screen>
+			<para>查看 message_size_limit 配置，默认是 10MB</para>
+			<screen>
+			<![CDATA[
+neo@netkiller ~ % postconf -d | grep message_size_limit
+message_size_limit = 10240000		
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+neo@netkiller ~ % sudo postconf -e 'message_size_limit = 1024000000'
+neo@netkiller ~ % sudo systemctl reload postfix
+			]]>
+			</screen>
+		</section>
+		<section id="452">
+			<title>452 4.3.1 Insufficient system storage</title>
+			<para>message_size_limit 设置不合理</para>
+			<screen>
+			<![CDATA[
+neo@netkiller ~ % sudo postconf -e 'message_size_limit = 10240000000'	
+			]]>
+			</screen>
+		</section>
+		<section id="454">
+			<title>454 Relay access denied</title>
+			<screen>
+			<![CDATA[
+Jul 10 08:22:43 netkiller postfix/smtpd[2820]: NOQUEUE: reject: RCPT from unknown[192.168.3.31]: 454 4.7.1 <netkiller@kindle.cn>: Relay access denied; from=<neo@netkiller.cn> to=<netkiller@kindle.cn> proto=ESMTP helo=<1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.ip6.arpa>			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+neo@netkiller ~ % sudo postconf -e 'smtpd_recipient_restrictions=permit_mynetworks' 
+			]]>
+			</screen>
+			<para>配置 permit_mynetworks 后，需要将网卡的IP地址配置到 mynetworks，这里是 192.168.3.0/24</para>
+			<screen>
+			<![CDATA[
+mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128 192.168.3.0/24
+			]]>
+			</screen>
+			<example>
+				<title>SMTP 服务器配置实例</title>
+				<para>配置例子</para>
+				<screen>
+			<![CDATA[
+neo@netkiller ~ % postconf -n
+alias_database = hash:/etc/aliases
+alias_maps = hash:/etc/aliases
+append_dot_mydomain = no
+biff = no
+compatibility_level = 2
+inet_interfaces = all
+inet_protocols = all
+mailbox_size_limit = 0
+message_size_limit = 10240000000
+mydestination = $myhostname, netkiller.cn, mail.netkiller.cn, localhost
+myhostname = mail.netkiller.cn
+mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128 192.168.3.0/24
+myorigin = /etc/mailname
+readme_directory = no
+recipient_delimiter = +
+relayhost =
+smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+smtpd_banner = $myhostname ESMTP $mail_name (Ubuntu)
+smtpd_recipient_restrictions = permit_mynetworks
+smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination permit_inet_interfaces
+smtpd_tls_cert_file = /etc/ssl/certs/ssl-cert-snakeoil.pem
+smtpd_tls_key_file = /etc/ssl/private/ssl-cert-snakeoil.key
+smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
+smtpd_use_tls = yes			
+			]]>
+				</screen>
+			</example>
 		</section>
 	</section>
 </chapter>
