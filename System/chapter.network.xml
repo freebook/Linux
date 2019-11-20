@@ -930,5 +930,32 @@ sshd:25161
 			</screen>
 		</section>
 	</section>
+	<section>
+		<title>Ubuntu netplan (Ubuntu 18.04 之后才用 netplan 管理网络)</title>
+		<para>https://netplan.io/examples 参考例子</para>
+		<para>配置 DHCP</para>
+		<example>
+			<title>netplan dhcp 例子</title>
+			<screen>
+			<![CDATA[
+neo@netkiller ~ % cat /etc/netplan/interfaces.yaml 
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    enp2s1:
+      dhcp4: true			
+			]]>
+			</screen>
+			<para>启用生效</para>
+			<screen>
+			<![CDATA[
+neo@netkiller ~ % sudo netplan apply			
+			]]>
+			</screen>
+			
+		</example>
+		
+	</section>
 	&chapter.network.router.xml;
 </chapter>
