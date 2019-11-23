@@ -288,4 +288,12 @@ Provide    : /bin/bash
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>删除软件表</title>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# dnf remove nginx
+		]]>
+		</screen>
+	</section>
 </section>
