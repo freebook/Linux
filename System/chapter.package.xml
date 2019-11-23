@@ -5,4 +5,13 @@
 	&section.package.apt.xml;
 	&section.package.snap.xml;
 	&section.package.yum.xml;
+	<section>
+		<title>清理安装包</title>
+		<screen>
+		<![CDATA[
+package-cleanup --leaves
+package-cleanup --orphans		
+		]]>
+		</screen>
+	</section>
 </chapter>

@@ -9,6 +9,7 @@
 	<!ENTITY section.package.apt.xml 		SYSTEM "section.package.apt.xml">
 	<!ENTITY section.package.yum.xml 		SYSTEM "section.package.yum.xml">
 	<!ENTITY section.package.snap.xml 		SYSTEM "section.package.snap.xml">
+	<!ENTITY section.package.dnf.xml 		SYSTEM "section.package.dnf.xml">
 	
 	<!ENTITY chapter.device.xml 			SYSTEM "chapter.device.xml">
 	<!ENTITY chapter.device.cpu.xml			SYSTEM "chapter.device.cpu.xml">
