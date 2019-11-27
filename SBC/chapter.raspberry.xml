@@ -263,5 +263,13 @@ pi@raspberrypi:~ $ sudo rpi-update
 			</section>
 		</section>
 	</section>
-
+	<section id="raspberry.android">
+		<title>Android 9 Pie</title>
+		<para>首先下载固件 https://www.brobwind.com/wp-content/uploads/2019/03/2019_03_02_rpi3_13fa200.bin.gz</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-Neo ~/Downloads % sudo dd if=2019_03_02_rpi3_13fa200.bin of=/dev/disk2 bs=4m
+		]]>
+		</screen>
+	</section>
 </chapter>
