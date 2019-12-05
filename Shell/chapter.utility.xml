@@ -28,4 +28,39 @@ $ cat *.csv | parallel --block 10M --pipe grep '131136688'
 			</screen>	
 		</example>
 	</section>
+	<section id="multitail">
+		<title>multitail</title>
+		<screen>
+		<![CDATA[
+dnf -y install epel-release
+dnf -y update
+
+dnf install -y gcc gcc-c++ make automake autoconf patch
+dnf install -y git
+dnf install -y python36
+dnf install -y ncurses-devel
+
+
+cd /usr/local/src/
+git clone git://github.com/martine/ninja.git
+cd ninja/
+python3 bootstrap.py
+cp ninja /usr/local/bin/
+
+cd /usr/local/src/
+git clone https://github.com/flok99/multitail.git
+cd multitail/
+make install
+		]]>
+		</screen>
+		<para>安装出错</para>
+		<screen>
+		<![CDATA[
+[root@localhost multitail]# make install
+cmake --build ../.build-multitail-Debug --target install
+ninja: error: loading 'build.ninja': No such file or directory
+make: *** [GNUmakefile:65: install] Error 1		
+		]]>
+		</screen>
+	</section>
 </chapter>

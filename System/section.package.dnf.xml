@@ -2,6 +2,60 @@
 <section id="centos.dnf">
 	<title>DNF 包管理</title>
 	<section>
+		<title>安装 epel-release 包</title>
+		<subtitle>Extra Packages for Enterprise Linux repository configuration</subtitle>
+		<para>使用下面命令安装企业版扩展包</para>
+		<screen>
+		<![CDATA[
+dnf -y install epel-release		
+		]]>
+		</screen>
+		<para>安装演示</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# dnf search epel-release
+Last metadata expiration check: 0:01:57 ago on Thu 05 Dec 2019 09:06:55 PM CST.
+==================================================================================================== Name Exactly Matched: epel-release ====================================================================================================
+epel-release.noarch : Extra Packages for Enterprise Linux repository configuration
+[root@localhost ~]# 
+[root@localhost ~]# dnf -y install epel-release
+Last metadata expiration check: 0:02:41 ago on Thu 05 Dec 2019 09:06:55 PM CST.
+Dependencies resolved.
+============================================================================================================================================================================================================================================
+ Package                                                      Arch                                                   Version                                                   Repository                                              Size
+============================================================================================================================================================================================================================================
+Installing:
+ epel-release                                                 noarch                                                 8-5.el8                                                   extras                                                  22 k
+
+Transaction Summary
+============================================================================================================================================================================================================================================
+Install  1 Package
+
+Total download size: 22 k
+Installed size: 30 k
+Downloading Packages:
+epel-release-8-5.el8.noarch.rpm                                                                                                                                                                              16 kB/s |  22 kB     00:01    
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Total                                                                                                                                                                                                       7.5 kB/s |  22 kB     00:02     
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                                                                                                                                                                                    1/1 
+  Installing       : epel-release-8-5.el8.noarch                                                                                                                                                                                        1/1 
+  Running scriptlet: epel-release-8-5.el8.noarch                                                                                                                                                                                        1/1 
+  Verifying        : epel-release-8-5.el8.noarch                                                                                                                                                                                        1/1 
+
+Installed:
+  epel-release-8-5.el8.noarch                                                                                                                                                                                                               
+
+Complete!
+		
+		]]>
+		</screen>		
+	</section>
+	<section>
 		<title>显示系统中可用的 DNF 软件库</title>
 		<screen>
 		<![CDATA[
