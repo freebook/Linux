@@ -9,7 +9,7 @@
 	<!ENTITY BG7NYT "&Neo;">
 	<!ENTITY Netkiller "<emphasis><trademark>Netkiller</trademark></emphasis>">
 
-        <!ENTITY % common.doctype.entity.xml 		SYSTEM "../../common/doctype.entity.xml">
+    <!ENTITY % common.doctype.entity.xml 		SYSTEM "../common/doctype.entity.xml">
 	%common.doctype.entity.xml;
 	
 	<!ENTITY book.info.abstract.xml 		SYSTEM "../book.info.abstract.xml">

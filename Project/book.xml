@@ -21,35 +21,7 @@
 		<subtitle>Continuous Integration &amp; Delivery</subtitle>
 		<authorgroup>
 		&book.info.author.xml;
-<!--
-		<author>
-			<firstname>netkiller</firstname>
-			<surname>Neo Chan</surname>
-			<address>
-				<phone>13113668890</phone>
-				<email>netkiller(at)msn(dot)com</email>
-			</address>
-			<affiliation>
 
-			</affiliation>
-		</author>
-
-		<collab>
-			<collabname>
-				<personname>
-					<honorific>Mr</honorific>
-					<firstname>your name</firstname>
-					<surname></surname>
-		    	</personname>
-			</collabname>
-        	<affiliation>
-        		<address>
-				    <country>中国</country><state>广东</state><city>深圳</city><street>科技园</street><postcode>518000</postcode>
-					<email>something@domain.com</email>
-				</address>
-			</affiliation>
-     	</collab>
- -->
 		</authorgroup>
 		<copyright>
 			<year>2009-2019</year>

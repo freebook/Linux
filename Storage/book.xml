@@ -9,19 +9,10 @@
 	<!ENTITY BG7NYT "&Neo;">
 	<!ENTITY Netkiller "<emphasis><trademark>Netkiller</trademark></emphasis>">
 
-	<!ENTITY % common.doctype.entity.xml 		SYSTEM "../../common/doctype.entity.xml">
+	<!ENTITY % common.doctype.entity.xml 		SYSTEM "../common/doctype.entity.xml">
 	%common.doctype.entity.xml;
 	
 	<!ENTITY book.info.abstract.xml 	SYSTEM "../book.info.abstract.xml">
-
-	<!ENTITY book.dedication.xml       	SYSTEM "../common/book.dedication.xml">
-
-<!--
-	<!ENTITY book.preface 		SYSTEM "book.preface.xml">
-	<!ENTITY book.dedication 	SYSTEM "book.dedication.xml">
-	<!ENTITY book.appendix 		SYSTEM "book.appendix.xml">
-	<!ENTITY book.history 		SYSTEM "book.history.xml">
--->
 	<!ENTITY % doctype.entity.xml 			SYSTEM "doctype.entity.xml">
 	%doctype.entity.xml;
 
