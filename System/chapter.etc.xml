@@ -1,10 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="etc">
-    <title>/etc</title>
-    <section id="etc.inputrc">
-    	<title>/etc/inputrc</title>
-    	<para>键盘映射配置文件,用户不同终端下的键盘定义</para>
-    	<screen>
+	<title>/etc</title>
+	<section>
+		<title>getent 用来察看系统的数据库中的相关记录</title>
+		<para>支持数据库</para>
+		<screen>
+    	<![CDATA[
+ahosts ahostsv4 ahostsv6 aliases ethers group gshadow hosts initgroups
+netgroup networks passwd protocols rpc services shadow    	
+    	]]>
+		</screen>
+		<section>
+			<title>主机名</title>
+			<para>查找主机名</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# getent hosts localhost
+::1             localhost localhost.localdomain localhost6 localhost6.localdomain6		
+
+[root@localhost ~]# getent hosts localhost.localdomain
+::1             localhost localhost.localdomain localhost6 localhost6.localdomain6	
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>用户组</title>
+			<para>查看用户</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# getent passwd halt
+halt:x:7:0:halt:/sbin:/sbin/halt		
+
+[root@localhost ~]# getent passwd `whoami`
+root:x:0:0:root:/root:/bin/bash	
+			]]>
+			</screen>
+			<para>通过UID查看用户信息</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# getent passwd 65534
+nobody:x:65534:65534:Kernel Overflow User:/:/sbin/nologin			
+			]]>
+			</screen>
+			<para>判定用户组test是否存在：如果存在就退出，不存在就创建</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# getent group test || groupadd test
+
+[root@localhost ~]# getent group zabbix > /dev/null || groupadd -r zabbix
+[root@localhost ~]# getent passwd zabbix > /dev/null || useradd -r -g zabbix -s /sbin/nologin -c "Zabbix Monitoring System" zabbix	
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>端口查看</title>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# getent services 22
+ssh                   22/tcp
+[root@localhost ~]# getent services 80
+http                  80/tcp www www-http
+[root@localhost ~]# getent services 443
+https                 443/tcp			
+			]]>
+			</screen>
+		</section>
+		
+	</section>
+	<section id="etc.inputrc">
+		<title>/etc/inputrc</title>
+		<para>键盘映射配置文件,用户不同终端下的键盘定义</para>
+		<screen>
     	<![CDATA[
 % grep -v '^#' /etc/inputrc | grep -v "^$"
 set input-meta on
@@ -27,12 +93,13 @@ $if term=rxvt
 $endif
 $endif 
         ]]>
-    	</screen>
-    </section>
-    <section id="etc.shells">
-        <title>/etc/shells</title>
-        <para>系统有效地登陆Shell</para>
-        <screen>
+		</screen>
+	</section>
+	<section id="etc.shells">
+		<title>/etc/shells</title>
+		<para>系统有效地登陆Shell</para>
+		<screen>
+        <![CDATA[
 % cat /etc/shells 
 # /etc/shells: valid login shells
 /bin/sh
@@ -42,7 +109,8 @@ $endif
 /usr/bin/tmux
 /usr/bin/screen
 /bin/zsh
-/usr/bin/zsh            
-        </screen>
-    </section>
+/usr/bin/zsh         
+		]]>
+		</screen>
+	</section>
 </chapter>
