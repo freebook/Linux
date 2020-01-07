@@ -53,7 +53,7 @@ nobody:x:65534:65534:Kernel Overflow User:/:/sbin/nologin
 			</screen>
 		</section>
 		<section>
-			<title>端口查看</title>
+			<title>查看端口</title>
 			<screen>
 			<![CDATA[
 [root@localhost ~]# getent services 22
@@ -65,7 +65,19 @@ https                 443/tcp
 			]]>
 			</screen>
 		</section>
-		
+		<section>
+			<title>shadow 密码</title>
+			<para></para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# getent shadow root
+root:$6$PlAA9lHTPmwOO8TL$1cjrer572Zbw.1nR4TvWRZRdRFuNgNxJayh4snUtqGZ6brTZNOyzWHfFUFptXUGjDgxqdrAtweeIuWbvbmtuQ1::0:99999:7:::
+
+[root@localhost ~]# getent shadow sshd
+sshd:!!:18229::::::			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="etc.inputrc">
 		<title>/etc/inputrc</title>
