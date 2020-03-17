@@ -164,6 +164,14 @@ curl -v -o /dev/null -e "http://www.example.com" http://www.your.com/
 			curl -o index.html http://www.example.com
 		</screen>
 	</section>
+	<section id="curl.L">
+		<title>-L, --location</title>
+		<screen>
+		<![CDATA[
+curl -L --retry 5 --retry-delay 3 https://github.com/hyperledger/fabric/releases/download/v2.0.1/hyperledger-fabric-linux-amd64-2.0.1.tar.gz | tar xz		
+		]]>
+		</screen>
+	</section>
 	<section id="curl.header">
 		<title>-H/--header &lt;line&gt; Custom header to pass to server (H)</title>
 		<section>
