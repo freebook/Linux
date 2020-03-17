@@ -53,7 +53,16 @@ Installed:
 Complete!
 		
 		]]>
-		</screen>		
+		</screen>
+	</section>
+	<section>
+		<title>DNF 软件库管理</title>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+Adding repo from: https://download.docker.com/linux/centos/docker-ce.repo	
+		]]>
+		</screen>
 	</section>
 	<section>
 		<title>显示系统中可用的 DNF 软件库</title>
@@ -69,10 +78,15 @@ extras              CentOS-8 - Extras                                           
 		
 		]]>
 		</screen>
-	</section>
-	<section>
-		<title>查看系统中所有的 DNF 软件库(包括禁用状态)</title>
 		<screen>
+		<![CDATA[
+dnf repolist -v		
+		]]>
+		</screen>
+
+		<section>
+			<title>查看系统中所有的 DNF 软件库(包括禁用状态)</title>
+			<screen>
 		<![CDATA[
 [root@localhost ~]# dnf repolist all
 Last metadata expiration check: 0:01:45 ago on Sat 23 Nov 2019 11:06:18 AM EST.
@@ -102,7 +116,8 @@ extras-source             CentOS-8 - Extras Sources                   disabled
 fasttrack                 CentOS-8 - fasttrack                        disabled
 		
 		]]>
-		</screen>
+			</screen>
+		</section>
 	</section>
 	<section>
 		<title>列出所有 RPM 包</title>
@@ -145,11 +160,11 @@ Available Packages
 nginx.x86_64                                   1:1.14.1-9.module_el8.0.0+184+e34fea82                                   AppStream		
 		]]>
 		</screen>
-	</section>
-	<section>
-		<title>查看已经安装包</title>
-		<para>用于列出系统上所有已经安装的软件包</para>
-		<screen>
+
+		<section>
+			<title>查看已经安装包</title>
+			<para>用于列出系统上所有已经安装的软件包</para>
+			<screen>
 		<![CDATA[
 [root@localhost ~]# dnf list installed | more
 Installed Packages
@@ -178,11 +193,11 @@ automake.noarch                    1.13.4-3.el7                    @System
 --More--
 		
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>列出可用的软件包</title>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>列出可用的软件包</title>
+			<screen>
 		<![CDATA[
 [root@localhost ~]# dnf list available | more
 Last metadata expiration check: 0:07:35 ago on Sat 23 Nov 2019 11:06:18 AM EST.
@@ -211,8 +226,20 @@ HepMC3.x86_64                                        3.1.2-1.el8                
 --More--
 		
 		]]>
-		</screen>
+			</screen>
+		</section>
+
+		<section>
+			<title>显示重复内容</title>
+			<screen>
+		<![CDATA[
+dnf list docker-ce --showduplicates | sort -r
+		]]>
+			</screen>
+		</section>
+
 	</section>
+
 	<section>
 		<title>搜索软件库中的包</title>
 		<screen>

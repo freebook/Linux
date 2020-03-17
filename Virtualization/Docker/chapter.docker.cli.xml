@@ -499,7 +499,7 @@ nginx: [emerg] invalid server name or wildcard "www.*.com" on 0.0.0.0:80
 		</screen>
 	</section>
 	<section id="history">
-		<title>history</title>
+		<title>history 镜像历史纪录</title>
 		<para>镜像历史纪录</para>
 		<screen>
 		<![CDATA[
@@ -524,6 +524,12 @@ ccc27f4f3bcf        5 days ago          /bin/sh -c #(nop)  ENV CATALINA_HOME=/sr
 3bee3060bfc8        9 days ago          /bin/sh -c #(nop)  CMD ["/bin/bash"]            0 B                 
 <missing>           9 days ago          /bin/sh -c #(nop)  LABEL name=CentOS Base ...   0 B                 
 <missing>           9 days ago          /bin/sh -c #(nop) ADD file:d22a9c627d1d1f3...   193 MB		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+docker history docker.io/mysql:5.7
+docker history --no-trunc docker.io/mysql:5.7		
 		]]>
 		</screen>
 	</section>
