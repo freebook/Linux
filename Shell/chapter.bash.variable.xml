@@ -460,8 +460,23 @@ aaa
 			</screen>
 		</section>
 		<section>
-			<title>:n1:n2</title>
-			<para>：${varible:n1:n2}:截取变量varible从n1到n2之间的字符串。</para>
+			<title>字符串截取</title>
+			<subtitle>:n1:n2</subtitle>
+			<para>左侧截取</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~/git/Lisa % STR=Netkiller; echo ${STR:3}
+killer
+			]]>
+			</screen>
+			<para>右侧截取</para>
+			<screen>
+			<![CDATA[
+file=netkiller.rpm
+$echo ${file: -3}			
+			]]>
+			</screen>
+			<para>范围截取：${varible:n1:n2}:截取变量varible从n1到n2之间的字符串。</para>
 			<screen>
 			<![CDATA[
 $ EXCLAIM=cowabunga
@@ -471,9 +486,6 @@ cow
 
 $ echo ${EXCLAIM:3:7}
 abunga
-
-file=netkiller.rpm
-$echo ${file: -3}
 			]]>
 			</screen>
 		</section>
