@@ -488,6 +488,12 @@ $ echo ${EXCLAIM:3:7}
 abunga
 			]]>
 			</screen>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~ % str="123456789"
+neo@MacBook-Pro-Neo ~ % str="123456789"; echo ${str:3:(6-3)}			
+			]]>
+			</screen>
 		</section>
 		<section>
 			<title>#</title>
