@@ -11,7 +11,7 @@ curl http://www.google.com/
 		</screen>
 	</section>
 	<section id="curl.d">
-		<title>data</title>
+		<title>提交表单数据</title>
 		<para>post 表单数据</para>
 		<screen>
 		<![CDATA[
@@ -178,88 +178,100 @@ curl -L --retry 5 --retry-delay 3 https://github.com/hyperledger/fabric/releases
 			<title>Last-Modified / If-Modified-Since</title>
 			<para>If-Modified-Since</para>
 			<screen>
-				neo@neo-OptiPlex-780:/tmp$ curl -I http://images.example.com/test/test.html
-				HTTP/1.0 200 OK
-				Cache-Control: s-maxage=7200, max-age=900
-				Expires: Mon, 16 May 2011 08:10:37 GMT
-				Content-Type: text/html
-				Accept-Ranges: bytes
-				ETag: "1205579110"
-				Last-Modified: Mon, 16 May 2011 06:57:39 GMT
-				Content-Length: 11
-				Date: Mon, 16 May 2011 07:55:37 GMT
-				Server: lighttpd/1.4.26
-				Age: 604
-				X-Via: 1.0 ls71:80 (Cdn Cache Server V2.0), 1.0 lydx136:8105 (Cdn Cache Server V2.0)
-				Connection: keep-alive
+			<![CDATA[
+neo@neo-OptiPlex-780:/tmp$ curl -I http://images.example.com/test/test.html
+HTTP/1.0 200 OK
+Cache-Control: s-maxage=7200, max-age=900
+Expires: Mon, 16 May 2011 08:10:37 GMT
+Content-Type: text/html
+Accept-Ranges: bytes
+ETag: "1205579110"
+Last-Modified: Mon, 16 May 2011 06:57:39 GMT
+Content-Length: 11
+Date: Mon, 16 May 2011 07:55:37 GMT
+Server: lighttpd/1.4.26
+Age: 604
+X-Via: 1.0 ls71:80 (Cdn Cache Server V2.0), 1.0 lydx136:8105 (Cdn Cache Server V2.0)
+Connection: keep-alive
 
-				neo@neo-OptiPlex-780:/tmp$ curl -H
-				"If-Modified-Since: Fri, 12 May 2011 18:53:33 GMT" -I http://images.example.com/test/test.html
-				HTTP/1.0 304 Not Modified
-				Date: Mon, 16 May 2011 07:56:19 GMT
-				Content-Type: text/html
-				Expires: Mon, 16 May 2011 08:11:19 GMT
-				Last-Modified: Mon, 16 May 2011 06:57:39 GMT
-				ETag: "1205579110"
-				Cache-Control: s-maxage=7200, max-age=900
-				Age: 790
-				X-Via: 1.0 wzdx168:8080 (Cdn Cache Server V2.0)
-				Connection: keep-alive
+neo@neo-OptiPlex-780:/tmp$ curl -H
+"If-Modified-Since: Fri, 12 May 2011 18:53:33 GMT" -I http://images.example.com/test/test.html
+HTTP/1.0 304 Not Modified
+Date: Mon, 16 May 2011 07:56:19 GMT
+Content-Type: text/html
+Expires: Mon, 16 May 2011 08:11:19 GMT
+Last-Modified: Mon, 16 May 2011 06:57:39 GMT
+ETag: "1205579110"
+Cache-Control: s-maxage=7200, max-age=900
+Age: 790
+X-Via: 1.0 wzdx168:8080 (Cdn Cache Server V2.0)
+Connection: keep-alive
+			]]>
 			</screen>
 		</section>
 		<section>
 			<title>ETag / If-None-Match</title>
 			<screen>
-				neo@neo-OptiPlex-780:/tmp$ curl -I http://images.example.com/test/test.html
-				HTTP/1.1 200 OK
-				Cache-Control: s-maxage=7200, max-age=900
-				Expires: Mon, 16 May 2011 09:48:45 GMT
-				Content-Type: text/html
-				Accept-Ranges: bytes
-				ETag: "1984705864"
-				Last-Modified: Mon, 16 May 2011 09:01:07 GMT
-				Content-Length: 22
-				Date: Mon, 16 May 2011 09:33:45 GMT
-				Server: lighttpd/1.4.26
+			<![CDATA[
+neo@neo-OptiPlex-780:/tmp$ curl -I http://images.example.com/test/test.html
+HTTP/1.1 200 OK
+Cache-Control: s-maxage=7200, max-age=900
+Expires: Mon, 16 May 2011 09:48:45 GMT
+Content-Type: text/html
+Accept-Ranges: bytes
+ETag: "1984705864"
+Last-Modified: Mon, 16 May 2011 09:01:07 GMT
+Content-Length: 22
+Date: Mon, 16 May 2011 09:33:45 GMT
+Server: lighttpd/1.4.26
+			]]>
 			</screen>
 			<screen>
-				neo@neo-OptiPlex-780:/tmp$ curl -H 'If-None-Match: "1984705864"' -I http://images.example.com/test/test.html
-				HTTP/1.1 304 Not Modified
-				Cache-Control: s-maxage=7200, max-age=900
-				Expires: Mon, 16 May 2011 09:48:32 GMT
-				Content-Type: text/html
-				Accept-Ranges: bytes
-				ETag: "1984705864"
-				Last-Modified: Mon, 16 May 2011 09:01:07 GMT
-				Date: Mon, 16 May 2011 09:33:32 GMT
-				Server: lighttpd/1.4.26
+			<![CDATA[
+neo@neo-OptiPlex-780:/tmp$ curl -H 'If-None-Match: "1984705864"' -I http://images.example.com/test/test.html
+HTTP/1.1 304 Not Modified
+Cache-Control: s-maxage=7200, max-age=900
+Expires: Mon, 16 May 2011 09:48:32 GMT
+Content-Type: text/html
+Accept-Ranges: bytes
+ETag: "1984705864"
+Last-Modified: Mon, 16 May 2011 09:01:07 GMT
+Date: Mon, 16 May 2011 09:33:32 GMT
+Server: lighttpd/1.4.26
+			]]>
 			</screen>
 		</section>
 		<section>
 			<title>Accept-Encoding:gzip,defalte</title>
 			<screen>
-				$ curl -H Accept-Encoding:gzip,defalte -I http://www.example.com/product/374218.html
-				HTTP/1.1 200 OK
-				Date: Mon, 16 May 2011 09:13:18 GMT
-				Server: Apache
-				Accept-Ranges: bytes
-				Content-Encoding: gzip
-				Content-Length: 16660
-				Content-Type: text/html; charset=UTF-8
-				X-Pad: avoid browser bug
-				Age: 97
-				X-Via: 1.1 dg44:8888 (Cdn Cache Server V2.0)
-				Connection: keep-alive
+			<![CDATA[
+$ curl -H Accept-Encoding:gzip,defalte -I http://www.example.com/product/374218.html
+HTTP/1.1 200 OK
+Date: Mon, 16 May 2011 09:13:18 GMT
+Server: Apache
+Accept-Ranges: bytes
+Content-Encoding: gzip
+Content-Length: 16660
+Content-Type: text/html; charset=UTF-8
+X-Pad: avoid browser bug
+Age: 97
+X-Via: 1.1 dg44:8888 (Cdn Cache Server V2.0)
+Connection: keep-alive
+			]]>
 			</screen>
 			<para></para>
 			<screen>
-				$ curl -H Accept-Encoding:gzip,defalte http://www.example.com/product/374218.html | gunzip
+			<![CDATA[
+$ curl -H Accept-Encoding:gzip,defalte http://www.example.com/product/374218.html | gunzip
+			]]>
 			</screen>
 		</section>
 		<section>
 			<title>HOST</title>
 			<screen>
-				curl -H HOST:www.example.com -I http://172.16.1.10/product/374218.html
+			<![CDATA[
+curl -H HOST:www.example.com -I http://172.16.1.10/product/374218.html
+			]]>
 			</screen>
 		</section>
 		<section>
@@ -303,26 +315,34 @@ curl -L --retry 5 --retry-delay 3 https://github.com/hyperledger/fabric/releases
 	<section id="curl-config">
 		<title>curl-config</title>
 		<screen>
-			curl-config --features
+		<![CDATA[
+curl-config --features
+		]]>
 		</screen>
 	</section>
 	<section id="curl.interface">
 		<title>指定网络接口或者地址</title>
 		<para>--interface INTERFACE Use network INTERFACE (or address)</para>
 		<screen>
-			curl --interface 127.0.0.1 http://www.netkiller.cn
+		<![CDATA[
+curl --interface 127.0.0.1 http://www.netkiller.cn		
+		]]>
 		</screen>
 	</section>
 	<section id="curl.cookie">
 		<title> Cookie 处理</title>
 		<para>cookie 可以从 http header 设置</para>
 		<screen>
-			curl -LO -H "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.rpm
+		<![CDATA[
+curl -LO -H "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.rpm
+		]]>
 		</screen>
 		<para>curl 还提供两个参数用于处理 cookie</para>
 		<screen>
-			-b, --cookie STRING/FILE Read cookies from STRING/FILE (H) 读取 cookie 文件
-			-c, --cookie-jar FILE Write cookies to FILE after operation (H) 将 cookie 写入文件
+		<![CDATA[
+-b, --cookie STRING/FILE Read cookies from STRING/FILE (H) 读取 cookie 文件
+-c, --cookie-jar FILE Write cookies to FILE after operation (H) 将 cookie 写入文件
+		]]>
 		</screen>
 		<screen>
 		<![CDATA[
@@ -332,15 +352,19 @@ curl -b cookie.txt http://www.netkiller.cn/user/profile
 		</screen>
 	</section>
 	<section id="curl.restful">
-		<title>RestFul 应用 JSON 数据处理</title>
+		<title>Restful 应用 JSON 数据处理</title>
 		<para>下面提供一些使用 curl 操作 restful 的实例</para>
 		<para>GET 操作</para>
 		<screen>
-			curl http://api.netkiller.cn/v1/withdraw/get/15.json
+		<![CDATA[
+curl http://api.netkiller.cn/v1/withdraw/get/15.json
+		]]>
 		</screen>
 		<para>用户认证的情况</para>
 		<screen>
-			curl http://test:123456@api.netkiller.cn/v1/withdraw/get/id/815.json
+		<![CDATA[
+curl http://test:123456@api.netkiller.cn/v1/withdraw/get/id/815.json
+		]]>
 		</screen>
 		<para>POST 操作</para>
 		<screen>
@@ -352,6 +376,9 @@ curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X POS
 }' https://test:123456@api.netkiller.cn/v1/withdraw/create.json
 		]]>
 		</screen>
+		<![CDATA[
+curl -H "Accept: application/json" -H "Content-Type: application/json" -d '{"id":100000, "username":"netkiller", "password":"123456", "email":"netkiller@msn.com"}' curl http://localhost:8080/restful/validation		
+		]]>
 		<section id="curl.oauth2">
 			<title>Curl Oauth2</title>
 			<screen>
