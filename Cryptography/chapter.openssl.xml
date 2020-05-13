@@ -7,81 +7,81 @@
 		<title>openssl 命令参数</title>
 		<section id="version">
 			<title>version</title>
-			<screen>
+			<screen><![CDATA[
 [root@netkiller nginx]# openssl version
 OpenSSL 1.0.1e-fips 11 Feb 2013
-			</screen>
+			]]></screen>
 		</section>
 		<section id="speed">
 			<title>测试加密算法的速度</title>
-			<screen>
+			<screen><![CDATA[
 $ openssl speed
-			</screen>
-			<screen>
+			]]></screen>
+			<screen><![CDATA[
 $ openssl speed rsa
 $ openssl speed aes
-			</screen>
+			]]></screen>
 		</section>
 		<section id="req">
 			<title>req</title>
-			<screen>
+			<screen><![CDATA[
 openssl req -new -x509 -days 7300 -key ca.key -out ca.crt
-			</screen>
+			]]></screen>
 		</section>
 		<section id="x509">
 			<title>x509</title>
-			<screen>
+			<screen><![CDATA[
 openssl x509 -req -in client-req.csr -out client.crt -signkey client-key.pem -CA ca.crt -CAkey ca.key -days 365 -CAserial serial
-			</screen>
+			]]></screen>
 			<para>验证一下我们生成的文件。</para>
-			<screen>
+			<screen><![CDATA[
 openssl x509 -in cacert.pem -text -noout
-			</screen>
+			]]></screen>
 			<para>-extfile</para>
-			<screen>
+			<screen><![CDATA[
 openssl x509 -req -in careq.pem -extfile openssl.cnf -extensions v3_ca -signkey key.pem -out cacert.pem
-			</screen>
+			]]></screen>
 		</section>
 		<section id="ca">
 			<title>ca</title>
-			<screen>
+			<screen><![CDATA[
 # 生成CRL列表
 $ openssl ca -gencrl -out exampleca.crl
-			</screen>
+			]]></screen>
 		</section>
 		<section id="crl">
 			<title>crl</title>
-			<screen>
+			<screen><![CDATA[
 # 查看CRL列表信息
 $ openssl crl -in exampleca.crl -text -noout
 
 # 验证CRL列表签名信息
 $ openssl crl -in exampleca.crl -noout -CAfile cacert.pem
-			</screen>
+			]]></screen>
 		</section>
 		<section id="pkcs12">
 			<title>pkcs12</title>
 			<para>-clcerts 表示仅导出客户证书。</para>
-			<screen>
+			<screen><![CDATA[
 openssl pkcs12 -export -clcerts -in 324.cer -inkey ca.pem -out 324.p12 -name "Email SMIME"
-			</screen>
+			]]></screen>
 			<para>转换PEM证书文件和私钥到PKCS#12文件</para>
-			<screen>
+			<screen><![CDATA[
 openssl pkcs12 -export -out certificate.pfx -inkey privateKey.key -in certificate.crt -certfile CACert.crt
-			</screen>
+			]]></screen>
 		</section>
 		<section id="passwd">
 			<title>passwd</title>
 			<para>MD5-based password algorithm</para>
-			<screen>
+			<screen><![CDATA[
 # openssl passwd -1 -salt 'random-phrase-here' 'your-password-here'
 $1$random-p$AOw9RDIWQm6tfUo9Ediu/0
-			</screen>
+			]]></screen>
 			<para>-crypt standard Unix password algorithm (default)</para>
-			<screen>
+			<screen><![CDATA[
 # openssl passwd -crypt -salt 'sa' 'password'
 sa3tHJ3/KuYvI
-			</screen>
+			]]></screen>
 		</section>
 		<section id="digest">
 			<title>digest</title>
@@ -90,7 +90,7 @@ sa3tHJ3/KuYvI
 			<section>
 				<title>list-message-digest-commands</title>
 				<para>列出可用摘要</para>
-				<screen>
+				<screen><![CDATA[
 $ openssl list-message-digest-commands
 md2
 md4
@@ -99,15 +99,17 @@ mdc2
 rmd160
 sha
 sha1
-				</screen>
+				]]></screen>
 			</section>
 			<section>
 				<title>md5</title>
-				<screen>
+				<screen><![CDATA[
 # MD5 digest
 openssl dgst -md5 filename
-				</screen>
-				<note><para>MD5 信息摘要也同样可以使用md5sum创建</para></note>
+				]]></screen>
+				<note>
+					<para>MD5 信息摘要也同样可以使用md5sum创建</para>
+				</note>
 				<screen>
 				<![CDATA[
 $ echo "Hello World!" > message.txt
@@ -118,14 +120,14 @@ MD5(message.txt)= d9226d4bd8779baa69db272f89a2e05c
 			</section>
 			<section>
 				<title>sha1</title>
-				<screen>
+				<screen><![CDATA[
 # SHA1 digest
 openssl dgst -sha1 filename
-				</screen>
-				<screen>
+				]]></screen>
+				<screen><![CDATA[
 $ openssl dgst -sha1 /etc/passwd
 SHA1(/etc/passwd)= 9d883a9d35fd9a6dc81e6a1717a8e2ecfc49cdd8
-				</screen>
+				]]></screen>
 			</section>
 		</section>
 		<section id="enc">
@@ -138,7 +140,7 @@ SHA1(/etc/passwd)= 9d883a9d35fd9a6dc81e6a1717a8e2ecfc49cdd8
 			<section id="list-cipher-commands">
 				<title>list-cipher-commands</title>
 				<para>可用的编码/解码方案</para>
-				<screen>
+				<screen><![CDATA[
 # or get a long list, one cipher per line
 openssl list-cipher-commands
 
@@ -195,21 +197,21 @@ rc5-cbc
 rc5-cfb
 rc5-ecb
 rc5-ofb
-				</screen>
+				]]></screen>
 			</section>
 			<section id="base64">
 				<title>base64</title>
 				<para>使用 base64-encode 编码/解码?</para>
 				<para>使用 enc -base64 选项</para>
-				<screen>
+				<screen><![CDATA[
 # send encoded contents of file.txt to stdout
 openssl enc -base64 -in file.txt
 
 # same, but write contents to file.txt.enc
 openssl enc -base64 -in file.txt -out file.txt.enc
-				</screen>
+				]]></screen>
 				<para>命令行</para>
-				<screen>
+				<screen><![CDATA[
 C:\GnuWin32\neo>openssl enc -base64 -in file.txt
 SGVsbG8gV29ybGQhDQo=
 
@@ -219,9 +221,9 @@ C:\GnuWin32\neo>type file.txt.enc
 SGVsbG8gV29ybGQhDQo=
 
 C:\GnuWin32\neo>
-				</screen>
+				]]></screen>
 				<para>通过管道操作</para>
-				<screen>
+				<screen><![CDATA[
 C:\GnuWin32\neo>echo "encode me" | openssl enc -base64
 ImVuY29kZSBtZSIgDQo=
 
@@ -229,16 +231,16 @@ C:\GnuWin32\neo>echo -n "encode me" | openssl enc -base64
 LW4gImVuY29kZSBtZSIgDQo=
 
 C:\GnuWin32\neo>
-				</screen>
+				]]></screen>
 				<para>使用 -d (解码) 选项来反转操作.</para>
-				<screen>
+				<screen><![CDATA[
 C:\GnuWin32\neo>openssl enc -base64 -d -in file.txt.enc
 Hello World!
 
 C:\GnuWin32\neo>openssl enc -base64 -d -in file.txt.enc -out file.txt
-				</screen>
+				]]></screen>
 				<para>快速命令行</para>
-				<screen>
+				<screen><![CDATA[
 C:\GnuWin32\neo>type file.txt.enc | openssl enc -base64 -d
 Hello World!
 
@@ -247,22 +249,22 @@ SGVsbG8gV29ybGQhDQo=
 
 C:\GnuWin32\neo>echo SGVsbG8gV29ybGQhDQo= | openssl enc -base64 -d
 Hello World!
-				</screen>
+				]]></screen>
 			</section>
 			<section id="enc.des">
 				<title>des</title>
 				<para>对称加密与解密</para>
 				<para>加密</para>
-				<screen>
+				<screen><![CDATA[
 # openssl enc -des -e -a -in file.txt -out file.txt.des
 enter des-cbc encryption password:
 Verifying - enter des-cbc encryption password:
-				</screen>
+				]]></screen>
 				<para>解密</para>
-				<screen>
+				<screen><![CDATA[
 # openssl enc -des -d -a -in file.txt.des -out file.txt.tmp
 enter des-cbc decryption password:
-				</screen>
+				]]></screen>
 				<screen>
 				<![CDATA[
 % echo abc | openssl des-cbc -k 123 -base64         
@@ -273,17 +275,18 @@ U2FsdGVkX1+atYQyhz7I1ktb5XtYasGk
 			<section id="enc.aes">
 				<title>aes</title>
 				<para>加密</para>
-				<screen>
+				<screen><![CDATA[
 openssl enc -aes-128-cbc -in filename -out filename.out
-				</screen>
+				]]></screen>
 				<para>解密</para>
-				<screen>
+				<screen><![CDATA[
 openssl enc -d -aes-128-cbc -in filename.out -out filename
-				</screen>
+				]]></screen>
 				<screen>
 				<![CDATA[
 echo abc | openssl aes-128-cbc -k 123 -base64				
 				]]>
+					]]>
 				</screen>
 			</section>
 		</section>
@@ -291,27 +294,27 @@ echo abc | openssl aes-128-cbc -k 123 -base64
 			<title>rsa</title>
 			<para>产生密钥对</para>
 			<para>生成私钥</para>
-			<screen>
+			<screen><![CDATA[
 openssl genrsa -out private.key 1024
-			</screen>
+			]]></screen>
 			<para>根据私钥产生公钥</para>
-			<screen>
+			<screen><![CDATA[
 openssl rsa -in private.key -pubout > public.key
-			</screen>
+			]]></screen>
 			<para>用公钥加密明文</para>
-			<screen>
+			<screen><![CDATA[
 $ openssl rsautl -encrypt -pubin -inkey public.key -in filename -out filename.out
-			</screen>
+			]]></screen>
 			<para>用私钥解密</para>
-			<screen>
+			<screen><![CDATA[
 $ openssl rsautl -decrypt -inkey private.key -in filename.out -out filename
-			</screen>
+			]]></screen>
 		</section>
 		<section id="dsa">
 			<title>dsa</title>
 			<example>
 				<title>dsaparam &amp; gendsa</title>
-				<screen>
+				<screen><![CDATA[
 # create parameters in dsaparam.pem
 openssl dsaparam -out dsaparam.pem 1024
 
@@ -320,18 +323,18 @@ openssl gendsa -out key1.pem dsaparam.pem
 
 # and second ...
 openssl gendsa -out key2.pem dsaparam.pem
-				</screen>
+				]]></screen>
 			</example>
 			<para>生成私钥</para>
-			<screen>
+			<screen><![CDATA[
 openssl dsaparam -out dsaparam.pem 1024
 openssl gendsa -out private.key dsaparam.pem
-			</screen>
+			]]></screen>
 			<para>根据私钥产生公钥</para>
-			<screen>
+			<screen><![CDATA[
 openssl dsa -in private.key -pubout -out public.key
-			</screen>
-			<screen>
+			]]></screen>
+			<screen><![CDATA[
 $ ls
 dsaparam.pem  private.key  public.key
 
@@ -369,37 +372,37 @@ JZi9pty4H0rKoSmbrgjev/wp7BW8NqaJnlSjNCzF4SH+DXxZeuktJPNftHYi8BPI
 rHxR6CG1h7VPDr/IwSoff0KxLhc6vqxcCRpcQoqbhXGG5RxMsczD4nRmdmhXbelP
 Ru10T4qxEiVG7g==
 -----END PUBLIC KEY-----
-			</screen>
+			]]></screen>
 		</section>
 		<section id="rc4">
 			<title>rc4</title>
 			<para>加密文件</para>
-			<screen>
+			<screen><![CDATA[
 # openssl enc -e -rc4 -in in.txt -out out.txt
 enter rc4 encryption password:
 Verifying - enter rc4 encryption password:
-			</screen>
+			]]></screen>
 			<para>解密文件</para>
-			<screen>
+			<screen><![CDATA[
 # openssl enc -d -rc4 -in out.txt -out test.txt
 enter rc4 decryption password:
-			</screen>
+			]]></screen>
 			<para>使用 -k 指定密钥</para>
-			<screen>
+			<screen><![CDATA[
 openssl enc -e -rc4 -k passwd -in in.txt -out out.txt
 openssl enc -d -rc4 -k passwd -in out.txt -out test.txt
-			</screen>
+			]]></screen>
 		</section>
 
 		<section id="config">
 			<title>-config 指定配置文件</title>
-			<screen>
+			<screen><![CDATA[
 # openssl req -new -newkey rsa:2048 -config openssl.cfg -keyout server.key -nodes -out certreq.csr
-			</screen>
+			]]></screen>
 		</section>
 		<section id="subj">
 			<title>-subj 指定参数</title>
-			<screen>
+			<screen><![CDATA[
 # openssl req -new -newkey rsa:2048 -keyout server.key -nodes -subj /C=CN/O=example.com/OU=IT/CN=Neo/ST=GD/L=Shenzhen -out certreq.csr
 
 C:\> openssl req -new -newkey rsa:2048 -config openssl.cfg -keyout server.key -nodes -subj /C=CN/O="%OrganizationName%"/OU="%OrganizationUnit%"/CN="%CommonName%"/ST="%StateName%"/L="%LocalityName%" -out certreq.csr
@@ -407,43 +410,43 @@ C:\> openssl req -new -newkey rsa:2048 -config openssl.cfg -keyout server.key -n
 openssl req -x509 -nodes -days 365 -newkey rsa:4096 -keyout /etc/nginx/ssl/www.netkiller.cn.key -out /etc/nginx/ssl/www.netkiller.cn.crt -subj "/C=CN/ST=Guangdong/L=Shenzhen/O=Global Security/OU=IT Department/CN=www.netkiller.cn/emailAddress=netkiller@msn.com"
 
 openssl req -x509 -nodes -days 365 -newkey rsa:4096 -keyout /etc/nginx/ssl/www.netkiller.cn.key -out /etc/nginx/ssl/www.netkiller.cn.crt -subj "/C=CN/ST=Guangdong/L=Shenzhen/O=Global Security/OU=IT Department/CN=*netkiller.cn/emailAddress=netkiller@msn.com"
-			</screen>
+			]]></screen>
 		</section>
 		<section id="rand">
 			<title>rand</title>
 			<para>生成随机数</para>
-			<screen>
+			<screen><![CDATA[
 openssl rand 12 -base64			
-			</screen>
-			<screen>
+			]]></screen>
+			<screen><![CDATA[
 # openssl rand -base64 24
 rgphwqZFFA2tY1QfuBrmw3aN62i6ctFy			
-			</screen>
+			]]></screen>
 		</section>
 		<section id="phrase">
 			<title>去除私钥的密码</title>
-			<screen>
+			<screen><![CDATA[
 $ openssl rsa -in neo.key -out nopassword.key
 Enter pass phrase for neo.key:
 writing RSA key
-			</screen>
+			]]></screen>
 		</section>
 	</section>
 
 	<section id="web">
-		<title>web 服务器  ssl 证书</title>
+		<title>web 服务器 ssl 证书</title>
 		<section id="nginx">
 			<title>Nginx</title>
-			<screen>
+			<screen><![CDATA[
 $ sudo openssl req -new -x509 -keyout server.pem -out server.pem -days 365 -nodes
-			</screen>
+			]]></screen>
 			<para>指定证书位数为4096</para>
-			<screen>
+			<screen><![CDATA[
 # openssl req -x509 -nodes -days 1825 -newkey rsa:4096 -keyout /etc/nginx/ssl/api.netkiller.cn.key -out /etc/nginx/ssl/api.netkiller.cn.crt
-			</screen>
+			]]></screen>
 			<section>
 				<title>Nginx + Tomcat (HTTP2)</title>
-				<screen>
+				<screen><![CDATA[
 upstream api.netkiller.cn {
     server 127.0.0.1:7000;
     server api2.netkiller.cn backup;
@@ -474,7 +477,7 @@ server {
         proxy_ignore_client_abort  on;
     }
 }
-				</screen>
+				]]></screen>
 			</section>
 		</section>
 	</section>
@@ -483,49 +486,136 @@ server {
 		<section>
 			<title>SSL POP3 / SMTP / IMAP</title>
 			<para>SSL POP3 / SMTP / IMAP 端口号</para>
-			<screen>
+			<screen><![CDATA[
 POP3 995
 SMTP 465
 IMAP 993
-			</screen>
-			<screen>
+			]]></screen>
+			<screen><![CDATA[
 openssl s_client -connect localhost:110 -starttls pop3
-			</screen>
+			]]></screen>
 			<para>如果提示 CONNECTED(00000003) 侧省去 -starttls pop3 选项</para>
-			<screen>
+			<screen><![CDATA[
 openssl s_client -connect pop.163.com:995
-			</screen>
-			<screen>
+			]]></screen>
+			<screen><![CDATA[
 openssl s_client -connect smtp.163.com:465
-			</screen>
-			<screen>
+			]]></screen>
+			<screen><![CDATA[
 openssl s_client -connect imap.163.com:993
+			]]></screen>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~ % openssl s_client -starttls smtp -connect smtp.qq.com:587
+CONNECTED(00000005)
+depth=2 C = BE, O = GlobalSign nv-sa, OU = Root CA, CN = GlobalSign Root CA
+verify return:1
+depth=1 C = BE, O = GlobalSign nv-sa, CN = GlobalSign Organization Validation CA - SHA256 - G2
+verify return:1
+depth=0 C = CN, ST = guangdong, L = shenzhen, O = Tencent Technology (Shenzhen) Company Limited, CN = *.mail.qq.com
+verify return:1
+---
+Certificate chain
+ 0 s:/C=CN/ST=guangdong/L=shenzhen/O=Tencent Technology (Shenzhen) Company Limited/CN=*.mail.qq.com
+   i:/C=BE/O=GlobalSign nv-sa/CN=GlobalSign Organization Validation CA - SHA256 - G2
+ 1 s:/C=BE/O=GlobalSign nv-sa/CN=GlobalSign Organization Validation CA - SHA256 - G2
+   i:/C=BE/O=GlobalSign nv-sa/OU=Root CA/CN=GlobalSign Root CA
+ 2 s:/C=BE/O=GlobalSign nv-sa/OU=Root CA/CN=GlobalSign Root CA
+   i:/C=BE/O=GlobalSign nv-sa/OU=Root CA/CN=GlobalSign Root CA
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIIHBjCCBe6gAwIBAgIMQRECNeI6N/Pq0txeMA0GCSqGSIb3DQEBCwUAMGYxCzAJ
+BgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTwwOgYDVQQDEzNH
+bG9iYWxTaWduIE9yZ2FuaXphdGlvbiBWYWxpZGF0aW9uIENBIC0gU0hBMjU2IC0g
+RzIwHhcNMTkxMTExMTAzMjE2WhcNMjAwNjAzMDQwMDMzWjCBhDELMAkGA1UEBhMC
+Q04xEjAQBgNVBAgTCWd1YW5nZG9uZzERMA8GA1UEBxMIc2hlbnpoZW4xNjA0BgNV
+BAoTLVRlbmNlbnQgVGVjaG5vbG9neSAoU2hlbnpoZW4pIENvbXBhbnkgTGltaXRl
+ZDEWMBQGA1UEAwwNKi5tYWlsLnFxLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEP
+ADCCAQoCggEBAMjn7wo/fZVfzKi9q7VOPZrSjTFFymgzS/TyJonILailwQMvL3ne
+R52n9NMVl9VbaIiJvdkzSunnrZrTOViqLdIODNsbiHCNeeskYV3bPgKIWU1LuNT/
+5LYcoR6qxX1X58sQttpxLE0TIVrcqKJBaCVXhoRnR5aRY1bXuaUkYCw0m3Jq1hT3
+em0iF5gTos4TAR3BMI/Z3sjACkB55WW/qDXx9uiG9P1HWIu8drq1SH4yrx9h2zYA
+yV6/s2CbNELwPUYHgSrbca3Sr9y+XCZocpECVLml5ZPO+ShbJHzWvztDz+ETZXZg
+AD09mUOfrHgxXZDKvC47lawMT4+DQgc9DXECAwEAAaOCA5MwggOPMA4GA1UdDwEB
+/wQEAwIFoDCBoAYIKwYBBQUHAQEEgZMwgZAwTQYIKwYBBQUHMAKGQWh0dHA6Ly9z
+ZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzb3JnYW5pemF0aW9udmFsc2hh
+MmcycjEuY3J0MD8GCCsGAQUFBzABhjNodHRwOi8vb2NzcDIuZ2xvYmFsc2lnbi5j
+b20vZ3Nvcmdhbml6YXRpb252YWxzaGEyZzIwVgYDVR0gBE8wTTBBBgkrBgEEAaAy
+ARQwNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVw
+b3NpdG9yeS8wCAYGZ4EMAQICMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+oDygOoY4
+aHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9ncy9nc29yZ2FuaXphdGlvbnZhbHNo
+YTJnMi5jcmwwgcMGA1UdEQSBuzCBuIINKi5tYWlsLnFxLmNvbYIOOTkzLmRhdi5x
+cS5jb22CDjk5My5lYXMucXEuY29tgg85OTMuaW1hcC5xcS5jb22CDjk5My5wb3Au
+cXEuY29tgg85OTMuc210cC5xcS5jb22CC2ltYXAucXEuY29tggpteDEucXEuY29t
+ggpteDIucXEuY29tggpteDMucXEuY29tggpwb3AucXEuY29tggtzbXRwLnFxLmNv
+bYILbWFpbC5xcS5jb20wHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMB8G
+A1UdIwQYMBaAFJbeYfG9HBYpUxzAzH07gwBA5hp8MB0GA1UdDgQWBBRL6XBdL20t
+FXnea3SBT+kdMMfp8TCCAQUGCisGAQQB1nkCBAIEgfYEgfMA8QB2AKS5CZC0GFgU
+h7sTosxncAo8NZgE+RvfuON3zQ7IDdwQAAABbloFfggAAAQDAEcwRQIgGxSwA4fJ
+0EjOBQCIqJEZY44CB42NTjj+dTXyFrj+1FQCIQCMpCiQvkTxI4XdBrhT4U7tCQGb
+BC6xAUVP1TrDPVNCbAB3AMZSoOxIzrP8qxcJksQ6h0EzCegAZaJiUkAbozYqF8Vl
+AAABbloFfi4AAAQDAEgwRgIhAOk6QzHNQHo9bTh5ALgZ05BcSpdoGdUzjDSG6KW/
+eejUAiEA2XMy8m3iQQyBw1oYj4GVKNGA1SsPrfKwTc+V8Wk0J1UwDQYJKoZIhvcN
+AQELBQADggEBACJ3IP+kzCWJTbsxo6wr0209CUPPDHAK2749OvYc59/xVNsOKwMR
+K+JLiiCr3V6WWjSouoZoGXRxcMZI/MFsjN2v0cIkLQSOzQNjYv3Gpm21M8dfMucM
+WySQfzm0+iFmsBt91rGBVMJe+vrKk9bRFAU0X7v6ScpsbEKKZ9eM+xcqBy2LzMpM
+6sbPqmskfKUDy/2Ow46ivKiFjfRbaJDDnClisFFEtX50yJQpSGmNwBBw04gcarAJ
++tQxtx93Q9MjrRpO6z8c8JxyvMzq9k1gTwVs8K6Xpz0NKKPqs8K7uu2mQDcZptDD
+SB4IP+p0vlCJ8WzwoTP9WGEA9wvqNMwtPJo=
+-----END CERTIFICATE-----
+subject=/C=CN/ST=guangdong/L=shenzhen/O=Tencent Technology (Shenzhen) Company Limited/CN=*.mail.qq.com
+issuer=/C=BE/O=GlobalSign nv-sa/CN=GlobalSign Organization Validation CA - SHA256 - G2
+---
+No client certificate CA names sent
+Server Temp Key: ECDH, P-256, 256 bits
+---
+SSL handshake has read 4633 bytes and written 357 bytes
+---
+New, TLSv1/SSLv3, Cipher is ECDHE-RSA-AES128-GCM-SHA256
+Server public key is 2048 bit
+Secure Renegotiation IS supported
+Compression: NONE
+Expansion: NONE
+No ALPN negotiated
+SSL-Session:
+    Protocol  : TLSv1.2
+    Cipher    : ECDHE-RSA-AES128-GCM-SHA256
+    Session-ID: FABAC96B719F190C64B7CD0F6A140FD57E2D9917239370F813F1BD9547A91AA5
+    Session-ID-ctx: 
+    Master-Key: FEF86566E6A588239A3779F721E7A22A7406611A4F419246F1695E435C4BBB6D560F25CB18FC684FE15AD546798EC9BC
+    Start Time: 1589379176
+    Timeout   : 7200 (sec)
+    Verify return code: 0 (ok)
+---
+250 8BITMIME			
+			]]>
 			</screen>
 		</section>
 
 		<section>
 			<title>server / client 文件传输</title>
 			<para>生成证书</para>
-			<screen>
+			<screen><![CDATA[
 $ openssl req -new -x509 -keyout server.pem -out server.pem -days 365 -nodes
-			</screen>
+			]]></screen>
 			<para>在一个终端运行以下命令</para>
-			<screen>
+			<screen><![CDATA[
 openssl s_server -accept 2009 -key server.pem -cert server.pem
-			</screen>
+			]]></screen>
 			<para>在另外一个终端运行命令如下</para>
-			<screen>
+			<screen><![CDATA[
 openssl s_client -connect localhost:2009
-			</screen>
+			]]></screen>
 			<example>
 				<title>加密传输文件</title>
 				<para>现在我们来尝试使用使用 openssl 加密传输文件</para>
 				<para>传输 /etc/passwd 文件</para>
-				<screen>
+				<screen><![CDATA[
 $ cat /etc/passwd | openssl s_server -accept 2009 -key server.pem -cert server.pem
-				</screen>
+				]]></screen>
 				<para>输出类似</para>
-				<screen>
+				<screen><![CDATA[
 $ cat /etc/passwd | openssl s_server -accept 2009 -key server.pem -cert server.pem
 Using default temp DH parameters
 Using default temp ECDH parameters
@@ -547,11 +637,11 @@ CONNECTION CLOSED
    0 session cache timeouts
    0 callback cache hits
    0 cache full overflows (128 allowed)
-				</screen>
+				]]></screen>
 				<para>另一个服务器上运行</para>
-				<screen>
+				<screen><![CDATA[
 openssl s_client -connect 192.168.6.2:2009
-				</screen>
+				]]></screen>
 				<para>输出类似</para>
 				<screen>
 				<![CDATA[
@@ -673,7 +763,7 @@ read:errno=0
 			<title>HTTP SSL 证书</title>
 			<section>
 				<title>证书链</title>
-				<screen>
+				<screen><![CDATA[
 [www@netkiller ~]$ openssl s_client -connect www.google.com:443 -state 
 CONNECTED(00000003)
 SSL_connect:before/connect initialization
@@ -774,9 +864,9 @@ SSL-Session:
     Timeout   : 300 (sec)
     Verify return code: 0 (ok)
 ---
-				</screen>
+				]]></screen>
 				<para>注意下面证书链，通常有三级，根证书，中级证书，服务器证书</para>
-				<screen>
+				<screen><![CDATA[
 ---
 Certificate chain
  0 s:/C=US/ST=California/L=Mountain View/O=Google Inc/CN=www.google.com
@@ -786,7 +876,7 @@ Certificate chain
  2 s:/C=US/O=GeoTrust Inc./CN=GeoTrust Global CA
    i:/C=US/O=Equifax/OU=Equifax Secure Certificate Authority
 ---
-				</screen>
+				]]></screen>
 				<para>GeoTrust Global CA 是根证书上</para>
 				<para>Google Internet Authority G2 中级证书</para>
 				<para>www.google.com 是服务器证书</para>
@@ -797,16 +887,16 @@ Certificate chain
 			</section>
 			<section>
 				<title>显示证书</title>
-				<screen>
+				<screen><![CDATA[
 $ openssl s_client -connect www.google.com:443 -showcerts
-				</screen>
+				]]></screen>
 			</section>
 			<section>
 				<title>指定 servername</title>
 				<para>默认s_client使用IP地址链接并不会推送HTTP的HOST头，如果链接的是虚拟机就会有麻烦。</para>
-				<screen>
+				<screen><![CDATA[
 $ openssl s_client -servername api.netkiller.com -connect api.netkiller.com:443				
-				</screen>
+				]]></screen>
 			</section>
 		</section>
 	</section>
@@ -819,16 +909,16 @@ $ openssl s_client -servername api.netkiller.com -connect api.netkiller.com:443
 		<section>
 			<title>快速创建自签名证书</title>
 			<para>以下适合个人使用</para>
-			<screen>
+			<screen><![CDATA[
 openssl genrsa -out ca.pem 1024
 openssl req -new -out neo.csr -key ca.pem
 openssl x509 -req -in neo.csr -out neo.cer -signkey ca.pem -days 365
 openssl pkcs12 -export -clcerts -in neo.cer -inkey ca.pem -out neo.p12
-			</screen>
+			]]></screen>
 			<para>安装cer与p12两个证书，然后打开outlook测试</para>
 			<example>
 				<title>快速创建自签名证书</title>
-				<screen>
+				<screen><![CDATA[
 				<![CDATA[
 [root@localhost smime]# openssl genrsa -out ca/ca.pem 1024
 Generating RSA private key, 1024 bit long modulus
@@ -868,41 +958,41 @@ Verifying - Enter Export Password:
 				]]>
 				</screen>
 				<para>更便捷的方法</para>
-				<screen>
+				<screen><![CDATA[
 openssl genrsa -out ca.pem 1024
 openssl req -new -out neo.csr -key ca.pem -subj  "/C=CN/ST=GD/L=SZ/O=Internet Widgits Pty Ltd/OU=IT/CN=neo/emailAddress=neo@668x.net"
 openssl x509 -req -in neo.csr -out neo.cer -signkey ca.pem -days 365
 openssl pkcs12 -export -in neo.cer -inkey ca.pem -out neo.p12 -name "neo"
-				</screen>
+				]]></screen>
 			</example>
 		</section>
 		<section>
 			<title>企业或集团方案</title>
 			<section>
 				<title>证书环境</title>
-				<screen>
+				<screen><![CDATA[
 % mkdir keys
 % cd keys/
-				</screen>
+				]]></screen>
 				<para>建立空文件 index.txt 用来保存以后的证书信息，这是OpenSSL的证书数据库：</para>
-				<screen>
+				<screen><![CDATA[
 touch  index.txt
-				</screen>
+				]]></screen>
 				<para>建立一个文件 serial 在文件中输入一个数字，做为以后颁发证书的序列号，颁发证书序列号就从你输入的数字开始递增：</para>
-				<screen>
+				<screen><![CDATA[
 echo 01 > serial
-				</screen>
+				]]></screen>
 			</section>
 
 			<section>
 				<title>颁发CA证书</title>
 				<para>首先创建CA根证书私钥文件，使用RSA格式，1024位：</para>
-				<screen>
+				<screen><![CDATA[
 % openssl genrsa -des3 -out ca.key 1024
-				</screen>
+				]]></screen>
 				<example>
 					<title>创建CA根证书</title>
-					<screen>
+					<screen><![CDATA[
 % openssl genrsa -des3 -out ca.key 1024
 Generating RSA private key, 1024 bit long modulus
 ...........................++++++
@@ -910,20 +1000,20 @@ Generating RSA private key, 1024 bit long modulus
 e is 65537 (0x10001)
 Enter pass phrase for ca.key:
 Verifying - Enter pass phrase for ca.key:
-					</screen>
+					]]></screen>
 				</example>
 				<para>私钥在建立时需要输入一个密码用来保护私钥文件，私钥文件使用3DES加密; 也可以不进行加密，这样不安全，因为一旦ca证书遗失，别人就可以随意颁发用户证书：</para>
-				<screen>
+				<screen><![CDATA[
 openssl genrsa -out ca.key 1024
-				</screen>
+				]]></screen>
 				<para>利用建立RSA私钥，为CA自己建立一个自签名的证书文件：</para>
-				<screen>
+				<screen><![CDATA[
 openssl req -new -x509 -days 365 -key ca.key -out ca.crt
-				</screen>
+				]]></screen>
 				<para>生成证书的过程中需要输入证书的信息，</para>
 				<example>
 					<title>创建自签名的证书</title>
-					<screen>
+					<screen><![CDATA[
 % openssl req -new -x509 -days 365 -key ca.key -out ca.crt
 Enter pass phrase for ca.key:
 You are about to be asked to enter information that will be incorporated
@@ -940,154 +1030,154 @@ Organization Name (eg, company) [Internet Widgits Pty Ltd]:Your Company Ltd
 Organizational Unit Name (eg, section) []:IT
 Common Name (e.g. server FQDN or YOUR name) []:Neo Chan
 Email Address []:neo.chan@live.com
-					</screen>
+					]]></screen>
 				</example>
 			</section>
 			<section>
 				<title>颁发客户证书</title>
 				<para>生成客户证书的私钥文件，与生成CA根证书文件的方法一样，</para>
-				<screen>
+				<screen><![CDATA[
 openssl genrsa -des3 -out client.key 1024
-				</screen>
+				]]></screen>
 				<para>OpenSSL生成客户端证书的时候，不能直接生成证书，而是必须通过证书请求文件来生成，因此现在我们来建立客户端的证书请求文件，生成的过程中一样要输入客户端的信息：</para>
-				<screen>
+				<screen><![CDATA[
 openssl req -new -key client.key -out client.csr
-				</screen>
+				]]></screen>
 				<para>有了证书请求文件之后，就可以使用CA的根证书、根私钥来对请求文件进行签名，生成客户端证书 client.pem 了：</para>
-				<screen>
+				<screen><![CDATA[
 openssl x509 -req -in client.csr -out client.crt -signkey client.key -CA ca.crt -CAkey ca.key -days 365 -CAserial serial
-				</screen>
-				<screen>
+				]]></screen>
+				<screen><![CDATA[
 openssl pkcs12 -export -clcerts -in client.crt -inkey client.key -out client.p12
-				</screen>
+				]]></screen>
 				<note>到这里为止，根CA为客户端签发证书的过程就结束了。</note>
 			</section>
 			<section>
 				<title>吊销已签发的证书</title>
 				<para>使用ca中的 -revoke 命令：</para>
-				<screen>
+				<screen><![CDATA[
 openssl ca -revoke client.pem -keyfile ca.key -cert ca.crt
-				</screen>
+				]]></screen>
 				<para>证书被吊销之后，还需要发布新的CRL文件：</para>
-				<screen>
+				<screen><![CDATA[
 openssl ca -gencrl  -out ca.crl -keyfile ca.key -cert ca.crt
-				</screen>
+				]]></screen>
 			</section>
 		</section>
 	</section>
 	<section id="format">
 		<title>证书转换</title>
 		<literallayout>
-PKCS 全称是 Public-Key Cryptography Standards ，是由 RSA 实验室与其它安全系统开发商为促进公钥密码的发展而制订的一系列标准，PKCS 目前共发布过 15 个标准。 常用的有：
-PKCS#7 Cryptographic Message Syntax Standard
-PKCS#10 Certification Request Standard
-PKCS#12 Personal Information Exchange Syntax Standard
-X.509是常见通用的证书格式。所有的证书都符合为Public Key Infrastructure (PKI) 制定的 ITU-T X509 国际标准。
-PKCS#7 常用的后缀是： .P7B .P7C .SPC
-PKCS#12 常用的后缀有： .P12 .PFX
-X.509 DER 编码(ASCII)的后缀是： .DER .CER .CRT
-X.509 PAM 编码(Base64)的后缀是： .PEM .CER .CRT
-.cer/.crt是用于存放证书，它是2进制形式存放的，不含私钥。
-.pem跟crt/cer的区别是它以Ascii来表示。
-pfx/p12用于存放个人证书/私钥，他通常包含保护密码，2进制方式
-p10是证书请求
-p7r是CA对证书请求的回复，只用于导入
-p7b以树状展示证书链(certificate chain)，同时也支持单个证书，不含私钥。
+			PKCS 全称是 Public-Key Cryptography Standards ，是由 RSA 实验室与其它安全系统开发商为促进公钥密码的发展而制订的一系列标准，PKCS 目前共发布过 15 个标准。 常用的有：
+			PKCS#7 Cryptographic Message Syntax Standard
+			PKCS#10 Certification Request Standard
+			PKCS#12 Personal Information Exchange Syntax Standard
+			X.509是常见通用的证书格式。所有的证书都符合为Public Key Infrastructure (PKI) 制定的 ITU-T X509 国际标准。
+			PKCS#7 常用的后缀是： .P7B .P7C .SPC
+			PKCS#12 常用的后缀有： .P12 .PFX
+			X.509 DER 编码(ASCII)的后缀是： .DER .CER .CRT
+			X.509 PAM 编码(Base64)的后缀是： .PEM .CER .CRT
+			.cer/.crt是用于存放证书，它是2进制形式存放的，不含私钥。
+			.pem跟crt/cer的区别是它以Ascii来表示。
+			pfx/p12用于存放个人证书/私钥，他通常包含保护密码，2进制方式
+			p10是证书请求
+			p7r是CA对证书请求的回复，只用于导入
+			p7b以树状展示证书链(certificate chain)，同时也支持单个证书，不含私钥。
 		</literallayout>
-		
+
 		<section>
 			<title>CA证书</title>
 			<para>用openssl创建CA证书的RSA密钥(PEM格式)：</para>
-			<screen>
+			<screen><![CDATA[
 openssl genrsa -des3 -out ca.key 1024
-			</screen>
+			]]></screen>
 		</section>
 		<section>
 			<title>创建CA证书有效期为一年</title>
 			<para>用openssl创建CA证书(PEM格式,假如有效期为一年)：</para>
-			<screen>
+			<screen><![CDATA[
 openssl req -new -x509 -days 365 -key ca.key -out ca.crt -config openssl.cnf
-			</screen>
+			]]></screen>
 			<para>openssl是可以生成DER格式的CA证书的，最好用IE将PEM格式的CA证书转换成DER格式的CA证书。</para>
 		</section>
 		<section id="x5092pfx">
 			<title>x509转换为pfx</title>
-			<screen>
+			<screen><![CDATA[
 openssl pkcs12 -export -out server.pfx -inkey server.key -in server.crt
-			</screen>
+			]]></screen>
 		</section>
 		<section id="pem2pvk">
 			<title>PEM格式的ca.key转换为Microsoft可以识别的pvk格式</title>
-			<screen>
+			<screen><![CDATA[
 pvk -in ca.key -out ca.pvk -nocrypt -topvk
-			</screen>
+			]]></screen>
 		</section>
 		<section id="pkcs#122pem">
 			<title>PKCS#12 到 PEM 的转换</title>
-			<screen>
+			<screen><![CDATA[
 openssl pkcs12 -nocerts -nodes -in cert.p12 -out private.pem
 验证
 openssl pkcs12 -clcerts -nokeys -in cert.p12 -out cert.pem
-			</screen>
+			]]></screen>
 		</section>
 		<section id="pfx2key">
 			<title>从 PFX 格式文件中提取私钥格式文件 (.key) </title>
-			<screen>
+			<screen><![CDATA[
 openssl pkcs12 -in mycert.pfx -nocerts -nodes -out mycert.key
-			</screen>
+			]]></screen>
 		</section>
 		<section id="pem2spc">
 			<title>转换 pem 到到 spc</title>
-			<screen>
+			<screen><![CDATA[
 openssl crl2pkcs7 -nocrl -certfile venus.pem  -outform DER -out venus.spc
-			</screen>
+			]]></screen>
 			<para>用 -outform -inform 指定 DER 还是 PAM 格式。例如：</para>
-			<screen>
+			<screen><![CDATA[
 openssl x509 -in Cert.pem -inform PEM -out cert.der -outform DER
-			</screen>
+			]]></screen>
 		</section>
 		<section id="pem2pkcs#12">
 			<title>PEM 到 PKCS#12 的转换</title>
-			<screen>
+			<screen><![CDATA[
 openssl pkcs12 -export -in Cert.pem -out Cert.p12 -inkey key.pem
-			</screen>
+			]]></screen>
 			<para>IIS 证书</para>
-			<screen>
+			<screen><![CDATA[
 cd c:\openssl
 set OPENSSL_CONF=openssl.cnf
 openssl pkcs12 -export -out server.pfx -inkey server.key -in server.crt
-			</screen>
+			]]></screen>
 			<para>server.key和server.crt文件是Apache的证书文件，生成的server.pfx用于导入IIS</para>
 		</section>
 		<section id="pfx2pem">
 			<title>How to Convert PFX Certificate to PEM Format for SOAP</title>
-			<screen>
+			<screen><![CDATA[
 $ openssl pkcs12 -in test.pfx -out client.pem
 Enter Import Password:
 MAC verified OK
 Enter PEM pass phrase:
 Verifying - Enter PEM pass phrase:
-			</screen>
+			]]></screen>
 		</section>
 		<section id="der2pem">
 			<title>DER文件（.crt .cer .der）转为PEM格式文件</title>
-			<screen>
+			<screen><![CDATA[
 转换DER文件(一般后缀名是.crt .cer .der的文件)到PEM文件
 openssl x509 -inform der -in certificate.cer -out certificate.pem
 转换PEM文件到DER文件
 openssl x509 -outform der -in certificate.pem -out certificate.der
-			</screen>
+			]]></screen>
 		</section>
 		<section id="jks2x509">
 			<title>JKS 转 X509</title>
-			<screen>
+			<screen><![CDATA[
 keytool -list -rfc --keystore netkiller.jks | openssl x509 -inform pem -pubkey			
-			</screen>
+			]]></screen>
 		</section>
 		<section>
 			<title>jks to pem</title>
 			<para>转换流程 jks - p12 - pem</para>
-			<screen>
+			<screen><![CDATA[
 keytool -keystore foo.jks -genkeypair -alias foo \
     -dname 'CN=foo.example.com,L=Melbourne,ST=Victoria,C=AU'
 
@@ -1098,28 +1188,28 @@ keytool -importkeystore -srckeystore foo.jks \
    -deststoretype pkcs12
 
 openssl pkcs12 -in foo.p12 -out foo.pem
-			</screen>
+			]]></screen>
 			<para></para>
-			<screen>
+			<screen><![CDATA[
 neo@MacBook-Pro ~/test/test % ls
 foo.jks foo.p12 foo.pem			
-			</screen>
+			]]></screen>
 			<para>查看证书</para>
-			<screen>
+			<screen><![CDATA[
 keytool -keystore foo.jks -exportcert -alias foo | openssl x509 -inform der -text
 
 openssl x509 -text -in foo.pem
 
 openssl dsa -text -in foo.pem			
-			</screen>
+			]]></screen>
 		</section>
 	</section>
 	<section id="sslscan">
 		<title>其他证书工具</title>
-		<screen>
+		<screen><![CDATA[
 sudo apt-get install sslscan
-		</screen>
-		<screen>
+		]]></screen>
+		<screen><![CDATA[
                    _
            ___ ___| |___  ___ __ _ _ __
           / __/ __| / __|/ __/ _` | '_ \
@@ -1129,7 +1219,7 @@ sudo apt-get install sslscan
                   Version 1.8.2
              http://www.titania.co.uk
         Copyright Ian Ventura-Whiting 2009
-		</screen>
+		]]></screen>
 	</section>
 	<section id="development">
 		<title>OpenSSL 开发库</title>
@@ -1217,10 +1307,10 @@ return (0);
 				]]>
 				</screen>
 				<para>编译运行</para>
-				<screen>
+				<screen><![CDATA[
 $ gcc des.c -o des -lssl -lcrypto
 $ ./des
-				</screen>
+				]]></screen>
 			</example>
 		</section>
 	</section>
