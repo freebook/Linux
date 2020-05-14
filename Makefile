@@ -14,6 +14,7 @@ endef
 
 define book
 	@git pull
+	@git submodule init
 	@git submodule update
 	@rsync -au ../common/docbook.css $(PUBLIC_HTML)/$(2)/
 	@$(XSLTPROC) -o $(PUBLIC_HTML)/$(2)/ $(DSSSL) $(1)/book.xml
