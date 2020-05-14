@@ -1,5 +1,5 @@
 XSLTPROC = /usr/bin/xsltproc
-DSSSL = ../../docbook-xsl/docbook.xsl
+DSSSL = ../docbook-xsl/docbook.xsl
 TMPDIR = $(shell mktemp -d --suffix=.tmp -p /tmp cryptography.html.XXXXXX)
 WORKSPACE=~/workspace
 PROJECT=Cryptography

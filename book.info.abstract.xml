@@ -8,7 +8,8 @@
 			<para>Linux只要接上电源你就不要再想用reboot,shutdown,halt,poweroff命令,Linux系统和应用软件一般备有reload,reconfigure,restart/start/stop...不需要安装软件或配置服务器后使用reboot重新引导计算机
 			</para>
 			<para>在Linux系统里SIGHUP信号被定义为刷新配置文件,有些程序没有提供reload参数,你可以给进程发送HUP信号,让它刷新配置文件,而不用restart.通过pkill,killall,kill
-				都可以发送HUP信号例如: pkill -HUP httpd</para>
+				都可以发送HUP信号例如: pkill -HUP httpd
+			</para>
 		</note>
 	</para>
 	<para>我的系列文档:</para>
@@ -41,6 +42,9 @@
 		</member>
 		<member>
 			<ulink url="../virtualization/index.html">Netkiller Virtualization 手札</ulink>
+		</member>
+		<member>
+			<ulink url="../cryptography/index.html">Netkiller Cryptography 手札</ulink>
 		</member>
 	</simplelist>
 
