@@ -286,7 +286,6 @@ openssl enc -d -aes-128-cbc -in filename.out -out filename
 				<![CDATA[
 echo abc | openssl aes-128-cbc -k 123 -base64				
 				]]>
-					]]>
 				</screen>
 			</section>
 		</section>
