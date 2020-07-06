@@ -41,6 +41,15 @@ do
 done
 			</screen>
 		</section>
+		<section id="quality">
+			<title>图像质量调整</title>
+			<screen>
+			<![CDATA[
+find . -iname "*.jpg" -exec convert -strip +profile "*"  -quality 65 {} {} \;​			
+			]]>
+			</screen>
+		</section>
+		
 		<section>
 			<title>PDF to PNG</title>
 			<para>将PDF文档每页生成一个PNG图片</para>

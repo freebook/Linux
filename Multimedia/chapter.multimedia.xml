@@ -1,5 +1,5 @@
 <part id="index"><?dbhtml dir="multimedia" ?>
-	<title>Multimedia</title>
+	<title>多媒体信息处理（Multimedia）</title>
 	&part.audio.xml;
 	&part.video.xml;
 	&part.graphics.xml;
