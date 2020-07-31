@@ -1,3 +1,4 @@
+git submodule update
 #rm -rf ~/tmp/linux/
 mkdir -p ~/tmp/linux/
 cp -r images ~/tmp/linux/
