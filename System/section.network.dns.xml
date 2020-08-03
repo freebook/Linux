@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+	<title>配置 DNS</title>
+	<section id="resolv.conf">
+		<title>常规 DNS 配置 /etc/resolv.conf</title>
+		<para>nameserver 后面填写 DNS 服务器 IP 地址</para>
+		<screen>
+		<![CDATA[
+When it comes to DNS setup Ubuntu doesn’t differ from other distributions. You can add hostname and IP addresses to the file /etc/hosts for static lookups.
+
+To cause your machine to consult with a particular server for name lookups you simply add their addresses to /etc/resolv.conf.
+
+For example a machine which should perform lookups from the DNS server at IP address 192.168.3.2 would have a resolv.conf file looking like this
+
+sudo vi /etc/resolv.conf
+
+enter the following details
+
+search test.com
+nameserver 192.168.3.2
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+domain domain.com
+search www.domain.com domain.com
+nameserver 202.96.128.86
+nameserver 202.96.134.133
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>安全 DNS 配置</title>
+		<section id="DoT">
+			<title>启用 DNS over TLS</title>
+			<para>常规 DNS 服务器域名解析过程是明文的，使用UDP传输，容易遭到劫持。DNS over TLS 类似 HTTPS 技术，域名解析过程是被加密的。</para>
+			<tip>普通 DNS 使用 53 UDP 端口，而 DNS over TLS 使用 853 TCP 端口。</tip>
+			<screen>
+		<![CDATA[
+$ cat /etc/systemd/resolved.conf
+[Resolve]
+DNS=1.1.1.1 9.9.9.9
+DNSOverTLS=yes
+FallbackDNS=8.8.8.8 4.4.4.4
+		]]>
+			</screen>
+		</section>
+		<section>
+			<title>启用 DNSSEC</title>
+			<para>DNSSEC 技术与 DNS over TLS 类似</para>
+			<screen>
+		<![CDATA[
+$ cat /etc/systemd/resolved.conf
+[Resolve]
+DNS=1.1.1.1 9.9.9.9
+DNSSEC=yes
+FallbackDNS=8.8.8.8 4.4.4.4
+		]]>
+			</screen>
+		</section>
+		<section>
+			<title>同时启用 DNS over TLS 和 DNSSEC</title>
+			<screen>
+		<![CDATA[
+$ cat /etc/systemd/resolved.conf
+[Resolve]
+DNS=1.1.1.1 9.9.9.9
+DNSOverTLS=yes
+DNSSEC=yes
+FallbackDNS=8.8.8.8 4.4.4.4		
+		]]>
+			</screen>
+		</section>
+		<section>
+			<title>配置 NetworkManager</title>
+			<para>在 /etc/NetworkManager/conf.d 中创建名为 10-dns-systemd-resolved.conf 文件。</para>
+			<screen>
+			<![CDATA[
+$ cat /etc/NetworkManager/conf.d/10-dns-systemd-resolved.conf
+[main]
+dns=systemd-resolved			
+			]]>
+			</screen>
+			<para>重启 NetworkManager 服务</para>
+			<screen>
+			<![CDATA[
+$ sudo systemctl start systemd-resolved
+$ sudo systemctl enable systemd-resolved
+$ sudo systemctl restart NetworkManager			
+			]]>
+			</screen>
+			<para>检查 DNS over TLS 是否一切正常</para>
+			<screen>
+			<![CDATA[
+$ resolvectl status
+MulticastDNS setting: yes
+  DNSOverTLS setting: yes
+      DNSSEC setting: yes
+    DNSSEC supported: yes
+  Current DNS Server: 1.1.1.1
+         DNS Servers: 1.1.1.1
+                      9.9.9.9
+Fallback DNS Servers: 8.8.8.8
+                      1.0.0.1
+                      8.8.4.4			
+			]]>
+			</screen>
+			<para>测试解析</para>
+			<screen>
+			<![CDATA[
+$ resolvectl query www.netkiller.cn			
+			]]>
+			</screen>
+		</section>
+	</section>
+</section>

@@ -296,30 +296,7 @@ $ sudo route add default gw 172.16.0.1
 $ sudo ip route default via 172.16.0.1 dev eth0
 		</screen>
 	</section>
-	<section id="resolv.conf">
-		<title>Configuring Name Server Lookups</title>
-		<para>Setting up DNS</para>
-		<screen>
-When it comes to DNS setup Ubuntu doesn’t differ from other distributions. You can add hostname and IP addresses to the file /etc/hosts for static lookups.
-
-To cause your machine to consult with a particular server for name lookups you simply add their addresses to /etc/resolv.conf.
-
-For example a machine which should perform lookups from the DNS server at IP address 192.168.3.2 would have a resolv.conf file looking like this
-
-sudo vi /etc/resolv.conf
-
-enter the following details
-
-search test.com
-nameserver 192.168.3.2
-		</screen>
-		<screen>
-domain domain.com
-search www.domain.com domain.com
-nameserver 202.96.128.86
-nameserver 202.96.134.133
-		</screen>
-	</section>
+	&section.network.dns.xml;
 	<section id="forwarding">
 		<title>IP forwarding(IP转发)</title>
 		<para>enable IP forwarding</para>
@@ -930,7 +907,7 @@ sshd:25161
 			</screen>
 		</section>
 	</section>
-	<section>
+	<section id="netplan">
 		<title>Ubuntu netplan (Ubuntu 18.04 之后才用 netplan 管理网络)</title>
 		<para>https://netplan.io/examples 参考例子</para>
 		<para>配置 DHCP</para>
@@ -957,5 +934,5 @@ neo@netkiller ~ % sudo netplan apply
 		</example>
 		
 	</section>
-	&chapter.network.router.xml;
+	&section.network.router.xml;
 </chapter>
