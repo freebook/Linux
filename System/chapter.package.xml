@@ -6,6 +6,7 @@
 	&section.package.snap.xml;
 	&section.package.dnf.xml;
 	&section.package.yum.xml;
+	&section.package.homebrew.xml;
 	<section>
 		<title>清理安装包</title>
 		<screen>

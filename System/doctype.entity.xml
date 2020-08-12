@@ -10,6 +10,7 @@
 	<!ENTITY section.package.yum.xml 		SYSTEM "section.package.yum.xml">
 	<!ENTITY section.package.snap.xml 		SYSTEM "section.package.snap.xml">
 	<!ENTITY section.package.dnf.xml 		SYSTEM "section.package.dnf.xml">
+	<!ENTITY section.package.homebrew.xml	SYSTEM "section.package.homebrew.xml">
 	
 	<!ENTITY chapter.device.xml 			SYSTEM "chapter.device.xml">
 	<!ENTITY chapter.device.cpu.xml			SYSTEM "chapter.device.cpu.xml">

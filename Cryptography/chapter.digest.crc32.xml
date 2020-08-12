@@ -12,4 +12,29 @@ printf("%u\n", $checksum);
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>Java CRC32</title>
+		<programlisting>
+		<![CDATA[
+package cn.netkiller.security;
+
+import java.nio.ByteBuffer;
+import java.util.zip.CRC32;
+
+public class CRC {
+
+	public static void main(String[] args) {
+
+		final CRC32 crc32 = new CRC32();
+		ByteBuffer data = ByteBuffer.wrap("http://www.netkiller.cn".getBytes());
+		crc32.update(data);
+		System.out.println(crc32.getValue());
+
+	}
+
+}		
+		]]>
+		</programlisting>
+	</section>
+	
 </section>
