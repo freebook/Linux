@@ -2,7 +2,7 @@
 	<title>多媒体信息处理（Multimedia）</title>
 	&part.audio.xml;
 	&part.video.xml;
-	&part.graphics.xml;
+	&part.images.xml;
 	&part.music.xml;
 	&part.stream.xml;
 	&chapter.miscellaneous.xml;

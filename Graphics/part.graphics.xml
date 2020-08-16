@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <part id="index"><?dbhtml dir="graphics" ?>
-	<title>Graphics</title>
+	<title>图形工具（Graphics）</title>
 	&chapter.gnuplot.xml;
 	&chapter.graphviz.xml;
 	&chapter.ttdtool.xml;

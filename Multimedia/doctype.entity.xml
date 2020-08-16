@@ -12,10 +12,10 @@
 
 <!ENTITY part.video.xml	 			SYSTEM "Video/part.video.xml">
 
-<!ENTITY part.graphics.xml			SYSTEM "Graphics/part.graphics.xml">
-<!ENTITY chapter.imagemagick.xml 	SYSTEM "Graphics/chapter.imagemagick.xml">
-<!ENTITY chapter.graphicsmagick.xml SYSTEM "Graphics/chapter.graphicsmagick.xml">
-<!ENTITY chapter.photivo.xml		SYSTEM "Graphics/chapter.photivo.xml">
+<!ENTITY part.images.xml			SYSTEM "Images/part.images.xml">
+<!ENTITY chapter.imagemagick.xml 	SYSTEM "Images/chapter.imagemagick.xml">
+<!ENTITY chapter.graphicsmagick.xml SYSTEM "Images/chapter.graphicsmagick.xml">
+<!ENTITY chapter.photivo.xml		SYSTEM "Images/chapter.photivo.xml">
 
 <!ENTITY part.music.xml				SYSTEM "Music/part.music.xml">
 <!ENTITY chapter.lilypond.xml 		SYSTEM "Music/chapter.lilypond.xml">
@@ -31,9 +31,3 @@
 <!ENTITY chapter.voip.xml 			SYSTEM "VoIP/chapter.voip.xml">
 <!ENTITY chapter.opensips.xml 		SYSTEM "VoIP/chapter.opensips.xml">
 <!ENTITY chapter.gatekeeper.xml 	SYSTEM "VoIP/chapter.gatekeeper.xml">
-
-	<!--
-	<!ENTITY chapter.teamwork.xml	 	SYSTEM "chapter.teamwork.xml">
-	<!ENTITY chapter.vm.xml		 		SYSTEM "chapter.vm.xml">
-	<!ENTITY chapter.monitor.xml		SYSTEM "chapter.monitor.xml">
-	-->

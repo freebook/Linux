@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="index"><?dbhtml dir="graphics" ?>
+<chapter id="index"><?dbhtml dir="images" ?>
 	<title>图像处理（Graphics）</title>
 	&chapter.graphicsmagick.xml;
 	&chapter.imagemagick.xml;
