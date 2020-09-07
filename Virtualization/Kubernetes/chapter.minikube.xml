@@ -2,24 +2,17 @@
 <section id="minikube">
 	<title>Minikube</title>
 	<section id="minikube.install">
-		<title>安装 </title>
+		<title>CentOS 8 安装 minikube</title>
 		<section>
-			<title>BIOS 设置</title>
+			<title>CentOS</title>
 			<para>执行下面命令检查服务器是否开启虚拟化技术</para>
 			<screen>
 			<![CDATA[
-egrep --color 'vmx|svm' /proc/cpuinfo			
+egrep --color 'vmx|svm' /proc/cpuinfo
 			]]>
 			</screen>
 			<para>如果没有任何输出，请重启服务器进入 BIOS 启用 VT-X 或 AMD-v</para>
-		</section>
-		<section>
-			<title>CentOS</title>
-			<screen>
-			<![CDATA[
-curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.13.2/bin/linux/amd64/kubectl && chmod +x kubectl && sudo cp kubectl /usr/local/bin/ && rm kubectl			
-			]]>
-			</screen>
+
 			<screen>
 			<![CDATA[
 curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 \
@@ -29,8 +22,9 @@ curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-
 			<para>尝试运行 minikube 如果输出帮助信息表示安装成功</para>
 			<screen>
 			<![CDATA[
-minikube version
-minikube version: v0.33.1			
+[root@localhost ~]# minikube version
+minikube version: v1.13.0
+commit: 0c5e9de4ca6f9c55147ae7f90af97eff5befef5f-dirty			
 			]]>
 			</screen>
 			<para></para>
@@ -39,14 +33,77 @@ minikube version: v0.33.1
 echo "1" > /proc/sys/net/bridge/bridge-nf-call-iptables			
 			]]>
 			</screen>
+			<para>dnf 安装 kubectl</para>
+			<screen>
+			<![CDATA[
+cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+EOF
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# dnf install kubectl
+			]]>
+			</screen>
+			<para>二进制安装 kubectl</para>
+			<screen>
+			<![CDATA[			
+curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl" \
+	&& install kubectl /usr/local/bin/kubectl
+			]]>
+			</screen>
+			<section>
+				<title>无虚拟机</title>
+				<para>如果你不想安装虚拟机</para>
+				<screen>
+			<![CDATA[
+adduser docker
+su - docker
+sudo usermod -aG docker $USER && newgrp docker			
+			]]>
+				</screen>
+				<para></para>
+				<screen>
+				<![CDATA[
+[docker@localhost ~]$ minikube start --driver=docker
+* minikube v1.13.0 on Centos 8.2.2004
+* Using the docker driver based on user configuration
+
+X Requested memory allocation (1694MB) is less than the recommended minimum 2000MB. Deployments may fail.
+
+
+X The requested memory allocation of 1694MiB does not leave room for system overhead (total system memory: 1694MiB). You may face stability issues.
+* Suggestion: Start minikube with less memory allocated: 'minikube start --memory=1694mb'
+
+* Starting control plane node minikube in cluster minikube
+* Pulling base image ...
+* Downloading Kubernetes v1.19.0 preload ...
+    > preloaded-images-k8s-v6-v1.19.0-docker-overlay2-amd64.tar.lz4: 486.28 MiB				
+				]]>
+				</screen>
+			</section>
 		</section>
-		
+
 		<section>
 			<title>Mac OS</title>
+			<para>检查硬件是否支持虚拟化</para>
+			<screen>
+			<![CDATA[
+iMac:Linux neo$ sysctl -a | grep -E --color 'machdep.cpu.features|VMX'
+machdep.cpu.features: FPU VME DE PSE TSC MSR PAE MCE CX8 APIC SEP MTRR PGE MCA CMOV PAT PSE36 CLFSH DS ACPI MMX FXSR SSE SSE2 SS HTT TM PBE SSE3 PCLMULQDQ DTES64 MON DSCPL VMX SMX EST TM2 SSSE3 CX16 TPR PDCM SSE4.1 SSE4.2 x2APIC POPCNT AES PCID XSAVE OSXSAVE TSCTMR AVX1.0			
+			]]>
+			</screen>
 			<screen>
 			<![CDATA[
 $ brew cask install virtualbox
-$ brew cask install minikube
+$ brew install minikube
 $ brew install kubectl
 $ brew install kubernetes-helm
 			]]>
