@@ -2,39 +2,7 @@
 <chapter id="system.utilities">
 	<title>System Utilities 配置工具</title>
 	<para></para>
-	<section id="nmtui">
-		<title>nmtui - Text User Interface for controlling NetworkManager</title>
-		<programlisting>
-		<![CDATA[
-# yum install NetworkManager-tui
-# nmtui		
-		]]>
-		</programlisting>
-		<screen>
-		<![CDATA[
-        ┌─┤ NetworkManager TUI ├──┐
-        │                         │ 
-        │ Please select an option │ 
-        │                         │ 
-        │ Edit a connection       │ 
-        │ Activate a connection   │ 
-        │ Set system hostname     │ 
-        │                         │ 
-        │ Quit                    │ 
-        │                         │ 
-        │                    <OK> │ 
-        │                         │ 
-        └─────────────────────────┘ 
-		]]>
-		</screen>
-		<screen>
-		<![CDATA[
-# nmtui
-# nmtui edit eno16777736
-# nmtui connect eno1677773
-		]]>
-		</screen>
-	</section>
+	
 	<section id="centos6.utilities">
 		<title>CentOS 6</title>
 		<para>setup</para>

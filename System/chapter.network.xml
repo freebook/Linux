@@ -178,8 +178,61 @@ iface eth0 inet dhcp
 			]]></screen>
 
 		</section>
+		<section>
+			<title>CentOS</title>
+			<screen><![CDATA[
+ifconfig eth0 192.168.0.10 netmask 255.255.255.0
+or
+ip addr add 192.168.0.10 dev eth0
+		]]></screen>
+			<para>ifcfg-eth0,ifcfg-eth1,ifcfg-eth2 ... ifcfg-eth(n)</para>
+			<screen>
+		<![CDATA[
+[root@development httpd]# cat /etc/sysconfig/network-scripts/ifcfg-eth0
+# Broadcom Corporation NetLink BCM5784M Gigabit Ethernet PCIe
+DEVICE=eth0
+BOOTPROTO=static
+BROADCAST=192.168.3.255
+HWADDR=00:25:64:A3:59:BF
+IPADDR=192.168.3.40
+IPV6INIT=yes
+IPV6_AUTOCONF=yes
+NETMASK=255.255.255.0
+NETWORK=192.168.3.0
+ONBOOT=yes
+		]]>
+			</screen>
+			<para>eth0:1</para>
+			<screen>
+		<![CDATA[
+[root@development httpd]# cp /etc/sysconfig/network-scripts/ifcfg-eth0 /etc/sysconfig/network-scripts/ifcfg-eth0:1
+[root@development httpd]# vi /etc/sysconfig/network-scripts/ifcfg-eth0:1
+# Broadcom Corporation NetLink BCM5784M Gigabit Ethernet PCIe
+DEVICE=eth0:1
+BOOTPROTO=static
+BROADCAST=192.168.3.255
+HWADDR=00:25:64:A3:59:BF
+IPADDR=192.168.3.41
+IPV6INIT=yes
+IPV6_AUTOCONF=yes
+NETMASK=255.255.255.0
+NETWORK=192.168.3.0
+ONBOOT=yes
+		]]>
+			</screen>
+			<para>reload network</para>
+			<screen>
+		<![CDATA[
+[root@development ~]# /etc/init.d/network reload
+Shutting down interface eth0:                              [  OK  ]
+Shutting down loopback interface:                          [  OK  ]
+Bringing up loopback interface:                            [  OK  ]
+Bringing up interface eth0:
+		]]>
+			</screen>
+		</section>
 		<section id="interfaces.static">
-			<title>Static IP</title>
+			<title>Ubuntu</title>
 			<para>Static IP</para>
 			<screen><![CDATA[
 # The primary network interface
@@ -209,78 +262,6 @@ dns-nameservers 8.8.8.8 4.4.4.4
 			]]></screen>
 		</section>
 	</section>
-
-	<section id="mask">
-		<title>Mask 子网掩码</title>
-		<literallayout>
-		<![CDATA[
-举例说明该算法。
-例：给定一 class c address : 192.168.5.0 ，要求划分20个子网，每个子网5个主机。
-解：因为4 <5 < 8 ，用256－8＝248 ---->即是所求的子网掩码，对应的子网数也就出来了。这是针对C类地址。
-针对B类地址的做法。对于B类地址，假如主机数小于或等于254，与C类地址算法相同。对于主机数大于254的，如需主机 700台，50个子网（相当大了），512 < 700< 1024
-256－（1024/256）=256－4＝252 ---->即是所求的子网掩码，对应的子网数也就出来了。上面256－4中的4（2的2次幂）是指主机数用2进制表示时超过8位的位数，即超过2位，掩码为剩余的前6位，即子网数为2（6）－2＝62个。
-		]]>
-		</literallayout>
-		<screen><![CDATA[
-Append :Host/Subnet Quantities Table
-
-----------------------------------------------------------------------
-Class A                   Effective  Effective
-# bits        Mask         Subnets     Hosts
--------  ---------------  ---------  ---------
-  2      255.192.0.0            2      4194302
-  3      255.224.0.0            6      2097150
-  4      255.240.0.0           14      1048574
-  5      255.248.0.0           30       524286
-  6      255.252.0.0           62       262142
-  7      255.254.0.0          126       131070
-  8      255.255.0.0          254        65536
-  9      255.255.128.0        510        32766
-  10     255.255.192.0       1022        16382
-  11     255.255.224.0       2046         8190
-  12     255.255.240.0       4094         4094
-  13     255.255.248.0       8190         2046
-  14     255.255.252.0      16382         1022
-  15     255.255.254.0      32766          510
-  16     255.255.255.0      65536          254
-  17     255.255.255.128   131070          126
-  18     255.255.255.192   262142           62
-  19     255.255.255.224   524286           30
-  20     255.255.255.240  1048574           14
-  21     255.255.255.248  2097150            6
-  22     255.255.255.252  4194302            2
-
-Class B                   Effective  Effective
-# bits        Mask         Subnets     Hosts
--------  ---------------  ---------  ---------
-  2      255.255.192.0           2     16382
-  3      255.255.224.0           6      8190
-  4      255.255.240.0          14      4094
-  5      255.255.248.0          30      2046
-  6      255.255.252.0          62      1022
-  7      255.255.254.0         126       510
-  8      255.255.255.0         254       254
-  9      255.255.255.128       510       126
-  10     255.255.255.192      1022        62
-  11     255.255.255.224      2046        30
-  12     255.255.255.240      4094        14
-  13     255.255.255.248      8190         6
-  14     255.255.255.252     16382         2
-
-Class C                   Effective  Effective
-# bits        Mask         Subnets     Hosts
--------  ---------------  ---------  ---------
-  2      255.255.255.192      2         62
-  3      255.255.255.224      6         30
-  4      255.255.255.240     14         14
-  5      255.255.255.248     30          6
-  6      255.255.255.252     62          2
-
-*Subnet all zeroes and all ones excluded.
-*Host all zeroes and all ones excluded.
-		]]></screen>
-	</section>
-
 	<section id="gateway">
 		<title>Gateway 设置默认网关</title>
 		<para>default gateway</para>
@@ -290,6 +271,18 @@ $ sudo route add default gw 172.16.0.1
 		<screen><![CDATA[
 $ sudo ip route default via 172.16.0.1 dev eth0
 		]]></screen>
+		<section>
+			<title>CentOS</title>
+			<screen>
+			<![CDATA[
+[root@development ~]# cat /etc/sysconfig/network
+NETWORKING=yes
+NETWORKING_IPV6=yes
+HOSTNAME=development.domain.org
+GATEWAY=192.168.3.1
+			]]>
+			</screen>
+		</section>
 	</section>
 	&section.network.dns.xml;
 	<section id="forwarding">
@@ -311,8 +304,10 @@ sysctl -w net.ipv4.ip_forward=1
 	<section id="bonding">
 		<title>bonding</title>
 		<para>绑定的前提条件：芯片组型号相同，而且网卡应该具备自己独立的BIOS芯片。</para>
-		<command>#vi ifcfg-bond0</command>
-		<screen><![CDATA[
+		<section id="bonding">
+			<title>bonding</title>
+			<command>#vi ifcfg-bond0</command>
+			<screen><![CDATA[
 # cat ifcfg-bond0
 DEVICE=bond0
 BOOTPROTO=static
@@ -322,8 +317,8 @@ BROADCAST=172.16.3.254
 ONBOOT=yes
 TYPE=Ethernet
 		]]></screen>
-		<para>这里要主意，不要指定单个网卡的IP 地址、子网掩码。将上述信息指定到虚拟适配器(bonding)中即可</para>
-		<screen><![CDATA[
+			<para>这里要主意，不要指定单个网卡的IP 地址、子网掩码。将上述信息指定到虚拟适配器(bonding)中即可</para>
+			<screen><![CDATA[
 [root@rhas-13 network-scripts]# cat ifcfg-eth0
 DEVICE=eth0
 ONBOOT=yes
@@ -334,38 +329,93 @@ DEVICE=eth1
 ONBOOT=yes
 BOOTPROTO=dhcp
 		]]></screen>
-		<para>编辑 /etc/modules.conf 文件，加入如下一行内容，以使系统在启动时加载bonding模块，对外虚拟网络接口设备为 bond0.加入下列两行:</para>
-		<command>* /etc/modules.conf 文件已经不再使用</command>
-		<screen>
+			<para>编辑 /etc/modules.conf 文件，加入如下一行内容，以使系统在启动时加载bonding模块，对外虚拟网络接口设备为 bond0.加入下列两行:</para>
+			<command>* /etc/modules.conf 文件已经不再使用</command>
+			<screen>
 		<![CDATA[
 cat >> /etc/modprobe.d/bonding.conf <<EOF
 alias bond0 bonding
 options bond0 miimon=100 mode=1
 EOF
         ]]>
-		</screen>
-		<para>
-			说明：miimon是用来进行链路监测的。比如:miimon=100，那么系统每100ms监测一次链路连接状态，如果有一条线路不通就转入另一条线路；mode的值表示工作模式，他共有0， 1,2,3四种模式，常用的为0,1两种。mode=0表示load balancing (round-robin)为负载均衡方式，两块网卡都工作。mode=1表示fault-tolerance (active-backup)提供冗余功能，工作方式是主备的工作方式,也就是说默认情况下只有一块网卡工作,另一块做备份。bonding只能提供链路监测，即从主机到交换机的链路是否接通。如果只是交换机对外的链路down掉了，而交换机本身并没有故障，那么bonding会认为链路没有问题而继续使用。
-		</para>
+			</screen>
+			<para>
+				说明：miimon是用来进行链路监测的。比如:miimon=100，那么系统每100ms监测一次链路连接状态，如果有一条线路不通就转入另一条线路；mode的值表示工作模式，他共有0， 1,2,3四种模式，常用的为0,1两种。mode=0表示load balancing (round-robin)为负载均衡方式，两块网卡都工作。mode=1表示fault-tolerance (active-backup)提供冗余功能，工作方式是主备的工作方式,也就是说默认情况下只有一块网卡工作,另一块做备份。bonding只能提供链路监测，即从主机到交换机的链路是否接通。如果只是交换机对外的链路down掉了，而交换机本身并没有故障，那么bonding会认为链路没有问题而继续使用。
+			</para>
 
-		<command># vi /etc/rc.d/rc.local</command>
-		<screen><![CDATA[
+			<command># vi /etc/rc.d/rc.local</command>
+			<screen><![CDATA[
 ifenslave bond0 eth0 eth1
 route add -net 172.31.3.254 netmask 255.255.255.0 bond0
 		]]></screen>
 
-		<para>到这时已经配置完毕 重新启动机器。重启会看见以下信息就表示配置成功了</para>
-		<screen><![CDATA[
+			<para>到这时已经配置完毕 重新启动机器。重启会看见以下信息就表示配置成功了</para>
+			<screen><![CDATA[
 ................
 Bringing up interface bond0 OK
 Bringing up interface eth0 OK
 Bringing up interface eth1 OK
 ................
 		]]></screen>
-		<para>mode=1工作在主备模式下,这时eth1作为备份网卡是no arp的 [root@rhas-13 network-scripts]# ifconfig 验证网卡的配置信息</para>
-		<para>那也就是说在主备模式下,当一个网络接口失效时(例如主交换机掉电等),不回出现网络中断, 系统会按照cat /etc/rc.d/rc.local里指定网卡的顺序工作,机器仍能对外服务,起到了失效保护的功能。在mode=0 负载均衡工作模式,他能提供两倍的带宽,下我们来看一下网卡的配置信息：</para>
-		<para>在这种情况下出现一块网卡失效,仅仅会是服务器出口带宽下降,也不会影响网络使用。通过查看bond0的工作状态查询能详细的掌握bonding的工作状态</para>
-		<para>Linux下通过网卡邦定技术既增加了服务器的可靠性,又增加了可用网络带宽,为用户提供不间断的关键服务。</para>
+			<para>mode=1工作在主备模式下,这时eth1作为备份网卡是no arp的 [root@rhas-13 network-scripts]# ifconfig 验证网卡的配置信息</para>
+			<para>那也就是说在主备模式下,当一个网络接口失效时(例如主交换机掉电等),不回出现网络中断, 系统会按照cat /etc/rc.d/rc.local里指定网卡的顺序工作,机器仍能对外服务,起到了失效保护的功能。在mode=0 负载均衡工作模式,他能提供两倍的带宽,下我们来看一下网卡的配置信息：</para>
+			<para>在这种情况下出现一块网卡失效,仅仅会是服务器出口带宽下降,也不会影响网络使用。通过查看bond0的工作状态查询能详细的掌握bonding的工作状态</para>
+			<para>Linux下通过网卡邦定技术既增加了服务器的可靠性,又增加了可用网络带宽,为用户提供不间断的关键服务。</para>
+
+			<screen>
+		    <![CDATA[
+cat >> /etc/modprobe.d/bonding.conf <<EOF
+alias bond0 bonding
+options bond0 mode=balance-alb miimon=1000
+EOF
+
+cat > /etc/sysconfig/network-scripts/ifcfg-eth0 <<EOF
+DEVICE="eth0"
+ONBOOT="yes"
+BOOTPROTO="none"
+USERCTL="no"
+NM_CONTROLLED="no"
+EOF
+
+cat > /etc/sysconfig/network-scripts/ifcfg-eth1 <<EOF
+DEVICE="eth1"
+ONBOOT="yes"
+BOOTPROTO="none"
+USERCTL="no"
+NM_CONTROLLED="no"
+EOF
+
+cat > /etc/sysconfig/network-scripts/ifcfg-bond0 <<EOF
+DEVICE="bond0"
+ONBOOT="yes"
+BOOTPROTO="none"
+TYPE="Ethernet"
+IPADDR=172.16.0.5
+NETMASK=255.255.255.0
+NETWORK=172.16.0.0
+USERCTL="no"
+NM_CONTROLLED="no"
+EOF
+
+modprobe bonding mode=balance-alb miimon=1000
+ifconfig bond0 up
+ifconfig bond0 172.16.0.5 netmask 255.255.255.0 up
+ip route add default via 172.16.0.254 dev bond0
+ifenslave bond0 eth0
+ifenslave bond0 eth1
+
+cat >> /etc/rc.local <<EOF
+#-------------------------
+ifenslave bond0 eth0
+ifenslave bond0 eth1
+ip route add default via 172.16.0.254 dev bond0
+#-------------------------
+EOF
+
+more /proc/net/bonding/bond0
+			]]>
+			</screen>
+		</section>
 		<section>
 			<title>Ubuntu</title>
 			<para>ifenslave</para>
@@ -408,7 +458,26 @@ down ifenslave -d bond0 eth0 eth1
 			</example>
 		</section>
 	</section>
+	<section id="brctl">
+		<title>brctl</title>
+		<para>Linux 系统4个物理网卡的名称则分别为eth0，eth1，eth2，eth3。我们将四个网口桥接到br0端口。</para>
+		<para>你可以这样理解 vlan 2, vlan ip 192.168.0.1，然后将4个接口划分到vlan2, 这时这4个接口可以通过vlan 2访问其他用户。我只是做了一个比喻，让你能够理解。</para>
+		<screen><![CDATA[
+# brctl addbr br0
 
+# brctl addif br0 eth0
+# brctl addif br0 eth1
+# brctl addif br0 eth2
+# brctl addif br0 eth3
+
+# ifconfig eth0 0.0.0.0
+# ifconfig eth1 0.0.0.0
+# ifconfig eth2 0.0.0.0
+# ifconfig eth3 0.0.0.0
+
+# ifconfig br0 192.168.0.1
+			]]></screen>
+	</section>
 	<section id="wireless">
 		<title>Wireless - WiFi 配置</title>
 		<section>
@@ -524,151 +593,326 @@ $ sudo iwconfig wlan1 essid Netkiller key 66535215
 	</section>
 
 	<section id="sys.net.centos">
-		<title>CentOS 网络配置</title>
-		<command>system-config-network</command>
-		<screen><![CDATA[
-ifconfig eth0 192.168.0.10 netmask 255.255.255.0
-or
-ip addr add 192.168.0.10 dev eth0
-		]]></screen>
-		<para>ifcfg-eth0,ifcfg-eth1,ifcfg-eth2 ... ifcfg-eth(n)</para>
-		<screen>
+		<title>CentOS 8</title>
+		<section id="nmtui">
+			<title>nmtui - Text User Interface for controlling NetworkManager</title>
+			<programlisting>
+			<![CDATA[
+# yum install NetworkManager-tui
+# nmtui		
+			]]>
+			</programlisting>
+			<screen>
 		<![CDATA[
-[root@development httpd]# cat /etc/sysconfig/network-scripts/ifcfg-eth0
-# Broadcom Corporation NetLink BCM5784M Gigabit Ethernet PCIe
-DEVICE=eth0
-BOOTPROTO=static
-BROADCAST=192.168.3.255
-HWADDR=00:25:64:A3:59:BF
-IPADDR=192.168.3.40
-IPV6INIT=yes
-IPV6_AUTOCONF=yes
-NETMASK=255.255.255.0
-NETWORK=192.168.3.0
-ONBOOT=yes
+        ┌─┤ NetworkManager TUI ├──┐
+        │                         │ 
+        │ Please select an option │ 
+        │                         │ 
+        │ Edit a connection       │ 
+        │ Activate a connection   │ 
+        │ Set system hostname     │ 
+        │                         │ 
+        │ Quit                    │ 
+        │                         │ 
+        │                    <OK> │ 
+        │                         │ 
+        └─────────────────────────┘ 
 		]]>
-		</screen>
-		<para>eth0:1</para>
-		<screen>
+			</screen>
+			<screen>
 		<![CDATA[
-[root@development httpd]# cp /etc/sysconfig/network-scripts/ifcfg-eth0 /etc/sysconfig/network-scripts/ifcfg-eth0:1
-[root@development httpd]# vi /etc/sysconfig/network-scripts/ifcfg-eth0:1
-# Broadcom Corporation NetLink BCM5784M Gigabit Ethernet PCIe
-DEVICE=eth0:1
-BOOTPROTO=static
-BROADCAST=192.168.3.255
-HWADDR=00:25:64:A3:59:BF
-IPADDR=192.168.3.41
-IPV6INIT=yes
-IPV6_AUTOCONF=yes
-NETMASK=255.255.255.0
-NETWORK=192.168.3.0
-ONBOOT=yes
+# nmtui
+# nmtui edit eno16777736
+# nmtui connect eno1677773
 		]]>
-		</screen>
-		<para>reload network</para>
-		<screen>
-		<![CDATA[
-[root@development ~]# /etc/init.d/network reload
-Shutting down interface eth0:                              [  OK  ]
-Shutting down loopback interface:                          [  OK  ]
-Bringing up loopback interface:                            [  OK  ]
-Bringing up interface eth0:
-		]]>
-		</screen>
-
-		<section id="gateway">
-			<title>Gateway</title>
+			</screen>
+		</section>
+		<section id="nmcli">
+			<title>nmcli - command-line tool for controlling NetworkManager</title>
+			<para>nmcli 是 nmtui 命令行版本。</para>
+			<command>nmcli</command>
 			<screen>
 			<![CDATA[
-[root@development ~]# cat /etc/sysconfig/network
-NETWORKING=yes
-NETWORKING_IPV6=yes
-HOSTNAME=development.domain.org
-GATEWAY=192.168.3.1
+nmcli 有 8 个参数：
+
+help 提供有关 nmcli 命令和使用方法的帮助信息
+general 返回 NetworkManager 的状态和总体配置信息
+networking 提供命令来查询某个网络连接的状态和启动、禁用连接的功能
+radio 提供命令来查询某个 WiFi 网络连接的状态和启动、禁用连接的功能
+monitor 提供命令来监控 NetworkManager 的活动并观察网络连接的状态改变
+connection 提供命令来启用或禁用网络接口、添加新的连接、删除已有连接等功能
+device 主要被用于更改与某个设备（例如接口名称）相关联的连接参数或者使用一个已有的连接来连接设备
+secret 注册 nmcli 来作为一个 NetworkManager 的秘密代理，用以监听秘密信息。这个子命令很少会被用到，因为当连接到网络时，nmcli 会自动做这些事
 			]]>
 			</screen>
-		</section>
+			<section>
+				<title>查看连接状态</title>
+				<screen>
+				<![CDATA[
+[root@localhost ~]# nmcli general
+STATE      CONNECTIVITY  WIFI-HW  WIFI     WWAN-HW  WWAN    
+connected  full          enabled  enabled  enabled  enabled 				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>查看接口状态</title>
+				<screen>
+				<![CDATA[
+[root@localhost ~]# nmcli connection show
+NAME                UUID                                  TYPE      DEVICE  
+enp8s0              ff04c285-bca6-48a3-b769-4871897bca7b  ethernet  enp8s0  
+docker0             b5bcd58d-b826-4bee-b100-4ae6976d6f76  bridge    docker0 
+The Peninsula 3-6   dc0d8214-3589-4044-9a05-8b5f50c3de1f  wifi      --  				
+				]]>
+				</screen>
+				<para>显示激活状态的接口</para>
+				<screen>
+				<![CDATA[
+[root@localhost ~]# nmcli connection show 
+NAME                UUID                                  TYPE      DEVICE 
+enp8s0              ff04c285-bca6-48a3-b769-4871897bca7b  ethernet  enp8s0 
+The Peninsula 3-6   dc0d8214-3589-4044-9a05-8b5f50c3de1f  wifi      --     
 
-		<section id="bonding">
-			<title>bonding</title>
-			<screen>
-		    <![CDATA[
-cat >> /etc/modprobe.d/bonding.conf <<EOF
-alias bond0 bonding
-options bond0 mode=balance-alb miimon=1000
-EOF
+[root@localhost ~]# nmcli connection show --active
+NAME    UUID                                  TYPE      DEVICE 
+enp8s0  ff04c285-bca6-48a3-b769-4871897bca7b  ethernet  enp8s0 				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>添加接口</title>
+				<screen>
+				<![CDATA[
+nmcli connection add type ethernet ifname enp0s8				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title></title>
+				<screen>
+				<![CDATA[
+$ nmcli connection modify enp8s0 ipv4.address 192.168.4.26/24
+$ nmcli connection modify enp8s0 ipv4.method manual				
+				]]>
+				</screen>
+				<para>DHCP</para>
+				<screen>
+				<![CDATA[
+$ nmcli connection modify enp8s0 ipv4.method auto				
+				]]>
+				</screen>
+				<screen>
+				<![CDATA[
+[root@localhost ~]# nmcli connection modify enp8s0 ipv4.address 192.168.3.26/24
 
-cat > /etc/sysconfig/network-scripts/ifcfg-eth0 <<EOF
-DEVICE="eth0"
-ONBOOT="yes"
-BOOTPROTO="none"
-USERCTL="no"
-NM_CONTROLLED="no"
-EOF
+[root@localhost ~]# cat /etc/sysconfig/network-scripts/ifcfg-enp8s0 
+TYPE=Ethernet
+PROXY_METHOD=none
+BROWSER_ONLY=no
+BOOTPROTO=dhcp
+DEFROUTE=yes
+IPV4_FAILURE_FATAL=no
+IPV6INIT=yes
+IPV6_AUTOCONF=yes
+IPV6_DEFROUTE=yes
+IPV6_FAILURE_FATAL=no
+IPV6_ADDR_GEN_MODE=stable-privacy
+NAME=enp8s0
+UUID=ff04c285-bca6-48a3-b769-4871897bca7b
+DEVICE=enp8s0
+ONBOOT=yes
+IPADDR=192.168.3.26
+PREFIX=24
 
-cat > /etc/sysconfig/network-scripts/ifcfg-eth1 <<EOF
-DEVICE="eth1"
-ONBOOT="yes"
-BOOTPROTO="none"
-USERCTL="no"
-NM_CONTROLLED="no"
-EOF
+[root@localhost ~]# ip addr show enp8s0:
+2: enp8s0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 00:26:9e:6f:bb:23 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.3.6/24 brd 192.168.3.255 scope global dynamic noprefixroute enp8s0
+       valid_lft 601424sec preferred_lft 601424sec
+    inet6 fe80::82e7:1911:232:d93/64 scope link noprefixroute 
+       valid_lft forever preferred_lft forever				
+				]]>
+				</screen>
+				
+			</section>
+			<section>
+				<title>停止接口</title>
+				<screen>
+				<![CDATA[
+[root@localhost ~]# nmcli connection down docker0
+Connection 'docker0' successfully deactivated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/2)
 
-cat > /etc/sysconfig/network-scripts/ifcfg-bond0 <<EOF
-DEVICE="bond0"
-ONBOOT="yes"
-BOOTPROTO="none"
-TYPE="Ethernet"
-IPADDR=172.16.0.5
-NETMASK=255.255.255.0
-NETWORK=172.16.0.0
-USERCTL="no"
-NM_CONTROLLED="no"
-EOF
-
-modprobe bonding mode=balance-alb miimon=1000
-ifconfig bond0 up
-ifconfig bond0 172.16.0.5 netmask 255.255.255.0 up
-ip route add default via 172.16.0.254 dev bond0
-ifenslave bond0 eth0
-ifenslave bond0 eth1
-
-cat >> /etc/rc.local <<EOF
-#-------------------------
-ifenslave bond0 eth0
-ifenslave bond0 eth1
-ip route add default via 172.16.0.254 dev bond0
-#-------------------------
-EOF
-
-more /proc/net/bonding/bond0
-			]]>
-			</screen>
-		</section>
-
-		<section id="brctl">
-			<title>brctl</title>
-			<para>Linux 系统4个物理网卡的名称则分别为eth0，eth1，eth2，eth3。我们将四个网口桥接到br0端口。</para>
-			<para>你可以这样理解 vlan 2, vlan ip 192.168.0.1，然后将4个接口划分到vlan2, 这时这4个接口可以通过vlan 2访问其他用户。我只是做了一个比喻，让你能够理解。</para>
-			<screen><![CDATA[
-	
-			]]></screen>
-			<screen><![CDATA[
-# brctl addbr br0
-
-# brctl addif br0 eth0
-# brctl addif br0 eth1
-# brctl addif br0 eth2
-# brctl addif br0 eth3
-
-# ifconfig eth0 0.0.0.0
-# ifconfig eth1 0.0.0.0
-# ifconfig eth2 0.0.0.0
-# ifconfig eth3 0.0.0.0
-
-# ifconfig br0 192.168.0.1
-			]]></screen>
+[root@localhost ~]# nmcli connection show 
+NAME                UUID                                  TYPE      DEVICE 
+enp8s0              ff04c285-bca6-48a3-b769-4871897bca7b  ethernet  enp8s0 
+The Peninsula 6-3C  dc0d8214-3589-4044-9a05-8b5f50c3de1f  wifi      --    				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title></title>
+				<screen>
+				<![CDATA[
+[root@localhost ~]# nmcli connection edit enp8s0				
+				]]>
+				</screen>
+				<para>print 显示配置信息</para>
+				<screen>
+				<![CDATA[
+nmcli> print
+===============================================================================
+                      Connection profile details (enp8s0)
+===============================================================================
+connection.id:                          enp8s0
+connection.uuid:                        ff04c285-bca6-48a3-b769-4871897bca7b
+connection.stable-id:                   --
+connection.type:                        802-3-ethernet
+connection.interface-name:              enp8s0
+connection.autoconnect:                 yes
+connection.autoconnect-priority:        0
+connection.autoconnect-retries:         -1 (default)
+connection.multi-connect:               0 (default)
+connection.auth-retries:                -1
+connection.timestamp:                   1599726610
+connection.read-only:                   no
+connection.permissions:                 --
+connection.zone:                        --
+connection.master:                      --
+connection.slave-type:                  --
+connection.autoconnect-slaves:          -1 (default)
+connection.secondaries:                 --
+connection.gateway-ping-timeout:        0
+connection.metered:                     unknown
+connection.lldp:                        default
+connection.mdns:                        -1 (default)
+connection.llmnr:                       -1 (default)
+connection.wait-device-timeout:         -1
+-------------------------------------------------------------------------------
+802-3-ethernet.port:                    --
+802-3-ethernet.speed:                   0
+802-3-ethernet.duplex:                  --
+802-3-ethernet.auto-negotiate:          no
+802-3-ethernet.mac-address:             --
+802-3-ethernet.cloned-mac-address:      --
+802-3-ethernet.generate-mac-address-mask:--
+802-3-ethernet.mac-address-blacklist:   --
+802-3-ethernet.mtu:                     auto
+802-3-ethernet.s390-subchannels:        --
+802-3-ethernet.s390-nettype:            --
+802-3-ethernet.s390-options:            --
+802-3-ethernet.wake-on-lan:             default
+802-3-ethernet.wake-on-lan-password:    --
+-------------------------------------------------------------------------------
+ipv4.method:                            auto
+ipv4.dns:                               --
+ipv4.dns-search:                        --
+ipv4.dns-options:                       --
+ipv4.dns-priority:                      0
+ipv4.addresses:                         192.168.3.26/24
+ipv4.gateway:                           --
+ipv4.routes:                            --
+ipv4.route-metric:                      -1
+ipv4.route-table:                       0 (unspec)
+ipv4.routing-rules:                     --
+ipv4.ignore-auto-routes:                no
+ipv4.ignore-auto-dns:                   no
+ipv4.dhcp-client-id:                    --
+ipv4.dhcp-iaid:                         --
+ipv4.dhcp-timeout:                      0 (default)
+ipv4.dhcp-send-hostname:                yes
+ipv4.dhcp-hostname:                     --
+ipv4.dhcp-fqdn:                         --
+ipv4.dhcp-hostname-flags:               0x0 (none)
+ipv4.never-default:                     no
+ipv4.may-fail:                          yes
+ipv4.dad-timeout:                       -1 (default)
+-------------------------------------------------------------------------------
+ipv6.method:                            auto
+ipv6.dns:                               --
+ipv6.dns-search:                        --
+ipv6.dns-options:                       --
+ipv6.dns-priority:                      0
+ipv6.addresses:                         --
+ipv6.gateway:                           --
+ipv6.routes:                            --
+ipv6.route-metric:                      -1
+ipv6.route-table:                       0 (unspec)
+ipv6.routing-rules:                     --
+ipv6.ignore-auto-routes:                no
+ipv6.ignore-auto-dns:                   no
+ipv6.never-default:                     no
+ipv6.may-fail:                          yes
+ipv6.ip6-privacy:                       -1 (unknown)
+ipv6.addr-gen-mode:                     stable-privacy
+ipv6.ra-timeout:                        0 (default)
+ipv6.dhcp-duid:                         --
+ipv6.dhcp-iaid:                         --
+ipv6.dhcp-timeout:                      0 (default)
+ipv6.dhcp-send-hostname:                yes
+ipv6.dhcp-hostname:                     --
+ipv6.dhcp-hostname-flags:               0x0 (none)
+ipv6.token:                             --
+-------------------------------------------------------------------------------
+proxy.method:                           none
+proxy.browser-only:                     no
+proxy.pac-url:                          --
+proxy.pac-script:                       --
+-------------------------------------------------------------------------------
+nmcli> 				
+				]]>
+				</screen>
+				<para>设置 DHCP</para>
+				<screen>
+				<![CDATA[
+nmcli> goto ipv4
+You may edit the following properties: method, dns, dns-search, dns-options, dns-priority, addresses, gateway, routes, route-metric, route-table, routing-rules, ignore-auto-routes, ignore-auto-dns, dhcp-client-id, dhcp-iaid, dhcp-timeout, dhcp-send-hostname, dhcp-hostname, dhcp-fqdn, dhcp-hostname-flags, never-default, may-fail, dad-timeout
+nmcli ipv4> set method auto
+Do you also want to clear 'ipv4.addresses'? [yes]: 
+nmcli ipv4> save
+Connection 'enp8s0' (ff04c285-bca6-48a3-b769-4871897bca7b) successfully updated.
+nmcli ipv4> quit				
+				]]>
+				</screen>
+			</section>
+			
+			<section>
+				<title>显示设备信息</title>
+				<screen>
+				<![CDATA[
+[root@localhost ~]# nmcli device status
+DEVICE   TYPE      STATE      CONNECTION 
+enp8s0   ethernet  connected  enp8s0     
+docker0  bridge    unmanaged  --         
+lo       loopback  unmanaged  --         
+wlp5s0   wifi      unmanaged  --     				
+				]]>
+				</screen>
+				<para>网卡设备详细信息</para>
+				<screen>
+				<![CDATA[
+[root@localhost ~]# nmcli device show enp8s0
+GENERAL.DEVICE:                         enp8s0
+GENERAL.TYPE:                           ethernet
+GENERAL.HWADDR:                         00:26:9E:6F:BB:23
+GENERAL.MTU:                            1500
+GENERAL.STATE:                          100 (connected)
+GENERAL.CONNECTION:                     enp8s0
+GENERAL.CON-PATH:                       /org/freedesktop/NetworkManager/ActiveConnection/1
+WIRED-PROPERTIES.CARRIER:               on
+IP4.ADDRESS[1]:                         192.168.3.6/24
+IP4.GATEWAY:                            192.168.3.1
+IP4.ROUTE[1]:                           dst = 0.0.0.0/0, nh = 192.168.3.1, mt = 100
+IP4.ROUTE[2]:                           dst = 192.168.3.0/24, nh = 0.0.0.0, mt = 100
+IP4.DNS[1]:                             192.168.3.1
+IP4.DOMAIN[1]:                          home
+IP6.ADDRESS[1]:                         fe80::82e7:1911:232:d93/64
+IP6.GATEWAY:                            --
+IP6.ROUTE[1]:                           dst = fe80::/64, nh = ::, mt = 100
+IP6.ROUTE[2]:                           dst = ff00::/8, nh = ::, mt = 256, table=255				
+				]]>
+				</screen>
+			</section>
 		</section>
 	</section>
 	<section id="network.check">
