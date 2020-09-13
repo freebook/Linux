@@ -2,5 +2,9 @@
 <section id="homebrew">
 	<title>Homebrew</title>
 	<para>Homebrew 最初是为 Mac 设计的包管理工具，现在已经移植到了Linux系统。</para>
-	
+	<screen>
+	<![CDATA[
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"	
+	]]>
+	</screen>
 </section>

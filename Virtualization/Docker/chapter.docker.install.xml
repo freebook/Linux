@@ -4,6 +4,34 @@
 <section id="install">
 	<title>Installation</title>
 	<section>
+		<title>CentSO 8</title>
+		<para>下载 containerd.io <ulink url="https://download.docker.com/linux/centos/7/x86_64/stable/Packages/" /></para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# dnf install https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.13-3.2.el7.x86_64.rpm
+		]]>
+		</screen>
+		<para>安装 Docker</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+Adding repo from: https://download.docker.com/linux/centos/docker-ce.repo
+
+[root@localhost ~]# dnf install -y docker-ce
+
+[root@localhost ~]# systemctl enable docker
+[root@localhost ~]# systemctl start docker
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# docker -v
+Docker version 19.03.12, build 48a66213fe
+		]]>
+		</screen>
+	</section>
+	<section>
 		<title>CentOS 6</title>
 		<screen>
 			<![CDATA[
@@ -41,20 +69,7 @@ docker run hello-world
 			]]>
 		</screen>
 	</section>
-	<section>
-		<title>CentSO 8</title>
-		<screen>
-		<![CDATA[
-[root@localhost ~]# dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
-Adding repo from: https://download.docker.com/linux/centos/docker-ce.repo
 
-[root@localhost ~]# dnf install -y docker-ce
-
-[root@localhost ~]# systemctl enable docker
-[root@localhost ~]# systemctl start docker
-		]]>
-		</screen>
-	</section>
 	<section>
 		<title>Ubuntu</title>
 		<para>Ubuntu 默认版本</para>
@@ -208,7 +223,7 @@ end script
 		
 		]]>
 		</screen>
-		
+
 	</section>
 	<section>
 		<title>测试 Docker</title>
