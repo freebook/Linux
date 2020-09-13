@@ -1,0 +1,21 @@
+<chapter id="bitlocker">
+	<title>硬盘分区与文件系统加密</title>
+	<subtitle>Harddisk Partition &amp; File System</subtitle>
+
+	<section>
+		<title>Microsoft 文件系统加密</title>
+
+		<section id="efs">
+			<title>Microsoft Encrypting File System (EFS)</title>
+			<para>http://www.microsoft.com/china/technet/security/sgk/protect_data_EFS.mspx</para>
+		</section>
+		<section id="bitlocker">
+			<title>BitLocker</title>
+			<para>
+				BitLocker 与 Encrypting File System (EFS) 的比较
+				<ulink url="http://windows.microsoft.com/zh-cn/windows7/whats-the-difference-between-bitlocker-drive-encryption-and-encrypting-file-system" />
+			</para>
+		</section>
+	</section>
+
+</chapter>

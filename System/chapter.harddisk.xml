@@ -750,6 +750,107 @@ $ sudo rmmod loop des cryptoloop
 		</section>
 	</section>
 
+	<section id="cryptsetup">
+		<title>Linux磁盘分区加密</title>
+		<procedure>
+			<title>cryptsetup - configures encrypted block devices</title>
+	    	<step>
+	    		<para>安装 cryptsetup</para>
+				<screen>
+# apt-get install cryptsetup dmsetup
+				</screen>
+	    	</step>
+			<step>
+				<para>硬盘分区 </para>
+				<para>添加一块新硬盘，使用cfdisk /dev/sdb 对他进行分区</para>
+	    		<screen>
+sapnu-melencio:~# fdisk -l
+
+Disk /dev/sda: 8589 MB, 8589934592 bytes
+255 heads, 63 sectors/track, 1044 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+Disk identifier: 0x0004287b
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1   *           1         993     7976241   83  Linux
+/dev/sda2             994        1044      409657+   5  Extended
+/dev/sda5             994        1044      409626   82  Linux swap / Solaris
+
+Disk /dev/sdb: 4294 MB, 4294967296 bytes
+255 heads, 63 sectors/track, 522 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+Disk identifier: 0x7256cdce
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdb1               1         522     4192933+  83  Linux
+	    		</screen>
+	    		<para>/dev/sdb1 就是我的分区</para>
+	    		<para>注意：分区操作要小心加小心，马虎不得，否则你将数据全失。</para>
+			</step>
+			<step>
+				<para>创建加密分区</para>
+				<screen>
+# cryptsetup --verbose --verify-passphrase -c aes-cbc-plain luksFormat /dev/sdb1
+
+WARNING!
+========
+This will overwrite data on /dev/sdb2 irrevocably.
+
+Are you sure? (Type uppercase yes): YES (输入大写的YES来确定创建加密分区)
+Enter LUKS passphrase: 	(输入密码)
+Verify passphrase:		(确认密码)
+Command successful.
+				</screen>
+				<para>这将把不可逆转地改写/dev/sda2 上的数据。</para>
+				<para>注意：也要小心加小心，马虎不得，否则你将数据全失。一定不要搞错分区。</para>
+			</step>
+			<step>
+				<para>挂载的逻辑分区 </para>
+				<screen>
+# cryptsetup luksOpen /dev/sdb1 sdb1
+Enter LUKS passphrase:
+key slot 0 unlocked.
+Command successful.
+				</screen>
+				<para>如下命令将显示/dev/mapper路径中的隐藏设备</para>
+				<screen>
+# ls -l /dev/mapper
+				</screen>
+			</step>
+			<step>
+				<para>格式化加密分区</para>
+				<para>现在将该分区格式化为ext3文件系统. </para>
+				<screen>
+ mkfs.ext3 /dev/mapper/sdb1
+				</screen>
+			</step>
+			<step>
+				<para>挂载</para>
+				<para>接下来我们创建一个用于挂载的挂载点并挂载.</para>
+				<screen>
+# mkdir /mnt/secret
+# mount /dev/mapper/sdb1 /mnt/secret
+				</screen>
+			</step>
+			<step>
+				<para>使用加密分区</para>
+				<para>好了,现在你可以使用你的加密分区了. </para>
+				<para>cd /mnt/secret</para>
+				<para>touch file</para>
+			</step>
+			<step>
+				<para>卸载</para>
+				<para>使用完毕后为了保护数据的隐密,我们需要取消挂载并关闭加密分区.</para>
+				<screen>
+# umount /mnt/secret
+# cryptsetup luksClose sdb1
+				</screen>
+			</step>
+	    </procedure>
+
+		<para>"Disconnect"</para>
+	</section>
+
 </chapter>
 
 <chapter id="index"><?dbhtml dir="removable" ?>

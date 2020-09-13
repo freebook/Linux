@@ -1,1 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!ENTITY chapter.cryptography.xml			SYSTEM "chapter.cryptography.xml">
+<!ENTITY chapter.office.xml			SYSTEM "chapter.office.xml">
+	<!ENTITY chapter.gpg.xml			SYSTEM "chapter.gpg.xml">
+	<!ENTITY chapter.uuid.xml			SYSTEM "chapter.uuid.xml">
+	<!ENTITY chapter.des.xml			SYSTEM "chapter.des.xml">
+	<!ENTITY chapter.aes.xml			SYSTEM "chapter.aes.xml">
+	<!ENTITY chapter.digest.xml 			SYSTEM "chapter.digest.xml">
+	<!ENTITY chapter.digest.md5.xml 		SYSTEM "chapter.digest.md5.xml">
+	<!ENTITY chapter.digest.sha.xml 		SYSTEM "chapter.digest.sha.xml">
+	<!ENTITY chapter.digest.crc32.xml		SYSTEM "chapter.digest.crc32.xml">
+	<!ENTITY chapter.digest.3rdparty.xml		SYSTEM "chapter.digest.3rdparty.xml">
+
+	<!ENTITY chapter.openssl.xml			SYSTEM "chapter.openssl.xml">
+	<!ENTITY chapter.rsa.xml 			SYSTEM "chapter.rsa.xml">
+	<!ENTITY chapter.code.xml 			SYSTEM "chapter.code.xml">
+	<!ENTITY chapter.code.base64.xml 		SYSTEM "chapter.code.base64.xml">
+	<!ENTITY chapter.code.base58.xml 		SYSTEM "chapter.code.base58.xml">
+	<!ENTITY chapter.code.uuencode.xml 		SYSTEM "chapter.code.uuencode.xml">
+	<!ENTITY chapter.base58.xml		 		SYSTEM "chapter.base58.xml">
+	<!ENTITY chapter.code.quoted-printable.xml	SYSTEM "chapter.code.quoted-printable.xml">
+	<!ENTITY chapter.certificate.xml		SYSTEM "chapter.certificate.xml">
+
+	<!ENTITY chapter.tunnel.xml			SYSTEM "chapter.tunnel.xml">
+	<!ENTITY chapter.devel.xml 			SYSTEM "chapter.devel.xml">
+	<!ENTITY chapter.devel.socket.xml		SYSTEM "chapter.devel.socket.xml">
+	<!ENTITY chapter.mail.xml			SYSTEM "chapter.mail.xml">
+	<!ENTITY chapter.openstego.xml			SYSTEM "chapter.openstego.xml">
+	<!ENTITY chapter.bitlocker.xml			SYSTEM "chapter.bitlocker.xml">
+	<!ENTITY chapter.organization.xml		SYSTEM "chapter.organization.xml">
+
+	<!ENTITY chapter.smartcard.xml			SYSTEM "chapter.smartcard.xml">
+	<!ENTITY chapter.database.xml			SYSTEM "chapter.database.xml">

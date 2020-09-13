@@ -48,7 +48,7 @@
 
 		<tip><para>你同样可以使用第三方数字证书来签名你的文档</para></tip>
 	</section>
-	<section id="email">
+	<section id="email.smime">
 		<title>Email Security using OpenPGP and S/MIME</title>
 		<section id="gpg4win">
 			<title>Gpg4win</title>

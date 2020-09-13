@@ -9,24 +9,24 @@
 	<!ENTITY BG7NYT "&Neo;">
 	<!ENTITY Netkiller "<emphasis><trademark>Netkiller</trademark></emphasis>">
 
-	<!ENTITY % common.doctype.entity.xml 		SYSTEM "common/doctype.entity.xml">
+	<!ENTITY % common.doctype.entity.xml 	SYSTEM "common/doctype.entity.xml">
 	%common.doctype.entity.xml;
 	
-	<!ENTITY book.info.abstract.xml 	SYSTEM "book.info.abstract.xml">
+	<!ENTITY book.info.abstract.xml 		SYSTEM "book.info.abstract.xml">
 
-	<!ENTITY book.preface 			SYSTEM "book.preface.xml">
-	<!ENTITY book.appendix.xml 		SYSTEM "book.appendix.xml">
-	<!ENTITY book.history.xml 		SYSTEM "book.history.xml">
+	<!ENTITY book.preface 					SYSTEM "book.preface.xml">
+	<!ENTITY book.appendix.xml 				SYSTEM "book.appendix.xml">
+	<!ENTITY book.history.xml 				SYSTEM "book.history.xml">
 
 	<!ENTITY chapter.introduction.xml		SYSTEM "chapter.introduction.xml">
-	<!ENTITY chapter.install.xml 		SYSTEM "chapter.install.xml">
-	<!ENTITY chapter.faq.xml	 		SYSTEM "chapter.faq.xml">
+	<!ENTITY chapter.install.xml 			SYSTEM "chapter.install.xml">
+	<!ENTITY chapter.faq.xml	 			SYSTEM "chapter.faq.xml">
 
-	<!ENTITY % system.doctype.entity.xml SYSTEM "System/doctype.entity.xml">
+	<!ENTITY % system.doctype.entity.xml 	SYSTEM "System/doctype.entity.xml">
 	%system.doctype.entity.xml;
 	<!ENTITY part.system.xml				SYSTEM "part.system.xml">
 
-	<!ENTITY % shell.doctype.entity.xml	SYSTEM "Shell/doctype.entity.xml">
+	<!ENTITY % shell.doctype.entity.xml		SYSTEM "Shell/doctype.entity.xml">
 	%shell.doctype.entity.xml;
 	<!ENTITY part.shell.xml					SYSTEM "part.shell.xml">
 
@@ -51,21 +51,21 @@
 	<!ENTITY part.security.xml 				SYSTEM "part.security.xml">
 
 
-	<!ENTITY % cluster.doctype.entity.xml	SYSTEM "Cluster/doctype.entity.xml">
+	<!ENTITY % cluster.doctype.entity.xml			SYSTEM "Cluster/doctype.entity.xml">
 	%cluster.doctype.entity.xml;
 
-	<!ENTITY % management.doctype.entity.xml	SYSTEM "Management/doctype.entity.xml">
+	<!ENTITY % management.doctype.entity.xml		SYSTEM "Management/doctype.entity.xml">
 	%management.doctype.entity.xml;
 
-	<!ENTITY % x.doctype.entity.xml 			SYSTEM "X/doctype.entity.xml">
+	<!ENTITY % x.doctype.entity.xml 				SYSTEM "X/doctype.entity.xml">
 	%x.doctype.entity.xml;
 
-	<!ENTITY % distributed.doctype.entity.xml 	SYSTEM "Distributed/doctype.entity.xml">
+	<!ENTITY % distributed.doctype.entity.xml 		SYSTEM "Distributed/doctype.entity.xml">
 	%distributed.doctype.entity.xml;
 
-	<!ENTITY % mail.doctype.entity.xml 			SYSTEM "Mail/doctype.entity.xml">
+	<!ENTITY % mail.doctype.entity.xml 				SYSTEM "Mail/doctype.entity.xml">
 	%mail.doctype.entity.xml;
-	<!ENTITY part.mail.xml				 		SYSTEM "part.mail.xml">
+	<!ENTITY part.mail.xml				 			SYSTEM "part.mail.xml">
 
 	<!ENTITY % multimedia.doctype.entity.xml 		SYSTEM "Multimedia/doctype.entity.xml">
 	%multimedia.doctype.entity.xml;
@@ -75,23 +75,27 @@
 	%virtualization.doctype.entity.xml;	
 	<!ENTITY part.virtualization.xml				SYSTEM "part.virtualization.xml">
 	
-	<!ENTITY % project.doctype.entity.xml 				SYSTEM "Project/doctype.entity.xml">
+	<!ENTITY % project.doctype.entity.xml 			SYSTEM "Project/doctype.entity.xml">
 	%project.doctype.entity.xml;
 	
-	<!ENTITY % queue.doctype.entity.xml		SYSTEM "Queue/doctype.entity.xml">
+	<!ENTITY % queue.doctype.entity.xml				SYSTEM "Queue/doctype.entity.xml">
 	%queue.doctype.entity.xml;
 	
-	<!ENTITY % graphics.doctype.entity.xml 	SYSTEM "Graphics/doctype.entity.xml">
+	<!ENTITY % graphics.doctype.entity.xml 			SYSTEM "Graphics/doctype.entity.xml">
 	%graphics.doctype.entity.xml;
 	
-	<!ENTITY % sbc.doctype.entity.xml 	SYSTEM "SBC/doctype.entity.xml">
+	<!ENTITY % sbc.doctype.entity.xml 				SYSTEM "SBC/doctype.entity.xml">
 	%sbc.doctype.entity.xml;
 	
-	<!ENTITY part.im 			SYSTEM "part.im.xml">
-	<!ENTITY chapter.gps 		SYSTEM "chapter.gps.xml">
+	<!ENTITY part.im 								SYSTEM "part.im.xml">
+	<!ENTITY chapter.gps 							SYSTEM "chapter.gps.xml">
 	
-	<!ENTITY chapter.ibm.websphere.xml 	SYSTEM "Middleware/chapter.ibm.websphere.xml">
-
+	<!ENTITY chapter.ibm.websphere.xml		 		SYSTEM "Middleware/chapter.ibm.websphere.xml">
+	
+	<!ENTITY % cryptography.doctype.entity.xml		SYSTEM "Cryptography/doctype.entity.xml">
+	%cryptography.doctype.entity.xml;
+	<!ENTITY part.cryptography.xml		 			SYSTEM "part.cryptography.xml">
+	
 	<!ENTITY openssl "<![CDATA[<link linkend='openssl'>OpenSSL</link>]]>
 ">
 
@@ -186,11 +190,12 @@
 	&part.project.xml;
 	&part.version.xml;
 	<!-- =========================================================================== -->	
-	&chapter.ibm.websphere.xml;
-	<!-- =========================================================================== -->
 	&part.graphics.xml;
 	&part.multimedia.xml;
+	&part.cryptography.xml;
+	<!-- =========================================================================== -->
 	&chapter.x.xml;
+	&chapter.ibm.websphere.xml;
 	&chapter.faq.xml;
 	&part.sbc.xml;
 	<!-- =========================================================================== -->
