@@ -27,5 +27,6 @@
 			lynx http://netkiller.guthub.com
 		</screen>
 	</section>
+	&section.network.ddns.xml;
 </chapter>
 
