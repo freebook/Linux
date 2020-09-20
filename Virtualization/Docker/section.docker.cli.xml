@@ -562,41 +562,7 @@ nginx: [emerg] invalid server name or wildcard "www.*.com" on 0.0.0.0:80
 		]]>
 			</screen>
 		</section>
-		<section id="history">
-			<title>history 镜像历史纪录</title>
-			<para>镜像历史纪录</para>
-			<screen>
-		<![CDATA[
-# docker history centos:tomcat
-IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT
-2faf9a2d2bdc        22 hours ago        /bin/sh -c #(nop)  CMD ["catalina.sh" "run"]    0 B                 
-8e12c1e8fd89        22 hours ago        /bin/sh -c #(nop)  EXPOSE 8080/tcp              0 B                 
-35158d8231c5        22 hours ago        /bin/sh -c #(nop)  VOLUME [/srv/tomcat/temp]    0 B                 
-4302c5c13241        22 hours ago        /bin/sh -c #(nop)  VOLUME [/srv/tomcat/work]    0 B                 
-53537696aa19        22 hours ago        /bin/sh -c #(nop) ADD file:ac42f23f37092b9...   298 B               
-be04ba27a9ae        23 hours ago        /bin/sh -c set -x   && wget -O tomcat.tar....   8.75 MB             
-847be662a35f        5 days ago          /bin/sh -c #(nop)  ENV TOMCAT_ASC_URL=http...   0 B                 
-ac6550346558        5 days ago          /bin/sh -c #(nop)  ENV TOMCAT_TGZ_URL=http...   0 B                 
-50c12be7ca48        5 days ago          /bin/sh -c #(nop)  ENV TOMCAT_VERSION=8.5.15    0 B                 
-89c44758e4ae        5 days ago          /bin/sh -c #(nop)  ENV TOMCAT_MAJOR=8           0 B                 
-560ad98c1b23        5 days ago          /bin/sh -c yum install -y java-1.8.0-openj...   236 MB              
-befeedbb7dc7        5 days ago          /bin/sh -c #(nop) WORKDIR /srv/tomcat           0 B                 
-c85cf394faf8        5 days ago          /bin/sh -c mkdir -p "$CATALINA_HOME"            0 B                 
-debf78012b2c        5 days ago          /bin/sh -c #(nop)  ENV PATH=/srv/tomcat/bi...   0 B                 
-ccc27f4f3bcf        5 days ago          /bin/sh -c #(nop)  ENV CATALINA_HOME=/srv/...   0 B                 
-8f351964d568        6 days ago          /bin/sh -c #(nop)  MAINTAINER Netkiller <n...   0 B                 
-3bee3060bfc8        9 days ago          /bin/sh -c #(nop)  CMD ["/bin/bash"]            0 B                 
-<missing>           9 days ago          /bin/sh -c #(nop)  LABEL name=CentOS Base ...   0 B                 
-<missing>           9 days ago          /bin/sh -c #(nop) ADD file:d22a9c627d1d1f3...   193 MB		
-		]]>
-			</screen>
-			<screen>
-		<![CDATA[
-docker history docker.io/mysql:5.7
-docker history --no-trunc docker.io/mysql:5.7		
-		]]>
-			</screen>
-		</section>
+
 		<section id="reset">
 			<title>重置 Docker </title>
 			<screen>
@@ -661,5 +627,5 @@ docker run -d -v /usr/local/etc/redis/redis.conf:/usr/local/etc/redis/redis.conf
 			</screen>
 		</section>
 	</section>
-	&chapter.docker-compose.xml;
+	&section.docker-compose.xml;
 </section>

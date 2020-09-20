@@ -1,18 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.miscellaneous.xml 446 2012-08-06 09:43:09Z netkiller $ -->
-<section id="docker.registry">
-	<title>私有仓库</title>
+<section id="repository">
+	<title>仓库</title>
 	<section>
-		<title>搭建私有仓库</title>
-		<para>搭建私有仓库只需两步</para>
-		<screen>
+		<title>Docker 官方仓库</title>
+
+		<section>
+			<title>登陆仓库</title>
+			<para>登录</para>
+			<screen>
+			<![CDATA[
+$ sudo docker login
+Username: netkiller
+Password: 
+Email: netkiller@msn.com
+Login Succeeded
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>获取镜像</title>
+			<screen>
+			<![CDATA[
+docker pull ubuntu:14.04
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>上传镜像</title>
+			<screen>
+			<![CDATA[
+docker tag friendlyhello username/repository:tag
+docker push username/repository:tag
+			]]>
+			</screen>
+		</section>
+	</section>
+
+
+	<section id="docker.registry">
+		<title>私有仓库</title>
+		<section>
+			<title>搭建私有仓库</title>
+			<para>搭建私有仓库只需两步</para>
+			<screen>
 		<![CDATA[
 docker pull registry
 docker run -d -p 5000:5000 -v /opt/registry:/var/lib/registry --name registry registry
 		]]>
-		</screen>
-		<para>操作演示</para>
-		<screen>
+			</screen>
+			<para>操作演示</para>
+			<screen>
 		<![CDATA[
 neo@ubuntu:~$ docker pull registry
 Using default tag: latest
@@ -31,35 +69,35 @@ neo@ubuntu:~$ docker run -d -p 5000:5000 -v /opt/registry:/tmp/registry registry
 neo@ubuntu:~$ docker ps | grep registry
 38a6d3b5e18e        registry              "/entrypoint.sh /etc…"   35 seconds ago      Up 33 seconds       0.0.0.0:5000->5000/tcp
 		]]>
-		</screen>
-		<para>设置允许http协议访问，有两种方式，一种是修改 /etc/docker/daemon.json并添加 “insecure-registries” 项</para>
-		<screen>
+			</screen>
+			<para>设置允许http协议访问，有两种方式，一种是修改 /etc/docker/daemon.json并添加 “insecure-registries” 项</para>
+			<screen>
 		<![CDATA[
 {
     "registry-mirrors": ["https://registry.docker-cn.com"],
     "insecure-registries": ["127.0.0.1:5000"]
 }
 		]]>
-		</screen>				
-		<para>另一种方式是修改 /etc/default/docker 中加入下面内容</para>
-		<screen>
+			</screen>
+			<para>另一种方式是修改 /etc/default/docker 中加入下面内容</para>
+			<screen>
 		<![CDATA[
 neo@ubuntu:~$ sudo vim /etc/default/docker
 
 DOCKER_OPTS="--insecure-registry 0.0.0.0:5000"
 		]]>
-		</screen>
-		<para>修改 /lib/systemd/system/docker.service</para>
-		<screen>
+			</screen>
+			<para>修改 /lib/systemd/system/docker.service</para>
+			<screen>
 		<![CDATA[
 # 加入		
 EnvironmentFile=/etc/default/docker
 # 尾部加入 $DOCKER_OPTS
 ExecStart=/usr/bin/dockerd -H fd:// -H unix:///var/run/docker.sock -H tcp://0.0.0.0:2375 $DOCKER_OPTS		
 		]]>
-		</screen>
-		<para>完整的例子</para>
-		<screen>
+			</screen>
+			<para>完整的例子</para>
+			<screen>
 		<![CDATA[
 neo@ubuntu:~$ sudo vim /lib/systemd/system/docker.service
 
@@ -100,9 +138,9 @@ StartLimitInterval=60s
 WantedBy=multi-user.target
 
 		]]>
-		</screen>
-		<para>重启 Docker</para>
-		<screen>
+			</screen>
+			<para>重启 Docker</para>
+			<screen>
 		<![CDATA[
 neo@ubuntu:~$ sudo systemctl daemon-reload
 neo@ubuntu:~$ sudo systemctl restart docker	
@@ -110,27 +148,27 @@ neo@ubuntu:~$ sudo systemctl restart docker
 neo@ubuntu:~$ ps ax | grep docker
 19548 ?        Ssl    0:00 /usr/bin/dockerd -H fd:// -H unix:///var/run/docker.sock -H tcp://0.0.0.0:2375 --insecure-registry 0.0.0.0:5000
 		]]>
-		</screen>
-		<para>验证 5000 端口可以访问</para>
-		<screen>
+			</screen>
+			<para>验证 5000 端口可以访问</para>
+			<screen>
 		<![CDATA[
 neo@ubuntu:~$ curl -XGET http://localhost:5000/v2/_catalog
 {"repositories":[]}		
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>推送镜像到私有仓库</title>
-		<para>本地镜像推送到远程私有仓库</para>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>推送镜像到私有仓库</title>
+			<para>本地镜像推送到远程私有仓库</para>
+			<screen>
 		<![CDATA[
 docker pull busybox
 docker tag busybox docker.netkiller.cn:5000/busybox
 docker push docker.netkiller.cn:5000/busybox
 		]]>
-		</screen>
-		<para>操作演示</para>
-		<screen>
+			</screen>
+			<para>操作演示</para>
+			<screen>
 		<![CDATA[
 [root@localhost ~]# docker pull busybox
 Using default tag: latest
@@ -146,9 +184,9 @@ The push refers to repository [docker.netkiller.cn:5000/busybox]
 adab5d09ba79: Pushed 
 latest: digest: sha256:4415a904b1aca178c2450fd54928ab362825e863c0ad5452fd020e92f7a6a47e size: 527
         ]]>
-		</screen>
-		<para>查看远程私有仓库</para>
-		<screen>
+			</screen>
+			<para>查看远程私有仓库</para>
+			<screen>
 		<![CDATA[
 [root@localhost ~]# curl -XGET http://docker.netkiller.cn:5000/v2/_catalog
 {"repositories":["busybox"]}
@@ -156,32 +194,32 @@ latest: digest: sha256:4415a904b1aca178c2450fd54928ab362825e863c0ad5452fd020e92f
 [root@localhost ~]# curl -XGET http://docker.netkiller.cn:5000/v2/busybox/tags/list
 {"name":"busybox","tags":["latest"]}
 		]]>
-		</screen>
-		<para>从私有仓库拉镜像</para>
-		<screen>
+			</screen>
+			<para>从私有仓库拉镜像</para>
+			<screen>
 		<![CDATA[
 docker pull docker.netkiller.cn:5000/busybox
 		]]>
-		</screen>
-		
-	</section>
-	<section>
-		<title>查询镜像</title>
-		<ulink url="http://seleniumhq.org/download/" />
-		<para>如果我们想要查询私有仓库中的所有镜像，使用docker search命令：</para>
-		<screen>
+			</screen>
+
+		</section>
+		<section>
+			<title>查询镜像</title>
+			<ulink url="http://seleniumhq.org/download/" />
+			<para>如果我们想要查询私有仓库中的所有镜像，使用docker search命令：</para>
+			<screen>
 		<![CDATA[
 docker search registry_ipaddr:5000/	
 		]]>
-		</screen>
-		<para>如果要查询仓库中指定账户下的镜像，则使用如下命令：</para>
-		<screen>
+			</screen>
+			<para>如果要查询仓库中指定账户下的镜像，则使用如下命令：</para>
+			<screen>
 		<![CDATA[
 docker search registry_ipaddr:5000/account/
 		]]>
-		</screen>
-		<para>操作演示</para>
-		<screen>
+			</screen>
+			<para>操作演示</para>
+			<screen>
 		<![CDATA[
 [root@localhost ~]# curl -XGET http://docker.netkiller.cn:5000/v2/_catalog
 {"repositories":["busybox"]}
@@ -189,12 +227,12 @@ docker search registry_ipaddr:5000/account/
 [root@localhost ~]# curl -XGET http://docker.netkiller.cn:5000/v2/busybox/tags/list
 {"name":"busybox","tags":["latest"]}		
 		]]>
-		</screen>
-	</section>
-	<section id="registry.config">
-		<title>registry 镜像高级配置</title>
-		<para>/etc/docker/registry/config.yml</para>
-		<screen>
+			</screen>
+		</section>
+		<section id="registry.config">
+			<title>registry 镜像高级配置</title>
+			<para>/etc/docker/registry/config.yml</para>
+			<screen>
 		<![CDATA[
 cat config.yml
  
@@ -219,17 +257,17 @@ health:
     interval: 10s
     threshold: 3
 		]]>
-		</screen>
-		<section id="registry.auth">
-			<title>私有仓库认证</title>
-			<para>创建密码文件</para>
-			<screen>
+			</screen>
+			<section id="registry.auth">
+				<title>私有仓库认证</title>
+				<para>创建密码文件</para>
+				<screen>
 			<![CDATA[
 docker run --entrypoint htpasswd registry -Bbn testuser testpassword > auth/htpasswd
 			]]>
-			</screen>
-			<para>启动 docker</para>
-			<screen>
+				</screen>
+				<para>启动 docker</para>
+				<screen>
 			<![CDATA[
 docker run -d -p 5000:5000 --restart=always --name docker-hub \
   -v /opt/registry:/var/lib/registry \
@@ -239,52 +277,53 @@ docker run -d -p 5000:5000 --restart=always --name docker-hub \
   -e REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd \
   registry
 			]]>
-			</screen>
-			<para>登录</para>
-			<screen>
+				</screen>
+				<para>登录</para>
+				<screen>
 			<![CDATA[
 docker login -u testuser -p testpassword docker.netkiller.cn:5000
 			]]>
-			</screen>
-			<para>退出</para>
-			<screen>
+				</screen>
+				<para>退出</para>
+				<screen>
 			<![CDATA[
 docker logout docker.netkiller.cn:5000			
 			]]>
-			</screen>
+				</screen>
+			</section>
 		</section>
-	</section>
-	<section id="registry.api">
-		<title>registry 接口</title>
-		<para>
-			查看仓库
-			<ulink url="http://registry:5000/v2/_catalog" />
-		</para>
-		<screen>
+		<section id="registry.api">
+			<title>registry 接口</title>
+			<para>
+				查看仓库
+				<ulink url="http://registry:5000/v2/_catalog" />
+			</para>
+			<screen>
 		<![CDATA[
 curl -XGET http://registry:5000/v2/_catalog
 		]]>
-		</screen>
-		<para>查看镜像</para>
-		<screen>
+			</screen>
+			<para>查看镜像</para>
+			<screen>
 		<![CDATA[
 curl -XGET http://registry:5000/v2/image_name/tags/list
 		]]>
-		</screen>
-		<para>删除镜像</para>
-		<screen>
+			</screen>
+			<para>删除镜像</para>
+			<screen>
 		<![CDATA[
 DELETE /v2/<name>/manifests/<reference>		
 name:镜像名称
 reference: 镜像对应sha256值
 		]]>
-		</screen>
-		<para>处理器测试</para>
-		<screen>
+			</screen>
+			<para>处理器测试</para>
+			<screen>
 		<![CDATA[
 curl -I -X DELETE http://registry:5000/v2/netkiller/manifests/sha256:6a67ba482a8dd4f8143ac96b1dcffa5e45af95b8d3e37aeba72401a5afd7ab8e		
 		]]>
-		</screen>
-	</section>
+			</screen>
+		</section>
 	&section.harbor.xml;
+	</section>
 </section>

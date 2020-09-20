@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="container">
+	<title>容器</title>
+	<section>
+		<title>启动与终止容器</title>
+		<screen>
+			<![CDATA[
+$ sudo docker run ubuntu:14.10 /bin/echo 'Hello world'
+Hello world			
+			]]>
+		</screen>
+		<para>进入BASH</para>
+		<screen>
+			<![CDATA[
+$ sudo docker run -t -i ubuntu:14.10 /bin/bash
+root@f8c7b2afff14:/# 			
+			]]>
+		</screen>
+		<para>start / stop / restart</para>
+		<screen>
+			<![CDATA[
+sudo docker start silly_bohr
+silly_bohr
+
+$ sudo docker stop silly_bohr
+silly_bohr
+
+$ sudo docker restart silly_bohr
+silly_bohr
+			]]>
+		</screen>
+		<para>守护进程运行</para>
+		<screen>
+			<![CDATA[
+$ sudo docker run -d ubuntu:14.10 /bin/sh -c "while true; do echo hello world; sleep 1; done"
+4cdbb75eeabf3f1ea87bec91accdf5211639d0895e94ab94ffa1d55fb7f62e2a
+			]]>
+		</screen>
+		<para>通过 docker ps 命令来查看容器信息</para>
+		<screen>
+			<![CDATA[
+$ sudo docker ps
+CONTAINER ID        IMAGE               COMMAND                CREATED             STATUS              PORTS               NAMES
+4cdbb75eeabf        ubuntu:14.10        "/bin/sh -c 'while t   30 seconds ago      Up 28 seconds                           drunk_rosalind 
+			]]>
+		</screen>
+		<para>要获取容器的输出信息，可以通过 docker logs 命令。</para>
+		<screen>
+			<![CDATA[
+$ sudo docker logs insane_babbage			
+			]]>
+		</screen>
+		<para>注意：守护进程在后台运行，所以无输出，只能通过docker logs 命令查看</para>
+	</section>
+	<section>
+		<title>进入容器</title>
+		<screen>
+			<![CDATA[
+$ sudo docker run -idt ubuntu:14.10
+793f9805620d7e10564e0778c388640cb73b6a1aec663bf468904d72a4f219f2
+
+$ sudo docker ps 
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+793f9805620d        ubuntu:14.10        "/bin/bash"         5 seconds ago       Up 4 seconds                            mad_elion           
+
+$ sudo docker attach mad_elion 
+root@793f9805620d:/# ls
+bin  boot  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
+			]]>
+		</screen>
+	</section>
+	<section>
+		<title>导出和导入容器</title>
+		<para></para>
+		<screen>
+			<![CDATA[
+$ sudo docker export 7691a814370e > ubuntu.tar
+			]]>
+		</screen>
+		<para></para>
+		<screen>
+			<![CDATA[
+			<![CDATA[
+$ cat ubuntu.tar | sudo docker import - test/ubuntu:v1.0
+			]]>
+		</screen>
+		<para>指定 URL 或者某个目录来导入，例如</para>
+		<screen>
+			<![CDATA[
+$sudo docker import http://example.com/exampleimage.tgz example/imagerepo			
+			]]>
+		</screen>
+	</section>
+	<section id="kill">
+		<title>kill</title>
+		<para>杀死所有正在运行的容器</para>
+		<screen>
+			<![CDATA[
+docker kill $(docker ps -a -q)			
+			]]>
+		</screen>
+	</section>
+	<section>
+		<title>删除容器</title>
+		<para>使用 docker rm 来删除一个处于终止状态的容器。</para>
+		<screen>
+			<![CDATA[
+$ sudo docker ps -a
+CONTAINER ID        IMAGE               COMMAND                CREATED             STATUS                      PORTS               NAMES
+f8c7b2afff14        ubuntu:14.10        "/bin/bash"            14 minutes ago      Exited (0) 2 minutes ago                        agitated_fermat     
+0abd2e5fc251        ubuntu:14.10        "/bin/echo 'Hello wo   15 minutes ago      Exited (0) 15 minutes ago                       clever_kowalevski 
+
+$ sudo docker rm clever_kowalevski
+clever_kowalevski
+
+$ sudo docker ps -a
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                     PORTS               NAMES
+f8c7b2afff14        ubuntu:14.10        "/bin/bash"         16 minutes ago      Exited (0) 5 minutes ago                       agitated_fermat     			
+			]]>
+		</screen>
+		<para></para>
+		<screen>
+			<![CDATA[
+$ docker rm 719f98391ecf1d6f1f153ffea1bbd84cd2dc9cf6d31d5a4f348c60d98392814c
+			]]>
+		</screen>
+		<para>删除所有已经停止的容器</para>
+		<screen>
+			<![CDATA[
+docker rm $(docker ps -a -q)			
+			]]>
+		</screen>
+	</section>
+
+</section>

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="docker.volume">
+	<title>卷管理</title>
+	<section>
+		<title>列出卷 </title>
+		<para>docker volume ls</para>
+		<screen>
+			<![CDATA[
+# docker volume ls
+DRIVER              VOLUME NAME
+local               dbac41b6de88c75d2932d5949367b17f347f482977d508195375dbc71518ab27
+			]]>
+		</screen>
+	</section>
+	<section>
+		<title>创建卷</title>
+		<screen>
+			<![CDATA[
+# docker volume create --name WebVolume1
+WebVolume1
+			]]>
+		</screen>
+		<para></para>
+		<screen>
+			<![CDATA[
+# docker volume ls
+DRIVER              VOLUME NAME
+local               WebVolume1
+local               dbac41b6de88c75d2932d5949367b17f347f482977d508195375dbc71518ab27			
+			]]>
+		</screen>
+
+	</section>
+	<section>
+		<title>挂在镜像</title>
+		<screen>
+			<![CDATA[
+# docker run -ti --rm -v WebVolume1:/www ubuntu
+# docker run -ti --rm -v WebVolume1:/www docker.io/centos:7
+			]]>
+		</screen>
+		<para>查看卷的挂载情况</para>
+		<screen>
+			<![CDATA[
+# df | grep /www
+/dev/vda1       20510332 7943940  11501484  41% /www			
+			]]>
+		</screen>
+		<para>创建测试文件</para>
+		<screen>
+			<![CDATA[
+# mkdir -p /www/netkiller.cn/www.netkiller.cn
+# echo Helloworld > /www/netkiller.cn/www.netkiller.cn/index.html
+# cat /www/netkiller.cn/www.netkiller.cn/index.html
+Helloworld
+# exit
+exit
+			]]>
+		</screen>
+	</section>
+	<section>
+		<title>检查卷</title>
+		<screen>
+			<![CDATA[
+# docker volume inspect WebVolume1
+[
+    {
+        "Driver": "local",
+        "Labels": {},
+        "Mountpoint": "/var/lib/docker/volumes/WebVolume1/_data",
+        "Name": "WebVolume1",
+        "Options": {},
+        "Scope": "local"
+    }
+]
+			]]>
+		</screen>
+	</section>
+	<section>
+		<title>删除卷</title>
+		<screen>
+			<![CDATA[
+# docker volume create AppVolume1
+# docker volume rm AppVolume1
+			]]>
+		</screen>
+	</section>
+	<section>
+		<title>销毁所有未使用的卷</title>
+		<screen>
+			<![CDATA[
+# docker volume prune
+WARNING! This will remove all volumes not used by at least one container.
+Are you sure you want to continue? [y/N] y
+Deleted Volumes:
+WebVolume1
+3fd379f8c2cf8727d2e83e84e434ea1f122016957bd7cf78a0f05b6e5a69cf2b
+app
+
+Total reclaimed space: 11 B
+			]]>
+		</screen>
+	</section>
+	<section>
+		<title>在多个容器间共享卷</title>
+		<para>容器一</para>
+		<screen>
+			<![CDATA[
+# docker run -ti --name=Container1 -v DataVolume1:/opt/data ubuntu
+			]]>
+		</screen>
+		<para>容器二</para>
+		<screen>
+			<![CDATA[
+# docker run -ti --name=Container2 --volumes-from Container1 ubuntu
+			]]>
+		</screen>
+		<para>进入容器一中查看数据</para>
+		<screen>
+			<![CDATA[
+# docker start -ai Container1
+			]]>
+		</screen>
+		<para>容器三，挂在只读卷</para>
+		<screen>
+			<![CDATA[
+# docker run -ti --name=Container3 --volumes-from Container2:ro ubuntu
+			]]>
+		</screen>
+		<para>删除上面三个测试容易和卷</para>
+		<screen>
+			<![CDATA[
+# docker rm Container1 Container2 Container3
+# docker volume rm DataVolume1
+			]]>
+		</screen>
+	</section>
+	<section>
+		<title>容器绑定本地文件系统</title>
+		<subtitle>Bind mount a volume (default [])</subtitle>
+		<screen>
+			<![CDATA[
+# docker run -it --name mycentos1 -v /www:/tmp/test docker.io/centos:7 /bin/bash
+# docker run -d -v ~/logs:/var/log/nginx -p 80:80 -i nginx			
+			]]>
+		</screen>
+	</section>
+	<section>
+		<title>只读权限</title>
+		<para>/etc/redis/redis.conf:/etc/redis/redis.conf:ro 表示只读权限</para>
+		<screen>
+			<![CDATA[
+docker run \
+-p 6379:6379 \
+-v /var/lib/redis:/data \
+-v /etc/redis/redis.conf:/etc/redis/redis.conf:ro \
+--privileged=true \
+--name redis \
+-d docker.io/redis:latest redis-server /etc/redis/redis.conf			
+			]]>
+		</screen>
+	</section>
+</section>
