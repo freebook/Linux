@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="docker.config">
+	<title>配置 Docker</title>
+	<section>
+		<title>开启远程访问</title>
+		<para>修改/etc/sysconfig/docker文件，在最后增加一行DOCKER_OPTS</para>
+		<para>vim /etc/sysconfig/docker</para>
+		<screen>
+			<![CDATA[
+DOCKER_OPTS="-H unix:///var/run/docker.sock -H tcp://0.0.0.0:2375"
+			]]>
+		</screen>
+		<para>修改/usr/lib/systemd/system/docker.service 在[Service]的ExexStart=下面增加一行$DOCKER_OPTS</para>
+		<screen>
+			<![CDATA[
+[Unit]
+Description=Docker Application Container Engine
+Documentation=https://docs.docker.com
+BindsTo=containerd.service
+After=network-online.target firewalld.service
+Wants=network-online.target
+Requires=docker.socket
+
+[Service]
+Type=notify
+# the default is not to use systemd for cgroups because the delegate issues still
+# exists and systemd currently does not support the cgroup feature set required
+# for containers run by docker
+EnvironmentFile=-/etc/sysconfig/docker
+ExecStart=/usr/bin/dockerd $DOCKER_OPTS
+ExecReload=/bin/kill -s HUP $MAINPID
+TimeoutSec=0
+RestartSec=2
+Restart=always
+
+# Note that StartLimit* options were moved from "Service" to "Unit" in systemd 229.
+# Both the old, and new location are accepted by systemd 229 and up, so using the old location
+# to make them work for either version of systemd.
+StartLimitBurst=3
+
+# Note that StartLimitInterval was renamed to StartLimitIntervalSec in systemd 230.
+# Both the old, and new name are accepted by systemd 230 and up, so using the old name to make
+# this option work for either version of systemd.
+StartLimitInterval=60s
+
+# Having non-zero Limit*s causes performance problems due to accounting overhead
+# in the kernel. We recommend using cgroups to do container-local accounting.
+LimitNOFILE=infinity
+LimitNPROC=infinity
+LimitCORE=infinity
+
+# Comment TasksMax if your systemd version does not supports it.
+# Only systemd 226 and above support this option.
+TasksMax=infinity
+
+# set delegate yes so that systemd does not reset the cgroups of docker containers
+Delegate=yes
+
+# kill only the docker process, not all processes in the cgroup
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target
+			]]>
+		</screen>
+		<para>重启 docker </para>
+		<screen>
+			<![CDATA[
+[root@localhost ~]# systemctl daemon-reload
+[root@localhost ~]# systemctl restart docker			
+			]]>
+		</screen>
+		<para>查看端口</para>
+		<screen>
+			<![CDATA[
+[root@localhost ~]# ss -lnt | grep 2375
+LISTEN     0      1024        :::2375                    :::*  			
+			]]>
+		</screen>
+		<para>检查 docker 信息</para>
+		<screen>
+			<![CDATA[
+[root@localhost ~]# curl -s http://localhost:2375/info
+{"ID":"YNK5:OJTT:FELN:H4DQ:AG7H:W3RE:WGLD:TOOI:32CH:S6HR:AJ45:4VLZ","Containers":4,"ContainersRunning":0,"ContainersPaused":0,"ContainersStopped":4,"Images":10,"Driver":"btrfs","DriverStatus":[["Build Version","Btrfs v4.9.1"],["Library Version","102"]],"SystemStatus":null,"Plugins":{"Volume":["local"],"Network":["bridge","host","macvlan","null","overlay"],"Authorization":null,"Log":["awslogs","fluentd","gcplogs","gelf","journald","json-file","local","logentries","splunk","syslog"]},"MemoryLimit":true,"SwapLimit":true,"KernelMemory":true,"CpuCfsPeriod":true,"CpuCfsQuota":true,"CPUShares":true,"CPUSet":true,"IPv4Forwarding":true,"BridgeNfIptables":false,"BridgeNfIp6tables":false,"Debug":false,"NFd":23,"OomKillDisable":true,"NGoroutines":37,"SystemTime":"2019-01-24T23:30:56.230913047-05:00","LoggingDriver":"json-file","CgroupDriver":"cgroupfs","NEventsListener":0,"KernelVersion":"3.10.0-693.el7.x86_64","OperatingSystem":"CentOS Linux 7 (Core)","OSType":"linux","Architecture":"x86_64","IndexServerAddress":"https://index.docker.io/v1/","RegistryConfig":{"AllowNondistributableArtifactsCIDRs":[],"AllowNondistributableArtifactsHostnames":[],"InsecureRegistryCIDRs":["127.0.0.0/8"],"IndexConfigs":{"docker.io":{"Name":"docker.io","Mirrors":[],"Secure":true,"Official":true}},"Mirrors":[]},"NCPU":2,"MemTotal":1958645760,"GenericResources":null,"DockerRootDir":"/var/lib/docker","HttpProxy":"","HttpsProxy":"","NoProxy":"","Name":"localhost.localdomain","Labels":[],"ExperimentalBuild":false,"ServerVersion":"18.09.1","ClusterStore":"","ClusterAdvertise":"","Runtimes":{"runc":{"path":"runc"}},"DefaultRuntime":"runc","Swarm":{"NodeID":"","NodeAddr":"","LocalNodeState":"inactive","ControlAvailable":false,"Error":"","RemoteManagers":null},"LiveRestoreEnabled":false,"Isolation":"","InitBinary":"docker-init","ContainerdCommit":{"ID":"9754871865f7fe2f4e74d43e2fc7ccd237edcbce","Expected":"9754871865f7fe2f4e74d43e2fc7ccd237edcbce"},"RuncCommit":{"ID":"96ec2177ae841256168fcf76954f7177af9446eb","Expected":"96ec2177ae841256168fcf76954f7177af9446eb"},"InitCommit":{"ID":"fec3683","Expected":"fec3683"},"SecurityOptions":["name=seccomp,profile=default"],"ProductLicense":"Community Engine","Warnings":["WARNING: API is accessible on http://0.0.0.0:2375 without encryption.\n         Access to the remote API is equivalent to root access on the host. Refer\n         to the 'Docker daemon attack surface' section in the documentation for\n         more information: https://docs.docker.com/engine/security/security/#docker-daemon-attack-surface","WARNING: bridge-nf-call-iptables is disabled","WARNING: bridge-nf-call-ip6tables is disabled"]}			
+			]]>
+		</screen>
+	</section>
+	<section>
+		<title>镜像配置</title>
+		<section>
+			<title>临时选择镜像</title>
+			<para>您可以在 Docker 守护进程启动时传入 --registry-mirror 参数：</para>
+			<screen>
+		<![CDATA[
+$ docker --registry-mirror=https://registry.docker-cn.com daemon
+		]]>
+			</screen>
+		</section>
+		<section>
+			<title>切换国内镜像</title>
+			<para>设置默认镜像，修改 /etc/docker/daemon.json 文件，并添加上 registry-mirrors 键值。</para>
+			<para>Docker 中国官方镜像</para>
+			<screen>
+		<![CDATA[
+{
+  "registry-mirrors": ["https://registry.docker-cn.com"]
+}
+		]]>
+			</screen>
+			<para>设置多个镜像</para>
+			<screen>
+		<![CDATA[
+{
+  "registry-mirrors": [
+    "https://registry.docker-cn.com",
+    "http://hub-mirror.c.163.com",
+    "https://docker.mirrors.ustc.edu.cn"
+  ]
+}		
+		]]>
+			</screen>
+			<screen>
+			<![CDATA[
+"registry-mirrors": ["https://mirror.ccs.tencentyun.com"]			
+			]]>
+			</screen>
+		</section>
+
+	</section>
+
+	<section id="docker.system">
+		<title>操作系统</title>
+		<section>
+			<title>/etc/hosts 配置</title>
+			<screen>
+		<![CDATA[
+# docker run --add-host=docker:10.180.0.1 --rm -it debian
+		]]>
+			</screen>
+		</section>
+		<section id="sysctl">
+			<title>sysctl</title>
+			<screen>
+		<![CDATA[
+$ docker run --sysctl net.ipv4.ip_forward=1 someimage		
+		]]>
+			</screen>
+		</section>
+		<section>
+			<title>ulimits</title>
+			<para>查看 ulimit 设置</para>
+			<screen>
+		<![CDATA[
+$ docker run --ulimit nofile=1024:1024 --rm debian sh -c "ulimit -n"
+		]]>
+			</screen>
+			<screen>
+		<![CDATA[
+$ docker run -it --ulimit as=1024 fedora /bin/bash
+$ docker run -d -u daemon --ulimit nproc=3 busybox top
+		]]>
+			</screen>
+		</section>
+	</section>
+</section>

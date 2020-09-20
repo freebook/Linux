@@ -266,7 +266,42 @@ users:
     client-key: /root/.minikube/client.key		
 		]]>
 		</screen>
-
+		<screen>
+		<![CDATA[
+iMac:~ neo$ kubectl config view
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: DATA+OMITTED
+    server: https://kubernetes.docker.internal:6443
+  name: docker-desktop
+- cluster:
+    certificate-authority: /Users/neo/.minikube/ca.crt
+    server: https://192.168.64.2:8443
+  name: minikube
+contexts:
+- context:
+    cluster: docker-desktop
+    user: docker-desktop
+  name: docker-desktop
+- context:
+    cluster: minikube
+    user: minikube
+  name: minikube
+current-context: minikube
+kind: Config
+preferences: {}
+users:
+- name: docker-desktop
+  user:
+    client-certificate-data: REDACTED
+    client-key-data: REDACTED
+- name: minikube
+  user:
+    client-certificate: /Users/neo/.minikube/profiles/minikube/client.crt
+    client-key: /Users/neo/.minikube/profiles/minikube/client.key		
+		]]>
+		</screen>
 		<section>
 			<title>use-context</title>
 			<para>如果之前用其他方式运行Kubernetes，如 minikube, mircok8s 等等，可以使用下面命令切换。</para>
@@ -285,6 +320,17 @@ $ kubectl config use-context docker-for-desktop
 [root@localhost ~]# kubectl get nodes
 NAME       STATUS   ROLES    AGE    VERSION
 minikube   Ready    master   119m   v1.13.2		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+iMac:~ neo$ kubectl get node 
+NAME       STATUS   ROLES    AGE   VERSION
+minikube   Ready    master   42h   v1.19.0
+
+iMac:~ neo$ kubectl get node -o wide
+NAME       STATUS   ROLES    AGE   VERSION   INTERNAL-IP    EXTERNAL-IP   OS-IMAGE               KERNEL-VERSION   CONTAINER-RUNTIME
+minikube   Ready    master   42h   v1.19.0   192.168.64.2   <none>        Buildroot 2019.02.11   4.19.114         docker://19.3.12		
 		]]>
 		</screen>
 	</section>

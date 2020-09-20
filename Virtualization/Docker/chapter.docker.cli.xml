@@ -2,9 +2,12 @@
 <!-- $Id$ -->
 <section id="cli">
 	<title>docker 命令</title>
-	<section id="docker.info">
-		<title>查看 docker 信息</title>
-		<screen>
+	<section>
+		<title>docker - A self-sufficient runtime for containers</title>
+
+		<section id="docker.info">
+			<title>查看 docker 信息</title>
+			<screen>
 		<![CDATA[
 neo@MacBook-Pro ~ % docker info
 Containers: 9
@@ -58,32 +61,93 @@ Insecure Registries:
 Live Restore Enabled: false
 Product License: Community Engine		
 		]]>
-		</screen>
-	</section>
-	<section id="run">
-		<title>run</title>
-		<para>run</para>
-		<screen>
-			$ sudo docker run ubuntu:14.04 /bin/echo 'Hello world'
-			Hello world
-		</screen>
-	</section>
-	<section id="start">
-		<title>start / stop / restart</title>
-		<screen>
-			sudo docker start silly_bohr
-			silly_bohr
+			</screen>
+			<para>iMac</para>
+			<screen>
+		<![CDATA[
+iMac:~ neo$ docker info
+Client:
+ Debug Mode: false
+ Plugins:
+  buildx: Build with BuildKit (Docker Inc., v0.3.1-tp-docker)
+  scan: Docker Scan (Docker Inc., v0.3.3)
+  app: Docker Application (Docker Inc., v0.8.0)
 
-			$ sudo docker stop silly_bohr
-			silly_bohr
+Server:
+ Containers: 0
+  Running: 0
+  Paused: 0
+  Stopped: 0
+ Images: 0
+ Server Version: 19.03.13-beta2
+ Storage Driver: overlay2
+  Backing Filesystem: extfs
+  Supports d_type: true
+  Native Overlay Diff: true
+ Logging Driver: json-file
+ Cgroup Driver: cgroupfs
+ Plugins:
+  Volume: local
+  Network: bridge host ipvlan macvlan null overlay
+  Log: awslogs fluentd gcplogs gelf journald json-file local logentries splunk syslog
+ Swarm: inactive
+ Runtimes: runc
+ Default Runtime: runc
+ Init Binary: docker-init
+ containerd version: 7ad184331fa3e55e52b890ea95e65ba581ae3429
+ runc version: dc9208a3303feef5b3839f4323d9beb36df0a9dd
+ init version: fec3683
+ Security Options:
+  seccomp
+   Profile: default
+ Kernel Version: 4.19.76-linuxkit
+ Operating System: Docker Desktop
+ OSType: linux
+ Architecture: x86_64
+ CPUs: 2
+ Total Memory: 3.848GiB
+ Name: docker-desktop
+ ID: LWQ5:KBRL:SE7U:SJZ4:ANS2:JEQD:5YJO:MVRG:HIEA:XDWD:LQIZ:EJPX
+ Docker Root Dir: /var/lib/docker
+ Debug Mode: false
+ HTTP Proxy: gateway.docker.internal:3128
+ HTTPS Proxy: gateway.docker.internal:3129
+ Registry: https://index.docker.io/v1/
+ Labels:
+ Experimental: true
+ Insecure Registries:
+  127.0.0.0/8
+ Registry Mirrors:
+  https://registry.docker-cn.com/
+ Live Restore Enabled: false
+ Product License: Community Engine		
+		]]>
+			</screen>
+		</section>
+		<section id="run">
+			<title>run</title>
+			<para>run</para>
+			<screen>
+				$ sudo docker run ubuntu:14.04 /bin/echo 'Hello world'
+				Hello world
+			</screen>
+		</section>
+		<section id="start">
+			<title>start / stop / restart</title>
+			<screen>
+				sudo docker start silly_bohr
+				silly_bohr
 
-			$ sudo docker restart silly_bohr
-			silly_bohr
-		</screen>
-	</section>
-	<section id="ps">
-		<title>ps</title>
-		<screen>
+				$ sudo docker stop silly_bohr
+				silly_bohr
+
+				$ sudo docker restart silly_bohr
+				silly_bohr
+			</screen>
+		</section>
+		<section id="ps">
+			<title>ps</title>
+			<screen>
 			<![CDATA[
 OPTIONS说明：
 -a :显示所有的容器，包括未运行的。
@@ -95,31 +159,31 @@ OPTIONS说明：
 -q :静默模式，只显示容器编号。
 -s :显示总的文件大小。			
 			]]>
-		</screen>
-		<screen>
-			sudo docker ps
-		</screen>
-		<screen>
-			$ sudo docker ps -l
-			CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMES
-			84391d1de0fc ubuntu:14.04 /bin/echo Hello worl 31 minutes ago Exit 0 romantic_ritchie
-		</screen>
-	</section>
-	<section id="top">
-		<title>top</title>
-		<screen>
-			$ sudo docker ps
-			CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMES
-			13b2a4a31455 ubuntu:14.04 /bin/bash 3 hours ago Up 3 hours silly_bohr
+			</screen>
+			<screen>
+				sudo docker ps
+			</screen>
+			<screen>
+				$ sudo docker ps -l
+				CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMES
+				84391d1de0fc ubuntu:14.04 /bin/echo Hello worl 31 minutes ago Exit 0 romantic_ritchie
+			</screen>
+		</section>
+		<section id="top">
+			<title>top</title>
+			<screen>
+				$ sudo docker ps
+				CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMES
+				13b2a4a31455 ubuntu:14.04 /bin/bash 3 hours ago Up 3 hours silly_bohr
 
-			$ sudo docker top silly_bohr
-			UID PID PPID C STIME TTY TIME CMD
-			root 23225 22908 0 12:17 pts/14 00:00:00 /bin/bash
-		</screen>
-	</section>
-	<section id="inspect">
-		<title>inspect</title>
-		<screen>
+				$ sudo docker top silly_bohr
+				UID PID PPID C STIME TTY TIME CMD
+				root 23225 22908 0 12:17 pts/14 00:00:00 /bin/bash
+			</screen>
+		</section>
+		<section id="inspect">
+			<title>inspect</title>
+			<screen>
 			<![CDATA[
 $ sudo docker inspect silly_bohr
 [{
@@ -197,10 +261,10 @@ $ sudo docker inspect silly_bohr
     }
 }]
 			]]>
-		</screen>
-		<section>
-			<title>获取容器名称</title>
-			<screen>
+			</screen>
+			<section>
+				<title>获取容器名称</title>
+				<screen>
 			<![CDATA[
 neo@MacBook-Pro ~ % docker inspect --format='{{.Name}}' $(docker ps -aq)
 /redis-cli
@@ -228,11 +292,11 @@ devel_eureka_1
 devel_config_1
 quizzical_heisenberg
 			]]>
-			</screen>
-		</section>
-		<section>
-			<title>容器镜像名称</title>
-			<screen>
+				</screen>
+			</section>
+			<section>
+				<title>容器镜像名称</title>
+				<screen>
 			<![CDATA[
 neo@MacBook-Pro ~ % docker inspect --format='{{.Config.Image}}' `docker ps -a -q`
 netkiller/redis:latest
@@ -247,11 +311,11 @@ netkiller/eureka:latest
 netkiller/config:latest
 netkiller/eureka			
 			]]>
-			</screen>
-		</section>
-		<section>
-			<title>获取容器主机名 Hostname</title>
-			<screen>
+				</screen>
+			</section>
+			<section>
+				<title>获取容器主机名 Hostname</title>
+				<screen>
 			<![CDATA[
 neo@MacBook-Pro ~ % docker inspect --format '{{ .Config.Hostname }}' $(docker ps -q)
 dbea51159085
@@ -262,17 +326,17 @@ dbea51159085
 70a20dd0396d
 742313f2af46			
 			]]>
-			</screen>
-		</section>
-		
-		<section>
-			<title>查询 IP 地址</title>
-			<screen>
+				</screen>
+			</section>
+
+			<section>
+				<title>查询 IP 地址</title>
+				<screen>
 			<![CDATA[
 $ sudo docker inspect -f '{{ .NetworkSettings.IPAddress }}' silly_bohr
 			]]>
-			</screen>
-			<screen>
+				</screen>
+				<screen>
 			<![CDATA[
 neo@MacBook-Pro ~ % docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps -q)
 
@@ -283,9 +347,9 @@ neo@MacBook-Pro ~ % docker inspect --format='{{range .NetworkSettings.Networks}}
 172.24.0.3
 172.24.0.2			
 			]]>
-			</screen>
-			<para>获取容器的MAC地址</para>
-			<screen>
+				</screen>
+				<para>获取容器的MAC地址</para>
+				<screen>
 			<![CDATA[
 neo@MacBook-Pro ~ % docker inspect --format='{{range .NetworkSettings.Networks}}{{.MacAddress}}{{end}}' $(docker ps -a -q)
 
@@ -296,11 +360,11 @@ neo@MacBook-Pro ~ % docker inspect --format='{{range .NetworkSettings.Networks}}
 02:42:ac:18:00:03
 02:42:ac:18:00:02			
 			]]>
-			</screen>
-		</section>
-		<section>
-			<title>容器日志</title>
-			<screen>
+				</screen>
+			</section>
+			<section>
+				<title>容器日志</title>
+				<screen>
 			<![CDATA[
 neo@MacBook-Pro ~ % docker inspect --format='{{.LogPath}}' `docker ps -a -q`
 /var/lib/docker/containers/dbea511590859fee80565d1c047da2443d62f72f79627c7a97fd891b3ae41168/dbea511590859fee80565d1c047da2443d62f72f79627c7a97fd891b3ae41168-json.log
@@ -315,11 +379,11 @@ neo@MacBook-Pro ~ % docker inspect --format='{{.LogPath}}' `docker ps -a -q`
 /var/lib/docker/containers/ae3c930f6eca854c9dc1c2ae84b7c870d63f3731290d347dc27fcf85c36821e5/ae3c930f6eca854c9dc1c2ae84b7c870d63f3731290d347dc27fcf85c36821e5-json.log
 /var/lib/docker/containers/9beae3d5f5132e5f733e044d634b1e8b2650c30151db1a8468109bbf891be674/9beae3d5f5132e5f733e044d634b1e8b2650c30151db1a8468109bbf891be674-json.log			
 			]]>
-			</screen>
-		</section>
-		<section>
-			<title>获取 json 配置</title>
-			<screen>
+				</screen>
+			</section>
+			<section>
+				<title>获取 json 配置</title>
+				<screen>
 			<![CDATA[
 neo@MacBook-Pro ~ % docker inspect --format='{{json .Config}}' dbea51159085 | jq
 {
@@ -366,13 +430,13 @@ neo@MacBook-Pro ~ % docker inspect --format='{{json .Config}}' dbea51159085 | jq
 }
 			
 			]]>
-			</screen>
-			
-		</section>
-		<section>
-			<title>函数</title>
-			<para>拆分和组合</para>
-			<screen>
+				</screen>
+
+			</section>
+			<section>
+				<title>函数</title>
+				<para>拆分和组合</para>
+				<screen>
 			<![CDATA[
 neo@MacBook-Pro ~ % docker inspect --format '{{join .Config.Entrypoint " , "}}' dbea51159085
 /docker-entrypoint.sh	
@@ -382,32 +446,32 @@ neo@MacBook-Pro ~ % docker inspect --format '{{.HostsPath}}' dbea51159085
 neo@MacBook-Pro ~ % docker inspect --format '{{split .HostsPath "/"}}' dbea51159085
 [ var lib docker containers dbea511590859fee80565d1c047da2443d62f72f79627c7a97fd891b3ae41168 hosts]		
 			]]>
-			</screen>
-			<para>大小写转换</para>
-			<screen>
+				</screen>
+				<para>大小写转换</para>
+				<screen>
 			<![CDATA[
 neo@MacBook-Pro ~ % docker inspect --format "{{lower .Name}}"  dbea51159085                 
 /redis-cli
 neo@MacBook-Pro ~ % docker inspect --format "{{upper .Name}}" dbea51159085
 /REDIS-CLI			
 			]]>
-			</screen>
-			<para>首字母大写</para>
-			<screen>
+				</screen>
+				<para>首字母大写</para>
+				<screen>
 			<![CDATA[
 neo@MacBook-Pro ~ % docker inspect --format "{{title .State.Status}}" dbea51159085
 Restarting			
 			]]>
-			</screen>
-			<para>长度计算</para>
-			<screen>
+				</screen>
+				<para>长度计算</para>
+				<screen>
 			<![CDATA[
 neo@MacBook-Pro ~ % docker inspect --format '{{len .Name}}' dbea51159085
 10			
 			]]>
-			</screen>
-			<para>打印字符串</para>
-			<screen>
+				</screen>
+				<para>打印字符串</para>
+				<screen>
 			<![CDATA[
 neo@MacBook-Pro ~ % INSTANCE_ID=42a58cb957d9                                                
 
@@ -424,13 +488,13 @@ neo@MacBook-Pro ~ % docker inspect --format '{{.State.Pid}}{{print "|"}}{{.State
 74577|0
 			
 			]]>
-			</screen>
-			
-		</section>
-		
-		<section>
-			<title>综合查询</title>
-			<screen>
+				</screen>
+
+			</section>
+
+			<section>
+				<title>综合查询</title>
+				<screen>
 			<![CDATA[
 neo@MacBook-Pro ~ % docker inspect --format 'Hostname:{{ .Config.Hostname }}  Name:{{.Name}} IP:{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps -q)
 Hostname:dbea51159085  Name:/redis-cli IP:
@@ -441,12 +505,12 @@ Hostname:68904b82d071  Name:/cluster_redisslave2_1 IP:172.24.0.4
 Hostname:70a20dd0396d  Name:/cluster_redismaster1_1 IP:172.24.0.3
 Hostname:742313f2af46  Name:/cluster_redisslave1_1 IP:172.24.0.2			
 			]]>
-			</screen>
+				</screen>
+			</section>
 		</section>
-	</section>
-	<section id="images">
-		<title>images</title>
-		<screen>
+		<section id="images">
+			<title>images</title>
+			<screen>
 		<![CDATA[
 $ sudo docker images
 REPOSITORY TAG IMAGE ID CREATED VIRTUAL SIZE
@@ -467,10 +531,10 @@ ubuntu trusty e54ca5efa2e9 4 weeks ago 276.5 MB
 ubuntu 10.04 3db9c44f4520 12 weeks ago 183 MB
 ubuntu lucid 3db9c44f4520 12 weeks ago 183 MB
 		]]>
-		</screen>
-		<section>
-			<title>Getting a new image</title>
-			<screen>
+			</screen>
+			<section>
+				<title>Getting a new image</title>
+				<screen>
 			<![CDATA[
 $ sudo docker pull centos
 Pulling repository centos
@@ -479,14 +543,14 @@ b7de3133ff98: Pulling dependent layers
 511136ea3c5a: Download complete
 ef52fb1fe610: Download complete
 			]]>
-			</screen>
+				</screen>
+			</section>
 		</section>
-	</section>
-	<section id="logs">
-		<title>logs</title>
-		<para>显示容器运行日志，用于排查异常情况</para>
-		<para>例如下面是nginx容易启动出错日志</para>
-		<screen>
+		<section id="logs">
+			<title>logs</title>
+			<para>显示容器运行日志，用于排查异常情况</para>
+			<para>例如下面是nginx容易启动出错日志</para>
+			<screen>
 		<![CDATA[
 [root@netkiller]# docker logs my-nginx-container
 nginx: [emerg] invalid server name or wildcard "www.*.com" on 0.0.0.0:80
@@ -496,12 +560,12 @@ nginx: [emerg] invalid server name or wildcard "www.*.com" on 0.0.0.0:80
 nginx: [emerg] invalid server name or wildcard "www.*.com" on 0.0.0.0:80
 nginx: [emerg] invalid server name or wildcard "www.*.com" on 0.0.0.0:80
 		]]>
-		</screen>
-	</section>
-	<section id="history">
-		<title>history 镜像历史纪录</title>
-		<para>镜像历史纪录</para>
-		<screen>
+			</screen>
+		</section>
+		<section id="history">
+			<title>history 镜像历史纪录</title>
+			<para>镜像历史纪录</para>
+			<screen>
 		<![CDATA[
 # docker history centos:tomcat
 IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT
@@ -525,76 +589,77 @@ ccc27f4f3bcf        5 days ago          /bin/sh -c #(nop)  ENV CATALINA_HOME=/sr
 <missing>           9 days ago          /bin/sh -c #(nop)  LABEL name=CentOS Base ...   0 B                 
 <missing>           9 days ago          /bin/sh -c #(nop) ADD file:d22a9c627d1d1f3...   193 MB		
 		]]>
-		</screen>
-		<screen>
+			</screen>
+			<screen>
 		<![CDATA[
 docker history docker.io/mysql:5.7
 docker history --no-trunc docker.io/mysql:5.7		
 		]]>
-		</screen>
-	</section>
-	<section id="reset">
-		<title>重置 Docker </title>
-		<screen>
+			</screen>
+		</section>
+		<section id="reset">
+			<title>重置 Docker </title>
+			<screen>
 		<![CDATA[
 docker ps -aq | xargs docker rm -f
 docker images -aq | xargs docker rmi -f	
 		]]>
-		</screen>
-	</section>
-	<section id="docker.cli.registry">
-		<title>仓库操作</title>
-		<para>
-			<ulink url="https://docs.docker.com/engine/reference/commandline/login/" />
-		</para>
-		<para>登陆到一个Docker镜像仓库，如果未指定镜像仓库地址，默认为官方仓库 Docker Hub</para>
-		<section>
-			<title>登陆</title>
-			<screen>
+			</screen>
+		</section>
+		<section id="docker.cli.registry">
+			<title>仓库操作</title>
+			<para>
+				<ulink url="https://docs.docker.com/engine/reference/commandline/login/" />
+			</para>
+			<para>登陆到一个Docker镜像仓库，如果未指定镜像仓库地址，默认为官方仓库 Docker Hub</para>
+			<section>
+				<title>登陆</title>
+				<screen>
 			<![CDATA[
 docker login -u 用户名 -p 密码			
 			]]>
-			</screen>
-			<para>登陆到私有仓库</para>
-			<screen>
+				</screen>
+				<para>登陆到私有仓库</para>
+				<screen>
 			<![CDATA[
 $ docker login localhost:8080			
 			]]>
-			</screen>
-			<para>从标准输出传递密码</para>
-			<screen>
+				</screen>
+				<para>从标准输出传递密码</para>
+				<screen>
 			<![CDATA[
 $ cat ~/my_password.txt | docker login --username foo --password-stdin			
 			]]>
-			</screen>
-		</section>
-		<section>
-			<title>注销</title>
-			<screen>
+				</screen>
+			</section>
+			<section>
+				<title>注销</title>
+				<screen>
 			<![CDATA[
 docker logout			
 			]]>
-			</screen>
+				</screen>
+			</section>
 		</section>
-	</section>
-	<section id="docker.build">
-		<title>build</title>
-		<screen>
+		<section id="docker.build">
+			<title>build</title>
+			<screen>
 		<![CDATA[
 $ docker build -f /path/to/a/Dockerfile .
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>网络管理</title>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>网络管理</title>
+			<screen>
 		<![CDATA[
 docker network create -d bridge --subnet 172.25.0.0/16 private_network
 
 docker run -d -v /usr/local/etc/redis/redis.conf:/usr/local/etc/redis/redis.conf -p 6379:6379 --network=private_network --name redis redis redis-server /usr/local/etc/redis/redis.conf
 
 		]]>
-		</screen>
+			</screen>
+		</section>
 	</section>
-
+	&chapter.docker-compose.xml;
 </section>

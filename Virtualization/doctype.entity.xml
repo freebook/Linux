@@ -5,6 +5,7 @@
 <!ENTITY chapter.vagrant.xml			SYSTEM "chapter.vagrant.xml">
 <!ENTITY chapter.docker.xml				SYSTEM "Docker/chapter.docker.xml">
 <!ENTITY chapter.docker.install.xml		SYSTEM "Docker/chapter.docker.install.xml">
+<!ENTITY section.docker.config.xml		SYSTEM "Docker/section.docker.config.xml">
 <!ENTITY chapter.docker.dockerfile.xml	SYSTEM "Docker/chapter.docker.dockerfile.xml">
 <!ENTITY chapter.docker.system.xml		SYSTEM "Docker/chapter.docker.system.xml">
 <!ENTITY chapter.docker.dockerfile.xml	SYSTEM "Docker/chapter.docker.dockerfile.xml">

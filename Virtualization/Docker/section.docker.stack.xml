@@ -2,6 +2,7 @@
 <section id="docker.stack">
 	<title>Stack</title>
 	<para>stack 是一组相互关联的services，这些services之间相互依赖，并能够一起进行编排和scale。单个stack就能够定义和协调整个应用程序的功能.</para>
+	<para>Stack 使用 docker-compose.yml 部署，Stack 与 docker-compose 	的区别是，Stack 无法 build 镜像，不支持 v2会v1 版本的 docker-compose.yml</para>
 	<para>创建 docker-compose.yml</para>
 	<screen>
 	<![CDATA[
