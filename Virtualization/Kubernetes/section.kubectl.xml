@@ -167,10 +167,56 @@ v1
 NAME       STATUS   ROLES    AGE   VERSION
 minikube   Ready    master   23m   v1.13.2		
 		]]>
+		</screen><section id="get.nodes">
+		<title>nodes</title>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# kubectl get nodes
+NAME       STATUS   ROLES    AGE    VERSION
+minikube   Ready    master   119m   v1.13.2		
+		]]>
 		</screen>
+		<screen>
+		<![CDATA[
+iMac:~ neo$ kubectl get node 
+NAME       STATUS   ROLES    AGE   VERSION
+minikube   Ready    master   42h   v1.19.0
+
+iMac:~ neo$ kubectl get node -o wide
+NAME       STATUS   ROLES    AGE   VERSION   INTERNAL-IP    EXTERNAL-IP   OS-IMAGE               KERNEL-VERSION   CONTAINER-RUNTIME
+minikube   Ready    master   42h   v1.19.0   192.168.64.2   <none>        Buildroot 2019.02.11   4.19.114         docker://19.3.12		
+		]]>
+		</screen>
+	</section>
 
 	</section>
-	<section id="get.pod">
+	
+	<section id="get.pods">
+		<title>pods</title>
+		<para></para>
+		<screen>
+		<![CDATA[
+kubectl get pod <pod-name> -o wide		
+kubectl get pods --all-namespaces
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# kubectl get pods --all-namespaces
+NAMESPACE     NAME                                   READY   STATUS    RESTARTS   AGE
+default       hello-minikube-5c856cbf98-6vfvp        1/1     Running   1          4d18h
+kube-system   coredns-86c58d9df4-2rfqf               1/1     Running   51         4d18h
+kube-system   coredns-86c58d9df4-wkb7l               1/1     Running   49         4d18h
+kube-system   etcd-minikube                          1/1     Running   12         4d18h
+kube-system   kube-addon-manager-minikube            1/1     Running   11         4d18h
+kube-system   kube-apiserver-minikube                1/1     Running   74         4d18h
+kube-system   kube-controller-manager-minikube       1/1     Running   31         4d18h
+kube-system   kube-proxy-brrdd                       1/1     Running   1          4d18h
+kube-system   kube-scheduler-minikube                1/1     Running   31         4d18h
+kube-system   kubernetes-dashboard-ccc79bfc9-dxcq2   1/1     Running   7          4d17h
+kube-system   storage-provisioner                    1/1     Running   2          4d18h		
+		]]>
+		</screen><section id="get.pod">
 		<title>pod</title>
 		<para></para>
 		<screen>
@@ -197,33 +243,63 @@ kubernetes-dashboard-ccc79bfc9-dxcq2   1/1     Running   5          16m
 storage-provisioner                    1/1     Running   0          39m		
 		]]>
 		</screen>
+	</section><section id="kubectl.describe">
+		<title>查看 Pod 的事件</title>
+		<screen>
+		<![CDATA[
+kubectl describe pod <pod-name> 		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+iMac:~ neo$ kubectl describe pod springboot
+Name:         springboot
+Namespace:    default
+Priority:     0
+Node:         minikube/192.168.64.2
+Start Time:   Mon, 21 Sep 2020 16:17:03 +0800
+Labels:       run=springboot
+Annotations:  <none>
+Status:       Pending
+IP:           
+IPs:          <none>
+Containers:
+  springboot:
+    Container ID:   
+    Image:          127.0.0.1:5000/netkiller/config:latest
+    Image ID:       
+    Port:           8888/TCP
+    Host Port:      0/TCP
+    State:          Waiting
+      Reason:       ContainerCreating
+    Ready:          False
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-fhfn8 (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             False 
+  ContainersReady   False 
+  PodScheduled      True 
+Volumes:
+  default-token-fhfn8:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  default-token-fhfn8
+    Optional:    false
+QoS Class:       BestEffort
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                 node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  80s   default-scheduler  Successfully assigned default/springboot to minikube
+  Normal  Pulling    79s   kubelet            Pulling image "127.0.0.1:5000/netkiller/config:latest"		
+		]]>
+		</screen>
 	</section>
-	<section id="get.pods">
-		<title>pods</title>
-		<para></para>
-		<screen>
-		<![CDATA[
-kubectl get pod <pod-name> -o wide		
-kubectl get pods --all-namespaces
-		]]>
-		</screen>
-		<screen>
-		<![CDATA[
-[root@localhost ~]# kubectl get pods --all-namespaces
-NAMESPACE     NAME                                   READY   STATUS    RESTARTS   AGE
-default       hello-minikube-5c856cbf98-6vfvp        1/1     Running   1          4d18h
-kube-system   coredns-86c58d9df4-2rfqf               1/1     Running   51         4d18h
-kube-system   coredns-86c58d9df4-wkb7l               1/1     Running   49         4d18h
-kube-system   etcd-minikube                          1/1     Running   12         4d18h
-kube-system   kube-addon-manager-minikube            1/1     Running   11         4d18h
-kube-system   kube-apiserver-minikube                1/1     Running   74         4d18h
-kube-system   kube-controller-manager-minikube       1/1     Running   31         4d18h
-kube-system   kube-proxy-brrdd                       1/1     Running   1          4d18h
-kube-system   kube-scheduler-minikube                1/1     Running   31         4d18h
-kube-system   kubernetes-dashboard-ccc79bfc9-dxcq2   1/1     Running   7          4d17h
-kube-system   storage-provisioner                    1/1     Running   2          4d18h		
-		]]>
-		</screen>
 	</section>
 	<section id="get.cs">
 		<title>查询集群状态</title>
@@ -357,27 +433,7 @@ $ kubectl config use-context docker-for-desktop
 		</section>
 
 	</section>
-	<section id="get.nodes">
-		<title>nodes</title>
-		<screen>
-		<![CDATA[
-[root@localhost ~]# kubectl get nodes
-NAME       STATUS   ROLES    AGE    VERSION
-minikube   Ready    master   119m   v1.13.2		
-		]]>
-		</screen>
-		<screen>
-		<![CDATA[
-iMac:~ neo$ kubectl get node 
-NAME       STATUS   ROLES    AGE   VERSION
-minikube   Ready    master   42h   v1.19.0
-
-iMac:~ neo$ kubectl get node -o wide
-NAME       STATUS   ROLES    AGE   VERSION   INTERNAL-IP    EXTERNAL-IP   OS-IMAGE               KERNEL-VERSION   CONTAINER-RUNTIME
-minikube   Ready    master   42h   v1.19.0   192.168.64.2   <none>        Buildroot 2019.02.11   4.19.114         docker://19.3.12		
-		]]>
-		</screen>
-	</section>
+	
 	<section id="get.service">
 		<title>service</title>
 		<section>
@@ -418,63 +474,7 @@ kubectl logs --previous <pod-name>
 		]]>
 		</screen>
 	</section>
-	<section id="kubectl.describe">
-		<title>查看 Pod 的事件</title>
-		<screen>
-		<![CDATA[
-kubectl describe pod <pod-name> 		
-		]]>
-		</screen>
-		<screen>
-		<![CDATA[
-iMac:~ neo$ kubectl describe pod springboot
-Name:         springboot
-Namespace:    default
-Priority:     0
-Node:         minikube/192.168.64.2
-Start Time:   Mon, 21 Sep 2020 16:17:03 +0800
-Labels:       run=springboot
-Annotations:  <none>
-Status:       Pending
-IP:           
-IPs:          <none>
-Containers:
-  springboot:
-    Container ID:   
-    Image:          127.0.0.1:5000/netkiller/config:latest
-    Image ID:       
-    Port:           8888/TCP
-    Host Port:      0/TCP
-    State:          Waiting
-      Reason:       ContainerCreating
-    Ready:          False
-    Restart Count:  0
-    Environment:    <none>
-    Mounts:
-      /var/run/secrets/kubernetes.io/serviceaccount from default-token-fhfn8 (ro)
-Conditions:
-  Type              Status
-  Initialized       True 
-  Ready             False 
-  ContainersReady   False 
-  PodScheduled      True 
-Volumes:
-  default-token-fhfn8:
-    Type:        Secret (a volume populated by a Secret)
-    SecretName:  default-token-fhfn8
-    Optional:    false
-QoS Class:       BestEffort
-Node-Selectors:  <none>
-Tolerations:     node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
-                 node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
-Events:
-  Type    Reason     Age   From               Message
-  ----    ------     ----  ----               -------
-  Normal  Scheduled  80s   default-scheduler  Successfully assigned default/springboot to minikube
-  Normal  Pulling    79s   kubelet            Pulling image "127.0.0.1:5000/netkiller/config:latest"		
-		]]>
-		</screen>
-	</section>
+	
 	<section id="kubectl.exec">
 		<title>执行 Shell</title>
 		<para>进入容器内部.</para>
