@@ -239,6 +239,25 @@ for { set i 1 } {$i<5} {incr i} {
 		]]>
 		</screen>
 	</section>
+	<section id="expect.openssl">
+		<title>openssl 例子</title>
+		<screen>
+		<![CDATA[
+expect -c  '
+spawn  openssl req -newkey rsa:4096 -nodes -sha256 -keyout domain.key -x509 -days 3650 -out domain.crt
+expect {
+    "Country Name" { send "CN\r"; exp_continue}
+    "State or Province Name" { send "Guangdong\r" ; exp_continue}
+    "Locality Name" { send "Shenzhen\r"; exp_continue}
+    "Organization Name" { send "netkiller\r"; exp_continue}
+    "Organizational Unit Name" { send "Neo\r"; exp_continue}
+    "Common Name" { send "netkiller.cn\r" ; exp_continue}
+    "Email Address" { send "netkiller@msn.com\r" ; exp_continue}
+    eof { exit }
+}'		
+		]]>
+		</screen>
+	</section>
 </section>
 <section id="expect-lite">
 	<title>expect-lite - quick and easy command line automation tool</title>
