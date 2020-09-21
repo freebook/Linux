@@ -219,6 +219,15 @@ COPY --from=netkiller /www/ /usr/share/nginx/html/
 			]]>
 			</screen>
 		</section>
-		
+		<section>
+			<title>EXPOSE</title>
+			<para>EXPOSE 是声明端口，容器内运行的程序使用了什么端口</para>
+			<screen>
+			<![CDATA[
+EXPOSE <端口1> [<端口2>...]
+			]]>
+			</screen>
+			
+		</section>
 	</section>
 </section>

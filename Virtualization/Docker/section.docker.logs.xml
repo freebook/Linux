@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+	<title>日志</title>
+	<screen>
+	<![CDATA[
+$ docker logs [OPTIONS] CONTAINER
+  Options:
+        --details        显示更多的信息
+    -f, --follow         跟踪实时日志
+        --since string   显示自某个timestamp之后的日志，或相对时间，如42m（即42分钟）
+        --tail string    从日志末尾显示多少行日志， 默认是all
+    -t, --timestamps     显示时间戳
+        --until string   显示自某个timestamp之前的日志，或相对时间，如42m（即42分钟）	
+	]]>
+	</screen>
+	<section>
+		<title>跟踪实时日志</title>
+		<screen>
+		<![CDATA[
+$ docker logs -f CONTAINER_ID		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>显示时间戳</title>
+		<screen>
+		<![CDATA[
+$ docker logs -t --since="2018-02-08" --tail=100 CONTAINER_ID		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>显示一段范围内的日志</title>
+		<screen>
+		<![CDATA[
+$ docker logs -t --since="2019-02-08T12:20:30" --until "2019-02-09T12:23:30" CONTAINER_ID		
+		]]>
+		</screen>
+	</section>
+</section>
