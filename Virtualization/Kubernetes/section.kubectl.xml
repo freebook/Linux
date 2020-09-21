@@ -425,6 +425,55 @@ kubectl logs --previous <pod-name>
 kubectl describe pod <pod-name> 		
 		]]>
 		</screen>
+		<screen>
+		<![CDATA[
+iMac:~ neo$ kubectl describe pod springboot
+Name:         springboot
+Namespace:    default
+Priority:     0
+Node:         minikube/192.168.64.2
+Start Time:   Mon, 21 Sep 2020 16:17:03 +0800
+Labels:       run=springboot
+Annotations:  <none>
+Status:       Pending
+IP:           
+IPs:          <none>
+Containers:
+  springboot:
+    Container ID:   
+    Image:          127.0.0.1:5000/netkiller/config:latest
+    Image ID:       
+    Port:           8888/TCP
+    Host Port:      0/TCP
+    State:          Waiting
+      Reason:       ContainerCreating
+    Ready:          False
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-fhfn8 (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             False 
+  ContainersReady   False 
+  PodScheduled      True 
+Volumes:
+  default-token-fhfn8:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  default-token-fhfn8
+    Optional:    false
+QoS Class:       BestEffort
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                 node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  80s   default-scheduler  Successfully assigned default/springboot to minikube
+  Normal  Pulling    79s   kubelet            Pulling image "127.0.0.1:5000/netkiller/config:latest"		
+		]]>
+		</screen>
 	</section>
 	<section id="kubectl.exec">
 		<title>执行 Shell</title>
@@ -447,5 +496,67 @@ kubectl scale deployment springbootdemo --replicas=4
 		]]>
 		</screen>
 	</section>
+	<section id="kubectl.port-forward">
+		<title>port-forward 端口映射</title>
+		<screen>
+		<![CDATA[
+$ kubectl port-forward svc/demo 8080:8080		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>Private Registry 用户认证</title>
+		<screen>
+		<![CDATA[
+kubectl create secret docker-registry docker-hub \
+--docker-server=https://index.docker.io/v1/ \
+--docker-username=netkiller \
+--docker-password=password \
+--docker-email=netkiller@msn.com
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+iMac:spring neo$ kubectl get secret
+NAME                  TYPE                                  DATA   AGE
+default-token-fhfn8   kubernetes.io/service-account-token   3      2d23h
+docker-hub            kubernetes.io/dockerconfigjson        1      15s		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+apiVersion: apps/v1
+kind: Deployment 
+metadata:
+  name: springboot 
+spec:
+  replicas: 3 
+  selector:
+    matchLabels:
+      app: springboot
+  template:
+    metadata:
+      labels:
+        app: springboot
+    spec:
+      containers: 
+      - name: springboot
+        image: netkiller/config:latest
+        imagePullPolicy: IfNotPresent 
+        ports:
+        - containerPort: 8888
+      imagePullSecrets:
+        - name: docker-hub		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+kubectl delete -n default secret docker-hub	
+		]]>
+		</screen>
+	</section>
+	
 </section>
 

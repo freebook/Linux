@@ -89,6 +89,32 @@ X The requested memory allocation of 1694MiB does not leave room for system over
 				]]>
 				</screen>
 			</section>
+			<section>
+				<title>指定下载镜像</title>
+				<screen>
+				<![CDATA[
+minikube start --image-mirror-country=cn --image-repository=registry.cn-hangzhou.aliyuncs.com/google_containers
+
+minikube start --image-mirror-country=cn --registry-mirror="https://docker.mirrors.ustc.edu.cn" --insecure-registry="127.0.0.1:5000"
+
+# 从阿里云下载 virtualbox 镜像
+minikube start --vm-driver='virtualbox' --image-mirror-country cn \
+    --iso-url=https://kubernetes.oss-cn-hangzhou.aliyuncs.com/minikube/iso/minikube-v1.9.0.iso \
+    --registry-mirror=https://docker.mirrors.ustc.edu.cn
+
+
+kubectl create deployment hello-minikube --image=tomcat:8.0 
+kubectl expose deployment hello-minikube --type=NodePort --port=80
+minikube service hello-minikube --url
+
+minikube start --vm-driver=virtualbox \
+--image-mirror-country cn \
+--registry-mirror=https://docker.mirrors.ustc.edu.cn \
+--image-repository=registry.aliyuncs.com/google_containers \
+--insecure-registry=192.168.0.10:5000 //访问宿主机的私有docker仓库				
+				]]>
+				</screen>
+			</section>
 		</section>
 
 		<section>
@@ -539,6 +565,28 @@ Loading cached images from config file.
 
 
 Everything looks great. Please enjoy minikube!
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>http: server gave HTTP response to HTTPS client</title>
+			<para>问题原因，使用私有 registry 由于没有 HTTPS 导致 kubectl 使用 https 去访问私有 registry.</para>
+			<screen>
+			<![CDATA[
+Failed to pull image "192.168.3.85:5000/netkiller/config:latest": rpc error: code = Unknown desc = Error response from daemon: Get https://192.168.3.85:5000/v2/: http: server gave HTTP response to HTTPS client			
+			]]>
+			</screen>
+			<para>minikube 并不会使用 docker 配置文件中的 insecure-registry 配置项</para>
+			<para>解决办法</para>
+			<screen>
+			<![CDATA[		
+minikube start --insecure-registry=127.0.0.1:5000		
+			]]>
+			</screen>
+			<para>或指定网段</para>
+			<screen>
+			<![CDATA[
+minikube start --insecure-registry "10.0.0.0/24"			
 			]]>
 			</screen>
 		</section>
