@@ -89,32 +89,7 @@ X The requested memory allocation of 1694MiB does not leave room for system over
 				]]>
 				</screen>
 			</section>
-			<section>
-				<title>指定下载镜像</title>
-				<screen>
-				<![CDATA[
-minikube start --image-mirror-country=cn --image-repository=registry.cn-hangzhou.aliyuncs.com/google_containers
 
-minikube start --image-mirror-country=cn --registry-mirror="https://docker.mirrors.ustc.edu.cn" --insecure-registry="127.0.0.1:5000"
-
-# 从阿里云下载 virtualbox 镜像
-minikube start --vm-driver='virtualbox' --image-mirror-country cn \
-    --iso-url=https://kubernetes.oss-cn-hangzhou.aliyuncs.com/minikube/iso/minikube-v1.9.0.iso \
-    --registry-mirror=https://docker.mirrors.ustc.edu.cn
-
-
-kubectl create deployment hello-minikube --image=tomcat:8.0 
-kubectl expose deployment hello-minikube --type=NodePort --port=80
-minikube service hello-minikube --url
-
-minikube start --vm-driver=virtualbox \
---image-mirror-country cn \
---registry-mirror=https://docker.mirrors.ustc.edu.cn \
---image-repository=registry.aliyuncs.com/google_containers \
---insecure-registry=192.168.0.10:5000 //访问宿主机的私有docker仓库				
-				]]>
-				</screen>
-			</section>
 		</section>
 
 		<section>
@@ -279,14 +254,6 @@ minikube start --vm-driver=none
 				</screen>
 			</section>
 			<section>
-				<title>指定 registry-mirror 镜像</title>
-				<screen>
-				<![CDATA[
-minikube start --registry-mirror=https://registry.docker-cn.com
-				]]>
-				</screen>
-			</section>
-			<section>
 				<title>开启GPU</title>
 				<screen>
 				<![CDATA[
@@ -324,6 +291,40 @@ minikube start --memory 8000 --cpus 2 --kubernetes-version v1.6.0
 				<screen>
 				<![CDATA[
 minikube start --extra-config=apiserver.v=10 --extra-config=kubelet.max-pods=100				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>指定 registry-mirror 镜像</title>
+				<screen>
+				<![CDATA[
+minikube start --registry-mirror=https://registry.docker-cn.com
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>指定下载镜像</title>
+				<screen>
+				<![CDATA[
+minikube start --image-mirror-country=cn --image-repository=registry.cn-hangzhou.aliyuncs.com/google_containers
+
+minikube start --image-mirror-country=cn --registry-mirror="https://docker.mirrors.ustc.edu.cn" --insecure-registry="127.0.0.1:5000"
+
+# 从阿里云下载 virtualbox 镜像
+minikube start --vm-driver='virtualbox' --image-mirror-country cn \
+    --iso-url=https://kubernetes.oss-cn-hangzhou.aliyuncs.com/minikube/iso/minikube-v1.9.0.iso \
+    --registry-mirror=https://docker.mirrors.ustc.edu.cn
+
+
+kubectl create deployment hello-minikube --image=tomcat:8.0 
+kubectl expose deployment hello-minikube --type=NodePort --port=80
+minikube service hello-minikube --url
+
+minikube start --vm-driver=virtualbox \
+--image-mirror-country cn \
+--registry-mirror=https://docker.mirrors.ustc.edu.cn \
+--image-repository=registry.aliyuncs.com/google_containers \
+--insecure-registry=192.168.0.10:5000 //访问宿主机的私有docker仓库				
 				]]>
 				</screen>
 			</section>
