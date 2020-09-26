@@ -13,7 +13,6 @@
 	&section.docker.registry.xml;
 	
 	&section.docker.swarms.xml;
-	&section.docker.stack.xml;
 
 	&section.docker.cli.xml;
 	&section.docker.example.xml;

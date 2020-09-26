@@ -120,4 +120,62 @@ volumes:
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>Docker Stack</title>
+		<para>下载 配置文件 <ulink url="https://redis.io/topics/config" /></para>
+		<screen>
+		<![CDATA[
+iMac:redis neo$ curl -sO https://raw.githubusercontent.com/redis/redis/6.0/redis.conf
+iMac:redis neo$ egrep -v "^#|^$" redis.conf 
+		]]>
+		</screen>
+		<para>修改配置文件</para>
+		<screen>
+		<![CDATA[
+bind 0.0.0.0
+logfile "/var/log/redis/redis.log"
+dir /var/lib/redis	
+appendonly yes	
+		]]>
+		</screen>
+		<!-- sed -i "69s|bind 127.0.0.1|bind 0.0.0.0|" redis.conf -->
+		<para>创建 Docker 网络</para>
+		<screen>
+		<![CDATA[
+iMac:redis neo$ docker network create \
+>   --driver=overlay \
+>   --subnet=172.12.0.0/16 \
+>   --ip-range=172.12.0.0/16 \
+>   --gateway=172.12.0.1 \
+>   --attachable \
+>   test
+gvcz5y66ovrlqfaxb02zx026t
+
+iMac:redis neo$ docker network ls
+NETWORK ID          NAME                DRIVER              SCOPE
+786efe30f42d        bridge              bridge              local
+51e2b21d7daa        docker_gwbridge     bridge              local
+96ba0de26cd2        host                host                local
+7r7k9robn0uu        ingress             overlay             swarm
+cbf078a5f121        none                null                local
+d851mrlkludv        redis_default       overlay             swarm
+q0h9awx86ef4        registry_default    overlay             swarm
+cf585ea9ceb4        registry_default    bridge              local
+gvcz5y66ovrl        test                overlay             swarm
+		
+iMac:redis neo$ docker stack deploy -c redis.yml redis
+Creating network redis_default
+Creating service redis_redis		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+iMac:redis neo$ docker service ls
+ID                  NAME                MODE                REPLICAS            IMAGE               PORTS
+1ti2ndlpdhm8        redis_redis         replicated          0/1                 redis:latest        *:6379->6379/tcp
+1w6xjrl0sn88        registry_registry   replicated          1/1                 registry:latest     *:5000->5000/tcp		
+		]]>
+		</screen>
+	</section>
 </section>

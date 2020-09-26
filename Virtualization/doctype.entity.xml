@@ -11,11 +11,13 @@
 <!ENTITY section.docker.dockerfile.xml	SYSTEM "Docker/section.docker.dockerfile.xml">
 <!ENTITY section.docker.container.xml	SYSTEM "Docker/section.docker.container.xml">
 <!ENTITY section.docker.volume.xml		SYSTEM "Docker/section.docker.volume.xml">
+<!ENTITY section.docker.network.xml		SYSTEM "Docker/section.docker.network.xml">
 <!ENTITY section.docker.cli.xml			SYSTEM "Docker/section.docker.cli.xml">
 <!ENTITY section.docker-compose.xml		SYSTEM "Docker/section.docker-compose.xml">
 <!ENTITY section.docker.registry.xml	SYSTEM "Docker/section.docker.registry.xml">
 <!ENTITY section.docker.swarms.xml 		SYSTEM "Docker/section.docker.swarms.xml">
 <!ENTITY section.docker.stack.xml 		SYSTEM "Docker/section.docker.stack.xml">
+<!ENTITY section.docker.service.xml		SYSTEM "Docker/section.docker.service.xml">
 <!ENTITY section.docker.faq.xml    		SYSTEM "Docker/section.docker.faq.xml">
 
 <!ENTITY section.docker.example.xml		SYSTEM "Docker/section.docker.example.xml">

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+	<title>Docker 网络</title>
+	<section>
+		<title>创建 overlay 网络</title>
+		<screen>
+		<![CDATA[
+docker network create \
+  --driver=overlay \
+  --subnet=172.12.0.0/16 \
+  --ip-range=172.12.0.0/16 \
+  --gateway=172.12.0.1 \
+  --attachable \
+  test			
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+iMac:redis neo$ docker network ls
+NETWORK ID          NAME                DRIVER              SCOPE
+786efe30f42d        bridge              bridge              local
+51e2b21d7daa        docker_gwbridge     bridge              local
+96ba0de26cd2        host                host                local
+7r7k9robn0uu        ingress             overlay             swarm
+cbf078a5f121        none                null                local
+d851mrlkludv        redis_default       overlay             swarm
+q0h9awx86ef4        registry_default    overlay             swarm
+cf585ea9ceb4        registry_default    bridge              local
+gvcz5y66ovrl        test                overlay             swarm		
+		]]>
+		</screen>
+		<para>查看详细信息</para>
+		<screen>
+		<![CDATA[
+iMac:redis neo$ docker network inspect test 
+[
+    {
+        "Name": "test",
+        "Id": "gvcz5y66ovrlqfaxb02zx026t",
+        "Created": "2020-09-26T14:07:49.037581155Z",
+        "Scope": "swarm",
+        "Driver": "overlay",
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": null,
+            "Config": [
+                {
+                    "Subnet": "172.12.0.0/16",
+                    "IPRange": "172.12.0.0/16",
+                    "Gateway": "172.12.0.1"
+                }
+            ]
+        },
+        "Internal": false,
+        "Attachable": true,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Containers": null,
+        "Options": {
+            "com.docker.network.driver.overlay.vxlanid_list": "4104"
+        },
+        "Labels": null
+    }
+]
+		
+		]]>
+		</screen>
+	</section>
+</section>

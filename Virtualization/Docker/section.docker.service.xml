@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="docker.stack">
-	<title>stack</title>
+<section id="docker.service">
+	<title>服务</title>
 	<screen>
 	<![CDATA[
 neo@MacBook-Pro ~ % docker service      
@@ -24,10 +24,20 @@ Run 'docker service COMMAND --help' for more information on a command.
 	]]>
 	</screen>
 	<section>
-		<title>create</title>
+		<title>创建 Service</title>
 		<screen>
 		<![CDATA[
-
+iMac:redis neo$ docker stack deploy -c redis.yml redis
+Creating service redis_redis
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>删除 Service</title>
+		<screen>
+		<![CDATA[
+iMac:redis neo$ docker stack rm redis
+Removing service redis_redis		
 		]]>
 		</screen>
 	</section>
@@ -35,6 +45,184 @@ Run 'docker service COMMAND --help' for more information on a command.
 		<title>inspect</title>
 		<screen>
 		<![CDATA[
+iMac:redis neo$ docker service inspect redis_redis
+[
+    {
+        "ID": "kpqopqq10a2yi1rdecuf1246q",
+        "Version": {
+            "Index": 10148
+        },
+        "CreatedAt": "2020-09-26T14:19:53.920458941Z",
+        "UpdatedAt": "2020-09-26T14:19:53.922204086Z",
+        "Spec": {
+            "Name": "redis_redis",
+            "Labels": {
+                "com.docker.stack.image": "redis:latest",
+                "com.docker.stack.namespace": "redis"
+            },
+            "TaskTemplate": {
+                "ContainerSpec": {
+                    "Image": "redis:latest@sha256:1cfb205a988a9dae5f025c57b92e9643ec0e7ccff6e66bc639d8a5f95bba928c",
+                    "Labels": {
+                        "com.docker.stack.namespace": "redis",
+                        "desktop.docker.io/mounts/0/Source": "/Users/neo/workspace/docker/docker-compose/redis/redis.conf",
+                        "desktop.docker.io/mounts/0/SourceKind": "hostFile",
+                        "desktop.docker.io/mounts/0/Target": "/etc/redis/redis.conf"
+                    },
+                    "Args": [
+                        "entrypoint.sh",
+                        "/etc/redis/redis.conf"
+                    ],
+                    "Hostname": "redis",
+                    "Env": [
+                        "TZ=Asia/Shanghai"
+                    ],
+                    "Privileges": {
+                        "CredentialSpec": null,
+                        "SELinuxContext": null
+                    },
+                    "Mounts": [
+                        {
+                            "Type": "bind",
+                            "Source": "/host_mnt/Users/neo/workspace/docker/docker-compose/redis/redis.conf",
+                            "Target": "/etc/redis/redis.conf"
+                        },
+                        {
+                            "Type": "bind",
+                            "Source": "/var/lib/redis",
+                            "Target": "/var/lib/redis"
+                        },
+                        {
+                            "Type": "bind",
+                            "Source": "/var/log/redis",
+                            "Target": "/var/log/redis"
+                        }
+                    ],
+                    "StopGracePeriod": 10000000000,
+                    "DNSConfig": {},
+                    "Isolation": "default"
+                },
+                "Resources": {
+                    "Limits": {
+                        "NanoCPUs": 1000000000,
+                        "MemoryBytes": 536870912
+                    }
+                },
+                "RestartPolicy": {
+                    "Condition": "any",
+                    "Delay": 5000000000,
+                    "MaxAttempts": 0
+                },
+                "Placement": {
+                    "Platforms": [
+                        {
+                            "Architecture": "amd64",
+                            "OS": "linux"
+                        },
+                        {
+                            "OS": "linux"
+                        },
+                        {
+                            "OS": "linux"
+                        },
+                        {
+                            "Architecture": "arm64",
+                            "OS": "linux"
+                        },
+                        {
+                            "Architecture": "386",
+                            "OS": "linux"
+                        },
+                        {
+                            "Architecture": "mips64le",
+                            "OS": "linux"
+                        },
+                        {
+                            "Architecture": "ppc64le",
+                            "OS": "linux"
+                        },
+                        {
+                            "Architecture": "s390x",
+                            "OS": "linux"
+                        }
+                    ]
+                },
+                "Networks": [
+                    {
+                        "Target": "gvcz5y66ovrlqfaxb02zx026t",
+                        "Aliases": [
+                            "redis"
+                        ]
+                    }
+                ],
+                "ForceUpdate": 0,
+                "Runtime": "container"
+            },
+            "Mode": {
+                "Replicated": {
+                    "Replicas": 1
+                }
+            },
+            "UpdateConfig": {
+                "Parallelism": 1,
+                "Delay": 5000000000,
+                "FailureAction": "pause",
+                "Monitor": 10000000000,
+                "MaxFailureRatio": 0.1,
+                "Order": "start-first"
+            },
+            "RollbackConfig": {
+                "Parallelism": 1,
+                "FailureAction": "pause",
+                "Monitor": 5000000000,
+                "MaxFailureRatio": 0,
+                "Order": "stop-first"
+            },
+            "EndpointSpec": {
+                "Mode": "vip",
+                "Ports": [
+                    {
+                        "Protocol": "tcp",
+                        "TargetPort": 6379,
+                        "PublishedPort": 6379,
+                        "PublishMode": "ingress"
+                    }
+                ]
+            }
+        },
+        "Endpoint": {
+            "Spec": {
+                "Mode": "vip",
+                "Ports": [
+                    {
+                        "Protocol": "tcp",
+                        "TargetPort": 6379,
+                        "PublishedPort": 6379,
+                        "PublishMode": "ingress"
+                    }
+                ]
+            },
+            "Ports": [
+                {
+                    "Protocol": "tcp",
+                    "TargetPort": 6379,
+                    "PublishedPort": 6379,
+                    "PublishMode": "ingress"
+                }
+            ],
+            "VirtualIPs": [
+                {
+                    "NetworkID": "7r7k9robn0uuojuxl1es2wdds",
+                    "Addr": "10.0.0.42/24"
+                },
+                {
+                    "NetworkID": "gvcz5y66ovrlqfaxb02zx026t",
+                    "Addr": "172.12.0.2/16"
+                }
+            ]
+        }
+    }
+]
 
 		]]>
 		</screen>

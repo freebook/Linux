@@ -2,8 +2,12 @@
 <section id="docker.swarms">
 	<title>Swarms</title>
 	<para>Swarm 是一组运行着Docker的机器。经过这些配置后，将节点加入到一个集群中，你仍然像之前那样运行Docker命令一样管理集群上的容器。这些命令由swarm manager在集群上执行。这些机器可以是真实的机器，也可以是虚拟机。机器加入到一个swarm后，可以称这些机器为节点(node)。</para>
-	<para>帮助命令</para>
-	<screen>
+	<section>
+		<title>管理 Swarms</title>
+
+
+		<para>帮助命令</para>
+		<screen>
 	<![CDATA[
 neo@MacBook-Pro ~ % docker-machine   
 Usage: docker-machine [OPTIONS] COMMAND [arg...]
@@ -54,19 +58,19 @@ Commands:
   
 Run 'docker-machine COMMAND --help' for more information on a command.	
 	]]>
-	</screen>
-	<section>
-		<title>查看 Swarms 版本</title>
-		<screen>
+		</screen>
+		<section>
+			<title>查看 Swarms 版本</title>
+			<screen>
 		<![CDATA[
 neo@MacBook-Pro ~ % docker-machine version
 docker-machine version 0.16.1, build cce350d7		
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>初始化 Swarms</title>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>初始化 Swarms</title>
+			<screen>
 		<![CDATA[
 neo@MacBook-Pro ~/workspace/docker/docker-compose % docker swarm init
 Swarm initialized: current node (t8gqr7wfyeis9n8wuegy4j6gn) is now a manager.
@@ -77,83 +81,83 @@ To add a worker to this swarm, run the following command:
 
 To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.		
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>显示 join-token</title>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>显示 join-token</title>
+			<screen>
 		<![CDATA[
 neo@MacBook-Pro ~ % docker swarm join-token manager
 To add a manager to this swarm, run the following command:
 
     docker swarm join --token SWMTKN-1-200v95u6lkow6wyxne1ll44rhhwy1zfvawnrqo39i44sqay8vp-1vltkdz94y79mgech56wtnj9n 192.168.65.3:2377		
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>创建虚拟机</title>
-		<para>使用VirtualBox驱动，创建虚拟机：</para>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>创建虚拟机</title>
+			<para>使用VirtualBox驱动，创建虚拟机：</para>
+			<screen>
 		<![CDATA[
 neo@MacBook-Pro ~ % docker-machine create --driver virtualbox vm1
 neo@MacBook-Pro ~ % docker-machine create --driver virtualbox vm2	
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>显示虚拟机列表</title>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>显示虚拟机列表</title>
+			<screen>
 		<![CDATA[
 $ docker-machine ls		
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>设置管理节点</title>
-		<para>配置虚拟机作为manager节点，用以执行管理命令并准许其他worker加入到swarm中。</para>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>设置管理节点</title>
+			<para>配置虚拟机作为manager节点，用以执行管理命令并准许其他worker加入到swarm中。</para>
+			<screen>
 		<![CDATA[
 $ docker-machine ssh vm1 "docker swarm init --advertise-addr <ip_address>"		
 		]]>
-		</screen>
-		<para>加入到管理节点</para>
-		<screen>
+			</screen>
+			<para>加入到管理节点</para>
+			<screen>
 		<![CDATA[
 $ docker-machine ssh vm2 "docker swarm join \
 --token <token> \
 <ip>:2377"		
 		]]>
-		</screen>
-		<para>查看节点列表</para>
-		<screen>
+			</screen>
+			<para>查看节点列表</para>
+			<screen>
 		<![CDATA[
 $ docker-machine ssh vm1 "docker node ls"		
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>环境变量</title>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>环境变量</title>
+			<screen>
 		<![CDATA[
 $ docker-machine env vm1		
 		]]>
-		</screen>
-		<para>现在运行docker-machine ls来验证vm1就是当前的活跃机器，会有星号标识：</para>
-		<screen>
+			</screen>
+			<para>现在运行docker-machine ls来验证vm1就是当前的活跃机器，会有星号标识：</para>
+			<screen>
 		<![CDATA[
 $ docker-machine ls		
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>切换节点</title>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>切换节点</title>
+			<screen>
 		<![CDATA[
 eval $(docker-machine env vm1)		
 		]]>
-		</screen>
-		<para>重置 shell 环境</para>
-		<screen>
+			</screen>
+			<para>重置 shell 环境</para>
+			<screen>
 		<![CDATA[
 neo@MacBook-Pro ~ % docker-machine env -u
 unset DOCKER_TLS_VERIFY
@@ -163,33 +167,37 @@ unset DOCKER_MACHINE_NAME
 # Run this command to configure your shell: 
 # eval $(docker-machine env -u)		
 		]]>
-		</screen>
-		<screen>
+			</screen>
+			<screen>
 		<![CDATA[
 eval $(docker-machine env -u)		
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>启动/停止节点</title>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>启动/停止节点</title>
+			<screen>
 		<![CDATA[
 $ docker-machine start vm1
 		]]>
-		</screen>
-		<screen>
+			</screen>
+			<screen>
 		<![CDATA[
 $ docker-machine stop vm1		
 		]]>
-		</screen>
-	</section>
-	
-	<section>
-		<title>离线</title>
-		<screen>
+			</screen>
+		</section>
+
+		<section>
+			<title>离线</title>
+			<screen>
 		<![CDATA[
 docker swarm leave --force		
 		]]>
-		</screen>
+			</screen>
+		</section>
 	</section>
+	&section.docker.stack.xml;
+	&section.docker.service.xml;
+	&section.docker.network.xml;
 </section>
