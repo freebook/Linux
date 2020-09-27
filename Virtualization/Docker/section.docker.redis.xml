@@ -122,6 +122,54 @@ volumes:
 	</section>
 	<section>
 		<title>Docker Stack</title>
+		<para></para>
+		<screen>
+		<![CDATA[
+version: '3.8'
+
+services:
+  redis:
+    image: redis:latest
+    environment:
+      - TZ=Asia/Shanghai
+    hostname: redis
+    ports:
+      - 6379:6379
+    networks:
+      - test
+    volumes:
+      - data:/var/lib/redis
+    configs:
+      - source: config
+        target: /usr/local/etc/redis.conf
+        mode: 0440
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: "1"
+          memory: 512M
+      update_config:
+        parallelism: 1
+        delay: 5s
+        monitor: 10s
+        max_failure_ratio: 0.1
+        order: start-first
+
+configs:
+  config:
+    file: ./redis.conf
+
+volumes:
+  data:
+
+networks:
+   test:
+     driver: overlay		
+		]]>
+		</screen>
 		<para>下载 配置文件 <ulink url="https://redis.io/topics/config" /></para>
 		<screen>
 		<![CDATA[
@@ -168,13 +216,21 @@ Creating network redis_default
 Creating service redis_redis		
 		]]>
 		</screen>
-		<para></para>
+		<para>查看服务</para>
 		<screen>
 		<![CDATA[
 iMac:redis neo$ docker service ls
 ID                  NAME                MODE                REPLICAS            IMAGE               PORTS
 1ti2ndlpdhm8        redis_redis         replicated          0/1                 redis:latest        *:6379->6379/tcp
 1w6xjrl0sn88        registry_registry   replicated          1/1                 registry:latest     *:5000->5000/tcp		
+		]]>
+		</screen>
+		<para>查看容器运行状态</para>
+		<screen>
+		<![CDATA[
+iMac:redis neo$ docker container ls
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS               NAMES
+8407fd8fe66b        redis:latest        "docker-entrypoint.s…"   29 seconds ago      Up 29 seconds       6379/tcp            redis_redis.1.6fpqt3pdti03j9swn3x04ob9n		
 		]]>
 		</screen>
 	</section>

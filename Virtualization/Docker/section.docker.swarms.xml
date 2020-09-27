@@ -200,4 +200,26 @@ docker swarm leave --force
 	&section.docker.stack.xml;
 	&section.docker.service.xml;
 	&section.docker.network.xml;
+	<section>
+		<title>共享卷</title>
+		<para>创建 NFS 数据共享卷</para>
+		<screen>
+		<![CDATA[
+docker volume create --driver local \
+    --opt type=nfs4 \
+    --opt o=addr=<NFS-Server>,rw \
+    --opt device=:<Shared-Path> \
+    share		
+		]]>
+		</screen>
+		<para>创建服务副本</para>
+		<screen>
+		<![CDATA[
+docker service create \
+  --mount type=volume,source=<Volume-Name>,destination=<Container-Path> \
+  --replicas 2 \
+  <Image>		
+		]]>
+		</screen>
+	</section>
 </section>
