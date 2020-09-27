@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section>
-	<title></title>
+<section id="kubectl.example">
+	<title>kubectl example</title>
 	<section>
-		<title></title>
+		<title>私有 registry</title>
+		<screen>
+			<![CDATA[
+kubectl create deployment registry --image=registry:latest
+kubectl expose deployment registry --port=5000 --target-port=30500 --type=NodePort
+kubectl delete -n default deployment registry
+kubectl delete -n default pod registry			
+			]]>
+		</screen>
+	</section>
+	<section>
+		<title>mongodb</title>
 		<screen>
 		<![CDATA[
 kubectl run mongodb  --image=docker.io/mongo  --env="p='27017:27017'" --env="v='/opt/mongodb:/data'" 

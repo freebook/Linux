@@ -5,7 +5,7 @@
 		Docker 镜像地址
 		<ulink url="https://registry.hub.docker.com/">https://registry.hub.docker.com/</ulink>
 	</para>
-	<section>
+	<section id="docker.image.search">
 		<title>搜索镜像</title>
 		<screen>
 			<![CDATA[
@@ -23,7 +23,7 @@ tutum/centos-6.4                                DEPRECATED. Use tutum/centos:6.4
 			]]>
 		</screen>
 	</section>
-	<section>
+	<section id="docker.image.pull">
 		<title>获取镜像</title>
 		<para>可以使用 docker pull 命令来从官网仓库获取所需要的镜像。</para>
 		<screen>
@@ -77,7 +77,7 @@ $ sudo docker run -t -i ubuntu:14.10 /bin/bash
 			]]>
 		</screen>
 	</section>
-	<section>
+	<section id="docker.image.list">
 		<title>列出本地镜像</title>
 		<screen>
 			<![CDATA[
@@ -88,8 +88,17 @@ ubuntu              latest              5506de2b643b        3 days ago          
 			]]>
 		</screen>
 	</section>
+	<section id="docker.image.tag">
+		<title>tag</title>
+		<programlisting>
+		<![CDATA[
+docker tag ubuntu:15.10 runoob/ubuntu:v3
 
-	<section>
+iMac:registry neo$ docker tag 127.0.0.1:5000/netkiller/config:latest 192.168.64.2:30050/netkiller/config:latest		
+		]]>
+		</programlisting>
+	</section>
+	<section id="docker.image.save">
 		<title>保存和载入镜像</title>
 		<para>保存镜像</para>
 		<screen>
@@ -106,7 +115,7 @@ $ sudo docker load < ubuntu_14.10.tar
 			]]>
 		</screen>
 	</section>
-	<section>
+	<section id="docker.image.remove">
 		<title>删除本地镜像</title>
 		<screen>
 			<![CDATA[
@@ -121,7 +130,7 @@ docker rmi -f $(docker images -q)
 			]]>
 		</screen>
 	</section>
-	<section id="history">
+	<section id="docker.image.history">
 		<title>history 镜像历史纪录</title>
 		<para>镜像历史纪录</para>
 		<screen>

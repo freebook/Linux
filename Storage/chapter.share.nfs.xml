@@ -444,6 +444,101 @@ stop()
 
 		]]></screen>
 	</section>
+	<section>
+		<title>macOS</title>
+		<section>
+			<title>配置 exports</title>
+			<screen>
+			<![CDATA[
+sudo vi /etc/exports
+/Users/neo/Documents -alldirs -rw -maproot=neo:staff -network 192.168.3.0 -mask 255.255.255.0
+/Users/neo/Downloads -alldirs -rw -maproot=root:wheel -network 192.168.3.0 -mask 255.255.255.0
+			]]>
+			</screen>
+			<para>启动 NFS 服务</para>
+			<screen>
+			<![CDATA[
+iMac:~ neo$ sudo nfsd start
+The nfsd service is already running.	
+
+iMac:~ neo$ sudo nfsd status
+nfsd service is enabled
+nfsd is running (pid 11344, 8 threads)		
+			]]>
+			</screen>
+			<para>查看共享目录</para>
+			<screen>
+			<![CDATA[
+iMac:~ neo$ showmount -e
+Exports list on localhost:
+/Users/neo/Documents                192.168.0.0			
+			]]>
+			</screen>
+		</section>
+
+		<section>
+			<title>查看共享状态</title>
+			<screen>
+			<![CDATA[
+showmount -e 
+showmount -e 192.168.0.1			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>挂载共享目录</title>
+			<screen>
+			<![CDATA[
+sudo mkdir /mnt/share
+sudo mount -t nfs4 -o nolock 192.168.0.1:/Users/neo/Documents /mnt/share			
+			]]>
+			</screen>
+			<para>操作演示</para>
+			<screen>
+			<![CDATA[
+iMac:~ neo$ mkdir -p tmp
+
+iMac:~ neo$ sudo mount -t nfs 192.168.3.85:/Users/neo/Documents/ tmp
+
+iMac:~ neo$ mount -t nfs
+192.168.3.85:/Users/neo/Documents on /Users/neo/tmp (nfs)
+
+iMac:~ neo$ sudo umount /Users/neo/tmp
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>服务管理</title>
+			<screen>
+			<![CDATA[
+sudo nfsd enable
+sudo nfsd disable
+sudo nfsd start
+sudo nfsd stop
+sudo nfsd restart
+sudo nfsd status
+sudo nfsd update			
+			]]>
+			</screen>
+			<para>系统启动后自动启动NFS</para>
+			<screen>
+			<![CDATA[
+sudo nfsd enable			
+			]]>
+			</screen>
+			<para>修改 /etc/exports 后使用 update 更新</para>
+			<screen>
+			<![CDATA[
+iMac:~ neo$ sudo nfsd update
+
+iMac:~ neo$ showmount -e
+Exports list on localhost:
+/Users/neo/Downloads                192.168.3.0
+/Users/neo/Documents                192.168.3.0			
+			]]>
+			</screen>
+		</section>
+	</section>
 	<section id="pnfs">
 		<title>Parallel NFS(pNFS)</title>
 	</section>

@@ -19,16 +19,19 @@ snap install helm --classic
 			<para>homebrew 安装 Helm</para>
 			<screen>
 			<![CDATA[
+iMac:~ neo$ brew install helm
+
+iMac:~ neo$ helm version
+version.BuildInfo{Version:"v3.3.3", GitCommit:"55e3ca022e40fe200fbc855938995f40b2a68ce0", GitTreeState:"dirty", GoVersion:"go1.15.2"}
+			]]>
+			</screen>
+			<para>旧版本</para>
+			<screen>
+			<![CDATA[
 brew install kubernetes-helm		
 			]]>
 			</screen>
-			<screen>
-			<![CDATA[
-$ brew install kubernetes-helm			
-			]]>
-			</screen>
 		</section>
-
 	</section>
 	<section>
 		<title>快速开始</title>
