@@ -306,9 +306,14 @@ minikube start --registry-mirror=https://registry.docker-cn.com
 				<title>指定下载镜像</title>
 				<screen>
 				<![CDATA[
-minikube start --image-mirror-country=cn --image-repository=registry.cn-hangzhou.aliyuncs.com/google_containers
+minikube start --image-mirror-country=cn --registry-mirror="https://docker.mirrors.ustc.edu.cn" --insecure-registry="127.0.0.1:5000"				
 
-minikube start --image-mirror-country=cn --registry-mirror="https://docker.mirrors.ustc.edu.cn" --insecure-registry="127.0.0.1:5000"
+minikube start --image-mirror-country=cn --registry-mirror="https://docker.mirrors.ustc.edu.cn" --insecure-registry="192.168.0.0/24"				
+				]]>
+				</screen>
+				<screen>
+				<![CDATA[
+minikube start --image-mirror-country=cn --image-repository=registry.cn-hangzhou.aliyuncs.com/google_containers
 
 # 从阿里云下载 virtualbox 镜像
 minikube start --vm-driver='virtualbox' --image-mirror-country cn \
@@ -474,6 +479,46 @@ dashboard was successfully enabled
 172.16.0.121			
 			]]>
 			</screen>
+		</section>
+		<section id="minikube.addons">
+			<title>addons</title>
+			<section>
+				<title></title>
+				<screen>
+				<![CDATA[
+iMac:registry neo$ minikube addons list
+|-----------------------------|----------|--------------|
+|         ADDON NAME          | PROFILE  |    STATUS    |
+|-----------------------------|----------|--------------|
+| ambassador                  | minikube | disabled     |
+| dashboard                   | minikube | enabled ✅   |
+| default-storageclass        | minikube | enabled ✅   |
+| efk                         | minikube | disabled     |
+| freshpod                    | minikube | disabled     |
+| gcp-auth                    | minikube | disabled     |
+| gvisor                      | minikube | disabled     |
+| helm-tiller                 | minikube | disabled     |
+| ingress                     | minikube | disabled     |
+| ingress-dns                 | minikube | disabled     |
+| istio                       | minikube | disabled     |
+| istio-provisioner           | minikube | disabled     |
+| kubevirt                    | minikube | disabled     |
+| logviewer                   | minikube | disabled     |
+| metallb                     | minikube | disabled     |
+| metrics-server              | minikube | disabled     |
+| nvidia-driver-installer     | minikube | disabled     |
+| nvidia-gpu-device-plugin    | minikube | disabled     |
+| olm                         | minikube | disabled     |
+| pod-security-policy         | minikube | disabled     |
+| registry                    | minikube | disabled     |
+| registry-aliases            | minikube | disabled     |
+| registry-creds              | minikube | disabled     |
+| storage-provisioner         | minikube | enabled ✅   |
+| storage-provisioner-gluster | minikube | disabled     |
+|-----------------------------|----------|--------------|				
+				]]>
+				</screen>
+			</section>
 		</section>
 	</section>
 	<section id="minikube.faq">

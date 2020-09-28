@@ -6,5 +6,7 @@
 	&section.kubectl.xml;
 	&section.rancher.xml;
 	&section.helm.xml;
+	&section.kubectl.example.xml;
+	&section.kubectl.yaml.xml;
 	&section.kubeapps.xml;
 </chapter>

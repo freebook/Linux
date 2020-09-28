@@ -11,6 +11,16 @@ kubectl delete -n default deployment registry
 kubectl delete -n default pod registry			
 			]]>
 		</screen>
+		<screen>
+		<![CDATA[
+iMac:registry neo$ docker pull nginx:latest
+iMac:registry neo$ docker push 192.168.64.2:30050/nginx:latest
+iMac:registry neo$ docker tag nginx:latest 192.168.64.2:30050/nginx:latest
+
+kubectl create deployment nginx --image=192.168.64.2:30050/nginx:latest
+kubectl expose deployment nginx --port=80 --target-port=30080 --type=NodePort
+		]]>
+		</screen>
 	</section>
 	<section>
 		<title>mongodb</title>

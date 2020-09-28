@@ -115,9 +115,13 @@ mongodba-6d5d6ddf64-jw4fv   1/1     Running   0          16h
 		]]>
 		</screen>
 	</section>
-	<section>
-		<title>api-versions</title>
-		<screen>
+	<section id="kubectl.info">
+		<title>查看信息</title>
+
+
+		<section>
+			<title>api-versions</title>
+			<screen>
 		<![CDATA[
 iMac:springboot neo$ kubectl api-versions
 admissionregistration.k8s.io/v1
@@ -157,27 +161,27 @@ storage.k8s.io/v1beta1
 v1
 		
 		]]>
-		</screen>
-	</section>
-	<section id="get.nodes">
-		<title>节点</title>
-		<screen>
+			</screen>
+		</section>
+		<section id="get.nodes">
+			<title>节点</title>
+			<screen>
 		<![CDATA[
 [root@localhost ~]# kubectl get nodes
 NAME       STATUS   ROLES    AGE   VERSION
 minikube   Ready    master   23m   v1.13.2		
 		]]>
-		</screen>
-		<section id="get.nodes">
-			<title>nodes</title>
-			<screen>
+			</screen>
+			<section id="get.nodes">
+				<title>nodes</title>
+				<screen>
 		<![CDATA[
 [root@localhost ~]# kubectl get nodes
 NAME       STATUS   ROLES    AGE    VERSION
 minikube   Ready    master   119m   v1.13.2		
 		]]>
-			</screen>
-			<screen>
+				</screen>
+				<screen>
 		<![CDATA[
 iMac:~ neo$ kubectl get node 
 NAME       STATUS   ROLES    AGE   VERSION
@@ -187,12 +191,145 @@ iMac:~ neo$ kubectl get node -o wide
 NAME       STATUS   ROLES    AGE   VERSION   INTERNAL-IP    EXTERNAL-IP   OS-IMAGE               KERNEL-VERSION   CONTAINER-RUNTIME
 minikube   Ready    master   42h   v1.19.0   192.168.64.2   <none>        Buildroot 2019.02.11   4.19.114         docker://19.3.12		
 		]]>
+				</screen>
+			</section>
+
+		</section>
+
+	
+	<section id="get.cs">
+		<title>查询集群状态</title>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# kubectl get cs
+NAME                 STATUS    MESSAGE              ERROR
+controller-manager   Healthy   ok                   
+scheduler            Healthy   ok                   
+etcd-0               Healthy   {"health": "true"}   		
+		]]>
+		</screen>
+	</section>
+	<section id="kubectl.config">
+		<title>config</title>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# kubectl config view
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority: /root/.minikube/ca.crt
+    server: https://172.16.0.121:8443
+  name: minikube
+contexts:
+- context:
+    cluster: minikube
+    user: minikube
+  name: minikube
+current-context: minikube
+kind: Config
+preferences: {}
+users:
+- name: minikube
+  user:
+    client-certificate: /root/.minikube/client.crt
+    client-key: /root/.minikube/client.key		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+iMac:~ neo$ kubectl config view
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: DATA+OMITTED
+    server: https://kubernetes.docker.internal:6443
+  name: docker-desktop
+- cluster:
+    certificate-authority: /Users/neo/.minikube/ca.crt
+    server: https://192.168.64.2:8443
+  name: minikube
+contexts:
+- context:
+    cluster: docker-desktop
+    user: docker-desktop
+  name: docker-desktop
+- context:
+    cluster: minikube
+    user: minikube
+  name: minikube
+current-context: minikube
+kind: Config
+preferences: {}
+users:
+- name: docker-desktop
+  user:
+    client-certificate-data: REDACTED
+    client-key-data: REDACTED
+- name: minikube
+  user:
+    client-certificate: /Users/neo/.minikube/profiles/minikube/client.crt
+    client-key: /Users/neo/.minikube/profiles/minikube/client.key		
+		]]>
+		</screen>
+		<section>
+			<title>use-context</title>
+			<para>如果之前用其他方式运行Kubernetes，如 minikube, mircok8s 等等，可以使用下面命令切换。</para>
+			<screen>
+			<![CDATA[
+$ kubectl config use-context docker-for-desktop		
+			]]>
 			</screen>
 		</section>
 
 	</section>
+	<section id="cluster-info">
+		<title>cluster-info</title>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# kubectl cluster-info
+Kubernetes master is running at https://172.16.0.121:8443
+KubeDNS is running at https://172.16.0.121:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
 
-	<section id="get.pods">
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.		
+		]]>
+		</screen>
+	</section>
+	</section>
+	<section id="kubectl.deployment">
+		<title>部署管理</title>
+		<screen>
+		<![CDATA[
+kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
+kubectl get pods --namespace=kube-system		
+		]]>
+		</screen>
+		<section>
+			<title></title>
+			<screen>
+		<![CDATA[
+kubectl create deployment registry --image=registry:latest
+kubectl get deploy		
+		]]>
+			</screen>
+		</section>
+		<section>
+			<title>创建命名空间</title>
+			<para> 创建 jenkins-namespace.yaml</para>
+			<screen>
+			<![CDATA[
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: jenkins-project
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+$ kubectl create -f jenkins-namespace.yaml
+namespace ”jenkins-project“ created			
+			]]>
+			</screen>
+		</section><section id="get.pods">
 		<title>pods</title>
 		<para></para>
 		<screen>
@@ -304,152 +441,10 @@ Events:
 			</screen>
 		</section>
 	</section>
-	<section id="get.cs">
-		<title>查询集群状态</title>
-		<screen>
-		<![CDATA[
-[root@localhost ~]# kubectl get cs
-NAME                 STATUS    MESSAGE              ERROR
-controller-manager   Healthy   ok                   
-scheduler            Healthy   ok                   
-etcd-0               Healthy   {"health": "true"}   		
-		]]>
-		</screen>
 	</section>
-	<section id="kubectl.config">
-		<title>config</title>
-		<screen>
-		<![CDATA[
-[root@localhost ~]# kubectl config view
-apiVersion: v1
-clusters:
-- cluster:
-    certificate-authority: /root/.minikube/ca.crt
-    server: https://172.16.0.121:8443
-  name: minikube
-contexts:
-- context:
-    cluster: minikube
-    user: minikube
-  name: minikube
-current-context: minikube
-kind: Config
-preferences: {}
-users:
-- name: minikube
-  user:
-    client-certificate: /root/.minikube/client.crt
-    client-key: /root/.minikube/client.key		
-		]]>
-		</screen>
-		<screen>
-		<![CDATA[
-iMac:~ neo$ kubectl config view
-apiVersion: v1
-clusters:
-- cluster:
-    certificate-authority-data: DATA+OMITTED
-    server: https://kubernetes.docker.internal:6443
-  name: docker-desktop
-- cluster:
-    certificate-authority: /Users/neo/.minikube/ca.crt
-    server: https://192.168.64.2:8443
-  name: minikube
-contexts:
-- context:
-    cluster: docker-desktop
-    user: docker-desktop
-  name: docker-desktop
-- context:
-    cluster: minikube
-    user: minikube
-  name: minikube
-current-context: minikube
-kind: Config
-preferences: {}
-users:
-- name: docker-desktop
-  user:
-    client-certificate-data: REDACTED
-    client-key-data: REDACTED
-- name: minikube
-  user:
-    client-certificate: /Users/neo/.minikube/profiles/minikube/client.crt
-    client-key: /Users/neo/.minikube/profiles/minikube/client.key		
-		]]>
-		</screen>
-		<section>
-			<title>use-context</title>
-			<para>如果之前用其他方式运行Kubernetes，如 minikube, mircok8s 等等，可以使用下面命令切换。</para>
-			<screen>
-			<![CDATA[
-$ kubectl config use-context docker-for-desktop		
-			]]>
-			</screen>
-		</section>
 
-	</section>
-	<section id="cluster-info">
-		<title>cluster-info</title>
-		<screen>
-		<![CDATA[
-[root@localhost ~]# kubectl cluster-info
-Kubernetes master is running at https://172.16.0.121:8443
-KubeDNS is running at https://172.16.0.121:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
-
-To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.		
-		]]>
-		</screen>
-	</section>
-	<section id="kubectl.create">
-		<title>create</title>
-		<screen>
-		<![CDATA[
-kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
-kubectl get pods --namespace=kube-system		
-		]]>
-		</screen>
-		<section>
-			<title></title>
-			<screen>
-		<![CDATA[
-kubectl create deployment registry --image=registry:latest
-kubectl get deploy		
-		]]>
-			</screen>
-		</section>
-		<section>
-			<title>创建命名空间</title>
-			<para> 创建 jenkins-namespace.yaml</para>
-			<screen>
-			<![CDATA[
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: jenkins-project
-			]]>
-			</screen>
-			<screen>
-			<![CDATA[
-$ kubectl create -f jenkins-namespace.yaml
-namespace ”jenkins-project“ created			
-			]]>
-			</screen>
-		</section>
-	</section>
-	<section id="kubectl.edit">
-		<title>edit</title>
-		<screen>
-		<![CDATA[
-kubectl edit --namespace=kube-system rc kubernetes-dashboard		
-		]]>
-		</screen>
-	</section>
-	
-
-
-	<section id="get.service">
-		<title>service</title>
+	<section id="kubectl.service">
+		<title>服务管理</title>
 		<section>
 			<title>列出服务</title>
 			<screen>
@@ -488,7 +483,15 @@ kubectl expose deployment keras-app --port=80 --target-port=5000 --type=LoadBala
 		]]>
 		</screen>
 	</section>
-	<section id="kubectl.logs">
+	<section id="kubectlscale">
+		<title>资源管理</title>
+		<screen>
+		<![CDATA[
+kubectl scale -n default deployment nginx --replicas=1	
+kubectl scale deployment springbootdemo --replicas=4		
+		]]>
+		</screen>
+	</section><section id="kubectl.logs">
 		<title>查看 pod 日志</title>
 		<screen>
 		<![CDATA[
@@ -511,11 +514,11 @@ $ kubectl exec -it mongodba-6d5d6ddf64-jw4fv bash
 		]]>
 		</screen>
 	</section>
-	<section>
-		<title>scale</title>
+	<section id="kubectl.edit">
+		<title>edit</title>
 		<screen>
 		<![CDATA[
-kubectl scale deployment springbootdemo --replicas=4		
+kubectl edit --namespace=kube-system rc kubernetes-dashboard		
 		]]>
 		</screen>
 	</section>

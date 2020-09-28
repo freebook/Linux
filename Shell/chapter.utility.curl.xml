@@ -407,6 +407,15 @@ curl -s  -X POST --user 'api:secret' -d 'grant_type=password&username=netkiller@
 
 		</section>
 	</section>
+	<section>
+		<title>访问自签名证书</title>
+		<screen>
+		<![CDATA[
+curl --cacert certs/domain.crt  https://www.netkiller.cn/		
+		]]>
+		</screen>
+	</section>
+	
 	<section id="curl.http2">
 		<title>HTTP2</title>
 		<para>curl 已经支持 HTTP2，使用方法如下</para>
