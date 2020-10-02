@@ -111,6 +111,23 @@ $ brew install kubernetes-helm
 			</screen>
 			<screen>
 			<![CDATA[
+neo@MacBook-Pro-Neo ~ % minikube start                 
+😄  minikube v1.13.1 on Darwin 11.0
+🆕  Kubernetes 1.19.2 is now available. If you would like to upgrade, specify: --kubernetes-version=v1.19.2
+✨  Using the hyperkit driver based on existing profile
+👍  Starting control plane node minikube in cluster minikube
+🔄  Restarting existing hyperkit VM for "minikube" ...
+❗  This VM is having trouble accessing https://k8s.gcr.io
+💡  To pull new external images, you may need to configure a proxy: https://minikube.sigs.k8s.io/docs/reference/networking/proxy/
+🐳  Preparing Kubernetes v1.19.0 on Docker 19.03.12 ...
+🔎  Verifying Kubernetes components...
+🌟  Enabled addons: dashboard, default-storageclass, storage-provisioner
+🏄  Done! kubectl is now configured to use "minikube" by default			
+			]]>
+			</screen>
+			<para>有些老系统可能不支持 hyperkit，需要virtualbox。</para>
+			<screen>
+			<![CDATA[
 $ minikube start —vm-driver=virtualbox
 $ minikube dashboard			
 			]]>
@@ -191,6 +208,7 @@ BODY:
 			</screen>
 		</example>
 	</section>
+	
 	<section id="minikube.command">
 		<title>minikube 命令</title>
 		<screen>
@@ -345,6 +363,45 @@ Machine stopped.
 			</screen>
 		</section>
 		<section>
+			<title>Docker 环境变量</title>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~ % minikube docker-env
+export DOCKER_TLS_VERIFY="1"
+export DOCKER_HOST="tcp://192.168.64.3:2376"
+export DOCKER_CERT_PATH="/Users/neo/.minikube/certs"
+export MINIKUBE_ACTIVE_DOCKERD="minikube"
+
+# To point your shell to minikube's docker-daemon, run:
+# eval $(minikube -p minikube docker-env)			
+			]]>
+			</screen>
+			<para>设置环境变量</para>
+			<screen>
+			<![CDATA[
+# eval $(minikube docker-env)	
+# eval $(minikube -p minikube docker-env)	
+			]]>
+			</screen>
+		</section>
+		<section id="minikube.ssh">
+			<title>SSH</title>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~ % minikube ssh                                                           
+                         _             _            
+            _         _ ( )           ( )           
+  ___ ___  (_)  ___  (_)| |/')  _   _ | |_      __  
+/' _ ` _ `\| |/' _ `\| || , <  ( ) ( )| '_`\  /'__`\
+| ( ) ( ) || || ( ) || || |\`\ | (_) || |_) )(  ___/
+(_) (_) (_)(_)(_) (_)(_)(_) (_)`\___/'(_,__/'`\____)
+
+$ 			
+			]]>
+			</screen>
+		</section>
+		
+		<section>
 			<title>缓存镜像</title>
 			<screen>
 			<![CDATA[
@@ -416,6 +473,15 @@ minikube docker-env
 			]]>
 			</screen>
 		</section>
+		<section id="minikube.profile">
+			<title>profile</title>
+			<screen>
+			<![CDATA[
+minikube profile demo
+minikube start -p demo --memory=8192 --cpus=6 --disk-size=50g			
+			]]>
+			</screen>
+		</section>
 		<section id="minikube.addons">
 			<title>addons</title>
 			<section>
@@ -483,7 +549,7 @@ dashboard was successfully enabled
 		<section id="minikube.addons">
 			<title>addons</title>
 			<section>
-				<title></title>
+				<title>查看所有插件</title>
 				<screen>
 				<![CDATA[
 iMac:registry neo$ minikube addons list
@@ -519,6 +585,51 @@ iMac:registry neo$ minikube addons list
 				]]>
 				</screen>
 			</section>
+		<section>
+		<title>开启 registry 私有库</title>
+		<screen>
+		<![CDATA[
+# enable the registry addon
+$ minikube addons enable registry
+
+$ minikube start
+
+# use the minikube docker daemon from the host
+$ eval $(minikube docker-env)
+
+# get the ip of the registry endpoint
+$ kubectl -n kube-system get svc registry -o jsonpath="{.spec.clusterIP}"
+10.0.0.240	
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+{
+  "insecure-registries" : ["10.0.0.240"]
+}		
+		]]>
+		</screen>
+		
+		<para></para>
+		<screen>
+		<![CDATA[
+$ minikube ssh
+$ docker pull busybox
+$ docker tag busybox 10.0.0.240/busybox
+
+# or
+
+# build and push to insecure registry
+$ docker build -t 10.0.0.240/busybox .
+$ docker push 10.0.0.240/busybox
+		]]>
+		</screen>
+		<!-- 
+		minikube addons enable registry
+docker tag ubuntu $(minikube ip):5000/ubuntu
+docker push $(minikube ip):5000/ubuntu
+		 -->
+	</section>
 		</section>
 	</section>
 	<section id="minikube.faq">

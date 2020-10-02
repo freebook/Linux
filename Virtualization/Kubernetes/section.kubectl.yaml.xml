@@ -58,4 +58,249 @@ spec:
 		]]>
 		</screen>
 	</section>
+	<section id="ConfigMap">
+		<title>ConfigMap</title>
+		<section>
+			<title>Key-Value 配置</title>
+			<screen>
+			<![CDATA[
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-config
+  namespace: default
+data:
+  db.host: 172.16.0.10
+  db.port: '3306'
+  db.user: neo
+  db.pass: chen
+			]]>
+			</screen>
+			<para>创建配置</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~/tmp/kubernetes % kubectl create -f key-value.yaml
+configmap/db-config created
+			]]>
+			</screen>
+			<para>将配置项保存到文件</para>
+			<screen>
+			<![CDATA[
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-pod
+spec:
+  containers:
+    - name: test-container
+      image: gcr.io/google_containers/busybox
+      command: [ "/bin/sh", "-c", "cat /usr/local/etc/config/db.host" ]
+      volumeMounts:
+      - name: config-volume
+        mountPath: /usr/local/etc/config
+  volumes:
+    - name: config-volume
+      configMap:
+        name: db-config
+  restartPolicy: Never			
+			]]>
+			</screen>
+			<para>定义多组配置项</para>
+			<screen>
+			<![CDATA[
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: spring-cloud-config
+  namespace: default
+data:
+  config: |
+    spring.security.user=config
+    spring.security.user=passw0rd
+  euerka: |
+    spring.security.user=eureka
+    spring.security.user=passw0rd
+  gateway: |
+    spring.security.user=gateway
+    spring.security.user=passw0rd    
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>环境变量</title>
+			<para>envFrom 可将 ConfigMap 中的配置项定义为容器环境变量</para>
+			<screen>
+			<![CDATA[
+apiVersion: v1
+kind: Pod
+metadata:
+  name: neo-test-pod
+spec:
+  containers:
+    - name: test-container
+      image: k8s.gcr.io/busybox
+      command: [ "/bin/sh", "-c", "env" ]
+      envFrom:
+      - configMapRef:
+          name: special-config
+  restartPolicy: Never			
+			]]>
+			</screen>
+			<para>引用单个配置项使用 valueFrom</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~/tmp/kubernetes % cat key-value.yaml 
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-config
+  namespace: default
+data:
+  db.host: 172.16.0.10
+  db.port: '3306'		
+  db.user: neo
+  db.pass: chen
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-pod
+spec:
+  containers:
+    - name: test-container
+      image: busybox
+      command: [ "/bin/sh", "-c", "env" ]
+      env:
+        - name: DBHOST
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: db.host
+        - name: DBPORT
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: db.port
+  restartPolicy: Never				
+			
+neo@MacBook-Pro-Neo ~/tmp/kubernetes % kubectl create -f key-value.yaml
+configmap/db-config created
+pod/test-pod created		
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>配置文件</title>
+			<para>定义配置</para>
+			<screen>
+		<![CDATA[
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-config
+  labels:
+    app: redis
+data:
+  redis.conf: |-
+    pidfile /var/lib/redis/redis.pid
+    dir /var/lib/redis
+    port 6379
+    bind 0.0.0.0
+    appendonly yes
+    protected-mode no
+    requirepass 123456
+		]]>
+			</screen>
+			<para>引用配置</para>
+			<screen>
+		<![CDATA[
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  labels:
+    app: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:5.0.8
+        command: 
+          - "sh"
+          - "-c"
+          - "redis-server /usr/local/etc/redis/redis.conf"
+        ports:
+        - containerPort: 6379
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 1024Mi
+          requests:
+            cpu: 1000m
+            memory: 1024Mi
+        livenessProbe:
+          tcpSocket:
+            port: 6379
+          initialDelaySeconds: 300
+          timeoutSeconds: 1
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 3
+        readinessProbe:
+          tcpSocket:
+            port: 6379
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 3
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        - name: config
+          mountPath:  /usr/local/etc/redis/redis.conf
+          subPath: redis.conf
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: redis
+      - name: config
+        configMap:
+          name: redis-config
+		]]>
+			</screen>
+			<screen>
+			<![CDATA[
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-pod
+spec:
+  containers:
+    - name: test-container
+      image: gcr.io/google_containers/busybox
+      command: [ "/bin/sh","-c","find /etc/config/" ]
+      volumeMounts:
+      - name: config-volume
+        mountPath: /etc/config
+  volumes:
+    - name: config-volume
+      configMap:
+        name: special-config
+        items:
+        - key: special.how
+          path: path/to/special-key
+  restartPolicy: Never			
+			]]>
+			</screen>
+		</section>
+	</section>
 </section>

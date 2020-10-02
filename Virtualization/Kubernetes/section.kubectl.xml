@@ -196,10 +196,10 @@ minikube   Ready    master   42h   v1.19.0   192.168.64.2   <none>        Buildr
 
 		</section>
 
-	
-	<section id="get.cs">
-		<title>查询集群状态</title>
-		<screen>
+
+		<section id="get.cs">
+			<title>查询集群状态</title>
+			<screen>
 		<![CDATA[
 [root@localhost ~]# kubectl get cs
 NAME                 STATUS    MESSAGE              ERROR
@@ -207,11 +207,11 @@ controller-manager   Healthy   ok
 scheduler            Healthy   ok                   
 etcd-0               Healthy   {"health": "true"}   		
 		]]>
-		</screen>
-	</section>
-	<section id="kubectl.config">
-		<title>config</title>
-		<screen>
+			</screen>
+		</section>
+		<section id="kubectl.config">
+			<title>config</title>
+			<screen>
 		<![CDATA[
 [root@localhost ~]# kubectl config view
 apiVersion: v1
@@ -234,8 +234,8 @@ users:
     client-certificate: /root/.minikube/client.crt
     client-key: /root/.minikube/client.key		
 		]]>
-		</screen>
-		<screen>
+			</screen>
+			<screen>
 		<![CDATA[
 iMac:~ neo$ kubectl config view
 apiVersion: v1
@@ -270,21 +270,21 @@ users:
     client-certificate: /Users/neo/.minikube/profiles/minikube/client.crt
     client-key: /Users/neo/.minikube/profiles/minikube/client.key		
 		]]>
-		</screen>
-		<section>
-			<title>use-context</title>
-			<para>如果之前用其他方式运行Kubernetes，如 minikube, mircok8s 等等，可以使用下面命令切换。</para>
-			<screen>
+			</screen>
+			<section>
+				<title>use-context</title>
+				<para>如果之前用其他方式运行Kubernetes，如 minikube, mircok8s 等等，可以使用下面命令切换。</para>
+				<screen>
 			<![CDATA[
 $ kubectl config use-context docker-for-desktop		
 			]]>
-			</screen>
-		</section>
+				</screen>
+			</section>
 
-	</section>
-	<section id="cluster-info">
-		<title>cluster-info</title>
-		<screen>
+		</section>
+		<section id="cluster-info">
+			<title>cluster-info</title>
+			<screen>
 		<![CDATA[
 [root@localhost ~]# kubectl cluster-info
 Kubernetes master is running at https://172.16.0.121:8443
@@ -292,8 +292,8 @@ KubeDNS is running at https://172.16.0.121:8443/api/v1/namespaces/kube-system/se
 
 To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.		
 		]]>
-		</screen>
-	</section>
+			</screen>
+		</section>
 	</section>
 	<section id="kubectl.deployment">
 		<title>部署管理</title>
@@ -329,16 +329,17 @@ $ kubectl create -f jenkins-namespace.yaml
 namespace ”jenkins-project“ created			
 			]]>
 			</screen>
-		</section><section id="get.pods">
-		<title>pods</title>
-		<para></para>
-		<screen>
+		</section>
+		<section id="get.pods">
+			<title>pods</title>
+			<para></para>
+			<screen>
 		<![CDATA[
 kubectl get pod <pod-name> -o wide		
 kubectl get pods --all-namespaces
 		]]>
-		</screen>
-		<screen>
+			</screen>
+			<screen>
 		<![CDATA[
 [root@localhost ~]# kubectl get pods --all-namespaces
 NAMESPACE     NAME                                   READY   STATUS    RESTARTS   AGE
@@ -354,19 +355,19 @@ kube-system   kube-scheduler-minikube                1/1     Running   31       
 kube-system   kubernetes-dashboard-ccc79bfc9-dxcq2   1/1     Running   7          4d17h
 kube-system   storage-provisioner                    1/1     Running   2          4d18h		
 		]]>
-		</screen>
-		<section id="get.pod">
-			<title>pod</title>
-			<para></para>
-			<screen>
+			</screen>
+			<section id="get.pod">
+				<title>pod</title>
+				<para></para>
+				<screen>
 		<![CDATA[
 [root@localhost ~]# kubectl get pod
 NAME                              READY   STATUS    RESTARTS   AGE
 hello-minikube-5c856cbf98-6vfvp   1/1     Running   0          6m59s
 		]]>
-			</screen>
-			<para>指定命名空间</para>
-			<screen>
+				</screen>
+				<para>指定命名空间</para>
+				<screen>
 		<![CDATA[
 [root@localhost ~]# kubectl get pod --namespace=kube-system
 NAME                                   READY   STATUS    RESTARTS   AGE
@@ -381,16 +382,16 @@ kube-scheduler-minikube                1/1     Running   5          41m
 kubernetes-dashboard-ccc79bfc9-dxcq2   1/1     Running   5          16m
 storage-provisioner                    1/1     Running   0          39m		
 		]]>
-			</screen>
-		</section>
-		<section id="kubectl.describe">
-			<title>查看 Pod 的事件</title>
-			<screen>
+				</screen>
+			</section>
+			<section id="kubectl.describe">
+				<title>查看 Pod 的事件</title>
+				<screen>
 		<![CDATA[
 kubectl describe pod <pod-name> 		
 		]]>
-			</screen>
-			<screen>
+				</screen>
+				<screen>
 		<![CDATA[
 iMac:~ neo$ kubectl describe pod springboot
 Name:         springboot
@@ -438,9 +439,9 @@ Events:
   Normal  Scheduled  80s   default-scheduler  Successfully assigned default/springboot to minikube
   Normal  Pulling    79s   kubelet            Pulling image "127.0.0.1:5000/netkiller/config:latest"		
 		]]>
-			</screen>
+				</screen>
+			</section>
 		</section>
-	</section>
 	</section>
 
 	<section id="kubectl.service">
@@ -491,7 +492,8 @@ kubectl scale -n default deployment nginx --replicas=1
 kubectl scale deployment springbootdemo --replicas=4		
 		]]>
 		</screen>
-	</section><section id="kubectl.logs">
+	</section>
+	<section id="kubectl.logs">
 		<title>查看 pod 日志</title>
 		<screen>
 		<![CDATA[
@@ -586,4 +588,350 @@ kubectl delete -n default secret docker-hub
 			</screen>
 		</section>
 	</section>
+	<section id="kubectl.configmap">
+		<title>ConfigMap</title>
+		<para>ConfigMap 用于保存配置数据的键值，也可以用来保存配置文件。</para>
+		<section>
+			<title>创建 Key-Value 配置项</title>
+			<para>从key-value字符串创建ConfigMap</para>
+			<screen>
+		<![CDATA[
+neo@MacBook-Pro-Neo ~ % kubectl create configmap config --from-literal=nickname=netkiller
+configmap/config created		
+		]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~ % kubectl get configmap config -o go-template='{{.data}}'
+map[nickname:netkiller]			
+			]]>
+			</screen>
+			<para>创建多个KV对</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~ % kubectl create configmap user --from-literal=username=neo --from-literal=nickname=netkiller --from-literal=age=35
+configmap/user created
+
+neo@MacBook-Pro-Neo ~ % kubectl get configmap user -o go-template='{{.data}}'                                                        
+map[age:35 nickname:netkiller username:neo]%  			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~ % kubectl create configmap db-config --from-literal=db.host=172.16.0.10 --from-literal=db.port='3306' 
+configmap/db-config created
+neo@MacBook-Pro-Neo ~ % kubectl describe configmap db-config                                                  
+Name:         db-config
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+
+Data
+====
+db.port:
+----
+3306
+db.host:
+----
+172.16.0.10
+Events:  <none>			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>从文件创建 ConfigMap</title>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~ % kubectl create configmap passwd --from-file=/etc/passwd
+configmap/passwd created
+
+neo@MacBook-Pro-Neo ~ % kubectl describe configmap passwd                      
+Name:         passwd
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+
+Data
+====
+passwd:
+----
+##
+# User Database
+# 
+# Note that this file is consulted directly only when the system is running
+# in single-user mode.  At other times this information is provided by
+# Open Directory.
+#
+# See the opendirectoryd(8) man page for additional information about
+# Open Directory.
+##
+nobody:*:-2:-2:Unprivileged User:/var/empty:/usr/bin/false
+root:*:0:0:System Administrator:/var/root:/bin/sh
+daemon:*:1:1:System Services:/var/root:/usr/bin/false
+_uucp:*:4:4:Unix to Unix Copy Protocol:/var/spool/uucp:/usr/sbin/uucico
+_taskgated:*:13:13:Task Gate Daemon:/var/empty:/usr/bin/false
+_networkd:*:24:24:Network Services:/var/networkd:/usr/bin/false
+_installassistant:*:25:25:Install Assistant:/var/empty:/usr/bin/false
+_lp:*:26:26:Printing Services:/var/spool/cups:/usr/bin/false
+_postfix:*:27:27:Postfix Mail Server:/var/spool/postfix:/usr/bin/false
+_scsd:*:31:31:Service Configuration Service:/var/empty:/usr/bin/false
+_ces:*:32:32:Certificate Enrollment Service:/var/empty:/usr/bin/false
+_appstore:*:33:33:Mac App Store Service:/var/db/appstore:/usr/bin/false
+_mcxalr:*:54:54:MCX AppLaunch:/var/empty:/usr/bin/false
+_appleevents:*:55:55:AppleEvents Daemon:/var/empty:/usr/bin/false
+_geod:*:56:56:Geo Services Daemon:/var/db/geod:/usr/bin/false
+_devdocs:*:59:59:Developer Documentation:/var/empty:/usr/bin/false
+_sandbox:*:60:60:Seatbelt:/var/empty:/usr/bin/false
+_mdnsresponder:*:65:65:mDNSResponder:/var/empty:/usr/bin/false
+_ard:*:67:67:Apple Remote Desktop:/var/empty:/usr/bin/false
+_www:*:70:70:World Wide Web Server:/Library/WebServer:/usr/bin/false
+_eppc:*:71:71:Apple Events User:/var/empty:/usr/bin/false
+_cvs:*:72:72:CVS Server:/var/empty:/usr/bin/false
+_svn:*:73:73:SVN Server:/var/empty:/usr/bin/false
+_mysql:*:74:74:MySQL Server:/var/empty:/usr/bin/false
+_sshd:*:75:75:sshd Privilege separation:/var/empty:/usr/bin/false
+_qtss:*:76:76:QuickTime Streaming Server:/var/empty:/usr/bin/false
+_cyrus:*:77:6:Cyrus Administrator:/var/imap:/usr/bin/false
+_mailman:*:78:78:Mailman List Server:/var/empty:/usr/bin/false
+_appserver:*:79:79:Application Server:/var/empty:/usr/bin/false
+_clamav:*:82:82:ClamAV Daemon:/var/virusmails:/usr/bin/false
+_amavisd:*:83:83:AMaViS Daemon:/var/virusmails:/usr/bin/false
+_jabber:*:84:84:Jabber XMPP Server:/var/empty:/usr/bin/false
+_appowner:*:87:87:Application Owner:/var/empty:/usr/bin/false
+_windowserver:*:88:88:WindowServer:/var/empty:/usr/bin/false
+_spotlight:*:89:89:Spotlight:/var/empty:/usr/bin/false
+_tokend:*:91:91:Token Daemon:/var/empty:/usr/bin/false
+_securityagent:*:92:92:SecurityAgent:/var/db/securityagent:/usr/bin/false
+_calendar:*:93:93:Calendar:/var/empty:/usr/bin/false
+_teamsserver:*:94:94:TeamsServer:/var/teamsserver:/usr/bin/false
+_update_sharing:*:95:-2:Update Sharing:/var/empty:/usr/bin/false
+_installer:*:96:-2:Installer:/var/empty:/usr/bin/false
+_atsserver:*:97:97:ATS Server:/var/empty:/usr/bin/false
+_ftp:*:98:-2:FTP Daemon:/var/empty:/usr/bin/false
+_unknown:*:99:99:Unknown User:/var/empty:/usr/bin/false
+_softwareupdate:*:200:200:Software Update Service:/var/db/softwareupdate:/usr/bin/false
+_coreaudiod:*:202:202:Core Audio Daemon:/var/empty:/usr/bin/false
+_screensaver:*:203:203:Screensaver:/var/empty:/usr/bin/false
+_locationd:*:205:205:Location Daemon:/var/db/locationd:/usr/bin/false
+_trustevaluationagent:*:208:208:Trust Evaluation Agent:/var/empty:/usr/bin/false
+_timezone:*:210:210:AutoTimeZoneDaemon:/var/empty:/usr/bin/false
+_lda:*:211:211:Local Delivery Agent:/var/empty:/usr/bin/false
+_cvmsroot:*:212:212:CVMS Root:/var/empty:/usr/bin/false
+_usbmuxd:*:213:213:iPhone OS Device Helper:/var/db/lockdown:/usr/bin/false
+_dovecot:*:214:6:Dovecot Administrator:/var/empty:/usr/bin/false
+_dpaudio:*:215:215:DP Audio:/var/empty:/usr/bin/false
+_postgres:*:216:216:PostgreSQL Server:/var/empty:/usr/bin/false
+_krbtgt:*:217:-2:Kerberos Ticket Granting Ticket:/var/empty:/usr/bin/false
+_kadmin_admin:*:218:-2:Kerberos Admin Service:/var/empty:/usr/bin/false
+_kadmin_changepw:*:219:-2:Kerberos Change Password Service:/var/empty:/usr/bin/false
+_devicemgr:*:220:220:Device Management Server:/var/empty:/usr/bin/false
+_webauthserver:*:221:221:Web Auth Server:/var/empty:/usr/bin/false
+_netbios:*:222:222:NetBIOS:/var/empty:/usr/bin/false
+_warmd:*:224:224:Warm Daemon:/var/empty:/usr/bin/false
+_dovenull:*:227:227:Dovecot Authentication:/var/empty:/usr/bin/false
+_netstatistics:*:228:228:Network Statistics Daemon:/var/empty:/usr/bin/false
+_avbdeviced:*:229:-2:Ethernet AVB Device Daemon:/var/empty:/usr/bin/false
+_krb_krbtgt:*:230:-2:Open Directory Kerberos Ticket Granting Ticket:/var/empty:/usr/bin/false
+_krb_kadmin:*:231:-2:Open Directory Kerberos Admin Service:/var/empty:/usr/bin/false
+_krb_changepw:*:232:-2:Open Directory Kerberos Change Password Service:/var/empty:/usr/bin/false
+_krb_kerberos:*:233:-2:Open Directory Kerberos:/var/empty:/usr/bin/false
+_krb_anonymous:*:234:-2:Open Directory Kerberos Anonymous:/var/empty:/usr/bin/false
+_assetcache:*:235:235:Asset Cache Service:/var/empty:/usr/bin/false
+_coremediaiod:*:236:236:Core Media IO Daemon:/var/empty:/usr/bin/false
+_launchservicesd:*:239:239:_launchservicesd:/var/empty:/usr/bin/false
+_iconservices:*:240:240:IconServices:/var/empty:/usr/bin/false
+_distnote:*:241:241:DistNote:/var/empty:/usr/bin/false
+_nsurlsessiond:*:242:242:NSURLSession Daemon:/var/db/nsurlsessiond:/usr/bin/false
+_displaypolicyd:*:244:244:Display Policy Daemon:/var/empty:/usr/bin/false
+_astris:*:245:245:Astris Services:/var/db/astris:/usr/bin/false
+_krbfast:*:246:-2:Kerberos FAST Account:/var/empty:/usr/bin/false
+_gamecontrollerd:*:247:247:Game Controller Daemon:/var/empty:/usr/bin/false
+_mbsetupuser:*:248:248:Setup User:/var/setup:/bin/bash
+_ondemand:*:249:249:On Demand Resource Daemon:/var/db/ondemand:/usr/bin/false
+_xserverdocs:*:251:251:macOS Server Documents Service:/var/empty:/usr/bin/false
+_wwwproxy:*:252:252:WWW Proxy:/var/empty:/usr/bin/false
+_mobileasset:*:253:253:MobileAsset User:/var/ma:/usr/bin/false
+_findmydevice:*:254:254:Find My Device Daemon:/var/db/findmydevice:/usr/bin/false
+_datadetectors:*:257:257:DataDetectors:/var/db/datadetectors:/usr/bin/false
+_captiveagent:*:258:258:captiveagent:/var/empty:/usr/bin/false
+_ctkd:*:259:259:ctkd Account:/var/empty:/usr/bin/false
+_applepay:*:260:260:applepay Account:/var/db/applepay:/usr/bin/false
+_hidd:*:261:261:HID Service User:/var/db/hidd:/usr/bin/false
+_cmiodalassistants:*:262:262:CoreMedia IO Assistants User:/var/db/cmiodalassistants:/usr/bin/false
+_analyticsd:*:263:263:Analytics Daemon:/var/db/analyticsd:/usr/bin/false
+_fpsd:*:265:265:FPS Daemon:/var/db/fpsd:/usr/bin/false
+_timed:*:266:266:Time Sync Daemon:/var/db/timed:/usr/bin/false
+_nearbyd:*:268:268:Proximity and Ranging Daemon:/var/db/nearbyd:/usr/bin/false
+_reportmemoryexception:*:269:269:ReportMemoryException:/var/db/reportmemoryexception:/usr/bin/false
+_driverkit:*:270:270:DriverKit:/var/empty:/usr/bin/false
+_diskimagesiod:*:271:271:DiskImages IO Daemon:/var/db/diskimagesiod:/usr/bin/false
+_logd:*:272:272:Log Daemon:/var/db/diagnostics:/usr/bin/false
+_appinstalld:*:273:273:App Install Daemon:/var/db/appinstalld:/usr/bin/false
+_installcoordinationd:*:274:274:Install Coordination Daemon:/var/db/installcoordinationd:/usr/bin/false
+_demod:*:275:275:Demo Daemon:/var/empty:/usr/bin/false
+_rmd:*:277:277:Remote Management Daemon:/var/db/rmd:/usr/bin/false
+_fud:*:278:278:Firmware Update Daemon:/var/db/fud:/usr/bin/false
+_knowledgegraphd:*:279:279:Knowledge Graph Daemon:/var/db/knowledgegraphd:/usr/bin/false
+_coreml:*:280:280:CoreML Services:/var/empty:/usr/bin/false
+_oahd:*:441:441:OAH Daemon:/var/empty:/usr/bin/false
+
+Events:  <none>			
+			]]>
+			</screen>
+			<para>处理多个文件</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~ % kubectl create configmap apache-httpd --from-file=/etc/apache2/httpd.conf --from-file=/etc/apache2/extra/httpd-vhosts.conf
+configmap/apache-httpd created			
+			]]>
+			</screen>
+			<para>处理目录内的所有文件</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~ % kubectl create configmap apache-httpd-users --from-file=/etc/apache2/users             
+configmap/apache-httpd-users created			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title></title>
+			<screen>
+			<![CDATA[
+cat <<EOF > /tmp/test.env
+username=neo
+nickname=netkiller
+age=38
+sex=Y
+EOF
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~ % cat <<EOF > /tmp/test.env
+username=neo
+nickname=netkiller
+age=38
+sex=Y
+EOF
+neo@MacBook-Pro-Neo ~ % cat /tmp/test.env 
+username=neo
+nickname=netkiller
+age=38
+sex=Y
+neo@MacBook-Pro-Neo ~ % kubectl create configmap env-config --from-env-file=/tmp/test.env          
+configmap/env-config created			
+			]]>
+			</screen>
+		</section>
+		
+		<section>
+			<title>查看 ConfigMap</title>
+			<para></para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~ % kubectl get configmap                                       
+NAME             DATA   AGE
+config           1      52s			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~ % kubectl describe configmap config
+Name:         config
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+
+Data
+====
+nickname:
+----
+netkiller
+Events:  <none>			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~ % kubectl get configmap config -o yaml 
+apiVersion: v1
+data:
+  nickname: netkiller
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2020-10-02T05:05:59Z"
+  managedFields:
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:data:
+        .: {}
+        f:nickname: {}
+    manager: kubectl-create
+    operation: Update
+    time: "2020-10-02T05:05:59Z"
+  name: config
+  namespace: default
+  resourceVersion: "18065"
+  selfLink: /api/v1/namespaces/default/configmaps/config
+  uid: 35381fa6-681b-417a-afc1-f45fdff5406d			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~ % kubectl get configmap user -o json                   
+{
+    "apiVersion": "v1",
+    "data": {
+        "age": "35",
+        "nickname": "netkiller",
+        "username": "neo"
+    },
+    "kind": "ConfigMap",
+    "metadata": {
+        "creationTimestamp": "2020-10-02T05:13:09Z",
+        "managedFields": [
+            {
+                "apiVersion": "v1",
+                "fieldsType": "FieldsV1",
+                "fieldsV1": {
+                    "f:data": {
+                        ".": {},
+                        "f:age": {},
+                        "f:nickname": {},
+                        "f:username": {}
+                    }
+                },
+                "manager": "kubectl-create",
+                "operation": "Update",
+                "time": "2020-10-02T05:13:09Z"
+            }
+        ],
+        "name": "user",
+        "namespace": "default",
+        "resourceVersion": "18381",
+        "selfLink": "/api/v1/namespaces/default/configmaps/user",
+        "uid": "51e3aa61-21cf-4ed1-871c-ac7119aec7a1"
+    }
+}			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>删除 ConfigMap</title>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~ % kubectl delete -n default configmap config
+configmap "config" deleted			
+			]]>
+			</screen>
+		</section>
+		
+	</section>
+
 </section>

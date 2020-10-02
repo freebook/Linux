@@ -4,6 +4,11 @@
 	<section>
 		<title>私有 registry</title>
 		<screen>
+		<![CDATA[
+docker run -d -p 5000:5000 --name registry registry:latest		
+		]]>
+		</screen>
+		<screen>
 			<![CDATA[
 kubectl create deployment registry --image=registry:latest
 kubectl expose deployment registry --port=5000 --target-port=30500 --type=NodePort
