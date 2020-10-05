@@ -176,6 +176,28 @@ spec:
 			</screen>
 		</section>
 		<section>
+			<title></title>
+			<screen>
+			<![CDATA[
+apiVersion: v1
+kind: Service
+metadata:
+  name: spring-cloud-config-server
+  namespace: default
+  labels:
+    app: springboot
+spec:
+  #type: NodePort
+  ports: web
+  - port: 8888
+    targetPort: web
+  clusterIP: 10.10.0.1
+  selector:
+    app: spring-cloud-config-server
+			]]>
+			</screen>
+		</section>
+		<section>
 			<title>nodePort</title>
 			<screen>
 			<![CDATA[
