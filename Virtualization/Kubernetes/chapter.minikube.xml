@@ -103,7 +103,6 @@ machdep.cpu.features: FPU VME DE PSE TSC MSR PAE MCE CX8 APIC SEP MTRR PGE MCA C
 			</screen>
 			<screen>
 			<![CDATA[
-$ brew cask install virtualbox
 $ brew install minikube
 $ brew install kubectl
 $ brew install kubernetes-helm
@@ -128,6 +127,7 @@ neo@MacBook-Pro-Neo ~ % minikube start
 			<para>有些老系统可能不支持 hyperkit，需要virtualbox。</para>
 			<screen>
 			<![CDATA[
+$ brew cask install virtualbox
 $ minikube start —vm-driver=virtualbox
 $ minikube dashboard			
 			]]>
@@ -208,7 +208,7 @@ BODY:
 			</screen>
 		</example>
 	</section>
-	
+
 	<section id="minikube.command">
 		<title>minikube 命令</title>
 		<screen>
@@ -317,6 +317,10 @@ minikube start --extra-config=apiserver.v=10 --extra-config=kubelet.max-pods=100
 				<screen>
 				<![CDATA[
 minikube start --registry-mirror=https://registry.docker-cn.com
+
+minikube start --image-mirror-country=cn --registry-mirror="https://docker.mirrors.ustc.edu.cn" --insecure-registry="127.0.0.1:5000"				
+
+minikube start --image-mirror-country=cn --registry-mirror="https://docker.mirrors.ustc.edu.cn" --insecure-registry="192.168.0.0/24"
 				]]>
 				</screen>
 			</section>
@@ -324,24 +328,15 @@ minikube start --registry-mirror=https://registry.docker-cn.com
 				<title>指定下载镜像</title>
 				<screen>
 				<![CDATA[
-minikube start --image-mirror-country=cn --registry-mirror="https://docker.mirrors.ustc.edu.cn" --insecure-registry="127.0.0.1:5000"				
-
-minikube start --image-mirror-country=cn --registry-mirror="https://docker.mirrors.ustc.edu.cn" --insecure-registry="192.168.0.0/24"				
+minikube start --image-mirror-country=cn --image-repository=registry.cn-hangzhou.aliyuncs.com/google_containers				
 				]]>
 				</screen>
 				<screen>
 				<![CDATA[
-minikube start --image-mirror-country=cn --image-repository=registry.cn-hangzhou.aliyuncs.com/google_containers
-
 # 从阿里云下载 virtualbox 镜像
 minikube start --vm-driver='virtualbox' --image-mirror-country cn \
     --iso-url=https://kubernetes.oss-cn-hangzhou.aliyuncs.com/minikube/iso/minikube-v1.9.0.iso \
     --registry-mirror=https://docker.mirrors.ustc.edu.cn
-
-
-kubectl create deployment hello-minikube --image=tomcat:8.0 
-kubectl expose deployment hello-minikube --type=NodePort --port=80
-minikube service hello-minikube --url
 
 minikube start --vm-driver=virtualbox \
 --image-mirror-country cn \
@@ -400,7 +395,7 @@ $
 			]]>
 			</screen>
 		</section>
-		
+
 		<section>
 			<title>缓存镜像</title>
 			<screen>
@@ -585,9 +580,9 @@ iMac:registry neo$ minikube addons list
 				]]>
 				</screen>
 			</section>
-		<section>
-		<title>开启 registry 私有库</title>
-		<screen>
+			<section>
+				<title>开启 registry 私有库</title>
+				<screen>
 		<![CDATA[
 # enable the registry addon
 $ minikube addons enable registry
@@ -601,17 +596,17 @@ $ eval $(minikube docker-env)
 $ kubectl -n kube-system get svc registry -o jsonpath="{.spec.clusterIP}"
 10.0.0.240	
 		]]>
-		</screen>
-		<screen>
+				</screen>
+				<screen>
 		<![CDATA[
 {
   "insecure-registries" : ["10.0.0.240"]
 }		
 		]]>
-		</screen>
-		
-		<para></para>
-		<screen>
+				</screen>
+
+				<para></para>
+				<screen>
 		<![CDATA[
 $ minikube ssh
 $ docker pull busybox
@@ -623,13 +618,9 @@ $ docker tag busybox 10.0.0.240/busybox
 $ docker build -t 10.0.0.240/busybox .
 $ docker push 10.0.0.240/busybox
 		]]>
-		</screen>
-		<!-- 
-		minikube addons enable registry
-docker tag ubuntu $(minikube ip):5000/ubuntu
-docker push $(minikube ip):5000/ubuntu
-		 -->
-	</section>
+				</screen>
+				<!-- minikube addons enable registry docker tag ubuntu $(minikube ip):5000/ubuntu docker push $(minikube ip):5000/ubuntu -->
+			</section>
 		</section>
 	</section>
 	<section id="minikube.faq">
@@ -744,6 +735,159 @@ minikube start --insecure-registry=127.0.0.1:5000
 			<screen>
 			<![CDATA[
 minikube start --insecure-registry "10.0.0.0/24"			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>provided port is not in the valid range. The range of valid ports is 30000-32767</title>
+			<screen>
+			<![CDATA[
+iMac:kubernetes neo$ kubectl create -f redis/redis.yml 
+configmap/redis-config created
+deployment.apps/redis created
+The Service "redis" is invalid: spec.ports[0].nodePort: Invalid value: 6379: provided port is not in the valid range. The range of valid ports is 30000-32767			
+			]]>
+			</screen>
+			<para>编辑kube-apiserver.yaml文件</para>
+			<screen>
+			<![CDATA[
+$ minikube ssh
+$ sudo vi /etc/kubernetes/manifests/kube-apiserver.yaml
+			]]>
+			</screen>
+			<para>增加kube-apiserver的启动配置项</para>
+			<screen>
+			<![CDATA[
+--service-node-port-range=1024-65535
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+$ sudo cat /etc/kubernetes/manifests/kube-apiserver.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    kubeadm.kubernetes.io/kube-apiserver.advertise-address.endpoint: 192.168.64.5:8443
+  creationTimestamp: null
+  labels:
+    component: kube-apiserver
+    tier: control-plane
+  name: kube-apiserver
+  namespace: kube-system
+spec:
+  containers:
+  - command:
+    - kube-apiserver
+    - --advertise-address=192.168.64.5
+    - --allow-privileged=true
+    - --authorization-mode=Node,RBAC
+    - --client-ca-file=/var/lib/minikube/certs/ca.crt
+    - --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,DefaultTolerationSeconds,NodeRestriction,MutatingAdmissionWebhook,ValidatingAdmissionWebhook,ResourceQuota
+    - --enable-bootstrap-token-auth=true
+    - --etcd-cafile=/var/lib/minikube/certs/etcd/ca.crt
+    - --etcd-certfile=/var/lib/minikube/certs/apiserver-etcd-client.crt
+    - --etcd-keyfile=/var/lib/minikube/certs/apiserver-etcd-client.key
+    - --etcd-servers=https://127.0.0.1:2379
+    - --insecure-port=0
+    - --kubelet-client-certificate=/var/lib/minikube/certs/apiserver-kubelet-client.crt
+    - --kubelet-client-key=/var/lib/minikube/certs/apiserver-kubelet-client.key
+    - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
+    - --proxy-client-cert-file=/var/lib/minikube/certs/front-proxy-client.crt
+    - --proxy-client-key-file=/var/lib/minikube/certs/front-proxy-client.key
+    - --requestheader-allowed-names=front-proxy-client
+    - --requestheader-client-ca-file=/var/lib/minikube/certs/front-proxy-ca.crt
+    - --requestheader-extra-headers-prefix=X-Remote-Extra-
+    - --requestheader-group-headers=X-Remote-Group
+    - --requestheader-username-headers=X-Remote-User
+    - --secure-port=8443
+    - --service-account-key-file=/var/lib/minikube/certs/sa.pub
+    - --service-cluster-ip-range=10.10.0.0/24
+    - --service-node-port-range=1024-65535
+    - --tls-cert-file=/var/lib/minikube/certs/apiserver.crt
+    - --tls-private-key-file=/var/lib/minikube/certs/apiserver.key
+    image: registry.cn-hangzhou.aliyuncs.com/google_containers/kube-apiserver:v1.19.2
+    imagePullPolicy: IfNotPresent
+    livenessProbe:
+      failureThreshold: 8
+      httpGet:
+        host: 192.168.64.5
+        path: /livez
+        port: 8443
+        scheme: HTTPS
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      timeoutSeconds: 15
+    name: kube-apiserver
+    readinessProbe:
+      failureThreshold: 3
+      httpGet:
+        host: 192.168.64.5
+        path: /readyz
+        port: 8443
+        scheme: HTTPS
+      periodSeconds: 1
+      timeoutSeconds: 15
+    resources:
+      requests:
+        cpu: 250m
+    startupProbe:
+      failureThreshold: 24
+      httpGet:
+        host: 192.168.64.5
+        path: /livez
+        port: 8443
+        scheme: HTTPS
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      timeoutSeconds: 15
+    volumeMounts:
+    - mountPath: /etc/ssl/certs
+      name: ca-certs
+      readOnly: true
+    - mountPath: /var/lib/minikube/certs
+      name: k8s-certs
+      readOnly: true
+    - mountPath: /usr/share/ca-certificates
+      name: usr-share-ca-certificates
+      readOnly: true
+  hostNetwork: true
+  priorityClassName: system-node-critical
+  volumes:
+  - hostPath:
+      path: /etc/ssl/certs
+      type: DirectoryOrCreate
+    name: ca-certs
+  - hostPath:
+      path: /var/lib/minikube/certs
+      type: DirectoryOrCreate
+    name: k8s-certs
+  - hostPath:
+      path: /usr/share/ca-certificates
+      type: DirectoryOrCreate
+    name: usr-share-ca-certificates
+status: {}			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+sudo systemctl restart kubelet			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Exiting due to MK_ENABLE: run callbacks: running callbacks: [verifying registry addon pods : timed out waiting for the condition: timed out waiting for the condition]</title>
+			<screen>
+			<![CDATA[
+iMac:~ neo$ minikube addons enable registry
+🔎  Verifying registry addon...
+
+❌  Exiting due to MK_ENABLE: run callbacks: running callbacks: [verifying registry addon pods : timed out waiting for the condition: timed out waiting for the condition]
+
+😿  If the above advice does not help, please let us know: 
+👉  https://github.com/kubernetes/minikube/issues/new/choose			
 			]]>
 			</screen>
 		</section>

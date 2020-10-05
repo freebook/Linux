@@ -2,6 +2,15 @@
 <section id="container">
 	<title>容器</title>
 	<section>
+		<title>查看容器</title>
+		<screen>
+		<![CDATA[
+iMac:netkiller neo$ docker container ls		
+		]]>
+		</screen>
+	</section>
+	
+	<section>
 		<title>启动与终止容器</title>
 		<screen>
 			<![CDATA[
@@ -71,28 +80,58 @@ bin  boot  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  s
 	</section>
 	<section>
 		<title>导出和导入容器</title>
-		<para></para>
-		<screen>
+		<section>
+			<title>Ubuntu</title>
+			<para></para>
+			<screen>
 			<![CDATA[
 $ sudo docker export 7691a814370e > ubuntu.tar
 			]]>
-		</screen>
-		<para></para>
-		<screen>
+			</screen>
+			<para></para>
+			<screen>
 			<![CDATA[
 			<![CDATA[
 $ cat ubuntu.tar | sudo docker import - test/ubuntu:v1.0
 			]]>
-		</screen>
-		<para>指定 URL 或者某个目录来导入，例如</para>
-		<screen>
+			</screen>
+			<para>指定 URL 或者某个目录来导入，例如</para>
+			<screen>
 			<![CDATA[
 $sudo docker import http://example.com/exampleimage.tgz example/imagerepo			
 			]]>
-		</screen>
+			</screen>
+		</section>
+		<section>
+			<title>Mac 导出与导入</title>
+			<para>导出</para>
+			<screen>
+		<![CDATA[
+iMac:tmp neo$ docker export registry -o registry.tar		
+		]]>
+			</screen>
+			<para>导入</para>
+			<screen>
+		<![CDATA[
+iMac:tmp neo$ docker import registry.tar 
+sha256:1678c838115696f9540f168fe117ea81715b6b676497307e65d15d1ac10d9a11
+		]]>
+			</screen>
+			<para>指定 [REPOSITORY[:TAG]]</para>
+			<screen>
+		<![CDATA[
+iMac:tmp neo$ docker import registry.tar registry:latest
+sha256:7b76bd807a47dcc60e41bf2f8268ecf69906bb14c2ebaa348c4c15aac716b878
+
+iMac:tmp neo$ docker images registry
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+registry            latest              7b76bd807a47        11 seconds ago      26.2MB		
+		]]>
+			</screen>
+		</section>
 	</section>
 	<section id="kill">
-		<title>kill</title>
+		<title>停止所有容器</title>
 		<para>杀死所有正在运行的容器</para>
 		<screen>
 			<![CDATA[

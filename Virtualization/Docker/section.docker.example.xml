@@ -1,6 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="docker.example">
 	<title>Docker Example</title>
+	<section>
+		<title>registry</title>
+		<screen>
+		<![CDATA[
+docker run -d -p 5000:5000 --name registry registry:latest
+		]]>
+		</screen>
+		<section>
+			<title>Auth + SSL</title>
+			<screen>
+			<![CDATA[
+iMac:registry neo$ mkdir etc			
+iMac:registry neo$ htpasswd -Bbn neo chen > etc/htpasswd
+
+or
+	
+docker run --entrypoint htpasswd registry:2 -Bbn neo passw0rd > etc/htpasswd			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+	
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+docker run -d \
+  --restart=always \
+  --name registry \
+  -v `pwd`/etc:/usr/local/etc \
+  -e "REGISTRY_AUTH=htpasswd" \
+  -e "REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm" \
+  -e REGISTRY_AUTH_HTPASSWD_PATH=/usr/local/etc/htpasswd \
+  -e REGISTRY_HTTP_ADDR=0.0.0.0:443 \
+  -e REGISTRY_HTTP_TLS_CERTIFICATE=/usr/local/etc/domain.cer \
+  -e REGISTRY_HTTP_TLS_KEY=/usr/local/etc/domaon.key \
+  -p 443:443 \
+  registry:2			
+			]]>
+			</screen>
+		</section>
+	</section>
 	&section.docker.java.xml;
 	&section.docker.redis.xml;
 	&section.docker.nginx.xml;
