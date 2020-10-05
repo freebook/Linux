@@ -170,5 +170,12 @@ docker rm $(docker ps -a -q)
 			]]>
 		</screen>
 	</section>
-
+	<section>
+		<title>向 /etc/hosts 文件内添加主机名</title>
+		<screen>
+		<![CDATA[
+docker run -it --add-host=db.netkiller.cn:172.16.18.80 ubuntu cat /etc/hosts		
+		]]>
+		</screen>
+	</section>
 </section>

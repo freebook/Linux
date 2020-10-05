@@ -507,6 +507,28 @@ my-service   ClusterIP   10.106.157.143   <none>        80/TCP,443/TCP   9m43s
 			</screen>
 		</section>
 		<section>
+			<title>查看服务详细信息</title>
+			<screen>
+			<![CDATA[
+iMac:kubernetes neo$ kubectl describe service/registry
+Name:                     registry
+Namespace:                default
+Labels:                   app=registry
+Annotations:              <none>
+Selector:                 app=registry
+Type:                     NodePort
+IP:                       10.10.0.188
+Port:                     registry  5000/TCP
+TargetPort:               5000/TCP
+NodePort:                 registry  32050/TCP
+Endpoints:                172.17.0.6:5000
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   <none>			
+			]]>
+			</screen>
+		</section>
+		<section>
 			<title>更新服务</title>
 			<screen>
 			<![CDATA[

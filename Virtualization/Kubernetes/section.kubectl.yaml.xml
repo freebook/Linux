@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="kubectl.yaml">
 	<title>Kubectl YAML</title>
-	<section>
+	<section id="Namespace">
 		<title>创建命名空间</title>
 		<para> 创建 jenkins-namespace.yaml</para>
 		<screen>
@@ -19,8 +19,8 @@ namespace ”jenkins-project“ created
 			]]>
 		</screen>
 	</section>
-	<section>
-		<title>POD</title>
+	<section id="Pod">
+		<title>Pod</title>
 		<screen>
 		<![CDATA[
 apiVersion: v1
