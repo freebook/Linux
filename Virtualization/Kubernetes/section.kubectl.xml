@@ -1179,5 +1179,17 @@ configmap "config" deleted
 		</section>
 
 	</section>
+	<section>
+		<title>Job/CronJob</title>
+		<section>
+			<title>CronJob</title>
+			<screen>
+			<![CDATA[
+kubectl run hello --schedule="*/1 * * * *" --restart=OnFailure --image=busybox -- /bin/sh -c "date; echo Hello from the Kubernetes cluster"
 
+kubectl delete cronjob hello
+			]]>
+			</screen>
+		</section>
+	</section>
 </section>

@@ -83,7 +83,7 @@ spec:
 			</screen>
 		</section>
 	</section>
-	
+
 	<section id="Service">
 		<title>Service</title>
 		<section>
@@ -136,7 +136,7 @@ my-service   <none>      2m20s
 		</section>
 		<section>
 			<title>查看服务</title>
-			
+
 		</section>
 		<section>
 			<title>设置外部IP</title>
@@ -244,8 +244,8 @@ status:
 			</screen>
 		</section>
 		<section>
-		<title>Example</title>
-		<screen>
+			<title>Example</title>
+			<screen>
 		<![CDATA[
 apiVersion: v1
 kind: Service
@@ -298,8 +298,8 @@ spec:
           name: registry
           protocol: TCP	
 		]]>
-		</screen>
-	</section>
+			</screen>
+		</section>
 	</section>
 	<section id="ConfigMap">
 		<title>ConfigMap</title>
@@ -542,6 +542,72 @@ spec:
         - key: special.how
           path: path/to/special-key
   restartPolicy: Never			
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>Job</title>
+		<section>
+			<title>执行单词任务</title>
+			<para>.spec.completions 标志Job结束需要成功运行的Pod个数，默认为1</para>
+			<para>.spec.parallelism 标志并行运行的Pod的个数，默认为1</para>
+			<para>.spec.activeDeadlineSeconds 标志失败Pod的重试最大时间，超过这个时间不会继续重试</para>
+			<screen>
+			<![CDATA[
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: busybox
+spec:
+  completions: 1
+  parallelism: 1
+  template:
+    metadata:
+      name: busybox
+    spec:
+      containers:
+      - name: busybox
+        image: busybox
+        command: ["echo", "hello"]
+      restartPolicy: Never			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+$ kubectl create -f job.yaml
+job "busybox" created
+$ pods=$(kubectl get pods --selector=job-name=busybox --output=jsonpath={.items..metadata.name})
+$ kubectl logs $pods		
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>计划任务</title>
+			<para>.spec.schedule 指定任务运行周期，格式同Cron</para>
+			<para>.spec.startingDeadlineSeconds 指定任务开始的截止期限</para>
+			<para>.spec.concurrencyPolicy 指定任务的并发策略，支持Allow、Forbid和Replace三个选项</para>
+			<screen>
+			<![CDATA[
+apiVersion: batch/v2alpha1
+kind: CronJob
+metadata:
+  name: hello
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: hello
+            image: busybox
+            args:
+            - /bin/sh
+            - -c
+            - date; echo Hello from the Kubernetes cluster
+          restartPolicy: OnFailure			
 			]]>
 			</screen>
 		</section>

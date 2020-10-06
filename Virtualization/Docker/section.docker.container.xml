@@ -38,6 +38,19 @@ $ sudo docker restart silly_bohr
 silly_bohr
 			]]>
 		</screen>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# docker container start registry
+registry
+
+[root@localhost ~]# docker ps
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                    NAMES
+f1e57592f82a        registry:latest     "/entrypoint.sh /etc…"   8 days ago          Up 6 seconds        0.0.0.0:5000->5000/tcp   registry		
+
+[root@localhost ~]# curl http://192.168.3.6:5000/v2/_catalog
+{"repositories":[]}
+		]]>
+		</screen>
 		<para>守护进程运行</para>
 		<screen>
 			<![CDATA[
