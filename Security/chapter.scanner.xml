@@ -76,3 +76,30 @@ To register, please visit http://www.nessus.org/register/
 		<para>http://www.backtrack-linux.org/</para>
 	</section>
 </chapter>
+<chapter id="Lynis">
+	<title>Lynis Linux 安全性扫描工具</title>
+	<section>
+		<title>安装</title>
+		<screen>
+		<![CDATA[
+# CentOS 8
+dnf install lynis
+
+# Ubuntu
+apt install lynis		
+		]]>
+		</screen>
+		<section>
+			<title></title>
+			
+		</section>
+	</section>
+	<section>
+		<title>开始审计</title>
+		<screen>
+		<![CDATA[
+lynis audit system		
+		]]>
+		</screen>
+	</section>
+</chapter>
