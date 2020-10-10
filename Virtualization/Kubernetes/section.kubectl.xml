@@ -363,6 +363,12 @@ kubectl run busybox --image=busybox --command -- ping www.netkiller.cn
 kubectl run nginx --replicas=3 --labels="app=example" --image=nginx:latest --port=80			
 			]]>
 			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+kubectl run busybox --rm=true --image=busybox --restart=Never -it			
+			]]>
+			</screen>
 		</section>
 		<section id="get.pod">
 			<title>pod</title>
@@ -833,6 +839,44 @@ kubectl delete -n default secret docker-hub
 		]]>
 			</screen>
 		</section>
+		<section>
+			<title>配置TLS SSL</title>
+			<screen>
+			<![CDATA[
+# 证书生成
+mkdir cert && cd cert
+
+# 生成 CA 自签证书
+
+openssl genrsa -out ca-key.pem 2048
+openssl req -x509 -new -nodes -key ca-key.pem -days 10000 -out ca.pem -subj "/CN=kube-ca"
+
+# 编辑 openssl 配置
+cp /etc/pki/tls/openssl.cnf .
+vim openssl.cnf
+
+[req]
+req_extensions = v3_req # 注释删掉
+# 新增下面配置是
+[ v3_req ]
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+subjectAltName = @alt_names
+[alt_names]
+DNS.1 = ns.netkiller.cn
+
+# 生成证书
+openssl genrsa -out ingress-key.pem 2048
+openssl req -new -key ingress-key.pem -out ingress.csr -subj "/CN=www.netkiller.cn" -config openssl.cnf
+openssl x509 -req -in ingress.csr -CA ca.pem -CAkey ca-key.pem -CAcreateserial -out ingress.pem -days 365 -extensions v3_req -extfile openssl.cnf
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+kubectl create secret tls ingress-secret --namespace=kube-system --key cert/ingress-key.pem --cert cert/ingress.pem 			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="kubectl.configmap">
 		<title>ConfigMap</title>
@@ -1179,7 +1223,7 @@ configmap "config" deleted
 		</section>
 
 	</section>
-	<section>
+	<section id="kubectl.cronjob">
 		<title>Job/CronJob</title>
 		<section>
 			<title>CronJob</title>
@@ -1188,6 +1232,98 @@ configmap "config" deleted
 kubectl run hello --schedule="*/1 * * * *" --restart=OnFailure --image=busybox -- /bin/sh -c "date; echo Hello from the Kubernetes cluster"
 
 kubectl delete cronjob hello
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section id="kubectl.explain">
+		<title>explain</title>
+		<section>
+			<title>ingress</title>
+			<screen>
+			<![CDATA[
+iMac:kubernetes neo$ kubectl explain ingress
+KIND:     Ingress
+VERSION:  extensions/v1beta1
+
+DESCRIPTION:
+     Ingress is a collection of rules that allow inbound connections to reach
+     the endpoints defined by a backend. An Ingress can be configured to give
+     services externally-reachable urls, load balance traffic, terminate SSL,
+     offer name based virtual hosting etc. DEPRECATED - This group version of
+     Ingress is deprecated by networking.k8s.io/v1beta1 Ingress. See the release
+     notes for more information.
+
+FIELDS:
+   apiVersion	<string>
+     APIVersion defines the versioned schema of this representation of an
+     object. Servers should convert recognized schemas to the latest internal
+     value, and may reject unrecognized values. More info:
+     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+
+   kind	<string>
+     Kind is a string value representing the REST resource this object
+     represents. Servers may infer this from the endpoint the client submits
+     requests to. Cannot be updated. In CamelCase. More info:
+     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+
+   metadata	<Object>
+     Standard object's metadata. More info:
+     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+
+   spec	<Object>
+     Spec is the desired state of the Ingress. More info:
+     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+
+   status	<Object>
+     Status is the current state of the Ingress. More info:
+     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status			
+			]]>
+			</screen>
+			<para>查看 ingress.spec 配置清单</para>
+			<screen>
+			<![CDATA[
+iMac:kubernetes neo$ kubectl explain ingress.spec
+KIND:     Ingress
+VERSION:  extensions/v1beta1
+
+RESOURCE: spec <Object>
+
+DESCRIPTION:
+     Spec is the desired state of the Ingress. More info:
+     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+
+     IngressSpec describes the Ingress the user wishes to exist.
+
+FIELDS:
+   backend	<Object>
+     A default backend capable of servicing requests that don't match any rule.
+     At least one of 'backend' or 'rules' must be specified. This field is
+     optional to allow the loadbalancer controller or defaulting logic to
+     specify a global default.
+
+   ingressClassName	<string>
+     IngressClassName is the name of the IngressClass cluster resource. The
+     associated IngressClass defines which controller will implement the
+     resource. This replaces the deprecated `kubernetes.io/ingress.class`
+     annotation. For backwards compatibility, when that annotation is set, it
+     must be given precedence over this field. The controller may emit a warning
+     if the field and annotation have different values. Implementations of this
+     API should ignore Ingresses without a class specified. An IngressClass
+     resource may be marked as default, which can be used to set a default value
+     for this field. For more information, refer to the IngressClass
+     documentation.
+
+   rules	<[]Object>
+     A list of host rules used to configure the Ingress. If unspecified, or no
+     rule matches, all traffic is sent to the default backend.
+
+   tls	<[]Object>
+     TLS configuration. Currently the Ingress only supports a single TLS port,
+     443. If multiple members of this list specify different hosts, they will be
+     multiplexed on the same port according to the hostname specified through
+     the SNI TLS extension, if the ingress controller fulfilling the ingress
+     supports SNI.			
 			]]>
 			</screen>
 		</section>

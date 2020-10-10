@@ -621,6 +621,14 @@ $ docker push 10.0.0.240/busybox
 				</screen>
 				<!-- minikube addons enable registry docker tag ubuntu $(minikube ip):5000/ubuntu docker push $(minikube ip):5000/ubuntu -->
 			</section>
+			<section>
+				<title>启用 ingress</title>
+				<screen>
+				<![CDATA[
+iMac:kubernetes neo$ minikube addons enable ingress				
+				]]>
+				</screen>
+			</section>
 		</section>
 	</section>
 	<section id="minikube.faq">

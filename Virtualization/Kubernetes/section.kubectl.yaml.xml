@@ -177,6 +177,22 @@ spec:
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>健康状态检查</title>
+			<para>就绪探针</para>
+			<screen>
+			<![CDATA[
+        readinessProbe: 
+          exec:
+            command:
+            - cat
+            - /tmp/healthy
+          initialDelaySeconds: 10         #10s之后开始第一次探测
+          periodSeconds: 5                #第一次探测之后每隔5s探测一次			
+			]]>
+			</screen>
+			<para></para>
+		</section>
 	</section>
 
 	<section id="Service">
@@ -641,7 +657,149 @@ spec:
 			</screen>
 		</section>
 	</section>
-	<section>
+	<section id="">
+		<title>Volume</title>
+		<section>
+			<title>local</title>
+			<screen>
+			<![CDATA[
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: example-pv
+spec:
+  capacity:
+    storage: 100Gi
+  # volumeMode field requires BlockVolume Alpha feature gate to be enabled.
+  volumeMode: Filesystem
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: local-storage
+  local:
+    path: /mnt/disks/ssd1
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - example-node			
+			]]>
+			</screen>
+			<section>
+				<title>案例</title>
+				<screen>
+				<![CDATA[
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: local-volume
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: netkiller-local-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-volume
+  local:
+    path: /tmp/neo
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - minikube
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: netkiller-pvc
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: local-volume
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: busybox
+  namespace: default
+spec:
+  containers:
+    - name: busybox
+      image: busybox:latest
+      # image: registry.netkiller.cn:5000/netkiller/welcome:latest
+      imagePullPolicy: IfNotPresent
+      command:
+        - sleep
+        - "3600"
+      volumeMounts:
+      - mountPath: "/srv"
+        name: mypd
+  restartPolicy: Always
+  volumes:
+    - name: mypd
+      persistentVolumeClaim:
+        claimName: netkiller-pvc			
+				]]>
+				</screen>
+				<para>部署 POD</para>
+				<screen>
+				<![CDATA[
+iMac:kubernetes neo$ kubectl create -f example/volume/local.yaml 
+storageclass.storage.k8s.io/local-volume created
+persistentvolume/netkiller-local-pv created
+persistentvolumeclaim/netkiller-pvc created
+pod/busybox created				
+				]]>
+				</screen>
+				<para>查看POD状态</para>
+				<screen>
+				<![CDATA[
+iMac:kubernetes neo$ kubectl get pod
+NAME      READY   STATUS    RESTARTS   AGE
+busybox   1/1     Running   0          2m28s				
+				]]>
+				</screen>
+				<para>进入POD查看local卷的挂载情况，同时创建一个测试文件。</para>
+				<screen>
+				<![CDATA[
+iMac:kubernetes neo$ kubectl exec -it busybox sh
+kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl exec [POD] -- [COMMAND] instead.
+/ # mount | grep /srv
+tmpfs on /srv type tmpfs (rw)
+
+/ # echo helloworld > /srv/netkiller
+/ # cat /srv/netkiller 
+helloworld
+				]]>
+				</screen>
+				<para>进入宿主主机查看挂载目录</para>
+				<screen>
+				<![CDATA[
+$ cat /tmp/neo/netkiller 
+helloworld
+				]]>
+				</screen>
+			</section>
+		</section>
+	</section>
+	
+	<section id="Job">
 		<title>Job</title>
 		<section>
 			<title>执行单词任务</title>
@@ -703,6 +861,173 @@ spec:
             - -c
             - date; echo Hello from the Kubernetes cluster
           restartPolicy: OnFailure			
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section id="Ingress">
+		<title>Ingress</title>
+		<section>
+			<title>端口</title>
+			<screen>
+			<![CDATA[
++----------+  Ingress   +---------+    Pod    +----------+
+| internet | ---------> | Service | --------> | Pod Node |
++----------+            +---------+           +----------+
+			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: springboot
+spec:
+  backend:
+    service:
+      name: springboot
+      port: 
+        number: 80			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>URI 规则</title>
+			<screen>
+			<![CDATA[
+                  Ingress	 / ---> /api --> api-service:8080		
+www.netkiller.cn ---------> |  ---> /usr --> usr-service:8080
+                             \ ---> /img --> img-service:8080			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: uri-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: www.netkiller.cn
+    http:
+      paths:
+      - path: /api
+        backend:
+          serviceName: api-service
+          servicePort: 8080
+      - path: /usr
+        backend:
+          serviceName: usr-service
+          servicePort: 8080		
+      - path: /img
+        backend:
+          serviceName: img-service
+          servicePort: 8080		
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>vhost 虚拟主机</title>
+			<screen>
+			<![CDATA[
+www.netkiller.cn --|     Ingress     |-> www.netkiller.cn www:80
+                   | --------------> |
+img.netkiller.cn --|                 |-> img.netkiller.cn img:80			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: vhost-ingress
+spec:
+  rules:
+  - host: www.netkiller.cn
+    http:
+      paths:
+      - backend:
+          serviceName: www
+          servicePort: 80
+  - host: img.netkiller.cn
+    http:
+      paths:
+      - backend:
+          serviceName: img
+          servicePort: 80			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>rewrite</title>
+			<screen>
+			<![CDATA[
+http://www.netkiller.cn/1100 => /article/1100			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress			
+metadata:
+  name: rewrite-ingress
+  annotations: 
+    nginx.ingress.kubernetes.io/rewrite-target: /article/$1
+spec:
+  rules:
+  - host: www.netkiller.cn
+    http:
+      paths:
+        # 可以有多个（可以正则）
+        - path: /($/.*)
+          backend:
+            serviceName: article
+            servicePort: 80	
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>annotations 配置</title>
+			<section>
+				<title>HTTP 跳转到 HTTPS</title>
+				<screen>
+				<![CDATA[
+# 该注解只在配置了HTTPS之后才会生效进行跳转
+nginx.ingress.kubernetes.io/ssl-redirect: "true"
+
+# 强制跳转到https，不论是否配置了https证书
+nginx.ingress.kubernetes.io/force-ssl-redirect: "true"				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>server-snippet</title>
+				<para>server-snippet 可以让你直接编排 Nginx 配置</para>
+				<screen>
+				<![CDATA[
+nginx.ingress.kubernetes.io/server-snippet: |
+    rewrite /api/($|.*) /api/v2/$1 break;
+    rewrite /img/($|.*) /img/thumbnail/$1 break;
+				]]>
+				</screen>
+			</section>
+			
+		</section>
+		<section>
+			<title>管理 Ingress</title>
+			<screen>
+			<![CDATA[
+# 查看已有配置
+kubectl describe ingress test
+
+# 修改配置
+kubectl edit ingress test	
+
+# 来重新载入配置
+kubectl replace -f ingress.yaml		
 			]]>
 			</screen>
 		</section>
