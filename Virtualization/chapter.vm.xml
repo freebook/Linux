@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="">
+	<title>Virtual Machine(虚拟机)</title>
+	&section.vm.kvm.xml;
+	&section.vm.xen.xml;
+	&section.vm.vagrant.xml;
+	&section.vm.web.xml;
+</chapter>

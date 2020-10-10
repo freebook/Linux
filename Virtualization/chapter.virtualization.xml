@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 	&chapter.docker.xml;
 	&chapter.kubernetes.xml;
-	&chapter.kvm.xml;
-	&chapter.xen.xml;
-	&chapter.vagrant.xml;
-	&chapter.vm.web.xml;
+	&chapter.vm.xml;

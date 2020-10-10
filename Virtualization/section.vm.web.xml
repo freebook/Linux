@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="vm.ui">
-	<title>虚拟机界面</title>
-
+<section id="vm.ui">
+	<title>虚拟机管理</title>
+	&section.vm.proxmox.xml;
 	<section id="openstack">
 		<title>OpenStack</title>
 	</section>
@@ -14,5 +14,5 @@
 	<section id="opennebula">
 		<title>OpenNEbula</title>
 	</section>
-	&section.proxmox.xml;
-</chapter>
+	
+</section>

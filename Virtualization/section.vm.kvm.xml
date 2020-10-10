@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="index"><?dbhtml dir="kvm" ?>
+<section id="index"><?dbhtml dir="kvm" ?>
 	<title>Kernel-based Virtual Machine(KVM)</title>
-	<chapterinfo>
+	<info>
 		<keywordset>
 			<keyword>kvm,vmx,svm,qemu-img,virsh,brctl,tunctl,qemu-kvm,virt-manager,iso</keyword>
 		</keywordset>
-	</chapterinfo>
+	</info>
 	<para>http://wiki.centos.org/HowTos/KVM</para>
 	<section id="kvm.ins">
 		<title>kvm install usage yum</title>
@@ -330,4 +330,4 @@ Switching to clocksource kvm-clock
 			</screen>
 		</section>
 	</section>
-</chapter>
+</section>

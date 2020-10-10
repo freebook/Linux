@@ -1,4 +1,4 @@
-<chapter id="index"><?dbhtml dir="xen" ?>
+<section id="index"><?dbhtml dir="xen" ?>
 	<title>Xen</title>
 	<section id="xen.ins">
 		<title>install</title>
@@ -68,9 +68,9 @@ vif = [ "mac=00:16:36:5d:41:d0,bridge=xenbr0,script=vif-bridge" ]
 [root@development ~]# mv /etc/xen/centos /etc/xen/auto
 		</screen>
 	</section>
-</chapter>
+</section>
 
-<chapter id="index"><?dbhtml dir="openvz" ?>
+<section id="index"><?dbhtml dir="openvz" ?>
 	<title>OpenVZ</title>
 	<chapterinfo>
 		<keywordset>
@@ -319,4 +319,4 @@ vzyum 100 install yum
 		</procedure>
 		<para>另外,如果vzctl enter进入节点时出现错误，或无法ssh节点，需要运行以下命令： vzctl exec 112 "cd /dev; /sbin/MAKEDEV pty; /sbin/MAKEDEV tty; /sbin/MAKEDEV generic"</para>
 	</section>
-</chapter>
+</section>

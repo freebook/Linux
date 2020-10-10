@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!ENTITY chapter.virtualization.xml		SYSTEM "chapter.virtualization.xml">
-<!ENTITY chapter.xen.xml				SYSTEM "chapter.xen.xml">
-<!ENTITY chapter.kvm.xml				SYSTEM "chapter.kvm.xml">
-<!ENTITY chapter.vagrant.xml			SYSTEM "chapter.vagrant.xml">
+<!ENTITY chapter.vm.xml					SYSTEM "chapter.vm.xml">
+<!ENTITY section.vm.xen.xml				SYSTEM "section.vm.xen.xml">
+<!ENTITY section.vm.kvm.xml				SYSTEM "section.vm.kvm.xml">
+<!ENTITY section.vm.vagrant.xml			SYSTEM "section.vm.vagrant.xml">
+<!ENTITY section.vm.proxmox.xml			SYSTEM "section.vm.proxmox.xml">
+<!ENTITY section.vm.web.xml				SYSTEM "section.vm.web.xml">
 
 <!ENTITY chapter.docker.xml				SYSTEM "Docker/chapter.docker.xml">
 <!ENTITY section.docker.install.xml		SYSTEM "Docker/section.docker.install.xml">
@@ -36,6 +39,3 @@
 <!ENTITY section.kubeapps.xml			SYSTEM "Kubernetes/section.kubeapps.xml">
 <!ENTITY section.kubectl.example.xml	SYSTEM "Kubernetes/section.kubectl.example.xml">
 <!ENTITY section.kubectl.yaml.xml		SYSTEM "Kubernetes/section.kubectl.yaml.xml">
-
-<!ENTITY section.proxmox.xml			SYSTEM "section.proxmox.xml">
-<!ENTITY chapter.vm.web.xml				SYSTEM "chapter.vm.web.xml">
