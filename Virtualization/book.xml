@@ -30,7 +30,7 @@
 	xmlns="http://docbook.org/ns/docbook" xml:lang="zh-cn">
 	<info>
 		<title>Netkiller Virtualization 手札</title>
-		<subtitle>Docker, KVM, OpenVZ, Vagrant, VirtualBox ...</subtitle>
+		<subtitle>Docker, Kubernetes, KVM, OpenVZ, Vagrant, VirtualBox ...</subtitle>
 
 		&book.info.author.xml;
 
@@ -39,6 +39,15 @@
 			<holder>Netkiller(Neo Chan). All rights reserved.</holder>
 		</copyright>
 
+		<cover>
+			<para role="tagline">Netkiller Virtualization 手札</para>
+			<mediaobject>
+				<imageobject>
+					<imagedata fileref="images/cover.png" />
+				</imageobject>
+			</mediaobject>
+		</cover>
+		
 		<publisher>
 			<publishername>Neo</publishername>
 			<address><street></street></address>

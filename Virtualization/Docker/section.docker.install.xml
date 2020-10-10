@@ -4,7 +4,7 @@
 <section id="install">
 	<title>Installation</title>
 	<section>
-		<title>CentSO 8</title>
+		<title>CentOS 8</title>
 		<para>下载 containerd.io <ulink url="https://download.docker.com/linux/centos/7/x86_64/stable/Packages/" /></para>
 		<screen>
 		<![CDATA[
