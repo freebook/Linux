@@ -27,13 +27,49 @@ Run 'docker service COMMAND --help' for more information on a command.
 		<title>创建 Service</title>
 		<screen>
 		<![CDATA[
+$ docker service create \
+  --replicas 10 \
+  --name ping_service \
+  alpine ping www.netkiller.cn		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+$ docker service create --replicas 1 --name my-prometheus \
+    --mount type=bind,source=/tmp/prometheus.yml,destination=/etc/prometheus/prometheus.yml \
+    --publish published=9090,target=9090,protocol=tcp \
+    prom/prometheus		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
 iMac:redis neo$ docker stack deploy -c redis.yml redis
 Creating service redis_redis
 		]]>
 		</screen>
+		<tip>
+			<para>--mount 不允许使用相对路径，小技巧 `pwd`/prometheus.yml</para>
+			<screen>
+		<![CDATA[
+docker service create --replicas 1 --name my-prometheus \
+    --mount type=bind,source=`pwd`/prometheus.yml,destination=/etc/prometheus/prometheus.yml \
+    --publish published=9090,target=9090,protocol=tcp \
+    prom/prometheus			
+		
+		]]>
+			</screen>
+		</tip>
 	</section>
 	<section>
 		<title>删除 Service</title>
+		<para></para>
+		<screen>
+		<![CDATA[
+iMac:docker neo$ docker service rm prometheus
+prometheus		
+		]]>
+		</screen>
+		<para>如果是 stack 部署的也可以这样删除</para>
 		<screen>
 		<![CDATA[
 iMac:redis neo$ docker stack rm redis

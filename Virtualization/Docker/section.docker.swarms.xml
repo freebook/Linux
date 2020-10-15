@@ -4,8 +4,6 @@
 	<para>Swarm 是一组运行着Docker的机器。经过这些配置后，将节点加入到一个集群中，你仍然像之前那样运行Docker命令一样管理集群上的容器。这些命令由swarm manager在集群上执行。这些机器可以是真实的机器，也可以是虚拟机。机器加入到一个swarm后，可以称这些机器为节点(node)。</para>
 	<section>
 		<title>管理 Swarms</title>
-
-
 		<para>帮助命令</para>
 		<screen>
 	<![CDATA[
@@ -201,9 +199,39 @@ docker swarm leave --force
 	&section.docker.service.xml;
 	&section.docker.network.xml;
 	<section>
-		<title>共享卷</title>
-		<para>创建 NFS 数据共享卷</para>
+		<title>swarm 卷管理</title>
+		<para>swarm 不能使用 -v /mysite:/usr/share/nginx/html 挂载卷，系统会提示</para>
 		<screen>
+		<![CDATA[
+unknown shorthand flag: 'v' in -v
+See 'docker service create --help'.		
+		]]>
+		</screen>
+		<section>
+			<title>Host Volumes</title>
+			<screen>
+			<![CDATA[
+$ docker service create --name nginx \
+  --mount type=bind,source=`pwd`/static-site,target=/usr/share/nginx/html \
+  -p 80:80 nginx			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Named Volumes</title>
+			<screen>
+			<![CDATA[
+$ docker service create --name nginx \
+  --mount type=volume,source=web,target=/usr/share/nginx/html \
+  -p 80:80 nginx			
+			]]>
+			</screen>
+		</section>
+
+		<section>
+			<title>共享卷</title>
+			<para>创建 NFS 数据共享卷</para>
+			<screen>
 		<![CDATA[
 docker volume create --driver local \
     --opt type=nfs4 \
@@ -211,15 +239,16 @@ docker volume create --driver local \
     --opt device=:<Shared-Path> \
     share		
 		]]>
-		</screen>
-		<para>创建服务副本</para>
-		<screen>
+			</screen>
+			<para>创建服务副本</para>
+			<screen>
 		<![CDATA[
 docker service create \
   --mount type=volume,source=<Volume-Name>,destination=<Container-Path> \
   --replicas 2 \
-  <Image>		
+  <Image>
 		]]>
-		</screen>
+			</screen>
+		</section>
 	</section>
 </section>
