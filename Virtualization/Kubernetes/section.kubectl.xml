@@ -295,6 +295,24 @@ To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 			</screen>
 		</section>
 	</section>
+	<section id="kubectl.namespace">
+		<title>namespace 命名空间</title>
+		<screen>
+		<![CDATA[
+$ kubectl create namespace new-namespace		
+		]]>
+		</screen>
+	</section>
+
+	<section id="kubectl.label">
+		<title>label 标签</title>
+		<para>label 用于识别对象，管理关联关系等目的，如Pod、Service、Deployment、Node的关联。</para>
+		<screen>
+		<![CDATA[
+kubectl label nodes <node-name> <label-key>=<label-value>		
+		]]>
+		</screen>
+	</section>
 	<section id="kubectl.pods">
 		<title>pods</title>
 		<para></para>
@@ -633,8 +651,8 @@ kubectl create serviceaccount my-service-account
 			</screen>
 		</section>
 	</section>
-	
-	
+
+
 	<section id="kubectl.deployment">
 		<title>部署管理</title>
 		<screen>
@@ -672,7 +690,8 @@ kubectl scale deployment springbootdemo --replicas=4
 kubectl scale deployment nginx --replicas=10	
 		]]>
 		</screen>
-	</section><section id="kubectl.logs">
+	</section>
+	<section id="kubectl.logs">
 		<title>查看 pod 日志</title>
 		<screen>
 		<![CDATA[
@@ -716,7 +735,7 @@ Address: 185.199.109.153
 *** Can't find www.netkiller.cn: No answer
 		]]>
 		</screen>
-		
+
 	</section>
 	<section id="kubectl.edit">
 		<title>edit</title>
