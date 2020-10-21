@@ -1347,4 +1347,15 @@ FIELDS:
 			</screen>
 		</section>
 	</section>
+	<section>
+		<title>操作系统</title>
+		<section>
+			<title>sysctls</title>
+			<screen>
+			<![CDATA[
+kubelet --experimental-allowed-unsafe-sysctls 'kernel.msg*,kernel.shmmax,kernel.sem,net.ipv4.route.min_pmtu'
+			]]>
+			</screen>
+		</section>
+	</section>
 </section>

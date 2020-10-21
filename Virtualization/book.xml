@@ -30,7 +30,7 @@
 	xmlns="http://docbook.org/ns/docbook" xml:lang="zh-cn">
 	<info>
 		<title>Netkiller Virtualization 手札</title>
-		<subtitle>Docker, Kubernetes, KVM, OpenVZ, Vagrant, VirtualBox ...</subtitle>
+		<subtitle>Docker, Kubernetes, KVM, Vagrant, OpenVZ, VirtualBox ...</subtitle>
 
 		&book.info.author.xml;
 

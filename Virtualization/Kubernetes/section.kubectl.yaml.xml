@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="kubectl.yaml">
 	<title>Kubectl YAML</title>
+	<section id="ServiceAccount">
+		<title>ServiceAccount</title>
+		<screen>
+		<![CDATA[
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+ labels:
+   app: elasticsearch
+ name: elasticsearch
+ namespace: elastic		
+		]]>
+		</screen>
+		<section>
+			<title></title>
+		</section>
+	</section>
+
 	<section id="Namespace">
 		<title>创建命名空间</title>
 		<para> 创建 jenkins-namespace.yaml</para>
@@ -193,10 +211,87 @@ spec:
 			</screen>
 			<para></para>
 		</section>
-		<section>
-			<title></title>
-		</section>
+		<section id="securityContext">
+			<title>securityContext</title>
+			<section>
+				<title>sysctls</title>
+				<para></para>
+				<screen>
+				<![CDATA[
+kubelet --allowed-unsafe-sysctls \
+  'kernel.msg*,net.core.somaxconn' ...				
+				]]>
+				</screen>
+				<screen>
+				<![CDATA[
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sysctl-example
+spec:
+  securityContext:
+    sysctls:
+    - name: kernel.shm_rmid_forced
+      value: "0"
+    - name: net.core.somaxconn
+      value: "1024"
+    - name: kernel.msgmax
+      value: "65536"				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>runAsUser</title>
+				<para>allowPrivilegeEscalation 表示是否继承父进程权限，runAsUser 表示使用 UID 1000 的用户运行</para>
+				<screen>
+				<![CDATA[
+apiVersion: v1
+kind: Pod
+metadata:
+  name: security-context-demo
+spec:
+  securityContext:
+    runAsUser: 1000
+  containers:
+  - name: sec-ctx-demo
+    image: busybox:latest
+    securityContext:
+      runAsUser: 1000
+      allowPrivilegeEscalation: false				
+				]]>
+				</screen>
+			</section>
 
+			<section>
+				<title>security.alpha.kubernetes.io/sysctls</title>
+				<para>security.alpha.kubernetes.io/sysctls</para>
+				<screen>
+			<![CDATA[
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sysctl-example
+  annotations:
+    security.alpha.kubernetes.io/sysctls: kernel.shm_rmid_forced=1
+spec:			
+			]]>
+				</screen>
+				<para>unsafe-sysctls</para>
+				<screen>
+			<![CDATA[
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sysctl-example
+  annotations:
+    security.alpha.kubernetes.io/unsafe-sysctls: net.core.somaxconn=65535                 #使用unsafe sysctl，设置最大连接数
+spec:
+  securityContext:
+    privileged: true                                                                      #开启privileged权限			
+			]]>
+				</screen>
+			</section>
+		</section>
 	</section>
 
 	<section id="Service">
@@ -871,6 +966,8 @@ spec:
 	</section>
 	<section id="Ingress">
 		<title>Ingress</title>
+		<para>正常情况 Service 只是暴露了端口，这个端口是可以对外访问的，但是80端口只有一个，很多 Service 都要使用 80端口，这时就需要使用虚拟主机技术。</para>
+		<para>多个 Service 共同使用一个 80 端口，通过域名区分业务。这就是 Ingress 存在的意义。</para>
 		<section>
 			<title>端口</title>
 			<screen>

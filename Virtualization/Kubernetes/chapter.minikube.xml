@@ -346,6 +346,14 @@ minikube start --vm-driver=virtualbox \
 				]]>
 				</screen>
 			</section>
+			<section>
+				<title>Enabling Unsafe Sysctls</title>
+				<screen>
+				<![CDATA[
+minikube start --extra-config="kubelet.allowed-unsafe-sysctls=kernel.msg*,net.core.somaxconn".
+				]]>
+				</screen>
+			</section>
 		</section>
 		<section id="minikube.stop">
 			<title>停止 minikube</title>

@@ -309,7 +309,14 @@ To connect to your database from outside the cluster execute the following comma
 			</screen>
 		</section>
 	</section>
-
+	<section>
+		<title>elastic</title>
+		<screen>
+		<![CDATA[
+helm repo add elastic https://helm.elastic.co		
+		]]>
+		</screen>
+	</section>
 	<section id="helm.faq">
 		<title>Helm Faq</title>
 	</section>

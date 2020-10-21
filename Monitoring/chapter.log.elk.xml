@@ -916,8 +916,8 @@ output{
 			</section>
 		</section>
 	</section>
-	<section id="beta"><?dbhtml dir="elk" ?>
-		<title>Beta</title>
+	<section id="beats"><?dbhtml dir="elk" ?>
+		<title>Beats</title>
 		<section id="beta.setup">
 			<title>安装 Beta</title>
 			<section id="6.x">
@@ -937,7 +937,7 @@ curl -s https://raw.githubusercontent.com/oscm/shell/master/search/elastic/beats
 			</section>
 		</section>
 		<section id="filebeat">
-			<title>filebeat</title>
+			<title>Filebeat</title>
 		</section>
 	</section>
 	<section id="faq">

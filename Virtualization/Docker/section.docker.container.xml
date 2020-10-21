@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="container">
 	<title>容器</title>
-	<section>
+	<section id="container.ls">
 		<title>查看容器</title>
 		<screen>
 		<![CDATA[
@@ -9,8 +9,8 @@ iMac:netkiller neo$ docker container ls
 		]]>
 		</screen>
 	</section>
-	
-	<section>
+
+	<section id="container.run">
 		<title>启动与终止容器</title>
 		<screen>
 			<![CDATA[
@@ -74,7 +74,7 @@ $ sudo docker logs insane_babbage
 		</screen>
 		<para>注意：守护进程在后台运行，所以无输出，只能通过docker logs 命令查看</para>
 	</section>
-	<section>
+	<section id="container.exec">
 		<title>进入容器</title>
 		<screen>
 			<![CDATA[
@@ -91,7 +91,7 @@ bin  boot  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  s
 			]]>
 		</screen>
 	</section>
-	<section>
+	<section id="container.export">
 		<title>导出和导入容器</title>
 		<section>
 			<title>Ubuntu</title>
@@ -143,7 +143,7 @@ registry            latest              7b76bd807a47        11 seconds ago      
 			</screen>
 		</section>
 	</section>
-	<section id="kill">
+	<section id="container.kill">
 		<title>停止所有容器</title>
 		<para>杀死所有正在运行的容器</para>
 		<screen>
@@ -152,7 +152,7 @@ docker kill $(docker ps -a -q)
 			]]>
 		</screen>
 	</section>
-	<section>
+	<section id="container.rm">
 		<title>删除容器</title>
 		<para>使用 docker rm 来删除一个处于终止状态的容器。</para>
 		<screen>
@@ -183,20 +183,90 @@ docker rm $(docker ps -a -q)
 			]]>
 		</screen>
 	</section>
-	<section>
-		<title>向 /etc/hosts 文件内添加主机名</title>
+	<section id="container.log-driver">
+		<title>log-driver</title>
+		<para>日志发送到 fluentd</para>
 		<screen>
 		<![CDATA[
-docker run -it --add-host=db.netkiller.cn:172.16.18.80 ubuntu cat /etc/hosts		
+docker run --log-driver=fluentd --log-opt fluentd-address=192.168.2.5:24220 ubuntu echo "Hello world"		
 		]]>
 		</screen>
 	</section>
-	<section>
-		<title>设置环境变量</title>
-		<screen>
+	<section id="container.system">
+		<title>操作系统</title>
+		<section id="container.env">
+			<title>设置环境变量</title>
+			<screen>
 		<![CDATA[
 iMac:welcome neo$ docker run 127.0.0.1:5000/netkiller/welcome -e JAVA_OPTS="-server -Xms512m -Xmx4096m"		
 		]]>
-		</screen>
+			</screen>
+		</section>
+		<section>
+			<title>/etc/hosts 配置</title>
+			<screen>
+		<![CDATA[
+# docker run --add-host=docker:10.180.0.1 --rm -it debian
+		]]>
+			</screen>
+			<para>向 /etc/hosts 文件内添加主机名</para>
+			<screen>
+		<![CDATA[
+docker run -it --add-host=db.netkiller.cn:172.16.18.80 ubuntu cat /etc/hosts		
+		]]>
+			</screen>
+		</section>
+		<section id="sysctl">
+			<title>sysctl</title>
+			<screen>
+		<![CDATA[
+$ docker run --sysctl net.ipv4.ip_forward=1 someimage		
+		]]>
+			</screen>
+			<screen>
+			<![CDATA[
+docker run -itd --restart=always --net=host \
+--name=centos01 --hostname=centos01 \
+--sysctl kernel.msgmnb=13107200 \
+--sysctl kernel.msgmni=256 \
+--sysctl kernel.msgmax=65536 \
+--sysctl kernel.shmmax=69719476736 \
+--sysctl kernel.sem='500 256000 250 1024' \
+-v /mnt/ssd:/var/lib/www \
+centos:latest /bin/bash
+
+docker exec centos01 sysctl -a |grep -E \
+'kernel.msgmnb|kernel.msgmni|kernel.msgmax|kernel.shmmax|kernel.sem'			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>ulimits</title>
+			<para>查看 ulimit 设置</para>
+			<screen>
+		<![CDATA[
+$ docker run --ulimit nofile=1024:1024 --rm debian sh -c "ulimit -n"
+		]]>
+			</screen>
+			<screen>
+		<![CDATA[
+$ docker run -it --ulimit as=1024 fedora /bin/bash
+$ docker run -d -u daemon --ulimit nproc=3 busybox top
+		]]>
+			</screen>
+			<screen>
+		<![CDATA[
+docker run -d --ulimit nofile=20480:40960 nproc=1024:2048 nginx		
+		]]>
+			</screen>
+		</section>
 	</section>
+<!-- 	<section id="container.add-host">
+
+	</section>
+
+	<section id="container.ulimit">
+		<title>ulimit 设置</title>
+
+	</section> -->
 </section>
