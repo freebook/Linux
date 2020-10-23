@@ -164,6 +164,34 @@ docker history docker.io/mysql:5.7
 docker history --no-trunc docker.io/mysql:5.7		
 		]]>
 		</screen>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-Neo ~ % docker history docker.elastic.co/kibana/kibana:7.9.2
+IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT
+ba296c26886a        4 weeks ago         /bin/sh -c #(nop)  CMD ["/usr/local/bin/kiba…   0B                  
+<missing>           4 weeks ago         /bin/sh -c #(nop)  ENTRYPOINT ["/usr/local/b…   0B                  
+<missing>           4 weeks ago         /bin/sh -c #(nop)  LABEL org.label-schema.sc…   0B                  
+<missing>           4 weeks ago         /bin/sh -c #(nop)  USER kibana                  0B                  
+<missing>           4 weeks ago         /bin/sh -c groupadd --gid 1000 kibana && use…   360kB               
+<missing>           4 weeks ago         /bin/sh -c find / -xdev -perm -4000 -exec ch…   484kB               
+<missing>           4 weeks ago         /bin/sh -c chmod g+ws /usr/share/kibana && f…   0B                  
+<missing>           4 weeks ago         /bin/sh -c #(nop) COPY --chown=1000:0file:49…   9.69kB              
+<missing>           4 weeks ago         /bin/sh -c #(nop) COPY --chown=1000:0file:ea…   234B                
+<missing>           4 weeks ago         /bin/sh -c #(nop)  ENV PATH=/usr/share/kiban…   0B                  
+<missing>           4 weeks ago         /bin/sh -c #(nop)  ENV ELASTIC_CONTAINER=true   0B                  
+<missing>           4 weeks ago         /bin/sh -c ln -s /usr/share/kibana /opt/kiba…   17B                 
+<missing>           4 weeks ago         /bin/sh -c #(nop) WORKDIR /usr/share/kibana     0B                  
+<missing>           4 weeks ago         /bin/sh -c #(nop) COPY --chown=1000:0dir:e8c…   941MB               
+<missing>           4 weeks ago         /bin/sh -c chmod +x /usr/local/bin/dumb-init    54.7kB              
+<missing>           4 weeks ago         /bin/sh -c echo "37f2c1f0372a45554f1b89924fb…   0B                  
+<missing>           4 weeks ago         /bin/sh -c curl -L -o /usr/local/bin/dumb-in…   75.2kB              
+<missing>           4 weeks ago         /bin/sh -c yum update -y && yum install -y f…   31.1MB              
+<missing>           4 weeks ago         /bin/sh -c #(nop)  EXPOSE 5601                  0B                  
+<missing>           2 months ago        /bin/sh -c #(nop)  CMD ["/bin/bash"]            0B                  
+<missing>           2 months ago        /bin/sh -c #(nop)  LABEL org.label-schema.sc…   0B                  
+<missing>           2 months ago        /bin/sh -c #(nop) ADD file:61908381d3142ffba…   203MB  		
+		]]>
+		</screen>
 	</section>
 		&section.docker.dockerfile.xml;
 </section>

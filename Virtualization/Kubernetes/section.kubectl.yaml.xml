@@ -1118,6 +1118,128 @@ nginx.ingress.kubernetes.io/server-snippet: |
 
 		</section>
 		<section>
+			<title>金丝雀发布（灰度发布）</title>
+			<para>三种annotation按匹配优先级顺序：</para>
+			<screen>
+			<![CDATA[
+canary-by-header > canary-by-cookie > canary-weight			
+			]]>
+			</screen>
+			<section>
+				<title>准备服务</title>
+				<screen>
+				<![CDATA[
+# Release Version
+apiVersion: v1
+kind: Service
+metadata:
+    name: hello-service
+    labels:
+    app: hello-service
+spec:
+ports:
+- port: 80
+    protocol: TCP
+selector:
+    app: hello-service
+---
+# canary Version
+apiVersion: v1
+kind: Service
+metadata:
+    name: canary-hello-service
+    labels:
+    app: canary-hello-service
+spec:
+ports:
+- port: 80
+    protocol: TCP
+selector:
+    app: canary-hello-service				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>方案一，权重分配</title>
+				<screen>
+				<![CDATA[
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: canary
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/canary: "true"
+    nginx.ingress.kubernetes.io/canary-weight: "30"
+spec:
+  rules:
+  - host: canary.netkiller.cn
+    http:
+      paths:
+      - backend:
+          serviceName: canary-hello-service 
+				]]>
+				</screen>
+				<para></para>
+				<screen>
+				<![CDATA[
+$ for i in $(seq 1 10); do curl http://canary.netkiller.cn; echo '\n'; done				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>通过HTTP头开启灰度发布</title>
+				<screen>
+				<![CDATA[
+annotations:
+  kubernetes.io/ingress.class: nginx
+  nginx.ingress.kubernetes.io/canary: "true"
+  nginx.ingress.kubernetes.io/canary-by-header: "canary"				
+				]]>
+				</screen>
+				<para></para>
+				<screen>
+				<![CDATA[
+$ for i in $(seq 1 5); do curl -H 'canary:always' http://canary.netkiller.cn; echo '\n'; done				
+				]]>
+				</screen>
+				<para></para>
+				<screen>
+				<![CDATA[
+annotations:
+  kubernetes.io/ingress.class: nginx
+  nginx.ingress.kubernetes.io/canary: "true"
+  nginx.ingress.kubernetes.io/canary-by-header: "canary"
+  nginx.ingress.kubernetes.io/canary-by-header-value: "true"				
+				]]>
+				</screen>
+				<para></para>
+				<screen>
+				<![CDATA[
+$ for i in $(seq 1 5); do curl -H 'canary:true' http://canary.netkiller.cn; echo '\n'; done						
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>通过 Cookie 开启</title>
+				<screen>
+				<![CDATA[
+annotations:
+  kubernetes.io/ingress.class: nginx
+  nginx.ingress.kubernetes.io/canary: "true"
+  nginx.ingress.kubernetes.io/canary-by-cookie: "canary"				
+				]]>
+				</screen>
+				<para></para>
+				<screen>
+				<![CDATA[
+$ for i in $(seq 1 5); do curl -b 'canary=always' http://canary.netkiller.cn; echo '\n'; done				
+				]]>
+				</screen>
+			</section>
+		</section>
+		
+		<section>
 			<title>管理 Ingress</title>
 			<screen>
 			<![CDATA[

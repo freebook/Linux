@@ -626,6 +626,19 @@ docker run -d -v /usr/local/etc/redis/redis.conf:/usr/local/etc/redis/redis.conf
 		]]>
 			</screen>
 		</section>
+		<section>
+			<title>事件信息</title>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~ % docker events
+2020-10-22T21:29:44.289075472+08:00 network create 8eab34642596e253eb51aa40cc4f5c4c14fb88f1bad7c8cbdeacc2ad411cdb44 (name=search_elastic, type=bridge)
+2020-10-22T21:29:44.304732058+08:00 volume create search_data01 (driver=local)
+2020-10-22T21:29:44.319023013+08:00 volume create search_data02 (driver=local)
+2020-10-22T21:29:44.331507541+08:00 volume create search_data03 (driver=local)
+2020-10-22T21:29:44.584989392+08:00 volume create search_data01 (driver=local)			
+			]]>
+			</screen>
+		</section>
 	</section>
 	&section.docker-compose.xml;
 </section>

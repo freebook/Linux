@@ -39,3 +39,4 @@
 <!ENTITY section.kubeapps.xml			SYSTEM "Kubernetes/section.kubeapps.xml">
 <!ENTITY section.kubectl.example.xml	SYSTEM "Kubernetes/section.kubectl.example.xml">
 <!ENTITY section.kubectl.yaml.xml		SYSTEM "Kubernetes/section.kubectl.yaml.xml">
+<!ENTITY section.istio.xml				SYSTEM "Kubernetes/section.istio.xml">

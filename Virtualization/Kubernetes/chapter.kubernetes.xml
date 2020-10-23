@@ -8,5 +8,6 @@
 	&section.helm.xml;
 	&section.kubectl.example.xml;
 	&section.kubectl.yaml.xml;
+	&section.istio.xml;
 	&section.kubeapps.xml;
 </chapter>

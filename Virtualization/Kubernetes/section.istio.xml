@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="istio">
+	<title>istio</title>
+	<para></para>
+	<section>
+		<title>启动 istio</title>
+		<para>下面的例子是在 default 命名空间启用 istio。</para>
+		<screen>
+		<![CDATA[
+$ kubectl label namespace default istio-injection=enabled
+namespace/default labeled		
+		]]>
+		</screen>
+	</section>
+	
+	<section>
+		<title>禁用 istio</title>
+		<para>如果在该namespace下创建pod，不想要使用istio-proxy，可以在创建的pod中annotations 配置项声明禁用 istio</para>
+		<screen>
+		<![CDATA[
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    sidecar.istio.io/inject: "false"		
+		]]>
+		</screen>	
+	</section>
+</section>

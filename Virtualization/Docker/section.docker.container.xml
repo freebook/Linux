@@ -261,12 +261,93 @@ docker run -d --ulimit nofile=20480:40960 nproc=1024:2048 nginx
 			</screen>
 		</section>
 	</section>
-<!-- 	<section id="container.add-host">
+	<section id="container.top">
+		<title>查看容器内运行的进程</title>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-Neo ~ % docker ps
+CONTAINER ID        IMAGE                                                 COMMAND                  CREATED             STATUS              PORTS                              NAMES
+a6e33697e4bb        docker.elastic.co/elasticsearch/elasticsearch:7.9.2   "/tini -- /usr/local…"   2 minutes ago       Up 2 minutes        9200/tcp, 9300/tcp                 es02
+598a6e61d4fc        docker.elastic.co/kibana/kibana:7.9.2                 "/usr/local/bin/dumb…"   2 minutes ago       Up 2 minutes        0.0.0.0:5601->5601/tcp             kibana
+bc125a658981        docker.elastic.co/elasticsearch/elasticsearch:7.9.2   "/tini -- /usr/local…"   2 minutes ago       Up 2 minutes        9200/tcp, 9300/tcp                 es03
+d027503bee4b        docker.elastic.co/elasticsearch/elasticsearch:7.9.2   "/tini -- /usr/local…"   2 minutes ago       Up 2 minutes        0.0.0.0:9200->9200/tcp, 9300/tcp   elasticsearch
 
+neo@MacBook-Pro-Neo ~ % docker top 598a6e61d4fc
+PID                 USER                TIME                COMMAND
+3077                1000                0:00                /usr/local/bin/dumb-init -- /usr/local/bin/kibana-docker
+3285                1000                1:58                /usr/share/kibana/bin/../node/bin/node /usr/share/kibana/bin/../src/cli --cpu.cgroup.path.override=/ --cpuacct.cgroup.path.override=/		
+		]]>
+		</screen>
 	</section>
 
-	<section id="container.ulimit">
-		<title>ulimit 设置</title>
-
-	</section> -->
+	<section id="container.update">
+		<title>更新容器资源配置</title>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-Neo ~ % docker update kibana --cpus 1
+kibana		
+		]]>
+		</screen>
+	</section>
+	<section id="container.wait">
+		<title>查看容器的退出状态</title>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-Neo ~ % docker wait a6e33697e4bb
+0
+		]]>
+		</screen>
+	</section>
+	<section id="container.pause">
+		<title>暂停与恢复容器</title>
+		<para>暂停容器运行</para>
+		<screen>
+		<![CDATA[
+docker pause a6e33697e4bb		
+		]]>
+		</screen>
+		<para>恢复容器运行</para>
+		<screen>
+		<![CDATA[
+docker unpause a6e33697e4bb
+		]]>
+		</screen>
+	</section>
+	<section id="container.diff">
+		<title>对比容器的变化</title>
+		<para>查看容器启动后，修改了镜像中哪些问题</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-Neo ~ % docker diff a6e33697e4bb
+C /tmp
+A /tmp/elasticsearch-14495251404334864644
+A /tmp/hsperfdata_elasticsearch
+A /tmp/hsperfdata_elasticsearch/6
+C /usr
+C /usr/share
+C /usr/share/elasticsearch
+C /usr/share/elasticsearch/config
+A /usr/share/elasticsearch/config/elasticsearch.keystore
+A /usr/share/elasticsearch/.cache
+A /usr/share/elasticsearch/.cache/JNA
+A /usr/share/elasticsearch/.cache/JNA/temp
+C /usr/share/elasticsearch/logs
+A /usr/share/elasticsearch/logs/gc.log
+A /usr/share/elasticsearch/logs/gc.log.00		
+		]]>
+		</screen>
+	</section>
+	<section id="container.stats">
+		<title>查看容器状态</title>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-Neo ~ % docker stats
+CONTAINER ID        NAME                CPU %               MEM USAGE / LIMIT     MEM %               NET I/O             BLOCK I/O           PIDS
+a6e33697e4bb        es02                0.68%               894.2MiB / 3.848GiB   22.69%              13.9MB / 6.95MB     98.9MB / 3.88MB     77
+598a6e61d4fc        kibana              0.95%               462.8MiB / 3.848GiB   11.74%              718kB / 13MB        409MB / 4.1kB       12
+bc125a658981        es03                2.67%               889.9MiB / 3.848GiB   22.58%              1.76MB / 5.79MB     48.5MB / 3.09MB     71
+d027503bee4b        elasticsearch       2.75%               928.4MiB / 3.848GiB   23.56%              24MB / 14.7MB       139MB / 8.57MB      75		
+		]]>
+		</screen>
+	</section>
 </section>
