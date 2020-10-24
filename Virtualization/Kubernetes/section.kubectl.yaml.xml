@@ -292,6 +292,15 @@ spec:
 				</screen>
 			</section>
 		</section>
+		<section>
+			<title>Taint（污点）和 Toleration（容忍）</title>
+			<screen>
+			<![CDATA[
+			
+			]]>
+			</screen>
+		</section>
+		
 	</section>
 
 	<section id="Service">

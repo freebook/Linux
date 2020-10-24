@@ -482,6 +482,107 @@ Events:
 		]]>
 			</screen>
 		</section>
+		<section>
+			<title>Taint（污点）和 Toleration（容忍）</title>
+			<para>其目的是分配 pod 在集群间的调度，Taint 和 toleration 相互配合，可以用来避免 pod 被分配到某个节点上。这跟节点亲和性作用相反。</para>
+			<para>给 node 节点设置 label，通过给 pod 设置 nodeSelector 将 pod 调度到匹配标签的节点上。</para>
+			<para>如果设置 toleration 应用于 pod 上，则表示 pod 可以被调度到 taint 的节点上。</para>
+			<section>
+				<title>Taint（污点）设置</title>
+				<para>设置污点: kubectl taint node [node] key=value:[effect]</para>
+				<orderedlist>
+					<title>effect 参数</title>
+					<listitem>NoSchedule ：不能被调度。</listitem>
+					<listitem>PreferNoSchedule：尽量不要调度。</listitem>
+					<listitem>NoExecute：不允许该节点有 Pod。</listitem>
+				</orderedlist>
+				<para>在 shenzhen 节点上设置Taint，键为key，值为value，effect是NoSchedule。</para>
+				<screen>
+				<![CDATA[
+kubectl taint nodes shenzhen key=value:NoSchedule
+				]]>
+				</screen>
+				<para>这意味着除非pod只有明确声明toleration可以容忍这个Taint，否则就不会被调度到该节点。</para>
+				<screen>
+				<![CDATA[
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-taints
+spec:
+  tolerations:
+  - key: "key"
+    operator: "Equal"
+    value: "value"
+    effect: "NoSchedule"
+  containers:
+    - name: pod-taints
+      image: busybox:latest				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>Toleration（容忍）调度</title>
+				<para>key 存在即可匹配</para>
+				<screen>
+				<![CDATA[
+spec:
+  tolerations:
+  - key: "key"
+    operator: "Exists"
+    effect: "NoSchedule"				
+				]]>
+				</screen>
+				<para>key 必须存在，并且值等 value</para>
+				<screen>
+				<![CDATA[
+spec:
+  tolerations:
+  - key: "key"
+    operator: "Equal"
+    value: "value"
+    effect: "NoSchedule"				
+				]]>
+				</screen>
+				<para>在pod上设置多个toleration：</para>
+				<screen>
+				<![CDATA[
+spec:				
+  tolerations:
+  - key: "key1"
+    operator: "Equal"
+    value: "value1"
+    effect: "NoSchedule"
+  - key: "key2"
+    operator: "Equal"
+    value: "value2"
+    effect: "NoExecute"				
+				]]>
+				</screen>
+				<para>如果给node加上Taint effect=NoExecute的，该节点上的没有设置toleration的pod都会被立刻驱逐，设置 tolerationSeconds 后会给 Pod 一个宽限期。</para>				
+				<screen>
+				<![CDATA[
+spec:		
+  tolerations:
+  - key: "key"
+    operator: "Equal"
+    value: "value"
+    effect: "NoSchedule"
+    tolerationSeconds: 3600
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>使用场景</title>
+				<para>例如有些节点上挂了SSD，给redis,mongodb,mysql 使用，有些节点上安装了显卡GPU。就可以使用 taint </para>
+				<screen>
+				<![CDATA[
+kubectl taint nodes shenzhen special=true:NoSchedule
+kubectl taint nodes guangdong special=true:PreferNoSchedule				
+				]]>
+				</screen>
+			</section>
+		</section>
 	</section>
 	<section id="kubectl.expose">
 		<title>expose</title>
