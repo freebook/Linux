@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="">
+<chapter id="monitor.dashboard"><!-- <?dbhtml dir="dashboard" ?> -->
 	<title>上一代监控系统</title>
 	<para>流行于2015年之前</para>
 	&chapter.cacti.xml;
@@ -7,8 +7,13 @@
 	&chapter.munin.xml;
 	&chapter.network.observium.xml;
 	&chapter.network.cluster.xml;
+	<section id="icinga">
+		<title>icinga</title>
+		<para>https://www.icinga.org/</para>
+	</section>
 	<section id="varnish">
 		<title>Varnish Dashboard</title>
 		<para>https://github.com/brandonwamboldt/varnish-dashboard</para>
 	</section>
+	&chapter.network.graphite.xml;
 </chapter>

@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!ENTITY chapter.monitor.xml 			SYSTEM "chapter.monitor.xml">
-<!ENTITY chapter.monitor.sms.xml		SYSTEM "chapter.monitor.sms.xml">
 
 <!ENTITY chapter.system.utility.xml		SYSTEM "chapter.system.utility.xml">
 <!ENTITY chapter.system.io.xml			SYSTEM "chapter.system.io.xml">
 <!ENTITY chapter.network.software.xml	SYSTEM "chapter.network.software.xml">
+<!ENTITY section.monitor.sms.xml		SYSTEM "section.monitor.sms.xml">
+<!ENTITY section.monitor.ipmi.xml		SYSTEM "section.monitor.ipmi.xml">
+<!ENTITY section.monitor.jvm.xml		SYSTEM "section.monitor.jvm.xml">
 
 <!ENTITY chapter.snmp.xml		 		SYSTEM "chapter.snmp.xml">
 <!ENTITY chapter.mrtg.xml				SYSTEM "chapter.mrtg.xml">
@@ -21,15 +23,14 @@
 <!ENTITY chapter.network.observium.xml	SYSTEM "chapter.network.observium.xml">
 <!ENTITY chapter.network.opentsdb.xml	SYSTEM "chapter.network.opentsdb.xml">
 <!ENTITY chapter.network.graphite.xml	SYSTEM "chapter.network.graphite.xml">
-<!ENTITY chapter.icinga.xml				SYSTEM "chapter.icinga.xml">
 <!ENTITY section.monitor.dashboard.xml	SYSTEM "section.monitor.dashboard.xml">
 
-<!ENTITY chapter.ipmi.xml			 	SYSTEM "chapter.ipmi.xml">
 <!ENTITY chapter.netflow.xml 			SYSTEM "chapter.netflow.xml">
 <!ENTITY chapter.log.xml		 		SYSTEM "chapter.log.xml">
 <!ENTITY chapter.log.web.xml			SYSTEM "chapter.log.web.xml">
 <!ENTITY chapter.log.flume.xml			SYSTEM "chapter.log.flume.xml">
 <!ENTITY chapter.log.elk.xml			SYSTEM "chapter.log.elk.xml">
-<!ENTITY chapter.jvm.xml		 		SYSTEM "chapter.jvm.xml">
 <!ENTITY chapter.zipkin.xml			 	SYSTEM "chapter.zipkin.xml">
+
 <!ENTITY chapter.prometheus.xml		 	SYSTEM "chapter.prometheus.xml">
+<!ENTITY section.prometheus.xml			SYSTEM "section.prometheus.xml">

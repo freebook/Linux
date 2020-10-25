@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 	&chapter.prometheus.xml;
 	&chapter.zabbix.xml;
+	&chapter.log.elk.xml;
 	&chapter.system.utility.xml;
 	&chapter.log.xml;
 	&section.monitor.dashboard.xml;
 	&chapter.bandwidth.xml;
 	&chapter.network.opentsdb.xml;
-	&chapter.network.graphite.xml;
-	&chapter.icinga.xml;
+
 	&chapter.zipkin.xml;

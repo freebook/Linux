@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="monitor.network">
+<chapter id="index"><?dbhtml dir="bandwidth" ?>
 	<title>网络监控</title>
 	&chapter.snmp.xml;
 	<section id="bandwidth">

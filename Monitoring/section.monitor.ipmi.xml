@@ -1,38 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="ipmi">
+<section id="ipmi">
 	<title>IPMI (Intelligent Platform Management Interface)</title>
-	<chapterinfo>
+	<sectioninfo>
 		<keywordset>
 			<keyword>dell,idrac,bmc</keyword>
 			<keyword>ipmi,openipmi,freeipmi,ipmitool</keyword>
 			<keyword>bios</keyword>
 		</keywordset>
-	</chapterinfo>
-	<screen>
+	</sectioninfo>
+	<screen><![CDATA[
 OpenIPMI：http://openipmi.sourceforge.net/
 Ipmitool： http://ipmitool.sourceforge.net/
 ipmiutil： http://ipmiutil.sourceforge.net/
-	</screen>
+	]]></screen>
 
 	<section id="openipmi">
 		<title>OpenIPMI</title>
-		<screen>
+		<screen><![CDATA[
 # yum install OpenIPMI
-		</screen>
+		]]></screen>
 		<para>start</para>
-		<screen>
+		<screen><![CDATA[
 /etc/init.d/ipmi start
 Starting ipmi drivers:                                     [  OK  ]
-		</screen>
+		]]></screen>
 	</section>
 	<section id="freeipmi">
 		<title>freeipmi</title>
-		<screen>
+		<screen><![CDATA[
 # yum install freeipmi
-		</screen>
+		]]></screen>
 		<section id="ipmiping">
 			<title>ipmiping</title>
-			<screen>
+			<screen><![CDATA[
 # ipmiping 172.16.5.52
 ipmiping 172.16.5.52 (172.16.5.52)
 response received from 172.16.5.52: rq_seq=57
@@ -42,11 +42,11 @@ response received from 172.16.5.52: rq_seq=60
 response received from 172.16.5.52: rq_seq=61
 ^C--- ipmiping 172.16.5.52 statistics ---
 5 requests transmitted, 5 responses received in time, 0.0% packet loss
-			</screen>
+			]]></screen>
 		</section>
 		<section id="ipmimonitoring">
 			<title>ipmimonitoring</title>
-			<screen>
+			<screen><![CDATA[
 # ipmimonitoring -h 172.16.1.23 -u root -pcalvin
 Caching SDR repository information: /root/.freeipmi/sdr-cache/sdr-cache-J10-51-Memcache-0.172.16.5.23
 Caching SDR record 125 of 125 (current record ID 125)
@@ -111,11 +111,11 @@ Record_ID | Sensor Name | Sensor Group | Monitoring Status| Sensor Units | Senso
 118 | Voltage | Voltage | Nominal | V | 220.000000
 120 | System Level | Current | Nominal | W | 329.000000
 123 | ROMB Battery | Battery | Nominal | N/A | 'OK'
-			</screen>
+			]]></screen>
 		</section>
 		<section id="ipmi-sensors">
 			<title>ipmi-sensors</title>
-			<screen>
+			<screen><![CDATA[
 # ipmi-sensors -h 172.16.5.23 -u root -pcalvin
 1: Temp (Temperature): NA (NA/90.00): [NA]
 2: Temp (Temperature): NA (NA/90.00): [NA]
@@ -231,11 +231,11 @@ Record_ID | Sensor Name | Sensor Group | Monitoring Status| Sensor Units | Senso
 121: Power Optimized (OEM Reserved): [Unrecognized State]
 123: ROMB Battery (Battery): [OK]
 125: vFlash (Module/Board): [OEM State = 0000h]
-			</screen>
+			]]></screen>
 		</section>
 		<section id="ipmi-locate">
 			<title>ipmi-locate</title>
-			<screen>
+			<screen><![CDATA[
 # ipmi-locate
 Probing KCS device using DMIDECODE... done
 IPMI Version: 2.0
@@ -305,7 +305,7 @@ IPMI interface: SSIF
 BMC driver device: /dev/i2c-0
 BMC SMBUS slave address: 0x42
 Register spacing: 1
-			</screen>
+			]]></screen>
 		</section>
 	</section>
 	<section id="ipmitool">
@@ -333,7 +333,7 @@ IPMI Device Information
 				]]>
 				</screen>
 				<para></para>
-				<screen>
+				<screen><![CDATA[
 sudo apt-get install openipmi
 
 sudo apt-get install ipmitool
@@ -343,11 +343,11 @@ sudo mkdir -p /var/lock/subsys/ipmi
 $ sudo /etc/init.d/openipmi start
  * Starting ipmi drivers                  [ OK ]
 
-				</screen>
+				]]></screen>
 			</section>
 			<section>
 				<title>CentOS</title>
-				<screen>
+				<screen><![CDATA[
 # yum search ipmi
 ========================================== Matched: ipmi ===========================================
 OpenIPMI.x86_64 : OpenIPMI (Intelligent Platform Management Interface) library and tools
@@ -372,20 +372,20 @@ ripmime.x86_64 : Extract attachments out of a MIME encoded email packages
 watchdog.x86_64 : Software and/or Hardware watchdog daemon
 
 # yum install OpenIPMI OpenIPMI-tools -y
-				</screen>
+				]]></screen>
 			</section>
 		</section>
 		<section>
 			<title>sensor</title>
-			<screen>
+			<screen><![CDATA[
 # ipmitool -I open sensor list
-			</screen>
+			]]></screen>
 		</section>
 		<section>
 			<title>ipmitool shell</title>
-			<screen>
+			<screen><![CDATA[
 # ipmitool shell
-			</screen>
+			]]></screen>
 			<para>mc info</para>
 			<screen>
 			<![CDATA[
@@ -541,14 +541,14 @@ MC Commands:
 			</section>
 			<section>
 				<title>Configure LAN Channels</title>
-				<screen>
+				<screen><![CDATA[
 ipmitool -I open lan print 1                           	显示BMC通道的信息，如果不知道BMC使用的是哪个通道，请使用下面的命令确认：
 ipmitool -I open channel info 1
 ipmitool -I open lan set 1 ipsrc static                	设置本地BMC地址为静态，才能设置IP
 ipmitool -I open lan set 1 ipaddr 172.16.0.2         	设置本地BMC的IP地址
 ipmitool -I open lan set 1 netmask 255.255.255.0       	子网掩码，别忘了设
 ipmitool -I open lan set 1 defgw ipaddr 172.16.0.254   	网关，可设可不设，不过一定要确保监控它的机器位于同一路由
-				</screen>
+				]]></screen>
 			</section>
 			<section>
 				<title>Configure Management Controller users</title>
@@ -562,7 +562,7 @@ ipmitool user set password 1 123456 对BMC的1号用户设置密码123456
 			</section>
 			<section>
 				<title>Configure Management Controller channels</title>
-				<screen>
+				<screen><![CDATA[
 # ipmitool -I open channel info 1
 Channel 0x1 info:
   Channel Medium Type   : 802.3 LAN
@@ -580,7 +580,7 @@ Channel 0x1 info:
     Per-message Auth    : disabled
     User Level Auth     : enabled
     Access Mode         : always available
-				</screen>
+				]]></screen>
 			</section>
 
 		</section>
@@ -590,7 +590,7 @@ Channel 0x1 info:
 			<section>
 				<title>更改IP地址,子网掩码与网关</title>
 				<para>查看IP，子网掩码与网关</para>
-				<screen>
+				<screen><![CDATA[
 # ipmitool -I open lan print 1
 Set in Progress         : Set Complete
 Auth Type Support       : NONE MD2 MD5 PASSWORD
@@ -619,37 +619,37 @@ Cipher Suite Priv Max   : aaaaaaaaaaaaaaa
                         :     o=OPERATOR
                         :     a=ADMIN
                         :     O=OEM
-				</screen>
+				]]></screen>
 				<para>设置IP，子网掩码与网关</para>
-				<screen>
+				<screen><![CDATA[
 /usr/bin/ipmitool -I open lan set 1 ipaddr 172.16.8.200
 /usr/bin/ipmitool -I open lan set 1 netmask 255.255.255.0
 /usr/bin/ipmitool -I open lan set 1 defgw ipaddr 172.16.8.254
 /usr/bin/ipmitool -I open lan set 1 access on
-				</screen>
+				]]></screen>
 			</section>
 			<section>
 				<title>更改 iDRAC LCD 显示屏</title>
-				<screen>
+				<screen><![CDATA[
 # ipmitool delloem lcd set mode userdefined test
 # ipmitool delloem lcd info
 LCD info
     Setting: User defined
     Text:    test
-				</screen>
+				]]></screen>
 			</section>
 			<section>
 				<title>更改 iDRAC 密码</title>
-				<screen>
+				<screen><![CDATA[
 # ipmitool user list 2
 ID  Name	     Callin  Link Auth	IPMI Msg   Channel Priv Limit
 2   root             true    true       true       ADMINISTRATOR
 # ipmitool user set password 2 "mypasswd"
-				</screen>
+				]]></screen>
 			</section>
 			<section>
 				<title>关机/开机</title>
-				<screen>
+				<screen><![CDATA[
 服务器关机
 #ipmitool -I lan -U root -P secpass -H 10.10.0.5 power off
 
@@ -658,14 +658,14 @@ ID  Name	     Callin  Link Auth	IPMI Msg   Channel Priv Limit
 
 服务器 reset
 #ipmitool -I lan -U root -P secpass -H 10.10.0.5 power reset
-				</screen>
+				]]></screen>
 			</section>
 			<section>
 				<title>启动列表</title>
-				<screen>
+				<screen><![CDATA[
 ipmitool -I lan -H 10.10.0.5 -U ADMIN -P ADMIN chassis bootdev pxe
-				</screen>
+				]]></screen>
 			</section>
 		</section>
 	</section>
-</chapter>
+</section>

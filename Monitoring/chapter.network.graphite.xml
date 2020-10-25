@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id$ -->
-<chapter id="graphite">
+<section id="graphite">
 	<title>Graphite</title>
 	<para>
 		<ulink url="http://groups.csail.mit.edu/carbon" />
@@ -10,37 +10,37 @@
 		<title>Graphite - Scalable Realtime Graphing</title>
 		<para>http://graphite.wikidot.com/</para>
 	</section>
-</chapter>
+</section>
 
-<chapter id="big_brother">
+<section id="big_brother">
 	<title>BIG BROTHER</title>
 	<para>waiting ...</para>
-</chapter>
-<chapter id="bigsister">
+</section>
+<section id="bigsister">
 	<title>Big Sister</title>
-</chapter>
-<chapter id="opennms">
+</section>
+<section id="opennms">
 	<title>OpenNMS</title>
 	<para>http://www.opennms.org/</para>
-</chapter>
-<chapter id="pcp">
+</section>
+<section id="pcp">
 	<title>Performance Co-Pilot</title>
 	<para>
 		<ulink url="http://oss.sgi.com/projects/pcp/">http://oss.sgi.com/projects/pcp/</ulink>
 	</para>
 	<para>Performance Co-Pilot (PCP) provides a framework and services to support system-level performance monitoring and management. It presents a unifying abstraction for all of the performance data in a system, and many tools for interrogating, retrieving and processing that data.</para>
-</chapter>
-<chapter id="clumon">
+</section>
+<section id="clumon">
 	<title>Clumon Performance Monitor</title>
 	<para>
 		<ulink url="http://clumon.ncsa.illinois.edu/">http://clumon.ncsa.illinois.edu/</ulink>
 	</para>
-</chapter>
-<chapter id="Zenoss">
+</section>
+<section id="Zenoss">
 	<title>Zenoss</title>
 	<para>http://www.linuxjournal.com/article/10070</para>
-</chapter>
-<chapter id="OpenView">
+</section>
+<section id="OpenView">
 	<title>商业软件</title>
 	<para>首选上ITM ，OpenView</para>
 	<para>
@@ -48,26 +48,26 @@
 		<ulink url="http://www.solarwinds.com/">Solarwinds</ulink>
 	</para>
 	<para>国产 BTNM ，siteview</para>
-</chapter>
+</section>
 
-<chapter id="hyperic">
+<section id="hyperic">
 	<title>Hyperic HQ</title>
 	<para>
 		<ulink url="http://www.hyperic.com/">http://www.hyperic.com/</ulink>
 	</para>
-</chapter>
-<chapter id="other">
+</section>
+<section id="other">
 	<title>OSSIM,Spiceworks,FireGen,LANSweeper,OSSEC,HIDS</title>
-</chapter>
+</section>
 
-<chapter id="hawtio">
+<section id="hawtio">
 	<title>HawtIO</title>
 	<para>http://hawt.io/</para>
 	<para>hawtio has lots of plugins such as: a git-based Dashboard and Wiki, logs, health, JMX, OSGi, Apache ActiveMQ, Apache Camel, Apache OpenEJB, Apache Tomcat, Jetty, JBoss and Fuse Fabric</para>
-</chapter>
-<chapter id="moloch">
+</section>
+<section id="moloch">
 	<title>moloch</title>
 	<para>
 		<ulink url="https://github.com/aol/moloch" />
 	</para>
-</chapter>	
+</section>	

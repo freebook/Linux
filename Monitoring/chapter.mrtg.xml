@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="index"><?dbhtml dir="mrtg" ?>
+<section id="mrtg">
 	<title>MRTG</title>
 	<section id="ubuntu">
 		<title>Ubuntu 安装</title>

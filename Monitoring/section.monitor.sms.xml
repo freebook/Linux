@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="sms">
+<section id="sms">
 	<title>SMS</title>
 	<section id="gnokii">
 		<title>gnokii</title>
@@ -118,4 +118,4 @@ ATDT13113668890
 			</screen>
 		</section>
 	</section>
-</chapter>
+</section>
