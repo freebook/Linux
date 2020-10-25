@@ -5,36 +5,36 @@
 		<title>Nagios core</title>
 		<para>Nagios 是一种开放源代码监视软件，它可以扫描主机、服务、网络方面存在的问题。Nagios 与其他类似的包之间的主要区别在于，Nagios 将所有的信息简化为“工作（working）”、“可疑的（questionable）”和“故障（failure）”状态，并且 Nagios 支持由插件组成的非常丰富的“生态系统”。这些特性使得用户能够进行有效安装，在此过程中无需过多地关心细节内容，只提供他们所需的信息即可。	</para>
 		<para>install</para>
-		<screen>
+		<screen><![CDATA[
 $ sudo apt-get install nagios3 nagios-nrpe-plugin
-		</screen>
+		]]></screen>
 		<para>add user nagiosadmin for nagios</para>
-		<screen>
+		<screen><![CDATA[
 $ sudo htpasswd -c /etc/nagios2/htpasswd.users nagiosadmin
 New password:
 Re-type new password:
 Adding password for user nagiosadmin
-		</screen>
+		]]></screen>
 		<para>Create a new nagcmd group for allowing external commands to be submitted through the web interface. Add both the nagios user and the apache user to the group. </para>
-		<screen>
+		<screen><![CDATA[
 $ groupadd nagcmd
 $ sudo usermod -a -G nagcmd nagios
 $ sudo usermod -a -G nagcmd www-data
 $ cat /etc/group
 nagcmd:x:1003:nagios,www-data
-		</screen>
+		]]></screen>
 <!--
 	<para>selinux</para>
-	<screen>
+	<screen><![CDATA[
 chcon ‐R ‐t httpd_sys_content_t /usr/local/nagios/sbin/
 chcon ‐R ‐t httpd_sys_content_t /usr/local/nagios/share/
-	</screen>
+	]]></screen>
  -->
 		<para>reload apache</para>
-		<screen>
+		<screen><![CDATA[
 $ sudo /etc/init.d/apache2 reload
  * Reloading web server config apache2                    [ OK ]
-		</screen>
+		]]></screen>
 	</section>
 
 	<section>
@@ -45,12 +45,12 @@ nagios-nrpe-server --------> nagios core (nagios-nrpe-plugin)
 		]]>
 		</screen>
 		<para>nagios-nrpe-server 的功能是向服务器发送监控数据, 而服务器端通过nagios-nrpe-plugin接收监控数据。</para>
-		<screen>
+		<screen><![CDATA[
 sudo apt-get install nagios-nrpe-server nagios-plugins
-		</screen>
+		]]></screen>
 		<para>/etc/nagios/nrpe.cfg</para>
 		<para>/etc/nagios/nrpe_local.cfg</para>
-		<screen>
+		<screen><![CDATA[
 $ sudo vim /etc/nagios/nrpe_local.cfg
 allowed_hosts=172.16.1.2
 
@@ -67,11 +67,11 @@ command[check_sda_iostat]=/usr/lib/nagios/plugins/check_iostat -d sda -w 100 -c 
 command[check_sdb_iostat]=/usr/lib/nagios/plugins/check_iostat -d sdb -w 100 -c 200
 # command[check_uri_user]=/usr/lib/nagios/plugins/check_http -I 127.0.0.1 -p 80 -u http://example.com/test/ok.php
 # command[check_mysql]=/usr/lib/nagios/plugins/check_mysql -H localhost -u root -ppassword test -P 3306
-		</screen>
+		]]></screen>
 		<para>重启后生效</para>
-		<screen>
+		<screen><![CDATA[
 /etc/init.d/nagios-nrpe-server restart
-		</screen>
+		]]></screen>
 	</section>
 	<section>
 		<title>Monitoring Windows Machines</title>
@@ -88,31 +88,31 @@ command[check_sdb_iostat]=/usr/lib/nagios/plugins/check_iostat -d sdb -w 100 -c 
 	<section id="centos">
 		<title>nagios</title>
 		<para>Install Nagios &amp; Plugins</para>
-		<screen>
+		<screen><![CDATA[
 [root@database ~]# yum -y install nagios nagios-plugins-all nagios-plugins-nrpe
-		</screen>
+		]]></screen>
 		<para>Create the default Nagios web access user &amp; set a password</para>
-		<screen>
+		<screen><![CDATA[
 # htpasswd -c /etc/nagios/passwd nagiosadmin
-		</screen>
+		]]></screen>
 		<para>Verify default config files</para>
-		<screen>
+		<screen><![CDATA[
 nagios -v /etc/nagios/nagios.cfg		
-		</screen>
+		]]></screen>
 		<para>Start Nagios</para>
-		<screen>
+		<screen><![CDATA[
 Start Nagios
-		</screen>
+		]]></screen>
 		<para>Configure it to start on boot</para>
-		<screen>
+		<screen><![CDATA[
 chkconfig --levels 345 nagios on
-		</screen>
+		]]></screen>
 		<para>http://localhost/nagios/</para>
 	</section>
 
 	<section id="nagios.nrpe">
 		<title>nrpe node</title>
-		<screen>
+		<screen><![CDATA[
 # yum install nrpe nagios-plugins-all
 
 allowed_hosts=172.16.1.2
@@ -128,17 +128,17 @@ command[check_all_disks]=/usr/lib64/nagios/plugins/check_disk -w 20% -c 10% -e
 
 # chkconfig nrpe on
 # service nrpe start
-		</screen>
+		]]></screen>
 		<para>其实没有必要安装所有的监控插件</para>
-		<screen>
+		<screen><![CDATA[
 yum install nrpe -y
 yum install nagios-plugins-disk  nagios-plugins-load nagios-plugins-ping nagios-plugins-procs nagios-plugins-swap nagios-plugins-users -y		
-		</screen>
+		]]></screen>
 	</section>
 
 <section id="config">
 		<title>配置 Nagios</title>
-		<screen>
+		<screen><![CDATA[
 $ sudo vim /etc/nagios3/nagios.cfg
 
 cfg_dir=/etc/nagios3/hosts
@@ -147,18 +147,18 @@ cfg_dir=/etc/nagios3/switches
 cfg_dir=/etc/nagios3/routers
 
 admin_email=nagios, neo.chen@example.com
-		</screen>
+		]]></screen>
 		<section>
 			<title>authorized</title>
 			<para>add user neo for nagios</para>
-			<screen>
+			<screen><![CDATA[
 $ sudo htpasswd /etc/nagios3/htpasswd.users neo
 New password:
 Re-type new password:
 Adding password for user neo
-			</screen>
+			]]></screen>
 			<para></para>
-			<screen>
+			<screen><![CDATA[
 # grep default_user_name cgi.cfg
 #default_user_name=guest
 
@@ -171,20 +171,20 @@ authorized_for_all_hosts=nagiosadmin
 authorized_for_all_service_commands=nagiosadmin
 authorized_for_all_host_commands=nagiosadmin
 #authorized_for_read_only=user1,user2
-			</screen>
+			]]></screen>
 			<para></para>
-			<screen>
+			<screen><![CDATA[
 
 $ sudo vim /etc/nagios3/cgi.cfg
 
 authorized_for_all_services=nagiosadmin,neo
 authorized_for_all_hosts=nagiosadmin,neo
 
-			</screen>
+			]]></screen>
 		</section>
 		<section>
 			<title>contacts</title>
-			<screen>
+			<screen><![CDATA[
 $ sudo vim /etc/nagios3/conf.d/contacts_nagios2.cfg
 
 ###############################################################################
@@ -220,20 +220,20 @@ define contactgroup{
         members                 root, neo
         }
 
-			</screen>
+			]]></screen>
 			<para>当服务出现w—报警(warning),u—未知(unkown),c—严重(critical),r—从异常恢复到正常，在这四种情况下通知联系人</para>
 			<para>当主机出现d－当机(down),u—返回不可达(unreachable),r—从异常情况恢复正常,在这3种情况下通知联系人</para>
 			<para>确认 contact_groups 已经设置</para>
-			<screen>
+			<screen><![CDATA[
 neo@monitor:/etc/nagios3$ grep admins conf.d/generic-host_nagios2.cfg
                 contact_groups                  admins
 neo@monitor:/etc/nagios3$ grep admins conf.d/generic-service_nagios2.cfg
                 contact_groups                  admins
-			</screen>
+			]]></screen>
 		</section>
 		<section>
 			<title>hostgroups</title>
-			<screen>
+			<screen><![CDATA[
 $ sudo vim /etc/nagios3/conf.d/hostgroups_nagios2.cfg
 
 define hostgroup {
@@ -242,11 +242,11 @@ define hostgroup {
                 members         *
         }
 
-			</screen>
+			]]></screen>
 		</section>
 		<section>
 			<title>generic-service</title>
-			<screen>
+			<screen><![CDATA[
 $ cat /etc/nagios3/conf.d/generic-service_nagios2.cfg
 # generic service template definition
 define service{
@@ -274,7 +274,7 @@ define service{
                 contact_groups                  admins
         register                        0       ; DONT REGISTER THIS DEFINITION - ITS NOT A REAL SERVICE, JUST A TEMPLATE!
         }
-			</screen>
+			]]></screen>
 
 			<itemizedlist>
 				<listitem><para>notification_interval 	报警发送间隔，单位分钟</para></listitem>
@@ -318,7 +318,7 @@ normal_sound=noproblem.wav
 		</section>
 		<section>
 			<title>SMS 短信</title>
-			<screen>
+			<screen><![CDATA[
 vim /etc/nagios3/commands.cfg
 
 # 'notify-host-by-sms' command definition
@@ -332,8 +332,8 @@ define command{
         command_name    notify-service-by-sms
         command_line    /srv/sms/sms $CONTACTPAGER$ "Service: $SERVICEDESC$\nHost: $HOSTALIAS$\nAddress: $HOSTADDRESS$\nState: $SERVICESTATE$\n\nDate/Time: $LONGDATETIME$\n\nAdditional Info:\n\n$SERVICEOUTPUT$"
         }
-			</screen>
-			<screen>
+			]]></screen>
+			<screen><![CDATA[
 sudo vim /etc/nagios3/conf.d/contacts_nagios2.cfg
 define contact{
         contact_name                    neo
@@ -348,12 +348,12 @@ define contact{
         pager 							13113668899
         }
 
-			</screen>
+			]]></screen>
 		</section>
 		
 		<section id="nrpe">
 			<title>nrpe plugins</title>
-			<screen>
+			<screen><![CDATA[
 neo@monitor:/etc/nagios3/hosts$ sudo cat www.example.com.cfg
 
 define host{
@@ -402,6 +402,6 @@ define service {
         check_command                   check_nrpe_1arg!check_zombie_procs!172.16.1.10
 }
 
-			</screen>			
+			]]></screen>			
 		</section>		
 </section>

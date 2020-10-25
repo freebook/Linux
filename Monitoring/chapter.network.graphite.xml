@@ -2,63 +2,16 @@
 <!-- $Id$ -->
 <chapter id="graphite">
 	<title>Graphite</title>
-	<para><ulink url="http://groups.csail.mit.edu/carbon" /></para>
-<!--	
-	<section>
-		<title>Installing and Configuring Graphite</title>
-		<screen>
-
-		</screen>
-		<screen>
-
-		</screen>
-		<screen>
-
-		</screen>
-		<para></para>
-		<screen>
-		<![CDATA[
-
-		]]>
-		</screen>
-		
-		<screen>
-		<![CDATA[
-cat >> /etc/services <<EOF
-
-EOF		
-		]]>
-		</screen>
+	<para>
+		<ulink url="http://groups.csail.mit.edu/carbon" />
+	</para>
+	<!-- <section> <title>Installing and Configuring Graphite</title> <screen> </screen> <screen> </screen> <screen> </screen> <para></para> <screen> <![CDATA[ ]]> </screen> <screen> <![CDATA[ cat >> /etc/services <<EOF EOF ]]> </screen> </section> <section> <title>web ui</title> <para>http://localhost/zabbix/</para> <para>user: admin</para> <para>passwd: zabbix</para> </section> <section> <title></title> <screen> </screen> <para></para> <screen> </screen> <para></para> <screen> </screen> <para></para> <screen> </screen> </section> -->
+	<section id="graphite.install">
+		<title>Graphite - Scalable Realtime Graphing</title>
+		<para>http://graphite.wikidot.com/</para>
 	</section>
-	<section>
-		<title>web ui</title>
-		<para>http://localhost/zabbix/</para>
-		<para>user: admin</para>
-		<para>passwd: zabbix</para>
-	</section>
-	<section>
-		<title></title>
-		<screen>
-		</screen>
-		<para></para>
-		<screen>
-
-		</screen>
-		<para></para>
-		<screen>
-
-		</screen>
-		<para></para>
-		<screen>
-
-		</screen>
-	</section>
--->	
 </chapter>
-<chapter id="graphite">
-	<title>Graphite - Scalable Realtime Graphing</title>
-	<para>http://graphite.wikidot.com/</para>
-</chapter>
+
 <chapter id="big_brother">
 	<title>BIG BROTHER</title>
 	<para>waiting ...</para>
@@ -72,12 +25,16 @@ EOF
 </chapter>
 <chapter id="pcp">
 	<title>Performance Co-Pilot</title>
-	<para><ulink url="http://oss.sgi.com/projects/pcp/">http://oss.sgi.com/projects/pcp/</ulink></para>
+	<para>
+		<ulink url="http://oss.sgi.com/projects/pcp/">http://oss.sgi.com/projects/pcp/</ulink>
+	</para>
 	<para>Performance Co-Pilot (PCP) provides a framework and services to support system-level performance monitoring and management. It presents a unifying abstraction for all of the performance data in a system, and many tools for interrogating, retrieving and processing that data.</para>
 </chapter>
 <chapter id="clumon">
 	<title>Clumon Performance Monitor</title>
-	<para><ulink url="http://clumon.ncsa.illinois.edu/">http://clumon.ncsa.illinois.edu/</ulink></para>
+	<para>
+		<ulink url="http://clumon.ncsa.illinois.edu/">http://clumon.ncsa.illinois.edu/</ulink>
+	</para>
 </chapter>
 <chapter id="Zenoss">
 	<title>Zenoss</title>
@@ -86,18 +43,23 @@ EOF
 <chapter id="OpenView">
 	<title>商业软件</title>
 	<para>首选上ITM ，OpenView</para>
-	<para>其次<ulink url="http://www.solarwinds.com/">Solarwinds</ulink></para>
+	<para>
+		其次
+		<ulink url="http://www.solarwinds.com/">Solarwinds</ulink>
+	</para>
 	<para>国产 BTNM ，siteview</para>
 </chapter>
 
 <chapter id="hyperic">
 	<title>Hyperic HQ</title>
-	<para><ulink url="http://www.hyperic.com/">http://www.hyperic.com/</ulink></para>
+	<para>
+		<ulink url="http://www.hyperic.com/">http://www.hyperic.com/</ulink>
+	</para>
 </chapter>
 <chapter id="other">
 	<title>OSSIM,Spiceworks,FireGen,LANSweeper,OSSEC,HIDS</title>
 </chapter>
-	
+
 <chapter id="hawtio">
 	<title>HawtIO</title>
 	<para>http://hawt.io/</para>
@@ -105,5 +67,7 @@ EOF
 </chapter>
 <chapter id="moloch">
 	<title>moloch</title>
-	<para><ulink url="https://github.com/aol/moloch" /></para>
+	<para>
+		<ulink url="https://github.com/aol/moloch" />
+	</para>
 </chapter>	

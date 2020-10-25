@@ -22,7 +22,7 @@
 <!ENTITY chapter.network.opentsdb.xml	SYSTEM "chapter.network.opentsdb.xml">
 <!ENTITY chapter.network.graphite.xml	SYSTEM "chapter.network.graphite.xml">
 <!ENTITY chapter.icinga.xml				SYSTEM "chapter.icinga.xml">
-<!ENTITY chapter.varnish.xml			SYSTEM "chapter.varnish.xml">
+<!ENTITY section.monitor.dashboard.xml	SYSTEM "section.monitor.dashboard.xml">
 
 <!ENTITY chapter.ipmi.xml			 	SYSTEM "chapter.ipmi.xml">
 <!ENTITY chapter.netflow.xml 			SYSTEM "chapter.netflow.xml">
@@ -31,4 +31,5 @@
 <!ENTITY chapter.log.flume.xml			SYSTEM "chapter.log.flume.xml">
 <!ENTITY chapter.log.elk.xml			SYSTEM "chapter.log.elk.xml">
 <!ENTITY chapter.jvm.xml		 		SYSTEM "chapter.jvm.xml">
-<!ENTITY chapter.zipkin.xml		 	SYSTEM "chapter.zipkin.xml">
+<!ENTITY chapter.zipkin.xml			 	SYSTEM "chapter.zipkin.xml">
+<!ENTITY chapter.prometheus.xml		 	SYSTEM "chapter.prometheus.xml">

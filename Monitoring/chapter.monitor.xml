@@ -1,19 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	&chapter.system.utility.xml;
-	&chapter.snmp.xml;
+	&chapter.prometheus.xml;
 	&chapter.zabbix.xml;
-	&chapter.cacti.xml;
-	&chapter.nagios.xml;
+	&chapter.system.utility.xml;
 	&chapter.log.xml;
-	&chapter.mrtg.xml;
-	&chapter.munin.xml;
-	&chapter.network.ntop.xml;
+	&section.monitor.dashboard.xml;
 	&chapter.bandwidth.xml;
-	&chapter.netflow.xml;
-	&chapter.network.cluster.xml;
-	&chapter.network.observium.xml;
 	&chapter.network.opentsdb.xml;
 	&chapter.network.graphite.xml;
 	&chapter.icinga.xml;
-	&chapter.varnish.xml;
 	&chapter.zipkin.xml;

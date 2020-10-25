@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="index"><?dbhtml dir="nagios" ?>
+<section id="index"><?dbhtml dir="nagios" ?>
 	<title>Nagios</title>
 	<para>homepage: http://www.nagios.org/</para>
 	&chapter.nagios.install.xml;
@@ -8,7 +8,7 @@
 		<title>配置监控设备</title>
 		<section>
 			<title>routers</title>
-			<screen>
+			<screen><![CDATA[
 vim /etc/nagios3/routers/firewall.cfg
 
 define host{
@@ -53,25 +53,25 @@ define service{
 
         }
 
-			</screen>
+			]]></screen>
 		</section>
 		<section>
 			<title>host</title>
-			<screen>
+			<screen><![CDATA[
 define service{
     use                             local-service
     host_name                       www.example.com
     service_description             Host Alive
     check_command                   check-host-alive
     }
-			</screen>
+			]]></screen>
 		</section>
 		<section>
 			<title>service</title>
 			<section>
 				<title>http</title>
 				<para>hosts</para>
-				<screen>
+				<screen><![CDATA[
 $ cat /etc/nagios3/hosts/www.example.com.cfg
 define host{
 
@@ -99,20 +99,20 @@ define service{
 
         }
 
-				</screen>
+				]]></screen>
 				<para>HTTP状态</para>
-				<screen>
+				<screen><![CDATA[
 neo@monitor:~$ /usr/lib/nagios/plugins/check_http -H www.example.com -I 172.16.0.8 -s "HTTs"
 HTTP CRITICAL: HTTP/1.1 404 Not Found - string not found - 336 bytes in 0.001 second response time |time=0.000733s;;;0.000000 size=336B;;;0
 
 neo@monitor:~$ /usr/lib/nagios/plugins/check_http -H www.example.com -I 172.16.0.8 -e '404'
 HTTP OK: Status line output matched "404" - 336 bytes in 0.001 second response time |time=0.000715s;;;0.000000 size=336B;;;0
 
-				</screen>
+				]]></screen>
 			</section>
 			<section>
 				<title>mysql hosts</title>
-				<screen>
+				<screen><![CDATA[
 $ sudo vim /etc/nagios3/hosts/mysql.cfg
 
 
@@ -142,18 +142,18 @@ define service{
 
         }
 
-				</screen>
+				]]></screen>
 			</section>
 			<section>
 				<title>check_tcp</title>
-				<screen>
+				<screen><![CDATA[
 define service{
     use                        generic-service     
     host_name                  db.example.com
     service_description        MySQL Master1 Port
     check_command              check_tcp!3306
     }
-				</screen>
+				]]></screen>
 			</section>
 		</section>
 	</section>
@@ -170,4 +170,4 @@ define service{
 			<para>https://nagios-plugins.org/doc/guidelines.html#THRESHOLDFORMAT</para>
 		</section>
 	</section>
-</chapter>
+</section>

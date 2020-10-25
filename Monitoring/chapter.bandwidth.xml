@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	<chapter id="bandwidth">
+<chapter id="monitor.network">
+	<title>网络监控</title>
+	&chapter.snmp.xml;
+	<section id="bandwidth">
 		<title>Bandwidth</title>
 		<para><ulink url="http://bandwidthd.sourceforge.net/" /></para>
 		<section id="install.ubuntu">
@@ -59,6 +62,7 @@ $ sudo apt-get install bandwidthd
 		<section id="install.centos">
 			<title>CentOS rpm/yum</title>
 			<screen>
+			<![CDATA[
 rpm -Uvh http://dl.fedoraproject.org/pub/epel/5/i386/epel-release-5-4.noarch.rpm
 
 # yum search bandwidthd
@@ -145,9 +149,10 @@ subnet 172.16.0.0/12
 
 #Set META REFRESH seconds (default 150, use 0 to disable).
 #meta_refresh 150
-
+			]]>
 			</screen>
 			<screen>
+			<![CDATA[
 cd /etc/nginx/conf
 
 htpasswd -c -d htpasswd user_name
@@ -164,18 +169,21 @@ server {
         auth_basic_user_file  htpasswd;
 	}
 }
+			]]>
 			</screen>
 			<para><ulink url="http://monitor.example.com" /></para>
 
 			<note>
 				<title>CentOS rpmforge-release 安装注意事项</title>
 				<screen>
+				<![CDATA[
 wget http://packages.sw.be/rpmforge-release/rpmforge-release-0.5.2-2.el5.rf.i386.rpm
 rpm --import http://apt.sw.be/RPM-GPG-KEY.dag.txt
 rpm -K rpmforge-release-0.5.2-2.el5.rf.*.rpm
 rpm -i rpmforge-release-0.5.2-2.el5.rf.*.rpm
 
 yum install bandwidth
+				]]>
 				</screen>
 				<para>rpmforge-release 中有一个bandwidth 是一个内从测试软件 不是 bandwidthd</para>
 				<screen>
@@ -187,23 +195,31 @@ bandwidth.i386 : Artificial benchmark for measuring memory bandwidth
 		<section id="install.source">
 			<title>source code</title>
 			<screen>
+			<![CDATA[
 tar zxvf bandwidthd-2.0.1.tgz
 cd bandwidthd-2.0.1
 ./configure --prefix=/srv/bandwidthd-2.0.1
 make
 make install
+			]]>
 			</screen>
 		</section>
 		<section id="bandwidthd.conf">
 			<title>/etc/bandwidthd.conf</title>
 			<screen>
+			<![CDATA[
 # 监控所有地址
 subnet 0.0.0.0 0.0.0.0
 # 监控某一段IP地址
 subnet 10.0.0.0 255.0.0.0
 subnet 192.168.0.0/16
 subnet 172.16.0.0/12
-
+			]]>
 			</screen>
 		</section>
-	</chapter>
+	</section>
+	&chapter.netflow.xml;
+	&chapter.network.ntop.xml;
+	&chapter.mrtg.xml;
+	&chapter.network.lvs.xml;
+</chapter>	

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="netflow">
+<section id="netflow">
 	<title>NetFlow</title>
 	<para>查看设备是否发送Netflow包</para>
 	<screen>
@@ -212,4 +212,4 @@ Alerter 0 queue max: 255, current: 0
 			<para>http://localhost/netams/cgi-bin/login.cgi</para>
 		</section>
 	</section>
-</chapter>
+</section>

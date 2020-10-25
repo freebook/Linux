@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="observium">
+<section id="observium">
 	<title>Observium</title>
 	<para>http://www.observium.org</para>
 	<section id="observium.installation">
 		<title>Installation</title>
-		<screen>
+		<screen><![CDATA[
 aptitude install libapache2-mod-php5 php5-cli php5-mysql php5-gd php5-snmp \
 php-pear snmp graphviz subversion mysql-server mysql-client rrdtool \
 fping imagemagick whois mtr-tiny nmap ipmitool
-		</screen>
+		]]></screen>
 		<para>安装 Net_IPv6</para>
-		<screen>
+		<screen><![CDATA[
 Install the IPv4 and IPv6 pear libraries:
 $ sudo pear install Net_IPv6
 $ sudo pear install Net_IPv4
-		</screen>
+		]]></screen>
 		<para>安装observium软件</para>
 		<para>http://www.observium.org/observium-latest.tar.gz</para>
-		<screen>
+		<screen><![CDATA[
 $ wget http://www.observium.org/observium-latest.tar.gz
 $ tar zxvf observium-latest.tar.gz
 $ sudo mv observium /opt
@@ -26,7 +26,7 @@ $ cp config.php.default config.php
 $ sudo mkdir graphs rrd
 $ chown www-data.www-data graphs rrd
 $ mkdir /opt/observium/logs
-		</screen>
+		]]></screen>
 		<para>创建数据库SQL脚本</para>
 		<screen>
 		<![CDATA[
@@ -54,7 +54,7 @@ Query OK, 0 rows affected (0.06 sec)
 		]]>
 		</screen>
 		<para>修改配置文件</para>
-		<screen>
+		<screen><![CDATA[
 $ vim config.php
 
 ### Database config
@@ -69,7 +69,7 @@ $config['nets'][] = "172.16.3.0/24";
 
 or
 $config['nets'][] = "172.16.0.0/16";
-		</screen>
+		]]></screen>
 		<para>创建数据库表</para>
 		<screen>
 		<![CDATA[
@@ -103,7 +103,7 @@ $ sudo vim /etc/apache2/sites-available/observium
 		]]>
 		</screen>
 		<para>启用Rewrite</para>
-		<screen>
+		<screen><![CDATA[
 $ sudo a2enmod rewrite
 Enabling module rewrite.
 Run '/etc/init.d/apache2 restart' to activate new configuration!
@@ -113,7 +113,7 @@ Enabling site observium.
 Run '/etc/init.d/apache2 reload' to activate new configuration!
 
 $ sudo apache2ctl restart
-		</screen>
+		]]></screen>
 		<para>添加用户</para>
 		<screen>
 		<![CDATA[
@@ -140,10 +140,10 @@ Trying community public
 Added device localhost (1)
 		]]>
 		</screen>
-		<screen>
+		<screen><![CDATA[
 ./discovery.php -h all
 ./poller.php -h all
-		</screen>
+		]]></screen>
 		<para>设置定时任务</para>
 		<screen>
 		<![CDATA[
@@ -157,4 +157,4 @@ $ sudo /etc/init.d/cron reload
 		]]>
 		</screen>
 	</section>
-</chapter>
+</section>

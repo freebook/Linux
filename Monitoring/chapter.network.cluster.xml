@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="ganglia">
+<section id="ganglia">
 	<title>Ganglia</title>
 	<para>Ganglia是一个集群监控软件</para>
 	<para>Ganglia 是一个开源项目，它为高性能计算系统（例如集群和网格）提供了一个免费的可扩展分布式监视系统。</para>
@@ -57,5 +57,5 @@ vim /etc/gmond.conf
 :%s#239.2.11.71#172.16.1.2#g
  -->
 	</section>
-</chapter>
-	&chapter.network.lvs.xml;
+</section>
+	
