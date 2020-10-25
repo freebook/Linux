@@ -50,7 +50,7 @@ GF_PATHS_PLUGINS		/var/lib/grafana/plugins
 GF_PATHS_PROVISIONING	/etc/grafana/provisioning			
 			]]>
 			</screen>
-			
+
 		</section>
 		<section>
 			<title>docker swarm</title>
@@ -62,7 +62,7 @@ $ docker service create --replicas 1 --name prometheus \
     prom/prometheus
 			]]>
 			</screen>
-			
+
 		</section>
 		<section>
 			<title>docker-compose</title>
@@ -73,6 +73,18 @@ $ docker service create --replicas 1 --name prometheus \
 			</screen>
 		</section>
 	</section>
+	<section>
+		<title>promtool</title>
+		<para></para>
+		<para></para>
+		<para></para>
+		<screen>
+	<![CDATA[
+promtool check config /etc/prometheus/config/prometheus.yml
+	]]>
+		</screen>
+	</section>
+
 	<section>
 		<title>监控 Docker</title>
 		<subtitle>Collect Docker metrics with Prometheus</subtitle>
@@ -697,7 +709,7 @@ services:
       - '9100:9100'		
 		]]>
 		</screen>
-		
+
 	</section>
 	<section id="cadvisor">
 		<title>cadvisor</title>

@@ -5,7 +5,7 @@
 	<para>
 		<ulink url="http://groups.csail.mit.edu/carbon" />
 	</para>
-	<!-- <section> <title>Installing and Configuring Graphite</title> <screen> </screen> <screen> </screen> <screen> </screen> <para></para> <screen> <![CDATA[ ]]> </screen> <screen> <![CDATA[ cat >> /etc/services <<EOF EOF ]]> </screen> </section> <section> <title>web ui</title> <para>http://localhost/zabbix/</para> <para>user: admin</para> <para>passwd: zabbix</para> </section> <section> <title></title> <screen> </screen> <para></para> <screen> </screen> <para></para> <screen> </screen> <para></para> <screen> </screen> </section> -->
+	
 	<section id="graphite.install">
 		<title>Graphite - Scalable Realtime Graphing</title>
 		<para>http://graphite.wikidot.com/</para>

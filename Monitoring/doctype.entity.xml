@@ -2,7 +2,6 @@
 <!ENTITY chapter.monitor.xml 			SYSTEM "chapter.monitor.xml">
 
 <!ENTITY chapter.system.utility.xml		SYSTEM "chapter.system.utility.xml">
-<!ENTITY chapter.system.io.xml			SYSTEM "chapter.system.io.xml">
 <!ENTITY chapter.network.software.xml	SYSTEM "chapter.network.software.xml">
 <!ENTITY section.monitor.sms.xml		SYSTEM "section.monitor.sms.xml">
 <!ENTITY section.monitor.ipmi.xml		SYSTEM "section.monitor.ipmi.xml">
@@ -34,3 +33,4 @@
 
 <!ENTITY chapter.prometheus.xml		 	SYSTEM "chapter.prometheus.xml">
 <!ENTITY section.prometheus.xml			SYSTEM "section.prometheus.xml">
+<!ENTITY section.prometheus.grafana.xml	SYSTEM "section.prometheus.grafana.xml">
