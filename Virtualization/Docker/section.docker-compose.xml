@@ -170,7 +170,7 @@ vim 	docker-compose.yml
 			<title>版本号</title>
 			<screen>
 			<![CDATA[
-version: '3'	
+version: '3.8'
 			]]>
 			</screen>
 		</section>
@@ -192,16 +192,56 @@ services:
        MYSQL_PASSWORD: wordpress			
 			]]>
 			</screen>
-			<section id="docker-compose.yml.volumes">
-				<title>挂在卷</title>
-				<screen>
+		</section>
+		<section id="docker-compose.yml.container_name">
+			<title>容器名称</title>
+			<screen>
+			<![CDATA[
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus			
+			]]>
+			</screen>
+		</section>
+		<section id="docker-compose.yml.restart">
+			<title>启动策略</title>
+			<screen>
+			<![CDATA[
+restart: unless-stopped			
+			]]>
+			</screen>
+		</section>
+		<section id="docker-compose.yml.user">
+			<title>容器用户</title>
+			<screen>
+			<![CDATA[
+# Define in docker-compose:
+
+ services:
+  prometheus:
+    image: prom/prometheus
+    user: "1000:1000"
+
+ services:
+  prometheus:
+    image: prom/prometheus
+    user: root
+
+# Dockerfile
+
+USER 1000:1000			
+			]]>
+			</screen>
+		</section>
+		<section id="docker-compose.yml.volumes">
+			<title>挂在卷</title>
+			<screen>
 				<![CDATA[
      volumes:
        - db_data:/var/lib/mysql
 				]]>
-				</screen>
+			</screen>
 
-			</section>
 		</section>
 		<section id="docker-compose.yml.ports">
 			<title>映射端口的标签</title>
@@ -231,6 +271,15 @@ ports:
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title></title>
+			<screen>
+			<![CDATA[
+working_dir			
+			]]>
+			</screen>
+		</section>
+		
 		<section id="docker-compose.yml.environment">
 			<title>设置环境变量</title>
 			<para>environment 实现容器中环境变量的定义</para>

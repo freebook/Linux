@@ -74,7 +74,7 @@ $ sudo docker logs insane_babbage
 		</screen>
 		<para>注意：守护进程在后台运行，所以无输出，只能通过docker logs 命令查看</para>
 	</section>
-	<section id="container.exec">
+	<section id="container.attach">
 		<title>进入容器</title>
 		<screen>
 			<![CDATA[
@@ -89,6 +89,15 @@ $ sudo docker attach mad_elion
 root@793f9805620d:/# ls
 bin  boot  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
 			]]>
+		</screen>
+	</section>
+	<section id="container.exec">
+		<title>运行容器内的命令</title>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-Neo ~ % docker exec prometheus id         
+uid=65534(nobody) gid=65534(nogroup)		
+		]]>
 		</screen>
 	</section>
 	<section id="container.export">

@@ -21,7 +21,7 @@
 <book xml:base="http://netkiller.sf.com/book/linux/monitoring"
 	xmlns="http://docbook.org/ns/docbook" xml:lang="zh-cn">
 	<info>
-		<title>Netkiller Linux Monitoring 手札</title>
+		<title>Netkiller Monitor 手札</title>
 		<subtitle>Monitoring,  Scanner, Sniffer and Audit... </subtitle>
 
 		&book.info.author.xml;
