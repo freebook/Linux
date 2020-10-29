@@ -1,1 +1,358 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<section id="PromQL">
+	<title>PromQL 自定义查询语言</title>
+	<section>
+		<title>Metrics 格式</title>
+		<para>Metric 的格式: metric 名称 {标签名=标签值} 监控样本	</para>
+		<screen>
+			<![CDATA[
+<metric name>{<label name>=<label value>, ...} <sample>
+			]]>
+		</screen>
+		<para>指标的名称(metric name)用于定义监控样本的含义，名称只能由ASCII字符、数字、下划线以及冒号组成并必须符合正则表达式[a-zA-Z_:][a-zA-Z0-9_:]*</para>
+		<para>标签(label)反映了当前样本的特征维度，通过这些维度Prometheus可以对样本数据进行过滤，聚合等。标签的名称只能由ASCII字符、数字以及下划线组成并满足正则表达式[a-zA-Z_][a-zA-Z0-9_]*</para>
+		<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~ % curl -s http://localhost:9100/metrics | grep node_cpu_seconds_total
+# HELP node_cpu_seconds_total Seconds the cpus spent in each mode.
+# TYPE node_cpu_seconds_total counter
+node_cpu_seconds_total{cpu="0",mode="idle"} 16761.9
+node_cpu_seconds_total{cpu="0",mode="iowait"} 2.91
+node_cpu_seconds_total{cpu="0",mode="irq"} 0
+node_cpu_seconds_total{cpu="0",mode="nice"} 0
+node_cpu_seconds_total{cpu="0",mode="softirq"} 5.76
+node_cpu_seconds_total{cpu="0",mode="steal"} 0
+node_cpu_seconds_total{cpu="0",mode="system"} 440.28
+node_cpu_seconds_total{cpu="0",mode="user"} 135.58
+node_cpu_seconds_total{cpu="1",mode="idle"} 16851.16
+node_cpu_seconds_total{cpu="1",mode="iowait"} 1.81
+node_cpu_seconds_total{cpu="1",mode="irq"} 0
+node_cpu_seconds_total{cpu="1",mode="nice"} 0
+node_cpu_seconds_total{cpu="1",mode="softirq"} 1.33
+node_cpu_seconds_total{cpu="1",mode="steal"} 0
+node_cpu_seconds_total{cpu="1",mode="system"} 440.52
+node_cpu_seconds_total{cpu="1",mode="user"} 125.7
+node_cpu_seconds_total{cpu="2",mode="idle"} 16792.57
+node_cpu_seconds_total{cpu="2",mode="iowait"} 2.52
+node_cpu_seconds_total{cpu="2",mode="irq"} 0
+node_cpu_seconds_total{cpu="2",mode="nice"} 0
+node_cpu_seconds_total{cpu="2",mode="softirq"} 1.36
+node_cpu_seconds_total{cpu="2",mode="steal"} 0
+node_cpu_seconds_total{cpu="2",mode="system"} 445.29
+node_cpu_seconds_total{cpu="2",mode="user"} 129.73
+node_cpu_seconds_total{cpu="3",mode="idle"} 16844.57
+node_cpu_seconds_total{cpu="3",mode="iowait"} 1.16
+node_cpu_seconds_total{cpu="3",mode="irq"} 0
+node_cpu_seconds_total{cpu="3",mode="nice"} 0
+node_cpu_seconds_total{cpu="3",mode="softirq"} 1.24
+node_cpu_seconds_total{cpu="3",mode="steal"} 0
+node_cpu_seconds_total{cpu="3",mode="system"} 430.82
+node_cpu_seconds_total{cpu="3",mode="user"} 135.15
+			]]>
+		</screen>
+	</section>
+	<section>
+		<title>metric 类型</title>
+		<itemizedlist>
+			<title>Prometheus 定义了4种不同的指标类型(metric type)：</title>
+			<listitem>Counter（计数器）</listitem>
+			<listitem>Gauge（仪表盘）	</listitem>
+			<listitem>Histogram（直方图）	</listitem>
+			<listitem>Summary（摘要）	</listitem>
+		</itemizedlist>
+		<section>
+			<title>Counter：只增不减的计数器</title>
+			<para>Counter 例子</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~ % curl -s http://localhost:9100/metrics | grep node_cpu_seconds_total
+# HELP node_cpu_seconds_total Seconds the cpus spent in each mode.
+# TYPE node_cpu_seconds_total counter
+node_cpu_seconds_total{cpu="0",mode="idle"} 16761.9			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Gauge：可增可减的仪表盘</title>
+			<para>Gauge 类型的指标侧重于反应系统的当前状态，指标的样本数据可增可减。常用于内存容量的监控。</para>
+			<screen>
+				<![CDATA[
+neo@MacBook-Pro-Neo ~ % curl -s http://localhost:9100/metrics | grep node_memory_MemFree
+# HELP node_memory_MemFree_bytes Memory information field MemFree_bytes.
+# TYPE node_memory_MemFree_bytes gauge
+node_memory_MemFree_bytes 2.933243904e+09				
+				]]>
+			</screen>
+		</section>
+		<section>
+			<title>Histogram</title>
+			<screen>
+				<![CDATA[
+neo@MacBook-Pro-Neo ~ % curl -s http://localhost:9090/metrics | grep prometheus_tsdb_compaction_chunk_range
+# HELP prometheus_tsdb_compaction_chunk_range_seconds Final time range of chunks on their first compaction
+# TYPE prometheus_tsdb_compaction_chunk_range_seconds histogram
+prometheus_tsdb_compaction_chunk_range_seconds_bucket{le="100"} 2
+prometheus_tsdb_compaction_chunk_range_seconds_bucket{le="400"} 2
+prometheus_tsdb_compaction_chunk_range_seconds_bucket{le="1600"} 2
+prometheus_tsdb_compaction_chunk_range_seconds_bucket{le="6400"} 2
+prometheus_tsdb_compaction_chunk_range_seconds_bucket{le="25600"} 2
+prometheus_tsdb_compaction_chunk_range_seconds_bucket{le="102400"} 3
+prometheus_tsdb_compaction_chunk_range_seconds_bucket{le="409600"} 1506
+prometheus_tsdb_compaction_chunk_range_seconds_bucket{le="1.6384e+06"} 1558
+prometheus_tsdb_compaction_chunk_range_seconds_bucket{le="6.5536e+06"} 4564
+prometheus_tsdb_compaction_chunk_range_seconds_bucket{le="2.62144e+07"} 4564
+prometheus_tsdb_compaction_chunk_range_seconds_bucket{le="+Inf"} 4564
+prometheus_tsdb_compaction_chunk_range_seconds_sum 5.85524936e+09
+prometheus_tsdb_compaction_chunk_range_seconds_count 4564				
+				]]>
+			</screen>
+		</section>
+		<section>
+			<title>Summary</title>
+			<screen>
+				<![CDATA[
+neo@MacBook-Pro-Neo ~ % curl -s http://localhost:9090/metrics | grep prometheus_tsdb_wal_fsync_duration_seconds
+# HELP prometheus_tsdb_wal_fsync_duration_seconds Duration of WAL fsync.
+# TYPE prometheus_tsdb_wal_fsync_duration_seconds summary
+prometheus_tsdb_wal_fsync_duration_seconds{quantile="0.5"} NaN
+prometheus_tsdb_wal_fsync_duration_seconds{quantile="0.9"} NaN
+prometheus_tsdb_wal_fsync_duration_seconds{quantile="0.99"} NaN
+prometheus_tsdb_wal_fsync_duration_seconds_sum 1.63e-05
+prometheus_tsdb_wal_fsync_duration_seconds_count 1				
+				]]>
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>查询时间序列</title>
+		<section>
+			<title>标签查询</title>
+			<para>查询 instance="node-exporter:9100"</para>
+			<screen>
+			<![CDATA[
+node_cpu_seconds_total{instance="node-exporter:9100"}			
+			]]>
+			</screen>
+			<para>mode!="irq" 排出 irq</para>
+			<screen>
+			<![CDATA[
+node_cpu_seconds_total{mode!="irq"}			
+			]]>
+			</screen>
+			<para>查询所有 mode="user"</para>
+			<screen>
+			<![CDATA[
+{mode="user"}	
+			]]>
+			</screen>
+			<para>正则查询</para>
+			<screen>
+			<![CDATA[
+node_cpu_seconds_total{mode=~"user|system|nice"}			
+restful_api_requests_total{environment=~"staging|testing|development",method!="GET"}	
+
+{instance =~"n.*"} 		
+			]]>
+			</screen>
+			<para>正则排除</para>
+			<screen>
+			<![CDATA[
+node_cpu_seconds_total{mode!~"steal|softirq|irq|iowait|idle"}			
+			]]>
+			</screen>
+
+		</section>
+		<section>
+			<title>范围查询</title>
+			<orderedlist>
+				<title>PromQL的时间范围选择器支持时间单位：</title>
+				<listitem>s - 秒</listitem>
+				<listitem>m - 分钟</listitem>
+				<listitem>h - 小时</listitem>
+				<listitem>d - 天</listitem>
+				<listitem>w - 周</listitem>
+				<listitem>y - 年</listitem>
+			</orderedlist>
+			<para>该表达式将会查询返回时间序列中最近5分钟的所有样本数据：</para>
+			<screen>
+			<![CDATA[
+rate(node_memory_MemAvailable_bytes{}[5m])
+			]]>
+			</screen>
+			<para>可以使用offset时间位移操作：</para>
+			<screen>
+			<![CDATA[
+node_memory_MemAvailable_bytes{} offset 5m
+rate(node_load1{}[5m] offset 1m)	
+			]]>
+			</screen>
+		</section>
+		
+		<section>
+			<title>数学运算</title>
+			<para>PromQL 支持：数学运算符，逻辑运算符，布尔运算符</para>
+			<itemizedlist>
+				<title>PromQL操作符中优先级由高到低依次为：</title>
+				<listitem>^</listitem>
+				<listitem>*, /, %</listitem>
+				<listitem>+, -</listitem>
+				<listitem><![CDATA[==, !=, <=, <, >=, >]]></listitem>
+				<listitem>and, unless</listitem>
+				<listitem>or</listitem>
+			</itemizedlist>
+			<para></para>
+			<para>Bytes 转 MB 的例子</para>
+			<screen>
+			<![CDATA[
+node_memory_MemFree_bytes /  (1024 * 1024)			
+			]]>
+			</screen>
+			<para>计算磁盘读写总量</para>
+			<screen>
+			<![CDATA[
+(node_disk_read_bytes_total{device="vda"} + node_disk_written_bytes_total{device="vda"}) / (1024 * 1024)			
+			]]>
+			</screen>
+			<para>内存使用率计算</para>
+			<screen>
+			<![CDATA[
+(node_memory_MemTotal_bytes - node_memory_MemFree_bytes) / node_memory_MemTotal_bytes * 100
+
+# 查询出内存使用率到达 80% 的节点			
+(node_memory_MemTotal_bytes - node_memory_MemFree_bytes) / node_memory_MemTotal_bytes > 0.8
+
+node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100 > 80
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>聚合操作</title>
+		<para>PromQL内置的聚合操作和函数可以让用户对这些数据进行进一步的分析</para>
+		<section>
+			<title>rate()</title>
+			<para>通过rate()函数计算HTTP请求量的增长率：</para>
+			<screen>
+				<![CDATA[
+rate(http_requests_total[5m])				
+				]]>
+			</screen>
+		</section>
+		<section>
+			<title>topk() 和 bottomk()</title>
+			<para>查询当前访问量前10的HTTP地址：</para>
+			<screen>
+				<![CDATA[
+topk(10, http_requests_total)
+				]]>
+			</screen>
+		</section>
+		<section>
+			<title>delta()</title>
+			<para>通过PromQL内置函数delta()可以获取样本在一段时间返回内的变化情况。例如，计算CPU温度在两个小时内的差异：</para>
+			<screen>
+				<![CDATA[
+delta(cpu_temp_celsius{host="zeus"}[2h])
+				]]>
+			</screen>
+			<para>delta 适用于 Gauge 类型的监控指标</para>
+		</section>
+		<section>
+			<title>predict_linear()</title>
+			<para>使用predict_linear()对数据的变化趋势进行预测。例如，预测系统磁盘空间在4个小时之后的剩余情况：</para>
+			<screen>
+				<![CDATA[
+predict_linear(node_filesystem_free{job="node"}[1h], 4 * 3600)				
+				]]>
+			</screen>
+		</section>
+		<section>
+			<title>deriv()</title>
+			<para>deriv()计算样本的线性回归模型</para>
+			<screen>
+				<![CDATA[
+				
+				]]>
+			</screen>
+		</section>
+		<section>
+			<title>sum()</title>
+			<para>求和操作</para>
+			<screen>
+			<![CDATA[
+sum(node_cpu_seconds_total) 
+sum(node_cpu_seconds_total) by (mode)	
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+Element			Value
+{mode="steal"}	0
+{mode="system"}	2632.2400000000002
+{mode="user"}	768.49
+{mode="idle"}	93899.19
+{mode="iowait"}	8.85
+{mode="irq"}	0
+{mode="nice"}	0
+{mode="softirq"}	13.35			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+sum(node_cpu_seconds_total) without (instance)
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+sum(node_cpu_seconds_total) by (mode,cpu)
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+sum(sum(irate(node_cpu{mode!='idle'}[5m]))  / sum(irate(node_cpu[5m]))) by (instance)			
+			]]>
+			</screen>
+			
+		</section>
+		<section>
+			<title>avg()</title>
+			<para>计算平均数</para>
+			<screen>
+			<![CDATA[
+avg(node_cpu_seconds_total) by (mode)
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+
+Element			Value
+{mode="nice"}	0
+{mode="softirq"}	3.3374999999999995
+{mode="steal"}	0
+{mode="system"}	658.06
+{mode="user"}	192.1225
+{mode="idle"}	23474.7975
+{mode="iowait"}	2.2125
+{mode="irq"}	0			
+			]]>
+			</screen>
+		</section>
+		<section>	
+			<title>min (最小值)，max (最大值)</title>
+			<para></para>
+			<screen>
+			<![CDATA[
+			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>count_values()</title>
+		</section>
+		<section>
+			<title>quantile()</title>
+		</section>
+	</section>
+</section>

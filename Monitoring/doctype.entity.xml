@@ -33,4 +33,5 @@
 
 <!ENTITY chapter.prometheus.xml		 	SYSTEM "chapter.prometheus.xml">
 <!ENTITY section.prometheus.xml			SYSTEM "section.prometheus.xml">
+<!ENTITY section.prometheus.exporter.xml	SYSTEM "section.prometheus.exporter.xml">
 <!ENTITY section.prometheus.grafana.xml	SYSTEM "section.prometheus.grafana.xml">

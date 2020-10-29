@@ -160,6 +160,25 @@ registry            latest              7b76bd807a47        11 seconds ago      
 docker kill $(docker ps -a -q)			
 			]]>
 		</screen>
+		<section>
+			<title>信号处理</title>
+			<para>--signal, -s	向容器发送信号</para>
+			<para>发送一个SIGHUP信号</para>
+			<screen>
+			<![CDATA[
+$ docker kill -s=SIGHUP my_container
+			]]>
+			</screen>
+			<para>你可以通过名字或数字指定自定义信号，SIG前缀是可选的，例如下面的命令是等价的：</para>
+			<screen>
+			<![CDATA[
+$ docker kill -s=SIGHUP my_container
+$ docker kill -s=HUP my_container
+$ docker kill -s=1 my_container
+			]]>
+			</screen>
+		</section>
+		
 	</section>
 	<section id="container.rm">
 		<title>删除容器</title>
@@ -356,6 +375,15 @@ a6e33697e4bb        es02                0.68%               894.2MiB / 3.848GiB 
 598a6e61d4fc        kibana              0.95%               462.8MiB / 3.848GiB   11.74%              718kB / 13MB        409MB / 4.1kB       12
 bc125a658981        es03                2.67%               889.9MiB / 3.848GiB   22.58%              1.76MB / 5.79MB     48.5MB / 3.09MB     71
 d027503bee4b        elasticsearch       2.75%               928.4MiB / 3.848GiB   23.56%              24MB / 14.7MB       139MB / 8.57MB      75		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>重启容器</title>
+		<para>--time, -t 10 停止容器之前需要等待的时间(秒)</para>
+		<screen>
+		<![CDATA[
+$ docker restart [options] container [container...]		
 		]]>
 		</screen>
 	</section>
