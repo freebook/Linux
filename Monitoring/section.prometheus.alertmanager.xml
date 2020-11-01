@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="alertmanager">
+	<title>Alertmanager</title>
+	<section>
+		<title>alertmanager.yml 配置文件</title>
+		<section id="amtool">
+			<title>amtool 配置文件检查工具</title>
+			<screen>
+			<![CDATA[
+amtool check-config alertmanager.yml		
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>global 全局配置项</title>
+			<para>SMTP 配置</para>
+			<screen>
+			<![CDATA[
+global:
+  resolve_timeout: 5m 						#处理超时时间，默认为5min
+  smtp_smarthost: 'smtp.nejtkiller.cn:25' 	# 邮箱smtp服务器代理
+  smtp_from: 'monitor@netkiller.cn' 		# 发送邮箱名称
+  smtp_auth_username: 'monitor@netkiller.cn' 	# 邮箱名称
+  smtp_auth_password: '******' 				#邮箱密码			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>route 路由配置</title>
+			<screen>
+			<![CDATA[
+route:
+  group_by: ['alertname'] 	# 报警分组名称
+  group_wait: 10s 			# 最初即第一次等待多久时间发送一组警报的通知
+  group_interval: 10s 		# 在发送新警报前的等待时间
+  repeat_interval: 1m 		# 发送重复警报的周期
+  receiver: 'email' 		# 发送警报的接收者的名称，以下receivers name的名称			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>receivers 定义警报接收者</title>
+			<screen>
+			<![CDATA[
+receivers:
+  - name: 'email' 					# 警报
+    email_configs: 					# 邮箱配置
+    - to: 'monitor@netkiller.cn'  	# 接收警报的email配置			
+			]]>
+			</screen>
+		</section>
+	</section>
+</section>

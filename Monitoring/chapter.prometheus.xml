@@ -172,5 +172,6 @@ groups:
 	
 	&section.prometheus.xml;
 	&section.prometheus.exporter.xml;
+	&section.prometheus.alertmanager.xml;
 	&section.prometheus.grafana.xml;
 </chapter>

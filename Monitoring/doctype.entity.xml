@@ -31,7 +31,8 @@
 <!ENTITY chapter.log.elk.xml			SYSTEM "chapter.log.elk.xml">
 <!ENTITY chapter.zipkin.xml			 	SYSTEM "chapter.zipkin.xml">
 
-<!ENTITY chapter.prometheus.xml		 	SYSTEM "chapter.prometheus.xml">
-<!ENTITY section.prometheus.xml			SYSTEM "section.prometheus.xml">
-<!ENTITY section.prometheus.exporter.xml	SYSTEM "section.prometheus.exporter.xml">
-<!ENTITY section.prometheus.grafana.xml	SYSTEM "section.prometheus.grafana.xml">
+<!ENTITY chapter.prometheus.xml		 			SYSTEM "chapter.prometheus.xml">
+<!ENTITY section.prometheus.xml					SYSTEM "section.prometheus.xml">
+<!ENTITY section.prometheus.exporter.xml		SYSTEM "section.prometheus.exporter.xml">
+<!ENTITY section.prometheus.grafana.xml			SYSTEM "section.prometheus.grafana.xml">
+<!ENTITY section.prometheus.alertmanager.xml	SYSTEM "section.prometheus.alertmanager.xml">
