@@ -49,9 +49,9 @@ debian:
 mail:
 	$(call reset,mail)
 	$(call book,Mail,mail)
-monitoring:
-	$(call reset,monitoring)
-	$(call book,Monitoring,monitoring)	
+monitor:
+	$(call reset,monitor)
+	$(call book,Monitoring,monitor)	
 storage:
 	$(call reset,storage)
 	$(call book,Storage,storage)
