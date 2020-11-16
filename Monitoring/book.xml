@@ -27,9 +27,18 @@
 		&book.info.author.xml;
 
 		<copyright>
-			<year>2010-2019</year>
+			<year>2010-2020</year>
 			<holder>Netkiller(Neo Chan). All rights reserved.</holder>
 		</copyright>
+
+		<cover>
+			<para role="tagline">Netkiller Monitor 手札</para>
+			<mediaobject>
+				<imageobject>
+					<imagedata fileref="images/cover.png" />
+				</imageobject>
+			</mediaobject>
+		</cover>
 
 		<publisher>
 			<publishername>Neo</publishername>
