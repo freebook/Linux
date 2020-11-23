@@ -14,13 +14,13 @@
 		</section>
 		<section>
 			<title>depends</title>
-			<screen>
+			<screen><![CDATA[
 # apt-cache depends tcpdump
-			</screen>
+			]]></screen>
 		</section>
 		<section>
 			<title>policy</title>
-			<screen>
+			<screen><![CDATA[
 $ apt-cache policy tcpdump
 tcpdump:
   Installed: 4.0.0-6ubuntu3
@@ -30,7 +30,7 @@ tcpdump:
         500 http://us.archive.ubuntu.com/ubuntu/ lucid/main Packages
         100 /var/lib/dpkg/status
 
-			</screen>
+			]]></screen>
 		</section>
 		<section>
 			<title>查看所属镜像</title>
@@ -47,10 +47,10 @@ neo@m-1d41c853af58:~$ apt-cache madison docker
 		<title>Apt-Get</title>
 		<para>apt 命令默认从cdrom安装</para>
 		<para>注释/etc/apt/sources.list中的deb cdrom项, apt会从互联网上安装</para>
-		<screen>
+		<screen><![CDATA[
 netkiller@Linux-server:~$ sudo vi /etc/apt/sources.list
 # deb cdrom:[Ubuntu-Server 6.10 _Edgy Eft_ - Release i386 (20061025.1)]/ edgy main restricted
-		</screen>
+		]]></screen>
 
 		<command>apt-setup </command>
 
@@ -58,110 +58,91 @@ netkiller@Linux-server:~$ sudo vi /etc/apt/sources.list
 		<section>
 			<title>Search</title>
 			<para>Searching a software package</para>
-			<screen>
+			<screen><![CDATA[
 $ apt-cache search package
-			</screen>
+			]]></screen>
 			<para>列出软件包的详细信息:</para>
-			<screen>
+			<screen><![CDATA[
 $ apt-cache show package
-			</screen>
+			]]></screen>
 			<para>列出软件包的依赖关系:</para>
-			<screen>
+			<screen><![CDATA[
 $ apt-cache depends package
-			</screen>
+			]]></screen>
 			<para>列出软件包, 以及逆向依赖的软件包的详细版本信息:</para>
-			<screen>
+			<screen><![CDATA[
 $ apt-cache showpkg package
-			</screen>
+			]]></screen>
 		</section>
 		<section id="install">
 			<title>Installation</title>
-			<screen>
+			<screen><![CDATA[
 $ sudo apt install package
-			</screen>
+			]]></screen>
 			<para>*.deb</para>
-			<screen>
+			<screen><![CDATA[
 sudo dpkg -i *.deb
-			</screen>
+			]]></screen>
 		</section>
 		<section id="update">
 			<title>Update</title>
-			<screen>
+			<screen><![CDATA[
 $ apt update
 $ apt upgrade
-			</screen>
+			]]></screen>
 			<para>Smart software update</para>
-			<screen>
+			<screen><![CDATA[
 $ apt dist-upgrade
-			</screen>
+			]]></screen>
 		</section>
 		<section id="remove">
 			<title>Remove</title>
 			<para> 删除系统中的foo软件包</para>
-			<screen>
+			<screen><![CDATA[
 $ sudo apt remove foo
-			</screen>
+			]]></screen>
 			<para>删除系统中的package软件包及其配置文件</para>
-			<screen>
+			<screen><![CDATA[
 $ sudo apt remove --purge package
-			</screen>
+			]]></screen>
 		</section>
 		<section id="purge">
 			<title>purge</title>
-			<screen>
+			<screen><![CDATA[
 sudo apt purge package			
-			</screen>
+			]]></screen>
 		</section>
-<!--
-
-　　apt-cache search package 搜索包
-　　apt-cache show package 获取包的相关信息，如说明、大小、版本等
-　　sudo apt-get install package 安装包
-　　sudo apt-get install package - - reinstall 重新安装包
-　　sudo apt-get -f install 修复安装"-f = ――fix-missing"
-　　sudo apt-get remove package 删除包
-　　sudo apt-get remove package - - purge 删除包，包括删除配置文件等
-　　sudo apt-get update 更新源
-　　sudo apt-get upgrade 更新已安装的包
-　　sudo apt-get dist-upgrade 升级系统
-　　sudo apt-get dselect-upgrade 使用 dselect 升级
-　　apt-cache depends package 了解使用依赖
-　　apt-cache rdepends package 是查看该包被哪些包依赖
-　　sudo apt-get build-dep package 安装相关的编译环境
-　　apt-get source package 下载该包的源代码
-　　sudo apt-get clean && sudo apt-get autoclean 清理无用的包
-　　sudo apt-get check 检查是否有损坏的依赖
-
- -->
+		<!-- 　　apt-cache search package 搜索包 　　apt-cache show package 获取包的相关信息，如说明、大小、版本等 　　sudo apt-get install package 安装包 　　sudo apt-get install package - - reinstall 重新安装包 　　sudo apt-get -f install 修复安装"-f = ――fix-missing" 　　sudo apt-get remove package 删除包 　　sudo apt-get remove package - - purge 删除包，包括删除配置文件等 　　sudo apt-get update 更新源 　　sudo apt-get upgrade 更新已安装的包 　　sudo apt-get dist-upgrade 升级系统 　　sudo apt-get dselect-upgrade 使用 dselect 升级 　　apt-cache depends package 了解使用依赖 　　apt-cache rdepends package 是查看该包被哪些包依赖 
+			　　sudo apt-get build-dep package 安装相关的编译环境 　　apt-get source package 下载该包的源代码 　　sudo apt-get clean && sudo apt-get autoclean 清理无用的包 　　sudo apt-get check 检查是否有损坏的依赖 -->
 	</section>
 	<section id="aptitude">
 		<title>aptitude</title>
 		<para>管理软件包</para>
-		<screen>
+		<screen><![CDATA[
 neo@kerberos:~$ tasksel
 neo@kerberos:~$ aptitude
-		</screen>
+		]]></screen>
 	</section>
 	<section id="upgrades">
 		<title>Automatic Updates</title>
-		<screen>
+		<screen><![CDATA[
 sudo apt-get install unattended-upgrades
-		</screen>
+		]]></screen>
 		<para>/etc/apt/apt.conf.d/50unattended-upgrades</para>
-		<screen>
+		<screen><![CDATA[
 
-		</screen>
+		]]></screen>
 		<para>Notifications</para>
-		<screen>
+		<screen><![CDATA[
 sudo apt-get install apticron
-		</screen>
+		]]></screen>
 		<para>/etc/apticron/apticron.conf</para>
-		<screen>
+		<screen><![CDATA[
 EMAIL="root@example.com"
-		</screen>
+		]]></screen>
 		<section>
 			<title>升级过程中链接中断怎么办?</title>
-			<screen>
+			<screen><![CDATA[
 Ubuntu 16.04 升级到 16.10 过程中SSH中断
 
 我猜测do-release-upgrade 一定会有恢复方案，应该是screen. 经过查看果然是 screen
@@ -184,8 +165,38 @@ There is a screen on:
 neo@netkiller:~$ sudo screen -r 1955
 
 继续			
+			]]></screen>
+		</section>
+		<section>
+			<title>列出不能更新的包</title>
+			<screen>
+			<![CDATA[
+neo@netkiller ~ % apt list --upgradable
+Listing... Done
+dh-python/groovy,groovy 4.20200925 all [upgradable from: 4.20191017ubuntu7]
+iptables/groovy-updates 1.8.5-3ubuntu2.20.10.1 amd64 [upgradable from: 1.8.5-3ubuntu1]
+krb5-locales/groovy-updates,groovy-updates,groovy-security,groovy-security 1.17-10ubuntu0.1 all [upgradable from: 1.17-10]
+libgssapi-krb5-2/groovy-updates,groovy-security 1.17-10ubuntu0.1 amd64 [upgradable from: 1.17-10]
+libgssapi-krb5-2/groovy-updates,groovy-security 1.17-10ubuntu0.1 i386 [upgradable from: 1.17-10]
+libip4tc2/groovy-updates 1.8.5-3ubuntu2.20.10.1 amd64 [upgradable from: 1.8.5-3ubuntu1]
+libip6tc2/groovy-updates 1.8.5-3ubuntu2.20.10.1 amd64 [upgradable from: 1.8.5-3ubuntu1]
+libk5crypto3/groovy-updates,groovy-security 1.17-10ubuntu0.1 amd64 [upgradable from: 1.17-10]
+libk5crypto3/groovy-updates,groovy-security 1.17-10ubuntu0.1 i386 [upgradable from: 1.17-10]
+libkrb5-3/groovy-updates,groovy-security 1.17-10ubuntu0.1 amd64 [upgradable from: 1.17-10]
+libkrb5-3/groovy-updates,groovy-security 1.17-10ubuntu0.1 i386 [upgradable from: 1.17-10]
+libkrb5support0/groovy-updates,groovy-security 1.17-10ubuntu0.1 amd64 [upgradable from: 1.17-10]
+libkrb5support0/groovy-updates,groovy-security 1.17-10ubuntu0.1 i386 [upgradable from: 1.17-10]
+libldap-2.4-2/groovy-updates,groovy-security 2.4.53+dfsg-1ubuntu1.2 amd64 [upgradable from: 2.4.53+dfsg-1ubuntu1.1]
+libldap-common/groovy-updates,groovy-updates,groovy-security,groovy-security 2.4.53+dfsg-1ubuntu1.2 all [upgradable from: 2.4.53+dfsg-1ubuntu1.1]
+libxtables12/groovy-updates 1.8.5-3ubuntu2.20.10.1 amd64 [upgradable from: 1.8.5-3ubuntu1]
+linux-generic/groovy-updates 5.8.0.29.34 amd64 [upgradable from: 5.8.0.28.33]
+linux-headers-generic/groovy-updates 5.8.0.29.34 amd64 [upgradable from: 5.8.0.28.33]
+linux-image-generic/groovy-updates 5.8.0.29.34 amd64 [upgradable from: 5.8.0.28.33]
+linux-libc-dev/groovy-updates 5.8.0-29.31 amd64 [upgradable from: 5.8.0-28.30]			
+			]]>
 			</screen>
 		</section>
+
 	</section>
 	<section id="sources.list">
 		<title>更换 api 源镜像</title>
@@ -231,19 +242,19 @@ EOF
 		<title>dpkg</title>
 		<section>
 			<title>-i|--install 安装.deb包</title>
-			<screen>
+			<screen><![CDATA[
 $ sudo dpkg -i netkiller-1.0.deb
-			</screen>
+			]]></screen>
 		</section>
 		<section>
 			<title>-r|--remove 卸载.deb包</title>
-			<screen>
+			<screen><![CDATA[
 $ sudo dpkg -r netkiller
-			</screen>
+			]]></screen>
 		</section>
 		<section>
 			<title><![CDATA[-L|--listfiles <package> ...     List files `owned' by package(s). 列出包中的文件]]></title>
-			<screen>
+			<screen><![CDATA[
 $ dpkg -L netkiller|more
 /.
 /opt
@@ -253,7 +264,7 @@ $ dpkg -L netkiller|more
 /opt/neo/netkiller-1.0/linux/docbook.css
 /opt/neo/netkiller-1.0/linux/apas03.html
 /opt/neo/netkiller-1.0/linux/shell
-			</screen>
+			]]></screen>
 		</section>
 		<section>
 			<title><![CDATA[-l|--list [<pattern> ...] 	List packages concisely. 列出.deb包]]></title>
@@ -270,11 +281,11 @@ un  netkiller      <none>         (no description available)
 			]]>
 			</screen>
 		</section>
-		
+
 		<section>
 			<title>Status</title>
 			<para>系统上装了哪些软件包</para>
-			<screen>
+			<screen><![CDATA[
 要查看 Debian 系统上安装的所有软件包的状态, 运行
 
      dpkg --list
@@ -288,39 +299,41 @@ un  netkiller      <none>         (no description available)
 要得到某个软件包的更详细信息, 执行:
 
      dpkg --status packagename
-			</screen>
+			]]></screen>
 			<para>List of installed software packages</para>
-			<screen>
+			<screen><![CDATA[
 $ dpkg-query -W
-			</screen>
+			]]></screen>
 			<para>Description of installed software packages</para>
-			<screen>
+			<screen><![CDATA[
 $ dpkg -l
-			</screen>
+			]]></screen>
 			<para>找出一个文件的归属包</para>
-			<screen>
+			<screen><![CDATA[
 dpkg --search cachemgr
 squid3-cgi: /usr/lib/cgi-bin/cachemgr3.cgi
 squid3-cgi: /usr/share/man/man8/cachemgr3.cgi.8.gz
 squid3-cgi: /etc/squid3/cachemgr.conf
-			</screen>
+			]]></screen>
 		</section>
 
 		<section>
 			<title>dpkg-deb - Debian package archive (.deb) manipulation tool</title>
 			<section>
 				<title>-X, --vextract archive directory
-		              Extract and display the filenames contained by a
-		              package</title>
-				<screen>
+					Extract and display the filenames contained by a
+					package
+				</title>
+				<screen><![CDATA[
 $ dpkg -X dmd_2.057-0_amd64.deb dmd_2.057-0_amd64
-				</screen>
-			</section>		
+				]]></screen>
+			</section>
 
 			<section>
 				<title>-e, --control archive [directory]
-		          Extracts the control information files from a package archive into the specified directory.</title>
-				<screen>
+					Extracts the control information files from a package archive into the specified directory.
+				</title>
+				<screen><![CDATA[
 $ dpkg -e dmd_2.057-0_amd64.deb
 
 $ find DEBIAN/
@@ -328,8 +341,8 @@ DEBIAN/
 DEBIAN/conffiles
 DEBIAN/md5sum
 DEBIAN/control
-				</screen>
-			</section>	
+				]]></screen>
+			</section>
 			<section id="dpkg.build">
 				<title>-b, --build directory [archive|directory]</title>
 				<para>在你的目录下创建DEBIAN目录与control文件</para>
@@ -395,13 +408,13 @@ drwxr-xr-x neo/neo           0 2012-02-06 11:22 ./
 
 		<section id="dpkg-reconfigure">
 			<title>dpkg-reconfigure</title>
-			<screen>
+			<screen><![CDATA[
 $ sudo dpkg-reconfigure package
-			</screen>
+			]]></screen>
 			<para>所有未完成的配置步骤，主要是你在安装过程中出现中断后，可以使用下面命令补救。</para>
-			<screen>
+			<screen><![CDATA[
 $ sudo dpkg --configure -a			
-			</screen>
+			]]></screen>
 		</section>
 	</section>
 	<section id="do-release-upgrade">
@@ -410,51 +423,51 @@ $ sudo dpkg --configure -a
 		<para>升级到最新开发版</para>
 		<section>
 			<title>GUI</title>
-			<screen>
+			<screen><![CDATA[
 update-manager --devel-release
-			</screen>
+			]]></screen>
 		</section>
 		<section>
 			<title>CLI</title>
-			<screen>
+			<screen><![CDATA[
 $ sudo do-release-upgrade
 
 $ lsb_release -a
-			</screen>
+			]]></screen>
 			<para>升级到最新开发版</para>
-			<screen>
+			<screen><![CDATA[
 vim /etc/update-manager/release-upgrades 文件，把里面的
 Prompt=lts
 改为
 Prompt=normal
-			</screen>
-			<screen>
+			]]></screen>
+			<screen><![CDATA[
 sudo do-release-upgrade -d
-			</screen>
+			]]></screen>
 		</section>
 		<section>
 			<title>CDROM</title>
-			<screen>
+			<screen><![CDATA[
 $ sudo mount -t iso9660 -o loop ~/maverick-alternate-i386.iso /cdrom
 $ sudo /cdrom/cdromupgrade
-			</screen>
+			]]></screen>
 		</section>
 	</section>
-	
+
 	<section id="deb">
 		<title>制作.deb安装包</title>
 		<section id="checkinstall">
 			<title>checkinstall — Track installation of local software, and produce a binary manageable with your package management software.</title>
-			<screen>
+			<screen><![CDATA[
 $ tar xxx.tar.gz
 $ cd xxx
 $ ./configure
 $ make			
-			</screen>			
-			<screen>
+			]]></screen>
+			<screen><![CDATA[
 $ sudo apt-get install checkinstall		
-			</screen>
-			
+			]]></screen>
+
 		</section>
 		<section id="dh_make">
 			<title>dh_make - prepare Debian packaging for an original source archive</title>
@@ -465,6 +478,6 @@ $ sudo apt-get install checkinstall
 			<title>control</title>
 			<para>Architecture: any | amd64 | i386 The generated binary package is an architecture dependent one usually in a compiled language.</para>
 			<para>Architecture: all The generated binary package is an architecture independent one usually consisting of text, images, or scripts in an interpreted language.</para>
-		</section>		
+		</section>
 	</section>
 </section>
