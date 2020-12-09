@@ -354,6 +354,30 @@ minikube start --extra-config="kubelet.allowed-unsafe-sysctls=kernel.msg*,net.co
 				]]>
 				</screen>
 			</section>
+			<section>
+				<title>使用 CRI-O 容易</title>
+				<screen>
+				<![CDATA[
+minikube start --container-runtime=cri-o --vm-driver=none				
+				]]>
+				</screen>
+				<para>启动演示</para>
+				<screen>
+				<![CDATA[
+iMac:~ neo$ minikube start --container-runtime=cri-o
+😄  Darwin 10.13.6 上的 minikube v1.15.0
+🆕  Kubernetes 1.19.4 is now available. If you would like to upgrade, specify: --kubernetes-version=v1.19.4
+✨  根据现有的配置文件使用 hyperkit 驱动程序
+👍  Starting control plane node minikube in cluster minikube
+🔄  Restarting existing hyperkit VM for "minikube" ...
+🎁  正在 CRI-O 1.17.3 中准备 Kubernetes v1.19.2…
+🔗  Configuring bridge CNI (Container Networking Interface) ...
+🔎  Verifying Kubernetes components...
+🌟  Enabled addons: storage-provisioner, dashboard, default-storageclass
+🏄  Done! kubectl is now configured to use "minikube" cluster and "" namespace by default
+				]]>
+				</screen>
+			</section>
 		</section>
 		<section id="minikube.stop">
 			<title>停止 minikube</title>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="cri-o">
+	<title>CRI-O</title>
+	<para><ulink url="https://cri-o.io/">https://cri-o.io/</ulink></para>
+	<section>
+		<title>/etc/crictl.yaml</title>
+		<screen>
+		<![CDATA[
+# cat /etc/crictl.yaml
+runtime-endpoint: unix:///var/run/crio/crio.sock
+image-endpoint: unix:///var/run/crio/crio.sock		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>crio-status</title>
+		<para>查看当前crio的配置</para>
+		<screen>
+		<![CDATA[
+crio-status config		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>crictl</title>
+		<screen>
+		<![CDATA[
+# go get github.com/kubernetes-sigs/cri-tools/cmd/crictl
+# cp /root/go/bin/crictl /usr/local/bin
+# crictl --runtime-endpoint unix:///var/run/crio/crio.sock version
+Version:  0.1.0
+RuntimeName:  cri-o
+RuntimeVersion:  1.15.1
+RuntimeApiVersion:  v1alpha1		
+		]]>
+		</screen>
+	</section>
+</section>
