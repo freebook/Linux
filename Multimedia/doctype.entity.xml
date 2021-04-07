@@ -11,6 +11,7 @@
 <!ENTITY chapter.pulseaudio.xml	 	SYSTEM "Audio/chapter.pulseaudio.xml">
 
 <!ENTITY part.video.xml	 			SYSTEM "Video/part.video.xml">
+<!ENTITY section.ffmpeg.xml	 		SYSTEM "Video/section.ffmpeg.xml">
 
 <!ENTITY part.images.xml			SYSTEM "Images/part.images.xml">
 <!ENTITY chapter.imagemagick.xml 	SYSTEM "Images/chapter.imagemagick.xml">

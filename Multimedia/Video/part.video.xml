@@ -10,14 +10,5 @@
 	<title>cinelerra-cv</title>
 	<para><ulink url="http://cinelerra.org/">http://cinelerra.org/</ulink></para>
 </section>
-
-<section id="ffmpeg">
-	<title>FFmpeg</title>
-	<para><ulink url="http://ffmpeg.org/">http://ffmpeg.org/</ulink></para>
-	<para>Converting video and audio has never been so easy.</para>
-	<screen>
-$ ffmpeg -i input.mp4 output.avi	
-	</screen>
-</section>
-
+	&section.ffmpeg.xml;
 </chapter>
