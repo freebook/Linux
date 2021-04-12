@@ -266,4 +266,19 @@ sed -i -e 's/aaa/bbb/g' *
 perl -p -i -e 's/aaa/bbb/g' *
 		</programlisting>
 	</section>
+	<section>
+		<title>案例</title>
+		<section>
+			<title>HTML 转 文本</title>
+			<screen>
+			<![CDATA[
+# Remove HTML Tags from a File in Linux
+sed 's/<[^>]*>//g ; /^$/d' htmlpage.html
+			
+# Convert HTML to Text in Linux			
+sed 's/<[^>]*>//g ; /^$/d' htmlpage.html > output.txt			
+			]]>
+			</screen>
+		</section>
+	</section>
 </section>
