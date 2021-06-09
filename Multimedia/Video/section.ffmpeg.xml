@@ -6,12 +6,29 @@
 	</para>
 	<para>Converting video and audio has never been so easy.</para>
 	<section>
+		<title>安装</title>
+		<para>MacOS</para>
+		<screen>
+		<![CDATA[
+brew install ffmpeg		
+		]]>
+		</screen>
+	</section>
+	<section>
 		<title>视频格式转换</title>
 		<screen>
 		<![CDATA[
 $ ffmpeg -i input.mp4 output.avi	
 		]]>
 		</screen>
+		<section>
+			<title>m4v to mov</title>
+			<screen>
+			<![CDATA[
+for i in *.m4v; do ffmpeg -y -i "$i" "${i%.*}.mov"; done			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section>
 		<title>提取视频中的音频</title>
