@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="">
+<chapter id="index"><?dbhtml dir="vm" ?>
 	<title>Virtual Machine(虚拟机)</title>
 	&section.vm.kvm.xml;
 	&section.vm.xen.xml;

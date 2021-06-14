@@ -227,7 +227,36 @@ COPY --from=netkiller /www/ /usr/share/nginx/html/
 EXPOSE <端口1> [<端口2>...]
 			]]>
 			</screen>
-			
+		</section>
+		<section>
+			<title>ENTRYPOINT</title>
+			<para>从命令行传递参数给容器</para>
+			<screen>
+			<![CDATA[
+FROM ubuntu
+ENTRYPOINT [ "top", "-b" ]		
+			]]>
+			</screen>
+			<para>运行下面的命令：</para>
+			<screen>
+			<![CDATA[
+$ docker run --rm test1 -c				
+			]]>
+			</screen>
+			<para>实际 Docker 内部</para>
+			<screen>
+			<![CDATA[
+top -b -c			
+			]]>
+			</screen>
+			<para>ENTRYPOINT 与 CMD 组合</para>
+			<screen>
+			<![CDATA[
+FROM ubuntu
+ENTRYPOINT [ "top", "-b" ]
+CMD [ "-c" ]			
+			]]>
+			</screen>
 		</section>
 	</section>
 </section>
