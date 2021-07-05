@@ -512,6 +512,42 @@ minikube start -p demo --memory=8192 --cpus=6 --disk-size=50g
 		<section id="minikube.addons">
 			<title>addons</title>
 			<section>
+				<title>查看所有插件</title>
+				<screen>
+				<![CDATA[
+iMac:registry neo$ minikube addons list
+|-----------------------------|----------|--------------|
+|         ADDON NAME          | PROFILE  |    STATUS    |
+|-----------------------------|----------|--------------|
+| ambassador                  | minikube | disabled     |
+| dashboard                   | minikube | enabled ✅   |
+| default-storageclass        | minikube | enabled ✅   |
+| efk                         | minikube | disabled     |
+| freshpod                    | minikube | disabled     |
+| gcp-auth                    | minikube | disabled     |
+| gvisor                      | minikube | disabled     |
+| helm-tiller                 | minikube | disabled     |
+| ingress                     | minikube | disabled     |
+| ingress-dns                 | minikube | disabled     |
+| istio                       | minikube | disabled     |
+| istio-provisioner           | minikube | disabled     |
+| kubevirt                    | minikube | disabled     |
+| logviewer                   | minikube | disabled     |
+| metallb                     | minikube | disabled     |
+| metrics-server              | minikube | disabled     |
+| nvidia-driver-installer     | minikube | disabled     |
+| nvidia-gpu-device-plugin    | minikube | disabled     |
+| olm                         | minikube | disabled     |
+| pod-security-policy         | minikube | disabled     |
+| registry                    | minikube | disabled     |
+| registry-aliases            | minikube | disabled     |
+| registry-creds              | minikube | disabled     |
+| storage-provisioner         | minikube | enabled ✅   |
+| storage-provisioner-gluster | minikube | disabled     |
+|-----------------------------|----------|--------------|				
+				]]>
+				</screen>
+			</section><section>
 				<title>启用 addons</title>
 				<screen>
 				<![CDATA[
@@ -552,67 +588,7 @@ dashboard was successfully enabled
 - storage-provisioner-gluster: disabled			
 				]]>
 				</screen>
-			</section>
-		</section>
-		<section id="minikube.ssh">
-			<title>SSH</title>
-			<para>--vm-driver=none 不支持 ssh</para>
-			<screen>
-			<![CDATA[
-[root@localhost ~]# minikube ssh
-'none' driver does not support 'minikube ssh' command			
-			]]>
-			</screen>
-		</section>
-		<section id="minikube.ip">
-			<title>查看IP地址</title>
-			<screen>
-			<![CDATA[
-[root@localhost ~]# minikube ip
-172.16.0.121			
-			]]>
-			</screen>
-		</section>
-		<section id="minikube.addons">
-			<title>addons</title>
-			<section>
-				<title>查看所有插件</title>
-				<screen>
-				<![CDATA[
-iMac:registry neo$ minikube addons list
-|-----------------------------|----------|--------------|
-|         ADDON NAME          | PROFILE  |    STATUS    |
-|-----------------------------|----------|--------------|
-| ambassador                  | minikube | disabled     |
-| dashboard                   | minikube | enabled ✅   |
-| default-storageclass        | minikube | enabled ✅   |
-| efk                         | minikube | disabled     |
-| freshpod                    | minikube | disabled     |
-| gcp-auth                    | minikube | disabled     |
-| gvisor                      | minikube | disabled     |
-| helm-tiller                 | minikube | disabled     |
-| ingress                     | minikube | disabled     |
-| ingress-dns                 | minikube | disabled     |
-| istio                       | minikube | disabled     |
-| istio-provisioner           | minikube | disabled     |
-| kubevirt                    | minikube | disabled     |
-| logviewer                   | minikube | disabled     |
-| metallb                     | minikube | disabled     |
-| metrics-server              | minikube | disabled     |
-| nvidia-driver-installer     | minikube | disabled     |
-| nvidia-gpu-device-plugin    | minikube | disabled     |
-| olm                         | minikube | disabled     |
-| pod-security-policy         | minikube | disabled     |
-| registry                    | minikube | disabled     |
-| registry-aliases            | minikube | disabled     |
-| registry-creds              | minikube | disabled     |
-| storage-provisioner         | minikube | enabled ✅   |
-| storage-provisioner-gluster | minikube | disabled     |
-|-----------------------------|----------|--------------|				
-				]]>
-				</screen>
-			</section>
-			<section>
+			</section><section>
 				<title>开启 registry 私有库</title>
 				<screen>
 		<![CDATA[
@@ -652,8 +628,7 @@ $ docker push 10.0.0.240/busybox
 		]]>
 				</screen>
 				<!-- minikube addons enable registry docker tag ubuntu $(minikube ip):5000/ubuntu docker push $(minikube ip):5000/ubuntu -->
-			</section>
-			<section>
+			</section><section>
 				<title>启用 ingress</title>
 				<screen>
 				<![CDATA[
@@ -661,6 +636,44 @@ iMac:kubernetes neo$ minikube addons enable ingress
 				]]>
 				</screen>
 			</section>
+		</section>
+		<section id="minikube.ssh">
+			<title>SSH</title>
+			<para>--vm-driver=none 不支持 ssh</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# minikube ssh
+'none' driver does not support 'minikube ssh' command			
+			]]>
+			</screen>
+		</section>
+		<section id="minikube.ip">
+			<title>查看IP地址</title>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# minikube ip
+172.16.0.121			
+			]]>
+			</screen>
+		</section>
+		<section id="minikube.image">
+			<title>镜像管理</title>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~ % minikube image ls
+registry.cn-hangzhou.aliyuncs.com/google_containers/storage-provisioner:v5
+registry.cn-hangzhou.aliyuncs.com/google_containers/pause:3.2
+registry.cn-hangzhou.aliyuncs.com/google_containers/metrics-scraper:v1.0.4
+registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:v1.20.7
+registry.cn-hangzhou.aliyuncs.com/google_containers/kube-proxy:v1.20.7
+registry.cn-hangzhou.aliyuncs.com/google_containers/kube-controller-manager:v1.20.7
+registry.cn-hangzhou.aliyuncs.com/google_containers/kube-apiserver:v1.20.7
+registry.cn-hangzhou.aliyuncs.com/google_containers/etcd:3.4.13-0
+registry.cn-hangzhou.aliyuncs.com/google_containers/dashboard:v2.1.0
+registry.cn-hangzhou.aliyuncs.com/google_containers/coredns:1.7.0
+docker.io/netkiller/flask:latest			
+			]]>
+			</screen>
 		</section>
 	</section>
 	<section id="minikube.faq">
