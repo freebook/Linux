@@ -572,6 +572,15 @@ $ sudo iwlist wlan1 scanning | grep ESSID
 $ sudo iwconfig eth1 essid <ESSID> key <PASSWORD>			
 			]]>
 			</screen>
+			<example>
+				<title>命令行建立WiFi链接步骤</title>
+				<screen><![CDATA[
+$ sudo rfkill unblock all
+$ sudo ifconfig wlan1 up
+$ sudo iwlist wlan1 scanning | grep ESSID
+$ sudo iwconfig wlan1 essid Netkiller key 66535215
+			]]></screen>
+			</example>
 		</section>
 		<section>
 			<title>/proc/net/wireless</title>
@@ -581,15 +590,7 @@ Inter-| sta-|   Quality        |   Discarded packets               | Missed | WE
  face | tus | link level noise |  nwid  crypt   frag  retry   misc | beacon | 22			
 			]]></screen>
 		</section>
-		<example>
-			<title>命令行建立WiFi链接步骤</title>
-			<screen><![CDATA[
-$ sudo rfkill unblock all
-$ sudo ifconfig wlan1 up
-$ sudo iwlist wlan1 scanning | grep ESSID
-$ sudo iwconfig wlan1 essid Netkiller key 66535215
-			]]></screen>
-		</example>
+
 	</section>
 
 	<section id="sys.net.centos">
@@ -689,7 +690,7 @@ nmcli connection add type ethernet ifname enp0s8
 				</screen>
 			</section>
 			<section>
-				<title></title>
+				<title>修改IP地址</title>
 				<screen>
 				<![CDATA[
 $ nmcli connection modify enp8s0 ipv4.address 192.168.4.26/24
@@ -734,7 +735,7 @@ PREFIX=24
        valid_lft forever preferred_lft forever				
 				]]>
 				</screen>
-				
+
 			</section>
 			<section>
 				<title>停止接口</title>
@@ -875,7 +876,24 @@ nmcli ipv4> quit
 				]]>
 				</screen>
 			</section>
-			
+			<section>
+				<title>链接 WI-FI</title>
+				<screen>
+				<![CDATA[
+sudo nmcli dev wifi connect netkiller password ******** ifname wlp1s0
+sudo nmcli device
+				]]>
+				</screen>
+				<para>运行命令后，会在/etc/NetworkManager/system-connections目录下看到一个名为“netkiller.nmconnection”的文件</para>
+				<para>--ask 询问密码</para>
+				<screen>
+				<![CDATA[
+sudo nmcli --ask dev wifi connect netkiller
+ Password: 
+ Device 'wlp2s0' successfully activated with 'f74121b-3245-48a2-ae25-1b6f789243984'.				
+				]]>
+				</screen>
+			</section>
 			<section>
 				<title>显示设备信息</title>
 				<screen>

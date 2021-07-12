@@ -149,5 +149,47 @@ yum install -y bind-utils
 yum install -y vim-enhanced
 		</screen>
 	</section>
+	<section>
+		<title>U 盘安装 CentOS Stream</title>
+		<para>下载 ISO 文件</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-Neo ~ % wget -c http://mirrors.163.com/centos/8-stream/isos/x86_64/CentOS-Stream-8-x86_64-20210706-dvd1.iso	
+		]]>
+		</screen>
+		<para>查看 U 盘设备文件，这里是 /dev/disk2</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-Neo ~ % diskutil list
+/dev/disk0 (internal, physical):
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:      GUID_partition_scheme                        *251.0 GB   disk0
+   1:                        EFI ⁨EFI⁩                     209.7 MB   disk0s1
+   2:                 Apple_APFS ⁨Container disk1⁩         250.8 GB   disk0s2
+
+/dev/disk1 (synthesized):
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:      APFS Container Scheme -                      +250.8 GB   disk1
+                                 Physical Store disk0s2
+   1:                APFS Volume ⁨Macintosh HD - Data⁩     209.8 GB   disk1s1
+   2:                APFS Volume ⁨Preboot⁩                 685.0 MB   disk1s2
+   3:                APFS Volume ⁨Recovery⁩                620.1 MB   disk1s3
+   4:                APFS Volume ⁨VM⁩                      6.4 GB     disk1s4
+   5:                APFS Volume ⁨Macintosh HD⁩            15.4 GB    disk1s5
+   6:              APFS Snapshot ⁨com.apple.os.update-...⁩ 15.4 GB    disk1s5s1
+
+/dev/disk2 (external, physical):
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:                                                   *30.8 GB    disk2		
+		]]>
+		</screen>
+		<para>制作U盘启动盘，注意！将 /dev/disk2 改成 /dev/rdisk2 写入速度会提速，rdisk 是 rawdisk。</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-Neo ~ % sudo dd if=CentOS-Stream-8-x86_64-20210706-dvd1.iso of=/dev/rdisk2 bs=100m
+Password:			
+		]]>
+		</screen>
+	</section>
 </section>		
 

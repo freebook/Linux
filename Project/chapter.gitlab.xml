@@ -14,24 +14,26 @@
 		<ulink url="http://www.netkiller.cn/project/project/gitlab/index.html" />
 	</para>
 
-<section id="install">
-	<title>GitLab</title>
-	
-	<para><ulink url="https://github.com/gitlabhq" /></para>
-	<para>GitLab是一个利用 Ruby on Rails 开发的开源应用程序，实现一个自托管的Git项目仓库，可通过Web界面进行访问公开的或者私人项目。</para>
-	<para>它拥有与Github类似的功能，能够浏览源代码，管理缺陷和注释。可以管理团队对仓库的访问，它非常易于浏览提交过的版本并提供一个文件历史库。团队成员可以利用内置的简单聊天程序(Wall)进行交流。它还提供一个代码片段收集功能可以轻松实现代码复用，便于日后有需要的时候进行查找。</para>
-	<para>GitLab 5.0以前版本要求服务器端采用 Gitolite 搭建，5.0版本以后不再使用 Gitolite ，采用自己开发的 gitlab-shell 来实现。如果你觉得安装麻烦可以使用 GitLab Installers 一键安装程序。</para>
 	<section id="install">
-		<title>Yum 安装 GitLab</title>
-		<screen>
+		<title>GitLab</title>
+
+		<para>
+			<ulink url="https://github.com/gitlabhq" />
+		</para>
+		<para>GitLab是一个利用 Ruby on Rails 开发的开源应用程序，实现一个自托管的Git项目仓库，可通过Web界面进行访问公开的或者私人项目。</para>
+		<para>它拥有与Github类似的功能，能够浏览源代码，管理缺陷和注释。可以管理团队对仓库的访问，它非常易于浏览提交过的版本并提供一个文件历史库。团队成员可以利用内置的简单聊天程序(Wall)进行交流。它还提供一个代码片段收集功能可以轻松实现代码复用，便于日后有需要的时候进行查找。</para>
+		<para>GitLab 5.0以前版本要求服务器端采用 Gitolite 搭建，5.0版本以后不再使用 Gitolite ，采用自己开发的 gitlab-shell 来实现。如果你觉得安装麻烦可以使用 GitLab Installers 一键安装程序。</para>
+		<section id="install">
+			<title>Yum 安装 GitLab</title>
+			<screen><![CDATA[
 yum localinstall -y https://downloads-packages.s3.amazonaws.com/centos-6.6/gitlab-ce-7.10.0~omnibus.2-1.x86_64.rpm
 
 gitlab-ctl reconfigure
 
 cp /etc/gitlab/gitlab.rb{,.original}
-		</screen>
-		<para>停止 GitLab 服务</para>
-		<screen>
+		]]></screen>
+			<para>停止 GitLab 服务</para>
+			<screen><![CDATA[
 # gitlab-ctl stop
 ok: down: logrotate: 1s, normally up
 ok: down: nginx: 0s, normally up
@@ -39,9 +41,9 @@ ok: down: postgresql: 0s, normally up
 ok: down: redis: 0s, normally up
 ok: down: sidekiq: 1s, normally up
 ok: down: unicorn: 0s, normally up
-		</screen>
-		<para>启动 GitLab 服务</para>
-		<screen>
+		]]></screen>
+			<para>启动 GitLab 服务</para>
+			<screen><![CDATA[
 # gitlab-ctl start
 ok: run: logrotate: (pid 3908) 0s
 ok: run: nginx: (pid 3911) 1s
@@ -49,14 +51,14 @@ ok: run: postgresql: (pid 3921) 0s
 ok: run: redis: (pid 3929) 1s
 ok: run: sidekiq: (pid 3933) 0s
 ok: run: unicorn: (pid 3936) 1s
-		</screen>
-		<para>配置gitlab</para>
-		<screen>
+		]]></screen>
+			<para>配置gitlab</para>
+			<screen><![CDATA[
 # vim /etc/gitlab/gitlab.rb
-external_url 'http://gitlab.example.com'		
-		</screen>
-		<para>SMTP配置</para>
-		<screen>
+external_url 'http://gitlab.example.com'
+		]]></screen>
+			<para>SMTP配置</para>
+			<screen><![CDATA[
 gitlab_rails['gitlab_email_enabled'] = true
 gitlab_rails['gitlab_email_from'] = 'openunix@163.com'
 gitlab_rails['gitlab_email_display_name'] = 'Neo'
@@ -68,22 +70,22 @@ gitlab_rails['smtp_user_name'] = "openunix@163.com"
 gitlab_rails['smtp_password'] = "password"
 gitlab_rails['smtp_domain'] = "163.com"
 gitlab_rails['smtp_authentication'] = "login"		
-		</screen>
-		<para>任何配置文件变化都需要运行 # gitlab-ctl reconfigure</para>
-		<para>WEB管理员</para>
-		<screen>
+		]]></screen>
+			<para>任何配置文件变化都需要运行 # gitlab-ctl reconfigure</para>
+			<para>WEB管理员</para>
+			<screen><![CDATA[
 # Username: root 
 # Password: 5iveL!fe		
-		</screen>
-	</section>
-	<section>
-		<title>Docker 方式安装 Gitlab</title>
-		<screen>
+		]]></screen>
+		</section>
+		<section>
+			<title>Docker 方式安装 Gitlab</title>
+			<screen>
 		<![CDATA[
 docker pull gitlab/gitlab-ce:latest		
 		]]>
-		</screen>
-		<screen>
+			</screen>
+			<screen>
 		<![CDATA[
 docker run \
     -d \
@@ -96,17 +98,17 @@ docker run \
     -v /opt/gitlab/data:/var/opt/gitlab \
     gitlab/gitlab-ce		
 		]]>
-		</screen>
-		<para>配置对外url，域名或者ip，公网能访问即可</para>
-		<screen>
+			</screen>
+			<para>配置对外url，域名或者ip，公网能访问即可</para>
+			<screen>
 		<![CDATA[
 vim /mnt/gitlab/etc/gitlab.rb
 添加一下配置：
 external_url	'http://127.0.0.1' （你的域名或者ip地址）	
 		]]>
-		</screen>
-		<para>配置邮箱</para>
-		<screen>
+			</screen>
+			<para>配置邮箱</para>
+			<screen>
 		<![CDATA[
 vim /mnt/gitlab/etc/gitlab.rb
 gitlab_rails['smtp_enable'] = true
@@ -120,26 +122,71 @@ gitlab_rails['smtp_enable_starttls_auto'] = true
 gitlab_rails['smtp_tls'] = true
 gitlab_rails['gitlab_email_from'] = '13721218@qq.com'  (替换成自己的QQ邮箱，且与smtp_user_name一致)		
 		]]>
-		</screen>
-		<para>重新启动gitlab</para>
-		<screen>
+			</screen>
+			<para>重新启动gitlab</para>
+			<screen>
 		<![CDATA[
 docker restart gitlab-ce	
 		]]>
-		</screen>
-	</section>
-	<section id="gitlab.runner">
-		<title>GitLab Runner</title>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>CentOS Stream</title>
+			<screen>
+			<![CDATA[
+sudo systemctl status firewalld 
+sudo firewall-cmd --permanent --add-service=http 
+sudo firewall-cmd --permanent --add-service=https 
+sudo systemctl reload firewalld   
+
+sudo dnf install postfix 
+sudo systemctl enable postfix 
+sudo systemctl start postfix
+
+
+curl -s https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh | bash
+
+EXTERNAL_URL="http://gitlab.example.com"
+
+export LC_ALL=en_US.UTF-8  
+export LANG=en_US.UTF-8
+export LC_CTYPE=UTF-8
+
+dnf install -y gitlab-ce
+
+cp /etc/gitlab/gitlab.rb{,.original}
+
+gitlab-ctl reconfigure			
+			]]>
+			</screen>
+			<para>查看 root 密码</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# cat  /etc/gitlab/initial_root_password
+# WARNING: This value is valid only in the following conditions
+#          1. If provided manually (either via `GITLAB_ROOT_PASSWORD` environment variable or via `gitlab_rails['initial_root_password']` setting in `gitlab.rb`, it was provided before database was seeded for the first time (usually, the first reconfigure run).
+#          2. Password hasn't been changed manually, either via UI or via command line.
+#
+#          If the password shown here doesn't work, you must reset the admin password following https://docs.gitlab.com/ee/security/reset_user_password.html#reset-your-root-password.
+
+Password: dpzQFzltaq0BhAwDnugMf6MCFbvItXDvC+RcuN9R+wg=
+
+# NOTE: This file will be automatically deleted in the first reconfigure run after 24 hours.			
+			]]>
+			</screen>
+		</section>
+		<section id="gitlab.runner">
+			<title>GitLab Runner</title>
+			<screen><![CDATA[
 curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-ci-multi-runner/script.rpm.sh | sudo bash
 sudo yum install gitlab-ci-multi-runner
-		</screen>
-		<para>进入 CI 配置页面 http://git.netkiller.cn/netkiller.cn/www.netkiller.cn/settings/ci_cd</para>
-		<para>Specific Runners 你将看到 CI 的URL和他的Token </para>
-		<para>Specify the following URL during the Runner setup: http://git.netkiller.cn/ci</para>
-		<para>Use the following registration token during setup: wRoz1Y_6CXpNh2JbxN_s</para>
-		<para>现在回到 GitLab Runner </para>
-		<screen>
+		]]></screen>
+			<para>进入 CI 配置页面 http://git.netkiller.cn/netkiller.cn/www.netkiller.cn/settings/ci_cd</para>
+			<para>Specific Runners 你将看到 CI 的URL和他的Token </para>
+			<para>Specify the following URL during the Runner setup: http://git.netkiller.cn/ci</para>
+			<para>Use the following registration token during setup: wRoz1Y_6CXpNh2JbxN_s</para>
+			<para>现在回到 GitLab Runner </para>
+			<screen><![CDATA[
 # gitlab-ci-multi-runner register
 Running in system-mode.                            
                                                    
@@ -157,34 +204,34 @@ Registering runner... succeeded                     runner=wRoz1Y_6
 Please enter the executor: docker, docker-ssh, shell, ssh, virtualbox, docker+machine, docker-ssh+machine, kubernetes, parallels:
 shell
 Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded! 
-		</screen>
-		<para>回到 Gitlab 页你将看到 Pending 状态变成 Running 状态</para>
-		<para>升级 GitLab Runner</para>
-		<screen>
+		]]></screen>
+			<para>回到 Gitlab 页你将看到 Pending 状态变成 Running 状态</para>
+			<para>升级 GitLab Runner</para>
+			<screen><![CDATA[
 yum install gitlab-ci-multi-runner		
-		</screen>
-	</section>
-	<section id="gitlab.user">
-		<title>用户管理</title>
-		<para>初始化GitLab，进入Admin area，单击左侧菜单Users，在这里为gitlab添加用户</para>
-	</section>
-	<section id="gitlab.group">
-		<title>组管理</title>
-		<para>初始化GitLab组，我比较喜欢使用“域名”作为组名，例如example.com</para>
-	</section>
-	<section id="gitlab.project">
-		<title>项目管理</title>
-		<para>创建项目，我通常会在组下面创建项目，每个域名对应一个项目,例如www.example.com,images.example.com</para>
-		<para>版本库URL如下</para>
-		<screen>
+		]]></screen>
+		</section>
+		<section id="gitlab.user">
+			<title>用户管理</title>
+			<para>初始化GitLab，进入Admin area，单击左侧菜单Users，在这里为gitlab添加用户</para>
+		</section>
+		<section id="gitlab.group">
+			<title>组管理</title>
+			<para>初始化GitLab组，我比较喜欢使用“域名”作为组名，例如example.com</para>
+		</section>
+		<section id="gitlab.project">
+			<title>项目管理</title>
+			<para>创建项目，我通常会在组下面创建项目，每个域名对应一个项目,例如www.example.com,images.example.com</para>
+			<para>版本库URL如下</para>
+			<screen><![CDATA[
 http: http://192.168.0.1/example.com/www.example.com.git
 ssh: git@192.168.0.1:example.com/www.example.com.git
-		</screen>
-	</section>
-	<section id="gitlab.ssl">
-		<title>绑定SSL证书</title>
-		<para>编辑 /etc/gitlab/gitlab.rb 文件</para>
-		<screen>
+		]]></screen>
+		</section>
+		<section id="gitlab.ssl">
+			<title>绑定SSL证书</title>
+			<para>编辑 /etc/gitlab/gitlab.rb 文件</para>
+			<screen>
 		<![CDATA[
 external_url 'https://git.netkiller.cn'
 
@@ -195,55 +242,56 @@ nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/git.netkiller.cn.key"
 nginx['listen_https'] = true
 nginx['http2_enabled'] = true
 		]]>
-		</screen>
-	</section>
-	<section id="gitlab.faq">
-		<title>FAQ</title>
-		<section>
-			<title>gitolite 向 gitlab 迁移</title>
-			<para>早期gitlab使用gitolite为用户提供SSH服务，新版gitlab有了更好的解决方案gitlab-shell。安装新版本是必会涉及gitolite 向 gitlab 迁移，下面是我总结的一些迁移经验。</para>
-			<para>第一步,将gitolite复制到gitlab仓库目录下</para>
-			<screen>
-# cp -r /gitroot/gitolite/repositories/* /var/opt/gitlab/git-data/repositories/
 			</screen>
-			<para>执行导入处理程序</para>
-			<screen>
-# gitlab-rake gitlab:import:repos
-			</screen>
-			<para>上面程序会处理一下目录结构，例如</para>
-			<para>进入gitlab web界面，创建仓库与导入的仓库同名，这样就完成了导入工作。</para>
-			<tip><para>转换最好在git用户下面操作，否则你需要运行</para>
-				<screen>
-# chown git:git -R /var/opt/gitlab/git-data/repositories				
-				</screen>
-			</tip>
 		</section>
-		<section>
-			<title>修改主机名</title>
-			<para>默认Gitlab采用主机名，给我使用代理一定麻烦</para>
-			<screen>
+		<section id="gitlab.faq">
+			<title>FAQ</title>
+			<section>
+				<title>gitolite 向 gitlab 迁移</title>
+				<para>早期gitlab使用gitolite为用户提供SSH服务，新版gitlab有了更好的解决方案gitlab-shell。安装新版本是必会涉及gitolite 向 gitlab 迁移，下面是我总结的一些迁移经验。</para>
+				<para>第一步,将gitolite复制到gitlab仓库目录下</para>
+				<screen><![CDATA[
+# cp -r /gitroot/gitolite/repositories/* /var/opt/gitlab/git-data/repositories/
+			]]></screen>
+				<para>执行导入处理程序</para>
+				<screen><![CDATA[
+# gitlab-rake gitlab:import:repos
+			]]></screen>
+				<para>上面程序会处理一下目录结构，例如</para>
+				<para>进入gitlab web界面，创建仓库与导入的仓库同名，这样就完成了导入工作。</para>
+				<tip>
+					<para>转换最好在git用户下面操作，否则你需要运行</para>
+					<screen><![CDATA[
+# chown git:git -R /var/opt/gitlab/git-data/repositories				
+				]]></screen>
+				</tip>
+			</section>
+			<section>
+				<title>修改主机名</title>
+				<para>默认Gitlab采用主机名，给我使用代理一定麻烦</para>
+				<screen><![CDATA[
 git@hostname:example.com/www.example.com.git
 http://hostname/example.com/www.example.com.git
-			</screen>
-			<para>我们希望使用IP地址替代主机名</para>
-			<screen>
+			]]></screen>
+				<para>我们希望使用IP地址替代主机名</para>
+				<screen><![CDATA[
 git@172.16.0.1:example.com/www.example.com.git
 http://172.16.0.1/example.com/www.example.com.git
-			</screen>
-			<para>编辑 /etc/gitlab/gitlab.rb 配置文件</para>
-			<screen>
+			]]></screen>
+				<para>编辑 /etc/gitlab/gitlab.rb 配置文件</para>
+				<screen><![CDATA[
 external_url 'http://172.16.0.1'
-			</screen>
-			<para>重新启动Gitlab</para>
-			<screen>
+			]]></screen>
+				<para>重新启动Gitlab</para>
+				<screen><![CDATA[
 # gitlab-ctl reconfigure
 # gitlab-ctl restart
-			</screen>
+			]]></screen>
+			</section>
 		</section>
+
 	</section>
 
-</section>
-	
 	<section id="user">
 		<title>创建用户</title>
 		<procedure>
@@ -314,12 +362,12 @@ external_url 'http://172.16.0.1'
 		<para>testing: 测试分支，测试部拥有权限，此分支不能修改，只能从开发分支合并代码。</para>
 		<para>development：开发组的分支，Team拥有修改权限，可以合并，可以接受pull request, 可以提交代码</para>
 		<para>tag 是 Release 本版，开发部主管/经理拥有权限</para>
-		
+
 		<para>分支的权限管理：</para>
 		<para>master: 保护 </para>
 		<para>testing：保护 </para>
 		<para>development：保护 </para>
-		
+
 		<procedure>
 			<title>Gitlab 分支应用 - 创建分支</title>
 			<step>
@@ -458,7 +506,7 @@ check_interval = 0
 				]]>
 				</screen>
 			</section>
-			
+
 		</section>
 		<section>
 			<title>配置 CI / CD</title>
@@ -491,7 +539,7 @@ Runner registered successfully. Feel free to start it, but if it's running alrea
 			<para>返回 gitlab 查看注册状态</para>
 			<graphic format="png" fileref="../images/gitlab/cicd/Runners-status.png" width="" srccredit="neo" />
 		</section>
-		
+
 		<section id="gitlab.pipeline">
 			<title>Pipeline</title>
 			<section id="pipeline.cache">
