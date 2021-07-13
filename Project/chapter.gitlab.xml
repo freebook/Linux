@@ -134,6 +134,9 @@ docker restart gitlab-ce
 			<title>CentOS Stream</title>
 			<screen>
 			<![CDATA[
+dnf install langpacks-en glibc-all-langpacks -y			
+localectl set-locale LANG=en_US.UTF-8
+			
 sudo systemctl status firewalld 
 sudo firewall-cmd --permanent --add-service=http 
 sudo firewall-cmd --permanent --add-service=https 
@@ -172,6 +175,13 @@ gitlab-ctl reconfigure
 Password: dpzQFzltaq0BhAwDnugMf6MCFbvItXDvC+RcuN9R+wg=
 
 # NOTE: This file will be automatically deleted in the first reconfigure run after 24 hours.			
+			]]>
+			</screen>
+			<para>GitLab Runner</para>
+			<screen>
+			<![CDATA[
+curl -L "https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.rpm.sh" | sudo bash
+dnf install gitlab-runner		
 			]]>
 			</screen>
 		</section>

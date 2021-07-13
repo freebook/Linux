@@ -6,9 +6,9 @@
 		<title>Installing</title>
 		<section id="oscm">
 			<title>Netkiller OSCM 一键安装 （CentOS 7）</title>
-			<screen>
+			<screen><![CDATA[
 # curl -s https://raw.githubusercontent.com/oscm/shell/master/web/nginx/stable/nginx.sh | bash
-			</screen>
+			]]></screen>
 		</section>
 		<section id="ubuntu">
 			<title>Installing by apt-get under the debain/ubuntu</title>
@@ -52,7 +52,7 @@ enabled=1
 EOF
 			]]>
 			</screen>
-			<screen>
+			<screen><![CDATA[
 yum search nginx
 ============================================= Matched: nginx =============================================
 nginx.x86_64 : high performance web server
@@ -60,16 +60,16 @@ nginx.x86_64 : high performance web server
 yum install -y nginx
 chkconfig nginx on
 service nginx start
-			</screen>
-			
+			]]></screen>
+
 			<section id="nginx.spawn-fcgi">
 				<title>spawn-fcgi script</title>
-				<screen>
+				<screen><![CDATA[
 yum -y install spawn-fcgi
-				</screen>
+				]]></screen>
 				<para>/etc/sysconfig/spawn-fcgi</para>
 				<para>移除SOCKET与OPTIONS注释, apache改为nginx</para>
-				<screen>
+				<screen><![CDATA[
 # cat /etc/sysconfig/spawn-fcgi
 # You must set some working options before the "spawn-fcgi" service will work.
 # If SOCKET points to a file, then this file is cleaned up by the init script.
@@ -79,7 +79,7 @@ yum -y install spawn-fcgi
 # Example :
 SOCKET=/var/run/php-fcgi.sock
 OPTIONS="-u apache -g apache -s $SOCKET -S -M 0600 -C 32 -F 1 -P /var/run/spawn-fcgi.pid -- /usr/bin/php-cgi"
-				</screen>
+				]]></screen>
 
 				<screen>
 				<![CDATA[
@@ -87,11 +87,11 @@ chkconfig spawn-fcgi on
 				]]>
 				</screen>
 				<para>starting spawn-fcgi</para>
-				<screen>
+				<screen><![CDATA[
 /etc/init.d/spawn-fcgi start
-				</screen>
+				]]></screen>
 				<para>check port</para>
-				<screen>
+				<screen><![CDATA[
 # netstat -nl
 Active Internet connections (only servers)
 Proto Recv-Q Send-Q Local Address               Foreign Address             State
@@ -101,8 +101,8 @@ Active UNIX domain sockets (only servers)
 Proto RefCnt Flags       Type       State         I-Node Path
 unix  2      [ ACC ]     STREAM     LISTENING     25282  /var/run/php-fcgi.sock
 unix  2      [ ACC ]     STREAM     LISTENING     8227   @/com/ubuntu/upstart
-				</screen>
-				<screen>
+				]]></screen>
+				<screen><![CDATA[
 				<para>Unix domain socket</para>
 				<![CDATA[
 
@@ -115,11 +115,12 @@ unix  2      [ ACC ]     STREAM     LISTENING     8227   @/com/ubuntu/upstart
 				]]>
 				</screen>
 				<para>TCP/IP</para>
-	
-				<screen>
+
+				<screen><![CDATA[
 /usr/bin/spawn-fcgi -a 127.0.0.1 -p 9000 -u nginx -g nginx -d /www -C 32 -F 1 -P /var/run/spawn-fcgi.pid -f /usr/bin/php-cgi
-				</screen>
-				<para> </para>
+				]]></screen>
+				<para>
+				</para>
 				<screen>
 				<![CDATA[
         location ~ \.php$ {
@@ -130,46 +131,46 @@ unix  2      [ ACC ]     STREAM     LISTENING     8227   @/com/ubuntu/upstart
         }
 				]]>
 				</screen>
-				<screen>
+				<screen><![CDATA[
 # netstat -tulpn | grep :9000
 tcp        0      0 127.0.0.1:9000              0.0.0.0:*                   LISTEN      26877/php-cgi
-				</screen>
-				<screen>
+				]]></screen>
+				<screen><![CDATA[
 chkconfig nginx on
-				</screen>
+				]]></screen>
 				<para>check config</para>
-				<screen>
+				<screen><![CDATA[
 nginx -t
-				</screen>
+				]]></screen>
 			</section>
 			<section id="nginx.php-fpm">
 				<title>php-fpm</title>
-				<screen>
+				<screen><![CDATA[
 rpm -Uvh http://download.fedora.redhat.com/pub/epel/6/x86_64/epel-release-6-5.noarch.rpm
 yum install nginx -y
-				</screen>
+				]]></screen>
 				<para></para>
-				<screen>
+				<screen><![CDATA[
 chkconfig nginx on
-				</screen>
+				]]></screen>
 				<para>check config</para>
-				<screen>
+				<screen><![CDATA[
 nginx -t
-				</screen>
-				<screen>
+				]]></screen>
+				<screen><![CDATA[
 yum -y install mysql mysql-server
 yum -y install php php-cgi php-mysql php-mbstring php-gd php-fastcgi
 yum -y install perl-DBI perl-DBD-MySQL
-				</screen>
+				]]></screen>
 				<para>其他 php-fpm YUM源</para>
-				<screen>
+				<screen><![CDATA[
 rpm --import http://rpms.famillecollet.com/RPM-GPG-KEY-remi
 rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
-				</screen>
-				<screen>
+				]]></screen>
+				<screen><![CDATA[
 # rpm -Uvh http://centos.alt.ru/repository/centos/6/i386/centalt-release-6-1.noarch.rpm
 # yum update
-				</screen>
+				]]></screen>
 			</section>
 			<section id="nginx.fastcgi.backend">
 				<title>fastcgi backend</title>
@@ -182,8 +183,8 @@ upstream backend  {
 fastcgi_pass   backend;
 				]]>
 				</screen>
-			</section>			
-			
+			</section>
+
 		</section>
 		<section id="source">
 			<title>installing by source</title>
@@ -206,20 +207,20 @@ wget http://www.nginx.org/download/nginx-1.0.6.tar.gz
 			]]>
 			</screen>
 			<para>rpm 所使用的编译参数</para>
-			<screen>
+			<screen><![CDATA[
 nginx -V
 nginx: nginx version: nginx/1.0.6
 nginx: built by gcc 4.4.4 20100726 (Red Hat 4.4.4-13) (GCC)
 nginx: TLS SNI support enabled
 nginx: configure arguments: --prefix=/etc/nginx/ --sbin-path=/usr/sbin/nginx --conf-path=/etc/nginx/nginx.conf --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --pid-path=/var/run/nginx.pid --lock-path=/var/run/nginx.lock --http-client-body-temp-path=/var/cache/nginx/client_temp --http-proxy-temp-path=/var/cache/nginx/proxy_temp --http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp --http-uwsgi-temp-path=/var/cache/nginx/uwcgi_temp --http-scgi-temp-path=/var/cache/nginx/scgi_temp --user=nginx --group=nginx --with-http_ssl_module --with-http_realip_module --with-http_addition_module --with-http_sub_module --with-http_dav_module --with-http_flv_module --with-http_gzip_static_module --with-http_random_index_module --with-http_secure_link_module --with-http_stub_status_module --with-mail --with-mail_ssl_module --with-file-aio --with-ipv6
-			</screen>
-			<screen>
+			]]></screen>
+			<screen><![CDATA[
 # nginx -V
 nginx version: nginx/1.2.3
 built by gcc 4.4.4 20100726 (Red Hat 4.4.4-13) (GCC)
 TLS SNI support enabled
 configure arguments: --prefix=/etc/nginx/ --sbin-path=/usr/sbin/nginx --conf-path=/etc/nginx/nginx.conf --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --pid-path=/var/run/nginx.pid --lock-path=/var/run/nginx.lock --http-client-body-temp-path=/var/cache/nginx/client_temp --http-proxy-temp-path=/var/cache/nginx/proxy_temp --http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp --http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp --http-scgi-temp-path=/var/cache/nginx/scgi_temp --user=nginx --group=nginx --with-http_ssl_module --with-http_realip_module --with-http_addition_module --with-http_sub_module --with-http_dav_module --with-http_flv_module --with-http_mp4_module --with-http_gzip_static_module --with-http_random_index_module --with-http_secure_link_module --with-http_stub_status_module --with-mail --with-mail_ssl_module --with-file-aio --with-ipv6 --with-cc-opt='-O2 -g'
-			</screen>
+			]]></screen>
 		</section>
 		<section id="centos7">
 			<title>CentOS 7</title>
@@ -246,30 +247,30 @@ systemctl start nginx
 			]]>
 			</screen>
 			<para>测试配置文件是否正确</para>
-			<screen>
+			<screen><![CDATA[
 # nginx -t
 nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
 nginx: configuration file /etc/nginx/nginx.conf test is successful			
-			</screen>
+			]]></screen>
 		</section>
 		<section id="mac">
 			<title>Mac</title>
 			<para>安装</para>
-			<screen>
+			<screen><![CDATA[
 neo@MacBook-Pro ~ % brew install nginx 			
-			</screen>
+			]]></screen>
 			<para>启动</para>
-			<screen>
+			<screen><![CDATA[
 neo@MacBook-Pro ~ % brew services start nginx
 ==> Successfully started `nginx` (label: homebrew.mxcl.nginx)
-			</screen>
+			]]></screen>
 			<para>重启</para>
-			<screen>
+			<screen><![CDATA[
 neo@MacBook-Pro /usr/local/etc/nginx % brew services restart nginx
 Stopping `nginx`... (might take a while)
 ==> Successfully stopped `nginx` (label: homebrew.mxcl.nginx)
 ==> Successfully started `nginx` (label: homebrew.mxcl.nginx)			
-			</screen>
+			]]></screen>
 			<para>配置文件在 /usr/local/etc/nginx 下，默认使用 8080端口</para>
 			<para>nginx.conf 文件如下</para>
 			<screen>
@@ -396,25 +397,25 @@ http {
 			<section>
 				<title>php-fpm</title>
 				<para>mac下自带的软件</para>
-				<screen>
+				<screen><![CDATA[
 neo@MacBook-Pro ~ % php -v
 PHP 5.6.30 (cli) (built: Feb  7 2017 16:18:37) 
 Copyright (c) 1997-2016 The PHP Group
 Zend Engine v2.6.0, Copyright (c) 1998-2016 Zend Technologies
-				</screen>
+				]]></screen>
 				<para>启动php-fpm方法如下</para>
-				<screen>
+				<screen><![CDATA[
 cd /private/etc
 sudo cp php-fpm.conf.default php-fpm.conf
-				</screen>
+				]]></screen>
 				<para>修改error_log项, 改为error_log = /usr/local/var/log/php-fpm.log</para>
 				<para>启动 php-fpm</para>
-				<screen>
+				<screen><![CDATA[
 php-fpm
-				</screen>
+				]]></screen>
 			</section>
 		</section>
-		<section id="logrotate"> 
+		<section id="logrotate">
 			<title>rotate log</title>
 			<section>
 				<title>log shell</title>
@@ -464,7 +465,7 @@ gzip ${log_dir}/${date_dir}/error.log &
 				</screen>
 			</section>
 		</section>
-		
+
 	</section>
 	<section id="nginx.param">
 		<title>Nginx 命令</title>
@@ -490,7 +491,7 @@ Options:
 		</screen>
 		<section>
 			<title>-V show version and configure options then exit</title>
-			<screen>
+			<screen><![CDATA[
 [root@netkiller tmp]# nginx -v
 nginx version: nginx/1.10.1
 
@@ -501,26 +502,26 @@ built with OpenSSL 1.0.1e-fips 11 Feb 2013
 TLS SNI support enabled
 configure arguments: --prefix=/etc/nginx --sbin-path=/usr/sbin/nginx --modules-path=/usr/lib64/nginx/modules --conf-path=/etc/nginx/nginx.conf --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --pid-path=/var/run/nginx.pid --lock-path=/var/run/nginx.lock --http-client-body-temp-path=/var/cache/nginx/client_temp --http-proxy-temp-path=/var/cache/nginx/proxy_temp --http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp --http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp --http-scgi-temp-path=/var/cache/nginx/scgi_temp --user=nginx --group=nginx --with-http_ssl_module --with-http_realip_module --with-http_addition_module --with-http_sub_module --with-http_dav_module --with-http_flv_module --with-http_mp4_module --with-http_gunzip_module --with-http_gzip_static_module --with-http_random_index_module --with-http_secure_link_module --with-http_stub_status_module --with-http_auth_request_module --with-http_xslt_module=dynamic --with-http_image_filter_module=dynamic --with-http_geoip_module=dynamic --with-http_perl_module=dynamic --add-dynamic-module=njs-1c50334fbea6/nginx --with-threads --with-stream --with-stream_ssl_module --with-http_slice_module --with-mail --with-mail_ssl_module --with-file-aio --with-ipv6 --with-http_v2_module --with-cc-opt='-O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches -m64 -mtune=generic'
 
-			</screen>
+			]]></screen>
 		</section>
 		<section>
-			<title>-t            : test configuration and exit</title>
+			<title>-t : test configuration and exit</title>
 			<para>CentOS 6</para>
-			<screen>
+			<screen><![CDATA[
 $ sudo service nginx configtest
 Testing nginx configuration: nginx.
-			</screen>
+			]]></screen>
 			<para>通用方法</para>
-			<screen>
+			<screen><![CDATA[
 root@netkiller ~ % nginx -t
 nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
 nginx: configuration file /etc/nginx/nginx.conf test is successful
-			</screen>
+			]]></screen>
 		</section>
 		<section>
 			<title>test configuration, dump it and exit</title>
 			<para></para>
-			<screen>
+			<screen><![CDATA[
 root@netkiller ~ % nginx -T
 nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
 nginx: configuration file /etc/nginx/nginx.conf test is successful
@@ -698,7 +699,7 @@ server {
     #}
 }
 
-			</screen>
+			]]></screen>
 		</section>
 	</section>
 	&chapter.nginx.conf.xml;

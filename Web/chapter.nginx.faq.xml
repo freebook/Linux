@@ -322,4 +322,69 @@ cp_socket
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>failed (13: Permission denied) while connecting to upstream</title>
+		<para>问题分析，此问题出在 SELINUX</para>
+		<screen>
+		<![CDATA[
+2021/07/13 02:18:52 [crit] 6671#0: *3 connect() to 192.168.60.7:8000 failed (13: Permission denied) while connecting to upstream, client: 192.168.90.137, server: www.netkiller.cn, request: "GET / HTTP/2.0", upstream: "http://192.168.60.7:8000/", host: "www.netkiller.cn"		
+		]]>
+		</screen>
+		<para>查看 SELINUX 设置</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# getsebool -a | grep httpd
+httpd_anon_write --> off
+httpd_builtin_scripting --> on
+httpd_can_check_spam --> off
+httpd_can_connect_ftp --> off
+httpd_can_connect_ldap --> off
+httpd_can_connect_mythtv --> off
+httpd_can_connect_zabbix --> off
+httpd_can_network_connect --> on
+httpd_can_network_connect_cobbler --> off
+httpd_can_network_connect_db --> off
+httpd_can_network_memcache --> off
+httpd_can_network_relay --> off
+httpd_can_sendmail --> off
+httpd_dbus_avahi --> off
+httpd_dbus_sssd --> off
+httpd_dontaudit_search_dirs --> off
+httpd_enable_cgi --> on
+httpd_enable_ftp_server --> off
+httpd_enable_homedirs --> off
+httpd_execmem --> off
+httpd_graceful_shutdown --> off
+httpd_manage_ipa --> off
+httpd_mod_auth_ntlm_winbind --> off
+httpd_mod_auth_pam --> off
+httpd_read_user_content --> off
+httpd_run_ipa --> off
+httpd_run_preupgrade --> off
+httpd_run_stickshift --> off
+httpd_serve_cobbler_files --> off
+httpd_setrlimit --> off
+httpd_ssi_exec --> off
+httpd_sys_script_anon_write --> off
+httpd_tmp_exec --> off
+httpd_tty_comm --> off
+httpd_unified --> off
+httpd_use_cifs --> off
+httpd_use_fusefs --> off
+httpd_use_gpg --> off
+httpd_use_nfs --> off
+httpd_use_opencryptoki --> off
+httpd_use_openstack --> off
+httpd_use_sasl --> off
+httpd_verify_dns --> off
+		
+		]]>
+		</screen>
+		<para>设置此选项可以解决</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# setsebool -P httpd_can_network_connect true 		
+		]]>
+		</screen>
+	</section>
 </section>
