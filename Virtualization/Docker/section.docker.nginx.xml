@@ -9,32 +9,32 @@
 			<step>
 				<para></para>
 				<screen>
-[root@iZj6ciilv2rcpgauqg2uuwZ]~# docker pull nginx
-Using default tag: latest
-latest: Pulling from library/nginx
-Digest: sha256:41ad9967ea448d7c2b203c699b429abe1ed5af331cd92533900c6d77490e0268
-Status: Image is up to date for nginx:latest
+					[root@iZj6ciilv2rcpgauqg2uuwZ]~# docker pull nginx
+					Using default tag: latest
+					latest: Pulling from library/nginx
+					Digest: sha256:41ad9967ea448d7c2b203c699b429abe1ed5af331cd92533900c6d77490e0268
+					Status: Image is up to date for nginx:latest
 				</screen>
 			</step>
 			<step>
 				<para>启动容器</para>
 				<screen>
-docker run --name my-nginx-container -p 80:80 -d nginx
+					docker run --name my-nginx-container -p 80:80 -d nginx
 				</screen>
 				<para>上面不能满足生产环境的需求，通常不会将数据放在容器中，我的做法如下。</para>
 				<screen>
-docker rm my-nginx-container -f
-docker run --name my-nginx-container \
-	-v /srv/nginx/nginx.conf:/etc/nginx/nginx.conf:ro \
-	-v /srv/nginx/conf.d:/etc/nginx/conf.d:ro \
-	-v /var/log/nginx:/var/log/nginx:rw \
-	-v /www:/www:ro \
-	-p 80:80 -d nginx
-docker ps
+					docker rm my-nginx-container -f
+					docker run --name my-nginx-container \
+					-v /srv/nginx/nginx.conf:/etc/nginx/nginx.conf:ro \
+					-v /srv/nginx/conf.d:/etc/nginx/conf.d:ro \
+					-v /var/log/nginx:/var/log/nginx:rw \
+					-v /www:/www:ro \
+					-p 80:80 -d nginx
+					docker ps
 				</screen>
 			</step>
 		</procedure>
-	</section>	
+	</section>
 	<section id="alpine">
 		<title>安装 Docker Nginx alpine</title>
 		<procedure>
@@ -42,7 +42,7 @@ docker ps
 			<step>
 				<para>获取镜像</para>
 				<screen>
-# docker pull nginx:alpine
+					# docker pull nginx:alpine
 				</screen>
 			</step>
 			<step>
@@ -55,12 +55,149 @@ docker run --name my-nginx-container -v /srv/nginx:/etc/nginx:ro -v /www:/www:ro
 			</step>
 			<step>
 				<screen>
-docker exec -it my-nginx-container /bin/bash
+					docker exec -it my-nginx-container /bin/bash
 				</screen>
-			</step>			
+			</step>
 		</procedure>
 		<para></para>
-		
+
 		<para></para>
+	</section>
+	<section>
+		<title>安装依赖工具</title>
+		<screen>
+		<![CDATA[
+apt update -y && apt install -y procps
+		]]>
+		</screen>
+
+	</section>
+	<section>
+		<title>容器内优雅重启</title>
+		<para>首先观察一个现象，打开 linux 终端窗口，查看 nginx 进程。</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# ps ax | grep nginx
+   6670 ?        Ss     0:00 nginx: master process /usr/sbin/nginx
+   6671 ?        S      0:00 nginx: worker process
+   6672 ?        S      0:00 nginx: worker process
+   6673 ?        S      0:00 nginx: worker process
+   6674 ?        S      0:00 nginx: worker process
+   9396 pts/0    S+     0:00 grep --color=auto nginx		
+		]]>
+		</screen>
+		<para>6670 ~ 6674 都是 nginx 的进程，其中 6670 nginx: master process /usr/sbin/nginx 是父进程，用于监听 80/443 端口。6671 ～ 6674 nginx: worker process 是子进程，每个进程中又产生多线程，每个线程对应一次用户TCP请求。</para>
+		<para>6671 ~ 6674 子进程的进程ID会变化，而 6670 是不变的。 6670 父进程可以接收操作系统传递过来的信号（不懂信号的同学请恶补，信号，共享内存，管道，Socket 可以实现进程间通信），也就是我们可以告诉正在运行的进程，现在要干什么。</para>
+		<para>给 6670 进程发送 HUP 信号，nginx 就会重新读取配置文件，刷新缓存，此时 6671～6674不受影响，会继续为用户体统TCP链接服务，直到都安全Close为止。此时 6670 父进程已经完成配置的更新，6671～6674 也完成了它的使命，下一次新用户过来 nginx 就会创建新的进程，这个过程是无缝的，用户感知不到，80/443 端口始终提供服务，不会有任何用户出现中断链接的情况。</para>
+		<para>现在来演示一下，执行 reload 就会刷新配置文件，清空缓存，同时会将闲置的 nginx: worker process 关闭，并开启新的子进程。</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# systemctl reload nginx
+[root@localhost ~]# ps ax | grep nginx
+   6670 ?        Ss     0:00 nginx: master process /usr/sbin/nginx
+   6671 ?        S      0:01 nginx: worker process is shutting down
+   9403 ?        S      0:00 nginx: worker process
+   9404 ?        S      0:00 nginx: worker process
+   9405 ?        S      0:00 nginx: worker process
+   9406 ?        S      0:00 nginx: worker process
+   9408 pts/0    S+     0:00 grep --color=auto nginx		
+		]]>
+		</screen>
+		<para>现在我们可以看到子进程ID的变化，9403 ～ 9406。父进程 nginx: master process /usr/sbin/nginx 的ID仍然是 6670</para>
+
+		<para>现在是容器中实现上面的 reload 操作。</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# cat docker-compose.yml 
+version: '3.9'
+services:
+  nginx:
+    container_name: nginx
+    restart: always
+    image: nginx:latest
+    ports:
+      - 192.168.30.11:80:80
+      - 192.168.30.11:443:443		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# docker-compose up
+Starting nginx ... done
+Attaching to nginx
+nginx    | /docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
+nginx    | /docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
+nginx    | /docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
+nginx    | 10-listen-on-ipv6-by-default.sh: info: IPv6 listen already enabled
+nginx    | /docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh
+nginx    | /docker-entrypoint.sh: Launching /docker-entrypoint.d/30-tune-worker-processes.sh
+nginx    | /docker-entrypoint.sh: Configuration complete; ready for start up
+nginx    | 2021/07/12 20:55:41 [notice] 1#1: using the "epoll" event method
+nginx    | 2021/07/12 20:55:41 [notice] 1#1: nginx/1.21.1
+nginx    | 2021/07/12 20:55:41 [notice] 1#1: built by gcc 8.3.0 (Debian 8.3.0-6) 
+nginx    | 2021/07/12 20:55:41 [notice] 1#1: OS: Linux 4.18.0-315.el8.x86_64
+nginx    | 2021/07/12 20:55:41 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+nginx    | 2021/07/12 20:55:41 [notice] 1#1: start worker processes
+nginx    | 2021/07/12 20:55:41 [notice] 1#1: start worker process 24
+nginx    | 2021/07/12 20:55:41 [notice] 1#1: start worker process 25
+nginx    | 2021/07/12 20:55:41 [notice] 1#1: start worker process 26
+nginx    | 2021/07/12 20:55:41 [notice] 1#1: start worker process 27		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# docker exec -it nginx bash
+root@2d2637a6ac4d:/# ps ax
+    PID TTY      STAT   TIME COMMAND
+      1 ?        Ss     0:00 nginx: master process nginx -g daemon off;
+     24 ?        S      0:00 nginx: worker process
+     25 ?        S      0:00 nginx: worker process
+     26 ?        S      0:00 nginx: worker process
+     27 ?        S      0:00 nginx: worker process
+    623 pts/0    Ss     0:00 bash
+    629 pts/0    R+     0:00 ps ax
+root@2d2637a6ac4d:/# 		
+		]]>
+		</screen>
+		<para>reload nginx</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# docker ps 
+CONTAINER ID   IMAGE          COMMAND                  CREATED          STATUS         PORTS                                                  NAMES
+2d2637a6ac4d   nginx:latest   "/docker-entrypoint.…"   25 minutes ago   Up 5 minutes   192.168.30.11:80->80/tcp, 192.168.30.11:443->443/tcp   nginx
+[root@localhost ~]# docker container exec nginx  nginx -t
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+[root@localhost ~]# docker container exec nginx  nginx -s reload
+2021/07/12 21:01:41 [notice] 636#636: signal process started		
+		]]>
+		</screen>
+		<para>再次查看进程</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# docker exec -it nginx bash
+root@2d2637a6ac4d:/# ps ax
+    PID TTY      STAT   TIME COMMAND
+      1 ?        Ss     0:00 nginx: master process nginx -g daemon off;
+     24 ?        S      0:00 nginx: worker process
+     25 ?        S      0:00 nginx: worker process
+     26 ?        S      0:00 nginx: worker process
+     27 ?        S      0:00 nginx: worker process
+    623 pts/0    Ss     0:00 bash
+    629 pts/0    R+     0:00 ps ax
+
+root@2d2637a6ac4d:/# ps ax
+    PID TTY      STAT   TIME COMMAND
+      1 ?        Ss     0:00 nginx: master process nginx -g daemon off;
+    623 pts/0    Ss     0:00 bash
+    642 ?        S      0:00 nginx: worker process
+    643 ?        S      0:00 nginx: worker process
+    644 ?        S      0:00 nginx: worker process
+    645 ?        S      0:00 nginx: worker process
+    646 pts/0    R+     0:00 ps ax		
+		]]>
+		</screen>
 	</section>
 </section>

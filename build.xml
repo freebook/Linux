@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="linux" default="usage" basedir=".">
+
+	<property environment="env" />
+	<property file="build.properties" />
+	<property name="tmp" value="${env.HOME}/tmp" />
+	<property name="stylesheet" value="docbook-xsl/docbook.mac.xsl" />
+	<property name="workspace" value="${env.HOME}/workspace" />
+	<property name="docbook" value="${workspace}/${ant.project.name}" />
+	<property name="resources" value="${docbook}/images" />
+	<property name="public_html" value="${env.HOME}/git/netkiller.github.io/${ant.project.name}" />
+	<!--	<property name="public_html" value="${env.HOME}/tmp/${ant.project.name}" /> -->
+	<property name="htmlhelp" value="${env.HOME}/tmp/${ant.project.name}" />
+	<property name="epub" value="${tmp}/${ant.project.name}.tmp" />
+	<property name="download" value="${env.HOME}/git/netkiller.github.io/download" />
+	<property name="epub.bookname" value="Netkiller-Architect" />
+	<property name="project.version" value="0.0.1" />
+	<property name="ant.log" value="/tmp/ant.log" />
+
+	<path id="classpath">
+		<fileset dir="${env.JAVA_HOME}/lib">
+			<include name="*.jar" />
+		</fileset>
+		<fileset dir="${project.dir}/lib">
+			<include name="*.jar" />
+		</fileset>
+		<fileset dir="${project.build}" includes="*.jar" />
+	</path>
+
+	<macrodef name="git">
+		<attribute name="command" />
+		<attribute name="dir" default="" />
+		<element name="args" optional="true" />
+		<sequential>
+			<!-- echo message="git @{command}" / -->
+			<exec executable="git" dir="@{dir}">
+				<arg value="@{command}" />
+				<args />
+			</exec>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="rsync">
+		<attribute name="option" default="auzv" />
+		<attribute name="src" default="" />
+		<attribute name="dest" default="" />
+		<element name="args" optional="true" />
+		<sequential>
+			<!-- echo message="rsync @{option} ${src} ${dest}" / -->
+			<exec executable="rsync">
+				<arg value="@{option}" />
+				<args />
+				<arg value="@{src}" />
+				<arg value="@{dest}" />
+			</exec>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="ssh">
+		<attribute name="host" />
+		<attribute name="command" />
+		<attribute name="keyfile" default="~/.ssh/id_rsa" />
+		<attribute name="option" default="-2" />
+		<element name="args" optional="true" />
+		<sequential>
+			<exec executable="ssh">
+				<arg value="@{option}" />
+				<arg value="@{host}" />
+				<!-- arg value="-i @{keyfile}" / -->
+				<args />
+				<arg value="@{command}" />
+			</exec>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="xsltproc">
+		<!-- <attribute name="options" default="" /> -->
+		<attribute name="output" default="${public_html}" />
+		<attribute name="stylesheet" default="" />
+		<attribute name="file" default=" " />
+		<element name="args" optional="true" />
+		<sequential>
+			<exec executable="xsltproc" dir="">
+				<!-- <arg line="@{options}" /> -->
+				<arg line="-o @{output}/" />
+				<arg value="@{stylesheet}" />
+				<arg value="@{file}" />
+				<args />
+			</exec>
+		</sequential>
+	</macrodef>
+
+
+	<target name="pull" depends="">
+		<echo>${project.dir} exists</echo>
+		<git command="clean" dir="${project.dir}">
+			<args>
+				<arg value="-df" />
+			</args>
+		</git>
+
+		<git command="reset" dir="${project.dir}">
+			<args>
+				<arg value="HEAD" />
+				<arg value="--hard" />
+			</args>
+		</git>
+
+		<git command="pull" dir="${project.dir}" />
+	</target>
+
+	<target name="submodule" depends="pull">
+		<git command="submodule" dir="${project.dir}">
+			<args>
+				<arg value="init" />
+			</args>
+		</git>
+		<git command="submodule" dir="${project.dir}">
+			<args>
+				<arg value="update" />
+			</args>
+		</git>
+	</target>
+	<!--
+	<target name="merge" depends="fetch" if="dir.exists" if:set="${git.merge}">
+		<git command="merge" dir="${project.dir}">
+			<args>
+				<arg value="remotes/origin/${git.merge}" />
+			</args>
+		</git>
+
+	</target>
+-->
+	<target name="push">
+		<git command="push" dir="${project.dir}">
+			<args>
+				<arg value="--progress" />
+				<arg value="origin" />
+				<arg value="${git.branch}:${git.branch}" />
+			</args>
+		</git>
+
+	</target>
+	<target name="reset" depends="">
+		<delete dir="${public_html}" />
+		<!-- <delete dir="${backup.dir}/${project.name}" includes="${project.name}*.jar" /> -->
+		<mkdir dir="${public_html}" />
+	</target>
+	<target name="clean">
+		<!--
+		<delete dir="${project.build}" />
+		<delete file="${project.dir}/target/${project.package}" />
+		-->
+		<delete includeEmptyDirs="true">
+			<fileset dir="${public_html}" includes="**/*.html" />
+		</delete>
+	</target>
+	<target name="images" depends="">
+		<echo>Resource: ${public_html}/images/</echo>
+		<!--		<rsync option="-auzv" src="${backup.dir}/${receive.timepoint}/${project.package}" dest="${remote.host}:${remote.destination}/" /> -->
+		<copy todir="${public_html}/images/" overwrite="true" failonerror="false">
+			<fileset dir="${resources}" includes="**/*.png" />
+			<fileset dir="${resources}" includes="**/*.jpeg" />
+			<fileset dir="common/images" includes="**/*.*" />
+		</copy>
+
+		<copy todir="${public_html}" file="common/docbook.css" />
+	</target>
+	<target name="html" depends="clean,images">
+		<echo>Output: ${public_html}</echo>
+		<xsltproc output="${public_html}" stylesheet="${stylesheet}" file="book.xml" />
+		<!--
+		<mkdir dir="${project.build}" />
+		-->
+	</target>
+	<target name="htmlhelp" depends="images">
+		<tstamp>
+			<format property="timepoint" pattern="yyyy-MM-dd.HH:mm:ss" locale="cn,CN" />
+		</tstamp>
+		<echo>the backup directory is ${timepoint}.</echo>
+		<xsltproc output="${htmlhelp}.${timepoint}" stylesheet="docbook-xsl/htmlhelp/template.xsl" file="book.xml">
+			<!--
+			<args>
+				<arg value="stringparam htmlhelp.chm ${ant.project.name}.chm" />
+			</args>
+-->
+		</xsltproc>
+		<!--			@test -f $(HTMLHELP_DIR)/htmlhelp.hhp && ../common/chm.sh $(HTMLHELP_DIR) -->
+	</target>
+	<target name="epub" depends="clean,images">
+		<delete dir="${epub}" />
+		<mkdir dir="${epub}" />
+		<tstamp>
+			<format property="timepoint" pattern="yyyy-MM-dd.HH:mm:ss" locale="cn,CN" />
+		</tstamp>
+		<echo>Epub directory: ${epub}</echo>
+		<xsltproc output="${epub}" stylesheet="docbook-xsl/epub3.mac.xsl" file="book.xml" />
+		<copy todir="${epub}/OEBPS/" file="common/docbook.css" />
+		<copy todir="${epub}/OEBPS/images" overwrite="true">
+			<fileset dir="images">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+		<echo file="${epub}/mimetype" append="false">application/epub+zip</echo>
+		<zip destfile="${download}/epub/${epub.bookname}.epub" basedir="${epub}" update="true" />
+		<delete dir="${epub}" />
+	</target>
+
+	<target name="mac" depends="images">
+		<tstamp>
+			<format property="TIMEPOINT" pattern="yyyy-MM-dd.HH:mm:ss" locale="cn,CN" />
+		</tstamp>
+		<echo>the backup directory is ${TIMEPOINT}.</echo>
+		<!-- <mkdir dir="${backup.dir}/${TIMEPOINT}" /> -->
+		<xsltproc output="${tmp}/${ant.project.name}" stylesheet="docbook-xsl/docbook.preview.xsl" file="book.xml" />
+	</target>
+	<target name="usage" depends="">
+		<echo>Java deploy tools by netkiller</echo>
+		<echo>Usage: deployment {domain} {stage} {target}</echo>
+		<echo>Email: netkiller@msn.com</echo>
+		<echo>Website: http://netkiller.github.io</echo>
+		<echo>Date: 2020-01-22</echo>
+	</target>
+</project>
+

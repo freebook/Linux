@@ -1,24 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="openntpd">
-	<title>OpenNTPD</title>
-	<subtitle>Synchronizes system time using the Network Time Protocol (NTP)</subtitle>
+<chapter id="ntp">
+	<title>Synchronizes system time using the Network Time Protocol (NTP)</title>
 	<para>http://www.ntp.org</para>
-	<para><ulink url="http://www.pool.ntp.org/"></ulink></para>
-	<section id="ntpd.install">
-		<title>install</title>		
-		<section>
-			<title>ntpd - Network Time Protocol (NTP) daemon</title>
-			<procedure>
-				<title>ntp server</title>
-				<step>
-					<para></para>
-					<screen>
+	<section id="chronyd">
+		<title>chronyd</title>
+		<subtitle>chronyd 是 ntpd 的替代品，在 CentOS 8 中 chronyd 取代了 ntpd 的位置</subtitle>
+		<para>安装</para>
+		<screen>
+		<![CDATA[
+dnf install -y chrony
+systemctl enable chronyd
+systemctl start chronyd		
+		]]>
+		</screen>
+		<para>chrony 的配置文件位于 /etc/chrony.conf </para>
+		<para>查看同步状态</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# chronyc tracking
+Reference ID    : CB6B0658 (203.107.6.88)
+Stratum         : 3
+Ref time (UTC)  : Tue Jul 13 08:39:57 2021
+System time     : 0.000333415 seconds fast of NTP time
+Last offset     : +0.001497547 seconds
+RMS offset      : 0.000643134 seconds
+Frequency       : 9.239 ppm fast
+Residual freq   : +0.134 ppm
+Skew            : 1.942 ppm
+Root delay      : 0.053295419 seconds
+Root dispersion : 0.001933562 seconds
+Update interval : 256.4 seconds
+Leap status     : Normal		
+		]]>
+		</screen>
+		<para>查看同步时间服务器列表</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# chronyc sources
+MS Name/IP address         Stratum Poll Reach LastRx Last sample               
+===============================================================================
+^- a.chl.la                      2   8   372   643    -30ms[  -28ms] +/-  143ms
+^- ntp1.flashdance.cx            2   8   177   455  +1760us[+3207us] +/-  166ms
+^* 203.107.6.88                  2   9   377   193  +2478us[+3976us] +/-   27ms
+^- ntp8.flashdance.cx            2   8   135   445  -8210us[-6856us] +/-  183ms		
+		]]>
+		</screen>
+	</section>
+
+	<section id="openntpd">
+		<title>OpenNTPD</title>
+
+
+		<para>
+			<ulink url="http://www.pool.ntp.org/"></ulink>
+		</para>
+		<section id="ntpd.install">
+			<title>install</title>
+			<section>
+				<title>ntpd - Network Time Protocol (NTP) daemon</title>
+				<procedure>
+					<title>ntp server</title>
+					<step>
+						<para></para>
+						<screen><![CDATA[
 # yum install ntp	
-					</screen>
-				</step>
-				<step>
-					<para>port</para>
-					<screen>
+					]]></screen>
+					</step>
+					<step>
+						<para>port</para>
+						<screen><![CDATA[
 [root@ntp ~]# netstat -unlnp |grep 123
 udp        0      0 192.168.5.5:123             0.0.0.0:*                               10810/ntpd
 udp        0      0 172.16.0.5:123              0.0.0.0:*                               10810/ntpd
@@ -39,23 +89,23 @@ ntpd    10810  ntp   20u  IPv4  35925       UDP localhost.localdomain:ntp
 ntpd    10810  ntp   21u  IPv4  35926       UDP nis.example.com:ntp
 ntpd    10810  ntp   22u  IPv4  35927       UDP 172.16.0.5:ntp
 ntpd    10810  ntp   23u  IPv4  35928       UDP 192.168.5.5:ntp
-					</screen>
-				</step>
-				<step>
-					<para>status</para>
-					
-					<para>ntpstat</para>
-					<screen>
+					]]></screen>
+					</step>
+					<step>
+						<para>status</para>
+
+						<para>ntpstat</para>
+						<screen><![CDATA[
 [root@subversion ~]# ntpstat
 synchronised to local net at stratum 11
    time correct to within 11 ms
    polling server every 1024 s
-					</screen>	
-					<screen>
+					]]></screen>
+						<screen><![CDATA[
 [root@subversion ~]# ntptrace -n 127.0.0.1
 127.0.0.1: stratum 11, offset 0.000000, synch distance 0.010984
-					</screen>				
-					<screen>
+					]]></screen>
+						<screen><![CDATA[
 [root@subversion ~]# ntpq -p
      remote           refid      st t when poll reach   delay   offset  jitter
 ==============================================================================
@@ -63,98 +113,103 @@ synchronised to local net at stratum 11
  218.75.4.130    .INIT.          16 u    - 1024    0    0.000    0.000   0.000
  www.chinaepg.ne .INIT.          16 u    - 1024    0    0.000    0.000   0.000
 *LOCAL(0)        .LOCL.          10 l   60   64  377    0.000    0.000   0.001
-					</screen>
-				</step>
-				<step>
-					<para>http://www.pool.ntp.org/</para>
-					<screen>
+					]]></screen>
+					</step>
+					<step>
+						<para>http://www.pool.ntp.org/</para>
+						<screen><![CDATA[
 vim /etc/ntp.conf
 server 2.cn.pool.ntp.org
 server 3.asia.pool.ntp.org
 server 2.asia.pool.ntp.org
-					</screen>
-				</step>
-				<step>
-					<para></para>
-					<screen>
+					]]></screen>
+					</step>
+					<step>
+						<para></para>
+						<screen><![CDATA[
 # chkconfig ntpd on
 # service ntpd start/stop/restart
-					</screen>
-				</step>			
-			</procedure>
-		</section>
-		<section>
-			<title>Ubuntu</title>
-			<para>ubuntu</para>
-			<screen>
+					]]></screen>
+					</step>
+				</procedure>
+			</section>
+			<section>
+				<title>Ubuntu</title>
+				<para>ubuntu</para>
+				<screen><![CDATA[
 sudo apt-get install openntpd
-			</screen>		
+			]]></screen>
+			</section>
+			<section id="ntpd.ntpdate">
+				<title>ntpdate</title>
+
+			</section>
 		</section>
-		<section id="ntpd.ntpdate">
+		<section id="ntpdate">
 			<title>ntpdate</title>
-			
-		</section>
-	</section>
-	<section id="ntpdate">
-		<title>ntpdate</title>
-		<section>
-			<title>CentOS 7</title>
-			<screen>
+			<section>
+				<title>CentOS 7</title>
+				<screen><![CDATA[
 # yum install ntpdate
 # systemctl enable ntpdate
 # systemctl start ntpdate
-			</screen>
-		
-			<screen>
-# ntpdate 172.16.3.51
-			</screen>
-			<para>或使用</para>	
-			<screen>
-# /usr/libexec/ntpdate-wrapper		
-			</screen>
-		</section>	
+			]]></screen>
 
-		<section id="centos6">
-			<title>CentOS 6</title>
-			<para>使用 ntpdate 临时更新时间</para>
-			<screen>
-			<![CDATA[
+				<screen><![CDATA[
+# ntpdate 172.16.3.51
+			]]></screen>
+				<para>或使用</para>
+				<screen><![CDATA[
+# /usr/libexec/ntpdate-wrapper		
+			]]></screen>
+			</section>
+
+			<section id="centos6">
+				<title>CentOS 6</title>
+				<para>使用 ntpdate 临时更新时间</para>
+				<screen>
+				<![CDATA[
 [root@dev1 ~]# ntpdate 192.168.3.5 && hwclock -w
  9 Aug 12:38:22 ntpdate[2538]: step time server 192.168.3.5 offset 3543.674078 sec
-	 		]]>
-			</screen>
-			<para>另外一个命令<link linkend="rdate">rdate</link>同样可以达到ntpdate目的，rdate是系统默认安装。</para>
-			<procedure>
-				<title>ntp client</title>
-				<step>
-					<screen>
+
+				]]>
+				</screen>
+				<para>
+					另外一个命令
+					<link linkend="rdate">rdate</link>
+					同样可以达到ntpdate目的，rdate是系统默认安装。
+				</para>
+				<procedure>
+					<title>ntp client</title>
+					<step>
+						<screen><![CDATA[
 # yum install ntp
 				
-					</screen>
-				</step>
-				<step>
-					<screen>
+					]]></screen>
+					</step>
+					<step>
+						<screen><![CDATA[
 # chkconfig ntpd on
 # service ntpd start				
-					</screen>
-				</step>
-				<step>
-					<screen>
+					]]></screen>
+					</step>
+					<step>
+						<screen><![CDATA[
 vim /etc/ntp.conf
 #server 0.centos.pool.ntp.org
 #server 1.centos.pool.ntp.org
 #server 2.centos.pool.ntp.org
 server 192.168.3.5
-					</screen>
-				</step>			
-			</procedure>
-			<para>ntpd 启动后，不能再使用ntpdate</para>
+					]]></screen>
+					</step>
+				</procedure>
+				<para>ntpd 启动后，不能再使用ntpdate</para>
+			</section>
 		</section>
-	</section>
-	
-	<section id="ntpd.conf">
-		<title>ntpd.conf / ntp.conf</title>
-		<screen>
+
+		<section id="ntpd.conf">
+			<title>ntpd.conf / ntp.conf</title>
+			<screen><![CDATA[
 
 # $OpenBSD: ntpd.conf,v 1.7 2004/07/20 17:38:35 henning Exp $
 # sample ntpd configuration file, see ntpd.conf(5)
@@ -179,35 +234,35 @@ server 0.asia.pool.ntp.org
 server 1.asia.pool.ntp.org
 server 2.asia.pool.ntp.org
 server 3.asia.pool.ntp.org
-		</screen>
-		<section>
-			<title>server 配置</title>
-			<para>server your_ip_address</para>
-			<screen>
+		]]></screen>
+			<section>
+				<title>server 配置</title>
+				<para>server your_ip_address</para>
+				<screen><![CDATA[
 server 172.16.0.1
 server 172.16.0.2
-			</screen>
-		</section>
-		<section>
-			<title>ntp 安全设置</title>
-			<para>允许192.168.1.0段访问ntp</para>
-			<screen>
+			]]></screen>
+			</section>
+			<section>
+				<title>ntp 安全设置</title>
+				<para>允许192.168.1.0段访问ntp</para>
+				<screen><![CDATA[
 restrict default ignore
 # Hosts on local network are less restricted.
 restrict 192.168.1.0 mask 255.255.255.0 nomodify notrap
-			</screen>
+			]]></screen>
+			</section>
 		</section>
-	</section>
-	<section>
-		<title>ntpstat - show network time synchronisation status</title>
-		<screen>
+		<section>
+			<title>ntpstat - show network time synchronisation status</title>
+			<screen><![CDATA[
 # ntpstat
 Unable to talk to NTP daemon. Is it running?		
-		</screen>
-	</section>
-	<section>
-		<title>ntpq - standard NTP query program</title>
-		<screen>
+		]]></screen>
+		</section>
+		<section>
+			<title>ntpq - standard NTP query program</title>
+			<screen><![CDATA[
 [root@netkiller nginx]# ntpq -p
      remote           refid      st t when poll reach   delay   offset  jitter
 ==============================================================================
@@ -229,9 +284,9 @@ Unable to talk to NTP daemon. Is it running?
  100.100.3.1     .INIT.          16 u    - 1024    0    0.000    0.000   0.000
  100.100.3.2     .INIT.          16 u    - 1024    0    0.000    0.000   0.000
  100.100.3.3     .INIT.          16 u    - 1024    0    0.000    0.000   0.000
-		</screen>
-		<para>-n 禁止DNS解析</para>
-		<screen>
+		]]></screen>
+			<para>-n 禁止DNS解析</para>
+			<screen><![CDATA[
 [root@iZ621r6pk9aZ nginx]# ntpq -n -p
      remote           refid      st t when poll reach   delay   offset  jitter
 ==============================================================================
@@ -253,6 +308,7 @@ Unable to talk to NTP daemon. Is it running?
  100.100.3.1     .INIT.          16 u    - 1024    0    0.000    0.000   0.000
  100.100.3.2     .INIT.          16 u    - 1024    0    0.000    0.000   0.000
  100.100.3.3     .INIT.          16 u    - 1024    0    0.000    0.000   0.000		
-		</screen>
+		]]></screen>
+		</section>
 	</section>
 </chapter>

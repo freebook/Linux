@@ -96,6 +96,36 @@ sudo sysctl -p
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>bbr</title>
+			<para>修改系统变量</para>
+			<screen>
+			<![CDATA[
+echo "net.core.default_qdisc=fq" >> /etc/sysctl.conf
+echo "net.ipv4.tcp_congestion_control=bbr" >> /etc/sysctl.conf			
+			]]>
+			</screen>
+			<para>保存生效</para>
+			<screen>
+			<![CDATA[
+sysctl -p
+			]]>
+			</screen>
+			<para>查看内核是否已开启BBR</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# sysctl net.ipv4.tcp_available_congestion_control
+net.ipv4.tcp_available_congestion_control = bbr cubic reno
+			]]>
+			</screen>
+			<para>查看BBR模块是否加载成功</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# lsmod | grep bbr
+tcp_bbr 20480 14				
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="sys">
 		<title>/sys</title>
@@ -165,4 +195,5 @@ Max realtime timeout      unlimited            unlimited            us
 			</screen>
 		</section>
 	</section>
+	&chapter.kernel.module.xml;
 </chapter>

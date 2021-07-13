@@ -3,35 +3,48 @@
 <chapter id="introduction">
 	<title>Introduction</title>
 	<section id="linux.distribution">
-		<title>Linux 发行版本</title>	
+		<title>Linux 发行版本</title>
 		<para>下面是我常用的Linux本版，Debian/Ubuntu适合做实验，快速安装定制，Gentoo适合DIY</para>
-		<para>如果是企业服务器还是建议使用CentOS，Scientific Linux， 所以CentOS是IDC装机量怎大的操作系统。</para>	
+		<para>如果是企业服务器还是建议使用CentOS，Scientific Linux， 所以CentOS是IDC装机量怎大的操作系统。</para>
 		<section>
 			<title>Linux 下载排名</title>
-			<para><ulink url="http://distrowatch.com/">http://distrowatch.com/</ulink></para>
-		</section>		
+			<para>
+				<ulink url="http://distrowatch.com/">http://distrowatch.com/</ulink>
+			</para>
+		</section>
 		<section>
 			<title>Debian 衍生版本</title>
-			<para>Ubuntu Server Edition<ulink url="http://www.ubuntu.com/">http://www.ubuntu.com/</ulink></para>
-			<para><ulink url="/en-us/technology/ubuntu.html">Netkiller Ubuntu Linux 手札</ulink></para>
+			<para>
+				Ubuntu Server Edition
+				<ulink url="http://www.ubuntu.com/">http://www.ubuntu.com/</ulink>
+			</para>
+			<para>
+				<ulink url="/en-us/technology/ubuntu.html">Netkiller Ubuntu Linux 手札</ulink>
+			</para>
 		</section>
 		<section>
 			<title>Redhat 衍生版本</title>
 			<para>CentOS - The Community ENTerprise Operating System</para>
-			<para><ulink url="http://www.centos.org/">http://www.centos.org/</ulink></para>
-			
+			<para>
+				<ulink url="http://www.centos.org/">http://www.centos.org/</ulink>
+			</para>
+
 			<para>Scientific Linux (SL)</para>
-			<para><ulink url="http://www.scientificlinux.org/">http://www.scientificlinux.org/</ulink></para>
-			
-			<para><ulink url="/en-us/technology/centos.html">Netkiller CentOS Linux 手札</ulink></para>
+			<para>
+				<ulink url="http://www.scientificlinux.org/">http://www.scientificlinux.org/</ulink>
+			</para>
+
+			<para>
+				<ulink url="/en-us/technology/centos.html">Netkiller CentOS Linux 手札</ulink>
+			</para>
 		</section>
 		<section>
 			<title>FreeBSD 包风格的Linux 发行版</title>
 			<para>Gentoo</para>
 			<para>http://www.gentoo.org/</para>
 		</section>
-		
-	
+
+
 	</section>
 
 	<chapter id="linux">
@@ -40,27 +53,27 @@
 		<section id="ubuntustudio">
 			<title>ubuntustudio</title>
 			<screen>
-$ apt-cache search ubuntustudio
-plymouth-theme-ubuntustudio - Ubuntu Studio Plymouth theme
-ubiquity-slideshow-ubuntustudio - Ubiquity slideshow for Ubuntu Studio
-ubuntustudio-audio - Transitional Package for the Audio Seed
-ubuntustudio-audio-plugins - Ubuntu Studio audio plugins Package
-ubuntustudio-controls - Ubuntu Studio Controls is a small app that changes A/V settings.
-ubuntustudio-default-settings - default settings for the Ubuntu Studio desktop
-ubuntustudio-desktop - Ubuntu Studio Desktop Package
-ubuntustudio-font-meta - Ubuntu Studio fonts Package
-ubuntustudio-generation - Ubuntu Studio Audio Generation Package
-ubuntustudio-graphics - Ubuntu Studio graphics Package
-ubuntustudio-icon-theme - Ubuntu Studio Icon Theme
-ubuntustudio-lightdm-theme - UbuntuStudio LightDM theme
-ubuntustudio-live-settings - configuration for the Ubuntu Studio live-dvd
-ubuntustudio-look - Ubuntu Studio look
-ubuntustudio-menu - Menu for Ubuntu Studio
-ubuntustudio-recording - Ubuntu Studio Audio Recording Package
-ubuntustudio-screensaver - Ubuntu Studio screensaver
-ubuntustudio-sounds - Ubuntu Studio's GNOME audio theme
-ubuntustudio-video - Ubuntu Studio video Package
-ubuntustudio-wallpapers - Ubuntu Studio - Wallpapers
+				$ apt-cache search ubuntustudio
+				plymouth-theme-ubuntustudio - Ubuntu Studio Plymouth theme
+				ubiquity-slideshow-ubuntustudio - Ubiquity slideshow for Ubuntu Studio
+				ubuntustudio-audio - Transitional Package for the Audio Seed
+				ubuntustudio-audio-plugins - Ubuntu Studio audio plugins Package
+				ubuntustudio-controls - Ubuntu Studio Controls is a small app that changes A/V settings.
+				ubuntustudio-default-settings - default settings for the Ubuntu Studio desktop
+				ubuntustudio-desktop - Ubuntu Studio Desktop Package
+				ubuntustudio-font-meta - Ubuntu Studio fonts Package
+				ubuntustudio-generation - Ubuntu Studio Audio Generation Package
+				ubuntustudio-graphics - Ubuntu Studio graphics Package
+				ubuntustudio-icon-theme - Ubuntu Studio Icon Theme
+				ubuntustudio-lightdm-theme - UbuntuStudio LightDM theme
+				ubuntustudio-live-settings - configuration for the Ubuntu Studio live-dvd
+				ubuntustudio-look - Ubuntu Studio look
+				ubuntustudio-menu - Menu for Ubuntu Studio
+				ubuntustudio-recording - Ubuntu Studio Audio Recording Package
+				ubuntustudio-screensaver - Ubuntu Studio screensaver
+				ubuntustudio-sounds - Ubuntu Studio's GNOME audio theme
+				ubuntustudio-video - Ubuntu Studio video Package
+				ubuntustudio-wallpapers - Ubuntu Studio - Wallpapers
 			</screen>
 		</section>
 		<section id="avlinux">
@@ -70,17 +83,18 @@ ubuntustudio-wallpapers - Ubuntu Studio - Wallpapers
 	</chapter>
 
 	<section id="install.centos8">
-		<title>CentOS 8</title>
+		<title>CentOS 8 Stream</title>
 		<para>Centos 8 较之前的版本改动比较大</para>
 		<itemizedlist>
 			<title>CentOS 有两个发行版</title>
 			<listitem>CentOS stream：滚动发布的 Linux 发行版，适用于需要频繁更新的开发者</listitem>
 			<listitem>CentOS：类似 RHEL 8 的稳定操作系统，系统管理员可以用其部署或配置服务和应用</listitem>
 		</itemizedlist>
-		
-		<para>下载 ISO 文件你会发现只有boot和dvd1，boot 是网络安装，而DVD1差不多8G，估计你的手上没有 DVD9光盘，普通DVD光盘是D5只有4.7G，那么怎么安装呢，使用U盘。</para>
-		<para>将ISO文件烧录到U盘中，方法如下。</para>
-		<screen>
+		<section>
+			<title>U 盘安装 CentOS Stream</title>
+			<para>下载 ISO 文件你会发现只有boot和dvd1，boot 是网络安装，而DVD1差不多8G，估计你的手上没有 DVD9光盘，普通DVD光盘是D5只有4.7G，那么怎么安装呢，使用U盘。</para>
+			<para>将ISO文件烧录到U盘中，方法如下。</para>
+			<screen>
 		<![CDATA[
 neo@MacBook-Pro-Neo ~/Downloads % sudo dd if=CentOS-Stream-x86_64-dvd1.iso of=/dev/disk2 bs=1m
 Password:
@@ -89,79 +103,276 @@ dd: /dev/disk2: end of device
 7580+1 records out
 7948210176 bytes transferred in 1500.898226 secs (5295636 bytes/sec)
 		]]>
-		</screen>
-		<para>我手上并没有大容量U盘，我是用USB读卡器+8GB TF卡。</para>
-		<para>使用 dd 命令将 ISO 写入U盘后，使用U盘启动电脑就可以安装了。</para>
-		<table>
-		   <title>Linux server partition</title>
-		   <tgroup cols="2">
-			 <thead>
-			   <row>
-				  <entry>volume</entry>
-				  <entry>size</entry>
-			   </row>
-			 </thead>
-			<tbody>
-			   	<row>
-				  <entry>/boot</entry>
-				  <entry>300M</entry>
-			   	</row>
-				<row>
-				  <entry>/</entry>
-				  <entry>30G</entry>
-			   	</row>
-				<row>
-				  <entry>/var</entry>
-				  <entry>50G</entry>
-			   	</row>
-			   	<row>
-				  <entry>/opt</entry>
-				  <entry>remainder</entry>
-				</row>
-			   	<row>
-				  <entry>swap</entry>
-				  <entry>memory * 2</entry>
-			   	</row>
-			</tbody>
-		   </tgroup>
-		</table>
+			</screen>
+			<para>我手上并没有大容量U盘，我是用USB读卡器+8GB TF卡。</para>
+			<para>使用 dd 命令将 ISO 写入U盘后，使用U盘启动电脑就可以安装了。</para>
+			<para>如果下载速度慢，可以从国内镜像下载 ISO 文件</para>
+			<screen>
+		<![CDATA[
+neo@MacBook-Pro-Neo ~ % wget -c http://mirrors.163.com/centos/8-stream/isos/x86_64/CentOS-Stream-8-x86_64-20210706-dvd1.iso	
+		]]>
+			</screen>
+		</section>
+		<section>
+			<title>macOS 制作 U 盘启动盘速度慢</title>
+			<para>制作启动盘慢怎么解决</para>
+			<para>查看 U 盘设备文件，这里是 /dev/disk2</para>
+			<screen>
+		<![CDATA[
+neo@MacBook-Pro-Neo ~ % diskutil list
+/dev/disk0 (internal, physical):
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:      GUID_partition_scheme                        *251.0 GB   disk0
+   1:                        EFI ⁨EFI⁩                     209.7 MB   disk0s1
+   2:                 Apple_APFS ⁨Container disk1⁩         250.8 GB   disk0s2
 
-		<table>
-		   <title>Linux desktop partition</title>
-		   <tgroup cols="2">
-			 <thead>
-			   <row>
-				  <entry>volume</entry>
-				  <entry>size</entry>
-			   </row>
-			 </thead>
-			<tbody>
-			   	<row>
-				  <entry>/boot</entry>
-				  <entry>300M</entry>
-			   	</row>
-				<row>
-				  <entry>/</entry>
-				  <entry>30G</entry>
-			   	</row>
-				<row>
-				  <entry>/var</entry>
-				  <entry>50G</entry>
-			   	</row>
-			   	<row>
-				  <entry>/home</entry>
-				  <entry>remainder</entry>
-				</row>
-			   	<row>
-				  <entry>swap</entry>
-				  <entry>memory * 2</entry>
-			   	</row>
-			</tbody>
-		   </tgroup>
-		</table>
+/dev/disk1 (synthesized):
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:      APFS Container Scheme -                      +250.8 GB   disk1
+                                 Physical Store disk0s2
+   1:                APFS Volume ⁨Macintosh HD - Data⁩     209.8 GB   disk1s1
+   2:                APFS Volume ⁨Preboot⁩                 685.0 MB   disk1s2
+   3:                APFS Volume ⁨Recovery⁩                620.1 MB   disk1s3
+   4:                APFS Volume ⁨VM⁩                      6.4 GB     disk1s4
+   5:                APFS Volume ⁨Macintosh HD⁩            15.4 GB    disk1s5
+   6:              APFS Snapshot ⁨com.apple.os.update-...⁩ 15.4 GB    disk1s5s1
 
+/dev/disk2 (external, physical):
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:                                                   *30.8 GB    disk2		
+		]]>
+			</screen>
+			<para>制作U盘启动盘，注意！将 /dev/disk2 改成 /dev/rdisk2 写入速度会提速，rdisk 是 rawdisk。</para>
+			<screen>
+		<![CDATA[
+neo@MacBook-Pro-Neo ~ % sudo dd if=CentOS-Stream-8-x86_64-20210706-dvd1.iso of=/dev/rdisk2 bs=100m
+Password:			
+		]]>
+			</screen>
+
+			<table>
+				<title>Linux server partition</title>
+				<tgroup cols="2">
+					<thead>
+						<row>
+							<entry>volume</entry>
+							<entry>size</entry>
+						</row>
+					</thead>
+					<tbody>
+						<row>
+							<entry>/boot</entry>
+							<entry>300M</entry>
+						</row>
+						<row>
+							<entry>/</entry>
+							<entry>30G</entry>
+						</row>
+						<row>
+							<entry>/var</entry>
+							<entry>50G</entry>
+						</row>
+						<row>
+							<entry>/opt</entry>
+							<entry>remainder</entry>
+						</row>
+						<row>
+							<entry>swap</entry>
+							<entry>memory * 2</entry>
+						</row>
+					</tbody>
+				</tgroup>
+			</table>
+
+			<table>
+				<title>Linux desktop partition</title>
+				<tgroup cols="2">
+					<thead>
+						<row>
+							<entry>volume</entry>
+							<entry>size</entry>
+						</row>
+					</thead>
+					<tbody>
+						<row>
+							<entry>/boot</entry>
+							<entry>300M</entry>
+						</row>
+						<row>
+							<entry>/</entry>
+							<entry>30G</entry>
+						</row>
+						<row>
+							<entry>/var</entry>
+							<entry>50G</entry>
+						</row>
+						<row>
+							<entry>/home</entry>
+							<entry>remainder</entry>
+						</row>
+						<row>
+							<entry>swap</entry>
+							<entry>memory * 2</entry>
+						</row>
+					</tbody>
+				</tgroup>
+			</table>
+
+		</section>
+		<section>
+			<title>首次安装后初始化系统</title>
+			<para>Extra Packages for Enterprise Linux repository configuration</para>
+			<screen>
+			<![CDATA[
+dnf -y update
+dnf -y install epel-release
+			]]>
+			</screen>
+			<para>管理员常用工具</para>
+			<screen>
+			<![CDATA[
+dnf install -y bzip2 tree psmisc \
+telnet wget rsync vim-enhanced \
+net-tools bind-utils			
+			]]>
+			</screen>
+			<para>设置终端字符集（这样对 macOS 更友好），还可以解决 Failed to set locale, defaulting to C.UTF-8 问题</para>
+			<screen>
+			<![CDATA[
+cat >> /etc/environment <<EOF
+LC_ALL=en_US.UTF-8
+LANG=en_US.UTF-8
+LC_CTYPE=UTF-8
+EOF			
+			]]>
+			</screen>
+			<para>设置历史记录格式，可以看到命令的执行时间</para>
+			<screen>
+			<![CDATA[
+cat >> /etc/profile.d/history.sh <<EOF
+# Administrator specific aliases and functions for system security
+export HISTSIZE=10000
+export HISTFILESIZE=10000
+export HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S "
+export TIME_STYLE=long-iso
+EOF
+
+source /etc/profile.d/history.sh			
+			]]>
+			</screen>
+			<para>关闭 SELINUX</para>
+			<screen>
+			<![CDATA[
+cp /etc/selinux/config{,.original}
+sed -i "s/SELINUX=enforcing/SELINUX=disabled/" /etc/selinux/config
+
+setenforce Permissive			
+			]]>
+			</screen>
+			<para>sysctl 优化</para>
+			<screen>
+			<![CDATA[
+cat >> /etc/sysctl.conf <<EOF
+
+# Netkiller OSCM
+net.ipv4.ip_local_port_range = 1025 65500
+net.ipv4.tcp_tw_reuse = 1
+net.ipv4.tcp_tw_recycle = 1
+net.ipv4.tcp_keepalive_time = 1800
+net.core.netdev_max_backlog=3000
+net.ipv4.tcp_max_syn_backlog = 8192
+net.ipv4.tcp_max_tw_buckets = 4096
+net.core.somaxconn = 1024
+
+# TCP BBR
+net.core.default_qdisc=fq
+net.ipv4.tcp_congestion_control=bbr
+EOF
+#net.ipv4.tcp_syncookies = 1
+#net.ipv4.tcp_fin_timeout = 60
+
+sysctl -p			
+			]]>
+			</screen>
+			<para>ulimit 优化</para>
+			<screen>
+			<![CDATA[
+cat > /etc/security/limits.d/20-nofile.conf <<EOF
+
+www soft nofile 65535
+www hard nofile 65535
+
+nginx soft nofile 65535
+nginx hard nofile 65535
+
+mysql soft nofile 65535
+mysql hard nofile 65535
+
+redis soft nofile 65535
+redis hard nofile 65535
+
+rabbitmq soft nofile 40960
+rabbitmq hard nofile 40960
+
+hadoop soft nofile 65535
+hadoop hard nofile 65535
+
+EOF			
+			]]>
+			</screen>
+			<para>设置时区</para>
+			<screen>
+			<![CDATA[
+timedatectl set-timezone Asia/Shanghai			
+			]]>
+			</screen>
+			<para>安装时间同步服务器，确保每台服务器的时间同步</para>
+			<screen>
+			<![CDATA[
+dnf install -y chrony
+systemctl enable chronyd
+systemctl start chronyd			
+			]]>
+			</screen>
+			<para>zmodem 用来上传和下载文件（注意 macOS 的 Terminal.app 不支持）</para>
+			<screen>
+			<![CDATA[
+dnf install -y lrzsz			
+			]]>
+			</screen>
+			<para>优化 SSH 禁止 root 登陆，开启 sudo</para>
+			<screen>
+			<![CDATA[
+cp /etc/ssh/sshd_config{,.original}
+vim /etc/ssh/sshd_config <<EOF > /dev/null 2>&1
+:37,37s/#LoginGraceTime 2m/LoginGraceTime 1m/
+:40,40s/#MaxAuthTries 6/MaxAuthTries 3/
+:79,79s/GSSAPIAuthentication yes/GSSAPIAuthentication no/
+:99,99s/#AllowTcpForwarding yes/AllowTcpForwarding no/
+:107,107s/#TCPKeepAlive yes/TCPKeepAlive yes/
+:112,112s/#ClientAliveInterval 0/ClientAliveInterval 30/
+:113,113s/#ClientAliveCountMax 3/ClientAliveCountMax 9/
+:115,115s/#UseDNS yes/UseDNS no/
+:wq
+EOF			
+			
+sed -i "s/#PermitRootLogin yes/PermitRootLogin no/" /etc/ssh/sshd_config
+systemctl restart sshd
+
+cp /etc/sudoers{,.original}
+
+#vim /etc/sudoers <<EOF > /dev/null 2>&1
+visudo <<EOF > /dev/null 2>&1
+:120,120s:#includedir /etc/sudoers.d:includedir /etc/sudoers.d:
+:wq
+EOF
+
+visudo -c			
+			]]>
+			</screen>
+		</section>
 	</section>
 	
 	&chapter.install.xml;
-	
+
 </chapter>

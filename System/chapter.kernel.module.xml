@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.udev.xml 459 2012-08-31 09:34:37Z netkiller $ -->
-<chapter id="kernel.modules">
+<section id="kernel.modules">
 	<title>Kernel modules</title>
 	<para>add and remove modules from the Linux Kernel</para>
 	<section id="modprobe">
@@ -1958,4 +1958,4 @@ kernel/lib/ts_bm.ko
 kernel/lib/ts_fsm.ko
 		</screen>
 	</section>
-</chapter>
+</section>

@@ -145,7 +145,6 @@ Current `best' version is /srv/node-v12.3.1/bin/node.
 </chapter>
 <!-- =========================================================================== -->
 	&chapter.kernel.xml;
-	&chapter.kernel.module.xml;
 <!-- =========================================================================== -->
 	&chapter.package.xml;
 	&chapter.device.xml;

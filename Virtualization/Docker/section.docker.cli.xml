@@ -128,21 +128,25 @@ Server:
 			<title>run</title>
 			<para>run</para>
 			<screen>
-				$ sudo docker run ubuntu:14.04 /bin/echo 'Hello world'
-				Hello world
+			<![CDATA[
+$ sudo docker run ubuntu:14.04 /bin/echo 'Hello world'
+Hello world			
+			]]>
 			</screen>
 		</section>
 		<section id="start">
 			<title>start / stop / restart</title>
 			<screen>
-				sudo docker start silly_bohr
-				silly_bohr
+			<![CDATA[
+sudo docker start silly_bohr
+silly_bohr
 
-				$ sudo docker stop silly_bohr
-				silly_bohr
+$ sudo docker stop silly_bohr
+silly_bohr
 
-				$ sudo docker restart silly_bohr
-				silly_bohr
+$ sudo docker restart silly_bohr
+silly_bohr
+			]]>
 			</screen>
 		</section>
 		<section id="ps">
@@ -161,25 +165,39 @@ OPTIONS说明：
 			]]>
 			</screen>
 			<screen>
-				sudo docker ps
+			<![CDATA[
+sudo docker ps				
+			]]>
 			</screen>
 			<screen>
-				$ sudo docker ps -l
-				CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMES
-				84391d1de0fc ubuntu:14.04 /bin/echo Hello worl 31 minutes ago Exit 0 romantic_ritchie
+			<![CDATA[
+$ sudo docker ps -l
+CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMES
+84391d1de0fc ubuntu:14.04 /bin/echo Hello worl 31 minutes ago Exit 0 romantic_ritchie				
+			]]>
+			</screen>
+		</section>
+		<section id="docker.kill">
+			<title>kill 信号</title>
+			<screen>
+			<![CDATA[
+docker kill -s HUP <CONTAINER ID>			
+			]]>
 			</screen>
 		</section>
 		<section id="top">
 			<title>top</title>
 			<screen>
-				$ sudo docker ps
-				CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMES
-				13b2a4a31455 ubuntu:14.04 /bin/bash 3 hours ago Up 3 hours silly_bohr
+			<![CDATA[
+$ sudo docker ps
+CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMES
+13b2a4a31455 ubuntu:14.04 /bin/bash 3 hours ago Up 3 hours silly_bohr
 
-				$ sudo docker top silly_bohr
-				UID PID PPID C STIME TTY TIME CMD
-				root 23225 22908 0 12:17 pts/14 00:00:00 /bin/bash
-			</screen>
+$ sudo docker top silly_bohr
+UID PID PPID C STIME TTY TIME CMD
+root 23225 22908 0 12:17 pts/14 00:00:00 /bin/bash	
+			]]>
+		</screen>
 		</section>
 		<section id="inspect">
 			<title>inspect</title>
@@ -615,7 +633,7 @@ $ docker build -f /path/to/a/Dockerfile .
 		]]>
 			</screen>
 		</section>
-		<section>
+		<section id="docker.network">
 			<title>网络管理</title>
 			<screen>
 		<![CDATA[
@@ -626,7 +644,7 @@ docker run -d -v /usr/local/etc/redis/redis.conf:/usr/local/etc/redis/redis.conf
 		]]>
 			</screen>
 		</section>
-		<section>
+		<section id="docker.events">
 			<title>事件信息</title>
 			<screen>
 			<![CDATA[
@@ -636,6 +654,14 @@ neo@MacBook-Pro-Neo ~ % docker events
 2020-10-22T21:29:44.319023013+08:00 volume create search_data02 (driver=local)
 2020-10-22T21:29:44.331507541+08:00 volume create search_data03 (driver=local)
 2020-10-22T21:29:44.584989392+08:00 volume create search_data01 (driver=local)			
+			]]>
+			</screen>
+		</section>
+		<section id="docker.cp">
+			<title>从 docker 中复制文件</title>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~ % docker cp 13acbc98fb35:/etc/nginx/nginx.conf nginx/conf			
 			]]>
 			</screen>
 		</section>
