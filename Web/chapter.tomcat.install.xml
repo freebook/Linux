@@ -395,6 +395,92 @@ cat context.xml
 				</screen>
 			</section>
 		</section>
+		<section>
+			<title>SSL 证书上</title>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~ % keytool -genkey -v -alias tomcat -keyalg RSA -keystore conf/tomcat.keystore -validity 36500
+输入密钥库口令:  
+再次输入新口令: 
+您的名字与姓氏是什么?
+  [Unknown]:  Neo
+您的组织单位名称是什么?
+  [Unknown]:  SF
+您的组织名称是什么?
+  [Unknown]:  IT
+您所在的城市或区域名称是什么?
+  [Unknown]:  SZ
+您所在的省/市/自治区名称是什么?
+  [Unknown]:  GD
+该单位的双字母国家/地区代码是什么?
+  [Unknown]:  CN
+CN=Neo, OU=SF, O=IT, L=SZ, ST=GD, C=CN是否正确?
+  [否]:  Y
+
+正在为以下对象生成 2,048 位RSA密钥对和自签名证书 (SHA256withRSA) (有效期为 36,500 天):
+	 CN=Neo, OU=SF, O=IT, L=SZ, ST=GD, C=CN
+[正在存储conf/tomcat.keystore]
+
+neo@MacBook-Pro-Neo ~ % ll conf/tomcat.keystore
+-rw-r--r--  1 neo  staff   2.6K  7 15 17:06 conf/tomcat.keystore			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+ <Connector port="8443" protocol="org.apache.coyote.http11.Http11NioProtocol"
+ 	maxThreads="150" SSLEnabled="true">
+     <SSLHostConfig>
+	     <Certificate
+	          certificateKeystoreFile="conf/tomcat.keystore"
+	          certificateKeystorePassword="12345678"
+	          certificateKeystoreType="PKCS12"
+	     />
+     </SSLHostConfig>
+</Connector>			
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section id="tomcat9">
+		<title>Tomcat 9/10</title>
+		<para>自签名证书生成命令：</para>
+		<screen>
+		<![CDATA[
+keytool -genkey -alias tomcat -keyalg RSA -keystore /srv/apache-tomcat/conf/localhost-rsa.jks
+
+keytool -genkeypair -alias "tomcat" -keyalg "RSA" -keystore "https.keystore"
+加入有效期： keytool -genkeypair -alias "tomcat" -keyalg "RSA" -keystore "e:\https.keystore" -validity 36000
+
+# CN为域名
+keytool -genkeypair -alias "tomcat" -keyalg "RSA" -keystore tomcat.keystore -keypass "123456" -storepass "123456" -validity 365000 -dname "CN=www.netkiller.cn.cn,OU=tomcat,O=tomcat,L=SZ,ST=GD,C="
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+	<Connector port="443" protocol="org.apache.coyote.http11.Http11NioProtocol" maxThreads="150" SSLEnabled="true" scheme="https" secure="true">
+        <SSLHostConfig>
+             <Certificate certificateKeystoreFile="cert/www.netkiller.cn.pfx" certificateKeystoreType="PKCS12" certificateKeystorePassword="12345678" />
+        </SSLHostConfig>
+    </Connector>
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+<Connector port="443"
+    protocol="org.apache.coyote.http11.Http11NioProtocol" 
+    maxThreads="150" 
+    SSLEnabled="true"
+    defaultSSLHostConfigName="www.netkiller.cn" >
+        <SSLHostConfig hostName="www.netkiller.cn">
+		<Certificate 
+               certificateKeystoreFile="cert/netkiller.pfx"
+               certificateKeystorePassword="****"
+               type="RSA"/>
+        </SSLHostConfig>
+</Connector>		
+		]]>
+		</screen>
 	</section>
 	<section id="firewall">
 		<title>防火墙配置</title>

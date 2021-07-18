@@ -1,183 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="docker-compose">
-	<title>docker-compose - Define and run multi-container applications with Docker.</title>
-	<subtitle>Docker Compose v3</subtitle>
-	<!-- https://docs.docker.com/compose/overview/ -->
-	<section>
-		<title>安装 docker-compose</title>
-		<section>
-			<title>使用 pip 安装</title>
-			<screen>
-			<![CDATA[
-yum install -y python-pip
-pip install docker-compose
-			]]>
-			</screen>
-		</section>
-		<section>
-			<title>OSCM 安装</title>
-			<screen>
-			<![CDATA[
-curl -s https://raw.githubusercontent.com/oscm/shell/master/virtualization/docker/docker-compose.sh | bash
-			]]>
-			</screen>
-		</section>
-	</section>
-	<section>
-		<title>快速入门</title>
-		<screen>
-		<![CDATA[
-[root@localhost tmp]# cat app.py 
-import time
-
-import redis
-from flask import Flask
-
-
-app = Flask(__name__)
-cache = redis.Redis(host='redis', port=6379)
-
-
-def get_hit_count():
-    retries = 5
-    while True:
-        try:
-            return cache.incr('hits')
-        except redis.exceptions.ConnectionError as exc:
-            if retries == 0:
-                raise exc
-            retries -= 1
-            time.sleep(0.5)
-
-
-@app.route('/')
-def hello():
-    count = get_hit_count()
-    return 'Hello World! I have been seen {} times.\n'.format(count)
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug=True)
-		
-		]]>
-		</screen>
-		<screen>
-		<![CDATA[
-[root@localhost tmp]# cat requirements.txt 
-flask
-redis		
-		]]>
-		</screen>
-		<screen>
-		<![CDATA[
-[root@localhost tmp]# cat Dockerfile 
-FROM python:3.4-alpine
-ADD . /code
-WORKDIR /code
-RUN pip install -r requirements.txt
-CMD ["python", "app.py"]
-		]]>
-		</screen>
-		<screen>
-		<![CDATA[
-[root@localhost tmp]# cat docker-compose.yml 
-version: '2'
-services:
-  web:
-    build: .
-    ports:
-     - "5000:5000"
-  redis:
-    image: "redis:alpine"
-		]]>
-		</screen>
-		<para></para>
-		<screen>
-		<![CDATA[
-
-		]]>
-		</screen>
-	</section>
-	<section id="up_down">
-		<title>启动/停止</title>
-		<section id="up">
-			<title>启动</title>
-			<para>docker-compose up</para>
-			<screen>
-			<![CDATA[
-[root@localhost docker]# docker-compose up
-			]]>
-			</screen>
-			<para>守护进程</para>
-			<screen>
-			<![CDATA[
-docker-compose up -d			
-			]]>
-			</screen>
-		</section>
-		<section id="down">
-			<title>停止</title>
-			<para>docker-compose down</para>
-			<screen>
-			<![CDATA[
-[root@localhost docker]# docker-compose down
-Removing docker_membersrvc_1 ... done		
-			]]>
-			</screen>
-		</section>
-
-	</section>
-	<section id="docker-compose.ps">
-		<title>查看进程</title>
-		<para>docker-compose ps</para>
-		<screen>
-		<![CDATA[
-[root@localhost docker]# docker-compose ps 
-      Name                     Command               State                                   Ports                                  
------------------------------------------------------------------------------------------------------------------------------------
-test_membersrvc_1   membersrvc                       Up      0.0.0.0:7054->7054/tcp                                                 
-test_vp0_1          sh -c sleep 5; peer node s ...   Up      0.0.0.0:7050->7050/tcp, 0.0.0.0:7051->7051/tcp, 0.0.0.0:7053->7053/tcp			
-		]]>
-		</screen>
-	</section>
-	<section id="docker-compose.logs">
-		<title>查看日志</title>
-		<screen>
-		<![CDATA[
-docker-compose logs -f vp0		
-		]]>
-		</screen>
-	</section>
-	<section id="docker-compose.exec">
-		<title>执行命令</title>
-		<screen>
-		<![CDATA[
-docker-compose exec vp0 bash		
-		]]>
-		</screen>
-	</section>
-	<section id="docker-compose.yml">
-		<title>docker-compose.yml</title>
-		<para>本章节介绍如何定义 docker-compose.yml 文件</para>
-		<para>首先创建项目目录</para>
-		<screen>
+<section id="docker-compose.yml">
+	<title>docker-compose.yml 容器编排</title>
+	<para>本章节介绍如何定义 docker-compose.yml 文件</para>
+	<para>首先创建项目目录</para>
+	<screen>
 		<![CDATA[
 mkdir docker
 cd docker
 vim 	docker-compose.yml
 		]]>
-		</screen>
-		<section id="docker-compose.yml.version">
-			<title>版本号</title>
-			<screen>
+	</screen>
+	<section id="docker-compose.yml.version">
+		<title>版本号</title>
+		<screen>
 			<![CDATA[
 version: '3.8'
 			]]>
-			</screen>
-		</section>
-		<section id="docker-compose.yml.image">
-			<title>镜像</title>
-			<para>image: mysql:5.7 表示使用 mysql:5.7 镜像, image: mysql:latest 表示 mysql 最新版</para>
-			<screen>
+		</screen>
+	</section>
+	<section id="docker-compose.yml.image">
+		<title>镜像</title>
+		<para>image: mysql:5.7 表示使用 mysql:5.7 镜像, image: mysql:latest 表示 mysql 最新版</para>
+		<screen>
 			<![CDATA[
 services:
    db:
@@ -191,29 +35,29 @@ services:
        MYSQL_USER: wordpress
        MYSQL_PASSWORD: wordpress			
 			]]>
-			</screen>
-		</section>
-		<section id="docker-compose.yml.container_name">
-			<title>容器名称</title>
-			<screen>
+		</screen>
+	</section>
+	<section id="docker-compose.yml.container_name">
+		<title>容器名称</title>
+		<screen>
 			<![CDATA[
   prometheus:
     image: prom/prometheus
     container_name: prometheus			
 			]]>
-			</screen>
-		</section>
-		<section id="docker-compose.yml.restart">
-			<title>启动策略</title>
-			<screen>
+		</screen>
+	</section>
+	<section id="docker-compose.yml.restart">
+		<title>启动策略</title>
+		<screen>
 			<![CDATA[
 restart: unless-stopped			
 			]]>
-			</screen>
-		</section>
-		<section id="docker-compose.yml.user">
-			<title>容器用户</title>
-			<screen>
+		</screen>
+	</section>
+	<section id="docker-compose.yml.user">
+		<title>容器用户</title>
+		<screen>
 			<![CDATA[
 # Define in docker-compose:
 
@@ -231,22 +75,22 @@ restart: unless-stopped
 
 USER 1000:1000			
 			]]>
-			</screen>
-		</section>
-		<section id="docker-compose.yml.volumes">
-			<title>挂在卷</title>
-			<screen>
+		</screen>
+	</section>
+	<section id="docker-compose.yml.volumes">
+		<title>挂在卷</title>
+		<screen>
 				<![CDATA[
      volumes:
        - db_data:/var/lib/mysql
 				]]>
-			</screen>
+		</screen>
 
-		</section>
-		<section id="docker-compose.yml.ports">
-			<title>映射端口的标签</title>
-			<para>将容器中的端口暴漏给宿主主机。</para>
-			<screen>
+	</section>
+	<section id="docker-compose.yml.ports">
+		<title>映射端口的标签</title>
+		<para>将容器中的端口暴漏给宿主主机。</para>
+		<screen>
 			<![CDATA[
 ports:
  - "3000"
@@ -254,13 +98,13 @@ ports:
  - "22:22"
  - "127.0.0.1:8000:8000"
 			]]>
-			</screen>
-			<para>默认 "端口:端口" 将监听 127.0.0.1 主机。如果需要将端口暴漏出去，格式是"IP:PORT:PORT"，IP地址是宿主主机的网络适配器IP地址。</para>
-		</section>
-		<section id="docker-compose.yml.extra_hosts">
-			<title>添加 hosts 文件</title>
-			<para>往/etc/hosts文件中添加主机名，与Docker client的--add-host类似：</para>
-			<screen>
+		</screen>
+		<para>默认 "端口:端口" 将监听 127.0.0.1 主机。如果需要将端口暴漏出去，格式是"IP:PORT:PORT"，IP地址是宿主主机的网络适配器IP地址。</para>
+	</section>
+	<section id="docker-compose.yml.extra_hosts">
+		<title>添加 hosts 文件</title>
+		<para>往/etc/hosts文件中添加主机名，与Docker client的--add-host类似：</para>
+		<screen>
 			<![CDATA[
 	extra_hosts:
 		- "orderer.example.com:10.130.116.8"
@@ -269,21 +113,62 @@ ports:
 		- "peer0.org2.example.com:10.130.116.25"
 		- "peer1.org2.example.com:10.130.116.27"
 			]]>
-			</screen>
-		</section>
-		<section>
-			<title></title>
-			<screen>
+		</screen>
+	</section>
+	<section id="docker-compose.yml.links">
+		<title>links</title>
+		<para>links的作用是在当前服务里面创建一个链接外部服务的别名。</para>
+		<para>docker-compose.yml</para>
+		<programlisting>
+			<![CDATA[
+services:
+  tomcat:
+    image: netkiller:latest
+    links:
+      - mysql:db.netkiller.cn
+			]]>
+		</programlisting>
+		<para>这时配置文件 application.properties 就可以这样些</para>
+		<screen>
+			<![CDATA[
+sql.mysql.jdbc-url=jdbc:mysql://db.netkiller.cn:3306/test?characterEncoding=utf8&serverTimezone=UTC&autoReconnect=true&useSSL=false
+sql.mysql.username=root
+sql.mysql.password=abcdef
+sql.mysql.driverClassName=com.mysql.jdbc.Driver			
+			]]>
+		</screen>
+	</section>
+	<section id="docker-compose.yml.depends_on">
+		<title>服务依赖</title>
+		<para>通过depends_on告诉docker-compose当前服务启动之前先要把depends_on指定的服务启动起来才行。</para>
+		<programlisting>
+			<![CDATA[
+services:
+  kafka:
+    image: tflinux_kafka
+    depends_on:
+      - zookeeper
+  spring:
+    image: springboot
+    depends_on:
+      - redis
+      - mysql      	
+			]]>
+		</programlisting>
+	</section>
+
+	<section id="docker-compose.yml.working_dir">
+		<title>working_dir</title>
+		<screen>
 			<![CDATA[
 working_dir			
 			]]>
-			</screen>
-		</section>
-		
-		<section id="docker-compose.yml.environment">
-			<title>设置环境变量</title>
-			<para>environment 实现容器中环境变量的定义</para>
-			<screen>
+		</screen>
+	</section>
+	<section id="docker-compose.yml.environment">
+		<title>设置环境变量</title>
+		<para>environment 实现容器中环境变量的定义</para>
+		<screen>
 			<![CDATA[
 version: '3'
 
@@ -315,24 +200,24 @@ services:
     networks:
         - basic
 			]]>
-			</screen>
-		</section>
-		<section id="docker-compose.yml.tmpfs">
-			<title>临时文件系统</title>
-			<para>挂载临时目录到容器：</para>
-			<screen>
+		</screen>
+	</section>
+	<section id="docker-compose.yml.tmpfs">
+		<title>临时文件系统</title>
+		<para>挂载临时目录到容器：</para>
+		<screen>
 			<![CDATA[
 tmpfs: /run
 tmpfs:
   - /run
   - /tmp			
 			]]>
-			</screen>
-		</section>
-		<section id="docker-compose.yml.Dockerfile">
-			<title>编译 Dockerfile</title>
-			<para>编译当前目录下的 Dockerfile 使用 build: .</para>
-			<screen>
+		</screen>
+	</section>
+	<section id="docker-compose.yml.Dockerfile">
+		<title>编译 Dockerfile</title>
+		<para>编译当前目录下的 Dockerfile 使用 build: .</para>
+		<screen>
 			<![CDATA[
 version: '3'
 services:
@@ -341,9 +226,9 @@ services:
     ports:
      - "5000:5000"			
 			]]>
-			</screen>
-			<para>指定镜像名称</para>
-			<screen>
+		</screen>
+		<para>指定镜像名称</para>
+		<screen>
 			<![CDATA[
 version: "3.7"
 services:
@@ -369,9 +254,9 @@ services:
         soft: 65535
         hard: 65535			
 			]]>
-			</screen>
-			<para>docker-compose build redis-image 构建镜像</para>
-			<screen>
+		</screen>
+		<para>docker-compose build redis-image 构建镜像</para>
+		<screen>
 			<![CDATA[
 neo@MacBook-Pro ~/workspace/docker/docker-compose/redis/cluster % docker-compose build redis-image
 Building redis-image
@@ -417,21 +302,42 @@ Successfully tagged netkiller/redis:latest
 neo@MacBook-Pro ~/workspace/docker/docker-compose/redis/cluster % docker images | grep netkiller/redis
 netkiller/redis                            latest              095823650068        8 minutes ago       95MB
 			]]>
-			</screen>
-		</section>
-		<section id="docker-compose.resources">
-			<title>resources 硬件资源分配</title>
-			<screen>
+		</screen>
+	</section>
+	<section id="docker-compose.resources">
+		<title>resources 硬件资源分配</title>
+		<screen>
 			<![CDATA[
-resources:
-  limits:
-    cpus: '0.001'
-    memory: 50M
-  reservations:
-    cpus: '0.0001'
-    memory: 20M			
+version: "3"
+services:
+  node:
+    build:
+     context: .
+      dockerfile: ./Dockerfile
+    restart: always
+    environment:
+      - HOST=localhost
+    volumes:
+      - logs:/app/logs
+    expose:
+      - 8080
+    deploy:  		
+      resources:
+        limits:
+          cpus: '0.001'
+          memory: 50M
+        reservations:
+          cpus: '0.0001'
+          memory: 20M			
 			]]>
-			</screen>
-		</section>
+		</screen>
+		<tip>
+		<para>注意：启动必须加入 --compatibility 选项</para>
+		<screen>
+		<![CDATA[
+docker-compose --compatibility up		
+		]]>
+		</screen>
+		</tip>
 	</section>
 </section>

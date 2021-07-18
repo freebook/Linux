@@ -4,17 +4,16 @@
 	<para>
 		<ulink url="https://www.docker.com" />
 	</para>
-	
 	&section.docker.install.xml;
 	&section.docker.config.xml;
 	&section.docker.image.xml;
 	&section.docker.container.xml;
 	&section.docker.volume.xml;
 	&section.docker.registry.xml;
-	
 	&section.docker.swarms.xml;
-
 	&section.docker.cli.xml;
+	&section.docker.dockerfile.xml;
+	&section.docker-compose.xml;
 	&section.docker.example.xml;
 	&section.docker.faq.xml;
 </chapter>

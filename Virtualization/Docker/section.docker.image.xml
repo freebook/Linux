@@ -193,5 +193,4 @@ ba296c26886a        4 weeks ago         /bin/sh -c #(nop)  CMD ["/usr/local/bin/
 		]]>
 		</screen>
 	</section>
-		&section.docker.dockerfile.xml;
 </section>

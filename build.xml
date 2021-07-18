@@ -160,7 +160,7 @@
 		<!--		<rsync option="-auzv" src="${backup.dir}/${receive.timepoint}/${project.package}" dest="${remote.host}:${remote.destination}/" /> -->
 		<copy todir="${public_html}/images/" overwrite="true" failonerror="false">
 			<fileset dir="${resources}" includes="**/*.png" />
-			<fileset dir="${resources}" includes="**/*.jpeg" />
+			<fileset dir="${resources}" includes="**/*.*" />
 			<fileset dir="common/images" includes="**/*.*" />
 		</copy>
 
@@ -187,7 +187,7 @@
 		</xsltproc>
 		<!--			@test -f $(HTMLHELP_DIR)/htmlhelp.hhp && ../common/chm.sh $(HTMLHELP_DIR) -->
 	</target>
-	<target name="epub" depends="clean,images">
+	<target name="epub" depends="images">
 		<delete dir="${epub}" />
 		<mkdir dir="${epub}" />
 		<tstamp>

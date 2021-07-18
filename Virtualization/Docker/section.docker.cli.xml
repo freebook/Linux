@@ -197,7 +197,7 @@ $ sudo docker top silly_bohr
 UID PID PPID C STIME TTY TIME CMD
 root 23225 22908 0 12:17 pts/14 00:00:00 /bin/bash	
 			]]>
-		</screen>
+			</screen>
 		</section>
 		<section id="inspect">
 			<title>inspect</title>
@@ -666,5 +666,191 @@ neo@MacBook-Pro-Neo ~ % docker cp 13acbc98fb35:/etc/nginx/nginx.conf nginx/conf
 			</screen>
 		</section>
 	</section>
-	&section.docker-compose.xml;
+	<section id="docker-compose">
+		<title>docker-compose - Define and run multi-container applications with Docker.</title>
+		<subtitle>Docker Compose v3</subtitle>
+		<!-- https://docs.docker.com/compose/overview/ -->
+		<section>
+			<title>安装 docker-compose</title>
+			<section>
+				<title>使用 pip 安装</title>
+				<screen>
+			<![CDATA[
+yum install -y python-pip
+pip install docker-compose
+			]]>
+				</screen>
+			</section>
+			<section>
+				<title>OSCM 安装</title>
+				<screen>
+			<![CDATA[
+curl -s https://raw.githubusercontent.com/oscm/shell/master/virtualization/docker/docker-compose.sh | bash
+			]]>
+				</screen>
+			</section>
+		</section>
+		<section>
+			<title>查看版本号</title>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# docker-compose version
+docker-compose version 1.29.2, build 5becea4c
+docker-py version: 5.0.0
+CPython version: 3.7.10
+OpenSSL version: OpenSSL 1.1.0l  10 Sep 2019			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>快速入门</title>
+			<screen>
+		<![CDATA[
+[root@localhost tmp]# cat app.py 
+import time
+
+import redis
+from flask import Flask
+
+
+app = Flask(__name__)
+cache = redis.Redis(host='redis', port=6379)
+
+
+def get_hit_count():
+    retries = 5
+    while True:
+        try:
+            return cache.incr('hits')
+        except redis.exceptions.ConnectionError as exc:
+            if retries == 0:
+                raise exc
+            retries -= 1
+            time.sleep(0.5)
+
+
+@app.route('/')
+def hello():
+    count = get_hit_count()
+    return 'Hello World! I have been seen {} times.\n'.format(count)
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", debug=True)
+		
+		]]>
+			</screen>
+			<screen>
+		<![CDATA[
+[root@localhost tmp]# cat requirements.txt 
+flask
+redis		
+		]]>
+			</screen>
+			<screen>
+		<![CDATA[
+[root@localhost tmp]# cat Dockerfile 
+FROM python:3.4-alpine
+ADD . /code
+WORKDIR /code
+RUN pip install -r requirements.txt
+CMD ["python", "app.py"]
+		]]>
+			</screen>
+			<screen>
+		<![CDATA[
+[root@localhost tmp]# cat docker-compose.yml 
+version: '2'
+services:
+  web:
+    build: .
+    ports:
+     - "5000:5000"
+  redis:
+    image: "redis:alpine"
+		]]>
+			</screen>
+			<para></para>
+			<screen>
+		<![CDATA[
+
+		]]>
+			</screen>
+		</section>
+		<section id="docker-compose.up">
+			<title>启动</title>
+			<para>docker-compose up</para>
+			<screen>
+			<![CDATA[
+[root@localhost docker]# docker-compose up
+			]]>
+			</screen>
+			<para>守护进程</para>
+			<screen>
+			<![CDATA[
+docker-compose up -d			
+			]]>
+			</screen>
+			<para>启动指定服务</para>
+			<screen>
+			<![CDATA[
+[root@localhost docker]# docker-compose up mysql
+[root@localhost docker]# docker-compose up -d mysql	
+			]]>
+			</screen>
+			<para>指定 yml 文件</para>
+			<screen>
+			<![CDATA[
+$ docker-compose -f docker-compose.yml up -d			
+			]]>
+			</screen>
+		</section>
+		<section id="docker-compose.down">
+			<title>停止</title>
+			<section>
+				<title>停止</title>
+				<para>docker-compose down</para>
+				<screen>
+				<![CDATA[
+[root@localhost docker]# docker-compose down
+Removing docker_membersrvc_1 ... done		
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>启动</title>
+
+			</section>			
+		</section>
+
+		<section id="docker-compose.ps">
+			<title>查看进程</title>
+			<para>docker-compose ps</para>
+			<screen>
+		<![CDATA[
+[root@localhost docker]# docker-compose ps 
+      Name                     Command               State                                   Ports                                  
+-----------------------------------------------------------------------------------------------------------------------------------
+test_membersrvc_1   membersrvc                       Up      0.0.0.0:7054->7054/tcp                                                 
+test_vp0_1          sh -c sleep 5; peer node s ...   Up      0.0.0.0:7050->7050/tcp, 0.0.0.0:7051->7051/tcp, 0.0.0.0:7053->7053/tcp			
+		]]>
+			</screen>
+		</section>
+		<section id="docker-compose.logs">
+			<title>查看日志</title>
+			<screen>
+		<![CDATA[
+docker-compose logs -f vp0		
+		]]>
+			</screen>
+		</section>
+		<section id="docker-compose.exec">
+			<title>执行命令</title>
+			<screen>
+		<![CDATA[
+docker-compose exec vp0 bash		
+		]]>
+			</screen>
+		</section>
+	</section>
+
 </section>

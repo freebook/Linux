@@ -44,7 +44,8 @@ docker run -d \
 			</screen>
 		</section>
 	</section>
-	&section.docker.java.xml;
-	&section.docker.redis.xml;
-	&section.docker.nginx.xml;
+	&section.docker.example.java.xml;
+	&section.docker.example.redis.xml;
+	&section.docker.example.nginx.xml;
+	&section.docker.example.mysql.xml;
 </section>

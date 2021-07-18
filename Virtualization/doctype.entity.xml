@@ -23,10 +23,12 @@
 <!ENTITY section.docker.service.xml		SYSTEM "Docker/section.docker.service.xml">
 <!ENTITY section.docker.faq.xml    		SYSTEM "Docker/section.docker.faq.xml">
 
-<!ENTITY section.docker.example.xml		SYSTEM "Docker/section.docker.example.xml">
-<!ENTITY section.docker.java.xml		SYSTEM "Docker/section.docker.java.xml">
-<!ENTITY section.docker.redis.xml		SYSTEM "Docker/section.docker.redis.xml">
-<!ENTITY section.docker.nginx.xml		SYSTEM "Docker/section.docker.nginx.xml">
+<!ENTITY section.docker.example.xml				SYSTEM "Docker/section.docker.example.xml">
+<!ENTITY section.docker.example.java.xml		SYSTEM "Docker/section.docker.example.java.xml">
+<!ENTITY section.docker.example.redis.xml		SYSTEM "Docker/section.docker.example.redis.xml">
+<!ENTITY section.docker.example.nginx.xml		SYSTEM "Docker/section.docker.example.nginx.xml">
+<!ENTITY section.docker.example.tomcat.xml		SYSTEM "Docker/section.docker.example.tomcat.xml">
+<!ENTITY section.docker.example.mysql.xml		SYSTEM "Docker/section.docker.example.mysql.xml">
 
 <!ENTITY section.harbor.xml				SYSTEM "Docker/section.harbor.xml">
 

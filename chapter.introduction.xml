@@ -53,27 +53,29 @@
 		<section id="ubuntustudio">
 			<title>ubuntustudio</title>
 			<screen>
-				$ apt-cache search ubuntustudio
-				plymouth-theme-ubuntustudio - Ubuntu Studio Plymouth theme
-				ubiquity-slideshow-ubuntustudio - Ubiquity slideshow for Ubuntu Studio
-				ubuntustudio-audio - Transitional Package for the Audio Seed
-				ubuntustudio-audio-plugins - Ubuntu Studio audio plugins Package
-				ubuntustudio-controls - Ubuntu Studio Controls is a small app that changes A/V settings.
-				ubuntustudio-default-settings - default settings for the Ubuntu Studio desktop
-				ubuntustudio-desktop - Ubuntu Studio Desktop Package
-				ubuntustudio-font-meta - Ubuntu Studio fonts Package
-				ubuntustudio-generation - Ubuntu Studio Audio Generation Package
-				ubuntustudio-graphics - Ubuntu Studio graphics Package
-				ubuntustudio-icon-theme - Ubuntu Studio Icon Theme
-				ubuntustudio-lightdm-theme - UbuntuStudio LightDM theme
-				ubuntustudio-live-settings - configuration for the Ubuntu Studio live-dvd
-				ubuntustudio-look - Ubuntu Studio look
-				ubuntustudio-menu - Menu for Ubuntu Studio
-				ubuntustudio-recording - Ubuntu Studio Audio Recording Package
-				ubuntustudio-screensaver - Ubuntu Studio screensaver
-				ubuntustudio-sounds - Ubuntu Studio's GNOME audio theme
-				ubuntustudio-video - Ubuntu Studio video Package
-				ubuntustudio-wallpapers - Ubuntu Studio - Wallpapers
+			<![CDATA[
+$ apt-cache search ubuntustudio
+plymouth-theme-ubuntustudio - Ubuntu Studio Plymouth theme
+ubiquity-slideshow-ubuntustudio - Ubiquity slideshow for Ubuntu Studio
+ubuntustudio-audio - Transitional Package for the Audio Seed
+ubuntustudio-audio-plugins - Ubuntu Studio audio plugins Package
+ubuntustudio-controls - Ubuntu Studio Controls is a small app that changes A/V settings.
+ubuntustudio-default-settings - default settings for the Ubuntu Studio desktop
+ubuntustudio-desktop - Ubuntu Studio Desktop Package
+ubuntustudio-font-meta - Ubuntu Studio fonts Package
+ubuntustudio-generation - Ubuntu Studio Audio Generation Package
+ubuntustudio-graphics - Ubuntu Studio graphics Package
+ubuntustudio-icon-theme - Ubuntu Studio Icon Theme
+ubuntustudio-lightdm-theme - UbuntuStudio LightDM theme
+ubuntustudio-live-settings - configuration for the Ubuntu Studio live-dvd
+ubuntustudio-look - Ubuntu Studio look
+ubuntustudio-menu - Menu for Ubuntu Studio
+ubuntustudio-recording - Ubuntu Studio Audio Recording Package
+ubuntustudio-screensaver - Ubuntu Studio screensaver
+ubuntustudio-sounds - Ubuntu Studio's GNOME audio theme
+ubuntustudio-video - Ubuntu Studio video Package
+ubuntustudio-wallpapers - Ubuntu Studio - Wallpapers
+			]]>
 			</screen>
 		</section>
 		<section id="avlinux">
@@ -224,7 +226,7 @@ Password:
 			<para>Extra Packages for Enterprise Linux repository configuration</para>
 			<screen>
 			<![CDATA[
-dnf -y update
+dnf -y upgrade
 dnf -y install epel-release
 			]]>
 			</screen>
@@ -239,6 +241,9 @@ net-tools bind-utils
 			<para>设置终端字符集（这样对 macOS 更友好），还可以解决 Failed to set locale, defaulting to C.UTF-8 问题</para>
 			<screen>
 			<![CDATA[
+dnf install -y langpacks-en glibc-langpack-en
+localectl set-locale LANG=en_US.UTF-8
+			
 cat >> /etc/environment <<EOF
 LC_ALL=en_US.UTF-8
 LANG=en_US.UTF-8
@@ -246,9 +251,10 @@ LC_CTYPE=UTF-8
 EOF			
 			]]>
 			</screen>
+			<!-- dnf install langpacks-en glibc-all-langpacks -y -->
 			<para>设置历史记录格式，可以看到命令的执行时间</para>
 			<screen>
-			<![CDATA[
+			<![CDATA[			
 cat >> /etc/profile.d/history.sh <<EOF
 # Administrator specific aliases and functions for system security
 export HISTSIZE=10000
@@ -274,7 +280,7 @@ setenforce Permissive
 			<![CDATA[
 cat >> /etc/sysctl.conf <<EOF
 
-# Netkiller OSCM
+# Netkiller
 net.ipv4.ip_local_port_range = 1025 65500
 net.ipv4.tcp_tw_reuse = 1
 net.ipv4.tcp_tw_recycle = 1
@@ -368,6 +374,24 @@ visudo <<EOF > /dev/null 2>&1
 EOF
 
 visudo -c			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>卸载防火墙</title>
+			<para>firewalld 不是适合 IDC 使用，IDC 通常只需要 INPUT 规则，其次是 OUTPUT 规则，所以我们换回 iptables 或者 nftable</para>
+			<screen>
+			<![CDATA[
+systemctl stop firewalld
+
+dnf remove -y firewalld
+dnf install iptables-services -y
+
+systemctl start iptables
+systemctl enable iptables
+
+systemctl stop ip6tables
+systemctl disable ip6tables
 			]]>
 			</screen>
 		</section>
