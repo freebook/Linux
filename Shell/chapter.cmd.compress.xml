@@ -254,6 +254,18 @@ access.2010-10-01.log  access.2010-10-12.log  access.2010-10-25.log  access.2010
 		<title>zip, zipcloak, zipnote, zipsplit - package and compress (archive) files</title>
 		<para>*.zip</para>
 		<command>zip/unzip file[.zip]</command>
+		<para>压缩文件</para>
+		<screen>
+		<![CDATA[
+zip -r dist.zip dist		
+		]]>
+		</screen>
+		<para>解压到指定目录</para>
+		<screen>
+		<![CDATA[
+unzip dist.zip -d /var/www/html		
+		]]>
+		</screen>
 	</section>
 	<section id="bzip2">
 		<title>bzip2, bunzip2 - a block-sorting file compressor</title>

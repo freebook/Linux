@@ -8,6 +8,7 @@
 	<!ENTITY Neo "http://netkiller.sf.net/">
 	<!ENTITY BG7NYT "&Neo;">
 	<!ENTITY Netkiller "<emphasis><trademark>Netkiller</trademark></emphasis>">
+	<!ENTITY VIDEO "https://www.ixigua.com/6986263438075003429?id=6986259853300007437">
 
 	<!ENTITY % common.doctype.entity.xml 	SYSTEM "common/doctype.entity.xml">
 	%common.doctype.entity.xml;
@@ -108,14 +109,15 @@
 <book xml:base="http://netkiller.github.com/linux/" xmlns="http://docbook.org/ns/docbook" xml:lang="zh-cn">
 	<info>
 		<title>Netkiller Linux 手札</title>
-		<subtitle>Netkiller Linux Cookbook</subtitle>
+		<subtitle><ulink url="&VIDEO;">《Netkiller Linux 手札》配套视频教程</ulink>（<?dbtimestamp format="Y"?>版）</subtitle>
+		<titleabbrev>Netkiller Linux Cookbook</titleabbrev>
 
 		<authorgroup>
 			&book.info.author.xml;
 		</authorgroup>
 
 		<copyright>
-			<year>2006-2020</year>
+			<year>2006-2021</year>
 			<holder>Netkiller(Neo Chan). All rights reserved.</holder>
 		</copyright>
 		

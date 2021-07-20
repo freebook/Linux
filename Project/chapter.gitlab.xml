@@ -14,7 +14,7 @@
 		<ulink url="http://www.netkiller.cn/project/project/gitlab/index.html" />
 	</para>
 
-	<section id="install">
+	<section id="gitlab.install">
 		<title>GitLab</title>
 
 		<para>
@@ -23,8 +23,8 @@
 		<para>GitLab是一个利用 Ruby on Rails 开发的开源应用程序，实现一个自托管的Git项目仓库，可通过Web界面进行访问公开的或者私人项目。</para>
 		<para>它拥有与Github类似的功能，能够浏览源代码，管理缺陷和注释。可以管理团队对仓库的访问，它非常易于浏览提交过的版本并提供一个文件历史库。团队成员可以利用内置的简单聊天程序(Wall)进行交流。它还提供一个代码片段收集功能可以轻松实现代码复用，便于日后有需要的时候进行查找。</para>
 		<para>GitLab 5.0以前版本要求服务器端采用 Gitolite 搭建，5.0版本以后不再使用 Gitolite ，采用自己开发的 gitlab-shell 来实现。如果你觉得安装麻烦可以使用 GitLab Installers 一键安装程序。</para>
-		
-		<section>
+
+		<section id="gitlab.docker">
 			<title>Docker 方式安装 Gitlab</title>
 			<screen>
 		<![CDATA[
@@ -76,7 +76,7 @@ docker restart gitlab-ce
 		]]>
 			</screen>
 		</section>
-		<section>
+		<section id="gitlab.centos">
 			<title>CentOS 8 Stream</title>
 			<screen>
 			<![CDATA[
@@ -127,11 +127,17 @@ Password: dpzQFzltaq0BhAwDnugMf6MCFbvItXDvC+RcuN9R+wg=
 			<screen>
 			<![CDATA[
 curl -L "https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.rpm.sh" | sudo bash
-dnf install gitlab-runner		
+dnf install gitlab-runner	
+			]]>
+			</screen>
+			<para>配置文件 /etc/gitlab-runner/config.toml</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# systemctl restart gitlab-runner
 			]]>
 			</screen>
 		</section>
-<section id="install">
+		<section id="install.centos6">
 			<title>Yum 安装 GitLab</title>
 			<screen><![CDATA[
 yum localinstall -y https://downloads-packages.s3.amazonaws.com/centos-6.6/gitlab-ce-7.10.0~omnibus.2-1.x86_64.rpm
@@ -222,23 +228,9 @@ yum install gitlab-ci-multi-runner
 		]]></screen>
 			</section>
 		</section>
-		<section id="gitlab.user">
-			<title>用户管理</title>
-			<para>初始化GitLab，进入Admin area，单击左侧菜单Users，在这里为gitlab添加用户</para>
-		</section>
-		<section id="gitlab.group">
-			<title>组管理</title>
-			<para>初始化GitLab组，我比较喜欢使用“域名”作为组名，例如example.com</para>
-		</section>
-		<section id="gitlab.project">
-			<title>项目管理</title>
-			<para>创建项目，我通常会在组下面创建项目，每个域名对应一个项目,例如www.example.com,images.example.com</para>
-			<para>版本库URL如下</para>
-			<screen><![CDATA[
-http: http://192.168.0.1/example.com/www.example.com.git
-ssh: git@192.168.0.1:example.com/www.example.com.git
-		]]></screen>
-		</section>
+
+
+
 		<section id="gitlab.ssl">
 			<title>绑定SSL证书</title>
 			<para>编辑 /etc/gitlab/gitlab.rb 文件</para>
@@ -255,112 +247,272 @@ nginx['http2_enabled'] = true
 		]]>
 			</screen>
 		</section>
-		<section id="gitlab.faq">
-			<title>FAQ</title>
-			<section>
-				<title>gitolite 向 gitlab 迁移</title>
-				<para>早期gitlab使用gitolite为用户提供SSH服务，新版gitlab有了更好的解决方案gitlab-shell。安装新版本是必会涉及gitolite 向 gitlab 迁移，下面是我总结的一些迁移经验。</para>
-				<para>第一步,将gitolite复制到gitlab仓库目录下</para>
-				<screen><![CDATA[
-# cp -r /gitroot/gitolite/repositories/* /var/opt/gitlab/git-data/repositories/
-			]]></screen>
-				<para>执行导入处理程序</para>
-				<screen><![CDATA[
-# gitlab-rake gitlab:import:repos
-			]]></screen>
-				<para>上面程序会处理一下目录结构，例如</para>
-				<para>进入gitlab web界面，创建仓库与导入的仓库同名，这样就完成了导入工作。</para>
-				<tip>
-					<para>转换最好在git用户下面操作，否则你需要运行</para>
-					<screen><![CDATA[
-# chown git:git -R /var/opt/gitlab/git-data/repositories				
-				]]></screen>
-				</tip>
-			</section>
-			<section>
-				<title>修改主机名</title>
-				<para>默认Gitlab采用主机名，给我使用代理一定麻烦</para>
-				<screen><![CDATA[
-git@hostname:example.com/www.example.com.git
-http://hostname/example.com/www.example.com.git
-			]]></screen>
-				<para>我们希望使用IP地址替代主机名</para>
-				<screen><![CDATA[
-git@172.16.0.1:example.com/www.example.com.git
-http://172.16.0.1/example.com/www.example.com.git
-			]]></screen>
-				<para>编辑 /etc/gitlab/gitlab.rb 配置文件</para>
-				<screen><![CDATA[
-external_url 'http://172.16.0.1'
-			]]></screen>
-				<para>重新启动Gitlab</para>
-				<screen><![CDATA[
-# gitlab-ctl reconfigure
-# gitlab-ctl restart
-			]]></screen>
-			</section>
+		
+
+	</section>
+	<section id="gitlab.runner">
+		<title>GitLab Runner</title>
+		<section>
+			<title>安装 GitLab Runner</title>
+			<subtitle>Install GitLab Runner</subtitle>
+			<screen>
+				<![CDATA[
+curl -L "https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.rpm.sh" | sudo bash
+dnf install gitlab-runner
+
+cp /etc/gitlab-runner/config.toml{,.original}
+
+systemctl enable gitlab-runner
+
+gitlab-runner register
+
+mkdir -p /home/gitlab-runner/.ssh/
+cat > /home/gitlab-runner/.ssh/config <<'EOF'
+Host *
+	StrictHostKeyChecking no
+	UserKnownHostsFile=/dev/null
+EOF
+
+chmod 600 -R /home/gitlab-runner/.ssh
+			
+				]]>
+			</screen>
+		</section>
+		<section>
+			<title>注册 Runners - Shell</title>
+			<subtitle>Registering Runners</subtitle>
+			<screen>
+				<![CDATA[
+[root@gitlab ~]# gitlab-runner register
+Runtime platform                                    arch=amd64 os=linux pid=1020084 revision=c1edb478 version=14.0.1
+Running in system-mode.                            
+                                                   
+Enter the GitLab instance URL (for example, https://gitlab.com/):
+http://192.168.30.5/
+Enter the registration token:
+DyKdKyaJaq5KN-irgNGz
+Enter a description for the runner:
+[gitlab]: 
+Enter tags for the runner (comma-separated):
+
+Registering runner... succeeded                     runner=DyKdKyaJ
+Enter an executor: parallels, virtualbox, docker+machine, custom, docker, docker-ssh, shell, ssh, docker-ssh+machine, kubernetes:
+shell
+Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded! 
+				]]>
+			</screen>
+		</section>
+		<section>
+			<title>/etc/gitlab-runner/config.toml</title>
+			<screen>
+				<![CDATA[
+[root@gitlab ~]# cat /etc/gitlab-runner/config.toml
+concurrent = 1
+check_interval = 0
+
+[session_server]
+  session_timeout = 1800
+
+[[runners]]
+  name = "gitlab"
+  url = "http://192.168.30.5/"
+  token = "kVkzjDM74xZUN-aKbdPp"
+  executor = "shell"
+  [runners.custom_build_dir]
+  [runners.cache]
+    [runners.cache.s3]
+    [runners.cache.gcs]
+    [runners.cache.azure]			
+				]]>
+			</screen>
+		</section>
+		<section>
+			<title>生成 SSH 证书</title>
+			<screen>
+				<![CDATA[
+[root@gitlab ~]# su - gitlab-runner
+Last login: Mon Jul 19 19:01:37 CST 2021
+[gitlab-runner@gitlab ~]$ ssh-keygen 
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/gitlab-runner/.ssh/id_rsa): 
+Created directory '/home/gitlab-runner/.ssh'.
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /home/gitlab-runner/.ssh/id_rsa.
+Your public key has been saved in /home/gitlab-runner/.ssh/id_rsa.pub.
+The key fingerprint is:
+SHA256:l90LYBeSF9l9JHXJUHeO+IyvscCziz4C8vFNpJoKEjo gitlab-runner@gitlab
+The key's randomart image is:
++---[RSA 3072]----+
+|          ..o===B|
+|          ..oo.**|
+|          o.o . o|
+|        .. = =   |
+|.      oS o + +  |
+|... o . .o   o . |
+|E  o * o  + . o  |
+|.o  + o o. + +   |
+|  ..   oo.o.o    |
++----[SHA256]-----+
+[gitlab-runner@gitlab ~]$ 				
+				]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+[gitlab-runner@gitlab ~]$ cat > ~/.ssh/config <<'EOF'
+Host *
+	ServerAliveInterval=30
+	StrictHostKeyChecking no
+	UserKnownHostsFile=/dev/null
+EOF
+
+chmod 600 -R ~/.ssh/config			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Java 环境</title>
+			<screen>
+			<![CDATA[
+[root@gitlab ~]# dnf install -y maven			
+			]]>
+			</screen>
+			<para>修改 Maven 镜像路</para>
+			<screen>
+			<![CDATA[
+[root@gitlab ~]# vim /etc/maven/settings.xml
+  <mirrors>
+    <mirror>
+      <id>aliyun</id>
+      <name>aliyun maven</name>
+      <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+      <mirrorOf>central</mirrorOf>
+    </mirror>
+  </mirrors>			
+			]]>
+			</screen>
+			<para>切换到 gitlab-runner 用户，随便运行一下 mvn 命令，这样就会产生 ～/.m2 文件夹</para>
+			<screen>
+			<![CDATA[
+[root@gitlab ~]# su - gitlab-runner		
+[gitlab-runner@gitlab ~]$ mvn	
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>NodeJS</title>
+			<screen>
+			<![CDATA[
+dnf install -y nodejs
+			]]>
+			</screen>
+			<para>CentOS 7</para>
+			<screen>
+				[root@netkiller www]# yum install -y nodejs
+				[root@netkiller www]# node --version
+				v6.9.1
+			</screen>
+			<para>安装 cnpm</para>
+			<screen>
+			<![CDATA[
+[root@gitlab ~]# npm config set registry https://registry.npm.taobao.org
+[root@gitlab ~]# npm config get registry
+https://registry.npm.taobao.org/
+[root@gitlab ~]# npm install -g cnpm		
+			]]>
+			</screen>
 		</section>
 
 	</section>
 
-	<section id="user">
-		<title>创建用户</title>
-		<procedure>
-			<title>企业内部使用的 Gitlab 初始化</title>
-			<step>
-				<para>关闭在线用户注册</para>
+	<section id="gitlab.user">
+		<title>用户管理</title>
+		<para>初始化GitLab，进入Admin area，单击左侧菜单Users，在这里为gitlab添加用户</para>
+		<section id="user">
+			<title>创建用户</title>
+			<procedure>
+				<title>企业内部使用的 Gitlab 初始化</title>
+				<step>
+					<para>关闭在线用户注册</para>
 
-			</step>
-			<step>
-				<para>Step 3.</para>
-				<substeps>
-					<step>
-						<para>Substep a.</para>
-					</step>
-					<step>
-						<para>Substep b.</para>
-					</step>
-				</substeps>
-			</step>
-		</procedure>
+				</step>
+				<step>
+					<para>Step 3.</para>
+					<substeps>
+						<step>
+							<para>Substep a.</para>
+						</step>
+						<step>
+							<para>Substep b.</para>
+						</step>
+					</substeps>
+				</step>
+			</procedure>
+		</section>
 	</section>
-	<section id="group">
-		<title>创建组与项目</title>
-		<procedure>
-			<title>Gitlab 初始化 - 创建组</title>
-			<step>
-				<para>点击 New Group 按钮新建一个组，我习惯每个域一个组，所以我使用 netkiller.cn 作为组名称
-				</para>
-				<graphic format="png" fileref="../images/gitlab/group.png" width="" srccredit="neo" />
-			</step>
-			<step>
-				<para>输入 netkiller.cn 然后单击 Create group</para>
-				<graphic format="png" fileref="../images/gitlab/group.new.png" width="" srccredit="neo" />
-			</step>
-			<step>
-				<para>组创建完毕</para>
-				<graphic format="png" fileref="../images/gitlab/groups.png" width="" srccredit="neo" />
-			</step>
-		</procedure>
-		<para>创建组后接下来创建项目</para>
-		<procedure>
-			<title>Gitlab 初始化 - 创建项目</title>
-			<step>
-				<para>单击 New Project 创建项目</para>
-				<graphic format="png" fileref="../images/gitlab/projects.png" width="" srccredit="neo" />
-			</step>
-			<step>
-				<para>输入 www.netkiller.cn 并点击 Create project 按钮创建项目</para>
-				<graphic format="png" fileref="../images/gitlab/projects.new.png" width="" srccredit="neo" />
-			</step>
-			<step>
-				<para>项目创建完毕</para>
-				<graphic format="png" fileref="../images/gitlab/projects.created.png" width="" srccredit="neo" />
-			</step>
-		</procedure>
+	<section id="gitlab.group">
+		<title>组管理</title>
+		<para>初始化GitLab组，我比较喜欢使用“域名”作为组名，例如example.com</para>
+		<section id="group">
+			<title>创建组与项目</title>
+			<procedure>
+				<title>Gitlab 初始化 - 创建组</title>
+				<step>
+					<para>点击 New Group 按钮新建一个组，我习惯每个域一个组，所以我使用 netkiller.cn 作为组名称
+					</para>
+					<graphic format="png" fileref="../images/gitlab/group.png" width="" srccredit="neo" />
+				</step>
+				<step>
+					<para>输入 netkiller.cn 然后单击 Create group</para>
+					<graphic format="png" fileref="../images/gitlab/group.new.png" width="" srccredit="neo" />
+				</step>
+				<step>
+					<para>组创建完毕</para>
+					<graphic format="png" fileref="../images/gitlab/groups.png" width="" srccredit="neo" />
+				</step>
+			</procedure>
+			<para>创建组后接下来创建项目</para>
+			<procedure>
+				<title>Gitlab 初始化 - 创建项目</title>
+				<step>
+					<para>单击 New Project 创建项目</para>
+					<graphic format="png" fileref="../images/gitlab/projects.png" width="" srccredit="neo" />
+				</step>
+				<step>
+					<para>输入 www.netkiller.cn 并点击 Create project 按钮创建项目</para>
+					<graphic format="png" fileref="../images/gitlab/projects.new.png" width="" srccredit="neo" />
+				</step>
+				<step>
+					<para>项目创建完毕</para>
+					<graphic format="png" fileref="../images/gitlab/projects.created.png" width="" srccredit="neo" />
+				</step>
+			</procedure>
+		</section>
+	</section>
+	<section id="gitlab.project">
+		<title>项目管理</title>
+		<para>创建项目，我通常会在组下面创建项目，每个域名对应一个项目,例如www.example.com,images.example.com</para>
+		<para>版本库URL如下</para>
+		<screen><![CDATA[
+http: http://192.168.0.1/example.com/www.example.com.git
+ssh: git@192.168.0.1:example.com/www.example.com.git
+		]]></screen>
 	</section>
 
-	<section id="branch">
+
+	<section id="gitlab.branch">
 		<title>分支管理</title>
 		<para>起初我们应对并行开发在Subversion上创建分支，每个任务一个分支，每个Bug一个分支，完成任务或修复bug后合并到开发分支(development)内部测试，然后再进入测试分支(testing)提交给测试组，测试组完成测试，最后进入主干(trunk)。对于Subverion来说每一个分支都是一份拷贝，SVN版本库膨胀的非常快。
 		</para>
@@ -419,7 +571,7 @@ external_url 'http://172.16.0.1'
 			</step>
 		</procedure>
 	</section>
-	<section id="issue">
+	<section id="gitlab.issue">
 		<title>Issue</title>
 		<para>Issues 任务</para>
 		<section>
@@ -431,94 +583,20 @@ external_url 'http://172.16.0.1'
 			<para>通常定义四个状态，开发，测试，升级，完成</para>
 		</section>
 	</section>
-	<section id="codereview">
-		<title>代码审查</title>
-	</section>
-	<section id="merge">
+
+	<section id="gitlab.merge">
 		<title>合并</title>
+		<section id="codereview">
+			<title>代码审查</title>
+		</section>
 	</section>
-	<section id="webhook">
+	<section id="gitlab.webhook">
 		<title>WebHook</title>
 	</section>
-	<section id="cicd">
+	<section id="gitlab.cicd">
 		<title>CI / CD</title>
 		<para>https://gitlab.com/gitlab-examples</para>
-		<section>
-			<title>GitLab Runner</title>
-			<section>
-				<title>Install GitLab Runner</title>
-				<screen>
-				<![CDATA[
-[root@localhost ~]# wget -O /usr/local/bin/gitlab-runner https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-amd64
---2019-06-06 16:19:31--  https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-amd64
-Resolving gitlab-runner-downloads.s3.amazonaws.com (gitlab-runner-downloads.s3.amazonaws.com)... 52.216.10.19
-Connecting to gitlab-runner-downloads.s3.amazonaws.com (gitlab-runner-downloads.s3.amazonaws.com)|52.216.10.19|:443... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 30832000 (29M) [application/octet-stream]
-Saving to: '/usr/local/bin/gitlab-runner'
 
-100%[==================================================================================================================================================================================================>] 30,832,000   113KB/s   in 7m 11s 
-
-2019-06-06 16:26:44 (69.8 KB/s) - '/usr/local/bin/gitlab-runner' saved [30832000/30832000]
-
-
-[root@localhost ~]# chmod +x /usr/local/bin/gitlab-runner
-[root@localhost ~]# useradd --comment 'GitLab Runner' --create-home gitlab-runner --shell /bin/bash
-[root@localhost ~]# gitlab-runner install --user=gitlab-runner --working-directory=/home/gitlab-runner
-Runtime platform                                    arch=amd64 os=linux pid=113531 revision=ac2a293c version=11.11.2
-[root@localhost ~]# gitlab-runner start
-Runtime platform                                    arch=amd64 os=linux pid=113576 revision=ac2a293c version=11.11.2				
-				]]>
-				</screen>
-			</section>
-			<section>
-				<title>Registering Runners</title>
-				<screen>
-				<![CDATA[
-[root@localhost ~]# gitlab-runner register
-Runtime platform                                    arch=amd64 os=linux pid=114182 revision=ac2a293c version=11.11.2
-Running in system-mode.                            
-                                                   
-Please enter the gitlab-ci coordinator URL (e.g. https://gitlab.com/):
-http://192.168.1.229/
-Please enter the gitlab-ci token for this runner:
-5iF88xJLfFgpvRJySam2
-Please enter the gitlab-ci description for this runner:
-[localhost.localdomain]: 
-Please enter the gitlab-ci tags for this runner (comma separated):
-my-tag,another-tag
-Registering runner... succeeded                     runner=5iF88xJL
-Please enter the executor: docker, docker-ssh, parallels, ssh, virtualbox, kubernetes, shell, docker+machine, docker-ssh+machine:
-shell
-Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded! 				
-				]]>
-				</screen>
-			</section>
-			<section>
-				<title>/etc/gitlab-runner/config.toml</title>
-				<screen>
-				<![CDATA[
-[root@localhost ~]# cat /etc/gitlab-runner/config.toml
-concurrent = 1
-check_interval = 0
-
-[session_server]
-  session_timeout = 1800
-
-[[runners]]
-  name = "localhost.localdomain"
-  url = "http://192.168.1.229/"
-  token = "09936a09484934dec93d78ffa49b89"
-  executor = "shell"
-  [runners.custom_build_dir]
-  [runners.cache]
-    [runners.cache.s3]
-    [runners.cache.gcs]				
-				]]>
-				</screen>
-			</section>
-
-		</section>
 		<section>
 			<title>配置 CI / CD</title>
 			<para>进入项目设置界面，点击 Settings，再点击 CI / CD</para>
@@ -662,6 +740,59 @@ connect:
 				]]>
 				</screen>
 			</section>
+			<section>
+				<title>tags</title>
+				<para>在 gitlab-runner register 的时候会提示：Please enter the gitlab-ci tags for this runner (comma separated): </para>
+				<para>如果你输入了标签就需要在 Pipeline 中设置 tags 否则 Pipeline 将不运行。</para>
+				<screen>
+				<![CDATA[
+# This file is a template, and might need editing before it works on your project.
+# This is a sample GitLab CI/CD configuration file that should run without any modifications.
+# It demonstrates a basic 3 stage CI/CD pipeline. Instead of real tests or scripts,
+# it uses echo commands to simulate the pipeline execution.
+#
+# A pipeline is composed of independent jobs that run scripts, grouped into stages.
+# Stages run in sequential order, but jobs within stages run in parallel.
+#
+# For more information, see: https://docs.gitlab.com/ee/ci/yaml/README.html#stages
+
+stages:          # List of stages for jobs, and their order of execution
+  - build
+  - test
+  - deploy
+
+build-job:       # This job runs in the build stage, which runs first.
+  stage: build
+  tags:
+    - neo
+  script:
+    - echo "Compiling the code..."
+    - echo "Compile complete."
+
+unit-test-job:   # This job runs in the test stage.
+  stage: test    # It only starts when the job in the build stage completes successfully.
+  tags:
+    - neo 
+  script:
+    - echo "Running unit tests... This will take about 60 seconds."
+    - sleep 60
+    - echo "Code coverage is 90%"
+
+lint-test-job:   # This job also runs in the test stage.
+  stage: test    # It can run at the same time as unit-test-job (in parallel).
+  script:
+    - echo "Linting code... This will take about 10 seconds."
+    - sleep 10
+    - echo "No lint issues found."
+
+deploy-job:      # This job runs in the deploy stage.
+  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
+  script:
+    - echo "Deploying application..."
+    - echo "Application successfully deployed."				
+				]]>
+				</screen>
+			</section>
 		</section>
 		<section>
 			<title>Java</title>
@@ -788,6 +919,84 @@ deploy:
     - rsync -rav --delete dist/ user@server.com:/your/project/path/			
 			]]>
 			</screen>
+		</section>
+	</section>
+	<section id="gitlab.faq">
+		<title>FAQ</title>
+		<section>
+			<title>查看日志</title>
+			<screen>
+				<![CDATA[
+gitlab-ctl tail
+gitlab-ctl tail gitlab-rails
+gitlab-ctl tail nginx/gitlab_error.log				
+				]]>
+			</screen>
+		</section>
+		<section>
+			<title>debug runner</title>
+			<screen>
+				<![CDATA[
+gitlab-runner -debug run				
+				]]>
+			</screen>
+		</section>
+		<section>
+			<title>gitolite 向 gitlab 迁移</title>
+			<para>早期gitlab使用gitolite为用户提供SSH服务，新版gitlab有了更好的解决方案gitlab-shell。安装新版本是必会涉及gitolite 向 gitlab 迁移，下面是我总结的一些迁移经验。</para>
+			<para>第一步,将gitolite复制到gitlab仓库目录下</para>
+			<screen><![CDATA[
+# cp -r /gitroot/gitolite/repositories/* /var/opt/gitlab/git-data/repositories/
+			]]></screen>
+			<para>执行导入处理程序</para>
+			<screen><![CDATA[
+# gitlab-rake gitlab:import:repos
+			]]></screen>
+			<para>上面程序会处理一下目录结构，例如</para>
+			<para>进入gitlab web界面，创建仓库与导入的仓库同名，这样就完成了导入工作。</para>
+			<tip>
+				<para>转换最好在git用户下面操作，否则你需要运行</para>
+				<screen><![CDATA[
+# chown git:git -R /var/opt/gitlab/git-data/repositories				
+				]]></screen>
+			</tip>
+		</section>
+		<section>
+			<title>修改主机名</title>
+			<para>默认Gitlab采用主机名，给我使用代理一定麻烦</para>
+			<screen><![CDATA[
+git@hostname:example.com/www.example.com.git
+http://hostname/example.com/www.example.com.git
+			]]></screen>
+			<para>我们希望使用IP地址替代主机名</para>
+			<screen><![CDATA[
+git@172.16.0.1:example.com/www.example.com.git
+http://172.16.0.1/example.com/www.example.com.git
+			]]></screen>
+			<para>编辑 /etc/gitlab/gitlab.rb 配置文件</para>
+			<screen><![CDATA[
+external_url 'http://172.16.0.1'
+			]]></screen>
+			<para>重新启动Gitlab</para>
+			<screen><![CDATA[
+# gitlab-ctl reconfigure
+# gitlab-ctl restart
+			]]></screen>
+		</section>
+		<section>
+			<title>ERROR: Uploading artifacts as "archive" to coordinator... too large archive</title>
+			<para>持续集成提示错误</para>
+			<screen>
+			<![CDATA[
+ERROR: Uploading artifacts as "archive" to coordinator... too large archive  id=185 responseStatus=413 Request Entity Too Large status=413 token=HKerPDE6
+FATAL: too large                                   
+ERROR: Job failed: exit status 1			
+			]]>
+			</screen>
+			<para>解决方案</para>
+			<para>Admin - Settings - CI/CD - Continuous Integration and Deployment</para>
+			<para>点击 Expand 展开配置项</para>
+			<para>Maximum artifacts size (MB): 修改构建无最大尺寸</para>
 		</section>
 	</section>
 </chapter>

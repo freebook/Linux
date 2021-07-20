@@ -55,7 +55,7 @@ Complete!
 		]]>
 		</screen>
 	</section>
-	<section>
+	<section id="dnf.config-manager">
 		<title>DNF 软件库管理</title>
 		<screen>
 		<![CDATA[
@@ -64,7 +64,7 @@ Adding repo from: https://download.docker.com/linux/centos/docker-ce.repo
 		]]>
 		</screen>
 	</section>
-	<section>
+	<section id="dnf.repolist">
 		<title>显示系统中可用的 DNF 软件库</title>
 		<screen>
 		<![CDATA[
@@ -119,7 +119,7 @@ fasttrack                 CentOS-8 - fasttrack                        disabled
 			</screen>
 		</section>
 	</section>
-	<section>
+	<section id="dnf.list">
 		<title>列出所有 RPM 包</title>
 		<para>用于列出系统上所有软件包</para>
 		<screen>
@@ -237,10 +237,34 @@ dnf list docker-ce --showduplicates | sort -r
 		]]>
 			</screen>
 		</section>
+		<section>
+			<title>使用通配符</title>
+			<screen>
+			<![CDATA[
+[root@gitlab ~]# dnf list -y mongodb-org
+gitlab_gitlab-ce                                                                                                                                                                                               45  B/s | 862  B     00:19    
+gitlab_gitlab-ce-source                                                                                                                                                                                       218  B/s | 862  B     00:03    
+runner_gitlab-runner                                                                                                                                                                                          138  B/s | 862  B     00:06    
+runner_gitlab-runner-source                                                                                                                                                                                   238  B/s | 862  B     00:03    
+Available Packages
+mongodb-org.x86_64                                                                                                 5.0.0-1.el8                                                                                                 mongodb-org-5.0
 
+[root@gitlab ~]# dnf list -y mongodb-org-*
+Last metadata expiration check: 0:03:16 ago on Tue 20 Jul 2021 10:06:00 AM CST.
+Installed Packages
+mongodb-org-database-tools-extra.x86_64                                                                                      5.0.0-1.el8                                                                                      @mongodb-org-5.0
+mongodb-org-server.x86_64                                                                                                    5.0.0-1.el8                                                                                      @mongodb-org-5.0
+mongodb-org-shell.x86_64                                                                                                     5.0.0-1.el8                                                                                      @mongodb-org-5.0
+mongodb-org-tools.x86_64                                                                                                     5.0.0-1.el8                                                                                      @mongodb-org-5.0
+Available Packages
+mongodb-org-database.x86_64                                                                                                  5.0.0-1.el8                                                                                      mongodb-org-5.0 
+mongodb-org-mongos.x86_64                                                                                                    5.0.0-1.el8                                                                                      mongodb-org-5.0	
+			]]>
+			</screen>
+		</section>
 	</section>
 
-	<section>
+	<section id="dnf.search">
 		<title>搜索软件库中的包</title>
 		<screen>
 		<![CDATA[
@@ -297,7 +321,7 @@ mariadb-java-client.noarch : Connects applications developed in Java to MariaDB 
 		]]>
 		</screen>
 	</section>
-	<section>
+	<section id="dnf.info">
 		<title>查看软件包详情</title>
 		<screen>
 		<![CDATA[
@@ -340,7 +364,7 @@ Description  : Redis is an advanced key-value store. It is often referred to as 
 		]]>
 		</screen>
 	</section>
-	<section>
+	<section id="dnf.provides">
 		<title>查找某一文件的提供者</title>
 		<screen>
 		<![CDATA[
@@ -369,7 +393,7 @@ Provide    : /bin/bash
 		]]>
 		</screen>
 	</section>
-	<section>
+	<section id="dnf.remove">
 		<title>删除软件包</title>
 		<screen>
 		<![CDATA[

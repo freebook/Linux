@@ -49,6 +49,12 @@ web1.example.com
 [root@netkiller ~]# hostnamectl set-hostname master
 			]]>
 			</screen>
+			<para>如果不生效执行下面命令</para>
+			<screen>
+			<![CDATA[
+systemctl restart systemd-hostnamed			
+			]]>
+			</screen>
 		</section>
 
 		<section>

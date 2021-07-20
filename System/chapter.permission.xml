@@ -239,10 +239,21 @@ u=rwx,g=rx,o=rx
 		<para>设置</para>
 		<screen>
 		<![CDATA[
-umask 002		
+umask 002
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>修改用户名</title>
+		<screen>
+		<![CDATA[
+usermod -l new_username old_username
+groupmod -n newname	oldname
+usermod -d /home/susan -m susan
+		]]>
+		</screen>
+	</section>
+	
 	<section id="permissions">
 		<title>Access Permissions</title>
 		<section id="chown">
