@@ -851,6 +851,14 @@ docker-compose exec vp0 bash
 		]]>
 			</screen>
 		</section>
+		<section id="docker-compose.run">
+			<title>运行</title>
+			<screen>
+			<![CDATA[
+docker-compose run vp0 bash				
+			]]>
+			</screen>
+		</section>
 	</section>
 
 </section>

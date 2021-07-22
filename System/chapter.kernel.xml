@@ -141,7 +141,7 @@ $ cat /sys/class/net/eth0/statistics/tx_bytes
 	</section>
 	<section id="proc">
 		<title>/proc</title>
-		<section>
+		<section id="proc.version">
 			<title>查看系统版本</title>
 			<screen>
 			<![CDATA[
@@ -150,7 +150,7 @@ Linux version 3.10.0-693.el7.x86_64 (builder@kbuilder.dev.centos.org) (gcc versi
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="proc.pid">
 			<title>/proc/进程ID</title>
 			<para>每个进程会对应一个/proc下的一个目录: /proc/进程ID</para>
 			<screen>
@@ -182,7 +182,7 @@ Linux version 3.10.0-693.el7.x86_64 (builder@kbuilder.dev.centos.org) (gcc versi
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="proc.fd">
 			<title>/proc/*/fd/ 进程所打开的文件</title>
 			<para>查看进程所打开的文件</para>
 			<screen>
@@ -218,7 +218,7 @@ l-wx------ 1 root root 64 May  9 18:02 4 -> /var/log/secure
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="proc.limits">
 			<title>ulimit 状态</title>
 			<para>通过下面命令查看ulimit是否对进程起作用。/proc/{pid}/limits pid是进程ID</para>
 			<screen>
@@ -268,7 +268,7 @@ Max realtime timeout      unlimited            unlimited            us
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="proc.cpuinfo">
 			<title>/proc/cpuinfo </title>
 			<screen>
 			<![CDATA[
@@ -380,6 +380,65 @@ clflush size	: 64
 cache_alignment	: 64
 address sizes	: 39 bits physical, 48 bits virtual
 power management:			
+			]]>
+			</screen>
+		</section>
+		<section id="proc.meminfo">
+			<title>内存信息</title>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# cat /proc/meminfo
+MemTotal:        7879260 kB
+MemFree:         1669960 kB
+MemAvailable:    2429272 kB
+Buffers:             408 kB
+Cached:           950980 kB
+SwapCached:         6564 kB
+Active:           895792 kB
+Inactive:        5033320 kB
+Active(anon):     247364 kB
+Inactive(anon):  4732792 kB
+Active(file):     648428 kB
+Inactive(file):   300528 kB
+Unevictable:         116 kB
+Mlocked:               0 kB
+SwapTotal:       8208380 kB
+SwapFree:        7714812 kB
+Dirty:                32 kB
+Writeback:             0 kB
+AnonPages:       4972664 kB
+Mapped:           223696 kB
+Shmem:             16708 kB
+KReclaimable:      68304 kB
+Slab:             166868 kB
+SReclaimable:      68304 kB
+SUnreclaim:        98564 kB
+KernelStack:       11168 kB
+PageTables:        22232 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:    12148008 kB
+Committed_AS:   15674280 kB
+VmallocTotal:   34359738367 kB
+VmallocUsed:           0 kB
+VmallocChunk:          0 kB
+Percpu:             3456 kB
+HardwareCorrupted:     0 kB
+AnonHugePages:   4628480 kB
+ShmemHugePages:        0 kB
+ShmemPmdMapped:        0 kB
+FileHugePages:         0 kB
+FilePmdMapped:         0 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+Hugetlb:               0 kB
+DirectMap4k:      256380 kB
+DirectMap2M:     8056832 kB
+DirectMap1G:           0 kB			
 			]]>
 			</screen>
 		</section>

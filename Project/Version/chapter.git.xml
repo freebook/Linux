@@ -6,10 +6,10 @@
 	<info>
 		<keywordset>
 			<keyword>
-ls $(git --exec-path) -1 | tr '\n ' ','
+				ls $(git --exec-path) -1 | tr '\n ' ','
 			</keyword>
 			<keyword>
-git,git-add,git-add--interactive,git-am,git-annotate,git-apply,git-archive,git-bisect,git-bisect--helper,git-blame,git-branch,git-bundle,git-cat-file,git-check-attr,git-checkout,git-checkout-index,git-check-ref-format,git-cherry,git-cherry-pick,git-clean,git-clone,git-commit,git-commit-tree,git-config,git-count-objects,git-daemon,git-describe,git-diff,git-diff-files,git-diff-index,git-difftool,git-difftool--helper,git-diff-tree,git-fast-export,git-fast-import,git-fetch,git-fetch-pack,git-filter-branch,git-fmt-merge-msg,git-for-each-ref,git-format-patch,git-fsck,git-fsck-objects,git-gc,git-get-tar-commit-id,git-grep,git-hash-object,git-help,git-http-backend,git-http-fetch,git-http-push,git-imap-send,git-index-pack,git-init,git-init-db,git-instaweb,git-log,git-lost-found,git-ls-files,git-ls-remote,git-ls-tree,git-mailinfo,git-mailsplit,git-merge,git-merge-base,git-merge-file,git-merge-index,git-merge-octopus,git-merge-one-file,git-merge-ours,git-merge-recursive,git-merge-resolve,git-merge-subtree,git-mergetool,git-mergetool--lib,git-merge-tree,git-mktag,git-mktree,git-mv,git-name-rev,git-notes,git-pack-objects,git-pack-redundant,git-pack-refs,git-parse-remote,git-patch-id,git-peek-remote,git-prune,git-prune-packed,git-pull,git-push,git-quiltimport,git-read-tree,git-rebase,git-rebase--interactive,git-receive-pack,git-reflog,git-relink,git-remote,git-remote-ftp,git-remote-ftps,git-remote-http,git-remote-https,git-remote-testgit,git-repack,git-replace,git-repo-config,git-request-pull,git-rerere,git-reset,git-revert,git-rev-list,git-rev-parse,git-rm,git-send-pack,git-shell,git-shortlog,git-show,git-show-branch,git-show-index,git-show-ref,git-sh-setup,git-stage,git-stash,git-status,git-stripspace,git-submodule,git-symbolic-ref,git-tag,git-tar-tree,git-unpack-file,git-unpack-objects,git-update-index,git-update-ref,git-update-server-info,git-upload-archive,git-upload-pack,git-var,git-verify-pack,git-verify-tag,git-web--browse,git-whatchanged,git-write-tree
+				git,git-add,git-add--interactive,git-am,git-annotate,git-apply,git-archive,git-bisect,git-bisect--helper,git-blame,git-branch,git-bundle,git-cat-file,git-check-attr,git-checkout,git-checkout-index,git-check-ref-format,git-cherry,git-cherry-pick,git-clean,git-clone,git-commit,git-commit-tree,git-config,git-count-objects,git-daemon,git-describe,git-diff,git-diff-files,git-diff-index,git-difftool,git-difftool--helper,git-diff-tree,git-fast-export,git-fast-import,git-fetch,git-fetch-pack,git-filter-branch,git-fmt-merge-msg,git-for-each-ref,git-format-patch,git-fsck,git-fsck-objects,git-gc,git-get-tar-commit-id,git-grep,git-hash-object,git-help,git-http-backend,git-http-fetch,git-http-push,git-imap-send,git-index-pack,git-init,git-init-db,git-instaweb,git-log,git-lost-found,git-ls-files,git-ls-remote,git-ls-tree,git-mailinfo,git-mailsplit,git-merge,git-merge-base,git-merge-file,git-merge-index,git-merge-octopus,git-merge-one-file,git-merge-ours,git-merge-recursive,git-merge-resolve,git-merge-subtree,git-mergetool,git-mergetool--lib,git-merge-tree,git-mktag,git-mktree,git-mv,git-name-rev,git-notes,git-pack-objects,git-pack-redundant,git-pack-refs,git-parse-remote,git-patch-id,git-peek-remote,git-prune,git-prune-packed,git-pull,git-push,git-quiltimport,git-read-tree,git-rebase,git-rebase--interactive,git-receive-pack,git-reflog,git-relink,git-remote,git-remote-ftp,git-remote-ftps,git-remote-http,git-remote-https,git-remote-testgit,git-repack,git-replace,git-repo-config,git-request-pull,git-rerere,git-reset,git-revert,git-rev-list,git-rev-parse,git-rm,git-send-pack,git-shell,git-shortlog,git-show,git-show-branch,git-show-index,git-show-ref,git-sh-setup,git-stage,git-stash,git-status,git-stripspace,git-submodule,git-symbolic-ref,git-tag,git-tar-tree,git-unpack-file,git-unpack-objects,git-update-index,git-update-ref,git-update-server-info,git-upload-archive,git-upload-pack,git-var,git-verify-pack,git-verify-tag,git-web--browse,git-whatchanged,git-write-tree
 			</keyword>
 		</keywordset>
 	</info>
@@ -19,9 +19,9 @@ git,git-add,git-add--interactive,git-am,git-annotate,git-apply,git-archive,git-b
 		<title>Git </title>
 		<step>
 			<para>install</para>
-			<screen>
+			<screen><![CDATA[
 sudo apt-get install git-core
-			</screen>
+			]]></screen>
 		</step>
 		<step>
 			<para>config</para>
@@ -34,29 +34,29 @@ $ git-config --global user.email openunix@163.com
 		</step>
 		<step>
 			<para>Initializ</para>
-			<screen>
+			<screen><![CDATA[
 $ mkdir repository
 $ cd repository/
 
 /repository$ git-init-db
 Initialized empty Git repository in .git/
-			</screen>
+			]]></screen>
 			<para>to check .gitconfig file</para>
-			<screen>
+			<screen><![CDATA[
 $ cat ~/.gitconfig
 [user]
         name = chen
         email = openunix@163.com
-			</screen>
+			]]></screen>
 		</step>
 	</procedure>
-<!-- http://tkg.im.ncue.edu.tw/?p=755 -->
-<section id="repositories">
-	<title>Repositories 仓库管理</title>
-	<section>
-		<title>initial setup</title>
-		<para></para>
-		<screen>
+	<!-- http://tkg.im.ncue.edu.tw/?p=755 -->
+	<section id="repositories">
+		<title>Repositories 仓库管理</title>
+		<section>
+			<title>initial setup</title>
+			<para></para>
+			<screen><![CDATA[
 Tell git who you are:
 
 $ git config user.name "FirstName LastName"
@@ -84,57 +84,57 @@ $ git config --global pack.threads "0"
 To disable the rename detection limit (which is set "pretty low" according to Linus, "just to not cause problems for people who have less memory in their machines than kernel developers tend to have"), use:
 
 $ git config --global   diff.renamelimit "0"
-		</screen>
-	</section>
-	<section id="checkout">
-		<title>checkout</title>
-		<para>将 nqp-cc/src/QASTCompilerMAST.nqp 文件 重置到 211ab0b19f25b8c81685a97540f4b1491eb17504 版本</para>
-		<screen>
+		]]></screen>
+		</section>
+		<section id="checkout">
+			<title>checkout</title>
+			<para>将 nqp-cc/src/QASTCompilerMAST.nqp 文件 重置到 211ab0b19f25b8c81685a97540f4b1491eb17504 版本</para>
+			<screen><![CDATA[
 git checkout 211ab0b19f25b8c81685a97540f4b1491eb17504 -- nqp-cc/src/QASTCompilerMAST.nqp
-		</screen>
-	</section>
-	<section id="commit">
-		<title>Creating and Commiting</title>
-		<screen>
+		]]></screen>
+		</section>
+		<section id="commit">
+			<title>Creating and Commiting</title>
+			<screen><![CDATA[
 $ cd (project-directory)
 $ git init
 $ (add some files)
 $ git add .
 $ git commit -m 'Initial commit'
-		</screen>
-	</section>
-	<section id="remote">
-		<title>Manager remote</title>
-		<para>remote add</para>
-		<screen>
+		]]></screen>
+		</section>
+		<section id="remote">
+			<title>Manager remote</title>
+			<para>remote add</para>
+			<screen>
 		<![CDATA[
 git remote add origin git@localhost:example.git
 		]]>
-		</screen>
-		<para>remote show</para>
-		<screen>
+			</screen>
+			<para>remote show</para>
+			<screen>
 		<![CDATA[
 git remote show
 origin
 		]]>
-		</screen>
-		<para>remote rm</para>
-		<screen>
+			</screen>
+			<para>remote rm</para>
+			<screen>
 		<![CDATA[
 git remote rm origin
 		]]>
-		</screen>
-		<para>添加多个远程仓库</para>
-		<screen>
+			</screen>
+			<para>添加多个远程仓库</para>
+			<screen><![CDATA[
 git remote add origin git@localhost:example.git
 git remote add another https://gitcafe.com/netkiller/netkiller.gitcafe.com.git
 git push origin master
 git push another master
-		</screen>
-	</section>
-	<section id="status">
-		<title>Status</title>
-		<screen>
+		]]></screen>
+		</section>
+		<section id="status">
+			<title>Status</title>
+			<screen>
 		<![CDATA[
 $ git clone git://10.10.0.5/example.git
 Cloning into example...
@@ -165,12 +165,12 @@ neo@neo-OptiPlex-380:~/tmp/example$ git status
 #
 no changes added to commit (use "git add" and/or "git commit -a")
 		]]>
-		</screen>
+			</screen>
 
-	</section>
-	<section id="diff">
-		<title>Diff</title>
-		<screen>
+		</section>
+		<section id="diff">
+			<title>Diff</title>
+			<screen>
 		<![CDATA[
 neo@neo-OptiPlex-380:~/tmp/example$ git diff
 diff --git a/test1 b/test1
@@ -180,21 +180,21 @@ index e69de29..ce01362 100644
 @@ -0,0 +1 @@
 +hello
 		]]>
-		</screen>
-		<para>比较 nqp-cc/src/QASTCompilerMAST.nqp 文件 当前版本与 211ab0b19f25b8c81685a97540f4b1491eb17504 版本的区别</para>
-		<screen>
-git diff 211ab0b19f25b8c81685a97540f4b1491eb17504 -- nqp-cc/src/QASTCompilerMAST.nqp
-		</screen>
-		<section>
-			<title>--name-only 仅显示文件名</title>
-			<screen>
-git diff --name-only
 			</screen>
+			<para>比较 nqp-cc/src/QASTCompilerMAST.nqp 文件 当前版本与 211ab0b19f25b8c81685a97540f4b1491eb17504 版本的区别</para>
+			<screen><![CDATA[
+git diff 211ab0b19f25b8c81685a97540f4b1491eb17504 -- nqp-cc/src/QASTCompilerMAST.nqp
+		]]></screen>
+			<section>
+				<title>--name-only 仅显示文件名</title>
+				<screen><![CDATA[
+git diff --name-only
+			]]></screen>
+			</section>
 		</section>
-	</section>
-	<section id="clone">
-		<title>Cloning</title>
-		<screen>
+		<section id="clone">
+			<title>Cloning</title>
+			<screen>
 		<![CDATA[
 $ git clone git://github.com/git/hello-world.git
 $ cd hello-world
@@ -202,11 +202,11 @@ $ (edit files)
 $ git add (files)
 $ git commit -m 'Explain what I changed'
 		]]>
-		</screen>
-	</section>
-	<section id="push">
-		<title>Push</title>
-		<screen>
+			</screen>
+		</section>
+		<section id="push">
+			<title>Push</title>
+			<screen>
 		<![CDATA[
 $ git clone git://10.10.0.5/example.git
 $ cd example
@@ -223,11 +223,11 @@ Total 3 (delta 0), reused 0 (delta 0)
 To git://10.10.0.5/example.git
    27f8417..b088cc3  master -> master
 		]]>
-		</screen>
-	</section>
-	<section id="pull">
-		<title>Pull</title>
-		<screen>
+			</screen>
+		</section>
+		<section id="pull">
+			<title>Pull</title>
+			<screen><![CDATA[
 $ git pull
 remote: Counting objects: 5, done.
 remote: Compressing objects: 100% (2/2), done.
@@ -239,11 +239,11 @@ Updating 27f8417..b088cc3
 Fast-forward
  test1 |    1 +
  1 files changed, 1 insertions(+), 0 deletions(-)
-		</screen>
-	</section>
-	<section id="fetch">
-		<title>fetch</title>
-		<screen>
+		]]></screen>
+		</section>
+		<section id="fetch">
+			<title>fetch</title>
+			<screen><![CDATA[
 $ git fetch
 remote: Counting objects: 3, done.
 remote: Compressing objects: 100% (2/2), done.
@@ -251,11 +251,11 @@ remote: Total 2 (delta 1), reused 0 (delta 0)
 Unpacking objects: 100% (2/2), done.
 From git://10.10.0.5/example
    b088cc3..7e8c17d  master     -> origin/master
-		</screen>
-	</section>
-	<section id="patch">
-		<title>Creating a Patch</title>
-		<screen>
+		]]></screen>
+		</section>
+		<section id="patch">
+			<title>Creating a Patch</title>
+			<screen>
 		<![CDATA[
 $ git clone git://github.com/git/hello-world.git
 $ cd hello-world
@@ -264,108 +264,127 @@ $ git add (files)
 $ git commit -m 'Explain what I changed'
 $ git format-patch origin/master
 		]]>
-		</screen>
-	</section>
-	<section id="reset">
-		<title>reset</title>
-		<para>重置到上一个版本</para>
-		<screen>
+			</screen>
+		</section>
+		<section id="reset">
+			<title>reset</title>
+			<para>重置到上一个版本</para>
+			<screen><![CDATA[
 git log
 git reset --hard HEAD^
 git log
 git push -f
-		</screen>
+		]]></screen>
+		</section>
 	</section>
-</section>
 
 	<section id="git-branch">
-		<title>Manipulating branches</title>
+		<title>分支管理</title>
+		<subtitle>Manipulating branches</subtitle>
 		<para>git-branch - List, create, or delete branches</para>
 		<section id="branch.list">
-			<title>list branches</title>
-			<screen>
-$ git-branch
+			<title>查看本地分支</title>
+			<screen><![CDATA[
+$ git branch
 * master
+			]]></screen>
+			<para>查看远程分支</para>
+			<screen>
+			<![CDATA[
+git branch -a			
+			]]>
 			</screen>
 		</section>
 		<section id="branch.create">
-			<title>create branches</title>
-			<screen>
-$ git-branch mybranch
-$ git-branch
+			<title>创建分支</title>
+			<screen><![CDATA[
+$ git branch development
+$ git branch
 * master
-  mybranch
-			</screen>
+  development
+			]]></screen>
 		</section>
 		<section id="branch.delete">
-			<title>delete branches</title>
-			<screen>
-$ git-branch -d mybranch
-Deleted branch mybranch.
+			<title>删除分支</title>
+			<screen><![CDATA[
+$ git branch -d staging
+Deleted branch staging.
 
-$ git-branch
+$ git branch
 * master
-			</screen>
+			]]></screen>
 		</section>
 		<section id="branch.switch">
-			<title>switch branch</title>
-			<screen>
-$ git-branch
+			<title>切换分支</title>
+			<screen><![CDATA[
+$ git branch
 * master
-  mybranch
+  testing
 
-$ git-checkout mybranch
-Switched to branch "mybranch"
+$ git checkout testing
+Switched to branch "testing"
 
-$ git-branch
+$ git branch
   master
-* mybranch
+* testing
+			]]></screen>
+		</section>
+		<section>
+			<title>重命名分支</title>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~/workspace/api.netkiller.cn % git checkout test
+neo@MacBook-Pro-Neo ~/workspace/api.netkiller.cn % git branch -m test testing
+neo@MacBook-Pro-Neo ~/workspace/api.netkiller.cn % git push --delete origin test
+neo@MacBook-Pro-Neo ~/workspace/api.netkiller.cn % git push origin testing
+			]]>
 			</screen>
 		</section>
 		<section id="git-show-branch">
 			<title>git-show-branch - Show branches and their commits</title>
-			<screen>
+			<screen><![CDATA[
 $ git-show-branch
 ! [master] add a new file
  * [mybranch] add a new file
 --
 +* [master] add a new file
-			</screen>
+			]]></screen>
 		</section>
 	</section>
 
 
-<section id="git.remote">
-	<title>Sharing Repositories with others</title>
-	<section id="git.server">
-		<title>Setting up a git server</title>
-		<para>First we need to setup a user with a home folder. We will store all the repositories in this users home folder.</para>
-		<screen>
+	<section id="git.remote">
+		<title>Sharing Repositories with others</title>
+		<section id="git.server">
+			<title>Setting up a git server</title>
+			<para>First we need to setup a user with a home folder. We will store all the repositories in this users home folder.</para>
+			<screen>
 		<![CDATA[
 sudo adduser git
 		]]>
-		</screen>
-		<para>Rather than giving out the password to the git user account use ssh keys to login so that you can have multiple developers connect securely and easily.</para>
-		<para>Next we will make a repository. For this example we will work with a repository called example. Login as the user git and add the repository.</para>
-		<para>login to remote server</para>
-		<screen>
+			</screen>
+			<para>Rather than giving out the password to the git user account use ssh keys to login so that you can have multiple developers connect securely and easily.</para>
+			<para>Next we will make a repository. For this example we will work with a repository called example. Login as the user git and add the repository.</para>
+			<para>login to remote server</para>
+			<screen>
 		<![CDATA[
 ssh git@REMOTE_SERVER
 		]]>
-		</screen>
-		<para>once logged in</para>
-		<screen>
+			</screen>
+			<para>once logged in</para>
+			<screen>
 		<![CDATA[
 sudo mkdir example.git
 cd example.git
 sudo git --bare init
 Initialized empty Git repository in /home/git/example.git/
 		]]>
-		</screen>
-		<para>That’s all there is to creating a repository. Notice we named our folder with a .git extension.</para>
-		<para>Also notice the ‘bare’ option. By default the git repository assumes that you’ll be using it as your working directory, so git stores the actual bare repository files in a .git directory alongside all the project files. Since we are setting up a remote server we don’t need copies of the files on the filesystem. Instead, all we need are the deltas and binary objects of the repository. By setting ‘bare’ we tell git not to store the current files of the repository only the diffs. This is optional as you may have need to be able to browse the files on your remote server.</para>
-		<para>Finally all you need to do is add your files to the remote repository. We will assume you don’t have any files yet.</para>
-		<screen>
+			</screen>
+			<para>That’s all there is to creating a repository. Notice we named our folder with a .git extension.</para>
+			<para>Also notice the ‘bare’ option. By default the git repository assumes that you’ll be using it as your working directory, so git stores the actual bare repository files in a .git directory alongside all the project files. Since we are setting up a remote server we don’t need copies of the files on the filesystem. Instead, all we need are the deltas and binary objects of the repository. By setting ‘bare’ we tell git not to store the current files of the repository only the diffs. This is optional as
+				you may have need to be able to browse the files on your remote server.</para>
+			<para>Finally all you need to do is add your files to the remote repository. We will assume you don’t have any files yet.</para>
+			<screen>
 		<![CDATA[
 mkdir example
 cd example
@@ -376,53 +395,53 @@ git commit -m 'first commit'
 git remote add origin git@REMOTE_SERVER:example.git
 git push origin master
 		]]>
-		</screen>
-		<para>replace REMOTE_SERVER with your server name or IP</para>
+			</screen>
+			<para>replace REMOTE_SERVER with your server name or IP</para>
 
-	</section>
-	<section id="git.remote.rename">
-		<title>修改 origin</title>
-		<screen>
+		</section>
+		<section id="git.remote.rename">
+			<title>修改 origin</title>
+			<screen>
 		<![CDATA[
 git remote rename origin old-origin
 		]]>
-		</screen>
-	</section>
-	<section id="git.remote.remove">
-		<title>删除 origin</title>
-		<screen>
+			</screen>
+		</section>
+		<section id="git.remote.remove">
+			<title>删除 origin</title>
+			<screen>
 		<![CDATA[
 git remote remove origin		
 		]]>
-		</screen>
+			</screen>
+		</section>
 	</section>
-</section>
 	&section.git.submodule.xml;
 	&section.git.lfs.xml;
-<section id="git.command">
-	<title>command</title>
-	<section id="hash-object">
-		<title>hash-object</title>
-		<para>使用git命令计算文件的 sha-1 值</para>
-		<screen>
+	<section id="git.command">
+		<title>command</title>
+		<section id="hash-object">
+			<title>hash-object</title>
+			<para>使用git命令计算文件的 sha-1 值</para>
+			<screen>
 		<![CDATA[
 neo@MacBook-Pro ~ % echo 'test content' | git hash-object --stdin
 d670460b4b4aece5915caf5c68d12f560a9fe3e4		
 		]]>
-		</screen>
-	</section>
-	<section id="git-add">
-		<title>git-add - Add file contents to the index</title>
-		<screen>
+			</screen>
+		</section>
+		<section id="git-add">
+			<title>git-add - Add file contents to the index</title>
+			<screen>
 		<![CDATA[
 $ echo 'hello world!!!'> newfile
 $ git-add newfile
 		]]>
-		</screen>
-	</section>
-	<section id="git-status">
-		<title>git-status - Show the working tree status</title>
-		<screen>
+			</screen>
+		</section>
+		<section id="git-status">
+			<title>git-status - Show the working tree status</title>
+			<screen>
 		<![CDATA[
 $ git-status newfile
 # On branch master
@@ -434,20 +453,20 @@ $ git-status newfile
 #
 #       new file: newfile
 #		]]>
-		</screen>
-	</section>
-	<section id="git-commit">
-		<title>git-commit - Record changes to the repository</title>
-		<screen>
+			</screen>
+		</section>
+		<section id="git-commit">
+			<title>git-commit - Record changes to the repository</title>
+			<screen><![CDATA[
 $ git-commit -m 'add a new file' newfile
 Created initial commit f6fda79: add a new file
  1 files changed, 1 insertions(+), 0 deletions(-)
  create mode 100644 newfile
-		</screen>
-	</section>
-	<section id="git-show">
-		<title>git-show - Show various types of objects</title>
-		<screen>
+		]]></screen>
+		</section>
+		<section id="git-show">
+			<title>git-show - Show various types of objects</title>
+			<screen>
 		<![CDATA[
 $ git-show
 commit f6fda79f2f550ea3b2c1b483371ed5d12499ac35
@@ -464,20 +483,20 @@ index 0000000..b659464
 @@ -0,0 +1 @@
 +hello world!!!
 		]]>
-		</screen>
-	</section>
-	<section id="git-checkout">
-		<title>git-checkout - Checkout and switch to a branch</title>
-		<section>
-			<title>checkout master</title>
-			<screen>
-$ git-checkout master
-Switched to branch "master"
 			</screen>
 		</section>
-		<section>
-			<title>checkout branch</title>
-			<screen>
+		<section id="git-checkout">
+			<title>git-checkout - Checkout and switch to a branch</title>
+			<section>
+				<title>checkout master</title>
+				<screen><![CDATA[
+$ git-checkout master
+Switched to branch "master"
+			]]></screen>
+			</section>
+			<section>
+				<title>checkout branch</title>
+				<screen><![CDATA[
 $ git-branch
 * master
   mybranch
@@ -488,59 +507,59 @@ Switched to branch "mybranch"
 $ git-branch
   master
 * mybranch
-			</screen>
+			]]></screen>
+			</section>
 		</section>
-	</section>
-	<section id="git.config">
-		<title>git config</title>
-		<screen>
+		<section id="git.config">
+			<title>git config</title>
+			<screen><![CDATA[
 $ git config --file config http.receivepack true
-		</screen>
-	</section>
-	<section id="git.log">
-		<title>git log</title>
-		<screen>
+		]]></screen>
+		</section>
+		<section id="git.log">
+			<title>git log</title>
+			<screen>
 		<![CDATA[
 git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
 
 git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%ai) %C(bold blue)<%an>%Creset' --abbrev-commit
 		]]>
-		</screen>
+			</screen>
+		</section>
 	</section>
-</section>
 
 
-<section id="git-daemon">
-	<title>git-daemon 服务器</title>
-	<section>
-		<title>git-daemon - A really simple server for git repositories</title>
-		<para>在/home/gitroot/ 上运行 git 守护进程</para>
-		<screen>
+	<section id="git-daemon">
+		<title>git-daemon 服务器</title>
+		<section>
+			<title>git-daemon - A really simple server for git repositories</title>
+			<para>在/home/gitroot/ 上运行 git 守护进程</para>
+			<screen><![CDATA[
 $ cd /home/gitroot
 $ mkdir test.git
 $ cd test.git
 $ git --bare init --shared
 Initialized empty shared Git repository in /home/gitroot/test.git/
-		</screen>
-		<screen>
+		]]></screen>
+			<screen>
 		<![CDATA[
 git daemon --verbose --export-all --base-path=/home/gitroot --enable=receive-pack --reuseaddr
 		]]>
-		</screen>
-		<para>允许push,否则该仓库只能clone/pull</para>
-		<screen>
+			</screen>
+			<para>允许push,否则该仓库只能clone/pull</para>
+			<screen><![CDATA[
 sudo git daemon --verbose --export-all --base-path=/home/gitroot --enable=upload-pack --enable=upload-archive --enable=receive-pack
-		</screen>
-		<para>或者增加配置项</para>
-		<screen>
+		]]></screen>
+			<para>或者增加配置项</para>
+			<screen><![CDATA[
 $ git config daemon.receivepack true
 $ git config --file config receive.denyCurrentBranch ignore
-		</screen>
-	</section>
-	<section id="git-daemon-sysvinit">
-		<title>git-daemon-sysvinit</title>
-		<para>for a read-only repo:</para>
-		<screen>
+		]]></screen>
+		</section>
+		<section id="git-daemon-sysvinit">
+			<title>git-daemon-sysvinit</title>
+			<para>for a read-only repo:</para>
+			<screen>
 		<![CDATA[
 $ sudo apt-get install git-daemon-sysvinit
 
@@ -572,58 +591,58 @@ $ dpkg -L git-daemon-sysvinit
 /etc/init.d/git-daemon
 /usr/share/doc/git-daemon-sysvinit/changelog.Debian.gz
 		]]>
-		</screen>
-		<para>配置 /etc/default/git-daemon 文件</para>
-	</section>
-	<section id="git.xinetd">
-		<title>inet.conf / xinetd 方式启动</title>
-		<procedure>
-			<title>git-daemon</title>
-			<step>
-				<para>/etc/shells</para>
-				<para>/etc/shells 最后一行添加 '/usr/bin/git-shell'</para>
-				<screen>
+			</screen>
+			<para>配置 /etc/default/git-daemon 文件</para>
+		</section>
+		<section id="git.xinetd">
+			<title>inet.conf / xinetd 方式启动</title>
+			<procedure>
+				<title>git-daemon</title>
+				<step>
+					<para>/etc/shells</para>
+					<para>/etc/shells 最后一行添加 '/usr/bin/git-shell'</para>
+					<screen><![CDATA[
 $ grep git /etc/shells
 /usr/bin/git-shell
-				</screen>
-			</step>
-			<step>
-				<para>add new user 'git' and 'gitroot' for git</para>
-				<para>you need to assign shell with /usr/bin/git-shell</para>
-				<screen>
+				]]></screen>
+				</step>
+				<step>
+					<para>add new user 'git' and 'gitroot' for git</para>
+					<para>you need to assign shell with /usr/bin/git-shell</para>
+					<screen><![CDATA[
 $ sudo adduser git --shell /usr/bin/git-shell
 $ sudo adduser gitroot --ingroup git --shell /bin/bash
-				</screen>
-				<para>/etc/passwd</para>
-				<screen>
+				]]></screen>
+					<para>/etc/passwd</para>
+					<screen><![CDATA[
 $ grep git /etc/passwd
 git:x:1001:1002:,,,:/home/git:/usr/bin/git-shell
 gitroot:x:1002:1002:,,,:/home/gitroot:/bin/bash
-				</screen>
-			</step>
-			<step>
-				<para>/etc/services</para>
-				<screen>
+				]]></screen>
+				</step>
+				<step>
+					<para>/etc/services</para>
+					<screen><![CDATA[
 $ grep 9418 /etc/services
 git             9418/tcp                        # Git Version Control System
-				</screen>
-			</step>
-			<step>
-				<para>/etc/inet.conf</para>
-				<screen>
+				]]></screen>
+				</step>
+				<step>
+					<para>/etc/inet.conf</para>
+					<screen><![CDATA[
 $ grep git /etc/inet.conf
 git     stream  tcp     nowait  nobody \
   /usr/bin/git-daemon git-daemon --inetd --syslog --export-all /home/gitroot
-				</screen>
-				<para>reload inetd</para>
-				<screen>
+				]]></screen>
+					<para>reload inetd</para>
+					<screen><![CDATA[
 $ sudo pkill -HUP inetd
-				</screen>
-			</step>
-			<step>
-				<para>xinetd</para>
-				<para>目前的Linux逐渐使用xinetd.d替代inet.conf，如Redhat系列已经不再使用inet.conf, Ubuntu系列发行版已经不预装inet与xinetd</para>
-				<screen>
+				]]></screen>
+				</step>
+				<step>
+					<para>xinetd</para>
+					<para>目前的Linux逐渐使用xinetd.d替代inet.conf，如Redhat系列已经不再使用inet.conf, Ubuntu系列发行版已经不预装inet与xinetd</para>
+					<screen><![CDATA[
 $ apt-cache search xinetd
 globus-gfork-progs - Globus Toolkit - GFork Programs
 rlinetd - gruesomely over-featured inetd replacement
@@ -631,9 +650,9 @@ update-inetd - inetd configuration file updater
 xinetd - replacement for inetd with many enhancements
 
 $ sudo apt-get install xinetd
-				</screen>
-				<para>/etc/xinetd.d/</para>
-				<screen>
+				]]></screen>
+					<para>/etc/xinetd.d/</para>
+					<screen><![CDATA[
 $ cat /etc/xinetd.d/git
 # default: off
 # description: The git server offers access to git repositories
@@ -650,28 +669,28 @@ service git
         server_args     = daemon --inetd --export-all --enable=receive-pack --reuseaddr --base-path=/home/gitroot
         log_on_failure  += USERID
 }
-				</screen>
-				<para>reload xinitd</para>
-				<screen>
+				]]></screen>
+					<para>reload xinitd</para>
+					<screen><![CDATA[
 $ sudo /etc/init.d/xinetd reload
  * Reloading internet superserver configuration xinetd                                       [ OK ]
-				</screen>
-			</step>
-		</procedure>
-	</section>
-	<section id="git-daemon-run">
-		<title>git-daemon-run</title>
-		<screen>
+				]]></screen>
+				</step>
+			</procedure>
+		</section>
+		<section id="git-daemon-run">
+			<title>git-daemon-run</title>
+			<screen><![CDATA[
 $ sudo apt-get install git-daemon-run
-		</screen>
-		<para>安装后会创建下面两个用户</para>
-		<screen>
+		]]></screen>
+			<para>安装后会创建下面两个用户</para>
+			<screen><![CDATA[
 $ cat /etc/passwd | grep git
 gitlog:x:117:65534::/nonexistent:/bin/false
 gitdaemon:x:118:65534::/nonexistent:/bin/false
-		</screen>
-		<para>git-daemon-run 包携带的文件</para>
-		<screen>
+		]]></screen>
+			<para>git-daemon-run 包携带的文件</para>
+			<screen><![CDATA[
 $ dpkg -L git-daemon-run
 /.
 /etc
@@ -688,9 +707,9 @@ $ dpkg -L git-daemon-run
 /usr/share/doc/git-daemon-run/changelog.Debian.gz
 /usr/share/doc/git-daemon-run/README.Debian
 /usr/share/doc/git-daemon-run/copyright
-		</screen>
-		<para>同时创建下面配置文件</para>
-		<screen>
+		]]></screen>
+			<para>同时创建下面配置文件</para>
+			<screen><![CDATA[
 $ find /etc/sv/git-daemon/
 /etc/sv/git-daemon/
 /etc/sv/git-daemon/run
@@ -698,9 +717,9 @@ $ find /etc/sv/git-daemon/
 /etc/sv/git-daemon/log
 /etc/sv/git-daemon/log/run
 /etc/sv/git-daemon/log/supervise
-		</screen>
-		<para>编辑/etc/sv/git-daemon/run配置</para>
-		<screen>
+		]]></screen>
+			<para>编辑/etc/sv/git-daemon/run配置</para>
+			<screen>
 		<![CDATA[
 $ sudo vim /etc/sv/git-daemon/run
 
@@ -711,9 +730,9 @@ exec chpst -ugitdaemon \
   "$(git --exec-path)"/git-daemon --verbose --reuseaddr \
     --base-path=/var/cache /var/cache/git
 		]]>
-		</screen>
-		<para></para>
-		<screen>
+			</screen>
+			<para></para>
+			<screen><![CDATA[
 git-daemon --verbose --reuseaddr \
     --base-path=/var/cache /var/cache/git
 
@@ -721,33 +740,33 @@ git-daemon --verbose --reuseaddr \
 
 git-daemon --verbose --reuseaddr \
 	--enable=receive-pack --export-all --base-path=/opt/git
-		</screen>
-		<tip>
-			<para>
-* 我加上了一个--export-all 使用该选项后，在git仓库中就不必创建git-daemon-export-ok文件。
-			</para>
-			<para>其他选项--enable=upload-pack --enable=upload-archive --enable=receive-pack</para>
-		</tip>
-		<para>/etc/services 文件中加入</para>
-		<screen>
+		]]></screen>
+			<tip>
+				<para>
+					* 我加上了一个--export-all 使用该选项后，在git仓库中就不必创建git-daemon-export-ok文件。
+				</para>
+				<para>其他选项--enable=upload-pack --enable=upload-archive --enable=receive-pack</para>
+			</tip>
+			<para>/etc/services 文件中加入</para>
+			<screen><![CDATA[
 # Local services
 git             9418/tcp                        # Git Version Control System
-		</screen>
-		<para>确认已经加入</para>
-		<screen>
+		]]></screen>
+			<para>确认已经加入</para>
+			<screen><![CDATA[
 $ grep 9418 /etc/services
-		</screen>
-		<para>启动git-daemon</para>
-		<screen>
+		]]></screen>
+			<para>启动git-daemon</para>
+			<screen><![CDATA[
 $ sudo sv stop git-daemon
 
 or
 
 $ sudo runsv git-daemon
 runsv git-daemon: fatal: unable to change to directory: file does not exist
-		</screen>
-		<para>扫描git端口，确认git-daemon已经启动</para>
-		<screen>
+		]]></screen>
+			<para>扫描git端口，确认git-daemon已经启动</para>
+			<screen><![CDATA[
 $ nmap localhost
 
 Starting Nmap 5.00 ( http://nmap.org ) at 2012-01-31 10:45 CST
@@ -766,12 +785,12 @@ PORT     STATE SERVICE
 3128/tcp open  squid-http
 3306/tcp open  mysql
 9418/tcp open  git
-		</screen>
+		]]></screen>
 
-	</section>
-	<section id="git.daemon.test">
-		<title>Testing</title>
-		<screen>
+		</section>
+		<section id="git.daemon.test">
+			<title>Testing</title>
+			<screen>
 		<![CDATA[
 $ sudo mkdir -p /opt/git/example.git
 $ cd /opt/git/example.git
@@ -783,9 +802,9 @@ denyCurrentBranch = ignore
 $ sudo chown gitdaemon -R /opt/git/*
 $ touch git-daemon-export-ok
 		]]>
-		</screen>
-		<para>.git/config 文件应该是下面这样</para>
-		<screen>
+			</screen>
+			<para>.git/config 文件应该是下面这样</para>
+			<screen><![CDATA[
 $ cat example.git/.git/config
 [core]
 	repositoryformatversion = 0
@@ -795,9 +814,9 @@ $ cat example.git/.git/config
 
 [receive]
 denyCurrentBranch = ignore
-		</screen>
-		<para>git-clone git://localhost/example.git</para>
-		<screen>
+		]]></screen>
+			<para>git-clone git://localhost/example.git</para>
+			<screen>
 		<![CDATA[
 neo@deployment:/tmp$ git clone git://localhost/example.git example.git
 Cloning into example.git...
@@ -810,9 +829,9 @@ neo@deployment:/tmp/example.git$ git commit -m 'Initial commit'
  1 files changed, 1 insertions(+), 0 deletions(-)
  create mode 100644 hello.txt
 		]]>
-		</screen>
-		<para>我们添加了一些文件 push 到服务器</para>
-		<screen>
+			</screen>
+			<para>我们添加了一些文件 push 到服务器</para>
+			<screen><![CDATA[
 $ git push origin master
 Counting objects: 3, done.
 Delta compression using up to 2 threads.
@@ -821,9 +840,9 @@ Writing objects: 100% (3/3), 214 bytes, done.
 Total 3 (delta 0), reused 0 (delta 0)
 To git://localhost/example.git
  * [new branch]      master -> master
-		</screen>
-		<para>然后再git clone，可以看到文件数目</para>
-		<screen>
+		]]></screen>
+			<para>然后再git clone，可以看到文件数目</para>
+			<screen>
 		<![CDATA[
 $ git-clone git://localhost/example.git
 Cloning into example...
@@ -832,9 +851,9 @@ remote: Compressing objects: 100% (2/2), done.
 remote: Total 3 (delta 0), reused 0 (delta 0)
 Receiving objects: 100% (3/3), done.
 		]]>
-		</screen>
+			</screen>
+		</section>
 	</section>
-</section>
 	<section id="git.config">
 		<title>git config</title>
 		<section id="core.sshCommand">
@@ -856,14 +875,14 @@ GIT_SSH_COMMAND="ssh -i ~/.ssh/id_rsa_example -F /dev/null" git clone git@github
 		</section>
 		<section id="http.postBuffer">
 			<title>fatal: The remote end hung up unexpectedly</title>
-			<screen>
+			<screen><![CDATA[
 error: RPC failed; result=22, HTTP code = 413 | 18.24 MiB/s
 fatal: The remote end hung up unexpectedly
-			</screen>
-			<screen>
+			]]></screen>
+			<screen><![CDATA[
 git config http.postBuffer 524288000
-			</screen>
-		</section>		
+			]]></screen>
+		</section>
 		<section id="http.sslVerify">
 			<title>忽略 SSL 检查</title>
 			<para>使用自颁发 ssl 证书时需要开启，否则无法 clone 和 push</para>
@@ -880,7 +899,7 @@ git config http.sslVerify "false"
 			</screen>
 		</section>
 	</section>
-	
+
 	<section id="git-svn">
 		<title>git-svn - Bidirectional operation between a single Subversion branch and git</title>
 		<screen>
@@ -889,18 +908,18 @@ sudo apt-get install git-svn
 		]]>
 		</screen>
 		<para>clone</para>
-		<screen>
+		<screen><![CDATA[
 git-svn clone -s svn://netkiller.8800.org/neo
 cd neo
 git gc
 
 git commit -a
 git-svn dcommit
-		</screen>
+		]]></screen>
 		<para>从 svn 仓库更新</para>
-		<screen>
+		<screen><![CDATA[
 git-svn rebase
-		</screen>
+		]]></screen>
 		<para>git-svn init svn://netkiller.8800.org/neo/public_html</para>
 	</section>
 	&chapter.git.dotfiles.xml;
@@ -911,9 +930,9 @@ git-svn rebase
 		<section id="HEAD">
 			<title>导出最后一次修改过的文件</title>
 			<para>有时我们希望把刚刚修改的文件复制出来，同时维持原有的目录结构，这样可能交给运维直接覆盖服务器上的代码。我们可以使用下面的命令完成这样的操作，而不用一个一个文件的复制。</para>
-			<screen>
+			<screen><![CDATA[
 git archive -o update.zip HEAD $(git diff --name-only HEAD^)
-			</screen>
+			]]></screen>
 		</section>
 		<section id="range">
 			<title>导出指定版本区间修改过的文件</title>
@@ -947,11 +966,11 @@ Date:   Wed Oct 14 17:27:15 2015 +0800
 	   		]]>
 			</screen>
 			<para>导入 b111c253321fb4b9c5858302a0707ba0adc3cd07 至 ee808bb4b3ed6b7c0e7b24eeec39d299b6054dd0 间修改过的文件。</para>
-			<screen>
+			<screen><![CDATA[
 $ git archive -o update2.zip HEAD $(git diff --name-only b111c253321fb4b9c5858302a0707ba0adc3cd07)
-			</screen>
+			]]></screen>
 		</section>
-		
+
 		<section>
 			<title>回撤提交</title>
 			<para>首先 reset 到指定的版本，根据实际情况选择 --mixed 还是 --hard</para>
