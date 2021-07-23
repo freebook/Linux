@@ -711,7 +711,7 @@ server {
 				}
 			]]></screen>
 
-			<section id="">
+			<section id="location.deny">
 				<title>禁止访问特定目录</title>
 				<para>location 匹配到特定的 path 将拒绝用户访问。</para>
 				<screen>
@@ -761,7 +761,7 @@ server {
 				]]>
 				</screen>
 			</section>
-			<section>
+			<section id="location.log">
 				<title>location 中关闭日志</title>
 				<screen>
 			<![CDATA[
@@ -777,11 +777,22 @@ server {
         }			
 			]]>
 				</screen>
+
+			</section>
+			<section>
+				<title>匹配多个目录</title>
 				<screen>
-				<![CDATA[]]>
+				<![CDATA[
+    location ~ /(dev|stage|prod) {
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header REMOTE-HOST $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://api.netkiller.cn:8080;
+    }				
+				]]>
 				</screen>
 			</section>
-
 
 		</section>
 

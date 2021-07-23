@@ -21,6 +21,7 @@
 <!ENTITY section.docker.swarms.xml 		SYSTEM "Docker/section.docker.swarms.xml">
 <!ENTITY section.docker.stack.xml 		SYSTEM "Docker/section.docker.stack.xml">
 <!ENTITY section.docker.service.xml		SYSTEM "Docker/section.docker.service.xml">
+<!ENTITY section.docker.gui.xml			SYSTEM "Docker/section.docker.gui.xml">
 <!ENTITY section.docker.faq.xml    		SYSTEM "Docker/section.docker.faq.xml">
 
 <!ENTITY section.docker.example.xml				SYSTEM "Docker/section.docker.example.xml">
