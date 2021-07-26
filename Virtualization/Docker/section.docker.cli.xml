@@ -661,7 +661,14 @@ neo@MacBook-Pro-Neo ~ % docker events
 			<title>从 docker 中复制文件</title>
 			<screen>
 			<![CDATA[
-neo@MacBook-Pro-Neo ~ % docker cp 13acbc98fb35:/etc/nginx/nginx.conf nginx/conf			
+neo@MacBook-Pro-Neo ~ % docker cp 13acbc98fb35:/etc/nginx/nginx.conf nginx/conf
+			]]>
+			</screen>
+			<para>复制文件和目录</para>
+			<screen>
+			<![CDATA[
+[root@localhost nginx]# docker cp nginx:/etc/nginx/nginx.conf .
+[root@localhost nginx]# docker cp nginx:/etc/nginx/conf.d .			
 			]]>
 			</screen>
 		</section>

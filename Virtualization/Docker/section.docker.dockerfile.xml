@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="Dockerfile">
-	<title>基于 Dockerfile 创建镜像</title>
-	<para>为什么要自己创建镜像呢？ 因为官方提供的镜像无法满足我们的需求，例如 nginx 镜像你会发现 ps, top 等等很多命令缺失。</para>
+	<title>Dockerfile</title>
 	<section>
-		<title>创建 Dockerfile 文件</title>
-		<para>需求基于centos7镜像创建nginx stable最新版本镜像</para>
-		<screen>
+		<title>基于 Dockerfile 创建镜像</title>
+		<para>为什么要自己创建镜像呢？ 因为官方提供的镜像无法满足我们的需求，例如 nginx 镜像你会发现 ps, top 等等很多命令缺失。</para>
+		<section>
+			<title>创建 Dockerfile 文件</title>
+			<para>需求基于centos7镜像创建nginx stable最新版本镜像</para>
+			<screen>
 		<![CDATA[
 ############################################################
 # Dockerfile to build Nginx container
@@ -48,11 +50,11 @@ EXPOSE 80 443
 
 CMD ["nginx", "-g", "daemon off;"]
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>创建镜像</title>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>创建镜像</title>
+			<screen>
 		<![CDATA[
 		# docker build -t "centos:nginx" .
 Sending build context to Docker daemon 3.072 kB
@@ -99,9 +101,9 @@ Step 14/14 : CMD nginx -g daemon off;
  ---> d5f21e409690
 Successfully built d5f21e409690
 		]]>
-		</screen>
-		<para>查看镜像</para>
-		<screen>
+			</screen>
+			<para>查看镜像</para>
+			<screen>
 		<![CDATA[
 # docker image ls                 
 REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
@@ -110,11 +112,11 @@ centos              latest              3bee3060bfc8        2 days ago          
 nginx               latest              958a7ae9e569        8 days ago          109 MB
 redis               latest              a858478874d1        2 weeks ago         184 MB		
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>运行镜像</title>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>运行镜像</title>
+			<screen>
 		<![CDATA[
 # docker run --name my-centos-nginx -d centos:nginx
 ecf342ddd66d1d5f3d28c583ec852c05903ef4813fcb75295c907a6b578dea3d
@@ -125,11 +127,11 @@ ecf342ddd66d        centos:nginx        "nginx -g 'daemon ..."   23 seconds ago 
 0df3b275bb03        nginx               "nginx -g 'daemon ..."   6 hours ago         Up 6 hours          80/tcp                   my-nginx
 1c4540d8617f        redis               "docker-entrypoint..."   2 days ago          Up 2 days           0.0.0.0:6379->6379/tcp   my-redis
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>测试 Nginx</title>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>测试 Nginx</title>
+			<screen>
 		<![CDATA[
 [root@netkiller]~/docker/nginx# docker exec -it my-centos-nginx /bin/bash
 
@@ -168,17 +170,17 @@ Commercial support is available at
 </html>
 		
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>提交镜像</title>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>提交镜像</title>
+			<screen>
 		<![CDATA[
 # docker commit my-centos-nginx netkiller/centos:nginx
 sha256:9ea1851b1c9f04aa3168977f666337223d09e20983f7a2c2328e15132a03d224
 		]]>
-		</screen>
-		<screen>
+			</screen>
+			<screen>
 		<![CDATA[
 # docker push netkiller/centos:nginx
 The push refers to a repository [docker.io/netkiller/centos]
@@ -193,7 +195,45 @@ e3a6f1af6a7a: Pushed
 dc1e2dcdc7b6: Mounted from library/centos 
 nginx: digest: sha256:ad9bd1ae3a3e17dac70f32afc14baf90932949d3eaa8bebbe907726aca3ea336 size: 2205
 		]]>
-		</screen>
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>Dockerfile 缺失的工具</title>
+		<para>工作中我们常常发现官方镜像裁剪的面目全非，里面缺失很多常用工具，这种情况给我们工作带来诸多不便。</para>
+		<section>
+			<title>debian 镜像</title>
+			<para>ps,top 等系统工具</para>
+			<screen>
+			<![CDATA[
+apt update -y && apt install -y procps		
+			]]>
+			</screen>
+			<para>ip, ss</para>
+			<screen>
+			<![CDATA[
+apt install -y iproute2			
+			]]>
+			</screen>
+			<para>ifconfig, netstat</para>
+			<screen>
+			<![CDATA[
+apt install -y net-tools			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>centos</title>
+			<para>psmisc 里面包含 ps, top 等命令</para>
+			<screen>
+			<![CDATA[
+dnf install -y bzip2 tree psmisc \
+telnet wget rsync vim-enhanced \
+net-tools bind-utils			
+			]]>
+			</screen>
+			
+		</section>
 	</section>
 	<section>
 		<title>Dockerfile 语法</title>

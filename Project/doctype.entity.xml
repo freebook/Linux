@@ -13,6 +13,7 @@
 <!ENTITY chapter.project.xml				SYSTEM "chapter.project.xml">
 <!ENTITY chapter.trac.xml					SYSTEM "chapter.trac.xml">
 <!ENTITY chapter.gitlab.xml 				SYSTEM "chapter.gitlab.xml">
+<!ENTITY section.gitlab.setup.xml			SYSTEM "section.gitlab.setup.xml">
 <!ENTITY section.gitlab.pipeline.xml		SYSTEM "section.gitlab.pipeline.xml">
 <!ENTITY chapter.redmine.xml 				SYSTEM "chapter.redmine.xml">
 <!ENTITY chapter.tutos.xml					SYSTEM "chapter.tutos.xml">
