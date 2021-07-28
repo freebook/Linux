@@ -133,6 +133,28 @@ $ sudo docker run ubuntu:14.04 /bin/echo 'Hello world'
 Hello world			
 			]]>
 			</screen>
+			<section>
+				<title>--privileged 让 root 具备真正的 root 权限</title>
+				<screen>
+				<![CDATA[
+[root@localhost ~]# docker run -t -i centos:latest bash
+[root@test /]# lsblk
+NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+vda    254:0    0 59.6G  0 disk 
+|-vda1 254:1    0 59.6G  0 part /etc/hosts
+`-vda2 252:1    0    1G  0 part
+[root@test /]# mount  /dev/vda2  /mnt/
+mount: permission denied				
+				]]>
+				</screen>
+				<para>加入 --privileged 选项后</para>
+				<screen>
+				<![CDATA[
+[root@netkiller ~]# docker run -t -i  --privileged  centos:latest bash
+[root@test /]# mount  /dev/vda2  /mnt/			
+				]]>
+				</screen>
+			</section>
 		</section>
 		<section id="start">
 			<title>start / stop / restart</title>
@@ -176,6 +198,25 @@ CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMES
 84391d1de0fc ubuntu:14.04 /bin/echo Hello worl 31 minutes ago Exit 0 romantic_ritchie				
 			]]>
 			</screen>
+			<section>
+				<title>不截断输出，显示完整信息</title>
+				<para>正常情况下无法显示完整的 COMMAND 信息</para>
+				<screen>
+				<![CDATA[
+neo@MacBook-Pro-Neo ~ % docker ps    
+CONTAINER ID   IMAGE          COMMAND                  CREATED              STATUS              PORTS                                       NAMES
+08252e252e11   eb705d309426   "redis-server /etc/r…"   About a minute ago   Up About a minute   0.0.0.0:6379->6379/tcp, :::6379->6379/tcp   redis				
+				]]>
+				</screen>
+				<para>使用 --no-trunc 参数可以显示完整信息</para>
+				<screen>
+				<![CDATA[
+neo@MacBook-Pro-Neo ~ % docker ps --no-trunc  
+CONTAINER ID                                                       IMAGE                                                                     COMMAND                                                     CREATED              STATUS              PORTS                                       NAMES
+08252e252e113105568f8b60b7bcee2f47978938402e440ba6874221a1621220   sha256:eb705d3094264a13130234869af89b635138f3d05b964ffdf6b3ee961f44a664   "redis-server /etc/redis.conf --requirepass yourpassword"   About a minute ago   Up About a minute   0.0.0.0:6379->6379/tcp, :::6379->6379/tcp   redis				
+				]]>
+				</screen>
+			</section>
 		</section>
 		<section id="docker.kill">
 			<title>kill 信号</title>

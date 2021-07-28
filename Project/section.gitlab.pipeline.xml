@@ -3,9 +3,9 @@
 	<title>Pipeline</title>
 	<section id="pipeline.cache">
 		<title>cache</title>
-		<para></para>
+		<para>Java 缓存设置</para>
 		<screen>
-				<![CDATA[
+		<![CDATA[
 image: maven:3.5.0-jdk-8
 
 variables:
@@ -37,7 +37,84 @@ package:
     paths:
       - target/java-project-0.0.1-SNAPSHOT.jar
 				
-				]]>
+		]]>
+		</screen>
+		<para>Node 缓存设置</para>
+		<screen>
+		<![CDATA[
+cache:
+  paths:
+    - node_modules
+    - dist
+
+# variables:
+  # GIT_STRATEGY: clone
+  # GIT_STRATEGY: fetch
+  # GIT_CHECKOUT: "false"
+
+stages:
+  - build
+  - test
+  - deploy
+
+build-job:
+  stage: build
+  only: 
+    - master    
+    - testing
+    - development 
+  script:
+    - echo "Compiling the code..."
+    # - cnpm cache verify
+    - cnpm install
+    - cnpm run build:stage
+    # - cnpm run build:prod
+    - echo "Compile complete."
+
+test-job:
+  stage: test
+  variables:
+    GIT_STRATEGY: none
+  only: 
+    - master    
+    - testing
+    - development 
+  script:
+    - echo "Running unit tests..."
+    - sed -i 's#192.168.20.180#192.168.30.4#g' dist/umi.*.js
+    - ls dist/*
+    # - rm -rf *.tar.gz
+    # - tar zcvf www.netkiller.cn.$(date -u +%Y-%m-%d.%H%M%S).tar.gz dist
+    # - ls *.tar.gz
+    - echo "Test complete."
+  artifacts:
+    name: "$CI_PROJECT_NAME"
+    paths:
+      - dist/*
+      # - ./*.tar.gz
+
+
+deploy-test-job:
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none
+  only: 
+    - testing
+    - development
+  script:
+    - echo "Deploying application..."
+    - rsync -auzv dist/* www@192.168.30.10:/opt/www.netkiller.cn/
+    - echo "Application successfully deployed."
+
+deploy-prod-job:
+  stage: deploy
+  only: 
+    - master
+  script:
+    - echo "Deploying application..."
+    - rsync -auzv --delete dist/* www@192.168.30.10:/opt/www.netkiller.cn/
+    - echo "Application successfully deployed."
+		]]>
 		</screen>
 	</section>
 	<section id="before_script">

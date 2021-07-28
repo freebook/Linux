@@ -105,7 +105,7 @@ services:
 		<programlisting>
 		<![CDATA[
 version: '3.9'
-services:		
+services:
   gitlab-runner:
     image: gitlab/gitlab-runner:alpine
     restart: unless-stopped
@@ -115,14 +115,15 @@ services:
     volumes:
       - ./config/gitlab-runner:/etc/gitlab-runner
       - /var/run/docker.sock:/var/run/docker.sock
-      - /bin/docker:/bin/docker		
+      - /bin/docker:/bin/docker
 		]]>
 		</programlisting>
-		<para></para>
+		<para>启动 Gitlab runner</para>
 		<screen>
 		<![CDATA[
 sudo chmod 666 /var/run/docker.sock
 sudo usermod -aG docker $USER
+docker-compose up -d
 		]]>
 		</screen>
 		<para>注册 gitlab-runner 到 Gitlab</para>
@@ -304,11 +305,14 @@ nginx['http2_enabled'] = true
 		]]>
 		</screen>
 	</section>
-
-
 </section>
 <section id="gitlab.runner">
 	<title>GitLab Runner</title>
+	<screen>
+	<![CDATA[
+Gitlab(仓库) -> Gitlab Runner（持续集成/部署） -> Remote host（远程部署主机）
+	]]>
+	</screen>
 	<section>
 		<title>安装 GitLab Runner</title>
 		<subtitle>Install GitLab Runner</subtitle>
@@ -335,7 +339,7 @@ chmod 600 -R /home/gitlab-runner/.ssh
 				]]>
 		</screen>
 	</section>
-	<section>
+	<section id="gitlab.runner.shell">
 		<title>注册 Runners - Shell</title>
 		<subtitle>Registering Runners</subtitle>
 		<screen>
@@ -358,10 +362,9 @@ shell
 Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded! 
 				]]>
 		</screen>
-	</section>
-	<section>
-		<title>/etc/gitlab-runner/config.toml</title>
-		<screen>
+		<section>
+			<title>/etc/gitlab-runner/config.toml</title>
+			<screen>
 				<![CDATA[
 [root@gitlab ~]# cat /etc/gitlab-runner/config.toml
 concurrent = 1
@@ -381,14 +384,20 @@ check_interval = 0
     [runners.cache.gcs]
     [runners.cache.azure]			
 				]]>
-		</screen>
-	</section>
-	<section>
-		<title>生成 SSH 证书</title>
-		<screen>
-				<![CDATA[
+			</screen>
+		</section>
+		<section>
+			<title>生成 SSH 证书</title>
+			<para>持续集成和部署运行在 gitlab-runner 用户下，切换到 gitlab-runner 用户</para>
+			<screen>
+			<![CDATA[
 [root@gitlab ~]# su - gitlab-runner
-Last login: Mon Jul 19 19:01:37 CST 2021
+Last login: Mon Jul 19 19:01:37 CST 2021			
+			]]>
+			</screen>
+			<para>生成 SSH 证书</para>
+			<screen>
+				<![CDATA[
 [gitlab-runner@gitlab ~]$ ssh-keygen 
 Generating public/private rsa key pair.
 Enter file in which to save the key (/home/gitlab-runner/.ssh/id_rsa): 
@@ -413,9 +422,9 @@ The key's randomart image is:
 +----[SHA256]-----+
 [gitlab-runner@gitlab ~]$ 				
 				]]>
-		</screen>
-		<para></para>
-		<screen>
+			</screen>
+			<para>配置 SSH</para>
+			<screen>
 			<![CDATA[
 [gitlab-runner@gitlab ~]$ cat > ~/.ssh/config <<'EOF'
 Host *
@@ -426,8 +435,17 @@ EOF
 
 chmod 600 -R ~/.ssh/config			
 			]]>
-		</screen>
+			</screen>
+			<para>授权远程执行 Shell</para>
+			<screen>
+			<![CDATA[
+[gitlab-runner@gitlab ~]$ ssh-copy-id www@test.netkiller.cn	
+			]]>
+			</screen>
+		</section>
 	</section>
+	
+	
 	<section>
 		<title>Java 环境</title>
 		<screen>
@@ -475,11 +493,12 @@ chmod 600 -R ~/.ssh/config
 dnf install -y nodejs
 			]]>
 		</screen>
-		<para>CentOS 7</para>
+		<para>yarn</para>
 		<screen>
-			[root@netkiller www]# yum install -y nodejs
-			[root@netkiller www]# node --version
-			v6.9.1
+		<![CDATA[
+curl -sL https://dl.yarnpkg.com/rpm/yarn.repo -o /etc/yum.repos.d/yarn.repo
+dnf install -y yarn		
+		]]>
 		</screen>
 		<para>安装 cnpm</para>
 		<screen>
@@ -489,6 +508,12 @@ dnf install -y nodejs
 https://registry.npm.taobao.org/
 [root@gitlab ~]# npm install -g cnpm		
 			]]>
+		</screen>
+		<para>pm2 进程管理</para>
+		<screen>
+		<![CDATA[
+npm install -g pm2			
+		]]>
 		</screen>
 	</section>
 

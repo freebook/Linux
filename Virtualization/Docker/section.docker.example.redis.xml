@@ -119,6 +119,46 @@ volumes:
   redis_data:
 		]]>
 		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+version: '3.9'
+
+services:
+  redis:
+    image: redis:alpine
+    container_name: redis
+    restart: always
+    hostname: redis.netkiller.cn
+    user: redis:redis
+    privileged: true
+    environment:
+      - TZ=Asia/Shanghai
+      - LANG=en_US.UTF-8
+    ports:
+      - 6379:6379
+    volumes:
+      - ./conf/redis.conf:/etc/redis.conf
+      - redis:/var/lib/redis
+      - ./logs:/var/log/redis
+    entrypoint: redis-server /etc/redis.conf
+    command: 
+      --requirepass passw0rd
+volumes:
+  redis:
+		]]>
+		</screen>
+		<para>确认配置生效</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-Neo ~ % docker exec -it redis redis-cli -a passw0rd                 
+Warning: Using a password with '-a' or '-u' option on the command line interface may not be safe.
+127.0.0.1:6379> config get dir
+1) "dir"
+2) "/var/lib/redis"
+127.0.0.1:6379> 		
+		]]>
+		</screen>
 	</section>
 	<section>
 		<title>Docker Stack</title>

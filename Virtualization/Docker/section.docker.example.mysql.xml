@@ -70,3 +70,35 @@ mysql>
 	]]>
 	</screen>
 </section>
+<section>
+	<title>MongoDB</title>
+	<screen>
+	<![CDATA[
+version: '3.9'
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongo
+    hostname: mongo.netkiller.cn
+    restart: always
+    user: mongodb:mongodb
+    privileged: false
+    volumes:
+      - ./data:/data
+    # - ./db:/var/lib/mongodb  
+      - ./log:/var/log/mongodb
+    ports:
+      - 27017:27017
+    environment:
+      TZ: Asia/Shanghai
+      LANG: en_US.UTF-8
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+    entrypoint: docker-entrypoint.sh mongod
+    command: 
+    #   --config /etc/mongod.conf
+      --logpath /var/log/mongodb/mongod.log	
+	]]>
+	</screen>
+	
+</section>
