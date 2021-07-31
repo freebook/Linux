@@ -569,7 +569,17 @@ proxy_pass_request_headers on;
 
 		</screen>
 	</section>
-	
+	<section>
+		<title>sub_filter 文本替换</title>
+		<screen>
+		<![CDATA[
+	proxy_set_header Accept-Encoding ""; # 防止网站gzip
+	sub_filter '景峰' '景峯'; # 有效
+	sub_filter 'neo' 'netkiller';
+	sub_filter_once off;	# 全部替换		
+		]]>
+		</screen>
+	</section>
 	<section id="proxy.example">
 		<title>example</title>
 		<para>/api/ 走代理，其他页面走 Nginx</para>

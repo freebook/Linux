@@ -444,8 +444,8 @@ chmod 600 -R ~/.ssh/config
 			</screen>
 		</section>
 	</section>
-	
-	
+
+
 	<section>
 		<title>Java 环境</title>
 		<screen>
@@ -490,29 +490,39 @@ chmod 600 -R ~/.ssh/config
 		<title>NodeJS</title>
 		<screen>
 			<![CDATA[
-dnf install -y nodejs
+[root@netkiller ~]# dnf install -y nodejs
+			]]>
+		</screen>
+		<para>安装 cnpm</para>
+		<screen>
+			<![CDATA[
+[root@netkiller ~]# npm config set registry https://registry.npm.taobao.org
+[root@netkiller ~]# npm config get registry
+https://registry.npm.taobao.org/
+[root@netkiller ~]# npm install -g cnpm		
 			]]>
 		</screen>
 		<para>yarn</para>
 		<screen>
 		<![CDATA[
-curl -sL https://dl.yarnpkg.com/rpm/yarn.repo -o /etc/yum.repos.d/yarn.repo
-dnf install -y yarn		
+[root@netkiller ~]# curl -sL https://dl.yarnpkg.com/rpm/yarn.repo -o /etc/yum.repos.d/yarn.repo
+[root@netkiller ~]# dnf install -y yarn
 		]]>
-		</screen>
-		<para>安装 cnpm</para>
-		<screen>
-			<![CDATA[
-[root@gitlab ~]# npm config set registry https://registry.npm.taobao.org
-[root@gitlab ~]# npm config get registry
-https://registry.npm.taobao.org/
-[root@gitlab ~]# npm install -g cnpm		
-			]]>
 		</screen>
 		<para>pm2 进程管理</para>
 		<screen>
 		<![CDATA[
-npm install -g pm2			
+[root@netkiller ~]# npm install -g pm2	
+		]]>
+		</screen>
+		<para>设置 pm2 启动开启</para>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# pm2 startup
+[root@netkiller ~]# pm2 save --force
+[root@netkiller ~]# systemctl enable pm2-root
+[root@netkiller ~]# systemctl start pm2-root
+[root@netkiller ~]# systemctl status pm2-root
 		]]>
 		</screen>
 	</section>

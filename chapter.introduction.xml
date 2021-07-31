@@ -283,7 +283,6 @@ cat >> /etc/sysctl.conf <<EOF
 # Netkiller
 net.ipv4.ip_local_port_range = 1025 65500
 net.ipv4.tcp_tw_reuse = 1
-net.ipv4.tcp_tw_recycle = 1
 net.ipv4.tcp_keepalive_time = 1800
 net.core.netdev_max_backlog=3000
 net.ipv4.tcp_max_syn_backlog = 8192
@@ -346,34 +345,45 @@ systemctl start chronyd
 dnf install -y lrzsz			
 			]]>
 			</screen>
-			<para>优化 SSH 禁止 root 登陆，开启 sudo</para>
+			<para>优化 SSH</para>
 			<screen>
 			<![CDATA[
 cp /etc/ssh/sshd_config{,.original}
+
 vim /etc/ssh/sshd_config <<EOF > /dev/null 2>&1
-:37,37s/#LoginGraceTime 2m/LoginGraceTime 1m/
-:40,40s/#MaxAuthTries 6/MaxAuthTries 3/
-:79,79s/GSSAPIAuthentication yes/GSSAPIAuthentication no/
+:43,43s/PermitRootLogin yes/PermitRootLogin no/
+:84,84s/GSSAPIAuthentication yes/GSSAPIAuthentication no/
 :99,99s/#AllowTcpForwarding yes/AllowTcpForwarding no/
-:107,107s/#TCPKeepAlive yes/TCPKeepAlive yes/
-:112,112s/#ClientAliveInterval 0/ClientAliveInterval 30/
-:113,113s/#ClientAliveCountMax 3/ClientAliveCountMax 9/
-:115,115s/#UseDNS yes/UseDNS no/
-:wq
-EOF			
-			
-sed -i "s/#PermitRootLogin yes/PermitRootLogin no/" /etc/ssh/sshd_config
-systemctl restart sshd
-
-cp /etc/sudoers{,.original}
-
-#vim /etc/sudoers <<EOF > /dev/null 2>&1
-visudo <<EOF > /dev/null 2>&1
-:120,120s:#includedir /etc/sudoers.d:includedir /etc/sudoers.d:
+:106,106/X11Forwarding yes/X11Forwarding no/
+:116,116s/#TCPKeepAlive yes/TCPKeepAlive yes/
+:121,121s/#UseDNS no/UseDNS no/
 :wq
 EOF
+			]]>
+			</screen>
+			<para>禁止 root 登陆，开启 sudo</para>
+			<para>禁用普通用户，我们需要一个普通用户登陆，然后使用 sudo 暂时获得 root 权限，我不打算新建一个用户，发现系统里面内置了 operator 这个操作员用户符合我的需求。</para>
+			<screen>
+			<![CDATA[
+usermod -s /bin/bash -aG wheel operator
 
-visudo -c			
+PASSWORD=$(cat /dev/urandom | tr -dc [:alnum:] | head -c 32)
+
+echo operator:${PASSWORD} | chpasswd
+echo "operator password: ${PASSWORD}"			
+			]]>
+			</screen>
+			<para>将 /usr/local/sbin:/usr/local/bin 路径加入到 Defaults secure_path = /sbin:/bin:/usr/sbin:/usr/bin，否则sudo找不到 /usr/local/sbin:/usr/local/bin 中的可执行文件。</para>
+			<screen>
+			<![CDATA[
+sed -i "s/#PermitRootLogin yes/PermitRootLogin no/" /etc/ssh/sshd_config
+systemctl restart sshd
+			
+cp /etc/sudoers{,.original}
+
+sed -i '88s#$#:/usr/local/sbin:/usr/local/bin#' /etc/sudoers
+
+visudo -c
 			]]>
 			</screen>
 		</section>
