@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="gitlab.cicd">
+	<title>CI / CD</title>
+	<para>https://gitlab.com/gitlab-examples</para>
+	<screen>
+	<![CDATA[
+Gitlab(仓库) -> Gitlab Runner（持续集成/部署） -> Remote host（远程部署主机）
+	]]>
+	</screen>
+	<section>
+		<title>远程服务器配置</title>
+		<para>为远程服务器创建 www 用户，我们将使用该用户远程部署，远程启动程序。</para>
+		<screen>
+			<![CDATA[
+[root@netkiller ~]# groupadd -g 80 www
+[root@netkiller ~]# adduser -o --uid 80 --gid 80 -G wheel -c "Web Application" www
+[root@netkiller ~]# id www
+uid=80(www) gid=80(www) groups=80(www),10(wheel)
+[root@netkiller ~]# PASSWORD=$(cat /dev/urandom | tr -dc [:alnum:] | head -c 32)
+[root@netkiller ~]# echo www:${PASSWORD} | chpasswd
+[root@netkiller ~]# echo "www password: ${PASSWORD}"
+www password: 0Uz1heY9v9KJyRKbvTi0VlAzfEoFW9GH	
+			]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+mkdir -p /opt/netkiller.cn/www.netkiller.cn
+chown www:www -R /opt/netkiller.cn
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>配置 CI / CD</title>
+		<para>进入项目设置界面，点击 Settings，再点击 CI / CD</para>
+		<graphic format="png" fileref="../images/gitlab/cicd/CI-CD.png" width="1024" srccredit="neo" />
+		<para>点击 Expand 按钮 展开 Runners</para>
+		<graphic format="png" fileref="../images/gitlab/cicd/Runners.png" width="1024" srccredit="neo" />
+		<para>这时可以看到 Set up a specific Runner manually, 后面会用到 http://192.168.1.96/ 和 zASzWwffenos6Jbbfsgu</para>
+		<section>
+			<title>安装 GitLab Runner</title>
+			<subtitle>Install GitLab Runner</subtitle>
+			<screen>
+				<![CDATA[
+curl -L "https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.rpm.sh" | sudo bash
+dnf install gitlab-runner
+
+cp /etc/gitlab-runner/config.toml{,.original}
+
+systemctl enable gitlab-runner			
+				]]>
+			</screen>
+		</section>
+		<section>
+			<title>注册 gitlab-runner</title>
+
+			<para>使用 SSH 登录 Gitlab runner 服务器，运行 gitlab-runner register</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# gitlab-runner register
+Runtime platform                                    arch=amd64 os=linux pid=92925 revision=ac2a293c version=11.11.2
+Running in system-mode.                            
+                                                   
+Please enter the gitlab-ci coordinator URL (e.g. https://gitlab.com/):
+http://192.168.1.96/
+Please enter the gitlab-ci token for this runner:
+zASzWwffenos6Jbbfsgu
+Please enter the gitlab-ci description for this runner:
+[localhost.localdomain]: 
+Please enter the gitlab-ci tags for this runner (comma separated):
+
+Registering runner... succeeded                     runner=zASzWwff
+Please enter the executor: docker, docker-ssh, shell, ssh, docker-ssh+machine, parallels, virtualbox, docker+machine, kubernetes:
+shell
+Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded! 
+			]]>
+			</screen>
+			<para>返回 gitlab 查看注册状态</para>
+			<graphic format="png" fileref="../images/gitlab/cicd/Runners-status.png" width="1024" srccredit="neo" />
+		</section>
+
+	</section>
+
+	<section id="gitlab.runner.shell">
+		<title>Shell 执行器</title>
+		<subtitle>Registering Runners</subtitle>
+		<screen>
+				<![CDATA[
+[root@gitlab ~]# gitlab-runner register
+Runtime platform                                    arch=amd64 os=linux pid=1020084 revision=c1edb478 version=14.0.1
+Running in system-mode.                            
+                                                   
+Enter the GitLab instance URL (for example, https://gitlab.com/):
+http://192.168.30.5/
+Enter the registration token:
+DyKdKyaJaq5KN-irgNGz
+Enter a description for the runner:
+[gitlab]: 
+Enter tags for the runner (comma-separated):
+
+Registering runner... succeeded                     runner=DyKdKyaJ
+Enter an executor: parallels, virtualbox, docker+machine, custom, docker, docker-ssh, shell, ssh, docker-ssh+machine, kubernetes:
+shell
+Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded! 
+				]]>
+		</screen>
+		<section>
+			<title>/etc/gitlab-runner/config.toml</title>
+			<screen>
+				<![CDATA[
+[root@gitlab ~]# cat /etc/gitlab-runner/config.toml
+concurrent = 1
+check_interval = 0
+
+[session_server]
+  session_timeout = 1800
+
+[[runners]]
+  name = "gitlab"
+  url = "http://192.168.30.5/"
+  token = "kVkzjDM74xZUN-aKbdPp"
+  executor = "shell"
+  [runners.custom_build_dir]
+  [runners.cache]
+    [runners.cache.s3]
+    [runners.cache.gcs]
+    [runners.cache.azure]			
+				]]>
+			</screen>
+		</section>
+		<section>
+			<title>生成 SSH 证书</title>
+			<para>持续集成和部署运行在 gitlab-runner 用户下，切换到 gitlab-runner 用户</para>
+			<screen>
+			<![CDATA[
+[root@gitlab ~]# su - gitlab-runner
+Last login: Mon Jul 19 19:01:37 CST 2021			
+			]]>
+			</screen>
+			<para>生成 SSH 证书</para>
+			<screen>
+				<![CDATA[
+[gitlab-runner@gitlab ~]$ ssh-keygen 
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/gitlab-runner/.ssh/id_rsa): 
+Created directory '/home/gitlab-runner/.ssh'.
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /home/gitlab-runner/.ssh/id_rsa.
+Your public key has been saved in /home/gitlab-runner/.ssh/id_rsa.pub.
+The key fingerprint is:
+SHA256:l90LYBeSF9l9JHXJUHeO+IyvscCziz4C8vFNpJoKEjo gitlab-runner@gitlab
+The key's randomart image is:
++---[RSA 3072]----+
+|          ..o===B|
+|          ..oo.**|
+|          o.o . o|
+|        .. = =   |
+|.      oS o + +  |
+|... o . .o   o . |
+|E  o * o  + . o  |
+|.o  + o o. + +   |
+|  ..   oo.o.o    |
++----[SHA256]-----+
+[gitlab-runner@gitlab ~]$ 				
+				]]>
+			</screen>
+			<para>正常情况下，当我们链接一个 SSH 主机，会让我们输入 yes 确认继续链接。</para>
+			<screen>
+			<![CDATA[
+[gitlab-runner@gitlab ~]$ ssh www@192.168.40.10
+The authenticity of host '192.168.40.10 (192.168.40.10)' can't be established.
+ECDSA key fingerprint is SHA256:xmFF266MPdXhnlAljS+QWhQsw6jOw1sOwQXRr/PHi2w.
+Are you sure you want to continue connecting (yes/no/[fingerprint])?			
+			]]>
+			</screen>
+			<para>配置 SSH</para>
+			<screen>
+			<![CDATA[
+[gitlab-runner@gitlab ~]$ cat > ~/.ssh/config <<'EOF'
+Host *
+	ServerAliveInterval=30
+	StrictHostKeyChecking no
+	UserKnownHostsFile=/dev/null
+EOF
+
+chmod 600 -R ~/.ssh/config			
+			]]>
+			</screen>
+			
+			<para>授权远程执行 Shell</para>
+			<screen>
+			<![CDATA[
+[gitlab-runner@gitlab ~]$ ssh-copy-id www@www.netkiller.cn	
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Java 环境</title>
+			<screen>
+			<![CDATA[
+[root@gitlab ~]# dnf install -y java-11-openjdk
+[root@gitlab ~]# dnf install -y maven
+			]]>
+			</screen>
+			<para>修改 Maven 镜像路</para>
+			<screen>
+			<![CDATA[
+[root@gitlab ~]# vim /etc/maven/settings.xml
+  <mirrors>
+    <mirror>
+      <id>aliyun</id>
+      <name>aliyun maven</name>
+      <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+      <mirrorOf>central</mirrorOf>
+    </mirror>
+  </mirrors>			
+			]]>
+			</screen>
+			<para>切换到 gitlab-runner 用户，随便运行一下 mvn 命令，这样就会产生 ～/.m2 文件夹</para>
+			<screen>
+			<![CDATA[
+[root@gitlab ~]# su - gitlab-runner		
+[gitlab-runner@gitlab ~]$ mvn	
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+
+
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>NodeJS</title>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# dnf install -y nodejs
+			]]>
+			</screen>
+			<para>安装 cnpm</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# npm config set registry https://registry.npm.taobao.org
+[root@netkiller ~]# npm config get registry
+https://registry.npm.taobao.org/
+[root@netkiller ~]# npm install -g cnpm		
+			]]>
+			</screen>
+			<para>yarn</para>
+			<screen>
+		<![CDATA[
+[root@netkiller ~]# curl -sL https://dl.yarnpkg.com/rpm/yarn.repo -o /etc/yum.repos.d/yarn.repo
+[root@netkiller ~]# dnf install -y yarn
+		]]>
+			</screen>
+			<para>pm2 进程管理</para>
+			<screen>
+		<![CDATA[
+[root@netkiller ~]# npm install -g pm2	
+		]]>
+			</screen>
+			<para>设置 pm2 启动开启</para>
+			<screen>
+		<![CDATA[
+[root@netkiller ~]# pm2 startup
+[root@netkiller ~]# pm2 save --force
+[root@netkiller ~]# systemctl enable pm2-root
+[root@netkiller ~]# systemctl start pm2-root
+[root@netkiller ~]# systemctl status pm2-root
+		]]>
+			</screen>
+		</section>
+		<section>
+			<title>远程执行 sudo 提示密码</title>
+			<screen>
+			<![CDATA[
+[gitlab-runner@gitlab api.sfzito.com]$ ssh www@192.168.40.10 "sudo ls"
+Warning: Permanently added '192.168.40.10' (ECDSA) to the list of known hosts.
+sudo: a terminal is required to read the password; either use the -S option to read from standard input or configure an askpass helper
+			]]>
+			</screen>
+			<para>解决方案一</para>
+			<screen>
+			<![CDATA[
+ssh -t www@www.netkiller.cn "echo <yourpassword> |sudo -S <yourcommand>"
+			]]>
+			</screen>
+			<para>解决方案二</para>
+			<screen>
+			<![CDATA[
+cat > /etc/sudoers.d/www <<-EOF
+www    ALL=(ALL)    NOPASSWD: ALL			
+EOF
+			]]>
+			</screen>
+		</section>
+	</section>
+
+	<section id="gitlab.runner.docker">
+		<title>Docker 执行器</title>
+
+
+	</section>
+</section>

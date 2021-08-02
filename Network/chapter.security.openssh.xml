@@ -1201,5 +1201,29 @@ Connection closed by 58.96.18.16
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>远程执行 sudo 提示密码</title>
+			<screen>
+			<![CDATA[
+[gitlab-runner@gitlab api.sfzito.com]$ ssh www@192.168.40.10 "sudo ls"
+Warning: Permanently added '192.168.40.10' (ECDSA) to the list of known hosts.
+sudo: a terminal is required to read the password; either use the -S option to read from standard input or configure an askpass helper
+			]]>
+			</screen>
+			<para>解决方案一</para>
+			<screen>
+			<![CDATA[
+ssh -t admin@remotehost "echo <yourpassword> |sudo -S <yourcommand>"			
+			]]>
+			</screen>
+			<para>解决方案二</para>
+			<screen>
+			<![CDATA[
+cat > /etc/sudoers.d/www <<-EOF
+www    ALL=(ALL)    NOPASSWD: ALL			
+EOF
+			]]>
+			</screen>
+		</section>
 	</section>
 </chapter>

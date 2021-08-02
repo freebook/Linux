@@ -1271,5 +1271,12 @@ sshd(3158)─┬─sshd(9409)───bash(9411)
 		]]>
 		</screen>
 	</section>
-	
+	<section id="pkexec">
+		<title>pkexec - Execute a command as another user</title>
+		<screen>
+		<![CDATA[
+pkexec --user www ls /		
+		]]>
+		</screen>
+	</section>
 </chapter>

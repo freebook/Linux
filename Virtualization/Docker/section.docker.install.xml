@@ -35,6 +35,95 @@ docker-compose -v
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>切换镜像</title>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# cat << EOF > /etc/docker/daemon.json
+> 
+> {
+>   "registry-mirrors": [
+>     "https://hub-mirror.c.163.com",
+>     "https://mirror.baidubce.com",
+>     "https://docker.mirrors.ustc.edu.cn/"
+>   ]
+> }
+> 
+> EOF
+
+[root@netkiller ~]# cat /etc/docker/daemon.json 
+
+{
+  "registry-mirrors": [
+    "https://hub-mirror.c.163.com",
+    "https://mirror.baidubce.com",
+    "https://docker.mirrors.ustc.edu.cn/"
+  ]
+}
+
+[root@netkiller ~]# systemctl restart docker
+
+[root@netkiller ~]# docker info
+Client:
+ Context:    default
+ Debug Mode: false
+ Plugins:
+  app: Docker App (Docker Inc., v0.9.1-beta3)
+  buildx: Build with BuildKit (Docker Inc., v0.5.1-docker)
+  scan: Docker Scan (Docker Inc., v0.8.0)
+
+Server:
+ Containers: 0
+  Running: 0
+  Paused: 0
+  Stopped: 0
+ Images: 0
+ Server Version: 20.10.7
+ Storage Driver: overlay2
+  Backing Filesystem: xfs
+  Supports d_type: true
+  Native Overlay Diff: true
+  userxattr: false
+ Logging Driver: json-file
+ Cgroup Driver: cgroupfs
+ Cgroup Version: 1
+ Plugins:
+  Volume: local
+  Network: bridge host ipvlan macvlan null overlay
+  Log: awslogs fluentd gcplogs gelf journald json-file local logentries splunk syslog
+ Swarm: inactive
+ Runtimes: io.containerd.runc.v2 io.containerd.runtime.v1.linux runc
+ Default Runtime: runc
+ Init Binary: docker-init
+ containerd version: e25210fe30a0a703442421b0f60afac609f950a3
+ runc version: v1.0.1-0-g4144b63
+ init version: de40ad0
+ Security Options:
+  seccomp
+   Profile: default
+ Kernel Version: 4.18.0-326.el8.x86_64
+ Operating System: CentOS Stream 8
+ OSType: linux
+ Architecture: x86_64
+ CPUs: 4
+ Total Memory: 7.514GiB
+ Name: netkiller
+ ID: 5GBU:CMWS:VIVP:TREZ:Y5AP:OGOW:EABK:NP4R:AWUA:S4J2:2YQ2:U7MT
+ Docker Root Dir: /var/lib/docker
+ Debug Mode: false
+ Registry: https://index.docker.io/v1/
+ Labels:
+ Experimental: false
+ Insecure Registries:
+  127.0.0.0/8
+ Registry Mirrors:
+  https://hub-mirror.c.163.com/
+  https://mirror.baidubce.com/
+  https://docker.mirrors.ustc.edu.cn/
+ Live Restore Enabled: false			
+			]]>
+			</screen>
+		</section>
 	</section>
 
 	<section>

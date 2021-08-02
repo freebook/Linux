@@ -57,20 +57,7 @@ AutomaticLogin=neo
 TimedLogin=neo
 		</screen>
 	</section>
-	<section id="x.fonts">
-		<title>fonts 字体</title>
-		<screen>
-		<![CDATA[
-# mkdir -p /usr/share/fonts/zh_CN/TrueType/
-# cp -r Fonts/* /usr/share/fonts/zh_CN/TrueType/
-# chmod 644 /usr/share/fonts/zh_CN/TrueType/*
-# cd /usr/share/fonts/zh_CN/TrueType/
-# mkfontscale
-# mkfontdir
-# fc-cache /usr/share/fonts/zh_CN/TrueType/
-		]]>
-		</screen>
-	</section>
+
         <section id="x.disable">
                 <title>disable x window</title>
                 <screen>
@@ -79,7 +66,7 @@ $ sudo chmod 600 /etc/init.d/gdm
         </section>
 
 </chapter>
-
+	&chapter.font.xml;
 	&chapter.vnc.xml;
 	&chapter.x.unity.xml;
 <chapter id="x.server">

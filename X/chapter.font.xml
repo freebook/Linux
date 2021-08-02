@@ -1,9 +1,188 @@
 <chapter id="fonts">
 	<title>Fonts 字体</title>
+	<para>确认安装了自己管理工具 fontconfig</para>
 	<screen>
-# yum install fonts-chinese.noarch
+	<![CDATA[
+[root@netkiller fonts]# dnf install fontconfig
+	]]>
 	</screen>
-	<section id="font">
-		<title>Font</title>
+	<para>字体存放文件夹</para>
+	<screen>
+	<![CDATA[
+/usr/share/fonts
+/usr/share/X11/fonts	
+	]]>
+	</screen>
+	<section id="fc-list">
+		<title>fc-list 字体查看命令</title>
+		<section>
+			<title>查看所有字体</title>
+			<screen>
+			<![CDATA[
+[root@netkiller fonts]# fc-list			
+			]]>
+			</screen>
+		</section>
+		
+		<section>
+			<title>查看中文字体</title>
+			<screen>
+			<![CDATA[
+fc-list :lang=zh		
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>查看字体详情</title>
+		<screen>
+		<![CDATA[
+[root@netkiller fonts]# fc-match "SimHei"
+Fontconfig warning: ignoring UTF-8: not a valid region tag
+DejaVuSans.ttf: "DejaVu Sans" "Book"		
+		]]>
+		</screen>
+		<para>显示所有字体</para>
+		<screen>
+		<![CDATA[
+[root@netkiller fonts]# fc-match -a
+Fontconfig warning: ignoring UTF-8: not a valid region tag
+DejaVuSans.ttf: "DejaVu Sans" "Book"
+DejaVuSansCondensed.ttf: "DejaVu Sans" "Condensed"
+DejaVuSans-ExtraLight.ttf: "DejaVu Sans" "ExtraLight"
+DejaVuSans-Bold.ttf: "DejaVu Sans" "Bold"
+DejaVuSansCondensed-Bold.ttf: "DejaVu Sans" "Condensed Bold"
+DejaVuSans-Oblique.ttf: "DejaVu Sans" "Oblique"
+DejaVuSansCondensed-Oblique.ttf: "DejaVu Sans" "Condensed Oblique"
+DejaVuSans-BoldOblique.ttf: "DejaVu Sans" "Bold Oblique"
+DejaVuSansCondensed-BoldOblique.ttf: "DejaVu Sans" "Condensed Bold Oblique"
+NimbusSans-Regular.otf: "Nimbus Sans" "Regular"
+NimbusSans-Regular.t1: "Nimbus Sans" "Regular"
+NimbusSans-Bold.otf: "Nimbus Sans" "Bold"
+NimbusSans-Bold.t1: "Nimbus Sans" "Bold"
+NimbusSans-Italic.otf: "Nimbus Sans" "Italic"
+NimbusSans-Italic.t1: "Nimbus Sans" "Italic"
+NimbusSans-BoldItalic.otf: "Nimbus Sans" "Bold Italic"
+NimbusSans-BoldItalic.t1: "Nimbus Sans" "Bold Italic"		
+		]]>
+		</screen>
+		<para>显示字体详细信息</para>
+		<screen>
+		<![CDATA[
+[root@netkiller fonts]# fc-match -v "SimHei"
+Fontconfig warning: ignoring UTF-8: not a valid region tag
+Pattern has 36 elts (size 48)
+	family: "DejaVu Sans"(s)
+	familylang: "en"(s)
+	style: "Book"(s)
+	stylelang: "en"(s)
+	fullname: "DejaVu Sans"(s)
+	fullnamelang: "en"(s)
+	slant: 0(i)(s)
+	weight: 80(f)(s)
+	width: 100(f)(s)
+	size: 12(f)(s)
+	pixelsize: 12.5(f)(s)
+	foundry: "PfEd"(w)
+	hintstyle: 1(i)(w)
+	hinting: True(s)
+	verticallayout: False(s)
+	autohint: False(s)
+	globaladvance: True(s)
+	file: "/usr/share/fonts/dejavu/DejaVuSans.ttf"(w)
+	index: 0(i)(w)
+	outline: True(w)
+	scalable: True(w)
+	dpi: 75(f)(s)
+	scale: 1(f)(s)
+	charset: 
+	0000: 00000000 ffffffff ffffffff 7fffffff 00000000 ffffffff ffffffff ffffffff
+	0001: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+	0002: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff 008873ff
+	0003: ffffffff ffffffff f58effff 7cff0007 ffffd7f0 fffffffb ffffffff ffffffff
+	0004: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+	0005: ffffffff fffe003f fe7fffff fffffffe 000006ff ffff0000 ffff00cf 001f07ff
+	0006: 882016c0 07fffffe 04bfffff fe11ffff ffffffff ffffffff 00205040 03ff0000
+	0007: 00000000 00000000 00000000 00000000 00000000 00000000 ffffffff 073ff8ff
+	000e: 00000000 80000000 00000000 00000000 fef02596 3bffecae 33ff3f5f 00000000
+	0010: 00000000 00000000 00000000 00000000 00000000 ffffffff ffff003f 1fffffff
+	0014: effffefe ffbfffff fff7f7ff ffffffff ffffffff 3fffffff ffffffff fffff7ff
+	0015: ffff00ff 7fffffff fffdffff fff007ff 007ffc3f 0000ffff 40000000 00000002
+	0016: 00000000 00000000 000000c0 007fc000 1fffffff 00000000 00000000 00000000
+	001d: ffdfffff ffff7fcf efffffff 298007ff f8000020 ffffffff 000003f0 00000000
+	001e: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff 0fffffff
+	001f: 3f3fffff ffffffff aaff3f3f 3fffffff ffffffff ffdfffff efcfffdf 7fdcffff
+	0020: ffffffff ffffffff ffffffff fff3fc1f 1fff7fff 033fffff 18c30000 00000002
+	0021: fffffbff ffffffff ffff4bff ffffffff ffff023f ffffffff ffffffff ffffffff
+	0022: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+	0023: f303ffff 000019f3 00000000 24380000 f8100080 00007fff 0000c000 00000128
+	0024: 00000000 0000000c 00000000 000003ff 00000000 00000000 00000000 00000000
+	0025: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+	0026: ffffffff ffffffff ffffffff ffffffff 1fffffff 01ffffff 0000000f 00000004
+	0027: fffff3de fffffeff 7f47afff fffffffe ff1fffff 7ffeffff 00000060 ffff0fc1
+	0028: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+	0029: 00000cc0 00000000 00000003 00000000 00000018 00000000 003fc000 0c000800
+	002a: 1ffff007 00008000 00000000 e0000000 ffffffff 07ffc001 00000000 06000000
+	002b: 87ffffff 0000001f 00180000 00000000 00000000 00000000 00000000 00000000
+	002c: 00000000 00000000 00000000 feffffff 00000000 00000000 00000000 00000000
+	002d: 00000000 ffff0000 ffffffff 0000803f 00000000 00000000 00000000 00000000
+	002e: 01000000 0000403c 00000000 00000000 00000000 00000000 00000000 00000000
+	004d: 00000000 00000000 00000000 00000000 00000000 00000000 ffffffff ffffffff
+	00a6: 00000000 00000000 00f330f0 00007ffc 00303c00 00000000 00000000 00000000
+	00a7: f87fff00 ffff0ffc 00cfcfc0 000000f0 00037e0f 00000000 00000000 fc000000
+	00ef: 03ffffff 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+	00f0: 0000000f 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+	00f6: 00000000 00000000 00000000 00000000 00000000 00000000 00000020 00000000
+	00fb: e0f8007f 5f7fffff fffcffdb ffffffff ffffffff 00003c0f 06780000 f0000300
+	00fe: 0000ffff 0000000f 00000000 ffdf0000 ffffffff ffffffff ffffffff 9fffffff
+	00ff: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 3e000000
+	0103: 7fffffff 0000000f 00000000 00000000 00000000 00000000 00000000 00000000
+	01d3: ffffffff ffffffff 007fffff 00000000 00000000 00000000 00000000 00000000
+	01d5: 00000000 7b000000 fffdfc5f 00000fff 00000000 ffffffff 000fffff 00000000
+	01d7: 00000000 00000000 00000000 00000000 00000000 00000000 ff000000 00000fff
+	01f0: 00000000 ffff0000 ffffffff ffffffff 000fffff 7ffe7fff fffefffe 00000000
+	01f4: 00000000 00226000 00000000 00000000 00000000 00000000 00000000 00000000
+	01f6: 755dfffe ffef2f2f 00000001 00000000 00000000 00000000 00000000 00000000
+(w)
+	lang: aa|ab|af|ar|ast|av|ay|az-az|az-ir|ba|bm|be|bg|bi|bin|br|bs|bua|ca|ce|ch|chm|co|cs|cu|cv|cy|da|de|el|en|eo|es|et|eu|fa|fi|fj|fo|fr|ff|fur|fy|ga|gd|gl|gn|gv|ha|haw|he|ho|hr|hu|hy|ia|ig|id|ie|ik|io|is|it|iu|ka|kaa|ki|kk|kl|ku-am|ku-ir|kum|kv|kw|ky|la|lb|lez|ln|lo|lt|lv|mg|mh|mi|mk|mo|mt|nb|nds|nl|nn|no|nr|nso|ny|oc|om|os|pl|pt|rm|ro|ru|sah|sco|se|sel|sh|shs|sk|sl|sm|sma|smj|smn|sms|so|sq|sr|ss|st|sv|sw|tg|tk|tl|tn|to|tr|ts|tt|tw|tyv|uk|uz|ve|vi|vo|vot|wa|wen|wo|xh|yap|yi|yo|zu|ak|an|ber-dz|ber-ma|crh|csb|ee|fat|fil|hsb|ht|hz|jv|kab|kj|kr|ku-iq|ku-tr|kwm|lg|li|mn-mn|ms|na|ng|nv|ota|pap-an|pap-aw|qu|quz|rn|rw|sc|sd|sg|sn|su|ty|za(s)
+	fontversion: 152698(i)(s)
+	capability: "otlayout:DFLT otlayout:arab otlayout:armn otlayout:brai otlayout:cans otlayout:cher otlayout:cyrl otlayout:geor otlayout:grek otlayout:hani otlayout:hebr otlayout:kana otlayout:lao  otlayout:latn otlayout:math otlayout:nko  otlayout:ogam otlayout:runr otlayout:tfng otlayout:thai"(w)
+	fontformat: "TrueType"(w)
+	embeddedbitmap: True(s)
+	decorative: False(s)
+	namelang: "en"(s)
+	prgname: "fc-match"(s)
+	postscriptname: "DejaVuSans"(w)
+	color: False(w)
+	symbol: False(s)
+	variable: False(s)		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>安装字体</title>
+		<para>将字体复制到 /usr/share/fonts 目录中，然后执行 fc-cache 命令即可</para>
+		<screen>
+		<![CDATA[
+[root@netkiller fonts]# fc-cache
+或
+[root@netkiller fonts]# fc-cache /usr/share/fonts		
+		]]>
+		</screen>
+	</section>
+	
+	<section id="x.fonts">
+		<title>fonts 字体</title>
+		<screen>
+		<![CDATA[
+# mkdir -p /usr/share/fonts/zh_CN/TrueType/
+# cp -r Fonts/* /usr/share/fonts/zh_CN/TrueType/
+# chmod 644 /usr/share/fonts/zh_CN/TrueType/*
+# cd /usr/share/fonts/zh_CN/TrueType/
+# mkfontscale
+# mkfontdir
+# fc-cache /usr/share/fonts/zh_CN/TrueType/
+		]]>
+		</screen>
 	</section>
 </chapter>

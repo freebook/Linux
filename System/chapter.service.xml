@@ -11,7 +11,8 @@
 # systemctl disable avahi-daemon
 		]]>
 		</screen>
-		<section id="">
+		
+		<section>
 			<title>电源管理</title>
 			<para>systemd 处理某些电源相关的 ACPI事件，可以通过从 /etc/systemd/logind.conf以下选项进行配置</para>
 			<orderedlist>
@@ -97,7 +98,72 @@ $ systemctl status rc-local
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="systemctl.edit">
+			<title>编辑 service 文件</title>
+			<screen>
+			<![CDATA[
+systemctl edit docker.service 			
+			]]>
+			</screen>
+		</section>
+		<section id="systemctl.cat">
+			<title>查看 service 文件</title>
+			<para>systemctl cat docker</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# systemctl cat docker
+# /usr/lib/systemd/system/docker.service
+[Unit]
+Description=Docker Application Container Engine
+Documentation=https://docs.docker.com
+After=network-online.target firewalld.service containerd.service
+Wants=network-online.target
+Requires=docker.socket containerd.service
+
+[Service]
+Type=notify
+# the default is not to use systemd for cgroups because the delegate issues still
+# exists and systemd currently does not support the cgroup feature set required
+# for containers run by docker
+ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+ExecReload=/bin/kill -s HUP $MAINPID
+TimeoutSec=0
+RestartSec=2
+Restart=always
+
+# Note that StartLimit* options were moved from "Service" to "Unit" in systemd 229.
+# Both the old, and new location are accepted by systemd 229 and up, so using the old location
+# to make them work for either version of systemd.
+StartLimitBurst=3
+
+# Note that StartLimitInterval was renamed to StartLimitIntervalSec in systemd 230.
+# Both the old, and new name are accepted by systemd 230 and up, so using the old name to make
+# this option work for either version of systemd.
+StartLimitInterval=60s
+
+# Having non-zero Limit*s causes performance problems due to accounting overhead
+# in the kernel. We recommend using cgroups to do container-local accounting.
+LimitNOFILE=infinity
+LimitNPROC=infinity
+LimitCORE=infinity
+
+# Comment TasksMax if your systemd version does not support it.
+# Only systemd 226 and above support this option.
+TasksMax=infinity
+
+# set delegate yes so that systemd does not reset the cgroups of docker containers
+Delegate=yes
+
+# kill only the docker process, not all processes in the cgroup
+KillMode=process
+OOMScoreAdjust=-500
+
+[Install]
+WantedBy=multi-user.target
+			]]>
+			</screen>
+		</section>
+		<section id="systemctl.is-enabled">
 			<title>is-enabled 查看当前服务的启用状态</title>
 			<screen>
 			<![CDATA[
@@ -108,7 +174,7 @@ disabled
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="systemctl.daemon-reload">
 			<title>重载 systemd</title>
 			<screen>
 			<![CDATA[
@@ -117,7 +183,7 @@ systemctl daemon-reload
 			</screen>
 		</section>
 
-		<section>
+		<section id="systemctl.--failed">
 			<title>列出启动失败的服务</title>
 			<screen>
 			<![CDATA[

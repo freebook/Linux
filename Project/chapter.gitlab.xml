@@ -172,46 +172,7 @@ ssh: git@192.168.0.1:example.com/www.example.com.git
 	<section id="gitlab.webhook">
 		<title>WebHook</title>
 	</section>
-	<section id="gitlab.cicd">
-		<title>CI / CD</title>
-		<para>https://gitlab.com/gitlab-examples</para>
-
-		<section>
-			<title>配置 CI / CD</title>
-			<para>进入项目设置界面，点击 Settings，再点击 CI / CD</para>
-			<graphic format="png" fileref="../images/gitlab/cicd/CI-CD.png" width="" srccredit="neo" />
-			<para>点击 Expand 按钮 展开 Runners</para>
-			<graphic format="png" fileref="../images/gitlab/cicd/Runners.png" width="" srccredit="neo" />
-			<para>这时可以看到 Set up a specific Runner manually, 后面会用到 http://192.168.1.96/ 和 zASzWwffenos6Jbbfsgu</para>
-
-		</section>
-		<section>
-			<title>注册 gitlab-runner</title>
-			<para>使用 SSH 登录 Gitlab runner 服务器，运行 gitlab-runner register</para>
-			<screen>
-			<![CDATA[
-[root@localhost ~]# gitlab-runner register
-Runtime platform                                    arch=amd64 os=linux pid=92925 revision=ac2a293c version=11.11.2
-Running in system-mode.                            
-                                                   
-Please enter the gitlab-ci coordinator URL (e.g. https://gitlab.com/):
-http://192.168.1.96/
-Please enter the gitlab-ci token for this runner:
-zASzWwffenos6Jbbfsgu
-Please enter the gitlab-ci description for this runner:
-[localhost.localdomain]: 
-Please enter the gitlab-ci tags for this runner (comma separated):
-
-Registering runner... succeeded                     runner=zASzWwff
-Please enter the executor: docker, docker-ssh, shell, ssh, docker-ssh+machine, parallels, virtualbox, docker+machine, kubernetes:
-shell
-Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded! 			
-			]]>
-			</screen>
-			<para>返回 gitlab 查看注册状态</para>
-			<graphic format="png" fileref="../images/gitlab/cicd/Runners-status.png" width="" srccredit="neo" />
-		</section>
-	</section>
+	&section.gitlab.cicd.xml;
 	&section.gitlab.pipeline.xml;
 	<section id="gitlab.faq">
 		<title>FAQ</title>

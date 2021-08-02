@@ -77,7 +77,7 @@ docker exec -it my-nginx-container /bin/bash
 		<title>安装依赖工具</title>
 		<screen>
 		<![CDATA[
-apt update -y && apt install -y procps
+apt update -y && apt install -y procps iproute2
 		]]>
 		</screen>
 	</section>
