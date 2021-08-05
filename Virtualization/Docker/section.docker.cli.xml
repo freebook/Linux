@@ -926,6 +926,12 @@ test_vp0_1          sh -c sleep 5; peer node s ...   Up      0.0.0.0:7050->7050/
 docker-compose logs -f vp0		
 		]]>
 			</screen>
+			<para>查看最后100行日志</para>
+			<screen>
+			<![CDATA[
+[www@testing api.netkiller.cn]$ sudo docker-compose logs -f --tail=100			
+			]]>
+			</screen>
 		</section>
 		<section id="docker-compose.exec">
 			<title>执行命令</title>

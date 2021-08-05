@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.web.xml 624 2013-06-21 10:50:00Z netkiller $ -->
 	&chapter.nginx.xml;
+	&chapter.caddy.xml;
 	&chapter.tomcat.xml;
 	&chapter.httpd.xml;
 	&chapter.lighttpd.xml;

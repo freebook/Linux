@@ -122,6 +122,24 @@ gzip_proxied any;
 				]]>
 				</screen>
 			</section>
+			<section>
+				<title>使用包含配置文件配置 gzip</title>
+				<screen>
+				<![CDATA[
+cat <<-EOF> /etc/nginx/conf.d/gzip.conf
+gzip on;
+gzip_vary on;
+gzip_proxied any;
+gzip_min_length 1000;
+gzip_types text/plain text/css application/javascript application/json application/xml application/octet-stream;
+EOF
+
+# text/html 类型无需配置，否则会提示
+# nginx: [warn] duplicate MIME type "text/html" in /etc/nginx/conf.d/default.conf				
+				]]>
+				</screen>
+			</section>
+			
 		</section>
 		<section id="server_tokens">
 			<title>server_tokens</title>

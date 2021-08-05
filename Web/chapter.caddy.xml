@@ -63,7 +63,110 @@ $ caddy file-server --root ~/public_html
 			<ulink url="https://caddyserver.com/docs/caddyfile" />
 		</para>
 		<section>
-			<title></title>
+			<title>监听地址</title>
+			<screen>
+			<![CDATA[
+localhost
+example.com
+:443
+http://example.com
+localhost:8080
+127.0.0.1
+[::1]:2015
+example.com/foo/*
+*.example.com
+http://			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+localhost:8080, example.com, www.example.com			
+			]]>
+			</screen>
+			<para>泛解析</para>
+			<screen>
+			<![CDATA[
+*.example.com			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>反向代理</title>
+			<screen>
+			<![CDATA[
+http://api.netkiller.cn {
+    reverse_proxy /* http://192.168.30.10:8080
+    tls netkiller@msn.com
+}			
+			]]>
+			</screen>
+			<para>推送 X-Forwarded-For 头</para>
+			<screen>
+			<![CDATA[
+http://www.netkiller.cn {
+
+    root * /opt/netkiller.cn/www.netkiller.cn
+    file_server
+
+    reverse_proxy /api/* 192.168.30.10:8080 {
+	    header_up X-Real-IP {http.request.remote.host}
+	    header_up X-Forwarded-For {http.request.remote.host}
+	}
+
+}			
+			]]>
+			</screen>
+			<para>反向代理自签名证书，添加 tls_insecure_skip_verify 配置项</para>
+			<screen>
+			<![CDATA[
+netkiller.cn {
+    reverse_proxy * {
+        to https://192.168.0.10
+        transport http {
+            tls_insecure_skip_verify
+        }
+    }
+}
+
+api.netkiller.cn {
+    reverse_proxy * {
+        to 192.168.10.10:443
+        transport http {
+            tls
+            tls_insecure_skip_verify
+        }
+    }
+}
+			]]>
+			</screen>
+			<para>反向代理URL前缀问题</para>
+			<screen>
+			<![CDATA[
+举例：
+www.netkiller.cn {
+	reverse_proxy /api/* http://api.netkiller.cn:8080
+}
+访问URL: 
+http://www.netkiller.cn/api/adduser
+
+实际访问的URL是:
+http://api.netkiller.cn:8080/api/adduser
+
+我们需要的URL是：
+http://api.netkiller.cn:8080/adduser
+			]]>
+			</screen>
+			<para>解决方案</para>
+			<screen>
+			<![CDATA[
+www.netkiller.cn {
+	route /api* {
+    	uri strip_prefix /api
+		reverse_proxy api.netkiller.cn:8088
+	}
+}	
+			]]>
+			</screen>
 		</section>
 	</section>
 </chapter>

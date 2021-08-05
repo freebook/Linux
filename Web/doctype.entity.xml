@@ -33,4 +33,4 @@
 <!ENTITY chapter.web.analysis 		SYSTEM "chapter.web.analysis.xml">
 
 <!ENTITY chapter.http2.xml			SYSTEM "chapter.http2.xml">
-
+<!ENTITY chapter.caddy.xml			SYSTEM "chapter.caddy.xml">

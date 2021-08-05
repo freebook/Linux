@@ -213,6 +213,11 @@
 		<echo>the backup directory is ${TIMEPOINT}.</echo>
 		<!-- <mkdir dir="${backup.dir}/${TIMEPOINT}" /> -->
 		<xsltproc output="${tmp}/${ant.project.name}" stylesheet="../docbook-xsl/docbook.preview.xsl" file="book.xml" />
+		<copy todir="${tmp}/${ant.project.name}/images" overwrite="true">
+			<fileset dir="images">
+				<include name="**/*" />
+			</fileset>
+		</copy>
 	</target>
 	<target name="usage" depends="">
 		<echo>Java deploy tools by netkiller</echo>
