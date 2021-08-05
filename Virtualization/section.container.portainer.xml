@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <section>
-	<title>Docker 图形化管理界面</title>
+	<title>Portainer</title>
+	<para>Portainer 是一个轻量级的 Docker 管理界面，官方提供了 Demo 演示地址</para>
+	<para></para>
 	<section>
-		<title>Portainer</title>
-		<para>Portainer 是一个轻量级的 Docker 管理界面，官方提供了 Demo 演示地址</para>
-		<para></para>
-		<section>
-			<title>安装</title>
-			<para>Server 服务器安装</para>
-			<screen>
+		<title>安装</title>
+		<para>Server 服务器安装</para>
+		<screen>
 			<![CDATA[
 docker volume create portainer_data
 docker run -d -p 8000:8000 -p 9000:9000 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce
 			]]>
-			</screen>
-			<para>Agent 代理安装</para>
-			<screen>
+		</screen>
+		<para>Agent 代理安装</para>
+		<screen>
 			<![CDATA[
 docker run -d -p 9001:9001 --name portainer_agent --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker/volumes:/var/lib/docker/volumes portainer/agent			
 			]]>
-			</screen>
-			<para>使用 docker-compose 安装</para>
-			<screen>
+		</screen>
+		<para>使用 docker-compose 安装</para>
+		<screen>
 			<![CDATA[
 version: '3.9'
 
@@ -50,8 +49,8 @@ services:
 volumes:
   portainter:    			
 			]]>
-			</screen>
-			<screen>
+		</screen>
+		<screen>
 			<![CDATA[
 第一台管理服务器，启动管理界面：
 [root@netkiller portainer]# docker-compose up -d portainer
@@ -62,48 +61,48 @@ volumes:
 第三台测试环境服务器，启动代理
 [root@testing portainer]# docker-compose up -d portainer-agent			
 			]]>
-			</screen>
-		</section>
-		<section>
-			<title>配置 Portainer</title>
-			<para>设置管理员密码，创建用户</para>
-			<graphic format="png" fileref="../images/portainer/Portainer-admin.png" width="800" srccredit="neo" />
-			<para>当前界面中有三个选项，分别是 Docker（本地 Docker），Kubernetes, Agent(代理)</para>
-			<graphic format="png" fileref="../images/portainer/Portainer-local.png" width="800" srccredit="neo" />
-			<para>添加本地 Docker，通过 UNIX SOCK 链接，通常是 /var/run/docker.sock</para>
-			<graphic format="png" fileref="../images/portainer/Portainer-local-connect.png" width="800" srccredit="neo" />
-			<para>点击 Connect 按钮就可以建立链接</para>
-			<graphic format="png" fileref="../images/portainer/Portainer-local-connect-success.png" width="800" srccredit="neo" />
-			<para>添加代理 Docker，左边菜单点击 Endpoints，然后点击 Add endpoint</para>
-			<graphic format="png" fileref="../images/portainer/Portainer-endpoint.png" width="800" srccredit="neo" />
-			<para>选择 Agent</para>
-			<graphic format="png" fileref="../images/portainer/Portainer-agent.png" width="800" srccredit="neo" />
-			<para>Name 给代理起个名气，Endpoint URL 输入代理的IP地址和端口号，Group 是分组（可不选），最后点击 Add endpoint 按钮。</para>
-			<graphic format="png" fileref="../images/portainer/Portainer-agent-addendpoint.png" width="800" srccredit="neo" />
-			<para>完成代理的添加</para>
-			<graphic format="png" fileref="../images/portainer/Portainer-agent-success.png" width="800" srccredit="neo" />
-			<para>回到 Home </para>
-			<graphic format="png" fileref="../images/portainer/Portainer-home.png" width="800" srccredit="neo" />
-		</section>
-		<section>
-			<title>添加代理出错</title>
-			<para>portainer 错误日志</para>
-			<screen>
+		</screen>
+	</section>
+	<section>
+		<title>配置 Portainer</title>
+		<para>设置管理员密码，创建用户</para>
+		<graphic format="png" fileref="../images/portainer/Portainer-admin.png" width="800" srccredit="neo" />
+		<para>当前界面中有三个选项，分别是 Docker（本地 Docker），Kubernetes, Agent(代理)</para>
+		<graphic format="png" fileref="../images/portainer/Portainer-local.png" width="800" srccredit="neo" />
+		<para>添加本地 Docker，通过 UNIX SOCK 链接，通常是 /var/run/docker.sock</para>
+		<graphic format="png" fileref="../images/portainer/Portainer-local-connect.png" width="800" srccredit="neo" />
+		<para>点击 Connect 按钮就可以建立链接</para>
+		<graphic format="png" fileref="../images/portainer/Portainer-local-connect-success.png" width="800" srccredit="neo" />
+		<para>添加代理 Docker，左边菜单点击 Endpoints，然后点击 Add endpoint</para>
+		<graphic format="png" fileref="../images/portainer/Portainer-endpoint.png" width="800" srccredit="neo" />
+		<para>选择 Agent</para>
+		<graphic format="png" fileref="../images/portainer/Portainer-agent.png" width="800" srccredit="neo" />
+		<para>Name 给代理起个名气，Endpoint URL 输入代理的IP地址和端口号，Group 是分组（可不选），最后点击 Add endpoint 按钮。</para>
+		<graphic format="png" fileref="../images/portainer/Portainer-agent-addendpoint.png" width="800" srccredit="neo" />
+		<para>完成代理的添加</para>
+		<graphic format="png" fileref="../images/portainer/Portainer-agent-success.png" width="800" srccredit="neo" />
+		<para>回到 Home </para>
+		<graphic format="png" fileref="../images/portainer/Portainer-home.png" width="800" srccredit="neo" />
+	</section>
+	<section>
+		<title>添加代理出错</title>
+		<para>portainer 错误日志</para>
+		<screen>
 			<![CDATA[
 portainer          | 2021/08/04 07:24:14 http error: Unable to initiate communications with endpoint (err=agent already paired with another Portainer instance) (code=500)
 portainer          | 2021/08/04 07:25:49 http error: Unable to initiate communications with endpoint (err=agent already paired with another Portainer instance) (code=500)			
 			]]>
-			</screen>
-			<para>agent 日志</para>
-			<screen>
+		</screen>
+		<para>agent 日志</para>
+		<screen>
 			<![CDATA[
 portainer-agent    | 2021/08/04 07:25:49 http error: Invalid request signature (err=Unauthorized) (code=403)
 portainer-agent    | 2021/08/04 07:25:49 http error: Invalid request signature (err=Unauthorized) (code=403)			
 			]]>
-			</screen>
-			<para>问题出在，重装了 portainer 先前的 agent 已经与之前的 portainer 建立链接。</para>
-			<para>解决方法，重装 agent 记得要删除卷。</para>
-			<screen>
+		</screen>
+		<para>问题出在，重装了 portainer 先前的 agent 已经与之前的 portainer 建立链接。</para>
+		<para>解决方法，重装 agent 记得要删除卷。</para>
+		<screen>
 			<![CDATA[
 [root@testing portainer]# docker-compose stop portainer-agent
 Stopping portainer-agent ... done
@@ -130,8 +129,6 @@ Creating portainer-agent ... done
 ----------------------------------------------------------------------------
 portainer-agent   ./agent   Up      0.0.0.0:9001->9001/tcp,:::9001->9001/tcp	
 			]]>
-			</screen>
-		</section>
+		</screen>
 	</section>
-
 </section>

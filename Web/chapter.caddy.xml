@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="caddy" ?>
+	<title>Caddy</title>
+	<subtitle>Caddy is a powerful, enterprise-ready, open source web server with automatic HTTPS written in Go.</subtitle>
+	<section>
+		<title>安装 Caddy</title>
+		<screen>
+		<![CDATA[
+		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>启动 Caddy</title>
+		<para>前台运行</para>
+		<screen>
+		<![CDATA[
+caddy run --config /etc/caddy/Caddyfile --adapter caddyfile		
+		]]>
+		</screen>
+		<section>
+			<title>开启 QUIC</title>
+			<screen>
+			<![CDATA[
+caddy run --config /etc/caddy/Caddyfile --adapter caddyfile --quic			
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>命令行</title>
+		<section>
+			<title>文件服务器</title>
+			<para>将当前目录作为文件服务器的根目录</para>
+			<screen>
+			<![CDATA[
+$ caddy file-server			
+			]]>
+			</screen>
+			<para>指定端口</para>
+			<screen>
+			<![CDATA[
+$ caddy file-server --listen :8080
+			]]>
+			</screen>
+			<para>不打开 index.html，显示文件目录</para>
+			<screen>
+			<![CDATA[
+$ caddy file-server --browse			
+			]]>
+			</screen>
+			<para>指定文件服务器根目录</para>
+			<screen>
+			<![CDATA[
+$ caddy file-server --root ~/public_html
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>/etc/caddy/Caddyfile</title>
+		<para>
+			<ulink url="https://caddyserver.com/docs/caddyfile" />
+		</para>
+		<section>
+			<title></title>
+		</section>
+	</section>
+</chapter>

@@ -4,7 +4,6 @@
 	<title>docker 命令</title>
 	<section>
 		<title>docker - A self-sufficient runtime for containers</title>
-
 		<section id="docker.info">
 			<title>查看 docker 信息</title>
 			<screen>
@@ -608,6 +607,19 @@ ef52fb1fe610: Download complete
 		<section id="logs">
 			<title>logs</title>
 			<para>显示容器运行日志，用于排查异常情况</para>
+
+			<screen>
+	<![CDATA[
+$ docker logs [OPTIONS] CONTAINER
+  Options:
+        --details        显示更多的信息
+    -f, --follow         跟踪实时日志
+        --since string   显示自某个timestamp之后的日志，或相对时间，如42m（即42分钟）
+        --tail string    从日志末尾显示多少行日志， 默认是all
+    -t, --timestamps     显示时间戳
+        --until string   显示自某个timestamp之前的日志，或相对时间，如42m（即42分钟）	
+	]]>
+			</screen>
 			<para>例如下面是nginx容易启动出错日志</para>
 			<screen>
 		<![CDATA[
@@ -620,6 +632,30 @@ nginx: [emerg] invalid server name or wildcard "www.*.com" on 0.0.0.0:80
 nginx: [emerg] invalid server name or wildcard "www.*.com" on 0.0.0.0:80
 		]]>
 			</screen>
+			<section>
+				<title>跟踪实时日志</title>
+				<screen>
+				<![CDATA[
+$ docker logs -f CONTAINER_ID		
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>显示时间戳</title>
+				<screen>
+				<![CDATA[
+$ docker logs -t --since="2018-02-08" --tail=100 CONTAINER_ID		
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>显示一段范围内的日志</title>
+				<screen>
+				<![CDATA[
+$ docker logs -t --since="2019-02-08T12:20:30" --until "2019-02-09T12:23:30" CONTAINER_ID		
+				]]>
+				</screen>
+			</section>
 		</section>
 
 		<section id="reset">
@@ -867,7 +903,7 @@ Removing docker_membersrvc_1 ... done
 			<section>
 				<title>启动</title>
 
-			</section>			
+			</section>
 		</section>
 
 		<section id="docker-compose.ps">

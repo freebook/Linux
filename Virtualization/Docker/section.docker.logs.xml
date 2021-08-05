@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section>
+<section id="docker.log-driver">
 	<title>日志</title>
-	<screen>
-	<![CDATA[
-$ docker logs [OPTIONS] CONTAINER
-  Options:
-        --details        显示更多的信息
-    -f, --follow         跟踪实时日志
-        --since string   显示自某个timestamp之后的日志，或相对时间，如42m（即42分钟）
-        --tail string    从日志末尾显示多少行日志， 默认是all
-    -t, --timestamps     显示时间戳
-        --until string   显示自某个timestamp之前的日志，或相对时间，如42m（即42分钟）	
-	]]>
-	</screen>
 	<section>
-		<title>跟踪实时日志</title>
+		<title>Fluentd</title>
+		<para>在 Docker 中安装 Fluentd</para>
+		<para>准备 test.conf 文件</para>
 		<screen>
 		<![CDATA[
-$ docker logs -f CONTAINER_ID		
+ <source>
+   @type forward
+ </source>
+
+ <match *>
+   @type stdout
+ </match>		
 		]]>
 		</screen>
-	</section>
-	<section>
-		<title>显示时间戳</title>
+		<para>启动 fluentd 接收日志</para>
 		<screen>
 		<![CDATA[
-$ docker logs -t --since="2018-02-08" --tail=100 CONTAINER_ID		
+ $ docker run -it -p 24224:24224 -v /path/to/conf/test.conf:/fluentd/etc/test.conf -e FLUENTD_CONF=test.conf fluent/fluentd:latest		
 		]]>
 		</screen>
-	</section>
-	<section>
-		<title>显示一段范围内的日志</title>
+		<para>运行你的程序</para>
 		<screen>
 		<![CDATA[
-$ docker logs -t --since="2019-02-08T12:20:30" --until "2019-02-09T12:23:30" CONTAINER_ID		
+$ docker run --log-driver=fluentd your/application		
+		]]>
+		</screen>
+		<para>如果是远程主机使用 fluentd-address 参数</para>
+		<screen>
+		<![CDATA[
+docker run --log-driver=fluentd --log-opt fluentd-address=fluentdhost:24224
+docker run --log-driver=fluentd --log-opt fluentd-address=tcp://fluentdhost:24224
+docker run --log-driver=fluentd --log-opt fluentd-address=unix:///path/to/fluentd.sock		
 		]]>
 		</screen>
 	</section>
