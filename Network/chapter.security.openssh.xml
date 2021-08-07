@@ -530,18 +530,6 @@ root@192.168.2.18's password:
 	</section>
 	<section id="ssh.tunnel">
 		<title>OpenSSH Tunnel</title>
-		<para>mysql tunnel</para>
-		<screen>
-		<![CDATA[
-$ ssh -L 3306:127.0.0.1:3306 user@example.org
-		]]>
-		</screen>
-		<para>testing</para>
-		<screen>
-		<![CDATA[
-$ mysql -h 127.0.0.1 -uroot -p test
-		]]>
-		</screen>
 		<section>
 			<title>SOCKS v5 Tunnel</title>
 			<screen>
@@ -584,7 +572,52 @@ ping -i 30 8.8.8.8 > /dev/null &
 			</screen>
 			<para>ping 是保持隧道活跃，每个 30秒 ping 访问一次外部主机以保持 ssh 不会退出。</para>
 		</section>
+		<section>
+			<title>从公网穿透局域网</title>
+			<section>
+				<title>WAN 服务区</title>
+				<para>编辑 /etc/ssh/sshd_config 文件，修改 GatewayPorts 配置项为 yes</para>
+				<screen>
+				<![CDATA[
+GatewayPorts yes			
+				]]>
+				</screen>
+				<para>如果没有配置 GatewayPorts yes 所有映射端口为 127.0.0.1:XXXX，配置 GatewayPorts yes 后可默认是 *:XXXX 以绑定任意接口。</para>
+				<para>重启 sshd</para>
+				<screen>
+				<![CDATA[
+systemctl reload sshd.service			
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>LAN 服务器</title>
+				<para>建立链接</para>
+				<screen>
+				<![CDATA[
+ssh -NTf -R 3306:127.0.0.1:3306 root@www.netkiller.cn
+# 多个端口可以这样写
+ssh -NTCf -R 80:192.168.10.10:80 -R 443:192.168.10.10:443 root@www.netkiller.cn
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>MySQL 应用案例</title>
+				<para>mysql tunnel</para>
+				<screen>
+		<![CDATA[
+$ ssh -L 3306:127.0.0.1:3306 user@example.org
+		]]>
+				</screen>
+				<para>testing</para>
+				<screen>
+		<![CDATA[
+$ mysql -h 127.0.0.1 -uroot -p test
+		]]>
+				</screen>
+			</section>
 
+		</section>
 	</section>
 
 	<section id="ssh-keygen">
