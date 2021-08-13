@@ -48,4 +48,29 @@ docker run -d \
 	&section.docker.example.redis.xml;
 	&section.docker.example.nginx.xml;
 	&section.docker.example.mysql.xml;
+	<section>
+		<title>Node</title>
+		<screen>
+		<![CDATA[
+version: '3.9'
+services:		
+  node:
+    image: node:latest
+    container_name: node
+    restart: always
+    hostname: node.netkiller.cn
+    extra_hosts:
+      - db.netkiller.cn:192.168.10.5
+      - redis.netkiller.cn:192.168.10.12
+    environment:
+      TZ: Asia/Shanghai
+    ports:
+      - 7777:7777
+    volumes:
+      - /opt/netkiller.cn/www.netkiller.cn:/opt/netkiller.cn/www.netkiller.cn
+    working_dir: /opt/netkiller.cn/www.netkiller.cn
+    entrypoint: node /opt/netkiller.cn/www.netkiller.cn/main.js		
+		]]>
+		</screen>
+	</section>
 </section>

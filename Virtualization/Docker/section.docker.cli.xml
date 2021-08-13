@@ -320,7 +320,7 @@ $ sudo docker inspect silly_bohr
 }]
 			]]>
 			</screen>
-			<section>
+			<section id="inspect.name">
 				<title>获取容器名称</title>
 				<screen>
 			<![CDATA[
@@ -352,7 +352,7 @@ quizzical_heisenberg
 			]]>
 				</screen>
 			</section>
-			<section>
+			<section id="inspect.image">
 				<title>容器镜像名称</title>
 				<screen>
 			<![CDATA[
@@ -371,7 +371,7 @@ netkiller/eureka
 			]]>
 				</screen>
 			</section>
-			<section>
+			<section id="inspect.hostname">
 				<title>获取容器主机名 Hostname</title>
 				<screen>
 			<![CDATA[
@@ -387,12 +387,21 @@ dbea51159085
 				</screen>
 			</section>
 
-			<section>
+			<section id="inspect.ipaddress">
 				<title>查询 IP 地址</title>
 				<screen>
 			<![CDATA[
 $ sudo docker inspect -f '{{ .NetworkSettings.IPAddress }}' silly_bohr
 			]]>
+				</screen>
+				<screen>
+				<![CDATA[
+[root@development ~]# docker ps | grep mysql
+84639b1810a1   mysql:5.7                     "docker-entrypoint.s…"   2 weeks ago    Up 22 hours        0.0.0.0:3306->3306/tcp, :::3306->3306/tcp, 33060/tcp                                   mysql
+
+[root@development ~]# docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' mysql
+172.21.0.4				
+				]]>
 				</screen>
 				<screen>
 			<![CDATA[
@@ -420,7 +429,19 @@ neo@MacBook-Pro ~ % docker inspect --format='{{range .NetworkSettings.Networks}}
 			]]>
 				</screen>
 			</section>
-			<section>
+			<section id="inspect.Subnet">
+				<title>查询子网</title>
+				<screen>
+				<![CDATA[
+[root@development ~]# docker network ls | grep nginx
+a82ea0e05c7b   nginx_default           bridge    local
+
+[root@development ~]# docker network inspect -f '{{range .IPAM.Config}}{{.Subnet}}{{end}}' nginx_default
+172.26.0.0/16				
+				]]>
+				</screen>
+			</section>
+			<section id="inspect.logpath">
 				<title>容器日志</title>
 				<screen>
 			<![CDATA[
@@ -439,7 +460,7 @@ neo@MacBook-Pro ~ % docker inspect --format='{{.LogPath}}' `docker ps -a -q`
 			]]>
 				</screen>
 			</section>
-			<section>
+			<section id="inspect.config">
 				<title>获取 json 配置</title>
 				<screen>
 			<![CDATA[
@@ -491,7 +512,7 @@ neo@MacBook-Pro ~ % docker inspect --format='{{json .Config}}' dbea51159085 | jq
 				</screen>
 
 			</section>
-			<section>
+			<section id="inspect.join">
 				<title>函数</title>
 				<para>拆分和组合</para>
 				<screen>
@@ -563,6 +584,11 @@ Hostname:68904b82d071  Name:/cluster_redisslave2_1 IP:172.24.0.4
 Hostname:70a20dd0396d  Name:/cluster_redismaster1_1 IP:172.24.0.3
 Hostname:742313f2af46  Name:/cluster_redisslave1_1 IP:172.24.0.2			
 			]]>
+				</screen>
+				<screen>
+				<![CDATA[
+docker inspect --format '{{ .Config.Hostname }}:{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps -q) 
+				]]>
 				</screen>
 			</section>
 		</section>

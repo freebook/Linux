@@ -6,7 +6,7 @@
 	<screen>
 	</screen>
 
-	<section id="ubuntu">
+	<section id="ubuntu.timezone">
 		<title>Ubuntu</title>
 		<section id="system.clock">
 			<title>time zone</title>
@@ -152,7 +152,7 @@ LANGUAGE="zh_CN:zh"
 	</section>
 
 
-	<section id="centos">
+	<section id="centos.timezone">
 		<title>CentOS 区域设置</title>
 		<section id="time.zone">
 			<title>时区设置 CentOS 6</title>
@@ -249,24 +249,16 @@ Fri Jul  4 18:12:17 CST 2014
 			]]>
 			</screen>
 		</section>
-		<section id="datatime">
-			<title>日期、时间</title>
+		<section id="rdate">
+			<title>rdate - get the time via the network</title>
 			<screen>
-		<![CDATA[
-# date -s "2008-7-19"
-# date -s 18:10
-		]]>
-			</screen>
-			<section id="rdate">
-				<title>rdate - get the time via the network</title>
-				<screen>
 			<![CDATA[
 # rdate time-a.nist.gov 查看
 # rdate -s time-a.nist.gov 设置
 			]]>
-				</screen>
-			</section>
+			</screen>
 		</section>
+
 		<section id="language">
 			<title>语言</title>
 			<para>
@@ -286,5 +278,15 @@ locale -a
 			</screen>
 		</section>
 	</section>
+	<section id="修改时间">
+		<title>修改服务区吃的日期和时间</title>
+		<screen>
+		<![CDATA[
+# date -s "2008-7-19"
+# date -s 18:10
+# date -s "2020-8-10 18:10:00"
+		]]>
+		</screen>
 
+	</section>
 </chapter>

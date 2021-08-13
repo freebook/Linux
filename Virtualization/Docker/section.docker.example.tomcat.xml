@@ -1,4 +1,77 @@
-section.docker.example.tomcat.xml<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+	<title>Tomcat</title>
+	<screen>
+	<![CDATA[
+version: '3.9'
+ 
+services: 
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    restart: always
+    hostname: db.netkiller.cn
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: test
+      MYSQL_DATABASE: testra
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test
+    ports:
+      - 3306:3306
+    volumes:
+      - ./mysql/conf.d/mysqld.cnf:/etc/mysql/conf.d/mysqld.cnf
+      - mysql:/var/lib/mysql
+      - ./mysql/docker-entrypoint-initdb.d/:/docker-entrypoint-initdb.d/
+    networks: 
+      - dev  
+    command:
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8
+      --collation-server=utf8_general_ci
+      --explicit_defaults_for_timestamp=true
+      --lower_case_table_names=1
+      --max_execution_time=0
 
-docker pull php
-docker run -t -i php /bin/bash
+  Web:
+    image: tomcat:8.5.69-jdk8-corretto
+    container_name: Web
+    hostname: www.netkiller.cn
+    restart: always
+    ports:
+      - 8080:8080
+      - 8443:8443
+    environment: 
+      TZ: Asia/Shanghai
+      JAVA_OPTS: -Xms1024m -Xmx2048m -Djava.security.egd=file:/dev/./urandom -Duser.timezone=GMT+8 -Dfile.encoding=utf-8
+    networks: 
+      - dev        
+    volumes:
+      - ./conf/server.xml:/usr/local/tomcat/conf/server.xml
+      - ./conf/server.jks:/usr/local/tomcat/server.jks
+      - ./logs/:/usr/local/tomcat/logs
+      - ./webapps/www.netkiller.cn.war:/usr/local/tomcat/webapps/www.netkiller.cn.war
+    depends_on: 
+      - mysql
+  Admin:
+    image: tomcat:latest
+    container_name: Admin
+    hostname: admin.netkiller.cn
+    restart: always
+    ports:
+      - 8080:8080
+      - 8443:8443
+    environment: 
+      TZ: Asia/Shanghai
+      JAVA_OPTS: -Xms1024m -Xmx2048m -Djava.security.egd=file:/dev/./urandom -Duser.timezone=GMT+8 -Dfile.encoding=utf-8 -XX:MaxNewSize=256m
+    volumes:         
+      - ./logs/paperless:/usr/local/tomcat/logs
+      - ./webapps/admin.netkiller.cn.war:/usr/local/tomcat/webapps/admin.netkiller.cn.war
+    networks: 
+      - dev  
+    depends_on: 
+      - mysql
+      - Web
+	]]>
+	</screen>
+</section>

@@ -22,12 +22,12 @@
 	xmlns="http://docbook.org/ns/docbook" xml:lang="zh-cn">
 	<info>
 		<title>Netkiller Monitor 手札</title>
-		<subtitle>Monitoring,  Scanner, Sniffer and Audit... </subtitle>
+		<subtitle>Prometheus, Zibbix, Cacti, Nagios, Scanner, Sniffer and Audit... </subtitle>
 
 		&book.info.author.xml;
 
 		<copyright>
-			<year>2010-2020</year>
+			<year>2010-2021</year>
 			<holder>Netkiller(Neo Chan). All rights reserved.</holder>
 		</copyright>
 

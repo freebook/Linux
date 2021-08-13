@@ -5,7 +5,8 @@
 	<!-- http://www.sme-solution.com/integration/route/01/index.html -->
 	<!-- http://www.cyberciti.biz/tips/howto-configure-linux-virtual-local-area-network-vlan.html -->
 	<!-- http://linux-ip.net/ -->
-
+	<section id="network.ipaddress">
+		<title>IP 地址类别</title>
 		<literallayout>
 		<![CDATA[
 举例说明该算法。
@@ -73,6 +74,235 @@ Class C                   Effective  Effective
 *Subnet all zeroes and all ones excluded.
 *Host all zeroes and all ones excluded.
 		]]></screen>
+	</section>
+	<section id="ping">
+		<title>ping</title>
+		<screen>
+			<![CDATA[
+-f: 发送洪水请求,每个请求打印一个点,每个响应删除一个点.如果网络存在丢包,那么会呈现出一长串不断增加的点.
+
+-n: 选项,加上之后可以阻止ping程序去进行反向dns查询
+    当每次ping完得到响应之后,ping程序会尝试一次反向dns查询(reverse dns lookup)来获取“64 bytes from”后面的域名,如果查询速度很慢的话,就会给人似乎延迟很大的感觉,其实这也是ping感觉慢,但是每次ping的响应时间却并不慢的原因.
+			]]>
+		</screen>
+	</section>
+	<section id="mtu">
+		<title>Finding optimal MTU</title>
+		<screen>
+			<![CDATA[
+$ ping -c 1 -s $((1500-28)) -M do www.debian.org
+PING www.debian.org (140.112.8.139) 1472(1500) bytes of data.
+1480 bytes from linux3.cc.ntu.edu.tw (140.112.8.139): icmp_seq=1 ttl=47 time=52.7 ms
+
+--- www.debian.org ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.778/52.778/52.778/0.000 ms
+			]]>
+		</screen>
+		<para>Try 1454 instead of 1500</para>
+	</section>
+	<section id="ss">
+		<title>ss - another utility to investigate sockets</title>
+		<screen>
+			<![CDATA[
+ss是Socket Statistics的缩写
+    ss命令可以用来获取socket统计信息,它可以显示和netstat类似的内容;但ss的优势在于它能够显示更多更详细的有关TCP和连接状态的信息,而且比netstat更快速更高效.
+    
+    当服务器的socket连接数量变得非常大时,无论是使用netstat命令还是直接cat /proc/net/tcp,执行速度都会很慢;ss快的秘诀在于,它利用到了TCP协议栈中 tcp_diag . tcp_diag是一个用于分析统计的模块, 用netfilter来获取第Linux内核中第一手的信息,这就确保了ss的快捷高效;如果你的系统中没有tcp_diag,ss也可以正常运行,只是效率会变得稍慢.
+    
+    netstat命令是net-tools工具集中的一员,而ss命令是iproute工具集中的一员.
+    yum install iproute iproute-doc
+
+
+#### ss过滤器
+
+ss的过滤器分为两种:
+     state
+         状态:established,syn-sent,syn-recv,fin-wait-1,fin-wait-2,time-wait,closed,close-wait,last-ack,listen,closing
+         除了这13种状态之外,还有几个聚类的状态:
+             all – for all the states
+             bucket – 显示状态为maintained as minisockets,如：time-wait和syn-recv
+             big – 和bucket相反
+             connected – 除了listen and closed的所有状态
+             synchronized – 所有已连接的状态除了syn-sent
+     addr+port
+         地址和端口可以使用表达式,类似于tcpdump中的用法,关键字有:
+             dst ADDRESS_PATTERN – matches remote address and port
+             src ADDRESS_PATTERN – matches local address and port
+             dport RELOP PORT – compares remote port to a number
+             sport RELOP PORT – compares local port to a number
+             autobound – checks that socket is bound to an ephemeral port
+
+#### ss usage
+
+ss [ OPTIONS ] [ FILTER ]
+        OPTIONS:
+            -p 显示每个进程的名字和pid
+            -s 列出当前socket详细信息
+            -n 不解析服务名称
+            -r 解析主机名
+            -a 显示所有套接字(sockets)
+            -o 显示计时器信息(timer)
+            -l 显示监听状态的套接字(sockets)
+            -e 显示详细的套接字(sockets)信息
+            -m 显示套接字(sockets)的内存使用情况
+            -i 显示 TCP内部信息
+            -4 仅显示IPv4的套接字(sockets)
+            -6 仅显示IPv6的套接字(sockets)
+            -0 显示 PACKET 套接字(sockets)
+            -t 仅显示 TCP套接字(sockets)
+            -u 仅显示 UCP套接字(sockets)
+            -d 仅显示 DCCP套接字(sockets)
+            -w 仅显示 RAW套接字(sockets)
+            -x 仅显示 Unix套接字(sockets)
+            -f --family=FAMILY  显示 FAMILY类型的套接字(sockets),FAMILY可选,支持 unix, inet, inet6, link, netlink
+            -D --diag=FILE     将原始TCP套接字(sockets)信息转储到文件
+            -F --filter=FILE   从文件中都去过滤器信息 FILTER := [ state TCP-STATE ] [ EXPRESSION ]
+
+#### Recv And Send
+
+[root@netkiller ~]# ss -anp | column -c1
+State      Recv-Q Send-Q        Local Address:Port          Peer Address:Port
+LISTEN     0      128               127.0.0.1:9000                     *:*      users:(("php-fpm",1481,9),("php-fpm",1482,0),("php-fpm",1483,0),("php-fpm",1484,0),("php-fpm",1485,0),("php-fpm",1486,0),("php-fpm",1487,0),("php-fpm",1488,0),("php-fpm",1489,0),("php-fpm",1490,0),("php-fpm",1491,0))
+LISTEN     0      50                        *:3306                     *:*      users:(("mysqld",2680,11))
+LISTEN     0      128                       *:443                      *:*      users:(("nginx",1743,8),("nginx",1744,8),("nginx",1745,8))
+LISTEN     0      128              10.1.17.17:2812                     *:*      users:(("monit",2030,6))
+TIME-WAIT  0      0                 127.0.0.1:43251            127.0.0.1:80
+TIME-WAIT  0      0                 127.0.0.1:43248            127.0.0.1:80
+ESTAB      0      0                10.1.17.17:22              10.1.17.18:51752  users:(("sshd",3122,3))
+ESTAB      0      0                10.1.17.17:22              10.1.20.70:51531  users:(("sshd",19093,3))
+
+处于LISTEN状态的socket:
+    Recv-Q表示了current listen backlog队列元素数目(等待用户调用accept的完成3次握手的socket)
+    Send-Q表示了listen socket最大能容纳的backlog.这个数目由listen时指定,且不能大于 /proc/sys/net/ipv4/tcp_max_syn_backlog;
+    
+对于非LISTEN socket:
+    Recv-Q表示了receive queue中的字节数目(等待接收的下一个tcp段的序号-尚未从内核空间copy到用户空间的段最前面的一个序号)
+    Send-Q表示发送queue中容纳的字节数(已加入发送队列中最后一个序号-输出段中最早一个未确认的序号)
+
+
+#### Sockets State
+>1 Listen
+
+
+[root@netkiller ~]# ss -lnp | column -c1
+State      Recv-Q Send-Q        Local Address:Port          Peer Address:Port
+LISTEN     0      128               127.0.0.1:9000                     *:*      users:(("php-fpm",1481,9),("php-fpm",1482,0),("php-fpm",1483,0),("php-fpm",1484,0),("php-fpm",1485,0),("php-fpm",1486,0),("php-fpm",1487,0),("php-fpm",1488,0),("php-fpm",1489,0),("php-fpm",1490,0),("php-fpm",1491,0))
+LISTEN     0      50                        *:3306                     *:*      users:(("mysqld",2680,11))
+LISTEN     0      50                        *:3307                     *:*      users:(("mysqld",2564,11))
+
+>2 Established
+
+
+[root@netkiller ~]# ss -onp state established | column -c1
+Recv-Q Send-Q             Local Address:Port               Peer Address:Port
+0      0                     10.1.17.17:22                   10.1.17.18:51752  timer:(keepalive,70min,0) users:(("sshd",3122,3))
+0      0                     10.1.17.17:22                   10.1.20.70:51531  timer:(keepalive,69min,0) users:(("sshd",19093,3))
+
+>3 Sockets Summary
+
+
+[root@netkiller ~]# ss -s
+Total: 93 (kernel 150)
+TCP:   106 (estab 10, closed 88, orphaned 0, synrecv 0, timewait 88/0), ports 41
+
+Transport Total     IP        IPv6
+*	  150       -         -
+RAW	  0         0         0
+UDP	  1         1         0
+TCP	  18        18        0
+INET	  19        19        0
+FRAG	  0         0         0
+
+>4 Expand
+
+
+1 显示所有状态为established的ssh连接
+[root@netkiller ~]# ss -o state established '( dport = :ssh or sport = :ssh )'
+Recv-Q Send-Q                                      Local Address:Port                                          Peer Address:Port
+0      0                                              10.1.17.17:ssh                                             10.1.17.18:51752    timer:(keepalive,109min,0)
+0      0                                              10.1.17.17:ssh                                             10.1.20.70:51531    timer:(keepalive,103min,0)
+
+#### ***timer user mem rto*** 
+
+------在另外一个终端执行 ssh 10.1.2.103-----
+然后在本终端执行如下命令
+[root@netkiller ~]# ss -eimpn '( dport = :22 )' -o
+State      Recv-Q Send-Q                                                          Local Address:Port                                                            Peer Address:Port
+ESTAB      0      0                                                                   10.1.2.23:44107                                                             10.1.2.103:22     timer:(keepalive,28min,0) users:(("ssh",9545,4)) ino:21970248 sk:ffff88013c2e5900
+	 mem:(r0,w0,f4096,t0) sack cubic wscale:7,8 rto:203 rtt:3.25/1.75 ato:40 cwnd:10 send 35.9Mbps rcv_rtt:33427 rcv_space:113592
+	 
+------在另外一个终端执行 telnet 27.111.200.86 15672-----
+然后在本终端执行如下命令
+[root@netkiller ~]# ss -eimpn '( dport = :15672 )' -o
+State      Recv-Q Send-Q                                                          Local Address:Port                                                            Peer Address:Port
+ESTAB      0      2                                                                   10.1.2.23:57531                                                          27.111.200.86:15672  timer:(on,614ms,0) users:(("telnet",10163,4)) ino:21983807 sk:ffff8800378ba040
+	 mem:(r0,w554,f3542,t0) sack cubic wscale:7,8 cwnd:10 rcv_space:14600
+
+> timer
+
+
+-o 显示计时器信息(timer),linux对一个tcp socket总共有7个定时器,通过4个timer实现
+    通过icsk_retransmit_timer实现的重传定时器,零窗口探测定时器;
+    通过sk_timer实现的连接建立定时器,保活定时器和FIN_WAIT_2定时器;
+    通过icsk_delack_timer实现的延时ack定时器以及TIME_WAIT定时器.
+    
+timer 这个输出描述的是tcp socket上的定时器
+timer 的输出含义就是(类型,过期时间,重试次数)
+    off: 当前socket没有timer
+    on: 重传timer
+    keepalive：连接建立timer or fin_wait_2 timer or 保活timer;具体是那个timer,可以根据连接的状态来确定.
+    timewait: TIME_WAITtimer
+    persist：零窗口探测timer 
+
+> user
+
+
+ss -p 输出users项里会出现三个参数:
+    第一个是进程名
+    第二个为pid
+    第三项该进程文件描述符的使用数量
+
+> mem
+
+
+mem:(r0,w554,f3542,t0)
+r  the read (inbound) buffer
+w  the write (outbound) buffer
+f  the "forward allocated memory" (memory available to the socket)
+t  the transmit queue (stuff waiting to be sent or waiting on an ACK)
+
+> socket information
+
+
+sack cubic wscale
+rto
+rtt
+cwnd
+send
+rcv_space
+
+#### Notice
+>1 ss process name and pid
+
+
+only name
+
+ss -tp | grep -v Recv-Q | sed -e 's/.*users:(("//' -e 's/".*$//' | sort | uniq
+
+only  pid
+[root@netkiller ~]# ss -tp | grep -v Recv-Q | sed -e 's/.*users:((.*",//' -e 's/,.*$//'  | sort | uniq
+
+name  and pid
+# ss -tp | grep -v Recv-Q | sed -e 's/.*users:(("\(.*\)",\(.*\),.*$/\1:\2/' | sort | uniq
+f_e_related_dat:4695
+mysqld:4289
+salt-minion:4001
+sshd:25161
+		
+			]]>
+		</screen>
+	</section>
 
 	<section id="netmask">
 		<title>netmask</title>
@@ -94,151 +324,153 @@ Class C                   Effective  Effective
 		<section id="iptab">
 			<title>iptab</title>
 			<screen>
-# iptab
-+----------------------------------------------+
-| addrs   bits   pref   class  mask            |
-+----------------------------------------------+
-|     1      0    /32          255.255.255.255 |
-|     2      1    /31          255.255.255.254 |
-|     4      2    /30          255.255.255.252 |
-|     8      3    /29          255.255.255.248 |
-|    16      4    /28          255.255.255.240 |
-|    32      5    /27          255.255.255.224 |
-|    64      6    /26          255.255.255.192 |
-|   128      7    /25          255.255.255.128 |
-|   256      8    /24      1C  255.255.255.0   |
-|   512      9    /23      2C  255.255.254.0   |
-|    1K     10    /22      4C  255.255.252.0   |
-|    2K     11    /21      8C  255.255.248.0   |
-|    4K     12    /20     16C  255.255.240.0   |
-|    8K     13    /19     32C  255.255.224.0   |
-|   16K     14    /18     64C  255.255.192.0   |
-|   32K     15    /17    128C  255.255.128.0   |
-|   64K     16    /16      1B  255.255.0.0     |
-|  128K     17    /15      2B  255.254.0.0     |
-|  256K     18    /14      4B  255.252.0.0     |
-|  512K     19    /13      8B  255.248.0.0     |
-|    1M     20    /12     16B  255.240.0.0     |
-|    2M     21    /11     32B  255.224.0.0     |
-|    4M     22    /10     64B  255.192.0.0     |
-|    8M     23     /9    128B  255.128.0.0     |
-|   16M     24     /8      1A  255.0.0.0       |
-|   32M     25     /7      2A  254.0.0.0       |
-|   64M     26     /6      4A  252.0.0.0       |
-|  128M     27     /5      8A  248.0.0.0       |
-|  256M     28     /4     16A  240.0.0.0       |
-|  512M     29     /3     32A  224.0.0.0       |
-| 1024M     30     /2     64A  192.0.0.0       |
-| 2048M     31     /1    128A  128.0.0.0       |
-| 4096M     32     /0    256A  0.0.0.0         |
-+----------------------------------------------+
+				# iptab
+				+----------------------------------------------+
+				| addrs bits pref class mask |
+				+----------------------------------------------+
+				| 1 0 /32 255.255.255.255 |
+				| 2 1 /31 255.255.255.254 |
+				| 4 2 /30 255.255.255.252 |
+				| 8 3 /29 255.255.255.248 |
+				| 16 4 /28 255.255.255.240 |
+				| 32 5 /27 255.255.255.224 |
+				| 64 6 /26 255.255.255.192 |
+				| 128 7 /25 255.255.255.128 |
+				| 256 8 /24 1C 255.255.255.0 |
+				| 512 9 /23 2C 255.255.254.0 |
+				| 1K 10 /22 4C 255.255.252.0 |
+				| 2K 11 /21 8C 255.255.248.0 |
+				| 4K 12 /20 16C
+				255.255.240.0 |
+				| 8K 13 /19 32C 255.255.224.0 |
+				| 16K 14 /18 64C 255.255.192.0 |
+				| 32K 15 /17 128C 255.255.128.0 |
+				| 64K 16 /16 1B 255.255.0.0 |
+				| 128K 17 /15 2B 255.254.0.0 |
+				| 256K 18 /14 4B 255.252.0.0 |
+				| 512K 19 /13 8B 255.248.0.0 |
+				| 1M 20 /12 16B 255.240.0.0 |
+				| 2M 21 /11 32B 255.224.0.0 |
+				| 4M 22 /10 64B 255.192.0.0 |
+				| 8M 23 /9 128B 255.128.0.0 |
+				| 16M 24 /8 1A 255.0.0.0 |
+				| 32M 25 /7 2A 254.0.0.0 |
+				| 64M 26 /6 4A 252.0.0.0 |
+				| 128M 27 /5 8A 248.0.0.0 |
+				| 256M 28 /4 16A 240.0.0.0 |
+				| 512M 29 /3 32A 224.0.0.0 |
+				| 1024M 30 /2 64A 192.0.0.0 |
+				| 2048M 31 /1 128A 128.0.0.0 |
+				| 4096M 32 /0 256A 0.0.0.0 |
+				+----------------------------------------------+
 			</screen>
 		</section>
 		<section id="netmask">
 			<title>netmask - a netmask generation and conversion program</title>
 			<screen>
-$ sudo apt-get install netmask
+				$ sudo apt-get install netmask
 			</screen>
-			<para>-s, --standard		Output address/netmask pairs</para>
+			<para>-s, --standard Output address/netmask pairs</para>
 			<screen>
-$ netmask -s 192.168.1.0/28
-    192.168.1.0/255.255.255.240
+				$ netmask -s 192.168.1.0/28
+				192.168.1.0/255.255.255.240
 
-$ netmask -s 192.168.1.0/24
-    192.168.1.0/255.255.255.0  
+				$ netmask -s 192.168.1.0/24
+				192.168.1.0/255.255.255.0
 
-$ netmask -s 192.168.1.0/24
-    192.168.1.0/255.255.255.0  
+				$ netmask -s 192.168.1.0/24
+				192.168.1.0/255.255.255.0
 
-$ netmask -s 192.168.1.0/26
-    192.168.1.0/255.255.255.192
-    
-[root@netkiller src]# netmask -s  11.111.195.211/27
- 11.111.195.192/255.255.255.224
+				$ netmask -s 192.168.1.0/26
+				192.168.1.0/255.255.255.192
+
+				[root@netkiller src]# netmask -s 11.111.195.211/27
+				11.111.195.192/255.255.255.224
 			</screen>
-			<para>-c, --cidr			Output CIDR format address lists</para>
+			<para>-c, --cidr Output CIDR format address lists</para>
 			<screen>
-$ netmask -c 192.168.1.0/255.255.255.252
-    192.168.1.0/30
+				$ netmask -c 192.168.1.0/255.255.255.252
+				192.168.1.0/30
 
-$ netmask -c 192.168.1.0/255.255.255.192
-    192.168.1.0/26
+				$ netmask -c 192.168.1.0/255.255.255.192
+				192.168.1.0/26
 
-$ netmask -c 192.168.1.0/255.255.255.240
-    192.168.1.0/28
+				$ netmask -c 192.168.1.0/255.255.255.240
+				192.168.1.0/28
 			</screen>
-			<para>-i, --cisco			Output Cisco style address lists 思科风格的反子网掩码计算</para>
+			<para>-i, --cisco Output Cisco style address lists 思科风格的反子网掩码计算</para>
 			<screen>
-$ netmask  -i 192.168.1.0/255.255.255.0
-    192.168.1.0 0.0.0.255      
+				$ netmask -i 192.168.1.0/255.255.255.0
+				192.168.1.0 0.0.0.255
 
-$ netmask  -i 192.168.1.0/255.255.255.252
-    192.168.1.0 0.0.0.3        
+				$ netmask -i 192.168.1.0/255.255.255.252
+				192.168.1.0 0.0.0.3
 
-$ netmask  -i 192.168.1.0/24
-    192.168.1.0 0.0.0.255      
+				$ netmask -i 192.168.1.0/24
+				192.168.1.0 0.0.0.255
 
-$ netmask  -i 192.168.1.0/28
-    192.168.1.0 0.0.0.15  
+				$ netmask -i 192.168.1.0/28
+				192.168.1.0 0.0.0.15
 			</screen>
-			<para>-r, --range			Output ip address ranges 输出地址范围</para>
+			<para>-r, --range Output ip address ranges 输出地址范围</para>
 			<para>计算子网掩码位数</para>
 			<screen>
-[root@netkiller src]# netmask  11.111.195.211/255.255.255.224
- 11.111.195.192/27			
-			</screen>			
+				[root@netkiller src]# netmask 11.111.195.211/255.255.255.224
+				11.111.195.192/27
+			</screen>
 			<screen>
-$ netmask  -r 192.168.1.0/255.255.255.0
-    192.168.1.0-192.168.1.255   (256)
+				$ netmask -r 192.168.1.0/255.255.255.0
+				192.168.1.0-192.168.1.255 (256)
 
-$ netmask  -r 192.168.1.0/255.255.255.192
-    192.168.1.0-192.168.1.63    (64)
-    
-$ netmask  -r 192.168.1.0/255.255.255.252
-    192.168.1.0-192.168.1.3     (4)
-    
-$ netmask  -r 192.168.1.0/28
-    192.168.1.0-192.168.1.15    (16)
-    
-$ netmask  -r 192.168.1.0/24
-    192.168.1.0-192.168.1.255   (256)
+				$ netmask -r 192.168.1.0/255.255.255.192
+				192.168.1.0-192.168.1.63 (64)
+
+				$ netmask -r 192.168.1.0/255.255.255.252
+				192.168.1.0-192.168.1.3 (4)
+
+				$ netmask -r 192.168.1.0/28
+				192.168.1.0-192.168.1.15 (16)
+
+				$ netmask -r 192.168.1.0/24
+				192.168.1.0-192.168.1.255 (256)
 			</screen>
 			<para></para>
 			<screen>
-$ netmask -r 192.168.1.0/255.255.255.252
-    192.168.1.0-192.168.1.3     (4)
+				$ netmask -r 192.168.1.0/255.255.255.252
+				192.168.1.0-192.168.1.3 (4)
 
-$ netmask -r 192.168.1.2/255.255.255.252
-    192.168.1.0-192.168.1.3     (4)
+				$ netmask -r 192.168.1.2/255.255.255.252
+				192.168.1.0-192.168.1.3 (4)
 
-$ netmask -r 192.168.1.6/255.255.255.252
-    192.168.1.4-192.168.1.7     (4)
+				$ netmask -r 192.168.1.6/255.255.255.252
+				192.168.1.4-192.168.1.7 (4)
 
-$ netmask -r 192.168.1.12/255.255.255.252
-   192.168.1.12-192.168.1.15    (4)
+				$ netmask -r 192.168.1.12/255.255.255.252
+				192.168.1.12-192.168.1.15 (4)
 
-$ netmask -r 192.168.1.13/255.255.255.252
-   192.168.1.12-192.168.1.15    (4)
+				$ netmask -r 192.168.1.13/255.255.255.252
+				192.168.1.12-192.168.1.15 (4)
 
-$ netmask -r 192.168.1.100/255.255.255.252
-  192.168.1.100-192.168.1.103   (4)
+				$ netmask -r 192.168.1.100/255.255.255.252
+				192.168.1.100-192.168.1.103 (4)
 
-$ netmask -r 192.168.1.100/255.255.255.240
-   192.168.1.96-192.168.1.111   (16)
+				$ netmask -r 192.168.1.100/255.255.255.240
+				192.168.1.96-192.168.1.111 (16)
 
-$ netmask -r 192.168.1.50/255.255.255.240
-   192.168.1.48-192.168.1.63    (16)			
+				$ netmask -r
+				192.168.1.50/255.255.255.240
+				192.168.1.48-192.168.1.63 (16)
 			</screen>
-			<para>-b, --binary			Output address/netmask pairs in binary 二进制</para>
+			<para>-b, --binary Output address/netmask pairs in binary 二进制</para>
 			<screen>
-$ netmask -b 192.168.1.0/255.255.255.240
-11000000 10101000 00000001 00000000 / 11111111 11111111 11111111 11110000
+				$ netmask -b 192.168.1.0/255.255.255.240
+				11000000 10101000 00000001 00000000 / 11111111 11111111 11111111 11110000
 
-$ netmask -b 172.16.0.0/255.255.252.0
-10101100 00010000 00000000 00000000 / 11111111 11111111 11111100 00000000
-			
+				$ netmask -b 172.16.0.0/255.255.252.0
+				10101100 00010000 00000000 00000000 / 11111111 11111111 11111100 00000000
+
 			</screen>
-		</section>		 
+		</section>
 	</section>
 	<section id="arp">
 		<title>arp - manipulate the system ARP cache</title>
@@ -246,74 +478,74 @@ $ netmask -b 172.16.0.0/255.255.252.0
 			<title>display hosts</title>
 			<para>display (all) hosts in alternative (BSD) style</para>
 			<screen>
-[root@dev2 ~]# arp -a
-? (192.168.3.253) at 00:1D:0F:82:05:DC [ether] on eth0
-? (192.168.3.48) at 00:25:64:9A:D7:CC [ether] on eth0
-? (192.168.3.101) at 00:25:64:A3:65:93 [ether] on eth0
-nis.example.com (192.168.3.5) at 00:25:64:9A:D7:E0 [ether] on eth0
-? (192.168.3.1) at 00:0F:E2:71:8E:FB [ether] on eth0
-? (192.168.3.153) at B8:AC:6F:25:D2:2E [ether] on eth0			
+				[root@dev2 ~]# arp -a
+				? (192.168.3.253) at 00:1D:0F:82:05:DC [ether] on eth0
+				? (192.168.3.48) at 00:25:64:9A:D7:CC [ether] on eth0
+				? (192.168.3.101) at 00:25:64:A3:65:93 [ether] on eth0
+				nis.example.com (192.168.3.5) at 00:25:64:9A:D7:E0 [ether] on eth0
+				? (192.168.3.1) at 00:0F:E2:71:8E:FB [ether] on eth0
+				? (192.168.3.153) at B8:AC:6F:25:D2:2E [ether] on eth0
 			</screen>
 			<para>display (all) hosts in default (Linux) style</para>
 			<screen>
-[root@dev2 ~]# arp -e
-Address                  HWtype  HWaddress           Flags Mask            Iface
-192.168.3.48             ether   00:25:64:9A:D7:CC   C                     eth0
-192.168.3.101            ether   00:25:64:A3:65:93   C                     eth0
-nis.example.com          ether   00:25:64:9A:D7:E0   C                     eth0
-192.168.3.1              ether   00:0F:E2:71:8E:FB   C                     eth0
-10.0.0.1                 ether   00:1F:12:55:A9:02   C                     eth0
-192.168.3.153            ether   B8:AC:6F:25:D2:2E   C                     eth0
+				[root@dev2 ~]# arp -e
+				Address HWtype HWaddress Flags Mask Iface
+				192.168.3.48 ether 00:25:64:9A:D7:CC C eth0
+				192.168.3.101 ether 00:25:64:A3:65:93 C eth0
+				nis.example.com ether 00:25:64:9A:D7:E0 C eth0
+				192.168.3.1 ether 00:0F:E2:71:8E:FB C eth0
+				10.0.0.1 ether 00:1F:12:55:A9:02 C eth0
+				192.168.3.153 ether B8:AC:6F:25:D2:2E C eth0
 			</screen>
 			<para>don't resolve names</para>
 			<screen>
-[root@dev2 ~]# arp -a -n
-? (192.168.3.253) at 00:1D:0F:82:05:DC [ether] on eth0
-? (192.168.3.48) at 00:25:64:9A:D7:CC [ether] on eth0
-? (192.168.3.101) at 00:25:64:A3:65:93 [ether] on eth0
-? (192.168.3.5) at 00:25:64:9A:D7:E0 [ether] on eth0
-? (192.168.3.1) at 00:0F:E2:71:8E:FB [ether] on eth0
-? (192.168.3.153) at B8:AC:6F:25:D2:2E [ether] on eth0
+				[root@dev2 ~]# arp -a -n
+				? (192.168.3.253) at 00:1D:0F:82:05:DC [ether] on eth0
+				? (192.168.3.48) at 00:25:64:9A:D7:CC [ether] on eth0
+				? (192.168.3.101) at 00:25:64:A3:65:93 [ether] on eth0
+				? (192.168.3.5) at 00:25:64:9A:D7:E0 [ether] on eth0
+				? (192.168.3.1) at 00:0F:E2:71:8E:FB [ether] on eth0
+				? (192.168.3.153) at B8:AC:6F:25:D2:2E [ether] on eth0
 			</screen>
 		</section>
 		<section>
 			<title>delete a specified entry</title>
 			<screen>
-[root@dev2 ~]# arp -d 192.168.3.101
-[root@dev2 ~]# arp -i eth1 -d 10.0.0.1
+				[root@dev2 ~]# arp -d 192.168.3.101
+				[root@dev2 ~]# arp -i eth1 -d 10.0.0.1
 			</screen>
 		</section>
 		<section>
 			<title>/proc/net/arp</title>
 			<screen>
-[root@dev2 ~]# cat /proc/net/arp
-IP address       HW type     Flags       HW address            Mask     Device
-192.168.3.48     0x1         0x2         00:25:64:9A:D7:CC     *        eth0
-192.168.3.101    0x1         0x2         00:1E:7A:E0:47:40     *        eth0
-192.168.3.5      0x1         0x2         00:25:64:9A:D7:E0     *        eth0
-192.168.3.1      0x1         0x2         00:0F:E2:71:8E:FB     *        eth0
-192.168.3.153    0x1         0x2         B8:AC:6F:25:D2:2E     *        eth0
+				[root@dev2 ~]# cat /proc/net/arp
+				IP address HW type Flags HW address Mask Device
+				192.168.3.48 0x1 0x2 00:25:64:9A:D7:CC * eth0
+				192.168.3.101 0x1 0x2 00:1E:7A:E0:47:40 * eth0
+				192.168.3.5 0x1 0x2 00:25:64:9A:D7:E0 * eth0
+				192.168.3.1 0x1 0x2 00:0F:E2:71:8E:FB * eth0
+				192.168.3.153 0x1 0x2 B8:AC:6F:25:D2:2E * eth0
 			</screen>
 		</section>
 		<section>
 			<title>/etc/ethers</title>
 			<screen>
-# Ethernet-address  IP-number
-00:25:64:9A:D7:CC	192.168.3.48
+				# Ethernet-address IP-number
+				00:25:64:9A:D7:CC 192.168.3.48
 			</screen>
 			<para>read new entries from file or from /etc/ethers</para>
 			<screen>
-# arp -f
+				# arp -f
 			</screen>
 		</section>
 	</section>
 	<section id="iproute2">
 		<title>iproute2</title>
 		<screen>
-add 增加路由
-del 删除路由
-via 网关出口 IP地址
-dev 网关出口 物理设备名
+			add 增加路由
+			del 删除路由
+			via 网关出口 IP地址
+			dev 网关出口 物理设备名
 		</screen>
 		<section>
 			<title></title>
@@ -327,49 +559,72 @@ sudo ip link set eth0 up
 		<section>
 			<title>添加路由</title>
 			<screen>
-ip route add 192.168.0.0/24 via 192.168.0.1
-ip route add 192.168.1.1 dev 192.168.0.1			
+				ip route add 192.168.0.0/24 via 192.168.0.1
+				ip route add 192.168.1.1 dev 192.168.0.1
 			</screen>
 		</section>
 		<section>
 			<title>删除路由</title>
 			<screen>
-ip route del 192.168.0.0/24 via 192.168.0.1			
+				ip route del 192.168.0.0/24 via 192.168.0.1
 			</screen>
 		</section>
 		<section>
 			<title>变更路由</title>
 			<screen>
-[root@router ~]# ip route
-192.168.5.0/24 dev eth0  proto kernel  scope link  src 192.168.5.47
-192.168.3.0/24 dev eth0  proto kernel  scope link  src 192.168.3.47
-default via 192.168.3.1 dev eth0
+				[root@router ~]# ip route
+				192.168.5.0/24 dev eth0 proto kernel scope link src 192.168.5.47
+				192.168.3.0/24 dev eth0 proto kernel scope link src 192.168.3.47
+				default via 192.168.3.1 dev eth0
 
-[root@router ~]# ip route change default via 192.168.5.1 dev eth0
+				[root@router ~]# ip route change default via 192.168.5.1 dev eth0
 
-[root@router ~]# ip route list
-192.168.5.0/24 dev eth0  proto kernel  scope link  src 192.168.5.47
-192.168.3.0/24 dev eth0  proto kernel  scope link  src 192.168.3.47
-default via 192.168.5.1 dev eth0
+				[root@router ~]# ip route list
+				192.168.5.0/24 dev eth0 proto kernel scope link src 192.168.5.47
+				192.168.3.0/24 dev eth0 proto kernel scope link src 192.168.3.47
+				default via 192.168.5.1 dev eth0
 			</screen>
 		</section>
 		<section>
 			<title>替换已有的路由</title>
 			<screen>
- ip route replace
+				ip route replace
 			</screen>
 		</section>
 		<section>
 			<title>增加默认路由</title>
 			<para>192.168.0.1 是我的默认路由器</para>
 			<screen>
-ip route add default via 192.168.0.1 dev eth0
+				ip route add default via 192.168.0.1 dev eth0
 			</screen>
 		</section>
 		<section>
 			<title>cache</title>
 			<screen>
-ip route flush cache			
+				ip route flush cache
+			</screen>
+		</section>
+		<section>
+			<title>只查看 ipv4 地址</title>
+			<screen>
+			<![CDATA[
+[root@development ~]# ip -4 -o addr 
+1: lo    inet 127.0.0.1/8 scope host lo\       valid_lft forever preferred_lft forever
+2: enp2s0    inet 192.168.30.11/24 brd 192.168.30.255 scope global enp2s0\       valid_lft forever preferred_lft forever
+2: enp2s0    inet 192.168.30.13/24 brd 192.168.30.255 scope global secondary noprefixroute enp2s0\       valid_lft forever preferred_lft forever
+4: docker0    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0\       valid_lft forever preferred_lft forever
+45: br-a32fa1ca1437    inet 172.18.0.1/16 brd 172.18.255.255 scope global br-a32fa1ca1437\       valid_lft forever preferred_lft forever
+71: br-2bb2f800fb7a    inet 172.20.0.1/16 brd 172.20.255.255 scope global br-2bb2f800fb7a\       valid_lft forever preferred_lft forever
+120: br-fc7ddec9d410    inet 172.21.0.1/16 brd 172.21.255.255 scope global br-fc7ddec9d410\       valid_lft forever preferred_lft forever
+399: br-a82ea0e05c7b    inet 172.26.0.1/16 brd 172.26.255.255 scope global br-a82ea0e05c7b\       valid_lft forever preferred_lft forever
+149: br-6d50d8b97aac    inet 172.22.0.1/16 brd 172.22.255.255 scope global br-6d50d8b97aac\       valid_lft forever preferred_lft forever
+1209: br-2eeefaf97995    inet 172.28.0.1/16 brd 172.28.255.255 scope global br-2eeefaf97995\       valid_lft forever preferred_lft forever
+185: br-3a54bbf16bd3    inet 172.24.0.1/16 brd 172.24.255.255 scope global br-3a54bbf16bd3\       valid_lft forever preferred_lft forever
+717: br-f5d2855f7db6    inet 172.19.0.1/16 brd 172.19.255.255 scope global br-f5d2855f7db6\       valid_lft forever preferred_lft forever
+206: br-33100abbf284    inet 172.25.0.1/16 brd 172.25.255.255 scope global br-33100abbf284\       valid_lft forever preferred_lft forever
+734: br-92f61288b627    inet 172.23.0.1/16 brd 172.23.255.255 scope global br-92f61288b627\       valid_lft forever preferred_lft forever
+482: br-469d326ed73c    inet 172.27.0.1/16 brd 172.27.255.255 scope global br-469d326ed73c\       valid_lft forever preferred_lft forever			
+			]]>
 			</screen>
 		</section>
 	</section>
@@ -405,7 +660,7 @@ vi /etc/iproute2/rt_tables
 # iptables -t nat -A POSTROUTING -j MASQUERADE
 # iptables -t nat -A PREROUTING -d 192.168.1.1 -p tcp --dport 21 -j DNAT --to 192.168.10.96
 # ip route flush cache	
-		]]>	
+		]]>
 		</screen>
 		<screen>
 		<![CDATA[
@@ -451,98 +706,129 @@ ip route flush cache
 	<section id="nexthop">
 		<title>负载均衡</title>
 		<screen>
-ip route add default scope global nexthop dev ppp0 nexthop dev ppp1		
+			ip route add default scope global nexthop dev ppp0 nexthop dev ppp1
 		</screen>
 		<screen>
-neo@debian:~$ sudo ip route add default scope global nexthop via 192.168.3.1 dev eth0 weight 1 \
-nexthop via 192.168.5.1 dev eth2 weight 1
-	
-neo@debian:~$ sudo ip route
-192.168.5.0/24 dev eth1  proto kernel  scope link  src 192.168.5.9
-192.168.4.0/24 dev eth0  proto kernel  scope link  src 192.168.4.9
-192.168.3.0/24 dev eth0  proto kernel  scope link  src 192.168.3.9
-172.16.0.0/24 dev eth2  proto kernel  scope link  src 172.16.0.254
-default
-        nexthop via 192.168.3.1  dev eth0 weight 1
-        nexthop via 192.168.5.1  dev eth1 weight 1
+			neo@debian:~$ sudo ip route add default scope global nexthop via 192.168.3.1 dev eth0 weight 1 \
+			nexthop via 192.168.5.1 dev eth2 weight 1
+
+			neo@debian:~$ sudo ip route
+			192.168.5.0/24 dev eth1 proto kernel scope link src 192.168.5.9
+			192.168.4.0/24 dev eth0 proto kernel scope link src 192.168.4.9
+			192.168.3.0/24 dev eth0 proto kernel scope link src 192.168.3.9
+			172.16.0.0/24 dev eth2 proto kernel scope link src 172.16.0.254
+			default
+			nexthop via 192.168.3.1 dev eth0 weight 1
+			nexthop via 192.168.5.1 dev eth1
+			weight 1
 
 		</screen>
 		<screen>
-ip route add default scope global nexthop via $P1 dev $IF1 weight 1 \
-nexthop via $P2 dev $IF2 weight 1			
+			ip route add default scope global nexthop via $P1 dev $IF1 weight 1 \
+			nexthop via $P2 dev $IF2 weight 1
 		</screen>
 	</section>
 	<section id="ppp.masq">
 		<title>MASQUERADE</title>
 		<screen>
-iptables–tnat–APOSTROUTING–d192.168.1.0/24–s0/0–oppp0–jMASQUERD
-iptables–tnat–APOSTROUTING–s192.168.1.0/24-jSNAT–to202.103.224.58	
-iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -j MASQUERADE 	
+			iptables–tnat–APOSTROUTING–d192.168.1.0/24–s0/0–oppp0–jMASQUERD
+			iptables–tnat–APOSTROUTING–s192.168.1.0/24-jSNAT–to202.103.224.58
+			iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -j MASQUERADE
 		</screen>
 		<para></para>
 		<screen>
-#ip route add via ppp0 dev eth0
-#ip route add via 202.103.224.58 dev eth0		
+			#ip route add via ppp0 dev eth0
+			#ip route add via 202.103.224.58 dev eth0
 		</screen>
 	</section>
-<section id="iptunnel">
-	<title>ip tunnel</title>
+	<section id="iptunnel">
+		<title>ip tunnel</title>
 		<para>ipip 是IP隧道模块</para>
-		<procedure><title>ip tunnel IP隧道配置步骤</title>
+		<procedure>
+			<title>ip tunnel IP隧道配置步骤</title>
 			<step>
 				<para>server 1</para>
 				<screen>
-modprobe ipip
-ip tunnel add mytun mode ipip remote 220.201.35.11 local 211.100.37.167 ttl 255
-ifconfig mytun 10.42.1.1
-route add -net 10.42.1.0/24 dev mytun
+					modprobe ipip
+					ip tunnel add mytun mode ipip remote 220.201.35.11 local 211.100.37.167 ttl 255
+					ifconfig mytun 10.42.1.1
+					route add -net 10.42.1.0/24 dev mytun
 				</screen>
 			</step>
 			<step>
 				<para>server 2</para>
 				<screen>
-modprobe ipip
-ip tunnel add mytun mode ipip remote 211.100.37.167 local 220.201.35.11 ttl 255
-ifconfig mytun 10.42.1.2
-route add -net 10.42.1.0/24 dev mytun
+					modprobe ipip
+					ip tunnel add mytun mode ipip remote 211.100.37.167 local 220.201.35.11 ttl 255
+					ifconfig mytun 10.42.1.2
+					route add -net 10.42.1.0/24 dev mytun
 				</screen>
 			</step>
 			<step>
 				<para>nat</para>
 				<screen>
-/sbin/iptables -t nat -A POSTROUTING -s 10.42.1.0/24 -j MASQUERADE
-/sbin/iptables -t nat -A POSTROUTING -s 211.100.37.0/24 -j MASQUERADE
+					/sbin/iptables -t nat -A POSTROUTING -s 10.42.1.0/24 -j MASQUERADE
+					/sbin/iptables -t nat -A POSTROUTING -s 211.100.37.0/24 -j MASQUERADE
 				</screen>
 			</step>
 		</procedure>
 		<para>删除路由表</para>
 		<screen>
-route del -net 10.42.1.0/24 dev mytun
+		<![CDATA[
+route del -net 10.42.1.0/24 dev mytun		
+		]]>
 		</screen>
 		<para>修改IP隧道的IP</para>
 		<screen>
+		<![CDATA[
 ifconfig mytun 10.10.10.220
-route add -net 10.10.10.0/24 dev mytun
+route add -net 10.10.10.0/24 dev mytun		
+		]]>
 		</screen>
 		<para>ip 伪装</para>
 		<screen>
+		<![CDATA[
 /sbin/iptables -t nat -A POSTROUTING -s 10.10.10.0/24 -j MASQUERADE
+		]]>
 		</screen>
-</section>	
+	</section>
 	<section id="vlan">
 		<title>VLAN</title>
 		<para>首先需确保加载了内核模块 802.1q</para>
 		<screen>
+		<![CDATA[
 [root@development ~]# lsmod | grep 8021q
-[root@development ~]# modprobe 8021q		
+[root@development ~]# modprobe 8021q
+		]]>
 		</screen>
 		<para>加载后会生成目录/proc/net/vlan </para>
 		<screen>
+		<![CDATA[
 [root@development ~]# cat /proc/net/vlan/config
-VLAN Dev name    | VLAN ID
-Name-Type: VLAN_NAME_TYPE_RAW_PLUS_VID_NO_PAD
-
+VLAN Dev name | VLAN ID
+Name-Type: VLAN_NAME_TYPE_RAW_PLUS_VID_NO_PAD		
+		]]>
 		</screen>
+	</section>
+	<section id="brctl">
+		<title>brctl</title>
+		<para>Linux 系统4个物理网卡的名称则分别为eth0，eth1，eth2，eth3。我们将四个网口桥接到br0端口。</para>
+		<para>你可以这样理解 vlan 2, vlan ip 192.168.0.1，然后将4个接口划分到vlan2, 这时这4个接口可以通过vlan 2访问其他用户。我只是做了一个比喻，让你能够理解。</para>
+		<screen><![CDATA[
+# brctl addbr br0
+
+# brctl addif br0 eth0
+# brctl addif br0 eth1
+# brctl addif br0 eth2
+# brctl addif br0 eth3
+
+# ifconfig eth0 0.0.0.0
+# ifconfig eth1 0.0.0.0
+# ifconfig eth2 0.0.0.0
+# ifconfig eth3 0.0.0.0
+
+# ifconfig br0 192.168.0.1
+			]]></screen>
 	</section>
 	<section id="zebra">
 		<title>Zebra</title>

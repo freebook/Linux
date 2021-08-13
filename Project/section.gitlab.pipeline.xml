@@ -252,7 +252,6 @@ variables:
 	</section>
 	<section>
 		<title>应用案例</title>
-
 		<section>
 			<title>Java</title>
 			<screen>
@@ -343,6 +342,45 @@ deploy_prod:
  environment: production			
 			]]>
 			</screen>
+		</section>
+		<section>
+			<title>Node</title>
+			<programlisting>
+			<![CDATA[
+cache:
+  paths:
+    - node_modules
+    # - dist
+
+stages: 
+  - build
+  # - test
+  - deploy
+
+build-job: 
+  stage: build
+  script:
+    - npm install
+#     - yarn install
+#     - yarn run build
+
+# unit-test-job:
+#   stage: test
+#   script:
+#     - yarn run test
+
+# lint-test-job:
+#   stage: test
+#   script:
+#     - yarn run lint
+
+deploy-job:
+  stage: deploy
+  script:
+    - rsync -auzv --delete * www@192.168.30.10:/opt/netkiller.cn/www.netkiller.cn/
+    - ssh www@192.168.0.10 "sudo pm2 --update-env restart /opt/netkiller.cn/www.netkiller.cn/main.js"
+			]]>
+			</programlisting>
 		</section>
 		<section>
 			<title>vue.js android</title>

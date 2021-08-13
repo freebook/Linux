@@ -442,6 +442,18 @@ DirectMap1G:           0 kB
 			]]>
 			</screen>
 		</section>
+		<section id="proc.sys.vm.overcommit_memory">
+			<title>overcommit_memory</title>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# echo "vm.overcommit_memory=1" >> /etc/sysctl.conf 
+[root@localhost ~]# sysctl vm.overcommit_memory=1
+vm.overcommit_memory = 1
+[root@localhost ~]# cat /proc/sys/vm/overcommit_memory 
+1			
+			]]>
+			</screen>
+		</section>
 	</section>
 	&chapter.kernel.module.xml;
 </chapter>

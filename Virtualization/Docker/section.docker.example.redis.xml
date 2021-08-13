@@ -28,8 +28,10 @@ Status: Downloaded newer image for redis:latest
 		<section>
 			<title>启动一个 Redis 实例</title>
 			<screen>
-				# docker run --name my-redis -d redis
-				10207174e18f61290f9c869e6437fa787e459e07b076b82cedf800a8c37c515d
+			<![CDATA[
+# docker run --name my-redis -d redis
+10207174e18f61290f9c869e6437fa787e459e07b076b82cedf800a8c37c515d
+			]]>
 			</screen>
 			<para>查看启动情况</para>
 			<screen>
@@ -271,6 +273,64 @@ ID                  NAME                MODE                REPLICAS            
 iMac:redis neo$ docker container ls
 CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS               NAMES
 8407fd8fe66b        redis:latest        "docker-entrypoint.s…"   29 seconds ago      Up 29 seconds       6379/tcp            redis_redis.1.6fpqt3pdti03j9swn3x04ob9n		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>somaxconn/overcommit_memory</title>
+		<para>redis 日志</para>
+		<screen>
+		<![CDATA[
+1:C 09 Aug 2021 15:13:20.270 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+1:C 09 Aug 2021 15:13:20.270 # Redis version=6.2.5, bits=64, commit=00000000, modified=0, pid=1, just started
+1:C 09 Aug 2021 15:13:20.270 # Configuration loaded
+1:M 09 Aug 2021 15:13:20.270 * monotonic clock: POSIX clock_gettime
+1:M 09 Aug 2021 15:13:20.270 * Running mode=standalone, port=6379.
+1:M 09 Aug 2021 15:13:20.270 # WARNING: The TCP backlog setting of 511 cannot be enforced because /proc/sys/net/core/somaxconn is set to the lower value of 128.
+1:M 09 Aug 2021 15:13:20.270 # Server initialized
+1:M 09 Aug 2021 15:13:20.270 # WARNING overcommit_memory is set to 0! Background save may fail under low memory condition. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
+1:M 09 Aug 2021 15:13:20.271 * Ready to accept connections		
+		]]>
+		</screen>
+		<para>宿主主机上配置如下</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# cat >> /etc/sysctl.conf <<EOF
+
+# Redis
+net.core.somaxconn = 1024
+vm.overcommit_memory=1
+EOF		
+		]]>
+		</screen>
+		<para>docker-compose.yml 中设置 net.core.somaxconn</para>
+		<screen>
+		<![CDATA[
+[root@localhost redis]# cat docker-compose.yml 
+version: '3.9'
+
+services:
+  redis:
+    image: redis:alpine
+    container_name: redis
+    restart: always
+    hostname: redis.netkiller.cn
+    user: redis:redis
+    environment:
+      - TZ=Asia/Shanghai
+      - LANG=en_US.UTF-8
+    ports:
+      - 6379:6379
+    volumes:
+      - redis:/data
+    sysctls:
+      - net.core.somaxconn=511
+    command: 
+      --logfile /data/redis.log
+      --requirepass passw0rd
+      --appendonly yes
+volumes:
+  redis:		
 		]]>
 		</screen>
 	</section>
