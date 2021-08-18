@@ -2,6 +2,65 @@
 <section>
 	<title>Docker 网络</title>
 	<section>
+		<title>docker0 IP地址</title>
+		<para>查看 docker0 的IP地址</para>
+		<screen>
+		<![CDATA[
+root@production:~# ifconfig docker0
+docker0   Link encap:Ethernet  HWaddr 02:42:ad:68:6b:cf  
+          inet addr:172.18.0.1  Bcast:172.18.255.255  Mask:255.255.0.0
+          UP BROADCAST MULTICAST  MTU:1500  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)		
+		]]>
+		</screen>
+		<para>修改 docker0 的IP地址</para>
+		<screen>
+		<![CDATA[
+root@production:~# vim /etc/docker/daemon.json
+root@production:~# cat /etc/docker/daemon.json 
+{
+  "bip":"172.100.10.1/24"
+}
+root@production:~# systemctl restart docker
+
+root@production:~# ifconfig docker0
+docker0   Link encap:Ethernet  HWaddr 02:42:ad:68:6b:cf  
+          inet addr:172.100.10.1  Bcast:172.100.10.255  Mask:255.255.255.0
+          UP BROADCAST MULTICAST  MTU:1500  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+		]]>
+		</screen>
+		<tip>
+		<para>曾经遇到一个案例，阿里云使用172.18.0.0/16作为RDS内网IP地址，ECS安装了docker后无法链接RDS属于，因为docker修改了路由表，将docker换到其他网段后工作正常。</para>
+		</tip>
+	</section>
+	<section>
+		<title>容器指定固定IP地址</title>
+		<screen>
+		<![CDATA[
+docker run -d --privileged -p 9000:9000 --ip 192.168.5.2 \
+--restart=always \
+-v /var/run/docker.sock:/var/run/docker.sock \
+-v /opt/portainer:/data \
+portainer/portainer
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>创建子网</title>
+		<screen>
+		<![CDATA[
+docker network create --subnet=172.32.0.0/24 web
+		]]>
+		</screen>
+	</section>
+	<section>
 		<title>创建 overlay 网络</title>
 		<screen>
 		<![CDATA[

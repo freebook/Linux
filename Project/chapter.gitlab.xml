@@ -159,6 +159,21 @@ ssh: git@192.168.0.1:example.com/www.example.com.git
 		</section>
 		<section>
 			<title>Labels 标签</title>
+			<para>参考 github 设置</para>
+			<literallayout>
+			<![CDATA[
+bug					Something isn't working
+documentation		Improvements or additions to documentation
+duplicate			This issue or pull request already exists
+enhancement			New feature or request
+good first issue	Good for newcomers
+help wanted			Extra attention is needed
+invalid				This doesn't seem right
+question			Further information is requested
+wontfix				This will not be worked on
+			]]>
+			</literallayout>
+			<para></para>
 			<para>通常定义四个状态，开发，测试，升级，完成</para>
 		</section>
 	</section>

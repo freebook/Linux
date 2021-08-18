@@ -2,6 +2,32 @@
 <section id="docker.faq">
 	<title>Docker FAQ</title>
 	<section>
+		<title>常用工具</title>
+		<para>查看出口IP地址</para>
+		<screen>
+		<![CDATA[
+root@production:~# curl icanhazip.com		
+root@production:~# curl -4 icanhazip.com
+root@production:~# curl -6 icanhazip.com
+
+root@production:~# curl api.ipify.org
+root@production:~# curl bot.whatismyipaddress.com
+		]]>
+		</screen>
+		<section>
+			<title>Debian/Ubuntu</title>
+			<screen>
+			<![CDATA[
+apt install net-tools
+apt install iputils-ping			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>CentOS</title>
+		</section>
+	</section>
+	<section>
 		<title>检查 Docker 是否可用</title>
 		<screen>
 		<![CDATA[

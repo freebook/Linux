@@ -2,6 +2,62 @@
 <chapter id="etc">
 	<title>/etc</title>
 	<section>
+		<title>/etc/rc.local</title>
+		<para>/etc/rc.local 是一个开机启动脚本</para>
+		<screen>
+		<![CDATA[
+[root@testing ~]# cat /etc/rc.local
+#!/bin/bash
+# THIS FILE IS ADDED FOR COMPATIBILITY PURPOSES
+#
+# It is highly advisable to create own systemd services or udev rules
+# to run scripts during boot instead of using this file.
+#
+# In contrast to previous versions due to parallel execution during boot
+# this script will NOT be run after all other services.
+#
+# Please note that you must run 'chmod +x /etc/rc.d/rc.local' to ensure
+# that this script will be executed during boot.
+
+touch /var/lock/subsys/local		
+		]]>
+		</screen>
+		<tip>
+			<para>很多系统已经弃用了该运行方案</para>
+		</tip>
+		<para>CentOS 8 Stream 如果你想使用 rc.local 需要做如下配置</para>
+		<screen>
+		<![CDATA[
+cat >> /usr/lib/systemd/system/rc-local.service <<EOF
+
+[Install]
+WantedBy=multi-user.target
+EOF		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+[root@testing ~]# chmod +x /etc/rc.d/rc.local		
+
+[root@testing ~]# systemctl enable rc-local
+Created symlink /etc/systemd/system/multi-user.target.wants/rc-local.service → /usr/lib/systemd/system/rc-local.service.
+
+[root@testing ~]# systemctl start rc-local	
+
+[root@testing ~]# systemctl status rc-local
+● rc-local.service - /etc/rc.d/rc.local Compatibility
+   Loaded: loaded (/usr/lib/systemd/system/rc-local.service; enabled; vendor preset: disabled)
+   Active: active (exited) since Mon 2021-08-16 12:57:16 CST; 2s ago
+     Docs: man:systemd-rc-local-generator(8)
+  Process: 532000 ExecStart=/etc/rc.d/rc.local start (code=exited, status=0/SUCCESS)
+
+Aug 16 12:57:16 testing systemd[1]: Starting /etc/rc.d/rc.local Compatibility...
+Aug 16 12:57:16 testing systemd[1]: Started /etc/rc.d/rc.local Compatibility.	
+		]]>
+		</screen>
+	</section>
+	<section>
 		<title>getent 用来察看系统的数据库中的相关记录</title>
 		<para>支持数据库</para>
 		<screen>

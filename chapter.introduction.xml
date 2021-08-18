@@ -2,88 +2,6 @@
 <!-- $Id: chapter.introduction.xml 655 2013-07-31 09:16:47Z netkiller $ -->
 <chapter id="introduction">
 	<title>Introduction</title>
-	<section id="linux.distribution">
-		<title>Linux 发行版本</title>
-		<para>下面是我常用的Linux本版，Debian/Ubuntu适合做实验，快速安装定制，Gentoo适合DIY</para>
-		<para>如果是企业服务器还是建议使用CentOS，Scientific Linux， 所以CentOS是IDC装机量怎大的操作系统。</para>
-		<section>
-			<title>Linux 下载排名</title>
-			<para>
-				<ulink url="http://distrowatch.com/">http://distrowatch.com/</ulink>
-			</para>
-		</section>
-		<section>
-			<title>Debian 衍生版本</title>
-			<para>
-				Ubuntu Server Edition
-				<ulink url="http://www.ubuntu.com/">http://www.ubuntu.com/</ulink>
-			</para>
-			<para>
-				<ulink url="/en-us/technology/ubuntu.html">Netkiller Ubuntu Linux 手札</ulink>
-			</para>
-		</section>
-		<section>
-			<title>Redhat 衍生版本</title>
-			<para>CentOS - The Community ENTerprise Operating System</para>
-			<para>
-				<ulink url="http://www.centos.org/">http://www.centos.org/</ulink>
-			</para>
-
-			<para>Scientific Linux (SL)</para>
-			<para>
-				<ulink url="http://www.scientificlinux.org/">http://www.scientificlinux.org/</ulink>
-			</para>
-
-			<para>
-				<ulink url="/en-us/technology/centos.html">Netkiller CentOS Linux 手札</ulink>
-			</para>
-		</section>
-		<section>
-			<title>FreeBSD 包风格的Linux 发行版</title>
-			<para>Gentoo</para>
-			<para>http://www.gentoo.org/</para>
-		</section>
-
-
-	</section>
-
-	<chapter id="linux">
-		<title>Linux 专用领域发行版</title>
-		<para>这些Linux都是为了特别用途而优化过的，例如处理音频，视频等等</para>
-		<section id="ubuntustudio">
-			<title>ubuntustudio</title>
-			<screen>
-			<![CDATA[
-$ apt-cache search ubuntustudio
-plymouth-theme-ubuntustudio - Ubuntu Studio Plymouth theme
-ubiquity-slideshow-ubuntustudio - Ubiquity slideshow for Ubuntu Studio
-ubuntustudio-audio - Transitional Package for the Audio Seed
-ubuntustudio-audio-plugins - Ubuntu Studio audio plugins Package
-ubuntustudio-controls - Ubuntu Studio Controls is a small app that changes A/V settings.
-ubuntustudio-default-settings - default settings for the Ubuntu Studio desktop
-ubuntustudio-desktop - Ubuntu Studio Desktop Package
-ubuntustudio-font-meta - Ubuntu Studio fonts Package
-ubuntustudio-generation - Ubuntu Studio Audio Generation Package
-ubuntustudio-graphics - Ubuntu Studio graphics Package
-ubuntustudio-icon-theme - Ubuntu Studio Icon Theme
-ubuntustudio-lightdm-theme - UbuntuStudio LightDM theme
-ubuntustudio-live-settings - configuration for the Ubuntu Studio live-dvd
-ubuntustudio-look - Ubuntu Studio look
-ubuntustudio-menu - Menu for Ubuntu Studio
-ubuntustudio-recording - Ubuntu Studio Audio Recording Package
-ubuntustudio-screensaver - Ubuntu Studio screensaver
-ubuntustudio-sounds - Ubuntu Studio's GNOME audio theme
-ubuntustudio-video - Ubuntu Studio video Package
-ubuntustudio-wallpapers - Ubuntu Studio - Wallpapers
-			]]>
-			</screen>
-		</section>
-		<section id="avlinux">
-			<title>AV Linux</title>
-			<para>http://www.bandshed.net/AVLinux.html</para>
-		</section>
-	</chapter>
-
 	<section id="install.centos8">
 		<title>CentOS 8 Stream</title>
 		<para>Centos 8 较之前的版本改动比较大</para>
@@ -285,7 +203,7 @@ net.ipv4.ip_local_port_range = 1025 65500
 net.ipv4.tcp_tw_reuse = 1
 net.ipv4.tcp_keepalive_time = 1800
 net.core.netdev_max_backlog=3000
-net.ipv4.tcp_max_syn_backlog = 8192
+net.ipv4.tcp_max_syn_backlog = 1024
 net.ipv4.tcp_max_tw_buckets = 4096
 net.core.somaxconn = 1024
 
@@ -388,6 +306,62 @@ visudo -c
 			</screen>
 		</section>
 		<section>
+			<title>启动 rc.local</title>
+			<para>/etc/rc.local 是一个开机启动脚本</para>
+			<screen>
+		<![CDATA[
+[root@testing ~]# cat /etc/rc.local
+#!/bin/bash
+# THIS FILE IS ADDED FOR COMPATIBILITY PURPOSES
+#
+# It is highly advisable to create own systemd services or udev rules
+# to run scripts during boot instead of using this file.
+#
+# In contrast to previous versions due to parallel execution during boot
+# this script will NOT be run after all other services.
+#
+# Please note that you must run 'chmod +x /etc/rc.d/rc.local' to ensure
+# that this script will be executed during boot.
+
+touch /var/lock/subsys/local		
+		]]>
+			</screen>
+			<tip>
+				<para>很多系统已经弃用了该运行方案</para>
+			</tip>
+			<para>CentOS 8 Stream 如果你想使用 rc.local 需要做如下配置</para>
+			<screen>
+		<![CDATA[
+cat >> /usr/lib/systemd/system/rc-local.service <<EOF
+
+[Install]
+WantedBy=multi-user.target
+EOF		
+		]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+[root@testing ~]# chmod +x /etc/rc.d/rc.local		
+
+[root@testing ~]# systemctl enable rc-local
+Created symlink /etc/systemd/system/multi-user.target.wants/rc-local.service → /usr/lib/systemd/system/rc-local.service.
+
+[root@testing ~]# systemctl start rc-local	
+
+[root@testing ~]# systemctl status rc-local
+● rc-local.service - /etc/rc.d/rc.local Compatibility
+   Loaded: loaded (/usr/lib/systemd/system/rc-local.service; enabled; vendor preset: disabled)
+   Active: active (exited) since Mon 2021-08-16 12:57:16 CST; 2s ago
+     Docs: man:systemd-rc-local-generator(8)
+  Process: 532000 ExecStart=/etc/rc.d/rc.local start (code=exited, status=0/SUCCESS)
+
+Aug 16 12:57:16 testing systemd[1]: Starting /etc/rc.d/rc.local Compatibility...
+Aug 16 12:57:16 testing systemd[1]: Started /etc/rc.d/rc.local Compatibility.	
+			]]>
+			</screen>
+		</section>
+		<section>
 			<title>卸载防火墙</title>
 			<para>firewalld 不是适合 IDC 使用，IDC 通常只需要 INPUT 规则，其次是 OUTPUT 规则，所以我们换回 iptables 或者 nftable</para>
 			<screen>
@@ -406,7 +380,403 @@ systemctl disable ip6tables
 			</screen>
 		</section>
 	</section>
-	
+	<section id="install.ubuntu">
+		<title>Debian / Ubuntu</title>
+		<para>
+			Ubuntu Server Edition
+			<ulink url="http://www.ubuntu.com/">http://www.ubuntu.com/</ulink>
+		</para>
+		<para>
+			Debian
+			<ulink url="https://www.debian.org/index.zh-cn.html">https://www.debian.org/index.zh-cn.html</ulink>
+		</para>
+		<section>
+			<title>历史记录优化</title>
+			<screen>
+			<![CDATA[
+cat >> /etc/profile.d/history.sh <<EOF
+# Administrator specific aliases and functions for system security
+# Add by netkiller
+export HISTSIZE=10000
+export HISTFILESIZE=10000
+export HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S "
+export TIME_STYLE=long-iso
+EOF
+
+source /etc/profile.d/history.sh				
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>关闭 SELinux</title>
+			<screen>
+			<![CDATA[
+cat >> /etc/selinux/config <<EOF
+# Add by netkiller
+SELINUX=disabled
+EOF
+
+setenforce Permissive		
+			]]>
+			</screen>
+			<tip>
+				<para>很多云主机的linux系统selinux被裁剪掉了，所以不用关闭 selinux</para>
+			</tip>
+		</section>
+		<section>
+			<title>sysctl / ulimit</title>
+			<para>sysctl 优化</para>
+			<screen>
+			<![CDATA[
+cat >> /etc/sysctl.conf <<EOF
+
+# Netkiller
+net.ipv4.ip_local_port_range = 1025 65500
+net.ipv4.tcp_tw_reuse = 1
+net.ipv4.tcp_keepalive_time = 1800
+net.core.netdev_max_backlog=3000
+net.ipv4.tcp_max_syn_backlog = 1024
+net.ipv4.tcp_max_tw_buckets = 4096
+net.core.somaxconn = 1024
+
+# TCP BBR
+net.core.default_qdisc=fq
+net.ipv4.tcp_congestion_control=bbr
+EOF
+#net.ipv4.tcp_syncookies = 1
+#net.ipv4.tcp_fin_timeout = 60
+
+sysctl -p			
+			]]>
+			</screen>
+			<tip>
+				<para>如果是阿里云会自动帮你配置</para>
+				<programlisting>
+				<![CDATA[
+# see details in https://help.aliyun.com/knowledge_detail/39428.html
+net.ipv4.conf.all.rp_filter = 0
+net.ipv4.conf.default.rp_filter = 0
+net.ipv4.conf.default.arp_announce = 2
+net.ipv4.conf.lo.arp_announce = 2
+net.ipv4.conf.all.arp_announce = 2
+
+# see details in https://help.aliyun.com/knowledge_detail/41334.html
+net.ipv4.tcp_max_tw_buckets = 5000
+net.ipv4.tcp_syncookies = 1
+net.ipv4.tcp_max_syn_backlog = 1024
+net.ipv4.tcp_synack_retries = 2
+net.ipv4.tcp_slow_start_after_idle = 0				
+				]]>
+				</programlisting>
+			</tip>
+			<para>ulimit 优化</para>
+			<screen>
+			<![CDATA[
+cat > /etc/security/limits.d/20-nofile.conf <<EOF
+
+www soft nofile 65535
+www hard nofile 65535
+
+nginx soft nofile 65535
+nginx hard nofile 65535
+
+mysql soft nofile 65535
+mysql hard nofile 65535
+
+redis soft nofile 65535
+redis hard nofile 65535
+
+rabbitmq soft nofile 40960
+rabbitmq hard nofile 40960
+
+hadoop soft nofile 65535
+hadoop hard nofile 65535
+
+EOF			
+			]]>
+			</screen>
+			<tip>
+				<para>如果是阿里云，不需要配置</para>
+				<screen>
+			<![CDATA[
+root@netkiller:~# cat /etc/security/limits.conf | tail -n 6
+
+# End of file
+root soft nofile 65535
+root hard nofile 65535
+* soft nofile 65535
+* hard nofile 65535			
+			]]>
+				</screen>
+			</tip>
+			<para>Redis 配置</para>
+			<screen>
+			<![CDATA[
+cat >> /etc/sysctl.conf <<EOF
+
+# Redis
+net.core.somaxconn = 1024
+vm.overcommit_memory=1
+EOF				
+			]]>
+			</screen>
+			<para>MongoDB 配置</para>
+			<screen>
+			<![CDATA[
+cat <<'EOF'>> /etc/rc.local 
+		
+if test -f /sys/kernel/mm/transparent_hugepage/enabled; then
+	echo never > /sys/kernel/mm/transparent_hugepage/enabled
+fi
+
+if test -f /sys/kernel/mm/transparent_hugepage/defrag; then
+	echo never > /sys/kernel/mm/transparent_hugepage/defrag
+fi
+EOF
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>时间同步</title>
+			<para>查看时区</para>
+			<screen>
+			<![CDATA[
+cat /etc/timezone			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+root@netkiller:~# timedatectl set-local-rtc 0
+root@netkiller:~# timedatectl
+      Local time: Tue 2021-08-17 10:32:27 CST
+  Universal time: Tue 2021-08-17 02:32:27 UTC
+        RTC time: Tue 2021-08-17 02:32:27
+       Time zone: Asia/Shanghai (CST, +0800)
+ Network time on: yes
+NTP synchronized: yes
+ RTC in local TZ: no			
+			]]>
+			</screen>
+			<para>确认 Network time on: yes 和 NTP synchronized: yes 开启，然后启动时间同步 systemd-timesyncd.service。</para>
+			<screen>
+			<![CDATA[
+root@netkiller:~# systemctl start systemd-timesyncd.service
+
+root@netkiller:~# systemctl status systemd-timesyncd.service
+● systemd-timesyncd.service - Network Time Synchronization
+   Loaded: loaded (/lib/systemd/system/systemd-timesyncd.service; enabled; vendor preset: enabled)
+  Drop-In: /lib/systemd/system/systemd-timesyncd.service.d
+           └─disable-with-time-daemon.conf
+   Active: inactive (dead)
+Condition: start condition failed at Tue 2021-08-17 10:29:36 CST; 14min ago
+     Docs: man:systemd-timesyncd.service(8)
+
+Aug 17 10:29:36 netkiller systemd[1]: Stopped Network Time Synchronization.			
+			]]>
+			</screen>
+			<para>如果 systemd-timesyncd.service 启动失败，可能是系统已经有其他时间同步服务在运行。查看方法</para>
+			<screen>
+			<![CDATA[
+root@netkiller:~# cat /lib/systemd/system/systemd-timesyncd.service.d/disable-with-time-daemon.conf 
+[Unit]
+# don't run timesyncd if we have another NTP daemon installed
+ConditionFileIsExecutable=!/usr/sbin/ntpd
+ConditionFileIsExecutable=!/usr/sbin/openntpd
+ConditionFileIsExecutable=!/usr/sbin/chronyd
+ConditionFileIsExecutable=!/usr/sbin/VBoxService			
+			]]>
+			</screen>
+			<para>然后逐一检查 ConditionFileIsExecutable 后面的程序，最终我们找到了 chronyd</para>
+			<screen>
+			<![CDATA[
+root@netkiller:~# whereis chronyd
+chronyd: /usr/sbin/chronyd /usr/share/man/man8/chronyd.8.gz
+
+root@netkiller:~# systemctl status chrony
+● chrony.service - LSB: Controls chronyd NTP time daemon
+   Loaded: loaded (/etc/init.d/chrony; bad; vendor preset: enabled)
+   Active: active (running) since Mon 2021-08-16 19:05:31 CST; 15h ago
+     Docs: man:systemd-sysv-generator(8)
+   CGroup: /system.slice/chrony.service
+           └─1222 /usr/sbin/chronyd
+
+Aug 16 19:05:29 netkiller systemd[1]: Starting LSB: Controls chronyd NTP time daemon...
+Aug 16 19:05:29 netkiller chronyd[1222]: chronyd version 2.1.1 starting (+CMDMON +NTP +REFCLOCK +RTC +PRIVDROP -DEBUG +ASYNCDNS +IPV6 +SECHASH)
+Aug 16 19:05:29 netkiller chronyd[1222]: Frequency -14.398 +/- 0.452 ppm read from /var/lib/chrony/drift
+Aug 16 19:05:31 netkiller chrony[1201]: Password: chronyd is running and online.
+Aug 16 19:05:31 netkiller systemd[1]: Started LSB: Controls chronyd NTP time daemon.
+Aug 16 19:05:39 netkiller chronyd[1222]: Selected source 100.100.61.88			
+			]]>
+			</screen>
+			<para>确保 chronyd 处于工作状态，systemd-timesyncd.service 与 chronyd 选择其中一个即可。所以我们不用在关心 systemd-timesyncd.service</para>
+		</section>
+		<section>
+			<title>启动 rc.local</title>
+			<para>/etc/rc.local 是一个开机启动脚本</para>
+			<tip>
+				<para>很多系统已经弃用了该运行方案</para>
+			</tip>
+			<screen>
+			<![CDATA[
+root@netkiller:~# cat /etc/rc.local
+#!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+
+exit 0	
+			]]>
+			</screen>
+			<para>注意：一定要删除 exit 0，之所以加入这行就是linux系统不鼓励你使用 rc.local </para>
+			<screen>
+			<![CDATA[
+root@netkiller:~# sed -i '$d' /etc/rc.local			
+			]]>
+			</screen>
+			<para>删除后效果</para>
+			<screen>
+			<![CDATA[
+root@netkiller:~# cat /etc/rc.local
+#!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+
+			]]>
+			</screen>
+			<para>rc-local.service 需要做如下配置</para>
+			<!-- /lib/systemd/system/rc-local.service.d/debian.conf -->
+			<screen>
+			<![CDATA[
+cat >> /lib/systemd/system/rc-local.service <<EOF
+
+[Install]
+WantedBy=multi-user.target
+EOF		
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+[root@testing ~]# chmod +x /etc/rc.local
+
+[root@testing ~]# systemctl enable rc-local
+Created symlink /etc/systemd/system/multi-user.target.wants/rc-local.service → /usr/lib/systemd/system/rc-local.service.
+
+[root@testing ~]# systemctl start rc-local	
+
+[root@testing ~]# systemctl status rc-local
+● rc-local.service - /etc/rc.d/rc.local Compatibility
+   Loaded: loaded (/usr/lib/systemd/system/rc-local.service; enabled; vendor preset: disabled)
+   Active: active (exited) since Mon 2021-08-16 12:57:16 CST; 2s ago
+     Docs: man:systemd-rc-local-generator(8)
+  Process: 532000 ExecStart=/etc/rc.d/rc.local start (code=exited, status=0/SUCCESS)
+
+Aug 16 12:57:16 testing systemd[1]: Starting /etc/rc.d/rc.local Compatibility...
+Aug 16 12:57:16 testing systemd[1]: Started /etc/rc.d/rc.local Compatibility.	
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>禁用防火墙</title>
+			<para>禁用防火墙</para>
+			<screen>
+			<![CDATA[
+root@production:~# ufw disable
+Firewall stopped and disabled on system startup			
+			]]>
+			</screen>
+		</section>
+
+	</section>
 	&chapter.install.xml;
+	<section id="linux.distribution">
+		<title>Linux 发行版本</title>
+		<para>下面是我常用的Linux本版，Debian/Ubuntu适合做实验，快速安装定制，Gentoo适合DIY</para>
+		<para>如果是企业服务器还是建议使用CentOS，Scientific Linux， 所以CentOS是IDC装机量怎大的操作系统。</para>
+		<section>
+			<title>Linux 下载排名</title>
+			<para>
+				<ulink url="http://distrowatch.com/">http://distrowatch.com/</ulink>
+			</para>
+		</section>
+		<section>
+			<title>Redhat 衍生版本</title>
+			<para>CentOS - The Community ENTerprise Operating System</para>
+			<para>
+				<ulink url="http://www.centos.org/">http://www.centos.org/</ulink>
+			</para>
+
+			<para>Scientific Linux (SL)</para>
+			<para>
+				<ulink url="http://www.scientificlinux.org/">http://www.scientificlinux.org/</ulink>
+			</para>
+
+			<para>
+				<ulink url="/en-us/technology/centos.html">Netkiller CentOS Linux 手札</ulink>
+			</para>
+		</section>
+		<section>
+			<title>FreeBSD 包风格的Linux 发行版</title>
+			<para>Gentoo</para>
+			<para>http://www.gentoo.org/</para>
+		</section>
+
+
+	</section>
+
+	<section id="linux">
+		<title>Linux 专用领域发行版</title>
+		<para>这些Linux都是为了特别用途而优化过的，例如处理音频，视频等等</para>
+		<section id="ubuntustudio">
+			<title>ubuntustudio</title>
+			<screen>
+			<![CDATA[
+$ apt-cache search ubuntustudio
+plymouth-theme-ubuntustudio - Ubuntu Studio Plymouth theme
+ubiquity-slideshow-ubuntustudio - Ubiquity slideshow for Ubuntu Studio
+ubuntustudio-audio - Transitional Package for the Audio Seed
+ubuntustudio-audio-plugins - Ubuntu Studio audio plugins Package
+ubuntustudio-controls - Ubuntu Studio Controls is a small app that changes A/V settings.
+ubuntustudio-default-settings - default settings for the Ubuntu Studio desktop
+ubuntustudio-desktop - Ubuntu Studio Desktop Package
+ubuntustudio-font-meta - Ubuntu Studio fonts Package
+ubuntustudio-generation - Ubuntu Studio Audio Generation Package
+ubuntustudio-graphics - Ubuntu Studio graphics Package
+ubuntustudio-icon-theme - Ubuntu Studio Icon Theme
+ubuntustudio-lightdm-theme - UbuntuStudio LightDM theme
+ubuntustudio-live-settings - configuration for the Ubuntu Studio live-dvd
+ubuntustudio-look - Ubuntu Studio look
+ubuntustudio-menu - Menu for Ubuntu Studio
+ubuntustudio-recording - Ubuntu Studio Audio Recording Package
+ubuntustudio-screensaver - Ubuntu Studio screensaver
+ubuntustudio-sounds - Ubuntu Studio's GNOME audio theme
+ubuntustudio-video - Ubuntu Studio video Package
+ubuntustudio-wallpapers - Ubuntu Studio - Wallpapers
+			]]>
+			</screen>
+		</section>
+		<section id="avlinux">
+			<title>AV Linux</title>
+			<para>http://www.bandshed.net/AVLinux.html</para>
+		</section>
+	</section>
 
 </chapter>

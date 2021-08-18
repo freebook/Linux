@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="install">
 	<title>Installation</title>
-	<section>
+	<section id="docker.centos8">
 		<title>CentOS 8 Stream</title>
 		<para>安装 Docker</para>
 		<screen>
@@ -124,33 +124,64 @@ Server:
 		</section>
 	</section>
 
-	<section>
+	<section id="docker.ubuntu">
 		<title>Ubuntu docker-ce</title>
 		<para>从官方网站获得最新社区版</para>
 		<screen>
 		<![CDATA[
 #!/bin/bash
 
-sudo apt remove docker docker-engine
+sudo apt update
+
+sudo apt remove docker docker-engine docker.io containerd runc
 
 sudo apt install \
     apt-transport-https \
     ca-certificates \
     curl \
-    software-properties-common
+    gnupg \
+    lsb-release
 	
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-sudo apt-key fingerprint 0EBFCD88
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 
-sudo add-apt-repository \
+echo \
+  "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+
+<!-- sudo add-apt-repository \
    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
    $(lsb_release -cs) \
-   stable"
+   stable" -->
    
 sudo apt update
-sudo apt install docker-ce
+sudo apt install docker-ce docker-ce-cli containerd.io
 
 apt-cache madison docker-ce
+		]]>
+		</screen>
+		<para>查看 docker 运行状态</para>
+		<screen>
+		<![CDATA[
+root@production:~# systemctl status docker
+● docker.service - Docker Application Container Engine
+   Loaded: loaded (/lib/systemd/system/docker.service; enabled; vendor preset: enabled)
+   Active: active (running) since Tue 2021-08-17 11:25:04 CST; 57s ago
+     Docs: https://docs.docker.com
+ Main PID: 7379 (dockerd)
+   CGroup: /system.slice/docker.service
+           └─7379 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+
+Aug 17 11:25:04 production dockerd[7379]: time="2021-08-17T11:25:04.708262132+08:00" level=info msg="ClientConn switching balancer to \"pick_first\"" module=grpc
+Aug 17 11:25:04 production dockerd[7379]: time="2021-08-17T11:25:04.742384618+08:00" level=warning msg="Your kernel does not support swap memory limit"
+Aug 17 11:25:04 production dockerd[7379]: time="2021-08-17T11:25:04.742397707+08:00" level=warning msg="Your kernel does not support CPU realtime scheduler"
+Aug 17 11:25:04 production dockerd[7379]: time="2021-08-17T11:25:04.742489785+08:00" level=info msg="Loading containers: start."
+Aug 17 11:25:04 production dockerd[7379]: time="2021-08-17T11:25:04.811316570+08:00" level=info msg="Default bridge (docker0) is assigned with an IP address 172.18.0.0/16. Daemon option --bip can be used 
+Aug 17 11:25:04 production dockerd[7379]: time="2021-08-17T11:25:04.836024290+08:00" level=info msg="Loading containers: done."
+Aug 17 11:25:04 production dockerd[7379]: time="2021-08-17T11:25:04.858428922+08:00" level=info msg="Docker daemon" commit=b0f5bc3 graphdriver(s)=overlay2 version=20.10.7
+Aug 17 11:25:04 production dockerd[7379]: time="2021-08-17T11:25:04.858470910+08:00" level=info msg="Daemon has completed initialization"
+Aug 17 11:25:04 production systemd[1]: Started Docker Application Container Engine.
+Aug 17 11:25:04 production dockerd[7379]: time="2021-08-17T11:25:04.875279830+08:00" level=info msg="API listen on /var/run/docker.sock"		
 		]]>
 		</screen>
 		<para>启动参数配置 /etc/default/docker</para>
@@ -318,8 +349,6 @@ docker volume rm $(docker volume ls -q)
 	</section>
 	<section>
 		<title>早起版本</title>
-
-
 		<section>
 			<title>CentOS 7 docker-ce</title>
 			<para>

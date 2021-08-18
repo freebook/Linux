@@ -115,8 +115,70 @@ ports:
 			]]>
 		</screen>
 	</section>
+	<section id="docker-compose.yml.network">
+		<title>网络配置</title>
+		<section>
+			<title>自定义 IPv4 子网地址</title>
+			<screen>
+			<![CDATA[
+version: '3.9'
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.88.10.0/24
+          gateway: 172.88.10.1			
+			]]>
+			</screen>
+		</section>
+		
+		<section>
+			<title>external 外部网络</title>
+
+			<para>创建固定网段的网络bridge2。</para>
+			<screen>
+		<![CDATA[
+docker network create --subnet=10.16.1.0/16 --gateway=10.16.1.1 --opt "com.docker.network.bridge.name"="bridge2" bridge2		
+		]]>
+			</screen>
+			<para>把bridge2网络配置导docker-compose里面。</para>
+			<screen>
+		<![CDATA[
+networks:
+  default:
+    driver: bridge
+  persist:
+    external:
+      name: bridge2		
+		]]>
+			</screen>
+		</section>
+		<section>
+			<title>配置 IPv6</title>
+			<screen>
+			<![CDATA[
+networks:
+    frontend:
+        # use the bridge driver, but enable IPv6
+        driver: bridge
+        driver_opts:
+            com.docker.network.enable_ipv6: "true"
+        ipam:
+            driver: default
+            config:
+                - subnet: 172.16.238.0/24
+                gateway: 172.16.238.1
+                - subnet: "2001:3984:3989::/64"
+                gateway: "2001:3984:3989::1"			
+			]]>
+			</screen>
+		</section>
+	</section>
+
 	<section id="docker-compose.yml.links">
-		<title>links</title>
+		<title>links 主机别名</title>
 		<para>links的作用是在当前服务里面创建一个链接外部服务的别名。</para>
 		<para>docker-compose.yml</para>
 		<programlisting>
@@ -138,6 +200,53 @@ sql.mysql.driverClassName=com.mysql.jdbc.Driver
 			]]>
 		</screen>
 	</section>
+	<section id="docker-compose.yml.external_links">
+		<title>链接外部容器</title>
+		<para>创建 development 网络</para>
+		<screen>
+		<![CDATA[
+docker network create development --driver bridge		
+docker run --name redis-external --net development -d redis		
+		]]>
+		</screen>
+		<programlisting>
+		<![CDATA[
+version: "3.9"
+networks:
+  default:
+    external:
+      name: development
+services:
+  demo-external:
+    image: demo:1.0
+    container_name: demo-external
+    restart: always
+    environment:
+      REDIS_HOST: redis-external
+    ports:
+      - 80:80
+    external_links:
+      - redis-external
+		]]>
+		</programlisting>
+		<para>测试方法，进入 demo-external 容器，然后 ping redis-external 容器</para>
+		<screen>
+		<![CDATA[
+docker exec -it demo-external ping redis-external		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+[root@netkiller docker]# docker exec -it demo-external ping redis-external
+PING redis-external (172.18.0.3) 56(84) bytes of data.
+64 bytes from redis-external.development (172.18.0.3): icmp_seq=1 ttl=64 time=0.091 ms
+64 bytes from redis-external.development (172.18.0.3): icmp_seq=2 ttl=64 time=0.122 ms
+64 bytes from redis-external.development (172.18.0.3): icmp_seq=3 ttl=64 time=0.185 ms		
+		]]>
+		</screen>
+	</section>
+	
 	<section id="docker-compose.yml.depends_on">
 		<title>服务依赖</title>
 		<para>通过depends_on告诉docker-compose当前服务启动之前先要把depends_on指定的服务启动起来才行。</para>
@@ -332,12 +441,12 @@ services:
 			]]>
 		</screen>
 		<tip>
-		<para>注意：启动必须加入 --compatibility 选项</para>
-		<screen>
+			<para>注意：启动必须加入 --compatibility 选项</para>
+			<screen>
 		<![CDATA[
 docker-compose --compatibility up		
 		]]>
-		</screen>
+			</screen>
 		</tip>
 	</section>
 </section>

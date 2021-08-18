@@ -70,10 +70,30 @@ mysql>
 	]]>
 	</screen>
 </section>
-<section>
+<section id="docker.mongodb">
 	<title>MongoDB</title>
 	<screen>
 	<![CDATA[
+$ docker run -d --network some-network --name mongo \
+	-e MONGO_INITDB_DATABASE=test \
+    -e MONGO_INITDB_ROOT_USERNAME=admin \
+    -e MONGO_INITDB_ROOT_PASSWORD=secret \
+    mongo
+
+$ docker run -it --rm --network some-network mongo \
+    mongo --host mongo \
+        -u admin \
+        -p secret \
+        --authenticationDatabase admin \
+        test
+> db.getName();
+test
+	]]>
+	</screen>
+	<section>
+		<title>使用 mongodb 用户运行</title>
+		<screen>
+		<![CDATA[
 version: '3.9'
 services:
   mongodb:
@@ -85,20 +105,88 @@ services:
     privileged: false
     volumes:
       - ./data:/data
-    # - ./db:/var/lib/mongodb  
-      - ./log:/var/log/mongodb
     ports:
       - 27017:27017
     environment:
       TZ: Asia/Shanghai
       LANG: en_US.UTF-8
+      MONGO_INITDB_DATABASE: admin
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: admin
     entrypoint: docker-entrypoint.sh mongod
     command: 
-    #   --config /etc/mongod.conf
-      --logpath /var/log/mongodb/mongod.log	
-	]]>
-	</screen>
-	
+      --logpath /data/mongod.log	
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title></title>
+		<screen>
+		<![CDATA[
+[www@testing ~]$ sudo  cat /var/log/mongodb/mongod.log | grep '"W"'
+{"t":{"$date":"2021-08-13T19:54:20.219+08:00"},"s":"W",  "c":"ASIO",     "id":22601,   "ctx":"main","msg":"No TransportLayer configured during NetworkInterface startup"}
+{"t":{"$date":"2021-08-13T19:54:20.227+08:00"},"s":"W",  "c":"ASIO",     "id":22601,   "ctx":"main","msg":"No TransportLayer configured during NetworkInterface startup"}
+{"t":{"$date":"2021-08-13T19:54:20.851+08:00"},"s":"W",  "c":"CONTROL",  "id":22178,   "ctx":"initandlisten","msg":"/sys/kernel/mm/transparent_hugepage/enabled is 'always'. We suggest setting it to 'never'","tags":["startupWarnings"]}
+{"t":{"$date":"2021-08-13T20:01:12.470+08:00"},"s":"W",  "c":"ASIO",     "id":22601,   "ctx":"main","msg":"No TransportLayer configured during NetworkInterface startup"}
+{"t":{"$date":"2021-08-13T20:01:12.478+08:00"},"s":"W",  "c":"ASIO",     "id":22601,   "ctx":"main","msg":"No TransportLayer configured during NetworkInterface startup"}
+{"t":{"$date":"2021-08-13T20:01:13.085+08:00"},"s":"W",  "c":"CONTROL",  "id":22178,   "ctx":"initandlisten","msg":"/sys/kernel/mm/transparent_hugepage/enabled is 'always'. We suggest setting it to 'never'","tags":["startupWarnings"]}		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+[root@testing ~]# docker exec -it mongo bash
+root@mongo:/# cat /sys/kernel/mm/transparent_hugepage/enabled
+[always] madvise never
+root@mongo:/# cat /sys/kernel/mm/transparent_hugepage/defrag
+always defer defer+madvise [madvise] never		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+root@mongo:/# echo never > /sys/kernel/mm/transparent_hugepage/defrag
+bash: /sys/kernel/mm/transparent_hugepage/defrag: Read-only file system		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+[root@testing ~]# if test -f /sys/kernel/mm/transparent_hugepage/enabled; then
+>   echo never > /sys/kernel/mm/transparent_hugepage/enabled
+> fi
+
+[root@testing ~]# cat /sys/kernel/mm/transparent_hugepage/enabled
+always madvise [never]
+
+[root@testing ~]# docker exec -it mongo bash
+root@mongo:/# cat /sys/kernel/mm/transparent_hugepage/defrag
+always defer defer+madvise [madvise] never
+
+root@mongo:/# cat /sys/kernel/mm/transparent_hugepage/enabled
+always madvise [never]
+root@mongo:/# exit
+exit		
+		]]>
+		</screen>
+		<para>解决方案 /etc/rc.local 中加入下面脚本，CentOS 8 Stream 开启 rc.local 请参考《Netkiller Linux 手札》</para>
+		<screen>
+		<![CDATA[
+cat <<'EOF'>> /etc/rc.local 
+		
+if test -f /sys/kernel/mm/transparent_hugepage/enabled; then
+	echo never > /sys/kernel/mm/transparent_hugepage/enabled
+fi
+
+if test -f /sys/kernel/mm/transparent_hugepage/defrag; then
+	echo never > /sys/kernel/mm/transparent_hugepage/defrag
+fi
+EOF
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+[root@testing ~]# systemctl restart rc-local
+		]]>
+		</screen>
+	</section>
+
 </section>

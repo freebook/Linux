@@ -138,6 +138,23 @@ $ cat /sys/class/net/eth0/statistics/tx_bytes
 			]]>
 			</screen>
 		</section>
+		<section id="sysfsutils">
+			<title>sysfsutils</title>
+			<screen>
+			<![CDATA[
+[root@development ~]# dnf install sysfsutils			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+cat >> /etc/sysfs.conf <<EOF
+kernel/mm/transparent_hugepage/enabled = never
+kernel/mm/transparent_hugepage/defrag = never
+EOF			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="proc">
 		<title>/proc</title>
