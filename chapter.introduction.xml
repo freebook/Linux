@@ -2,710 +2,6 @@
 <!-- $Id: chapter.introduction.xml 655 2013-07-31 09:16:47Z netkiller $ -->
 <chapter id="introduction">
 	<title>Introduction</title>
-	<section id="install.centos8">
-		<title>CentOS 8 Stream</title>
-		<para>Centos 8 较之前的版本改动比较大</para>
-		<itemizedlist>
-			<title>CentOS 有两个发行版</title>
-			<listitem>CentOS stream：滚动发布的 Linux 发行版，适用于需要频繁更新的开发者</listitem>
-			<listitem>CentOS：类似 RHEL 8 的稳定操作系统，系统管理员可以用其部署或配置服务和应用</listitem>
-		</itemizedlist>
-		<section>
-			<title>U 盘安装 CentOS Stream</title>
-			<para>下载 ISO 文件你会发现只有boot和dvd1，boot 是网络安装，而DVD1差不多8G，估计你的手上没有 DVD9光盘，普通DVD光盘是D5只有4.7G，那么怎么安装呢，使用U盘。</para>
-			<para>将ISO文件烧录到U盘中，方法如下。</para>
-			<screen>
-		<![CDATA[
-neo@MacBook-Pro-Neo ~/Downloads % sudo dd if=CentOS-Stream-x86_64-dvd1.iso of=/dev/disk2 bs=1m
-Password:
-dd: /dev/disk2: end of device
-7581+0 records in
-7580+1 records out
-7948210176 bytes transferred in 1500.898226 secs (5295636 bytes/sec)
-		]]>
-			</screen>
-			<para>我手上并没有大容量U盘，我是用USB读卡器+8GB TF卡。</para>
-			<para>使用 dd 命令将 ISO 写入U盘后，使用U盘启动电脑就可以安装了。</para>
-			<para>如果下载速度慢，可以从国内镜像下载 ISO 文件</para>
-			<screen>
-		<![CDATA[
-neo@MacBook-Pro-Neo ~ % wget -c http://mirrors.163.com/centos/8-stream/isos/x86_64/CentOS-Stream-8-x86_64-20210706-dvd1.iso	
-		]]>
-			</screen>
-		</section>
-		<section>
-			<title>macOS 制作 U 盘启动盘速度慢</title>
-			<para>制作启动盘慢怎么解决</para>
-			<para>查看 U 盘设备文件，这里是 /dev/disk2</para>
-			<screen>
-		<![CDATA[
-neo@MacBook-Pro-Neo ~ % diskutil list
-/dev/disk0 (internal, physical):
-   #:                       TYPE NAME                    SIZE       IDENTIFIER
-   0:      GUID_partition_scheme                        *251.0 GB   disk0
-   1:                        EFI ⁨EFI⁩                     209.7 MB   disk0s1
-   2:                 Apple_APFS ⁨Container disk1⁩         250.8 GB   disk0s2
-
-/dev/disk1 (synthesized):
-   #:                       TYPE NAME                    SIZE       IDENTIFIER
-   0:      APFS Container Scheme -                      +250.8 GB   disk1
-                                 Physical Store disk0s2
-   1:                APFS Volume ⁨Macintosh HD - Data⁩     209.8 GB   disk1s1
-   2:                APFS Volume ⁨Preboot⁩                 685.0 MB   disk1s2
-   3:                APFS Volume ⁨Recovery⁩                620.1 MB   disk1s3
-   4:                APFS Volume ⁨VM⁩                      6.4 GB     disk1s4
-   5:                APFS Volume ⁨Macintosh HD⁩            15.4 GB    disk1s5
-   6:              APFS Snapshot ⁨com.apple.os.update-...⁩ 15.4 GB    disk1s5s1
-
-/dev/disk2 (external, physical):
-   #:                       TYPE NAME                    SIZE       IDENTIFIER
-   0:                                                   *30.8 GB    disk2		
-		]]>
-			</screen>
-			<para>制作U盘启动盘，注意！将 /dev/disk2 改成 /dev/rdisk2 写入速度会提速，rdisk 是 rawdisk。</para>
-			<screen>
-		<![CDATA[
-neo@MacBook-Pro-Neo ~ % sudo dd if=CentOS-Stream-8-x86_64-20210706-dvd1.iso of=/dev/rdisk2 bs=100m
-Password:			
-		]]>
-			</screen>
-
-			<table>
-				<title>Linux server partition</title>
-				<tgroup cols="2">
-					<thead>
-						<row>
-							<entry>volume</entry>
-							<entry>size</entry>
-						</row>
-					</thead>
-					<tbody>
-						<row>
-							<entry>/boot</entry>
-							<entry>300M</entry>
-						</row>
-						<row>
-							<entry>/</entry>
-							<entry>30G</entry>
-						</row>
-						<row>
-							<entry>/var</entry>
-							<entry>50G</entry>
-						</row>
-						<row>
-							<entry>/opt</entry>
-							<entry>remainder</entry>
-						</row>
-						<row>
-							<entry>swap</entry>
-							<entry>memory * 2</entry>
-						</row>
-					</tbody>
-				</tgroup>
-			</table>
-
-			<table>
-				<title>Linux desktop partition</title>
-				<tgroup cols="2">
-					<thead>
-						<row>
-							<entry>volume</entry>
-							<entry>size</entry>
-						</row>
-					</thead>
-					<tbody>
-						<row>
-							<entry>/boot</entry>
-							<entry>300M</entry>
-						</row>
-						<row>
-							<entry>/</entry>
-							<entry>30G</entry>
-						</row>
-						<row>
-							<entry>/var</entry>
-							<entry>50G</entry>
-						</row>
-						<row>
-							<entry>/home</entry>
-							<entry>remainder</entry>
-						</row>
-						<row>
-							<entry>swap</entry>
-							<entry>memory * 2</entry>
-						</row>
-					</tbody>
-				</tgroup>
-			</table>
-
-		</section>
-		<section>
-			<title>首次安装后初始化系统</title>
-			<para>Extra Packages for Enterprise Linux repository configuration</para>
-			<screen>
-			<![CDATA[
-dnf -y upgrade
-dnf -y install epel-release
-			]]>
-			</screen>
-			<para>管理员常用工具</para>
-			<screen>
-			<![CDATA[
-dnf install -y bzip2 tree psmisc \
-telnet wget rsync vim-enhanced \
-net-tools bind-utils			
-			]]>
-			</screen>
-			<para>设置终端字符集（这样对 macOS 更友好），还可以解决 Failed to set locale, defaulting to C.UTF-8 问题</para>
-			<screen>
-			<![CDATA[
-dnf install -y langpacks-en glibc-langpack-en
-localectl set-locale LANG=en_US.UTF-8
-			
-cat >> /etc/environment <<EOF
-LC_ALL=en_US.UTF-8
-LANG=en_US.UTF-8
-LC_CTYPE=UTF-8
-EOF			
-			]]>
-			</screen>
-			<!-- dnf install langpacks-en glibc-all-langpacks -y -->
-			<para>设置历史记录格式，可以看到命令的执行时间</para>
-			<screen>
-			<![CDATA[			
-cat >> /etc/profile.d/history.sh <<EOF
-# Administrator specific aliases and functions for system security
-export HISTSIZE=10000
-export HISTFILESIZE=10000
-export HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S "
-export TIME_STYLE=long-iso
-EOF
-
-source /etc/profile.d/history.sh			
-			]]>
-			</screen>
-			<para>关闭 SELINUX</para>
-			<screen>
-			<![CDATA[
-cp /etc/selinux/config{,.original}
-sed -i "s/SELINUX=enforcing/SELINUX=disabled/" /etc/selinux/config
-
-setenforce Permissive			
-			]]>
-			</screen>
-			<para>sysctl 优化</para>
-			<screen>
-			<![CDATA[
-cat >> /etc/sysctl.conf <<EOF
-
-# Netkiller
-net.ipv4.ip_local_port_range = 1025 65500
-net.ipv4.tcp_tw_reuse = 1
-net.ipv4.tcp_keepalive_time = 1800
-net.core.netdev_max_backlog=3000
-net.ipv4.tcp_max_syn_backlog = 1024
-net.ipv4.tcp_max_tw_buckets = 4096
-net.core.somaxconn = 1024
-
-# TCP BBR
-net.core.default_qdisc=fq
-net.ipv4.tcp_congestion_control=bbr
-EOF
-#net.ipv4.tcp_syncookies = 1
-#net.ipv4.tcp_fin_timeout = 60
-
-sysctl -p			
-			]]>
-			</screen>
-			<para>ulimit 优化</para>
-			<screen>
-			<![CDATA[
-cat > /etc/security/limits.d/20-nofile.conf <<EOF
-
-www soft nofile 65535
-www hard nofile 65535
-
-nginx soft nofile 65535
-nginx hard nofile 65535
-
-mysql soft nofile 65535
-mysql hard nofile 65535
-
-redis soft nofile 65535
-redis hard nofile 65535
-
-rabbitmq soft nofile 40960
-rabbitmq hard nofile 40960
-
-hadoop soft nofile 65535
-hadoop hard nofile 65535
-
-EOF			
-			]]>
-			</screen>
-			<para>设置时区</para>
-			<screen>
-			<![CDATA[
-timedatectl set-timezone Asia/Shanghai			
-			]]>
-			</screen>
-			<para>安装时间同步服务器，确保每台服务器的时间同步</para>
-			<screen>
-			<![CDATA[
-dnf install -y chrony
-systemctl enable chronyd
-systemctl start chronyd			
-			]]>
-			</screen>
-			<para>zmodem 用来上传和下载文件（注意 macOS 的 Terminal.app 不支持）</para>
-			<screen>
-			<![CDATA[
-dnf install -y lrzsz			
-			]]>
-			</screen>
-			<para>优化 SSH</para>
-			<screen>
-			<![CDATA[
-cp /etc/ssh/sshd_config{,.original}
-
-vim /etc/ssh/sshd_config <<EOF > /dev/null 2>&1
-:43,43s/PermitRootLogin yes/PermitRootLogin no/
-:84,84s/GSSAPIAuthentication yes/GSSAPIAuthentication no/
-:99,99s/#AllowTcpForwarding yes/AllowTcpForwarding no/
-:106,106/X11Forwarding yes/X11Forwarding no/
-:116,116s/#TCPKeepAlive yes/TCPKeepAlive yes/
-:121,121s/#UseDNS no/UseDNS no/
-:wq
-EOF
-			]]>
-			</screen>
-			<para>禁止 root 登陆，开启 sudo</para>
-			<para>禁用普通用户，我们需要一个普通用户登陆，然后使用 sudo 暂时获得 root 权限，我不打算新建一个用户，发现系统里面内置了 operator 这个操作员用户符合我的需求。</para>
-			<screen>
-			<![CDATA[
-usermod -s /bin/bash -aG wheel operator
-
-PASSWORD=$(cat /dev/urandom | tr -dc [:alnum:] | head -c 32)
-
-echo operator:${PASSWORD} | chpasswd
-echo "operator password: ${PASSWORD}"			
-			]]>
-			</screen>
-			<para>将 /usr/local/sbin:/usr/local/bin 路径加入到 Defaults secure_path = /sbin:/bin:/usr/sbin:/usr/bin，否则sudo找不到 /usr/local/sbin:/usr/local/bin 中的可执行文件。</para>
-			<screen>
-			<![CDATA[
-sed -i "s/#PermitRootLogin yes/PermitRootLogin no/" /etc/ssh/sshd_config
-systemctl restart sshd
-			
-cp /etc/sudoers{,.original}
-
-sed -i '88s#$#:/usr/local/sbin:/usr/local/bin#' /etc/sudoers
-
-visudo -c
-			]]>
-			</screen>
-		</section>
-		<section>
-			<title>启动 rc.local</title>
-			<para>/etc/rc.local 是一个开机启动脚本</para>
-			<screen>
-		<![CDATA[
-[root@testing ~]# cat /etc/rc.local
-#!/bin/bash
-# THIS FILE IS ADDED FOR COMPATIBILITY PURPOSES
-#
-# It is highly advisable to create own systemd services or udev rules
-# to run scripts during boot instead of using this file.
-#
-# In contrast to previous versions due to parallel execution during boot
-# this script will NOT be run after all other services.
-#
-# Please note that you must run 'chmod +x /etc/rc.d/rc.local' to ensure
-# that this script will be executed during boot.
-
-touch /var/lock/subsys/local		
-		]]>
-			</screen>
-			<tip>
-				<para>很多系统已经弃用了该运行方案</para>
-			</tip>
-			<para>CentOS 8 Stream 如果你想使用 rc.local 需要做如下配置</para>
-			<screen>
-		<![CDATA[
-cat >> /usr/lib/systemd/system/rc-local.service <<EOF
-
-[Install]
-WantedBy=multi-user.target
-EOF		
-		]]>
-			</screen>
-			<para></para>
-			<screen>
-			<![CDATA[
-[root@testing ~]# chmod +x /etc/rc.d/rc.local		
-
-[root@testing ~]# systemctl enable rc-local
-Created symlink /etc/systemd/system/multi-user.target.wants/rc-local.service → /usr/lib/systemd/system/rc-local.service.
-
-[root@testing ~]# systemctl start rc-local	
-
-[root@testing ~]# systemctl status rc-local
-● rc-local.service - /etc/rc.d/rc.local Compatibility
-   Loaded: loaded (/usr/lib/systemd/system/rc-local.service; enabled; vendor preset: disabled)
-   Active: active (exited) since Mon 2021-08-16 12:57:16 CST; 2s ago
-     Docs: man:systemd-rc-local-generator(8)
-  Process: 532000 ExecStart=/etc/rc.d/rc.local start (code=exited, status=0/SUCCESS)
-
-Aug 16 12:57:16 testing systemd[1]: Starting /etc/rc.d/rc.local Compatibility...
-Aug 16 12:57:16 testing systemd[1]: Started /etc/rc.d/rc.local Compatibility.	
-			]]>
-			</screen>
-		</section>
-		<section>
-			<title>卸载防火墙</title>
-			<para>firewalld 不是适合 IDC 使用，IDC 通常只需要 INPUT 规则，其次是 OUTPUT 规则，所以我们换回 iptables 或者 nftable</para>
-			<screen>
-			<![CDATA[
-systemctl stop firewalld
-
-dnf remove -y firewalld
-dnf install iptables-services -y
-
-systemctl start iptables
-systemctl enable iptables
-
-systemctl stop ip6tables
-systemctl disable ip6tables
-			]]>
-			</screen>
-		</section>
-	</section>
-	<section id="install.ubuntu">
-		<title>Debian / Ubuntu</title>
-		<para>
-			Ubuntu Server Edition
-			<ulink url="http://www.ubuntu.com/">http://www.ubuntu.com/</ulink>
-		</para>
-		<para>
-			Debian
-			<ulink url="https://www.debian.org/index.zh-cn.html">https://www.debian.org/index.zh-cn.html</ulink>
-		</para>
-		<section>
-			<title>历史记录优化</title>
-			<screen>
-			<![CDATA[
-cat >> /etc/profile.d/history.sh <<EOF
-# Administrator specific aliases and functions for system security
-# Add by netkiller
-export HISTSIZE=10000
-export HISTFILESIZE=10000
-export HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S "
-export TIME_STYLE=long-iso
-EOF
-
-source /etc/profile.d/history.sh				
-			]]>
-			</screen>
-		</section>
-		<section>
-			<title>关闭 SELinux</title>
-			<screen>
-			<![CDATA[
-cat >> /etc/selinux/config <<EOF
-# Add by netkiller
-SELINUX=disabled
-EOF
-
-setenforce Permissive		
-			]]>
-			</screen>
-			<tip>
-				<para>很多云主机的linux系统selinux被裁剪掉了，所以不用关闭 selinux</para>
-			</tip>
-		</section>
-		<section>
-			<title>sysctl / ulimit</title>
-			<para>sysctl 优化</para>
-			<screen>
-			<![CDATA[
-cat >> /etc/sysctl.conf <<EOF
-
-# Netkiller
-net.ipv4.ip_local_port_range = 1025 65500
-net.ipv4.tcp_tw_reuse = 1
-net.ipv4.tcp_keepalive_time = 1800
-net.core.netdev_max_backlog=3000
-net.ipv4.tcp_max_syn_backlog = 1024
-net.ipv4.tcp_max_tw_buckets = 4096
-net.core.somaxconn = 1024
-
-# TCP BBR
-net.core.default_qdisc=fq
-net.ipv4.tcp_congestion_control=bbr
-EOF
-#net.ipv4.tcp_syncookies = 1
-#net.ipv4.tcp_fin_timeout = 60
-
-sysctl -p			
-			]]>
-			</screen>
-			<tip>
-				<para>如果是阿里云会自动帮你配置</para>
-				<programlisting>
-				<![CDATA[
-# see details in https://help.aliyun.com/knowledge_detail/39428.html
-net.ipv4.conf.all.rp_filter = 0
-net.ipv4.conf.default.rp_filter = 0
-net.ipv4.conf.default.arp_announce = 2
-net.ipv4.conf.lo.arp_announce = 2
-net.ipv4.conf.all.arp_announce = 2
-
-# see details in https://help.aliyun.com/knowledge_detail/41334.html
-net.ipv4.tcp_max_tw_buckets = 5000
-net.ipv4.tcp_syncookies = 1
-net.ipv4.tcp_max_syn_backlog = 1024
-net.ipv4.tcp_synack_retries = 2
-net.ipv4.tcp_slow_start_after_idle = 0				
-				]]>
-				</programlisting>
-			</tip>
-			<para>ulimit 优化</para>
-			<screen>
-			<![CDATA[
-cat > /etc/security/limits.d/20-nofile.conf <<EOF
-
-www soft nofile 65535
-www hard nofile 65535
-
-nginx soft nofile 65535
-nginx hard nofile 65535
-
-mysql soft nofile 65535
-mysql hard nofile 65535
-
-redis soft nofile 65535
-redis hard nofile 65535
-
-rabbitmq soft nofile 40960
-rabbitmq hard nofile 40960
-
-hadoop soft nofile 65535
-hadoop hard nofile 65535
-
-EOF			
-			]]>
-			</screen>
-			<tip>
-				<para>如果是阿里云，不需要配置</para>
-				<screen>
-			<![CDATA[
-root@netkiller:~# cat /etc/security/limits.conf | tail -n 6
-
-# End of file
-root soft nofile 65535
-root hard nofile 65535
-* soft nofile 65535
-* hard nofile 65535			
-			]]>
-				</screen>
-			</tip>
-			<para>Redis 配置</para>
-			<screen>
-			<![CDATA[
-cat >> /etc/sysctl.conf <<EOF
-
-# Redis
-net.core.somaxconn = 1024
-vm.overcommit_memory=1
-EOF				
-			]]>
-			</screen>
-			<para>MongoDB 配置</para>
-			<screen>
-			<![CDATA[
-cat <<'EOF'>> /etc/rc.local 
-		
-if test -f /sys/kernel/mm/transparent_hugepage/enabled; then
-	echo never > /sys/kernel/mm/transparent_hugepage/enabled
-fi
-
-if test -f /sys/kernel/mm/transparent_hugepage/defrag; then
-	echo never > /sys/kernel/mm/transparent_hugepage/defrag
-fi
-EOF
-			]]>
-			</screen>
-		</section>
-		<section>
-			<title>时间同步</title>
-			<para>查看时区</para>
-			<screen>
-			<![CDATA[
-cat /etc/timezone			
-			]]>
-			</screen>
-			<para></para>
-			<screen>
-			<![CDATA[
-root@netkiller:~# timedatectl set-local-rtc 0
-root@netkiller:~# timedatectl
-      Local time: Tue 2021-08-17 10:32:27 CST
-  Universal time: Tue 2021-08-17 02:32:27 UTC
-        RTC time: Tue 2021-08-17 02:32:27
-       Time zone: Asia/Shanghai (CST, +0800)
- Network time on: yes
-NTP synchronized: yes
- RTC in local TZ: no			
-			]]>
-			</screen>
-			<para>确认 Network time on: yes 和 NTP synchronized: yes 开启，然后启动时间同步 systemd-timesyncd.service。</para>
-			<screen>
-			<![CDATA[
-root@netkiller:~# systemctl start systemd-timesyncd.service
-
-root@netkiller:~# systemctl status systemd-timesyncd.service
-● systemd-timesyncd.service - Network Time Synchronization
-   Loaded: loaded (/lib/systemd/system/systemd-timesyncd.service; enabled; vendor preset: enabled)
-  Drop-In: /lib/systemd/system/systemd-timesyncd.service.d
-           └─disable-with-time-daemon.conf
-   Active: inactive (dead)
-Condition: start condition failed at Tue 2021-08-17 10:29:36 CST; 14min ago
-     Docs: man:systemd-timesyncd.service(8)
-
-Aug 17 10:29:36 netkiller systemd[1]: Stopped Network Time Synchronization.			
-			]]>
-			</screen>
-			<para>如果 systemd-timesyncd.service 启动失败，可能是系统已经有其他时间同步服务在运行。查看方法</para>
-			<screen>
-			<![CDATA[
-root@netkiller:~# cat /lib/systemd/system/systemd-timesyncd.service.d/disable-with-time-daemon.conf 
-[Unit]
-# don't run timesyncd if we have another NTP daemon installed
-ConditionFileIsExecutable=!/usr/sbin/ntpd
-ConditionFileIsExecutable=!/usr/sbin/openntpd
-ConditionFileIsExecutable=!/usr/sbin/chronyd
-ConditionFileIsExecutable=!/usr/sbin/VBoxService			
-			]]>
-			</screen>
-			<para>然后逐一检查 ConditionFileIsExecutable 后面的程序，最终我们找到了 chronyd</para>
-			<screen>
-			<![CDATA[
-root@netkiller:~# whereis chronyd
-chronyd: /usr/sbin/chronyd /usr/share/man/man8/chronyd.8.gz
-
-root@netkiller:~# systemctl status chrony
-● chrony.service - LSB: Controls chronyd NTP time daemon
-   Loaded: loaded (/etc/init.d/chrony; bad; vendor preset: enabled)
-   Active: active (running) since Mon 2021-08-16 19:05:31 CST; 15h ago
-     Docs: man:systemd-sysv-generator(8)
-   CGroup: /system.slice/chrony.service
-           └─1222 /usr/sbin/chronyd
-
-Aug 16 19:05:29 netkiller systemd[1]: Starting LSB: Controls chronyd NTP time daemon...
-Aug 16 19:05:29 netkiller chronyd[1222]: chronyd version 2.1.1 starting (+CMDMON +NTP +REFCLOCK +RTC +PRIVDROP -DEBUG +ASYNCDNS +IPV6 +SECHASH)
-Aug 16 19:05:29 netkiller chronyd[1222]: Frequency -14.398 +/- 0.452 ppm read from /var/lib/chrony/drift
-Aug 16 19:05:31 netkiller chrony[1201]: Password: chronyd is running and online.
-Aug 16 19:05:31 netkiller systemd[1]: Started LSB: Controls chronyd NTP time daemon.
-Aug 16 19:05:39 netkiller chronyd[1222]: Selected source 100.100.61.88			
-			]]>
-			</screen>
-			<para>确保 chronyd 处于工作状态，systemd-timesyncd.service 与 chronyd 选择其中一个即可。所以我们不用在关心 systemd-timesyncd.service</para>
-		</section>
-		<section>
-			<title>启动 rc.local</title>
-			<para>/etc/rc.local 是一个开机启动脚本</para>
-			<tip>
-				<para>很多系统已经弃用了该运行方案</para>
-			</tip>
-			<screen>
-			<![CDATA[
-root@netkiller:~# cat /etc/rc.local
-#!/bin/sh -e
-#
-# rc.local
-#
-# This script is executed at the end of each multiuser runlevel.
-# Make sure that the script will "exit 0" on success or any other
-# value on error.
-#
-# In order to enable or disable this script just change the execution
-# bits.
-#
-# By default this script does nothing.
-
-exit 0	
-			]]>
-			</screen>
-			<para>注意：一定要删除 exit 0，之所以加入这行就是linux系统不鼓励你使用 rc.local </para>
-			<screen>
-			<![CDATA[
-root@netkiller:~# sed -i '$d' /etc/rc.local			
-			]]>
-			</screen>
-			<para>删除后效果</para>
-			<screen>
-			<![CDATA[
-root@netkiller:~# cat /etc/rc.local
-#!/bin/sh -e
-#
-# rc.local
-#
-# This script is executed at the end of each multiuser runlevel.
-# Make sure that the script will "exit 0" on success or any other
-# value on error.
-#
-# In order to enable or disable this script just change the execution
-# bits.
-#
-# By default this script does nothing.
-
-			]]>
-			</screen>
-			<para>rc-local.service 需要做如下配置</para>
-			<!-- /lib/systemd/system/rc-local.service.d/debian.conf -->
-			<screen>
-			<![CDATA[
-cat >> /lib/systemd/system/rc-local.service <<EOF
-
-[Install]
-WantedBy=multi-user.target
-EOF		
-			]]>
-			</screen>
-			<para></para>
-			<screen>
-			<![CDATA[
-[root@testing ~]# chmod +x /etc/rc.local
-
-[root@testing ~]# systemctl enable rc-local
-Created symlink /etc/systemd/system/multi-user.target.wants/rc-local.service → /usr/lib/systemd/system/rc-local.service.
-
-[root@testing ~]# systemctl start rc-local	
-
-[root@testing ~]# systemctl status rc-local
-● rc-local.service - /etc/rc.d/rc.local Compatibility
-   Loaded: loaded (/usr/lib/systemd/system/rc-local.service; enabled; vendor preset: disabled)
-   Active: active (exited) since Mon 2021-08-16 12:57:16 CST; 2s ago
-     Docs: man:systemd-rc-local-generator(8)
-  Process: 532000 ExecStart=/etc/rc.d/rc.local start (code=exited, status=0/SUCCESS)
-
-Aug 16 12:57:16 testing systemd[1]: Starting /etc/rc.d/rc.local Compatibility...
-Aug 16 12:57:16 testing systemd[1]: Started /etc/rc.d/rc.local Compatibility.	
-			]]>
-			</screen>
-		</section>
-		<section>
-			<title>禁用防火墙</title>
-			<para>禁用防火墙</para>
-			<screen>
-			<![CDATA[
-root@production:~# ufw disable
-Firewall stopped and disabled on system startup			
-			]]>
-			</screen>
-		</section>
-
-	</section>
 	&chapter.install.xml;
 	<section id="linux.distribution">
 		<title>Linux 发行版本</title>
@@ -740,14 +36,12 @@ Firewall stopped and disabled on system startup
 		</section>
 
 
-	</section>
-
-	<section id="linux">
-		<title>Linux 专用领域发行版</title>
-		<para>这些Linux都是为了特别用途而优化过的，例如处理音频，视频等等</para>
-		<section id="ubuntustudio">
-			<title>ubuntustudio</title>
-			<screen>
+		<section id="linux">
+			<title>Linux 专用领域发行版</title>
+			<para>这些Linux都是为了特别用途而优化过的，例如处理音频，视频等等</para>
+			<section id="ubuntustudio">
+				<title>ubuntustudio</title>
+				<screen>
 			<![CDATA[
 $ apt-cache search ubuntustudio
 plymouth-theme-ubuntustudio - Ubuntu Studio Plymouth theme
@@ -771,11 +65,274 @@ ubuntustudio-sounds - Ubuntu Studio's GNOME audio theme
 ubuntustudio-video - Ubuntu Studio video Package
 ubuntustudio-wallpapers - Ubuntu Studio - Wallpapers
 			]]>
-			</screen>
+				</screen>
+			</section>
+			<section id="avlinux">
+				<title>AV Linux</title>
+				<para>http://www.bandshed.net/AVLinux.html</para>
+			</section>
 		</section>
-		<section id="avlinux">
-			<title>AV Linux</title>
-			<para>http://www.bandshed.net/AVLinux.html</para>
+		<section id="install">
+			<title>早起版本</title>
+			<subtitle>Getting Started Guides</subtitle>
+			<section id="install.scientific">
+				<title>Scientific Linux</title>
+				<para>
+					<graphic format="png" fileref="images/scientific/scientific-1.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/scientific/scientific-2.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/scientific/scientific-3.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/scientific/scientific-4.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/scientific/scientific-5.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/scientific/scientific-6.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/scientific/scientific-7.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/scientific/scientific-8.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/scientific/scientific-9.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/scientific/scientific-10.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/scientific/scientific-11.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/scientific/scientific-12.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/scientific/scientific-13.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/scientific/scientific-14.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/scientific/scientific-15.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/scientific/scientific-16.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/scientific/scientific-17.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/scientific/scientific-18.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/scientific/scientific-19.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/scientific/scientific-20.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/scientific/scientific-21.png" srccredit="neo" width="" />
+				</para>
+			</section>
+			<section id="install.redhat">
+				<title>Redhat Linux</title>
+				<para>
+					<graphic format="png" fileref="images/redhat/Redhat-000010.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/redhat/Redhat-000011.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/redhat/Redhat-000012.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/redhat/Redhat-000013.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/redhat/Redhat-000014.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/redhat/Redhat-000015.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/redhat/Redhat-000016.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/redhat/Redhat-000017.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/redhat/Redhat-000018.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/redhat/Redhat-000019.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/redhat/Redhat-000020.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/redhat/Redhat-000021.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/redhat/Redhat-000022.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/redhat/Redhat-000023.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/redhat/Redhat-000024.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/redhat/Redhat-000025.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/redhat/Redhat-000026.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/redhat/Redhat-000027.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/redhat/Redhat-000028.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/redhat/Redhat-000029.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/redhat/Redhat-000030.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/redhat/Redhat-000031.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/redhat/Redhat-000032.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/redhat/Redhat-000033.png" srccredit="neo" width="" />
+				</para>
+			</section>
+			<section id="install.centos">
+				<title>CentOS 6</title>
+				<para>
+					<graphic format="png" fileref="images/centos/CentOS-1.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/centos/CentOS-2.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/centos/CentOS-3.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/centos/CentOS-4.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/centos/CentOS-5.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/centos/CentOS-6.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/centos/CentOS-6-1.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/centos/CentOS-6-2.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/centos/CentOS-7.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/centos/CentOS-8.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/centos/CentOS-9.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/centos/CentOS-10.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/centos/CentOS-10-1.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/centos/CentOS-10-2.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/centos/CentOS-10-3.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/centos/CentOS-10-4.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/centos/CentOS-10-5.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/centos/CentOS-10-6.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/centos/CentOS-10-7.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/centos/CentOS-10-8.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/centos/CentOS-10-9.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/centos/CentOS-10-10.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/centos/CentOS-11.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/centos/CentOS-12.png" srccredit="neo" width="" />
+				</para>
+				<para>
+					<graphic format="png" fileref="images/centos/CentOS-13.png" srccredit="neo" width="" />
+				</para>
+			</section>
+			<section id="5.x">
+				<title>5.x 减肥</title>
+				<para>卸载无用的包</para>
+				<screen>
+				<![CDATA[
+yum remove NetworkManager
+yum remove avahi
+yum remove cups
+yum remove bluez-gnome bluez-utils bluez-libs
+yum remove isdn4k-utils
+				]]>
+				</screen>
+			</section>
+			<section id="6.x">
+				<title>6.x Mini 安装后需要做的一些事</title>
+				<para>禁用防火墙与SELinux</para>
+				<screen>
+				<![CDATA[
+lokkit --disabled --selinux=disabled				
+				]]>
+				</screen>
+				<screen>
+				<![CDATA[
+yum remove dhclient -y				
+				]]>
+				</screen>
+				<screen>
+				<![CDATA[
+yum update -y
+yum install -y telnet wget rsync
+yum install -y openssh-clients
+yum install -y system-config-network-tui
+yum install -y bind-utils
+yum install -y vim-enhanced
+				]]>
+				</screen>
+			</section>
+
+
 		</section>
 	</section>
 

@@ -416,6 +416,39 @@ git remote remove origin
 			</screen>
 		</section>
 	</section>
+	<section id="git.merge">
+		<title>合并分支</title>
+		<para>testing 分支向 master 分支合并</para>
+		<para>获取 testing 合并请求的分支</para>
+		<screen>
+		<![CDATA[
+git fetch origin
+git checkout -b "testing" "origin/testing"		
+		]]>
+		</screen>
+		<para>如果此前已经执行过，使用下面命令切换分支即可，切换后 pull 代码，看看有什么新提交</para>
+		<screen>
+		<![CDATA[
+git checkout "testing"
+git pull
+		]]>
+		</screen>
+		<para>切换到 master 分支</para>
+		<screen>
+		<![CDATA[
+git fetch origin
+git checkout "master"
+git branch --show-current
+git merge --no-ff "testing"
+		]]>
+		</screen>
+		<para>将合并结果推送到远程</para>
+		<screen>
+		<![CDATA[
+git push origin "master"		
+		]]>
+		</screen>
+	</section>
 	&section.git.submodule.xml;
 	&section.git.lfs.xml;
 	<section id="git.command">

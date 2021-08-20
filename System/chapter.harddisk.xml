@@ -48,7 +48,6 @@ lrwxrwxrwx 1 root root 10 2009-07-11 00:52 cc2c1be9-a6e0-4494-a5f0-76b39d3fc1f0 
 		<title>Label</title>
 		<section>
 			<title>Ext2</title>
-
 			<para>e2label - Change the label on an ext2/ext3 filesystem</para>
 			<section>
 				<title>查看卷标</title>

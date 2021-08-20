@@ -1,166 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="infomation">
-	<title>获取系统信息</title>
-	<section id="lsb_release">
-		<title>Distribution information</title>
-		<para>To find your Ubuntu version: lsb_release -a</para>
-		<screen>
-		<![CDATA[
-[root@localhost ~]# lsb_release -a
-LSB Version:    :core-3.1-ia32:core-3.1-noarch:graphics-3.1-ia32:graphics-3.1-noarch
-Distributor ID: CentOS
-Description:    CentOS release 5.2 (Final)
-Release:        5.2
-Codename:       Final
-
-
-neo@netkiller:~$ lsb_release -a
-
-No LSB modules are available.
-Distributor ID: Ubuntu
-Description:    Ubuntu 8.04.1
-Release:        8.04
-Codename:       hardy
-		]]>
-		</screen>
-		<screen><![CDATA[
-$ head -n1 /etc/issue
-Ubuntu 10.04 LTS \n \l
-		]]></screen>
-	</section>
-	<section id="system.infomation">
-		<title>System Infomation</title>
-		<section id="system.cpu">
-			<title>Cpu Bit</title>
-			<screen><![CDATA[
-neo@netkiller:~$ uname -a
-Linux netkiller 2.6.28-15-server #52-Ubuntu SMP Wed Sep 9 11:34:09 UTC 2009 x86_64 GNU/Linux
-
-neo@netkiller:~$ getconf LONG_BIT
-64
-			]]></screen>
-		</section>
-	</section>
-	<section id="system.shutdown">
-		<title>shutdown</title>
-		<screen><![CDATA[
-shutdown -h now
-shutdown -h 10:00 10点关机
-shutdown -h +10 10mins后关机
-shutdown -r now reboot at once
-shutdown -r +30 'System will reboot in 30mins'
-shutdown -k 'System will reboot'
-		]]></screen>
-	</section>
-	<section id="system.profile">
-		<title>Profile</title>
-		<section>
-			<title>shell</title>
-			<screen><![CDATA[
-$ chsh /bin/bash
-			]]></screen>
-		</section>
-	</section>
-
-	<section id="alternatives">
-		<title>环境默认值</title>
-		<subtitle>alternatives - maintain symbolic links determining default commands</subtitle>
-
-		<section>
-			<title>显示所有配置项</title>
-			<screen>
-			<![CDATA[
-[root@localhost ~]# alternatives --list
-libwbclient.so.0.14-64	auto	/usr/lib64/samba/wbclient/libwbclient.so.0.14
-ld	auto	/usr/bin/ld.bfd
-cups_backend_smb	auto	/usr/bin/smbspool
-mta	auto	/usr/sbin/sendmail.postfix
-libnssckbi.so.x86_64	auto	/usr/lib64/pkcs11/p11-kit-trust.so
-jre_1.8.0	auto	/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.212.b04-0.el7_6.x86_64/jre
-jre_1.8.0_openjdk	auto	/usr/lib/jvm/jre-1.8.0-openjdk-1.8.0.212.b04-0.el7_6.x86_64
-pgsql-ld-conf	auto	/usr/pgsql-11/share/postgresql-11-libs.conf
-dockerd	auto	/usr/bin/dockerd-ce
-java	auto	/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.212.b04-0.el7_6.x86_64/jre/bin/java
-jre_openjdk	auto	/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.212.b04-0.el7_6.x86_64/jre
-jre_11	auto	/usr/lib/jvm/java-11-openjdk-11.0.3.7-0.el7_6.x86_64
-jre_11_openjdk	auto	/usr/lib/jvm/jre-11-openjdk-11.0.3.7-0.el7_6.x86_64
-			]]>
-			</screen>
-		</section>
-
-		<section>
-			<title>切换版本</title>
-			<screen>
-			<![CDATA[
-[root@localhost ~]# alternatives --config java
-
-There are 3 programs which provide 'java'.
-
-  Selection    Command
------------------------------------------------
-   1           java-1.8.0-openjdk.x86_64 (/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.201.b09-2.el7_6.x86_64/jre/bin/java)
-*+ 2           java-1.8.0-openjdk.x86_64 (/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.212.b04-0.el7_6.x86_64/jre/bin/java)
-   3           java-11-openjdk.x86_64 (/usr/lib/jvm/java-11-openjdk-11.0.3.7-0.el7_6.x86_64/bin/java)
-
-Enter to keep the current selection[+], or type selection number: 3		
-			]]>
-			</screen>
-			<para>输入数字 3，切换到 Java 11</para>
-			<screen>
-			<![CDATA[
-[root@localhost ~]# java -version
-openjdk version "11.0.3" 2019-04-16 LTS
-OpenJDK Runtime Environment 18.9 (build 11.0.3+7-LTS)
-OpenJDK 64-Bit Server VM 18.9 (build 11.0.3+7-LTS, mixed mode, sharing)			
-			]]>
-			</screen>
-		</section>
-		<section>
-			<title>使用 alternatives 管理自己的软件版本</title>
-			<para>下面 nodejs 是编译版本，我们需要使用 alternatives 来管理版本</para>
-			<screen>
-			<![CDATA[
-alternatives --install /usr/local/bin/node node /srv/node-v12.3.1/bin/node  100			
-			]]>
-			</screen>
-			<para>查看 node</para>
-			<screen>
-			<![CDATA[
-[root@localhost ~]# alternatives --display node
-node - status is auto.
- link currently points to /srv/node-v12.3.1/bin/node
-/srv/node-v12.3.1/bin/node - priority 100
-Current `best' version is /srv/node-v12.3.1/bin/node.			
-			]]>
-			</screen>
-			<para>删除 node</para>
-			<screen>
-			<![CDATA[
-[root@localhost ~]# alternatives --remove node /srv/node-v12.3.1/bin/node
-[root@localhost ~]# alternatives --display node
-			]]>
-			</screen>
-		</section>
-	</section>
-</chapter>
 <!-- =========================================================================== -->
+	&chapter.infomation.xml;
+	&chapter.etc.xml;
 	&chapter.kernel.xml;
 <!-- =========================================================================== -->
 	&chapter.package.xml;
-	&chapter.device.xml;
 	&chapter.locale.xml;
 	&chapter.console.xml;
 	&chapter.harddisk.xml;
 	&chapter.filesystem.xml;
 	&chapter.network.xml;
-	&chapter.system.logging.xml;
 	&chapter.service.xml;
 <!-- =========================================================================== -->
 	&chapter.process.xml;
 	&chapter.permission.xml;
+	&chapter.crontab.xml;
+	&chapter.system.logging.xml;
 <!-- =========================================================================== -->
-	&chapter.etc.xml;
 	&chapter.kickstart.xml;
 	&chapter.system.utilities.xml;
 <!-- =========================================================================== -->
-	&chapter.crontab.xml;

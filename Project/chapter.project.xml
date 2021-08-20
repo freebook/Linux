@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 	&chapter.gitlab.xml;
+	&chapter.integration.xml;
 	&chapter.trac.xml;
 	&chapter.redmine.xml;
 	&chapter.tutos.xml;
 	&chapter.nexus.xml;
-	&chapter.integration.xml;
+	

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<project name="project" default="usage" basedir=".">
-
+<project name="devops" default="usage" basedir=".">
 	<property environment="env" />
 	<property file="build.properties" />
 	<property name="tmp" value="${env.HOME}/tmp" />
@@ -13,7 +12,7 @@
 	<property name="htmlhelp" value="${env.HOME}/tmp/${ant.project.name}" />
 	<property name="epub" value="${tmp}/${ant.project.name}.tmp" />
 	<property name="download" value="${env.HOME}/git/netkiller.github.io/download" />
-	<property name="epub.bookname" value="Netkiller-Project" />
+	<property name="epub.bookname" value="Netkiller-DevOps" />
 	<property name="project.version" value="0.0.1" />
 	<property name="ant.log" value="/tmp/ant.log" />
 

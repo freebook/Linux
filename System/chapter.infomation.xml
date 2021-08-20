@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="infomation">
+	<title>获取系统信息</title>
+	<section id="lsb_release">
+		<title>查看版本信息</title>
+		<subtitle>Distribution information</subtitle>
+		<para>To find your Ubuntu version: lsb_release -a</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# lsb_release -a
+LSB Version:    :core-3.1-ia32:core-3.1-noarch:graphics-3.1-ia32:graphics-3.1-noarch
+Distributor ID: CentOS
+Description:    CentOS release 5.2 (Final)
+Release:        5.2
+Codename:       Final
+
+
+neo@netkiller:~$ lsb_release -a
+
+No LSB modules are available.
+Distributor ID: Ubuntu
+Description:    Ubuntu 8.04.1
+Release:        8.04
+Codename:       hardy
+		]]>
+		</screen>
+		<screen><![CDATA[
+$ head -n1 /etc/issue
+Ubuntu 10.04 LTS \n \l
+		]]></screen>
+	</section>
+	<section id="system.infomation">
+		<title>System Infomation</title>
+		<section id="system.cpu">
+			<title>Cpu Bit</title>
+			<screen><![CDATA[
+neo@netkiller:~$ uname -a
+Linux netkiller 2.6.28-15-server #52-Ubuntu SMP Wed Sep 9 11:34:09 UTC 2009 x86_64 GNU/Linux
+
+neo@netkiller:~$ getconf LONG_BIT
+64
+			]]></screen>
+		</section>
+		<section id="dmesg">
+			<title>dmesg - print or control the kernel ring buffer</title>
+			<command>dmesg</command>
+			<screen>
+			<![CDATA[
+neo@shenzhen:~/doc/Linux/xhtml$ dmesg
+			]]>
+			</screen>
+		</section>
+	</section>
+	&section.infomation.device.xml;
+
+</chapter>	

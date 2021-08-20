@@ -12,8 +12,9 @@
 	<!ENTITY section.package.dnf.xml 		SYSTEM "section.package.dnf.xml">
 	<!ENTITY section.package.homebrew.xml	SYSTEM "section.package.homebrew.xml">
 	
-	<!ENTITY chapter.device.xml 			SYSTEM "chapter.device.xml">
-	<!ENTITY chapter.device.cpu.xml			SYSTEM "chapter.device.cpu.xml">
+	<!ENTITY chapter.infomation.xml			SYSTEM "chapter.infomation.xml">
+	<!ENTITY section.infomation.device.xml 	SYSTEM "section.infomation.device.xml">
+	
 	<!ENTITY chapter.console.xml			SYSTEM "chapter.console.xml">
 	<!ENTITY chapter.harddisk.xml	 		SYSTEM "chapter.harddisk.xml">
 	<!ENTITY chapter.filesystem.xml			SYSTEM "chapter.filesystem.xml">

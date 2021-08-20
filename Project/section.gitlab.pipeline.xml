@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="gitlab.pipeline">
 	<title>Pipeline</title>
-	<section id="pipeline.cache">
+	<section id="gitlab-ci.yml.cache">
 		<title>cache</title>
 		<para>Java 缓存设置</para>
 		<screen>
@@ -117,13 +117,94 @@ deploy-prod-job:
 		]]>
 		</screen>
 	</section>
-	<section id="before_script">
-		<title>before_script</title>
+	<section id="gitlab-ci.yml.before_script">
+		<title>before_script / after_script</title>
+		<para>before_script: 在 pipeline 运行前执行脚本</para>
+		<para>after_script: 在 pipeline 完成之后执行脚本</para>
+		<screen>
+		<![CDATA[
+cache:
+  paths:
+    - node_modules
+    - dist
+
+before_script:
+  - cnpm install
+
+stages:
+  - build
+  - test
+  - deploy
+
+build-dev-job:
+  stage: build
+  only: 
+    - development
+  script:
+    - npm run build:dev
+
+build-test-job:
+  stage: build
+  only: 
+    - testing
+  script:
+    - npm run build:stage
+
+build-prod-job:
+  stage: build
+  only: 
+    - master
+  script:
+    - npm run build:prod
+
+test-job:
+  stage: test
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - echo "Running unit tests..."
+    - find dist/
+    - echo "Test complete."
+
+deploy-dev-job:
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none
+  only: 
+    - development
+  script:
+    - echo "Deploying application..."
+    - rsync -auzv --delete dist/* www@192.168.30.11:/opt/netkiller.cn/admin.netkiller.cn/
+    - echo "Application successfully deployed."
+
+deploy-test-job:
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none
+  only: 
+    - testing
+  script:
+    - echo "Deploying application..."
+    - rsync -auzv --delete dist/* www@192.168.30.10:/opt/netkiller.cn/admin.netkiller.cn/
+    - echo "Application successfully deployed."
+
+deploy-prod-job:
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none
+  only: 
+    - master
+  script:
+    - echo "Deploying application..."
+    - rsync -auzv --delete dist/* www@139.16.10.12:/opt/netkiller.cn/admin.netkiller.cn/
+    - echo "Application successfully deployed."		
+		]]>
+		</screen>
 	</section>
-	<section id="stages">
+	<section id="gitlab-ci.yml.stages">
 		<title>stages</title>
 		<screen>
-				<![CDATA[
+		<![CDATA[
 image: mileschou/php-testing-base:7.0
 
 stages:
@@ -167,10 +248,94 @@ deploy_job:
 				]]>
 		</screen>
 	</section>
-	<section id="services">
+	<section id="gitlab-ci.yml.only">
+		<title>only and except</title>
+		<para>only 用于匹配分支</para>
+		<screen>
+		<![CDATA[
+deploy_job:
+  stage: deploy
+  script:
+    - echo Deploy OK
+  only:
+    - master
+  when: manual		
+		]]>
+		</screen>
+		<para>only 可是使用正则表达式，还可能与 except 一同使用，用于排除分支</para>
+		<screen>
+		<![CDATA[
+job:
+  # use regexp
+  only:
+    - /^issue-.*$/
+  # use special keyword
+  except:
+    - branches		
+		]]>
+		</screen>
+		<para>使用关键字</para>
+		<screen>
+		<![CDATA[
+job:
+  # use special keywords
+  only:
+    - tags
+    - triggers		
+		]]>
+		</screen>
+		<itemizedlist>
+			<title>only和except允许使用特殊的关键字：</title>
+			<listitem>branches 匹配所有 git 分支</listitem>
+			<listitem>tags 匹配所有 git tag</listitem>
+			<listitem>triggers</listitem>
+		</itemizedlist>
+		<para></para>
+	</section>
+	<section id="gitlab-ci.yml.allow_failure">
+		<title>允许失败</title>
+		<para>设置当一个job运行失败之后并不影响后续的CI构建过程</para>
+		<screen>
+		<![CDATA[
+job1:
+  stage: build
+  script:
+  - execute_script_that_will_fail
+
+job2:
+  stage: test
+  script:
+  - execute_script_that_will_succeed
+  allow_failure: true
+
+job3:
+  stage: deploy
+  script:
+  - deploy_to_staging
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>定义何时开始job</title>
+		<para>when: 可以是on_success，on_failure，always或者manual</para>
+		<itemizedlist>
+			<title>when可以设置以下值：</title>
+			<listitem>on_success: 只有前面stages的所有工作成功时才执行。 这是默认值。</listitem>
+			<listitem>on_failure: 当前面stages中任意一个jobs失败后执行。</listitem>
+			<listitem>always: 无论前面stages中jobs状态如何都执行。</listitem>
+			<listitem>manual: 手动执行</listitem>
+		</itemizedlist>
+		<para></para>
+		<screen>
+		<![CDATA[
+		
+		]]>
+		</screen>
+	</section>
+	<section id="gitlab-ci.yml.services">
 		<title>services</title>
 		<screen>
-				<![CDATA[
+		<![CDATA[
 services:
 - mysql
 
@@ -183,11 +348,10 @@ connect:
   image: mysql
   script:
   - echo "SELECT 'OK';" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mysql "$MYSQL_DATABASE"
-				
-				]]>
+		]]>
 		</screen>
 	</section>
-	<section>
+	<section id="gitlab-ci.yml.tags">
 		<title>tags</title>
 		<para>在 gitlab-runner register 的时候会提示：Please enter the gitlab-ci tags for this runner (comma separated): </para>
 		<para>如果你输入了标签就需要在 Pipeline 中设置 tags 否则 Pipeline 将不运行。</para>
@@ -240,7 +404,7 @@ deploy-job:      # This job runs in the deploy stage.
 				]]>
 		</screen>
 	</section>
-	<section>
+	<section id="gitlab-ci.yml.submodule">
 		<title>Git submodule</title>
 		<screen>
 		<![CDATA[
@@ -250,7 +414,7 @@ variables:
 		</screen>
 
 	</section>
-	<section>
+	<section id="gitlab-ci.yml.java">
 		<title>应用案例</title>
 		<section>
 			<title>Java</title>

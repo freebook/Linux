@@ -4,7 +4,7 @@
 		<title>serial console</title>
 		<!-- http://blog.chinaunix.net/u/8673/showart_280018.html -->
 		<para>gurb</para>
-		<screen>
+		<screen><![CDATA[
 $ sudo vim /boot/grub/menu.lst
 
 title           Ubuntu 8.04.1, kernel 2.6.24-21-generic
@@ -14,22 +14,22 @@ kernel          /boot/vmlinuz-2.6.24-21-generic root=UUID=3d5dd6c0-bbd2-4ddf-9b7
 console=tty0 console=ttyS0,38400
 initrd          /boot/initrd.img-2.6.24-21-generic
 quiet	
-		</screen>
+		]]></screen>
 		<para>tty6</para>
-		<screen>
+		<screen><![CDATA[
 $ sudo vim /etc/event.d/tty6
 
 respawn
 #exec /sbin/getty 38400 tty6
 exec /sbin/getty -L /dev/ttyS0 38400 vt100	
-		</screen>
+		]]></screen>
 		<para>other terminal: VT100, VT220, VT320, VT420</para>
 		<para>securetty</para>
-		<screen>
+		<screen><![CDATA[
 $ cat /etc/securetty
 # for people with serial port consoles
 ttyS0
-		</screen>
+		]]></screen>
 	</section>
 	<section id="console.timeout">
 		<title>console timeout</title>
@@ -42,10 +42,10 @@ ttyS0
 	<section id="svgatextmode">
 		<title>TUI (Text User Interface)</title>
 		<para>SVGATextMode</para>
-		<screen>
+		<screen><![CDATA[
 $ sudo apt-get install svgatextmode
 $ SVGATextMode 80x25x9
-		</screen>
+		]]></screen>
 	</section>
 	<section id="framebuffer">
 		<title>framebuffer</title>

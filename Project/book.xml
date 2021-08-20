@@ -16,7 +16,7 @@
 <book xml:base="http://netkiller.github.com/book/version/"
 	xmlns="http://docbook.org/ns/docbook" xml:lang="zh-cn">
 	<info>
-		<title>Netkiller Project 手札</title>
+		<title>Netkiller DevOps 手札</title>
 		<subtitle>Software engineering platform, Integrated SCM &amp; Project Management, Version Control System</subtitle>
 		<subtitle>Continuous Integration &amp; Delivery</subtitle>
 		<authorgroup>
@@ -47,7 +47,7 @@ git,git-add,git-add--interactive,git-am,git-annotate,git-apply,git-archive,git-b
 
 	&book.dedication.xml;
 	&book.preface.xml;
-	&chapter.project.xml;
+	&part.project.xml;
 	&part.version.xml;
 	
 </book>

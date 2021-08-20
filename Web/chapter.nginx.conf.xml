@@ -139,7 +139,7 @@ EOF
 				]]>
 				</screen>
 			</section>
-			
+
 		</section>
 		<section id="server_tokens">
 			<title>server_tokens</title>
@@ -1190,8 +1190,10 @@ autoindex_localtime on;
 		</section>
 		<section id="add_header">
 			<title>add_header</title>
-			<para># 相关页面设置Cache-Control头信息</para>
-			<screen>
+			<section id="cache">
+				<title>Cache</title>
+				<para># 相关页面设置Cache-Control头信息</para>
+				<screen>
 			<![CDATA[
 	if ($request_uri ~* "^/$|^/news/.+/|^/info/.+/") {
 		add_header Cache-Control max-age=3600;
@@ -1201,9 +1203,7 @@ autoindex_localtime on;
 		add_header Cache-Control max-age=86400;
 	}
 			]]>
-			</screen>
-			<section id="cache">
-				<title>Cache</title>
+				</screen>
 				<screen>
 				<![CDATA[
 add_header     Nginx-Cache     "HIT  from  www.example.com";
@@ -1240,6 +1240,40 @@ add_header     Nginx-Cache     "$upstream_cache_status  from  www.example.com";
 			return 200;
 		}
 	}
+				]]>
+				</screen>
+				<para>允许 所有头部 所有域 所有方法</para>
+				<screen>
+				<![CDATA[
+server {
+	...
+	location / {
+		add_header 'Access-Control-Allow-Origin' '*';
+		add_header 'Access-Control-Allow-Headers' '*';
+		add_header 'Access-Control-Allow-Methods' '*';
+		# OPTIONS 直接返回204
+		if ($request_method = 'OPTIONS') {
+			return 204;
+		}
+	}
+	...
+}				
+				]]>
+				</screen>
+				<para>使用 $http_origin 变量</para>
+				<screen>
+				<![CDATA[
+add_header 'Access-Control-Allow-Origin' $http_origin;
+add_header 'Access-Control-Allow-Credentials' 'true';
+add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+add_header 'Access-Control-Allow-Headers' 'DNT,web-token,app-token,Authorization,Accept,Origin,Keep-Alive,User-Agent,X-Mx-ReqToken,X-Data-Type,X-Auth-Token,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range';
+add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
+if ($request_method = 'OPTIONS') {
+	add_header 'Access-Control-Max-Age' 1728000;
+	add_header 'Content-Type' 'text/plain; charset=utf-8';
+	add_header 'Content-Length' 0;
+	return 204;
+}				
 				]]>
 				</screen>
 			</section>
