@@ -387,4 +387,9 @@ $ docker restart [options] container [container...]
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>DNS</title>
+		<para>host.docker.internal</para>
+		<para>gateway.docker.internal</para>
+	</section>
 </section>

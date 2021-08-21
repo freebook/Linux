@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section>
-	<title>Installing and Configuring Graphite</title>
-	<section>
-		<title></title>
-		<screen>
-		<![CDATA[]]>
-		</screen>
-	</section>
+<section id="PrometheusExporter">
+	<title>Prometheus Exporter</title>
 	<section>
 		<title>监控 Docker</title>
 		<subtitle>Collect Docker metrics with Prometheus</subtitle>
 		<para>配置 docker /etc/docker/daemon.json</para>
-		<para>指定metrics采集端口， Prometheus会定时从该端口拉取数据</para>
+		<para>指定metrics采集端口， Prometheus 会定时从该端口拉取数据</para>
 		<screen>
 		<![CDATA[
 {
@@ -610,7 +604,7 @@ $ docker service create --replicas 1 --name my-prometheus \
 		<para>docker-compress</para>
 		<screen>
 		<![CDATA[
-version: '3.8'
+version: '3.9'
 services:
   prometheus:
     image: prom/prometheus:latest
@@ -633,6 +627,35 @@ services:
 		</screen>
 
 	</section>
+	<section id="node-exporter">
+		<title>node-exporter</title>
+		<para>
+			<ulink url="https://grafana.com/grafana/dashboards/8919" />
+		</para>
+		<screen>
+		<![CDATA[
+version: '3.9'
+services:		
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    hostname: node-exporter
+    restart: always
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    ports:
+      - '9100:9100'
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - --collector.filesystem.ignored-mount-points
+      - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"		
+		]]>
+		</screen>
+	</section>
+
 	<section id="cadvisor">
 		<title>cadvisor</title>
 		<screen>
@@ -657,6 +680,236 @@ google/cadvisor:latest
 		]]>
 		</screen>
 	</section>
+	<section id="nginx-prometheus-exporter">
+		<title>Nginx Prometheus Exporter</title>
+		<para>Nginx 配置，开启状态</para>
+		<para>/etc/nginx/conf.d/status.conf:</para>
+		<screen>
+		<![CDATA[
+server {
+	listen 80;
+	server_name 127.0.0.1;
+	location = /status {
+		stub_status;
+		access_log off;
+	    allow 127.0.0.1;
+   		deny all;
+	}
+}
+		]]>
+		</screen>
+		<para>如果 nginx 是 docker 运行需要设置 server_name，实体机不需要指定 server_name。</para>
+		<para>docker-compose.yml 编排脚本</para>
+		<screen>
+		<![CDATA[
+version: '3.9'
+services:		
+  nginx-prometheus-exporter:
+    image: nginx/nginx-prometheus-exporter:latest
+    command: -nginx.scrape-uri http://your_ipaddress_or_domain/status
+    ports:
+      - "9113:9113"		
+		]]>
+		</screen>
+		<para>nginx-prometheus-exporter 官方下载地址：https://github.com/nginxinc/nginx-prometheus-exporter</para>
+		<para>调试方法</para>
+		<screen>
+		<![CDATA[
+$ nginx-prometheus-exporter -nginx.scrape-uri http://<nginx>/status	
 
-
+neo@MacBook-Pro-Neo ~/workspace/Linux % curl http://localhost:9113/metrics
+# HELP nginx_connections_accepted Accepted client connections
+# TYPE nginx_connections_accepted counter
+nginx_connections_accepted 53
+# HELP nginx_connections_active Active client connections
+# TYPE nginx_connections_active gauge
+nginx_connections_active 10
+# HELP nginx_connections_handled Handled client connections
+# TYPE nginx_connections_handled counter
+nginx_connections_handled 53
+# HELP nginx_connections_reading Connections where NGINX is reading the request header
+# TYPE nginx_connections_reading gauge
+nginx_connections_reading 0
+# HELP nginx_connections_waiting Idle client connections
+# TYPE nginx_connections_waiting gauge
+nginx_connections_waiting 9
+# HELP nginx_connections_writing Connections where NGINX is writing the response back to the client
+# TYPE nginx_connections_writing gauge
+nginx_connections_writing 1
+# HELP nginx_http_requests_total Total http requests
+# TYPE nginx_http_requests_total counter
+nginx_http_requests_total 390
+# HELP nginx_up Status of the last metric scrape
+# TYPE nginx_up gauge
+nginx_up 1
+# HELP nginxexporter_build_info Exporter build information
+# TYPE nginxexporter_build_info gauge
+nginxexporter_build_info{commit="5f88afbd906baae02edfbab4f5715e06d88538a0",date="2021-03-22T20:16:09Z",version="0.9.0"} 1	
+		]]>
+		</screen>
+		<para>配置 prometheus.yml 加入 job</para>
+		<screen>
+		<![CDATA[
+  - job_name: 'nginx_exporter'
+    static_configs:
+     - targets: ['nginx-exporter:9113']		
+		]]>
+		</screen>
+		<para>
+			NGINX exporter dashboard:
+			<ulink url="https://grafana.com/grafana/dashboards/12708" />
+		</para>
+		<para>Official dashboard for NGINX Prometheus exporter for https://github.com/nginxinc/nginx-prometheus-exporter</para>
+	</section>
+	<section>
+		<title>Redis</title>
+		<para>https://github.com/oliver006/redis_exporter</para>
+		<screen>
+		<![CDATA[
+version: '3.9'
+services:
+  redis-exporter:
+        image: oliver006/redis_exporter
+        container_name: redis-exporter
+        hostname: redis-exporter
+        restart: always
+        ports:
+            - "9121:9121"
+        command:
+            - '--redis.addr=redis://:passw0rd@redis.netkiller.cn:6379'
+		]]>
+		</screen>
+		<para>使用下面命令确认 redis-exporter 是否工作正常</para>
+		<screen>
+		<![CDATA[
+root@production:~/prometheus# curl -s http://redis.netkiller.cn:9121/metrics | head
+# HELP go_gc_duration_seconds A summary of the pause duration of garbage collection cycles.
+# TYPE go_gc_duration_seconds summary
+go_gc_duration_seconds{quantile="0"} 0
+go_gc_duration_seconds{quantile="0.25"} 0
+go_gc_duration_seconds{quantile="0.5"} 0
+go_gc_duration_seconds{quantile="0.75"} 0
+go_gc_duration_seconds{quantile="1"} 0
+go_gc_duration_seconds_sum 0
+go_gc_duration_seconds_count 0
+# HELP go_goroutines Number of goroutines that currently exist.		
+		]]>
+		</screen>
+		<para>修改配置文件 prometheus.yml 加入下面配置</para>
+		<screen>
+		<![CDATA[
+scrape_configs:
+  - job_name: redis_exporter
+    static_configs:
+    - targets: ['<<REDIS-EXPORTER-HOSTNAME>>:9121']		
+		]]>
+		</screen>
+		<para>Grafana 面板：https://grafana.com/grafana/dashboards/763</para>
+	</section>
+	<section>
+		<title>MongoDB</title>
+		<para>https://github.com/percona/mongodb_exporter</para>
+		<para>docker-compose.yml 构建脚本</para>
+		<screen>
+		<![CDATA[
+version: '3.9'
+services:
+  mongodb_exporter:
+    image: noenv/mongo-exporter:latest
+    container_name: mongodb_exporter
+    hostname: mongodb_exporter
+    restart: always
+    ports:
+        - "9216:9216"
+    command:
+        - '--mongodb.uri=mongodb://admin:admin@mongo.netkiller.cn:27017/admin'  		
+		]]>
+		</screen>
+		<para>检查 exporter 数据采集状态</para>
+		<screen>
+		<![CDATA[
+root@production:~/prometheus# curl -s http://localhost:9216/metrics | head
+# HELP go_gc_duration_seconds A summary of the pause duration of garbage collection cycles.
+# TYPE go_gc_duration_seconds summary
+go_gc_duration_seconds{quantile="0"} 2.4908e-05
+go_gc_duration_seconds{quantile="0.25"} 2.7779e-05
+go_gc_duration_seconds{quantile="0.5"} 2.9463e-05
+go_gc_duration_seconds{quantile="0.75"} 3.736e-05
+go_gc_duration_seconds{quantile="1"} 0.000120332
+go_gc_duration_seconds_sum 0.001014832
+go_gc_duration_seconds_count 26
+# HELP go_goroutines Number of goroutines that currently exist.		
+		]]>
+		</screen>
+		<para>修改配置文件 prometheus.yml 加入下面配置</para>
+		<screen>
+		<![CDATA[
+  - job_name: mongo_exporter
+    static_configs:
+    - targets: ['mongo.netkiller.cn:9216']		
+		]]>
+		</screen>
+		<para>Dashboard for Grafana (ID: 2583)</para>
+	</section>
+	<section>
+		<title>MySQL</title>
+		<para>https://github.com/prometheus/mysqld_exporter</para>
+		<para>创建 MySQL 监控用户</para>
+		<screen>
+		<![CDATA[
+mysql> CREATE USER 'exporter'@'%' IDENTIFIED BY 'exporterpassword' WITH MAX_USER_CONNECTIONS 3;
+mysql> GRANT PROCESS, REPLICATION CLIENT, SELECT ON *.* TO 'exporter'@'%';
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+version: '3.9'
+services:		
+  mysqld_exporter:
+    image: prom/mysqld-exporter:latest
+    container_name: mysqld_exporter
+    hostname: mysqld_exporter
+    restart: always
+    ports:
+        - "9104:9104"
+    environment:    
+      - DATA_SOURCE_NAME=exporter:passw0rd@(db.netkiller.cn:3306)/neo
+    # command:
+    #   --collect.info_schema.processlist
+    #   --collect.info_schema.innodb_metrics
+    #   --collect.info_schema.tablestats
+    #   --collect.info_schema.tables
+    #   --collect.info_schema.userstats
+    #   --collect.engine_innodb_status		
+		]]>
+		</screen>
+		<para>检查 exporter 数据采集状态</para>
+		<screen>
+		<![CDATA[
+root@production:~# curl -s http://db.netkiller.cn:9104/metrics | head
+# HELP go_gc_duration_seconds A summary of the pause duration of garbage collection cycles.
+# TYPE go_gc_duration_seconds summary
+go_gc_duration_seconds{quantile="0"} 1.9298e-05
+go_gc_duration_seconds{quantile="0.25"} 2.846e-05
+go_gc_duration_seconds{quantile="0.5"} 3.8975e-05
+go_gc_duration_seconds{quantile="0.75"} 6.0157e-05
+go_gc_duration_seconds{quantile="1"} 0.000150234
+go_gc_duration_seconds_sum 0.007067359
+go_gc_duration_seconds_count 145
+# HELP go_goroutines Number of goroutines that currently exist.	
+		]]>
+		</screen>
+		<para>修改配置文件 prometheus.yml 加入下面配置</para>
+		<screen>
+		<![CDATA[
+  - job_name: mysql_exporter
+    static_configs:
+    - targets: ['db.netkiller.cn:9104']		
+		]]>
+		</screen>
+		<para>https://grafana.com/oss/prometheus/exporters/mysql-exporter/</para>
+		<para>14057</para>
+	</section>
+	
 </section>

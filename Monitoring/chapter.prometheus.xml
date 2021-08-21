@@ -72,104 +72,27 @@ $ docker service create --replicas 1 --name prometheus \
 			]]>
 			</screen>
 		</section>
-	</section>
-	<section>
-		<title>Prometheus 命令行工具</title>
 		<section>
-			<title>刷新配置文件</title>
+			<title>防火墙设置</title>
 			<screen>
 			<![CDATA[
-#方式1: 
-kill -HUP ${prometheus_pid} 
-
-docker kill -s HUP <容器ID> 
- 
-#方式2: 
-# 需要 --web.enable-lifecycle 参数为true
-curl -X POST http://10.0.209.140:9090/-/reload			
+firewall-cmd --zone=public --add-port=9090/tcp --permanent
+firewall-cmd --zone=public --add-port=3000/tcp --permanent
+firewall-cmd --zone=public --add-port=9191/tcp --permanent
+firewall-cmd --zone=public --add-port=9093/tcp --permanent
+firewall-cmd --zone=public --add-port=9323/tcp --permanent
+firewall-cmd --reload
 			]]>
 			</screen>
-
-		</section>
-		<section>
-			<title>promtool 配置文件校验工具</title>
-			<para>安装 promtool </para>
+			<para>查看端口策略是否已经生效</para>
 			<screen>
-		<![CDATA[
-go get github.com/prometheus/prometheus/cmd/promtool
-promtool check rules /path/to/example.rules.yml		
-		]]>
-			</screen>
-
-			<para></para>
-			<screen>
-		<![CDATA[
-promtool check config /etc/prometheus/prometheus.yml
-		]]>
+			<![CDATA[
+firewall-cmd --permanent --zone=public --list-ports			
+			]]>
 			</screen>
 		</section>
+		
 	</section>
-	<section>
-		<title>prometheus 配置</title>
-		<section>
-			<title>rules 规则配置</title>
-			<para>prometheus.yml 配置文件</para>
-			<screen>
-			<![CDATA[
-rule_files:
-  - "rules/node.yml"	# 载入单个配置文件
-  - "rules/*.rules"		# 通过通配符载入文件
-			]]>
-			</screen>
-			<itemizedlist>
-				<title>prometheus 支持两种 rules</title>
-				<listitem>recording rules</listitem>
-				<listitem>alerting rules</listitem>
-			</itemizedlist>
-			<section>
-				<title>recording rules</title>
-				<para></para>
-				<screen>
-			<![CDATA[
-groups:
-- name: cpu-node
-  rules:
-  - record: job_instance_mode:node_cpu_seconds:avg_rate5m
-    expr: avg by (job, instance, mode) (rate(node_cpu_seconds_total[5m]))			
-			]]>
-				</screen>
-			</section>
-			<section>
-				<title>alerting rules</title>
-				<screen>
-			<![CDATA[
-groups:
-- name: example
-  rules:
-
-  # Alert for any instance that is unreachable for >5 minutes.
-  - alert: InstanceDown
-    expr: up == 0
-    for: 5m
-    labels:
-      severity: page
-    annotations:
-      summary: "Instance {{ $labels.instance }} down"
-      description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes."
-
-  # Alert for any instance that has a median request latency >1s.
-  - alert: APIHighRequestLatency
-    expr: api_http_request_latencies_second{quantile="0.5"} > 1
-    for: 10m
-    annotations:
-      summary: "High request latency on {{ $labels.instance }}"
-      description: "{{ $labels.instance }} has a median request latency above 1s (current value: {{ $value }}s)"			
-			]]>
-				</screen>
-			</section>
-		</section>
-	</section>
-	
 	&section.prometheus.xml;
 	&section.prometheus.exporter.xml;
 	&section.prometheus.alertmanager.xml;

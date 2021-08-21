@@ -281,5 +281,29 @@ Current `best' version is /srv/node-v12.3.1/bin/node.
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>配置系统默认编辑器</title>
+			<screen>
+			<![CDATA[
+update-alternatives --config editor			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+root@production:~# update-alternatives --config editor
+There are 4 choices for the alternative editor (providing /usr/bin/editor).
+
+  Selection    Path                Priority   Status
+------------------------------------------------------------
+  0            /bin/nano            40        auto mode
+  1            /bin/ed             -100       manual mode
+  2            /bin/nano            40        manual mode
+  3            /usr/bin/vim.basic   30        manual mode
+* 4            /usr/bin/vim.tiny    10        manual mode
+
+Press <enter> to keep the current choice[*], or type selection number: 			
+			]]>
+			</screen>			
+		</section>
 	</section>
 </chapter>

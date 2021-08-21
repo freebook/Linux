@@ -775,6 +775,44 @@ neo@MacBook-Pro-Neo ~ % docker cp 13acbc98fb35:/etc/nginx/nginx.conf nginx/conf
 			]]>
 			</screen>
 		</section>
+		<section id="docker.history">
+			<title>查看历史记录</title>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~/workspace/Linux % docker history prom/prometheus:latest
+IMAGE          CREATED        CREATED BY                                      SIZE      COMMENT
+267e73020447   9 days ago     /bin/sh -c #(nop)  CMD ["--config.file=/etc/…   0B        
+<missing>      9 days ago     /bin/sh -c #(nop)  ENTRYPOINT ["/bin/prometh…   0B        
+<missing>      9 days ago     /bin/sh -c #(nop) WORKDIR /prometheus           0B        
+<missing>      9 days ago     /bin/sh -c #(nop)  VOLUME [/prometheus]         0B        
+<missing>      9 days ago     /bin/sh -c #(nop)  EXPOSE 9090                  0B        
+<missing>      9 days ago     /bin/sh -c #(nop)  USER nobody                  0B        
+<missing>      9 days ago     |2 ARCH=amd64 OS=linux /bin/sh -c mkdir -p /…   1kB       
+<missing>      9 days ago     |2 ARCH=amd64 OS=linux /bin/sh -c ln -s /usr…   70B       
+<missing>      9 days ago     /bin/sh -c #(nop) COPY file:ccd2272d74b950d3…   129kB     
+<missing>      9 days ago     /bin/sh -c #(nop) COPY file:e56be853b56584e3…   3.65kB    
+<missing>      9 days ago     /bin/sh -c #(nop) COPY file:141c5dcfe0148c05…   11.4kB    
+<missing>      9 days ago     /bin/sh -c #(nop) COPY dir:fb3645c7e168b5a4c…   19.5kB    
+<missing>      9 days ago     /bin/sh -c #(nop) COPY dir:6111a57e3d623c34c…   9.04kB    
+<missing>      9 days ago     /bin/sh -c #(nop) COPY file:a1aaf2bddcc0da1d…   934B      
+<missing>      9 days ago     /bin/sh -c #(nop) COPY file:32c8fb6cc8e0278c…   91.1MB    
+<missing>      9 days ago     /bin/sh -c #(nop) COPY file:a9b6183415409ccb…   102MB     
+<missing>      9 days ago     /bin/sh -c #(nop)  ARG OS=linux                 0B        
+<missing>      9 days ago     /bin/sh -c #(nop)  ARG ARCH=amd64               0B        
+<missing>      9 days ago     /bin/sh -c #(nop)  LABEL maintainer=The Prom…   0B        
+<missing>      3 months ago   /bin/sh -c #(nop) COPY dir:bb5589ed25434b0b5…   1.44MB    
+<missing>      3 months ago   /bin/sh -c #(nop)  MAINTAINER The Prometheus…   0B        
+<missing>      3 months ago   /bin/sh -c #(nop)  CMD ["sh"]                   0B        
+<missing>      3 months ago   /bin/sh -c #(nop) ADD file:dc794c2febce9ec5b…   1.24MB  			
+			]]>
+			</screen>
+			<para>使用 --no-trunc 可以查看被隐藏的部分</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~/workspace/Linux % docker history --no-trunc docker.io/mysql:latest			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="docker-compose">
 		<title>docker-compose - Define and run multi-container applications with Docker.</title>
