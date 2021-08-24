@@ -187,7 +187,7 @@ EOF
 chmod 600 -R ~/.ssh/config			
 			]]>
 			</screen>
-			
+
 			<para>授权远程执行 Shell</para>
 			<screen>
 			<![CDATA[
@@ -197,9 +197,11 @@ chmod 600 -R ~/.ssh/config
 		</section>
 		<section>
 			<title>Java 环境</title>
+			<para>JRE：java-11-openjdk</para>
+			<para>JDK：java-11-openjdk-devel</para>
 			<screen>
 			<![CDATA[
-[root@gitlab ~]# dnf install -y java-11-openjdk
+[root@gitlab ~]# dnf install -y java-11-openjdk java-11-openjdk-devel
 [root@gitlab ~]# dnf install -y maven
 			]]>
 			</screen>
@@ -217,23 +219,56 @@ chmod 600 -R ~/.ssh/config
   </mirrors>			
 			]]>
 			</screen>
+			<para>如果需要安装最新版本 maven 使用下面脚本。</para>
+			<screen>
+			<![CDATA[
+#!/bin/bash
+
+cd /usr/local/src/
+wget https://mirrors.bfsu.edu.cn/apache/maven/maven-3/3.8.2/binaries/apache-maven-3.8.2-bin.tar.gz
+tar zxf apache-maven-3.8.2-bin.tar.gz
+mv apache-maven-3.8.2 /srv/
+rm -f /srv/apache-maven
+ln -s /srv/apache-maven-3.8.2 /srv/apache-maven
+
+alternatives --install /usr/local/bin/mvn apache-maven-3.8.2 /srv/apache-maven-3.8.2/bin/mvn 0
+
+mvn -v			
+			]]>
+			</screen>
+			<para>apache-maven-3.8.2 配置</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# vim /srv/apache-maven/conf/settings.xml
+  <mirrors>
+    <!-- mirror
+     | Specifies a repository mirror site to use instead of a given repository. The repository that
+     | this mirror serves has an ID that matches the mirrorOf element of this mirror. IDs are used
+     | for inheritance and direct lookup purposes, and must be unique across the set of mirrors.
+     |
+    <mirror>
+      <id>mirrorId</id>
+      <mirrorOf>repositoryId</mirrorOf>
+      <name>Human Readable Name for this Mirror.</name>
+      <url>http://my.repository.com/repo/path</url>
+    </mirror>
+     -->
+    <mirror>
+      <id>maven-default-http-blocker</id>
+      <mirrorOf>external:http:*</mirrorOf>
+      <name>Pseudo repository to mirror external repositories initially using HTTP.</name>
+      <url>http://0.0.0.0/</url>
+      <blocked>true</blocked>
+    </mirror>
+  </mirrors>			
+			]]>
+			</screen>
+			<para>apache-maven-3.8.2 默认会阻止其他镜像，需要会去掉 maven-default-http-blocker 配置</para>
 			<para>切换到 gitlab-runner 用户，随便运行一下 mvn 命令，这样就会产生 ～/.m2 文件夹</para>
 			<screen>
 			<![CDATA[
 [root@gitlab ~]# su - gitlab-runner		
-[gitlab-runner@gitlab ~]$ mvn	
-			]]>
-			</screen>
-			<para></para>
-			<screen>
-			<![CDATA[
-
-
-			]]>
-			</screen>
-			<screen>
-			<![CDATA[
-			
+[gitlab-runner@gitlab ~]$ mvn -v
 			]]>
 			</screen>
 		</section>

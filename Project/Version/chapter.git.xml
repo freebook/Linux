@@ -449,6 +449,18 @@ git push origin "master"
 		]]>
 		</screen>
 	</section>
+	<section id="git.rebase">
+		<title>rebase</title>
+		<para>恢复 rebase 版本</para>
+		<screen>
+		<![CDATA[
+git rebase
+git reflog
+git reset --hard 5faf0ae
+git push
+		]]>
+		</screen>
+	</section>
 	&section.git.submodule.xml;
 	&section.git.lfs.xml;
 	<section id="git.command">
