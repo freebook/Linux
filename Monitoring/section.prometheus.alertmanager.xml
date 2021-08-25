@@ -188,7 +188,7 @@ services:
 		</section>
 	</section>
 	<section>
-		<title></title>
+		<title>触发测试</title>
 		<screen>
 		<![CDATA[
 alerts_message='[

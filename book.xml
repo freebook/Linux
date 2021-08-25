@@ -89,18 +89,18 @@
 	<!ENTITY % sbc.doctype.entity.xml 				SYSTEM "SBC/doctype.entity.xml">
 	%sbc.doctype.entity.xml;
 	
+	<!ENTITY % cloud.doctype.entity.xml				SYSTEM "Cloud/doctype.entity.xml">
+	%cloud.doctype.entity.xml;
+	
 	<!ENTITY part.im 								SYSTEM "part.im.xml">
 	<!ENTITY chapter.gps 							SYSTEM "chapter.gps.xml">
-	
 	<!ENTITY chapter.ibm.websphere.xml		 		SYSTEM "Middleware/chapter.ibm.websphere.xml">
 	
 	<!ENTITY % cryptography.doctype.entity.xml		SYSTEM "Cryptography/doctype.entity.xml">
 	%cryptography.doctype.entity.xml;
 	<!ENTITY part.cryptography.xml		 			SYSTEM "part.cryptography.xml">
 	
-	<!ENTITY openssl "<![CDATA[<link linkend='openssl'>OpenSSL</link>]]>
-">
-
+	<!ENTITY openssl "<![CDATA[<link linkend='openssl'>OpenSSL</link>]]>">
 	<!ENTITY OpenSSL "&openssl;">
 	<!ENTITY md5sum "<![CDATA[ <link linkend='md5sum'>md5sum</link> ]]>">
 	<!ENTITY uuid "<![CDATA[ <link linkend='uuid'>UUID</link> ]]>">
@@ -176,7 +176,6 @@
 	&part.mail.xml;
 	<!-- =========================================================================== -->
 	&part.storage.xml;
-	<!-- =========================================================================== -->
 	&part.monitor.xml;
 	<!-- =========================================================================== -->
 	&part.cluster.xml;
@@ -199,8 +198,10 @@
 	<!-- =========================================================================== -->
 	&chapter.x.xml;
 	&chapter.ibm.websphere.xml;
-	&chapter.faq.xml;
+	<!-- =========================================================================== -->
 	&part.sbc.xml;
+	&chapter.cloud.xml;
+	&chapter.faq.xml;
 	<!-- =========================================================================== -->
 	&book.appendix.xml;
 	&book.history.xml;
