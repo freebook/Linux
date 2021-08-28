@@ -1,9 +1,115 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="mrtg">
 	<title>MRTG</title>
+	<section>
+		<title>CentOS 8 Stream</title>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# dnf search mrtg
+Last metadata expiration check: 3:27:52 ago on Thu 26 Aug 2021 02:14:39 PM CST.
+======================================================================================== Name Exactly Matched: mrtg ========================================================================================
+mrtg.x86_64 : Multi Router Traffic Grapher
+============================================================================================ Name Matched: mrtg ============================================================================================
+pcp-import-mrtg2pcp.x86_64 : Performance Co-Pilot tools for importing MTRG data into PCP archive logs
+
+[root@localhost ~]# dnf install -y mrtg
+		]]>
+		</screen>
+		<para>默认配置文件</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# cat /etc/mrtg/mrtg.cfg 
+######################################################################
+# Multi Router Traffic Grapher -- Example Configuration File
+######################################################################
+# This file is for use with mrtg-2.0
+#
+# Note:
+#
+# * Keywords must start at the begin of a line.
+#
+# * Lines which follow a keyword line which do start 
+#   with a blank are appended to the keyword line
+#
+# * Empty Lines are ignored
+#
+# * Lines starting with a # sign are comments.
+
+# Where should the logfiles, and webpages be created?
+
+# Minimal mrtg.cfg
+#--------------------
+
+HtmlDir: /var/www/mrtg
+ImageDir: /var/www/mrtg
+LogDir: /var/lib/mrtg
+ThreshDir: /var/lib/mrtg
+#Target[r1]: 2:public@myrouter.somplace.edu
+#MaxBytes[r1]: 1250000
+#Title[r1]: Traffic Analysis
+#PageTop[r1]: <H1>Stats for our Ethernet</H1>		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# indexmaker --output=/var/www/mrtg/index.html /etc/mrtg/mrtg.cfg		
+		]]>
+		</screen>
+		<para>启用 mrtg</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# systemctl enable mrtg
+Created symlink /etc/systemd/system/multi-user.target.wants/mrtg.service → /usr/lib/systemd/system/mrtg.service.		
+		]]>
+		</screen>
+		<para>启动 mrtg</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# systemctl start mrtg	
+		]]>
+		</screen>
+		<para>查看启动状态</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# systemctl status mrtg
+● mrtg.service - Multi-router Traffic Grapher
+   Loaded: loaded (/usr/lib/systemd/system/mrtg.service; disabled; vendor preset: disabled)
+   Active: active (running) since Thu 2021-08-26 17:58:34 CST; 4s ago
+ Main PID: 176231 (mrtg)
+    Tasks: 1 (limit: 100608)
+   Memory: 21.4M
+   CGroup: /system.slice/mrtg.service
+           └─176231 /usr/bin/perl -w /usr/bin/mrtg /etc/mrtg/mrtg.cfg --lock-file /var/lock/mrtg/mrtg_l --confcache-file /var/lib/mrtg/mrtg.ok
+
+Aug 26 17:58:34 localhost.localdomain systemd[1]: Started Multi-router Traffic Grapher.		
+		]]>
+		</screen>
+		<para>Nginx 配置</para>
+		<screen>
+		<![CDATA[
+[root@localhost conf.d]# cat /etc/nginx/conf.d/monitor.netkiller.cn.conf 
+server {
+    listen       192.168.30.13:80;
+    server_name  192.168.30.13;
+
+    access_log /var/log/nginx/monitor.netkiller.cn.access.log;
+    error_log /var/log/nginx/monitor.netkiller.cn.error.log;
+
+    # Load configuration files for the default server block.
+    include /etc/nginx/default.d/*.conf;
+
+    location / {
+    	root /var/www/mrtg;
+    	index  index.html; 
+	    autoindex on;
+    }
+}
+		]]>
+		</screen>
+	</section>
 	<section id="ubuntu">
 		<title>Ubuntu 安装</title>
-		<screen>
+		<screen><![CDATA[
 $ sudo apt-get install mrtg
 $ sudo mkdir /etc/mrtg/
 $ sudo sh -c 'cfgmaker --global "HtmlDir: /var/www/mrtg" \
@@ -16,7 +122,7 @@ public@172.16.0.254 > /etc/mrtg/firewall.cfg'
 
 $ sudo mkdir -p /var/www/mrtg
 $ sudo indexmaker --output=/var/www/mrtg/firewall.html /etc/mrtg/firewall.cfg
-		</screen>
+		]]></screen>
 		<example>
 			<title>mrtg</title>
 			<programlisting>
@@ -28,13 +134,13 @@ $ sudo indexmaker --output=/var/www/mrtg/firewall.html /etc/mrtg/firewall.cfg
 	</section>
 	<section id="centos">
 		<title>CentOS 安装</title>
-		<screen>
+		<screen><![CDATA[
 # yum install mrtg
-		</screen>
+		]]></screen>
 		<para>start</para>
-		<screen>
+		<screen><![CDATA[
 # env LANG=C /usr/bin/mrtg /etc/mrtg/mrtg.cfg	
-		</screen>
+		]]></screen>
 		<para>/etc/mrtg/mrtg.cfg</para>
 		<screen>
 		<![CDATA[
@@ -54,7 +160,7 @@ PageTop[dell_3548_switch]: <H1>Stats for our Ethernet</H1>
 		]]>
 		</screen>
 		<para>create mrtg.cfg</para>
-		<screen>
+		<screen><![CDATA[
 cp /etc/mrtg/mrtg.cfg /etc/mrtg/mrtg.cfg.old
 	
 cfgmaker --global "HtmlDir: /var/www/mrtg" \
@@ -64,15 +170,15 @@ cfgmaker --global "HtmlDir: /var/www/mrtg" \
 --global "Options[_]: growright,bits"  \
 --ifref=name --ifdesc=descr  --show-op-down \
 public@172.16.0.252 > /etc/mrtg/mrtg.cfg	
-		</screen>
+		]]></screen>
 		<para>index.html</para>
-		<screen>
+		<screen><![CDATA[
 # indexmaker --output=/var/www/mrtg/index.html /etc/mrtg/mrtg.cfg	
-		</screen>
+		]]></screen>
 	</section>
 	<section id="cfg">
 		<title>监控多个设备</title>
-		<screen>
+		<screen><![CDATA[
 cfgmaker --global "HtmlDir: /var/www/mrtg" \
 --global "ImageDir: /var/www/mrtg" \
 --global "LogDir: /var/lib/mrtg" \
@@ -89,7 +195,7 @@ public@172.16.0.252 \
 public@172.16.0.253 > /etc/mrtg/mrtg.cfg
 
 indexmaker --output=/var/www/mrtg/index.html /etc/mrtg/mrtg.cfg
-		</screen>
+		]]></screen>
 	</section>
 	<section id="batch">
 		<title>批量生成监控配置文件</title>
@@ -115,7 +221,7 @@ indexmaker --output=/var/www/mrtg/switch-2960-$host.html /etc/mrtg/switch-2960-$
 done
 		]]>
 		</screen>
-	</section>	
+	</section>
 	<section id="size">
 		<title>图片尺寸</title>
 		<para>Xsize / Ysize</para>

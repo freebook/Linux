@@ -924,10 +924,12 @@ IP6.ROUTE[2]:                           dst = ff00::/8, nh = ::, mt = 256, table
 	<section id="netplan">
 		<title>Ubuntu netplan (Ubuntu 18.04 之后才用 netplan 管理网络)</title>
 		<para>https://netplan.io/examples 参考例子</para>
-		<para>配置 DHCP</para>
-		<example>
-			<title>netplan dhcp 例子</title>
-			<screen>
+		<section>
+			<title>DHCP</title>
+			<para>配置 DHCP</para>
+			<example>
+				<title>netplan dhcp 例子</title>
+				<screen>
 			<![CDATA[
 neo@netkiller ~ % cat /etc/netplan/interfaces.yaml 
 network:
@@ -935,18 +937,33 @@ network:
   renderer: networkd
   ethernets:
     enp2s1:
-      dhcp4: true			
+      dhcp4: true
 			]]>
-			</screen>
-			<para>启用生效</para>
-			<screen>
+				</screen>
+				<para>启用生效</para>
+				<screen>
 			<![CDATA[
 neo@netkiller ~ % sudo netplan apply			
 			]]>
+				</screen>
+			</example>
+		</section>
+		<section>
+			<title>静态IP地址</title>
+			<screen>
+			<![CDATA[
+sudo  vi /etc/netplan/00-installer-config.yaml
+ 
+# This is the network config written by 'subiquity'
+network:
+  ethernets:
+    ens33:
+      addresses: [192.168.0.102/24]
+      dhcp4: false
+      gateway4: 192.168.0.254			
+			]]>
 			</screen>
-
-		</example>
-
+		</section>
 	</section>
 	&section.network.router.xml;
 </chapter>

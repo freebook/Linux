@@ -244,4 +244,20 @@ curl -XPOST -d"$alerts_message" http://127.0.0.1:9093/api/v1/alerts
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>警报状态</title>
+		<itemizedlist>
+			<title></title>
+			<listitem>firing：警报已被激活，而且超出设置的持续时间。</listitem>
+			<listitem>pending：警报被激活，但是低于配置的持续即rule里的FOR字段设置的时间。</listitem>
+			<listitem>inactive：既不是pending也不是firing的时候状态变为inactive</listitem>
+			<listitem>resolved: 故障恢复</listitem>
+		</itemizedlist>
+		<para></para>
+		<screen>
+		<![CDATA[
+		
+		]]>
+		</screen>
+	</section>
 </section>
