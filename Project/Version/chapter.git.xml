@@ -382,7 +382,8 @@ Initialized empty Git repository in /home/git/example.git/
 			</screen>
 			<para>That’s all there is to creating a repository. Notice we named our folder with a .git extension.</para>
 			<para>Also notice the ‘bare’ option. By default the git repository assumes that you’ll be using it as your working directory, so git stores the actual bare repository files in a .git directory alongside all the project files. Since we are setting up a remote server we don’t need copies of the files on the filesystem. Instead, all we need are the deltas and binary objects of the repository. By setting ‘bare’ we tell git not to store the current files of the repository only the diffs. This is optional as
-				you may have need to be able to browse the files on your remote server.</para>
+				you may have need to be able to browse the files on your remote server.
+			</para>
 			<para>Finally all you need to do is add your files to the remote repository. We will assume you don’t have any files yet.</para>
 			<screen>
 		<![CDATA[
@@ -418,48 +419,144 @@ git remote remove origin
 	</section>
 	<section id="git.merge">
 		<title>合并分支</title>
-		<para>testing 分支向 master 分支合并</para>
-		<para>获取 testing 合并请求的分支</para>
-		<screen>
+		<section>
+			<title>合并分支</title>
+
+			<para>testing 分支向 master 分支合并</para>
+			<para>获取 testing 合并请求的分支</para>
+			<screen>
 		<![CDATA[
 git fetch origin
 git checkout -b "testing" "origin/testing"		
 		]]>
-		</screen>
-		<para>如果此前已经执行过，使用下面命令切换分支即可，切换后 pull 代码，看看有什么新提交</para>
-		<screen>
+			</screen>
+			<para>如果此前已经执行过，使用下面命令切换分支即可，切换后 pull 代码，看看有什么新提交</para>
+			<screen>
 		<![CDATA[
 git checkout "testing"
 git pull
 		]]>
-		</screen>
-		<para>切换到 master 分支</para>
-		<screen>
+			</screen>
+			<para>切换到 master 分支</para>
+			<screen>
 		<![CDATA[
 git fetch origin
 git checkout "master"
 git branch --show-current
 git merge --no-ff "testing"
 		]]>
-		</screen>
-		<para>将合并结果推送到远程</para>
-		<screen>
+			</screen>
+			<para>将合并结果推送到远程</para>
+			<screen>
 		<![CDATA[
 git push origin "master"		
 		]]>
-		</screen>
-	</section>
-	<section id="git.rebase">
-		<title>rebase</title>
-		<para>恢复 rebase 版本</para>
-		<screen>
+			</screen>
+		</section>
+		<section id="git.rebase">
+			<title>rebase</title>
+			<para>恢复 rebase 版本</para>
+			<screen>
 		<![CDATA[
 git rebase
 git reflog
 git reset --hard 5faf0ae
 git push
 		]]>
-		</screen>
+			</screen>
+		</section>
+		<section>
+			<title>合并分支解决冲突</title>
+			<para>案例，例如我们从 testing 分支向 master 分支合并代码出现冲突，该如何解决呢？</para>
+			<para>首先，两个分支拉取最新代码</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~/workspace/api.netkiller.cn % git checkout testing
+neo@MacBook-Pro-Neo ~/workspace/api.netkiller.cn % git pull		
+neo@MacBook-Pro-Neo ~/workspace/api.netkiller.cn % git checkout master
+neo@MacBook-Pro-Neo ~/workspace/api.netkiller.cn % git pull
+			]]>
+			</screen>
+			<para>然后合并分支，从 testing 分支向 master 合并</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~/workspace/api.netkiller.cn % git merge --no-ff testing
+自动合并 neo-incar/src/main/java/com/neo/incar/utils/PaperlessConfig.java
+冲突（内容）：合并冲突于 neo-incar/src/main/java/com/neo/incar/utils/PaperlessConfig.java
+自动合并失败，修正冲突然后提交修正的结果。			
+			]]>
+			</screen>
+			<para>出现冲突，编辑冲突文件</para>
+			<screen>
+			<![CDATA[
+vim neo-incar/src/main/java/com/neo/incar/utils/PaperlessConfig.java
+			]]>
+			</screen>
+			<para>保存后重看状态</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~/workspace/api.netkiller.cn % git status
+位于分支 master
+您的分支与上游分支 'origin/master' 一致。
+
+您有尚未合并的路径。
+  （解决冲突并运行 "git commit"）
+  （使用 "git merge --abort" 终止合并）
+
+要提交的变更：
+	修改：     neo-admin/src/main/resources/application-prod.yml
+	修改：     neo-admin/src/main/resources/application-test.yml
+	修改：     neo-common/src/main/java/com/neo/common/enums/IncarAttachTypeEnum.java
+	修改：     neo-incar/src/main/java/com/neo/incar/service/impl/IncarAttachServiceImpl.java
+
+未合并的路径：
+  （使用 "git add <文件>..." 标记解决方案）
+	双方修改：   neo-incar/src/main/java/com/neo/incar/utils/PaperlessConfig.java			
+			]]>
+			</screen>
+			<para>将合并的文件添加到 git</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~/workspace/api.netkiller.cn % git add neo-incar/src/main/java/com/neo/incar/utils/PaperlessConfig.java
+neo@MacBook-Pro-Neo ~/workspace/api.netkiller.cn % git status                                                                
+位于分支 master
+您的分支与上游分支 'origin/master' 一致。
+
+所有冲突已解决但您仍处于合并中。
+  （使用 "git commit" 结束合并）
+
+要提交的变更：
+	修改：     neo-admin/src/main/resources/application-prod.yml
+	修改：     neo-admin/src/main/resources/application-test.yml
+	修改：     neo-common/src/main/java/com/neo/common/enums/IncarAttachTypeEnum.java
+	修改：     neo-incar/src/main/java/com/neo/incar/service/impl/IncarAttachServiceImpl.java
+	修改：     neo-incar/src/main/java/com/neo/incar/utils/PaperlessConfig.java			
+			]]>
+			</screen>
+			<para>提交代码</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~/workspace/api.netkiller.cn % git commit -a -m '手工合并分支 testing -> master'
+[master 3652bf8e] 手工合并分支 testing -> master			
+			]]>
+			</screen>
+			<para>推送代码</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~/workspace/api.netkiller.cn % git push
+枚举对象中: 1, 完成.
+对象计数中: 100% (1/1), 完成.
+写入对象中: 100% (1/1), 240 字节 | 240.00 KiB/s, 完成.
+总共 1（差异 0），复用 0（差异 0），包复用 0
+remote: 
+remote: To create a merge request for master, visit:
+remote:   http://192.168.30.5/netkiller.cn/api.netkiller.cn/-/merge_requests/new?merge_request%5Bsource_branch%5D=master
+remote: 
+To http://192.168.30.5/netkiller.cn/api.netkiller.cn.git
+   fcaefaf4..3652bf8e  master -> master
+			]]>
+			</screen>
+		</section>
 	</section>
 	&section.git.submodule.xml;
 	&section.git.lfs.xml;
