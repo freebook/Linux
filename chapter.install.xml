@@ -67,34 +67,34 @@ Password:
 		</screen>
 
 		<table>
-			<title>Linux server partition</title>
+			<title>服务器怎样分区才合理</title>
 			<tgroup cols="2">
 				<thead>
 					<row>
-						<entry>volume</entry>
-						<entry>size</entry>
+						<entry>卷（volume）</entry>
+						<entry>尺寸（size）</entry>
 					</row>
 				</thead>
 				<tbody>
 					<row>
+						<entry>/boot/efi</entry>
+						<entry>500M</entry>
+					</row>
+					<row>
 						<entry>/boot</entry>
-						<entry>300M</entry>
+						<entry>1G</entry>
 					</row>
 					<row>
 						<entry>/</entry>
-						<entry>30G</entry>
-					</row>
-					<row>
-						<entry>/var</entry>
 						<entry>50G</entry>
 					</row>
 					<row>
 						<entry>/opt</entry>
-						<entry>remainder</entry>
+						<entry>剩余所有</entry>
 					</row>
 					<row>
-						<entry>swap</entry>
-						<entry>memory * 2</entry>
+						<entry>交换分区（swap）</entry>
+						<entry>如何开发测试环境不需要分，生产服务器是情况而定，因为现在的服务器内存越来越大，极少出现不够用的情况，16G 内存交换分区可以给 memory * 2，32G 分 32G空间，超过32G 基本不需要分交换分区了。</entry>
 					</row>
 				</tbody>
 			</tgroup>
@@ -157,12 +157,12 @@ net-tools bind-utils
 			<![CDATA[
 dnf install -y langpacks-en glibc-langpack-en
 localectl set-locale LANG=en_US.UTF-8
-			
+
 cat >> /etc/environment <<EOF
 LC_ALL=en_US.UTF-8
 LANG=en_US.UTF-8
 LC_CTYPE=UTF-8
-EOF			
+EOF
 			]]>
 		</screen>
 		<!-- dnf install langpacks-en glibc-all-langpacks -y -->
@@ -177,7 +177,7 @@ export HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S "
 export TIME_STYLE=long-iso
 EOF
 
-source /etc/profile.d/history.sh			
+source /etc/profile.d/history.sh
 			]]>
 		</screen>
 		<para>关闭 SELINUX</para>
@@ -186,7 +186,7 @@ source /etc/profile.d/history.sh
 cp /etc/selinux/config{,.original}
 sed -i "s/SELINUX=enforcing/SELINUX=disabled/" /etc/selinux/config
 
-setenforce Permissive			
+setenforce Permissive
 			]]>
 		</screen>
 		<para>sysctl 优化</para>
@@ -217,6 +217,9 @@ sysctl -p
 		<screen>
 			<![CDATA[
 cat > /etc/security/limits.d/20-nofile.conf <<EOF
+
+root soft nofile 65535
+root hard nofile 65535
 
 www soft nofile 65535
 www hard nofile 65535
@@ -302,7 +305,7 @@ visudo -c
 		</screen>
 	</section>
 	<section>
-		<title>启动 rc.local</title>
+		<title>启用 rc.local</title>
 		<para>/etc/rc.local 是一个开机启动脚本</para>
 		<screen>
 		<![CDATA[
@@ -323,7 +326,7 @@ touch /var/lock/subsys/local
 		]]>
 		</screen>
 		<tip>
-			<para>很多系统已经弃用了该运行方案</para>
+			<para>很多系统已经弃用了该运行方案，因为很多更好的替代方案，例如 node 实现的 pm2 和 Python 实现的 supervisor，以及 Linux 系统自带的 Systemd。</para>
 		</tip>
 		<para>CentOS 8 Stream 如果你想使用 rc.local 需要做如下配置</para>
 		<screen>

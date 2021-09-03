@@ -197,7 +197,6 @@ docker swarm leave --force
 	</section>
 	&section.docker.stack.xml;
 	&section.docker.service.xml;
-	&section.docker.network.xml;
 	<section>
 		<title>swarm 卷管理</title>
 		<para>swarm 不能使用 -v /mysite:/usr/share/nginx/html 挂载卷，系统会提示</para>

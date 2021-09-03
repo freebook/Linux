@@ -2,5 +2,13 @@
 <section id="Grafana">
 	<title>Grafana</title>
 	<subtitle>Installing and Configuring Graphite</subtitle>
-	
+	<section>
+		<title>cadvisor</title>
+		<para><ulink url="https://grafana.com/grafana/dashboards/11277" /></para>
+	</section>
+	<section>
+		<title>Docker - container summary (Prometheus)</title>
+		<para><ulink url="https://grafana.com/grafana/dashboards/11467" /></para>
+		<para>This is a visualization of the Docker container metrics provided by the <ulink url="https://github.com/prometheus-net/docker_exporter">prometheus-net/docker_exporter</ulink> project.</para>
+	</section>
 </section>

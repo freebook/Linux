@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="gitlab.pipeline">
-	<title>Pipeline</title>
+	<title>Pipeline 流水线</title>
 	<section id="gitlab-ci.yml.cache">
 		<title>cache</title>
 		<para>Java 缓存设置</para>
@@ -414,40 +414,13 @@ variables:
 		</screen>
 
 	</section>
-	<section id="gitlab-ci.yml.java">
-		<title>应用案例</title>
-		<section>
-			<title>Java</title>
-			<screen>
-			<![CDATA[
-#image: java:8
-#image: maven:latest
-image: maven:3.5.0-jdk-8
+</section>
+<section id="gitlab-ci.yml.example">
+	<title>应用案例</title>
 
-stages:
-  - build
-  - test
-  - package
-
-build:
-  stage: build
-  script: mvn compile
-
-unittest:
-  stage: test
-  script: mvn test
-  
-  
-package:
-  stage: package
-  script: mvn package
-  artifacts:
-    paths:
-      - target/java-project-0.0.1-SNAPSHOT.jar
-
-			]]>
-			</screen>
-			<screen>
+	<section>
+		<title>Java</title>
+		<screen>
 			<![CDATA[
 before_script:
  - echo "Execute scripts which are required to bootstrap the application. !"
@@ -505,11 +478,230 @@ deploy_prod:
   - master
  environment: production			
 			]]>
+		</screen>
+		<section>
+			<title>使用 Docker 编译并收集构建物</title>
+			<screen>
+			<![CDATA[
+#image: java:8
+#image: maven:latest
+image: maven:3.5.0-jdk-8
+
+stages:
+  - build
+  - test
+  - package
+
+build:
+  stage: build
+  script: mvn compile
+
+unittest:
+  stage: test
+  script: mvn test
+  
+  
+package:
+  stage: package
+  script: mvn package
+  artifacts:
+    paths:
+      - target/java-project-0.0.1-SNAPSHOT.jar
+
+			]]>
+			</screen>
+		</section>
+
+		<section>
+			<title>Shell 执行器，远程部署物理机/虚拟机</title>
+			<programlisting>
+		<![CDATA[
+cache:
+  untracked: true
+
+stages:
+  - build
+  - test
+  - deploy
+
+build-job:
+  stage: build
+  tags:
+    - shell
+  script:
+    - mvn clean package -Dmaven.test.skip=true
+    - ls target/*.jar    
+  artifacts:
+    name: "$CI_PROJECT_NAME"
+    paths:
+      - target/*.jar
+
+test-job:
+  stage: test
+  variables:
+    GIT_STRATEGY: none
+  only: 
+    - tags
+    - testing
+  script:
+    - mvn test
+
+deploy-job:
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none
+    HOST: 192.168.30.14
+  environment:
+    name: development
+    url: https://api.netkiller.cn
+  only: 
+    - development
+  tags:
+    - shell
+  before_script:
+    - rm -rf *.sql.gz
+    - mysqldump -hmysql.netkiller.cn test | gzip > test.$(date -u +%Y-%m-%d.%H:%M:%S).sql.gz
+  # after_script:
+  artifacts:
+    name: "$CI_PROJECT_NAME"
+    paths:
+      - ./*.sql.gz
+  script:
+    - rsync -auzv target/*.jar www@$HOST:/opt/netkiller.cn/api.netkiller.cn/
+    - ssh -f -C -q www@$HOST "pkill java; sleep 5; java -jar /opt/netkiller.cn/api.netkiller.cn/alertmanager-0.0.1.jar >/dev/null 2>&1 &"
+		]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Shell 执行器，远程部使用容器启动项目</title>
+			<screen>
+			<![CDATA[
+cache:
+  untracked: true
+
+stages:
+  - build
+  - test
+  - deploy
+
+build-job:
+  stage: build
+  tags:
+    - shell
+  script:
+    - mvn clean package -Dmaven.test.skip=true
+    - ls target/*.jar    
+  artifacts:
+    name: "$CI_PROJECT_NAME"
+    paths:
+      - target/*.jar
+
+test-job:
+  stage: test
+  variables:
+    GIT_STRATEGY: none
+  only: 
+    - tags
+    - testing
+  script:
+    - mvn test
+
+deploy-job:
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none
+    HOST: 192.168.30.14
+  environment:
+    name: development
+    url: https://api.netkiller.cn
+  only: 
+    - development
+  tags:
+    - shell
+  before_script:
+    - rm -rf *.sql.gz
+    - mysqldump -hmysql.netkiller.cn test | gzip > test.$(date -u +%Y-%m-%d.%H:%M:%S).sql.gz
+  # after_script:
+  artifacts:
+    name: "$CI_PROJECT_NAME"
+    paths:
+      - ./*.sql.gz
+  script:
+    - rsync -auzv target/*.jar www@$HOST:/opt/netkiller.cn/api.netkiller.cn/
+    - rsync -auzv src/main/docker/development/docker-compose.yaml www@$HOST:/opt/netkiller.cn/api.netkiller.cn/
+    - ssh www@$HOST "sudo docker-compose -f /opt/netkiller.cn/api.netkiller.cn/docker-compose.yaml up -d api"
+    - ssh www@$HOST "sudo docker-compose -f /opt/netkiller.cn/api.netkiller.cn/docker-compose.yaml restart api"			
+			]]>
 			</screen>
 		</section>
 		<section>
-			<title>Node</title>
-			<programlisting>
+			<title>Docker 执行器</title>
+			<screen>
+			<![CDATA[
+cache:
+  untracked: true
+
+stages:
+  - build
+  - test
+  - deploy
+
+build-job:
+  image: maven:3.8.2-openjdk-17
+  stage: build
+  tags:
+    - docker
+  script:
+    - mvn clean package -Dmaven.test.skip=true
+    - ls target/*.jar    
+  artifacts:
+    name: "$CI_PROJECT_NAME"
+    paths:
+      - target/*.jar
+
+test-job:
+  image: maven:3.8.2-openjdk-17
+  stage: test
+  variables:
+    GIT_STRATEGY: none
+  tags:
+    - docker    
+  script:
+    - mvn test
+
+deploy-job:
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none
+    HOST: 192.168.30.14
+  environment:
+    name: development
+    url: https://api.netkiller.cn
+  only: 
+    - development
+  tags:
+    - shell
+  before_script:
+    # - DOCKER_HOST=unix:///var/run/docker.sock mvn clean install docker:build
+    - mvn docker:build -DpushImage
+    # - mvn docker:push
+    - rm -rf *.sql.gz
+    - mysqldump -hmysql.netkiller.cn test | gzip > test.$(date -u +%Y-%m-%d.%H:%M:%S).sql.gz
+  artifacts:
+    name: "$CI_PROJECT_NAME"
+    paths:
+      - ./*.sql.gz
+  script:
+    - scp src/main/docker/docker-compose.yaml www@$HOST:/opt/netkiller.cn/api.netkiller.cn/
+    - ssh www@$HOST "sudo docker-compose -f /opt/netkiller.cn/api.netkiller.cn/docker-compose.yaml up"
+    - ssh www@$HOST "sudo docker-compose -f /opt/netkiller.cn/api.netkiller.cn/docker-compose.yaml restart"			
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>Node</title>
+		<programlisting>
 			<![CDATA[
 cache:
   paths:
@@ -544,11 +736,11 @@ deploy-job:
     - rsync -auzv --delete * www@192.168.30.10:/opt/netkiller.cn/www.netkiller.cn/
     - ssh www@192.168.0.10 "sudo pm2 --update-env restart /opt/netkiller.cn/www.netkiller.cn/main.js"
 			]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>vue.js android</title>
-			<screen>
+		</programlisting>
+	</section>
+	<section>
+		<title>vue.js android</title>
+		<screen>
 			<![CDATA[
 build site:
   image: node:6
@@ -579,7 +771,8 @@ deploy:
     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
     - rsync -rav --delete dist/ user@server.com:/your/project/path/			
 			]]>
-			</screen>
-		</section>
+		</screen>
 	</section>
 </section>
+
+	
