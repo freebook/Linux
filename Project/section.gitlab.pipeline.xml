@@ -248,6 +248,22 @@ deploy_job:
 				]]>
 		</screen>
 	</section>
+	<section id="gitlab-ci.yml.variables">
+		<title>variables</title>
+		<screen>
+		<![CDATA[
+job1:
+  variables:
+    FOLDERS: src test docs
+  script:
+    - |
+      for FOLDER in $FOLDERS
+        do
+          echo "The path is root/${FOLDER}"
+        done		
+		]]>
+		</screen>
+	</section>
 	<section id="gitlab-ci.yml.only">
 		<title>only and except</title>
 		<para>only 用于匹配分支</para>
@@ -315,7 +331,7 @@ job3:
 		]]>
 		</screen>
 	</section>
-	<section>
+	<section id="gitlab-ci.yml.when">
 		<title>定义何时开始job</title>
 		<para>when: 可以是on_success，on_failure，always或者manual</para>
 		<itemizedlist>

@@ -4,31 +4,49 @@
 	<section id="install">
 		<title>install</title>
 		<section>
+			<title>CentOS 8 Stream</title>
+			<para>服务器端</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# dnf install samba	
+[root@netkiller ~]# cp /etc/samba/smb.conf{,.original}
+[root@netkiller ~]# systemctl enable smb
+[root@netkiller ~]# systemctl start smb		
+			]]>
+			</screen>
+			<para>客户端</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# dnf install samba-client			
+			]]>
+			</screen>
+		</section>
+		<section>
 			<title>Ubuntu</title>
 			<para>环境 ubuntu 17.10</para>
-			<screen>
+			<screen><![CDATA[
 $ sudo apt install samba
-			</screen>
+			]]></screen>
 			<para>查看Samba 服务器的端口</para>
-			<screen>
+			<screen><![CDATA[
 neo@shenzhen:~$ sudo netstat -tlnp |grep smb
 tcp        0      0 0.0.0.0:139             0.0.0.0:*               LISTEN     4480/smbd
 tcp        0      0 0.0.0.0:445             0.0.0.0:*               LISTEN     4480/smbd
 neo@shenzhen:~$
-			</screen>
+			]]></screen>
 		</section>
 		<section id="centos6">
 			<title>Samba</title>
-			<screen>
+			<screen><![CDATA[
 # yum -y install samba
 # service smbd start
-			</screen>
+			]]></screen>
 			<para>smbpasswd</para>
-			<screen>
+			<screen><![CDATA[
 [root@development ~]# sudo smbpasswd -L -a neo		
-			</screen>
+			]]></screen>
 			<para>smb.conf</para>
-			<screen>
+			<screen><![CDATA[
 #============================ Share Definitions ==============================
 
 [homes]
@@ -45,24 +63,24 @@ neo@shenzhen:~$
         printable = no
         write list = +apache
 		
-			</screen>
+			]]></screen>
 		</section>
-	
+
 		<section id="centos7">
 			<title>CentOS 7</title>
-			<screen>
+			<screen><![CDATA[
 yum install -y samba
 
 cp /etc/samba/smb.conf{,.original}
 
 systemctl enable smb
 systemctl start smb
-			</screen>
+			]]></screen>
 		</section>
 		<section id="samba.firewall">
 			<title>firewall</title>
 			<para>防火墙</para>
-			<screen>
+			<screen><![CDATA[
 firewall-cmd --permanent --add-port=137/tcp
 firewall-cmd --permanent --add-port=138/tcp
 firewall-cmd --permanent --add-port=139/tcp
@@ -70,40 +88,91 @@ firewall-cmd --permanent --add-port=445/tcp
 firewall-cmd --permanent --add-port=901/tcp
 
 firewall-cmd --reload
-			</screen>
+			]]></screen>
 			<para>iptables -L</para>
 		</section>
 		<section id="samba.SELinux">
 			<title>SELinux Configuration</title>
-			<screen>
+			<screen><![CDATA[
 setsebool -P samba_enable_home_dirs on
 chcon -t samba_share_t /home/samba
-			</screen>
+			]]></screen>
 			<para>/home/samba 改为你共享的目录</para>
 		</section>
 	</section>
 	<section id="smb.conf">
 		<title>smb.conf</title>
 		<para>security = share|user 共享|用户模式</para>
-		<screen>
+		<screen><![CDATA[
 comment = 描述
 valid users = '%S'登录用户，'neo'允许neo访问
 read only = 'No'读写模式，'Yes'只读模式
 browseable = 'No'不显示, 'Yes'显示
-		</screen>
+		]]></screen>
 		<section>
 			<title>Security consideration</title>
-			<screen>
+			<screen><![CDATA[
 [global]
 interfaces = lo, eth0
 bind interfaces only = true
+			]]></screen>
+		</section>
+		<section>
+			<title>共享目录</title>
+			<para>添加账号</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# adduser finance
+[root@netkiller ~]# smbpasswd -a finance
+New SMB password:
+Retype new SMB password:
+Added user finance.
+			]]>
+			</screen>
+			<para>确认账号正确添加</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# pdbedit -L
+finance:1000:			
+			]]>
+			</screen>
+			<para>创建共享目录</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# mkdir -p /opt/backup/finance
+[root@netkiller ~]# chown finance:finance  /opt/backup/finance
+			]]>
+			</screen>
+			<para>配置 /etc/samba/smb.conf 文件</para>
+			<screen>
+			<![CDATA[
+[finance]
+        comment = Finance Stuff
+        path = /opt/backup/finance
+        browseable = yes
+        writable = yes
+        create mask = 0644
+		directory mask = 0755
+		valid users = neo
+        write list = finance			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>限制IP地址访问</title>
+			<screen>
+			<![CDATA[
+hosts deny=192.168.50.10 192.168.10.   ## 禁止IP 192.168.50.10 及 192.168.10.* 段IP访问
+			]]>
 			</screen>
 		</section>
 	</section>
-	
-	<section id="testparm">
-		<title>testparm - check an smb.conf configuration file for internal correctness</title>
-		<screen>
+	<section>
+		<title>Samba 相关命令</title>
+
+		<section id="testparm">
+			<title>testparm - check an smb.conf configuration file for internal correctness</title>
+			<screen><![CDATA[
 # testparm
 Load smb config files from /etc/samba/smb.conf
 rlimit_max: increasing rlimit_max (1024) to minimum Windows limit (16384)
@@ -133,11 +202,11 @@ Press enter to see a dump of your service definitions
 	print ok = Yes
 	browseable = No
 		
-		</screen>
-	</section>
-	<section id="smbstatus">
-		<title>smbstatus - report on current Samba connections</title>
-		<screen>
+		]]></screen>
+		</section>
+		<section id="smbstatus">
+			<title>smbstatus - report on current Samba connections</title>
+			<screen><![CDATA[
 # smbstatus 
 
 Samba version 4.1.12
@@ -148,9 +217,9 @@ Service      pid     machine       Connected at
 -------------------------------------------------------
 
 No locked files
-		</screen>
-		<para>链接共享目录后再次查看</para>
-		<screen>
+		]]></screen>
+			<para>链接共享目录后再次查看</para>
+			<screen><![CDATA[
 # smbstatus 
 
 Samba version 4.1.12
@@ -170,20 +239,20 @@ Pid          Uid        DenyMode   Access      R/W        Oplock           Share
 12507        80         DENY_NONE  0x100081    RDONLY     NONE             /www   SOA/queue   Wed Sep 23 02:01:22 2015
 12507        80         DENY_NONE  0x100081    RDONLY     NONE             /www   .   Wed Sep 23 01:37:53 2015
 12507        80         DENY_NONE  0x100081    RDONLY     NONE             /www   .   Wed Sep 23 01:58:22 2015
-		</screen>
-	</section>
-	<section id="smbpasswd">
-		<title>smbpasswd - change a user's SMB password</title>
-		<screen>
+		]]></screen>
+		</section>
+		<section id="smbpasswd">
+			<title>smbpasswd - change a user's SMB password</title>
+			<screen><![CDATA[
 # smbpasswd -a www
 New SMB password:
 Retype new SMB password:
 Added user www.
-		</screen>
-	</section>
-	<section id="nmblookup">
-		<title>nmblookup - NetBIOS over TCP/IP client used to lookup NetBIOS names</title>
-		<screen>
+		]]></screen>
+		</section>
+		<section id="nmblookup">
+			<title>nmblookup - NetBIOS over TCP/IP client used to lookup NetBIOS names</title>
+			<screen><![CDATA[
 		<![CDATA[
 $ nmblookup -A 172.16.0.5
 Looking up status of 172.16.0.5
@@ -196,41 +265,42 @@ Looking up status of 172.16.0.5
 
         MAC Address = 00-25-64-A7-18-97
         ]]>
-		</screen>
-	</section>
-	<section id="smbfs">
-		<title>smbfs/smbmount/smbumount</title>
-		<screen>
+				]]>
+			</screen>
+		</section>
+		<section id="smbfs">
+			<title>smbfs/smbmount/smbumount</title>
+			<screen><![CDATA[
 sudo apt-get install smbfs
-		</screen>
-		<para>smbmount</para>
-		<screen>
+		]]></screen>
+			<para>smbmount</para>
+			<screen><![CDATA[
 $ sudo mkdir /mnt/winfs
 $ sudo smbmount //172.16.0.92/tmp /mnt/winfs
 $ ls /mnt/winfs/
-		</screen>
-		<para>使用neo帐号登录</para>
-		<screen>
+		]]></screen>
+			<para>使用neo帐号登录</para>
+			<screen><![CDATA[
 $ sudo smbmount //172.16.0.92/tmp /mnt/winfs -o username=neo
-		</screen>
-		<para>mount</para>
-		<screen>
+		]]></screen>
+			<para>mount</para>
+			<screen><![CDATA[
 $ mount -t smbfs -o username=jwhittal \\\\172.16.1.3\\c$ /mnt/thumb
-		</screen>
-		<para>linux 不再使用smbfs, 替换为 cifs</para>
-		<screen>
+		]]></screen>
+			<para>linux 不再使用smbfs, 替换为 cifs</para>
+			<screen><![CDATA[
 $ mount -t cifs //192.168.0.2/ /mnt/
-		</screen>
-	</section>
-	<section id="smbclient">
-		<title>smbclient - ftp-like client to access SMB/CIFS resources on servers</title>
-		<screen>
+		]]></screen>
+		</section>
+		<section id="smbclient">
+			<title>smbclient - ftp-like client to access SMB/CIFS resources on servers</title>
+			<screen><![CDATA[
 $ sudo apt-get install smbclient
-		</screen>
-		<section>
-			<title>显示共享目录</title>
-			<command>$ smbclient -L 172.16.1.3</command>
-			<screen>
+		]]></screen>
+			<section>
+				<title>显示共享目录</title>
+				<command>$ smbclient -L 172.16.1.3</command>
+				<screen><![CDATA[
 neo@netkiller:~$ smbclient -L 172.16.0.1
 Enter neo's password:
 Domain=[WORKGROUP] OS=[Unix] Server=[Samba 3.4.0]
@@ -251,12 +321,12 @@ Domain=[WORKGROUP] OS=[Unix] Server=[Samba 3.4.0]
         Workgroup            Master
         ---------            -------
         WORKGROUP            DEBIAN
-			</screen>
-		</section>
-		<section>
-			<title>访问共享资源</title>
-			<para>访问developer共享目录</para>
-			<screen>
+			]]></screen>
+			</section>
+			<section>
+				<title>访问共享资源</title>
+				<para>访问developer共享目录</para>
+				<screen><![CDATA[
 $ smbclient //localhost/developer
 
 Enter neo's password:
@@ -285,12 +355,12 @@ smb: \> ls
 
                 61335 blocks of size 131072. 41655 blocks available
 smb: \>
-			</screen>
-		</section>
-		<section>
-			<title>用户登录</title>
-			<para>使用用户Neo登录</para>
-			<screen>
+			]]></screen>
+			</section>
+			<section>
+				<title>用户登录</title>
+				<para>使用用户Neo登录</para>
+				<screen><![CDATA[
 $ smbclient //localhost/developer -U neo
 
 Enter neo's password:
@@ -318,24 +388,24 @@ smb: \> ls
 
                 61335 blocks of size 131072. 41654 blocks available
 smb: \> quit
-			</screen>
+			]]></screen>
+			</section>
 		</section>
-	</section>
-	<section id="smbtar">
-		<title>smbtar - shell script for backing up SMB/CIFS shares directly to UNIX tape drives</title>
-	</section>
-	
+		<section id="smbtar">
+			<title>smbtar - shell script for backing up SMB/CIFS shares directly to UNIX tape drives</title>
+		</section>
 
-	<section id="example">
-		<title>by Example</title>
-		<para>Backup the /etc/samba/smb.conf file: </para>
-		<screen>
+
+		<section id="example">
+			<title>by Example</title>
+			<para>Backup the /etc/samba/smb.conf file: </para>
+			<screen><![CDATA[
 sudo cp /etc/samba/smb.conf /etc/samba/smb.conf.original
-		</screen>
-		<section>
-			<title>share</title>
-			<para>security = share</para>
-			<screen>
+		]]></screen>
+			<section>
+				<title>share</title>
+				<para>security = share</para>
+				<screen>
 			<![CDATA[
 [tmp]
    comment = test
@@ -359,39 +429,39 @@ sudo cp /etc/samba/smb.conf /etc/samba/smb.conf.original
    public = yes
 
 			]]>
-			</screen>
-		</section>
-		<section>
-			<title>user</title>
-			<screen>
+				</screen>
+			</section>
+			<section>
+				<title>user</title>
+				<screen><![CDATA[
 sudo cp /etc/samba/smb.conf /etc/samba/smb.conf.original
-			</screen>
-			<screen>
+			]]></screen>
+				<screen><![CDATA[
 security = user
-			</screen>
-			<para>add user</para>
-			<screen>
+			]]></screen>
+				<para>add user</para>
+				<screen><![CDATA[
 sudo useradd -s /bin/true neo
 sudo smbpasswd -L -a neo
-			</screen>
-			<para>enable</para>
-			<screen>
+			]]></screen>
+				<para>enable</para>
+				<screen><![CDATA[
 sudo smbpasswd -L -e neo
-			</screen>
-			<para>del user</para>
-			<screen>
+			]]></screen>
+				<para>del user</para>
+				<screen><![CDATA[
 sudo smbpasswd -L -x neo
-			</screen>
-		</section>
+			]]></screen>
+			</section>
 
-		<section>
-			<title>test</title>
-			<para>测试配置文件是否正确</para>
-			<screen>
+			<section>
+				<title>test</title>
+				<para>测试配置文件是否正确</para>
+				<screen><![CDATA[
 $ testparm
-			</screen>
-			<para>查看共享目录</para>
-			<screen>
+			]]></screen>
+				<para>查看共享目录</para>
+				<screen><![CDATA[
 $ smbclient -L localhost -N
 
 Domain=[WORKGROUP] OS=[Unix] Server=[Samba 3.3.2]
@@ -412,9 +482,9 @@ Domain=[WORKGROUP] OS=[Unix] Server=[Samba 3.3.2]
         ---------            -------
         WORKGROUP            PRINTSERVER
 
-			</screen>
-			<para>Windows 访问测试</para>
-			<screen>
+			]]></screen>
+				<para>Windows 访问测试</para>
+				<screen><![CDATA[
 C:\>net view \\192.168.3.40
 在 \\192.168.3.40 的共享资源
 
@@ -425,16 +495,16 @@ ubuntu server (Samba, Ubuntu)
 ----------------------------------------------------------
 developer  Disk  Development
 命令运行完毕，但发生一个或多个错误。
-			</screen>
+			]]></screen>
+			</section>
 		</section>
-	</section>	
-	
-	
+	</section>
+
 	<section id="faq">
 		<title>FAQ</title>
 		<section>
 			<title>smbd/service.c:make_connection_snum(1013)</title>
-			<screen>
+			<screen><![CDATA[
   '/www' does not exist or permission denied when connecting to [www] Error was Permission denied
 [2010/05/17 17:26:08, 0] smbd/service.c:make_connection_snum(1013)
   '/www' does not exist or permission denied when connecting to [www] Error was Permission denied
@@ -450,7 +520,7 @@ developer  Disk  Development
   '/www' does not exist or permission denied when connecting to [www] Error was Permission denied
 [2010/05/17 17:26:13, 0] smbd/service.c:make_connection_snum(1013)
   '/www' does not exist or permission denied when connecting to [www] Error was Permission denied
-			</screen>
+			]]></screen>
 			<para>关闭 SELinux</para>
 		</section>
 	</section>
