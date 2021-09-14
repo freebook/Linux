@@ -306,7 +306,64 @@ job:
 			<listitem>tags 匹配所有 git tag</listitem>
 			<listitem>triggers</listitem>
 		</itemizedlist>
-		<para></para>
+		<para>匹配 feature / hotfix 分支</para>
+		<screen>
+		<![CDATA[
+
+deploy-feature-job:
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none
+    HOST: 192.168.30.14
+    # DOCKER_HOST: unix:///var/run/docker.sock mvn clean install docker:build
+  environment:
+    name: feature
+    url: https://api.netkiller.cn
+  only: 
+    - /^feature\/.*/
+  tags:
+    - shell
+  before_script:
+    - mvn docker:build -DpushImage
+    - rm -rf *.sql.gz
+    - mysqldump -hmysql.netkiller.cn test | gzip > test.$(date -u +%Y-%m-%d.%H:%M:%S).sql.gz
+  artifacts:
+    name: "$CI_PROJECT_NAME"
+    paths:
+      - ./*.sql.gz
+  script:
+    - scp src/main/docker/docker-compose.yaml www@$HOST:/opt/netkiller.cn/api.netkiller.cn/
+    - ssh www@$HOST "sudo docker-compose -f /opt/netkiller.cn/api.netkiller.cn/docker-compose.yaml up"
+    - ssh www@$HOST "sudo docker-compose -f /opt/netkiller.cn/api.netkiller.cn/docker-compose.yaml restart"
+  when: manual
+
+deploy-hotfix-job:
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none
+    HOST: 192.168.30.14
+  environment:
+    name: hotfix
+    url: https://api.netkiller.cn
+  only: 
+    - /^hotfix\/.*/
+  tags:
+    - shell
+  before_script:
+    - mvn docker:build -DpushImage
+    - rm -rf *.sql.gz
+    - mysqldump -hmysql.netkiller.cn test | gzip > test.$(date -u +%Y-%m-%d.%H:%M:%S).sql.gz
+  artifacts:
+    name: "$CI_PROJECT_NAME"
+    paths:
+      - ./*.sql.gz
+  script:
+    - scp src/main/docker/docker-compose.yaml www@$HOST:/opt/netkiller.cn/api.netkiller.cn/
+    - ssh www@$HOST "sudo docker-compose -f /opt/netkiller.cn/api.netkiller.cn/docker-compose.yaml up"
+    - ssh www@$HOST "sudo docker-compose -f /opt/netkiller.cn/api.netkiller.cn/docker-compose.yaml restart"
+  when: manual		
+		]]>
+		</screen>
 	</section>
 	<section id="gitlab-ci.yml.allow_failure">
 		<title>允许失败</title>
@@ -418,6 +475,18 @@ deploy-job:      # This job runs in the deploy stage.
     - echo "Deploying application..."
     - echo "Application successfully deployed."				
 				]]>
+		</screen>
+	</section>
+	<section id="gitlab-ci.yml.rules">
+		<title>rules 规则</title>
+		<screen>
+		<![CDATA[
+job-name: 
+  script:
+    - echo "i am potato"
+  rules:
+    - if: '$CI_COMMIT_BRANCH != "potato"'		
+		]]>
 		</screen>
 	</section>
 	<section id="gitlab-ci.yml.submodule">
@@ -787,6 +856,70 @@ deploy:
     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
     - rsync -rav --delete dist/ user@server.com:/your/project/path/			
 			]]>
+		</screen>
+	</section>
+	<section>
+		<title>docker</title>
+		<screen>
+		<![CDATA[
+cache:
+  untracked: true
+
+stages:
+  - build
+  - test
+  - deploy
+
+build-job:
+  image: maven:3.8.2-openjdk-17
+  stage: build
+  tags:
+    - docker
+  script:
+    - mvn clean package -Dmaven.test.skip=true
+    - ls target/*.jar    
+  artifacts:
+    name: "$CI_PROJECT_NAME"
+    paths:
+      - target/*.jar
+
+test-job:
+  image: maven:3.8.2-openjdk-17
+  stage: test
+  variables:
+    GIT_STRATEGY: none
+  tags:
+    - docker    
+  script:
+    - mvn test
+
+deploy-job:
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none
+    HOST: 192.168.30.14
+    DOCKER_HOST: unix:///var/run/docker.sock mvn clean install docker:build
+  environment:
+    name: development
+    url: https://api.netkiller.cn
+  only: 
+    - development
+  tags:
+    - shell
+  before_script:
+    - mvn docker:build -DpushImage
+    # - mvn docker:push
+    - rm -rf *.sql.gz
+    - mysqldump -hmysql.netkiller.cn test | gzip > test.$(date -u +%Y-%m-%d.%H:%M:%S).sql.gz
+  artifacts:
+    name: "$CI_PROJECT_NAME"
+    paths:
+      - ./*.sql.gz
+  script:
+    - scp src/main/docker/docker-compose.yaml www@$HOST:/opt/netkiller.cn/api.netkiller.cn/
+    - ssh www@$HOST "sudo docker-compose -f /opt/netkiller.cn/api.netkiller.cn/docker-compose.yaml up"
+    - ssh www@$HOST "sudo docker-compose -f /opt/netkiller.cn/api.netkiller.cn/docker-compose.yaml restart"		
+		]]>
 		</screen>
 	</section>
 </section>

@@ -264,8 +264,7 @@ Looking up status of 172.16.0.5
         ..__MSBROWSE__. <01> - <GROUP> B <ACTIVE>
 
         MAC Address = 00-25-64-A7-18-97
-        ]]>
-				]]>
+        	]]>
 			</screen>
 		</section>
 		<section id="smbfs">

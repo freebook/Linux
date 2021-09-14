@@ -200,6 +200,9 @@
 			<fileset dir="images">
 				<include name="**/*" />
 			</fileset>
+			<fileset dir="common/images">
+				<include name="**/*" />
+			</fileset>
 		</copy>
 		<echo file="${epub}/mimetype" append="false">application/epub+zip</echo>
 		<zip destfile="${download}/epub/${epub.bookname}.epub" basedir="${epub}" update="true" />
@@ -213,6 +216,14 @@
 		<echo>the backup directory is ${TIMEPOINT}.</echo>
 		<!-- <mkdir dir="${backup.dir}/${TIMEPOINT}" /> -->
 		<xsltproc output="${tmp}/${ant.project.name}" stylesheet="docbook-xsl/docbook.preview.xsl" file="book.xml" />
+		<copy todir="${tmp}/${ant.project.name}/images" overwrite="true">
+			<fileset dir="images">
+				<include name="**/*" />
+			</fileset>
+			<fileset dir="common/images">
+				<include name="**/*" />
+			</fileset>
+		</copy>
 	</target>
 	<target name="usage" depends="">
 		<echo>Java deploy tools by netkiller</echo>

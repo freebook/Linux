@@ -1,20 +1,24 @@
 <abstract>
 	<title>内容摘要</title>
-	<para>本文档讲述Linux系统涵盖了系统管理与配置包括：</para>
-	<para>
-		<note>
-			<title>对初学Linux的爱好者忠告</title>
-			<para>玩Linux最忌reboot（重新启动）这是windows玩家坏习惯</para>
-			<para>Linux只要接上电源你就不要再想用reboot,shutdown,halt,poweroff命令,Linux系统和应用软件一般备有reload,reconfigure,restart/start/stop...不需要安装软件或配置服务器后使用reboot重新引导计算机
-			</para>
-			<para>在Linux系统里SIGHUP信号被定义为刷新配置文件,有些程序没有提供reload参数,你可以给进程发送HUP信号,让它刷新配置文件,而不用restart.通过pkill,killall,kill
-				都可以发送HUP信号例如: pkill -HUP httpd
-			</para>
-		</note>
-	</para>
+	<para>Netkiller 系列手札 已经被 Github 收录，并备份保存在北极地下250米深的代码库中，备份会保留1000年。</para>
+	<simplelist type='horiz' columns='2'>
+		<member>
+			<ulink url="https://archiveprogram.github.com/arctic-vault/">
+				<graphic format="png" fileref="images/logo/badge--acv-64.png" srccredit="neo" width="" />
+			</ulink>
+		</member>
+		<member>
+			<para>Preserving open source software for future generations</para>
+			<para>The world is powered by open source software. It is a hidden cornerstone of modern civilization, and the shared heritage of all humanity.</para>
+			<para>The GitHub Arctic Code Vault is a data repository preserved in the Arctic World Archive (AWA), a very-long-term archival facility 250 meters deep in the permafrost of an Arctic mountain.</para>
+			<para>We are collaborating with the Bodleian Library in Oxford, the Bibliotheca Alexandrina in Egypt, and Stanford Libraries in California to store copies of 17,000 of GitHub’s most popular and most-depended-upon projects—open source’s “greatest hits”—in their archives, in museum-quality cases, to preserve them for future generations.</para>
+			<para>我们正在与牛津的博德利安图书馆、埃及的亚历山大图书馆和加利福尼亚州的斯坦福图书馆合作，将 GitHub 最受欢迎和最依赖的项目 17，000 份副本保存在他们的档案中，在博物馆质量的案例中，为子孙后代保存这些作品。</para>
+			<para><ulink url="https://archiveprogram.github.com/arctic-vault/" /></para>
+		</member>
+	</simplelist>
+
 	<para>我的系列文档:</para>
-	<para>操作系统</para>
-	<simplelist type='horiz' columns='3'>
+	<simplelist type='horiz' columns='4'>
 		<title>操作系统</title>
 		<member>
 			<ulink url="../linux/index.html">Netkiller Linux 手札</ulink>
