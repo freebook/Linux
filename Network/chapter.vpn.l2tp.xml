@@ -2,17 +2,35 @@
 <!-- $Id: chapter.network.vpn.l2tp.xml 420 2012-05-29 11:42:48Z netkiller $ -->
 <section id="l2tp">
 	<title>l2tpd - dummy package for l2tpd to xl2tpd transition</title>
-	<procedure>
-		<title>install l2tpd</title>
-		<step>
-			<para>install</para>
-			<screen>
+	<para>PAP（PasswordAuthenticationProtocol 密码认证协议）PAP 是 PPP 协议集中的一种链路控制协议，通过2次握手建立认证，对等结点持续重复发送 ID/ 密码（明文）给验证者，直至认证得到响应或连接终止，常见于PPPOE拨号环境中。</para>
+	<para>首先被认证方向认证方发送认证请求（包含用户名和密码），以明文形式进行传输，认证方接到认证请求，再根据被认证方发送来的用户名去到自己的数据库认证用户名密码是否正确，如果密码正确，PAP认证通过，如果用户名密码错误，PAP认证未通过
+		PAP 并不是一种强有效的认证方法，其密码以文本格式在电路上进行发送，对于窃听、重放或重复尝试和错误攻击没有任何保护。
+	</para>
+	<para>CHAP (ChallengeHandshakeAuthenticationProtocol 质询握手认证协议) CHAP通过三次握手验证被认证方的身份（密文），在初始链路建立时完成，为了提高安全性，在链路建立之后周期性进行验证，目前在企业网的远程接入环境中用的比较常见。</para>
+	<orderedlist>
+		<title>CHAP: </title>
+		<listitem>链路建立阶段结束之后，认证方主动向对端点发送“challenge”消息（此认证序列号id+认证方主机名+随机数）</listitem>
+		<listitem>对端点去到自己的数据库查到认证方主机名对应的密码，用查到的密码结合认证方发来的认证序列号id和随机数，经过单向哈希函数MD5计算出来的值做应答。</listitem>
+		<listitem>根据被认证方发来的认证用户名，主认证方在本地数据库中查找被认证方对应的密码，结合id找到先前保存的随机数据和id根据MD5算法算出一个Hash值，与被认证方得到的Hash值做比较，如果一致，则认证通过，如果不一致，则认证不通过。</listitem>
+		<listitem>经过一定的随机间隔，认证方发送一个新的 challenge 给端点，重复步骤 1 到 3 。</listitem>
+	</orderedlist>
+	<para></para>
+	<section>
+		<title>Ubuntu/Debian</title>
+
+		<procedure>
+			<title>install l2tpd</title>
+			<step>
+				<para>install</para>
+				<screen>
+			<![CDATA[
 # apt-get install l2tpd
-			</screen>
-		</step>
-		<step>
-			<para>/etc/xl2tpd/xl2tpd.conf</para>
-			<screen>
+			]]>
+				</screen>
+			</step>
+			<step>
+				<para>/etc/xl2tpd/xl2tpd.conf</para>
+				<screen>
 			<![CDATA[
 # cp /etc/xl2tpd/xl2tpd.conf /etc/xl2tpd/xl2tpd.conf.original
 # vim /etc/xl2tpd/xl2tpd.conf
@@ -30,11 +48,11 @@ require authentication = yes
 name = vpn.example.com
 pppoptfile = /etc/ppp/options.l2tpd.lns
 			]]>
-			</screen>
-		</step>
-		<step>
-			<para>/etc/ppp/options.l2tpd.lns</para>
-			<screen>
+				</screen>
+			</step>
+			<step>
+				<para>/etc/ppp/options.l2tpd.lns</para>
+				<screen>
 			<![CDATA[
 vim /etc/ppp/options.l2tpd.lns
 
@@ -55,25 +73,316 @@ lock
 proxyarp
 connect-delay 5000
 			]]>
-			</screen>
-		</step>
-		<step>
-			<para>/etc/xl2tpd/l2tp-secrets</para>
-			<screen>
+				</screen>
+			</step>
+			<step>
+				<para>/etc/xl2tpd/l2tp-secrets</para>
+				<screen>
 			<![CDATA[
 vim /etc/xl2tpd/l2tp-secrets
 
 neo     *       chen    *
 			]]>
-			</screen>
-		</step>
-		<step>
-			<para>start</para>
-			<screen>
+				</screen>
+			</step>
+			<step>
+				<para>start</para>
+				<screen>
 			<![CDATA[
 /etc/init.d/xl2tpd start
 			]]>
-			</screen>
-		</step>
-	</procedure>
+				</screen>
+			</step>
+		</procedure>
+	</section>
+	<section>
+		<title>CentOS 8 Stream</title>
+		<procedure>
+			<title>L2TP 服务器端</title>
+			<step>
+				<para>安装 xl2tpd</para>
+				<screen>
+				<![CDATA[
+[root@stage ~]# dnf search xl2tpd | grep xl2tpd
+Last metadata expiration check: 2:14:26 ago on Thu 16 Sep 2021 03:24:26 PM CST.
+============================= Name Matched: l2tpd ==============================
+xl2tpd.x86_64 : Layer 2 Tunnelling Protocol Daemon (RFC 2661)				
+				]]>
+				</screen>
+				<para></para>
+				<screen>
+				<![CDATA[
+[root@stage ~]# dnf install -y xl2tpd libreswan
+				]]>
+				</screen>
+				<para>由于L2TP安装需要加载内核模块，所以需要重启系统，否则 modprobe 找不到 l2tp_ppp 模块</para>
+				<screen>
+				<![CDATA[
+[root@stage ~]# reboot				
+				]]>
+				</screen>
+			</step>
+			<step>
+				<para>配置 /etc/xl2tpd/xl2tpd.conf</para>
+				<screen>
+				<![CDATA[
+[root@stage ~]# cp /etc/xl2tpd/xl2tpd.conf{,.original}
+
+[root@stage ~]# cat /etc/xl2tpd/xl2tpd.conf | grep -v "^;"
+
+[global]
+
+[lns default]
+ip range = 192.168.1.128-192.168.1.254
+local ip = 192.168.1.99
+require chap = yes
+refuse pap = yes
+require authentication = yes
+name = LinuxVPNserver
+ppp debug = yes
+pppoptfile = /etc/ppp/options.xl2tpd
+length bit = yes
+				]]>
+				</screen>
+				<para>配置 /etc/ppp/options.xl2tpd</para>
+				<screen>
+				<![CDATA[
+[root@stage ~]# vim /etc/ppp/options.xl2tpd
+ipcp-accept-local
+ipcp-accept-remote
+ms-dns  8.8.8.8
+ms-dns  1.1.1.1
+# ms-dns  192.168.1.1
+# ms-dns  192.168.1.3
+# ms-wins 192.168.1.2
+# ms-wins 192.168.1.4
+noccp
+auth
+#obsolete: crtscts
+idle 1800
+mtu 1410
+mru 1410
+nodefaultroute
+debug
+#obsolete: lock
+proxyarp
+connect-delay 5000
+# To allow authentication against a Windows domain EXAMPLE, and require the
+# user to be in a group "VPN Users". Requires the samba-winbind package
+# require-mschap-v2
+# plugin winbind.so
+# ntlm_auth-helper '/usr/bin/ntlm_auth --helper-protocol=ntlm-server-1 --require-membership-of="EXAMPLE\\VPN Users"' 
+# You need to join the domain on the server, for example using samba:
+# http://rootmanager.com/ubuntu-ipsec-l2tp-windows-domain-auth/setting-up-openswan-xl2tpd-with-native-windows-clients-lucid.html
+				]]>
+				</screen>
+				<para>修改为</para>
+				<screen>
+				<![CDATA[
+[root@stage ~]# cat /etc/ppp/options.xl2tpd | grep -v ^#
+ipcp-accept-local
+ipcp-accept-remote
+ms-dns  8.8.8.8
+ms-dns  114.114.114.114
+auth
+idle 1800
+mtu 1410
+mru 1410
+nodefaultroute
+debug
+connect-delay 5000
+require-mschap-v2
+logfile /var/log/xl2tpd.log				
+				]]>
+				</screen>
+			</step>
+			<step>
+				<para>配置 Ipsec</para>
+				<screen>
+				<![CDATA[
+[root@stage ~]# cp /etc/ipsec.conf{,.original}
+
+[root@stage ~]# cat /etc/ipsec.conf | grep -v "#"
+
+config setup
+	logfile=/var/log/pluto.log
+	interfaces="%defaultroute"
+	virtual_private=%v4:10.0.0.0/8,%v4:192.168.0.0/16,%v4:172.16.0.0/12,%v4:25.0.0.0/8,%v4:100.64.0.0/10,%v6:fd00::/8,%v6:fe80::/10
+
+
+include /etc/ipsec.d/*.conf
+				]]>
+				</screen>
+				<screen>
+				<![CDATA[
+[root@stage ~]# cat > /etc/ipsec.d/default.secrets <<EOF
+# 0.0.0.0 %any: PSK "123456"
+# %any  %any  : PSK "VPN_IPSEC_PSK"
+: PSK "12345678"
+EOF
+
+[root@stage ~]# cat /etc/ipsec.d/default.secrets
+				]]>
+				</screen>
+			</step>
+			<step>
+				<para>创建登陆用户和密码</para>
+				<para>设置登陆密码 /etc/ppp/chap-secrets</para>
+				<screen>
+				<![CDATA[
+[root@stage ~]# cp /etc/ppp/chap-secrets
+[root@stage ~]# cat /etc/ppp/chap-secrets
+# Secrets for authentication using CHAP
+# client	server	secret			IP addresses
+neo	*	chen	*
+tom	*	112233	*
+apple	*	chen	*
+"username" l2tpd "password" *
+				
+				]]>
+				</screen>
+				<screen>
+				<![CDATA[
+[root@stage ~]# vim /etc/xl2tpd/l2tp-secrets 
+[root@stage ~]# cat /etc/xl2tpd/l2tp-secrets 
+# Secrets for authenticating l2tp tunnels
+# us	them	secret
+# *		marko blah2
+# zeus		marko	blah
+# *	*	interop
+
+neo	*	chen	*				
+				]]>
+				</screen>
+			</step>
+			<step>
+				<para>启动</para>
+				<!-- vim /etc/sysctl.d/60-sysctl_ipsec.conf -->
+				<para></para>
+				<screen>
+				<![CDATA[
+cat << 'EOF' >>  /etc/sysctl.conf 
+
+# XL2TPD Add by neo
+net.ipv4.ip_forward=1
+net.ipv4.conf.default.send_redirects=0
+net.ipv4.conf.default.accept_redirects=0
+EOF				
+				]]>
+				</screen>
+				<screen>
+				<![CDATA[
+[root@stage ~]# modprobe l2tp_ppp
+[root@stage ~]# lsmod | grep l2tp
+l2tp_ppp               28672  0
+l2tp_netlink           28672  1 l2tp_ppp
+l2tp_core              32768  2 l2tp_ppp,l2tp_netlink
+pppox                  16384  1 l2tp_ppp
+ppp_generic            45056  2 pppox,l2tp_ppp
+ip6_udp_tunnel         16384  1 l2tp_core
+udp_tunnel             20480  1 l2tp_core				
+				]]>
+				</screen>
+				<screen>
+				<![CDATA[
+[root@stage ~]# sysctl -w net.ipv4.conf.default.send_redirects=0 
+[root@stage ~]# sysctl -w net.ipv4.conf.default.accept_redirects=0				
+[root@stage ~]# ipsec verify
+Verifying installed system and configuration files
+
+Version check and ipsec on-path                   	[OK]
+Libreswan 4.3 (netkey) on 4.18.0-305.12.1.el8_4.x86_64
+Checking for IPsec support in kernel              	[OK]
+ NETKEY: Testing XFRM related proc values
+         ICMP default/send_redirects              	[OK]
+         ICMP default/accept_redirects            	[OK]
+         XFRM larval drop                         	[OK]
+Pluto ipsec.conf syntax                           	[OK]
+Checking rp_filter                                	[OK]
+Checking that pluto is running                    	[OK]
+ Pluto listening for IKE on udp 500               	[OK]
+ Pluto listening for IKE/NAT-T on udp 4500        	[OK]
+ Pluto ipsec.secret syntax                        	[OK]
+Checking 'ip' command                             	[OK]
+Checking 'iptables' command                       	[OK]
+Checking 'prelink' command does not interfere with FIPS	[OK]
+Checking for obsolete ipsec.conf options          	[OK]
+				]]>
+				</screen>
+				<screen>
+				<![CDATA[
+[root@stage ~]# systemctl enable ipsec
+Created symlink /etc/systemd/system/multi-user.target.wants/ipsec.service → /usr/lib/systemd/system/ipsec.service.
+[root@stage ~]# systemctl start ipsec
+				
+[root@stage ~]# systemctl enable xl2tpd				
+[root@stage ~]# systemctl start xl2tpd				
+				]]>
+				</screen>
+			</step>
+			<step>
+				<para>配置IP伪装</para>
+				<screen>
+				<![CDATA[
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+iptables -A FORWARD -o ppp0 -j ACCEPT				
+				]]>
+				</screen>
+				<para></para>
+				<screen>
+				<![CDATA[
+
+firewall-cmd --permanent --add-service=ipsec	# 放行ipsec服务，安装时会自定生成此服务
+firewall-cmd --permanent --add-port=1701/udp	# xl2tp 的端口，默认1701. 
+firewall-cmd --permanent --add-port=4500/udp	# ipsec 的端口
+firewall-cmd --permanent --add-masquerade		# 启用NAT转发功能。必须启用此功能
+firewall-cmd --reload				
+				]]>
+				</screen>
+			</step>
+		</procedure>
+		<!-- 
+		<para>L2TP 客户端</para>
+		<screen>
+		<![CDATA[
+remotename default
+ipcp-accept-local
+ipcp-accept-remote
+refuse-eap
+require-mschap-v2
+noccp
+noauth
+idle 1800
+mtu 1410
+mru 1410
+defaultroute
+#noipdefault
+debug
+connect-delay 5000
+name neo
+password chen
+persist
+maxfail 0		
+		]]>
+		</screen>
+		<para>remotename：设置xl2tpd.conf配置文件中的名称。</para>
+		<para>defaultroute：将vpn设置为默认路由，默认情况所有流量都从vpn进行传输。</para>
+		<para>noipdefault：不设置分配的默认IP地址，配置后将由l2tp server分配IP。</para>
+		 -->
+	</section>
+	<section id="ipsec">
+		<title>Ipsec VPN</title>
+		
+		<section id="ipsec-tools">
+			<title>ipsec-tools - IPsec tools for Linux</title>
+			<para>https://trac.ipsec-tools.net/</para>
+		</section>
+	</section>	
+	<section>
+		<title>FAQ</title>
+		<section>
+			<title>Unsupported protocol 'Compression Control Protocol' (0x80fd) received</title>
+			<para>删除 /etc/ppp/options.xl2tpd 文件中的 noccp</para>
+		</section>
+	</section>
 </section>

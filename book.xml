@@ -140,7 +140,7 @@
 		<!-- <releaseinfo>2017-02-13</releaseinfo> -->
 
 		&book.info.legalnotice.xml;
-		&book.info.abstract.xml;
+<!-- 		&book.info.abstract.xml; -->
 
 		<keywordset>
 			<keyword>
