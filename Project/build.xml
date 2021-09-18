@@ -208,9 +208,8 @@
 	<target name="mac" depends="">
 		<xsltproc output="${tmp}/${ant.project.name}" stylesheet="../docbook-xsl/docbook.preview.xsl" file="book.xml" />
 		<copy todir="${tmp}/${ant.project.name}/images" overwrite="true">
-			<fileset dir="images">
-				<include name="**/*" />
-			</fileset>
+			<fileset dir="${resources}" includes="**/*" />
+			<fileset dir="../common/images" includes="**/*" />
 		</copy>
 	</target>
 	<target name="usage" depends="">

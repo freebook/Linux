@@ -263,6 +263,150 @@ job1:
         done		
 		]]>
 		</screen>
+		<section>
+			<title>列出所有环境变量</title>
+			<para>使用 export 列出所有环境变量</para>
+			<screen>
+			<![CDATA[
+build-job:
+  image: maven:3.8.2-openjdk-17
+  stage: build
+  # variables:
+    # accessKeyId: 123456
+    # accessSecret: 654321
+  tags:
+    - docker
+  before_script:
+    - export
+    - cat src/main/resources/application.properties
+  script:
+    - mvn clean package -Dmaven.test.skip=true
+    - ls target/*.jar    
+  artifacts:
+    name: "$CI_PROJECT_NAME"
+    paths:
+      - target/*.jar			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+$ export
+21declare -x CI="true"
+22declare -x CI_API_V4_URL="http://192.168.30.5/api/v4"
+23declare -x CI_BUILDS_DIR="/builds"
+24declare -x CI_BUILD_BEFORE_SHA="213825d0cfd133aadb2648b0c1236f834e98972b"
+25declare -x CI_BUILD_ID="4705"
+26declare -x CI_BUILD_NAME="build-job"
+27declare -x CI_BUILD_REF="61fe2acb56474b4b2ffb289de2c7d93afe514354"
+28declare -x CI_BUILD_REF_NAME="development"
+29declare -x CI_BUILD_REF_SLUG="development"
+30declare -x CI_BUILD_STAGE="build"
+31declare -x CI_BUILD_TOKEN="[MASKED]"
+32declare -x CI_COMMIT_AUTHOR="neo <neo@t.com>"
+33declare -x CI_COMMIT_BEFORE_SHA="213825d0cfd133aadb2648b0c1236f834e98972b"
+34declare -x CI_COMMIT_BRANCH="development"
+35declare -x CI_COMMIT_DESCRIPTION=""
+36declare -x CI_COMMIT_MESSAGE="更新.gitlab-ci.yml文件"
+37declare -x CI_COMMIT_REF_NAME="development"
+38declare -x CI_COMMIT_REF_PROTECTED="true"
+39declare -x CI_COMMIT_REF_SLUG="development"
+40declare -x CI_COMMIT_SHA="61fe2acb56474b4b2ffb289de2c7d93afe514354"
+41declare -x CI_COMMIT_SHORT_SHA="61fe2acb"
+42declare -x CI_COMMIT_TIMESTAMP="2021-09-18T07:00:58+00:00"
+43declare -x CI_COMMIT_TITLE="更新.gitlab-ci.yml文件"
+44declare -x CI_CONCURRENT_ID="0"
+45declare -x CI_CONCURRENT_PROJECT_ID="0"
+46declare -x CI_CONFIG_PATH=".gitlab-ci.yml"
+47declare -x CI_DEFAULT_BRANCH="development"
+48declare -x CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX="192.168.30.5:80/neo/dependency_proxy/containers"
+49declare -x CI_DEPENDENCY_PROXY_PASSWORD="[MASKED]"
+50declare -x CI_DEPENDENCY_PROXY_SERVER="192.168.30.5:80"
+51declare -x CI_DEPENDENCY_PROXY_USER="gitlab-ci-token"
+52declare -x CI_DISPOSABLE_ENVIRONMENT="true"
+53declare -x CI_JOB_ID="4705"
+54declare -x CI_JOB_IMAGE="maven:3.8.2-openjdk-17"
+55declare -x CI_JOB_JWT="[MASKED]"
+56declare -x CI_JOB_NAME="build-job"
+57declare -x CI_JOB_STAGE="build"
+58declare -x CI_JOB_STARTED_AT="2021-09-18T07:01:07Z"
+59declare -x CI_JOB_STATUS="running"
+60declare -x CI_JOB_TOKEN="[MASKED]"
+61declare -x CI_JOB_URL="http://192.168.30.5/neo/alertmanager-webhook/-/jobs/4705"
+62declare -x CI_NODE_TOTAL="1"
+63declare -x CI_PAGES_DOMAIN="example.com"
+64declare -x CI_PAGES_URL="http://neo.example.com/alertmanager-webhook"
+65declare -x CI_PIPELINE_CREATED_AT="2021-09-18T07:00:58Z"
+66declare -x CI_PIPELINE_ID="1866"
+67declare -x CI_PIPELINE_IID="100"
+68declare -x CI_PIPELINE_SOURCE="push"
+69declare -x CI_PIPELINE_URL="http://192.168.30.5/neo/alertmanager-webhook/-/pipelines/1866"
+70declare -x CI_PROJECT_CLASSIFICATION_LABEL=""
+71declare -x CI_PROJECT_DIR="/builds/neo/alertmanager-webhook"
+72declare -x CI_PROJECT_ID="23"
+73declare -x CI_PROJECT_NAME="alertmanager-webhook"
+74declare -x CI_PROJECT_NAMESPACE="neo"
+75declare -x CI_PROJECT_PATH="neo/alertmanager-webhook"
+76declare -x CI_PROJECT_PATH_SLUG="neo-alertmanager-webhook"
+77declare -x CI_PROJECT_REPOSITORY_LANGUAGES="java"
+78declare -x CI_PROJECT_ROOT_NAMESPACE="neo"
+79declare -x CI_PROJECT_TITLE="Alertmanager Webhook"
+80declare -x CI_PROJECT_URL="http://192.168.30.5/neo/alertmanager-webhook"
+81declare -x CI_PROJECT_VISIBILITY="public"
+82declare -x CI_REGISTRY_PASSWORD="[MASKED]"
+83declare -x CI_REGISTRY_USER="gitlab-ci-token"
+84declare -x CI_REPOSITORY_URL="http://gitlab-ci-token:[MASKED]@192.168.30.5/neo/alertmanager-webhook.git"
+85declare -x CI_RUNNER_DESCRIPTION="development"
+86declare -x CI_RUNNER_EXECUTABLE_ARCH="linux/amd64"
+87declare -x CI_RUNNER_ID="23"
+88declare -x CI_RUNNER_REVISION="58ba2b95"
+89declare -x CI_RUNNER_SHORT_TOKEN="GP-ozvd6"
+90declare -x CI_RUNNER_TAGS="docker"
+91declare -x CI_RUNNER_VERSION="14.2.0"
+92declare -x CI_SERVER="yes"
+93declare -x CI_SERVER_HOST="192.168.30.5"
+94declare -x CI_SERVER_NAME="GitLab"
+95declare -x CI_SERVER_PORT="80"
+96declare -x CI_SERVER_PROTOCOL="http"
+97declare -x CI_SERVER_REVISION="2da7c857960"
+98declare -x CI_SERVER_URL="http://192.168.30.5"
+99declare -x CI_SERVER_VERSION="14.2.1"
+100declare -x CI_SERVER_VERSION_MAJOR="14"
+101declare -x CI_SERVER_VERSION_MINOR="2"
+102declare -x CI_SERVER_VERSION_PATCH="1"
+103declare -x FF_CMD_DISABLE_DELAYED_ERROR_LEVEL_EXPANSION="false"
+104declare -x FF_DISABLE_UMASK_FOR_DOCKER_EXECUTOR="false"
+105declare -x FF_ENABLE_BASH_EXIT_CODE_CHECK="false"
+106declare -x FF_GITLAB_REGISTRY_HELPER_IMAGE="true"
+107declare -x FF_NETWORK_PER_BUILD="false"
+108declare -x FF_SCRIPT_SECTIONS="false"
+109declare -x FF_SKIP_DOCKER_MACHINE_PROVISION_ON_CREATION_FAILURE="true"
+110declare -x FF_SKIP_NOOP_BUILD_STAGES="true"
+111declare -x FF_USE_DIRECT_DOWNLOAD="true"
+112declare -x FF_USE_DYNAMIC_TRACE_FORCE_SEND_INTERVAL="false"
+113declare -x FF_USE_FASTZIP="false"
+114declare -x FF_USE_LEGACY_KUBERNETES_EXECUTION_STRATEGY="false"
+115declare -x FF_USE_NEW_BASH_EVAL_STRATEGY="false"
+116declare -x FF_USE_POWERSHELL_PATH_RESOLVER="false"
+117declare -x FF_USE_WINDOWS_LEGACY_PROCESS_STRATEGY="true"
+118declare -x GITLAB_CI="true"
+119declare -x GITLAB_FEATURES=""
+120declare -x GITLAB_USER_EMAIL="neo@t.com"
+121declare -x GITLAB_USER_ID="2"
+122declare -x GITLAB_USER_LOGIN="neo"
+123declare -x GITLAB_USER_NAME="neo"
+124declare -x HOME="/root"
+125declare -x HOSTNAME="runner-gp-ozvd6-project-23-concurrent-0"
+126declare -x JAVA_HOME="/usr/java/openjdk-17"
+127declare -x JAVA_VERSION="17"
+128declare -x LANG="C.UTF-8"
+129declare -x MAVEN_HOME="/usr/share/maven"
+130declare -x OLDPWD="/"
+131declare -x PATH="/usr/java/openjdk-17/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+132declare -x PWD="/builds/neo/alertmanager-webhook"
+133declare -x SHLVL="1"			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="gitlab-ci.yml.only">
 		<title>only and except</title>
