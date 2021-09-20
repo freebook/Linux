@@ -2,7 +2,7 @@
 <!-- $Id: book.xml 559 2013-04-10 07:03:49Z netkiller $ -->
 <?xml-stylesheet type="text/xsl" href="../stylesheet/docbook-article.xsl"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V5.0//EN"
-	"/usr/share/xml/docbook/schema/dtd/5.0/docbook.dtd" [
+	"/usr/local/Cellar/docbook/5.1_1/docbook/xml/5.0/dtd/docbook.dtd" [
 
 	<!ENTITY % common.doctype.entity.xml 		SYSTEM "../common/doctype.entity.xml">
 	%common.doctype.entity.xml;
@@ -17,23 +17,31 @@
 	xmlns="http://docbook.org/ns/docbook" xml:lang="zh-cn">
 	<info>
 		<title>Netkiller DevOps 手札</title>
-		<subtitle>Software engineering platform, Integrated SCM &amp; Project Management, Version Control System</subtitle>
-		<subtitle>Continuous Integration &amp; Delivery</subtitle>
+		<subtitle>Software engineering platform, Integrated SCM &amp; Project Management, Version Control System，Continuous Integration &amp; Delivery</subtitle>
+		<subtitle><ulink url="https://www.ixigua.com/home/70159530207">《Netkiller DevOps 手札》视频教程</ulink></subtitle>
 		<authorgroup>
 		&book.info.author.xml;
 
 		</authorgroup>
 		<copyright>
-			<year>2009-2019</year>
+			<year>2009-2021</year>
 			<holder>Neo Chan</holder>
 		</copyright>
 		<releaseinfo>
 			<pubdate>$Date: 2013-04-10 15:03:49 +0800 (Wed, 10 Apr 2013) $</pubdate>
 			<remark>2009-12-12</remark>
 		</releaseinfo>
+		<cover>
+			<para role="tagline">Netkiller DevOps 手札</para>
+			<mediaobject>
+				<imageobject>
+					<imagedata fileref="images/cover.png" />
+				</imageobject>
+			</mediaobject>
+		</cover>
 
 		&book.info.legalnotice.xml;
-		&book.info.abstract.xml;
+<!-- 		&book.info.abstract.xml; -->
 
 		<keywordset>
 			<keyword>
