@@ -535,6 +535,41 @@ proxy_set_header User-Agent "Mozilla/5.0 (compatible; MSIE 10.6; Windows NT 6.1;
 proxy_set_header X-Forwarded-URI $request_uri;
 		</screen>
 	</section>
+	<section id="proxy_hide_header">
+		<title>隐藏头部信息</title>
+		<para>例如响应头：</para>
+		<screen>
+		<![CDATA[
+Connection: keep-alive
+Content-Encoding: gzip
+Content-Type: text/html; charset=UTF-8
+Date: Thu, 04 Feb 2018 02:20:36 GMT
+Transfer-Encoding: chunked
+Vary: Accept-Encoding
+X-Powered-By: PHP/7.2.0		
+		]]>
+		</screen>
+		<para>隐藏 PHP 版本信息</para>
+		<screen>
+		<![CDATA[
+proxy_hide_header X-Powered-By;		
+		]]>
+		</screen>
+	</section>
+	<section id="proxy_ignore_headers">
+		<title>忽略头</title>
+		<screen>
+		<![CDATA[
+location /images/ {
+    proxy_cache my_cache;
+    proxy_ignore_headers Cache-Control;
+    proxy_cache_valid any 30m;
+    ...
+}		
+		]]>
+		</screen>
+	</section>
+	
 	<section id="proxy_pass_request_headers">
 		<title>proxy_pass_request_headers 透传 Header</title>
 		<para>有时用户会设置自定义的 HTTP 头信息，这些不符合 HTTP 的头信息如果需要会被 proxy_pass 过滤并丢弃。</para>
@@ -1011,5 +1046,65 @@ server {
 			]]>
 			</screen>
 		</section>	
+	</section>
+	<section>
+		<title>HTTP Auth 认证冲突</title>
+		<para>nginx 代理 springboot，Springboot 使用了 JWT 认证，HTTP头为 Authorization: Bearer {BASE64}</para>
+		<para>admin.netkiller.cn 后台需要限制登陆，公司没有固定IP地址，尝试了 VPN 方案，被封。最终决定使用 HTTP Auth，HTTP Auth 使用 HTTP Authorization: Basic {BASE64}。</para>
+		<para>问题来了，由于HTTP的 key 都是 Authorization，Authorization: Basic 会覆盖掉 Authorization: Bearer 导致 Springboot 无法认证返回 401.</para>
+		<para>使用下面👇配置解决，注意⚠️调试的时候需要每次关闭浏览器，否则会保留状态，不生效。</para>
+		<screen>
+		<![CDATA[
+auth_basic off;
+proxy_pass_request_headers on;		
+		]]>
+		</screen>
+		<para>完成的例子</para>
+		<screen>
+		<![CDATA[
+server {
+    listen       80;
+    listen       443 ssl http2;
+    server_name  admin.netkiller.cn;
+
+    include /etc/nginx/default.d/*.conf;
+
+    access_log /var/log/nginx/admin.netkiller.cn.access.log;
+    error_log /var/log/nginx/admin.netkiller.cn.error.log;
+
+    error_page 497 https://$host$uri?$args;
+	
+    if ($scheme = http) {
+	    return 301 https://$server_name$request_uri;
+    }
+
+    location / {
+        auth_basic "Administrator's Area";
+        auth_basic_user_file  htpasswd;
+    	root   /opt/netkiller.cn/admin.netkiller.cn;
+	    try_files $uri $uri/ /index.html;
+	    index  index.html;
+    }
+
+    location /api/ {
+		auth_basic off;
+		proxy_pass_request_headers on;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header REMOTE-HOST $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://api.netkiller.cn:8080/;
+    }
+
+    error_page 404 /404.html;
+        location = /40x.html {
+    }
+
+    error_page 500 502 503 504 /50x.html;
+        location = /50x.html {
+    }
+}		
+		]]>
+		</screen>
 	</section>
 </section>

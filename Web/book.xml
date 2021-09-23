@@ -30,7 +30,14 @@
 			<year>2010-2019</year>
 			<holder>Netkiller(Neo Chan). All rights reserved.</holder>
 		</copyright>
-
+		<cover>
+			<para role="tagline">Netkiller Web 手札</para>
+			<mediaobject>
+				<imageobject>
+					<imagedata fileref="images/cover.png" />
+				</imageobject>
+			</mediaobject>
+		</cover>
 		<publisher>
 			<publishername>Neo</publishername>
 			<address><street></street></address>
@@ -41,7 +48,7 @@
 		<releaseinfo>$Date: 2013-04-10 15:03:49 +0800 (Wed, 10 Apr 2013) $, $Id: book.xml 559 2013-04-10 07:03:49Z netkiller $</releaseinfo>
 
 		&book.info.legalnotice.xml;
-		&book.info.abstract.xml;
+<!-- 		&book.info.abstract.xml; -->
 
 		<keywordset>
 			<keyword>lamp,lnmp,famp,fnmp</keyword>
