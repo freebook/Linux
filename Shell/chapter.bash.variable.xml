@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="variable">
-	<title>variable</title>
+	<title>变量 variable</title>
 	<section id="system">
 		<title>系统变量</title>
 		<para>系统变量,Shell常用的系统变量并不多，但却十分有用，特别是在做一些参数检测的时候。下面是Shell常用的系统变量</para>

@@ -2,7 +2,24 @@
 <section id="docker.log-driver">
 	<title>日志</title>
 	<section>
-		<title>Fluentd</title>
+		<title>查看默认驱动</title>
+		<para>查看默认驱动 docker info --format '{{.LoggingDriver}}'</para>
+		<screen>
+		<![CDATA[
+[root@testing ~]# docker info --format '{{.LoggingDriver}}'
+json-file	
+		]]>
+		</screen>
+		<para>查看容器日志配置</para>
+		<screen>
+		<![CDATA[
+[root@testing ~]# docker inspect -f '{{.HostConfig.LogConfig.Type}}' api
+fluentd
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>Fluentd 配置</title>
 		<para>在 Docker 中安装 Fluentd</para>
 		<para>准备 test.conf 文件</para>
 		<screen>
@@ -11,9 +28,9 @@
    @type forward
  </source>
 
- <match *>
+ <match **>
    @type stdout
- </match>		
+ </match>
 		]]>
 		</screen>
 		<para>启动 fluentd 接收日志</para>
@@ -22,6 +39,9 @@
  $ docker run -it -p 24224:24224 -v /path/to/conf/test.conf:/fluentd/etc/test.conf -e FLUENTD_CONF=test.conf fluent/fluentd:latest		
 		]]>
 		</screen>
+	</section>
+	<section>
+		<title>Docker 配置</title>
 		<para>运行你的程序</para>
 		<screen>
 		<![CDATA[
@@ -34,6 +54,91 @@ $ docker run --log-driver=fluentd your/application
 docker run --log-driver=fluentd --log-opt fluentd-address=fluentdhost:24224
 docker run --log-driver=fluentd --log-opt fluentd-address=tcp://fluentdhost:24224
 docker run --log-driver=fluentd --log-opt fluentd-address=unix:///path/to/fluentd.sock		
+		]]>
+		</screen>
+		<para>以 Nginx 为例：</para>
+		<screen>
+		<![CDATA[
+$ docker run -d \
+--log-driver=fluentd \
+--log-opt fluentd-address=10.10.0.1:24224 \
+--log-opt tag="docker.{{.Name}}" \
+nginx		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>docker-compose 编排</title>
+		<para>fluentd.conf</para>
+		<screen>
+		<![CDATA[
+<source>
+  @type forward
+</source>
+
+<match **>
+  @type file
+  path               /var/log/fluentd/${tag}
+  append             true
+  <format>
+    @type            single_value
+    message_key      log
+  </format>
+  <buffer tag,time>
+    @type             file
+    timekey           1d
+    timekey_wait      10m
+    flush_mode        interval
+    flush_interval    30s
+  </buffer>
+</match>		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+version: '3.9'
+services:		
+  fluentd:
+    image: fluent/fluentd:latest
+    container_name: fluentd
+    hostname: fluentd.netkiller.cn
+    restart: always
+    volumes:
+      - /opt/netkiller.cn/ops.netkiller.cn/fluentd/conf:/fluentd/etc
+      - /var/log/fluentd:/var/log/fluentd
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+    environment:
+      FLUENTD_CONF: fluentd.conf
+
+  api:
+    image: openjdk:8
+    container_name: api
+    restart: always
+    hostname: api.netkiller.cn
+    extra_hosts:
+      - www.netkiller.cn:139.186.170.130
+    environment:
+      TZ: Asia/Shanghai
+      JAVA_OPTS: -Xms1024m -Xmx4096m -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=512m
+    ports:
+      - 8088:8080
+    volumes:
+      - /opt/netkiller.cn/api.netkiller.cn:/app
+      - /opt/netkiller.cn/api.netkiller.cn/logs:/app/logs
+    working_dir: /app
+    #links:
+    #  - fluentd
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: 192.168.30.10:24224
+        tag: httpd.access
+    entrypoint: java -jar /app/api.netkiller.cn.jar
+    command:
+      --spring.profiles.active=test
+      --server.port=8080		
 		]]>
 		</screen>
 	</section>

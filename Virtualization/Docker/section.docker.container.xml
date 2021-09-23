@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="container">
+<section id="docker.container">
 	<title>容器</title>
 	<section id="container.ls">
 		<title>查看容器</title>

@@ -156,7 +156,14 @@
 	       </tbody>
 	   </tgroup>
 	</table>
-
+	<screen>
+	<![CDATA[
+[ -z "$VAR" ] && VAR="some default"
+[ ! "$VAR" ] && VAR="some default"
+[ "$VAR" ] || VAR="some default"
+	]]>
+	</screen>
+	
 	<orderedlist>
 		<title>Arithmetic relational operators</title>
 		<listitem><para><![CDATA[ -lt (<) ]]></para></listitem>
@@ -203,7 +210,11 @@
 		<![CDATA[
 if [ ! -d /directory/to/check ]; then
     mkdir -p /directory/toc/check
-fi		
+fi
+
+if [ -z "$VAR" ]; then
+	VAR="some default"
+fi
 		]]>
 		</screen>
 		<example>

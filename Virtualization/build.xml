@@ -90,6 +90,19 @@
 		</sequential>
 	</macrodef>
 
+	<macrodef name="ebook">
+		<attribute name="from" default="" />
+		<attribute name="to" default=" " />
+		<element name="args" optional="true" />
+		<sequential>
+			<property name="ebook-convert" location="/Applications/calibre.app/Contents/MacOS/ebook-convert" />
+			<exec executable="${ebook-convert}" dir="">
+				<arg value="@{from}" />
+				<arg value="@{to}" />
+				<args />
+			</exec>
+		</sequential>
+	</macrodef>
 
 	<target name="pull" depends="">
 		<echo>${project.dir} exists</echo>
@@ -197,13 +210,14 @@
 		<xsltproc output="${epub}" stylesheet="../docbook-xsl/epub3.mac.xsl" file="book.xml" />
 		<copy todir="${epub}/OEBPS/" file="../common/docbook.css" />
 		<copy todir="${epub}/OEBPS/images" overwrite="true">
-			<fileset dir="images">
-				<include name="**/*" />
-			</fileset>
+			<fileset dir="${resources}" includes="**/*" />
+			<fileset dir="../common/images" includes="**/*" />
 		</copy>
 		<echo file="${epub}/mimetype" append="false">application/epub+zip</echo>
 		<zip destfile="${download}/epub/${epub.bookname}.epub" basedir="${epub}" update="true" />
 		<delete dir="${epub}" />
+		<ebook from="${download}/epub/${epub.bookname}.epub" to="${download}/mobi/${epub.bookname}.mobi" />
+		<ebook from="${download}/epub/${epub.bookname}.epub" to="${download}/pdf/${epub.bookname}.pdf" />
 	</target>
 
 	<target name="mac" depends="">
@@ -214,9 +228,8 @@
 		<!-- <mkdir dir="${backup.dir}/${TIMEPOINT}" /> -->
 		<xsltproc output="${tmp}/${ant.project.name}" stylesheet="../docbook-xsl/docbook.preview.xsl" file="book.xml" />
 		<copy todir="${tmp}/${ant.project.name}/images" overwrite="true">
-			<fileset dir="images">
-				<include name="**/*" />
-			</fileset>
+			<fileset dir="${resources}" includes="**/*" />
+			<fileset dir="../common/images" includes="**/*" />
 		</copy>
 	</target>
 	<target name="usage" depends="">

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.miscellaneous.xml 446 2012-08-06 09:43:09Z netkiller $ -->
-<section id="repository">
+<section id="docker.registry">
 	<title>仓库</title>
 	<section>
 		<title>Docker 官方仓库</title>

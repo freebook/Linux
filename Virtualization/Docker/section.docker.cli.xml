@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id$ -->
-<section id="cli">
+<section id="docker.cli">
 	<title>docker 命令</title>
 	<section>
 		<title>docker - A self-sufficient runtime for containers</title>

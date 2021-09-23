@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="gitlab.install">
-	<title>GitLab</title>
+	<title>GitLab 安装与配置</title>
 	<para>
 		<ulink url="https://github.com/gitlabhq" />
 	</para>
@@ -25,7 +25,7 @@ sudo docker run --detach \
   --volume $GITLAB_HOME/config:/etc/gitlab \
   --volume $GITLAB_HOME/logs:/var/log/gitlab \
   --volume $GITLAB_HOME/data:/var/opt/gitlab \
-  gitlab/gitlab-ce:latest		
+  gitlab/gitlab-ce:latest
 		]]>
 		</screen>
 		<para>配置对外url，域名或者ip，公网能访问即可</para>
