@@ -4,14 +4,7 @@
 	<para>OS	Linux/FreeBSD</para>
 	<para>Web	Apache/Lighttpd/Nginx</para>
 	<para>DB	MySQL/PostgreSQL</para>
-	<section>
-		<title>收集 Docker 日志</title>
-		<section>
-			<title></title>
-		</section>
-		
-		
-	</section>
+	&section.fluentd.docker.xml;
     <section id="fluentd.faq">
 		<title>temporarily failed to flush the buffer</title>
 		<para></para>

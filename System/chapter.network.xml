@@ -555,7 +555,7 @@ Inter-| sta-|   Quality        |   Discarded packets               | Missed | WE
 	</section>
 
 	<section id="sys.net.centos">
-		<title>CentOS 8</title>
+		<title>CentOS 8 Stream</title>
 		<section>
 			<title>hostnamectl - Control the system hostname</title>
 			<screen><![CDATA[
@@ -740,7 +740,7 @@ The Peninsula 6-3C  dc0d8214-3589-4044-9a05-8b5f50c3de1f  wifi      --
 				</screen>
 			</section>
 			<section>
-				<title></title>
+				<title>编辑接口</title>
 				<screen>
 				<![CDATA[
 [root@localhost ~]# nmcli connection edit enp8s0				
@@ -861,6 +861,29 @@ Do you also want to clear 'ipv4.addresses'? [yes]:
 nmcli ipv4> save
 Connection 'enp8s0' (ff04c285-bca6-48a3-b769-4871897bca7b) successfully updated.
 nmcli ipv4> quit				
+				]]>
+				</screen>
+			</section>
+			<section id="nmcli.connection.delete">
+				<title>删除接口</title>
+				<para>查看接口</para>
+				<screen>
+				<![CDATA[
+[root@stage ~]# ifconfig
+br-8e039a79ebcc: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
+        inet 172.17.0.1  netmask 255.255.0.0  broadcast 172.17.255.255
+        ether 02:42:13:08:b4:52  txqueuelen 0  (Ethernet)
+        RX packets 42334  bytes 7746029 (7.3 MiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 29017  bytes 11857277 (11.3 MiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0        				
+				]]>
+				</screen>
+				<para>删除网桥</para>
+				<screen>
+				<![CDATA[
+[root@stage ~]# nmcli connection delete br-8e039a79ebcc
+Connection 'br-8e039a79ebcc' (d1a9382e-221e-4e5e-a97e-a098147a2f15) successfully deleted.				
 				]]>
 				</screen>
 			</section>

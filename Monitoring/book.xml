@@ -49,7 +49,7 @@
 		<releaseinfo>2010-11-18</releaseinfo>
 
 		&book.info.legalnotice.xml;
-		&book.info.abstract.xml;
+<!-- 		&book.info.abstract.xml; -->
 
 		<keywordset>
 			<keyword>snmp</keyword>

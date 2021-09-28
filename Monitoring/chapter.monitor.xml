@@ -2,6 +2,7 @@
 	&chapter.prometheus.xml;
 	&chapter.zabbix.xml;
 	&chapter.log.elk.xml;
+	&chapter.fluentd.xml;
 	&chapter.system.utility.xml;
 	&chapter.log.xml;
 	&section.monitor.dashboard.xml;

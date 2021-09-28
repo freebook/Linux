@@ -31,6 +31,9 @@
 <!ENTITY chapter.log.elk.xml			SYSTEM "chapter.log.elk.xml">
 <!ENTITY chapter.zipkin.xml			 	SYSTEM "chapter.zipkin.xml">
 
+<!ENTITY chapter.fluentd.xml		 	SYSTEM "chapter.fluentd.xml">
+<!ENTITY section.fluentd.docker.xml	 	SYSTEM "section.fluentd.docker.xml">
+
 <!ENTITY chapter.prometheus.xml		 			SYSTEM "chapter.prometheus.xml">
 <!ENTITY section.prometheus.xml					SYSTEM "section.prometheus.xml">
 <!ENTITY section.prometheus.exporter.xml		SYSTEM "section.prometheus.exporter.xml">
