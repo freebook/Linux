@@ -63,9 +63,17 @@ sudo docker logs -f gitlab
 
 	<section id="gitlab.docker-compose">
 		<title>docker-compose 安装</title>
+		<para></para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# mkdir -p /opt/gitlab/{config,data,logs} 
+[root@localhost ~]# cd /opt/gitlab/
+		]]>
+		</screen>
 		<para>安装 gitlab</para>
 		<screen>
 		<![CDATA[
+[root@localhost gitlab]# vim docker-compose.yaml		
 version: '3.9'
 services:
     gitlab:

@@ -137,6 +137,14 @@ Password:
 	</section>
 	<section>
 		<title>首次安装后初始化系统</title>
+		<para></para>
+		<screen>
+		<![CDATA[
+cp /etc/dnf/dnf.conf{,.original}		
+echo "fastestmirror=True" >> /etc/dnf/dnf.conf
+dnf makecache
+		]]>
+		</screen>
 		<para>Extra Packages for Enterprise Linux repository configuration</para>
 		<screen>
 			<![CDATA[
