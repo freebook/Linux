@@ -4,7 +4,7 @@
 <?xml-stylesheet type="text/xsl" href="http://www.altova.com/stylesheets/docbook/xhtml/docbook.xsl"?>
 -->
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
-	"/usr/share/xml/docbook/schema/dtd/5.0/docbook.dtd" [
+	"/usr/local/Cellar/docbook/5.1_1/docbook/xml/5.0/dtd/docbook.dtd" [
 	<!ENTITY Neo "http://netkiller.github.io">
 	<!ENTITY BG7NYT "&Neo;">
 	<!ENTITY Netkiller "<emphasis><trademark>Netkiller</trademark></emphasis>">
@@ -23,7 +23,7 @@
 	<!ENTITY homepage "http://netkiller.sf.net/">
 
 ]>
-<book>
+<book xml:lang="zh-cn">
 	<bookinfo>
 		<title>Netkiller Cryptography 手札</title>
 		<!-- Cryptography Encryption -->

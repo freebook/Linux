@@ -1,19 +1,928 @@
 <chapter id="index"><?dbhtml dir="gpg" ?>
-	<title>OpenPGP/OpenGPG(GnuPG)</title>
-	<para>下载PGP: http://www.pgp.com/</para>
-	<para>下载OpenPGP: http://www.pgpi.org/</para>
-	<section id="GnuPG">
-		<title>GnuPG</title>
-		<para>GnuPG</para>
+	<title>GnuPG</title>
+	<section>
+		<title>安装 GnuPG</title>
+		<para>
+			<ulink url="http://www.gnupg.org" />
+		</para>
 		<screen>
+		<![CDATA[
+[root@netkiller ~]# dnf install -y gnupg
+		]]>
+		</screen>
+	</section>
+	<section id="gpg.gen-key">
+		<title>创建密钥</title>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# gpg --gen-key
+gpg (GnuPG) 2.2.20; Copyright (C) 2020 Free Software Foundation, Inc.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Note: Use "gpg --full-generate-key" for a full featured key generation dialog.
+
+GnuPG needs to construct a user ID to identify your key.
+
+Real name: Neo Chen
+Email address: netkiller@msn.com
+You selected this USER-ID:
+    "Neo Chen <netkiller@msn.com>"
+
+Change (N)ame, (E)mail, or (O)kay/(Q)uit? O
+We need to generate a lot of random bytes. It is a good idea to perform
+some other action (type on the keyboard, move the mouse, utilize the
+disks) during the prime generation; this gives the random number
+generator a better chance to gain enough entropy.
+We need to generate a lot of random bytes. It is a good idea to perform
+some other action (type on the keyboard, move the mouse, utilize the
+disks) during the prime generation; this gives the random number
+generator a better chance to gain enough entropy.
+gpg: /root/.gnupg/trustdb.gpg: trustdb created
+gpg: key F01C0CAEAAA458E6 marked as ultimately trusted
+gpg: directory '/root/.gnupg/openpgp-revocs.d' created
+gpg: revocation certificate stored as '/root/.gnupg/openpgp-revocs.d/70CECE32E5D67D12B95ED1E7F01C0CAEAAA458E6.rev'
+public and secret key created and signed.
+
+pub   rsa2048 2021-10-08 [SC] [expires: 2023-10-08]
+      70CECE32E5D67D12B95ED1E7F01C0CAEAAA458E6
+uid                      Neo Chen <netkiller@msn.com>
+sub   rsa2048 2021-10-08 [E] [expires: 2023-10-08]		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# gpg --full-generate-key
+gpg (GnuPG) 2.2.20; Copyright (C) 2020 Free Software Foundation, Inc.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Please select what kind of key you want:
+   (1) RSA and RSA (default)
+   (2) DSA and Elgamal
+   (3) DSA (sign only)
+   (4) RSA (sign only)
+  (14) Existing key from card
+Your selection? 
+RSA keys may be between 1024 and 4096 bits long.
+What keysize do you want? (2048) 
+Requested keysize is 2048 bits
+Please specify how long the key should be valid.
+         0 = key does not expire
+      <n>  = key expires in n days
+      <n>w = key expires in n weeks
+      <n>m = key expires in n months
+      <n>y = key expires in n years
+Key is valid for? (0) 
+Key does not expire at all
+Is this correct? (y/N) y
+
+GnuPG needs to construct a user ID to identify your key.
+
+Real name: Netkiller
+Email address: netkiller@msn.com
+Comment: Test Key
+You selected this USER-ID:
+    "Netkiller (Test Key) <netkiller@msn.com>"
+
+Change (N)ame, (C)omment, (E)mail or (O)kay/(Q)uit? O
+We need to generate a lot of random bytes. It is a good idea to perform
+some other action (type on the keyboard, move the mouse, utilize the
+disks) during the prime generation; this gives the random number
+generator a better chance to gain enough entropy.
+We need to generate a lot of random bytes. It is a good idea to perform
+some other action (type on the keyboard, move the mouse, utilize the
+disks) during the prime generation; this gives the random number
+generator a better chance to gain enough entropy.
+gpg: key 5E27578A03F0B510 marked as ultimately trusted
+gpg: revocation certificate stored as '/root/.gnupg/openpgp-revocs.d/E1C21F034FC0ACBF1337EE905E27578A03F0B510.rev'
+public and secret key created and signed.
+
+pub   rsa2048 2021-10-08 [SC]
+      E1C21F034FC0ACBF1337EE905E27578A03F0B510
+uid                      Netkiller (Test Key) <netkiller@msn.com>
+sub   rsa2048 2021-10-08 [E]
+		]]>
+		</screen>
+	</section>
+	<section id="gpg.list-keys">
+		<title>查看密钥</title>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# gpg --list-keys
+gpg: checking the trustdb
+gpg: marginals needed: 3  completes needed: 1  trust model: pgp
+gpg: depth: 0  valid:   2  signed:   0  trust: 0-, 0q, 0n, 0m, 0f, 2u
+gpg: next trustdb check due at 2023-10-08
+/root/.gnupg/pubring.kbx
+------------------------
+pub   rsa2048 2021-10-08 [SC] [expires: 2023-10-08]
+      70CECE32E5D67D12B95ED1E7F01C0CAEAAA458E6
+uid           [ultimate] Neo Chen <netkiller@msn.com>
+sub   rsa2048 2021-10-08 [E] [expires: 2023-10-08]
+
+pub   rsa2048 2021-10-08 [SC]
+      E1C21F034FC0ACBF1337EE905E27578A03F0B510
+uid           [ultimate] Netkiller (Test Key) <netkiller@msn.com>
+sub   rsa2048 2021-10-08 [E]		
+		]]>
+		</screen>
+		<para>查看私钥</para>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# gpg --list-secret-keys
+/root/.gnupg/pubring.kbx
+------------------------
+sec   rsa2048 2021-10-08 [SC] [expires: 2023-10-08]
+      70CECE32E5D67D12B95ED1E7F01C0CAEAAA458E6
+uid           [ultimate] Neo Chen <netkiller@msn.com>
+ssb   rsa2048 2021-10-08 [E] [expires: 2023-10-08]		
+		]]>
+		</screen>
+		<para>SC（"sign","certify"，代表可以签名和认证其它密钥）</para>
+		<para>E（"encrypt"，加密）</para>
+		<para>S（"sign"，签名）</para>
+		<screen>
+		<![CDATA[
+sec => 'SECret key'
+ssb => 'Secret SuBkey'
+pub => 'PUBlic key'
+sub => 'public SUBkey'		
+		]]>
+		</screen>
+	</section>
+	<section id="gpg.gen-revoke">
+		<title>吊销密钥</title>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# gpg --gen-revoke E1C21F034FC0ACBF1337EE905E27578A03F0B510
+
+sec  rsa2048/5E27578A03F0B510 2021-10-08 Netkiller (Test Key) <netkiller@msn.com>
+
+Create a revocation certificate for this key? (y/N) y
+Please select the reason for the revocation:
+  0 = No reason specified
+  1 = Key has been compromised
+  2 = Key is superseded
+  3 = Key is no longer used
+  Q = Cancel
+(Probably you want to select 1 here)
+Your decision? 0
+Enter an optional description; end it with an empty line:
+> revoke key
+> 
+Reason for revocation: No reason specified
+revoke key
+Is this okay? (y/N) y
+ASCII armored output forced.
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Comment: This is a revocation certificate
+
+iQFABCABCAAqFiEE4cIfA0/ArL8TN+6QXidXigPwtRAFAmFgHfAMHQByZXZva2Ug
+a2V5AAoJEF4nV4oD8LUQHTQH/iZdX2mAq2jOT/QwvKxMT6ePLJb1yQ+2aFUkvV2m
+tgGfWh7k94rKpukXBk3Ay9HgOQRx450SFqo7dA9sGZFoVGxAd8iC2c0ofwpdm4W5
+UWy6eeiQI2Huq+HuvEYebuz/ZLDsKMq53ZFTfu8GndTQfLcXvu/jk7ACzPgtvyV8
+4eIqg9Lnlbs6GDomMmcaLlG2kF1lHCYeFgxJlMCJgpwJAqDetAwB/6q7xFPGhfbt
+mLeR7dwCffoVivdBgiFVjlSDL8PJX0fDvsm0uY7gZmGyMzEQUbrBD2s9QIqtDKaK
+KamXegbf3pM1EIWdgK9xtbQV2SRYAJmUwaKz6Sfab623jYc=
+=pW/X
+-----END PGP PUBLIC KEY BLOCK-----
+Revocation certificate created.
+
+Please move it to a medium which you can hide away; if Mallory gets
+access to this certificate he can use it to make your key unusable.
+It is smart to print this certificate and store it away, just in case
+your media become unreadable.  But have some caution:  The print system of
+your machine might store the data and make it available to others!		
+		]]>
+		</screen>
+	</section>
+	<section id="gpg.delete-key">
+		<title>删除密钥</title>
+		<para>首先，删除私钥</para>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# gpg --delete-secret-keys E1C21F034FC0ACBF1337EE905E27578A03F0B510
+gpg (GnuPG) 2.2.20; Copyright (C) 2020 Free Software Foundation, Inc.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+
+sec  rsa2048/5E27578A03F0B510 2021-10-08 Netkiller (Test Key) <netkiller@msn.com>
+
+Delete this key from the keyring? (y/N) y
+This is a secret key! - really delete? (y/N) y	
+		]]>
+		</screen>
+		<para>然后，删除公钥</para>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# gpg --delete-key E1C21F034FC0ACBF1337EE905E27578A03F0B510
+gpg (GnuPG) 2.2.20; Copyright (C) 2020 Free Software Foundation, Inc.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+
+pub  rsa2048/5E27578A03F0B510 2021-10-08 Netkiller (Test Key) <netkiller@msn.com>
+
+Delete this key from the keyring? (y/N) y		
+		]]>
+		</screen>
+		<para>最后，查看密钥，并确认删除</para>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# gpg --list-keys
+gpg: checking the trustdb
+gpg: marginals needed: 3  completes needed: 1  trust model: pgp
+gpg: depth: 0  valid:   1  signed:   0  trust: 0-, 0q, 0n, 0m, 0f, 1u
+gpg: next trustdb check due at 2023-10-08
+/root/.gnupg/pubring.kbx
+------------------------
+pub   rsa2048 2021-10-08 [SC] [expires: 2023-10-08]
+      70CECE32E5D67D12B95ED1E7F01C0CAEAAA458E6
+uid           [ultimate] Neo Chen <netkiller@msn.com>
+sub   rsa2048 2021-10-08 [E] [expires: 2023-10-08]			
+		]]>
+		</screen>
+	</section>
+	<section id="gpg.import.export">
+		<title>密钥倒入/导出</title>
+		<section>
+			<title>导出密钥</title>
+			<section>
+				<title>显示所有公钥</title>
+				<para>--export export keys</para>
+				<screen>
+				<![CDATA[
+[root@netkiller ~]# gpg --export -a
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+mQENBGFgEfYBCACXIT6K61G3uwwFPxwKaKirZyhSnhh22CwTPEGkeviyXCCfpr2X
+d8bjibOCwO8bigXFjaKuTikHmpppy7B/CKJ4OlsLXnoMnnSmynntudJ+jcGmC3/0
+QE1nvDzqbe8L5KJ3TMgAuDUSp3QWXqIAXxQfEABLl49wJ11envwTXJVPG/ks2U3m
+b/QAFZqd3AxUpEzASIKbtiB5JE/rxnhyZH7fHkt3vU2N3qAcUQ67cJN+thkMEsOo
+wnp9eGvDv1qBieQKK5DzxC+a04p4cWv5z0rV4IEE3bRR2wKW45HI9Lmgz8zZyFcO
+gTV1HshRYnDBVgzcnyombQfzbd76g5tBQC2vABEBAAG0HE5lbyBDaGVuIDxuZXRr
+aWxsZXJAbXNuLmNvbT6JAVQEEwEIAD4WIQRwzs4y5dZ9Erle0efwHAyuqqRY5gUC
+YWAR9gIbAwUJA8JnAAULCQgHAgYVCgkICwIEFgIDAQIeAQIXgAAKCRDwHAyuqqRY
+5v8UB/9GuKFO86BprJUfPBOE4sqUPH44kLupVMuvM+XaBkuOQIT5q37MPoUpb3Uj
+g7tV3Nc+6/VLTCDTERKEfV7PRke2UjjjdYf4EYA2PMVVtHEnWngKhVcMkD2iEvR2
+ViCQQ6sCve5lefMQcPyLVMX1ynMOQCNiVcOZjfv+vW2H4BynZC6kG472a3TjoTKz
+TlbrsiK/n7CSMLsevQh9UrG2n24rKfxQiWCo9tVxyWjcYLEO6yRzOxC+KnEBVr30
+O86qn8A/soKY3PEWWUWCcve9g7Km3OVMQf3kJo+xy3hDafDhuBTvNUH3Bz9lwXa3
+Sune2h5J77AbgUCHZSw4MZEWdknxuQENBGFgEfYBCACVjr3QGs1b2cei5sHyBO59
+hC8VgehGs42jiItaNQSLpBO8g8Z2UbwcB9y3QWrbBITXfj1Jmy+XJInbc3FYYoZE
+9bVHb+KjIR4JLqWrieGCWaKzl78ByRRKfQWO0di5OVMQBWg3yzd2dRJnvpa8+W60
+ksHoyL0wcXLDbCxYxTNmpHacbvEJYe4zxYJxMyD3V8BEF/r6HtA8ZrhPHrI23AF6
+iqSK7PIKAFBLIbU9jinncy/Vbv1DgXZrh72cxhl0n7hTgX8tI2gFRpz+p10iKX2B
+zab3F4Ac1YNBy/F9tqIeCPBGK4CmFTtZkzpokevrIfzLThWuqRGIRtnwqlvMKHxz
+ABEBAAGJATwEGAEIACYWIQRwzs4y5dZ9Erle0efwHAyuqqRY5gUCYWAR9gIbDAUJ
+A8JnAAAKCRDwHAyuqqRY5hpyB/4hh3qMpSOtjOFS5nWGrYNb/o//YRKDwORjJUdI
+t0A1RvQkIZEQ9MYR67xpQ8OO2JrsznB7yF0D/Wrmleuu9lY9IVgdaNdNYRRzAdam
+MuU5hYe6cUkNudjekhWb2J77EIaL70g9tboEHlQEdVe/FesLg1iZVlPZaaN6UjN6
+81AcVw3nloBgIHQUWWsdsSW5sTfymnMhtUfJVlPfeEagLIioTvTzUqy0LjjeIOhR
+B1EXkjs/4g/20c/X9JH8z+QwnZ0lmHy9HzUl+g3zLQ7Vu2xaTwHgBWl5sGdkDkJX
+RiSdzxKOlGfxNN0e5r7fUYvlCkqOvAFvdpZANcVYkWurjWt2
+=W+8i
+-----END PGP PUBLIC KEY BLOCK-----
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>导出公钥到指定文件</title>
+				<para>-o, --output use as output file</para>
+				<screen>
+				<![CDATA[
+$ gpg --export -a -o test.asc
+$ gpg --output yourname.asc --export -a
+				]]>
+				</screen>
+				<screen>
+				<![CDATA[
+[root@netkiller ~]# gpg --list-keys
+/root/.gnupg/pubring.kbx
+------------------------
+pub   rsa2048 2021-10-08 [SC] [expires: 2023-10-08]
+      70CECE32E5D67D12B95ED1E7F01C0CAEAAA458E6
+uid           [ultimate] Neo Chen <netkiller@msn.com>
+sub   rsa2048 2021-10-08 [E] [expires: 2023-10-08]
+
+[root@netkiller ~]# gpg --output neo.gpg --export 70CECE32E5D67D12B95ED1E7F01C0CAEAAA458E6
+
+[root@netkiller ~]# ls neo.gpg
+neo.gpg
+				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>导出私钥</title>
+				<screen>
+				<![CDATA[
+gpg --armor --output private-key.gpg --export-secret-keys
+				]]>
+				</screen>
+			</section>
+		</section>
+		<section>
+			<title>导入密钥</title>
+			<subtitle>--import import/merge keys</subtitle>
+			<para>导入公钥</para>
+			<screen>
+				<![CDATA[
+[root@testing ~]# gpg --import /home/www/backup.gpg 
+gpg: /root/.gnupg/trustdb.gpg: trustdb created
+gpg: key 0C835D03507C8536: public key "Backup <backup@netkiller.cn>" imported
+gpg: Total number processed: 1
+gpg:               imported: 1				
+				]]>
+			</screen>
+			<para>查看公钥</para>
+			<screen>
+				<![CDATA[
+[root@testing ~]# gpg -k
+/root/.gnupg/pubring.kbx
+------------------------
+pub   rsa2048 2021-10-09 [SC] [expires: 2023-10-09]
+      18235CBA04497C42EFAC78210C835D03507C8536
+uid           [ unknown] Backup <backup@netkiller.cn>
+sub   rsa2048 2021-10-09 [E] [expires: 2023-10-09]				
+				]]>
+			</screen>
+			<para></para>
+		</section>
+	</section>
+	<section id="gpg.sign">
+		<title>签名</title>
+		<para>二进制格式 *.gpg 签名文件</para>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# gpg --passphrase "123456" --sign compose.yml		
+		]]>
+		</screen>
+		<para>BASE64 格式的 *.asc 签名文件</para>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# gpg --clear-sign stdin.log 
+[root@netkiller ~]# cat stdin.log.asc 
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEcM7OMuXWfRK5XtHn8BwMrqqkWOYFAmFhDW8ACgkQ8BwMrqqk
+WOY//ggAloOa20OfQUrVMKeHNijAhUCvG6wvEAz/cQRMjmkzinsdtVjoDo2gTtiS
+lsfB6s4+5PkPq2kCW1v3edWiW33ghb4eK/1GDfTiFvE8ly0goAlD4N5Ruk3ROXJy
+9InT5LtsuKTNWO3pKaJTjQ/dVdjcBUdEEZWMxJX5T/+JtJUg1tUOWmG7t+6gon+/
+wMAzScqEIa2aaTEyX1tvUVIJWZUakZiqHY2mb3rnKmaUFe7Ny7vbqmkgvkDgzvbV
+iIphoFRuTAtu7CbB5BV1oZ0IhiIztH7hlm5M5XlwTPo7fb8hyPo3NkvGsxCEM3mr
+H770N2NHUVCumIw1jSOxqIv0cARcyg==
+=J8o1
+-----END PGP SIGNATURE-----		
+		]]>
+		</screen>
+		<para>生成 *.sig 格式的签名文件</para>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# gpg --detach-sign stdin.log
+
+[root@netkiller ~]# ll stdin.log.*
+-rw-r--r-- 1 root root 538 Oct  9 11:33 stdin.log.asc
+-rw-r--r-- 1 root root 310 Oct  9 11:34 stdin.log.sig		
+		]]>
+		</screen>
+		<para>生成BASE64 *.sig 格式的签名文件</para>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# gpg --armor --detach-sign stdin.log
+File 'stdin.log.asc' exists. Overwrite? (y/N) y
+[root@netkiller ~]# cat stdin.log.asc 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEcM7OMuXWfRK5XtHn8BwMrqqkWOYFAmFhDnkACgkQ8BwMrqqk
+WOadjQf7BlOH6iIjylXIN3ziSrwtaM6AgQweBv3+PKV4VCFKLsKJOwecSTzy4sRu
+JyzPoPoR/sHbAwe3VqbLTri1HVqtOy5mMuiK9KE3BjbmC8seo97tJ1O4gSd6OjyX
+Q3eK/sQfRmo802qAFOj7iKldPGbJyBxhIZ+pirMNbMxrX2tfCq3o7qy1SjAyOhgO
+ECorVAcHWl00xBj5vbgJJSIwo1kIx23+e/6lzKEwoseAj0sEPALqmi1r9HzocDoO
+B0f5GgJVj74RC6svVQQMDwMjRgf27285CzxLpoTTioURtJawNI2NlUk59U11fYVH
+4j8vOaHxTvP17LxAJyA9ndAsxz8y5w==
+=+wjo
+-----END PGP SIGNATURE-----		
+		]]>
+		</screen>
+	</section>
+
+	<section id="gpg.recipient">
+		<title>加密/解密文件</title>
+		<section>
+			<title>加密文件</title>
+			<para>加密</para>
+			<screen>
+			<![CDATA[
+# echo hello > file.txt
+# gpg -c file.txt
+
+       lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk
+       x Enter passphrase                                    x
+       x                                                     x
+       x                                                     x
+       x Passphrase ****____________________________________ x
+       x                                                     x
+       x       <OK>                             <Cancel>     x
+       mqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj
+
+       lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk
+       x Please re-enter this passphrase                     x
+       x                                                     x
+       x Passphrase ****____________________________________ x
+       x                                                     x
+       x       <OK>                             <Cancel>     x
+       mqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj
+       		]]>
+			</screen>
+			<screen><![CDATA[
+# ls file.txt*
+file.txt  file.txt.gpg
+			]]></screen>
+
+		</section>
+		<section>
+			<title>解密</title>
+			<para>解密</para>
+			<screen>
+			<![CDATA[
+# gpg -o myfile -d file.txt.gpg
+
+       lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk
+       x Enter passphrase                                    x
+       x                                                     x
+       x                                                     x
+       x Passphrase ________________________________________ x
+       x                                                     x
+       x       <OK>                             <Cancel>     x
+       mqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj
+       		]]>
+			</screen>
+		</section>
+		<section>
+			<title>指定用户ID</title>
+			<para>-r, --recipient USER-ID encrypt for USER-ID</para>
+			<screen>
+			<![CDATA[
+gpg --recipient [用户ID] --output netkiller.epub.gpg --encrypt netkiller.epub			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+gpg --decrypt netkiller.epub.gpg --output netkiller.epub
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>签名+加密</title>
+			<screen>
+			<![CDATA[
+gpg --local-user [发信者ID] --recipient [接收者ID] --armor --sign --encrypt netkiller.epub			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+gpg --verify netkiller.epub.asc netkiller.epub			
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section id="gpg.edit-key">
+		<title>修改密钥</title>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# gpg --edit-key 70CECE32E5D67D12B95ED1E7F01C0CAEAAA458E6
+gpg (GnuPG) 2.2.20; Copyright (C) 2020 Free Software Foundation, Inc.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Secret key is available.
+
+sec  rsa2048/F01C0CAEAAA458E6
+     created: 2021-10-08  expires: 2023-10-08  usage: SC  
+     trust: ultimate      validity: ultimate
+ssb  rsa2048/EAA2F7FD813D2A2E
+     created: 2021-10-08  expires: 2023-10-08  usage: E   
+[ultimate] (1). Neo Chen <netkiller@msn.com>
+
+gpg> 		
+		]]>
+		</screen>
+		<section>
+			<title>显示帮助信息</title>
+			<para>使用 "?" 显示帮助信息</para>
+			<screen>
+			<![CDATA[
+gpg> ?
+quit        quit this menu
+save        save and quit
+help        show this help
+fpr         show key fingerprint
+grip        show the keygrip
+list        list key and user IDs
+uid         select user ID N
+key         select subkey N
+check       check signatures
+sign        sign selected user IDs [* see below for related commands]
+lsign       sign selected user IDs locally
+tsign       sign selected user IDs with a trust signature
+nrsign      sign selected user IDs with a non-revocable signature
+adduid      add a user ID
+addphoto    add a photo ID
+deluid      delete selected user IDs
+addkey      add a subkey
+addcardkey  add a key to a smartcard
+keytocard   move a key to a smartcard
+bkuptocard  move a backup key to a smartcard
+delkey      delete selected subkeys
+addrevoker  add a revocation key
+delsig      delete signatures from the selected user IDs
+expire      change the expiration date for the key or selected subkeys
+primary     flag the selected user ID as primary
+pref        list preferences (expert)
+showpref    list preferences (verbose)
+setpref     set preference list for the selected user IDs
+keyserver   set the preferred keyserver URL for the selected user IDs
+notation    set a notation for the selected user IDs
+passwd      change the passphrase
+trust       change the ownertrust
+revsig      revoke signatures on the selected user IDs
+revuid      revoke selected user IDs
+revkey      revoke key or selected subkeys
+enable      enable key
+disable     disable key
+showphoto   show selected photo IDs
+clean       compact unusable user IDs and remove unusable signatures from key
+minimize    compact unusable user IDs and remove all signatures from key
+
+* The 'sign' command may be prefixed with an 'l' for local signatures (lsign),
+  a 't' for trust signatures (tsign), an 'nr' for non-revocable signatures
+  (nrsign), or any combination thereof (ltsign, tnrsign, etc.).
+
+			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>签名</title>
+			<screen>
+			<![CDATA[
+gpg> sign
+"Neo Chen <netkiller@msn.com>" was already signed by key F01C0CAEAAA458E6
+Nothing to sign with key F01C0CAEAAA458E6
+
+gpg> save			
+			]]>
+			</screen>
+		</section>
+	</section>
+
+	<section id="gpg.mysql.backup">
+		<title>加密备份 MySQL</title>
+		<para>准备环境：</para>
+		<para>数据库服务器一台，备份服务器一台。</para>
+		<para>我们将在备份服务器上创建密钥，然后将公钥导出并在数据库服务器上导入。</para>
+		<para>数据库服务器运行定时备份脚本，加密备份文件，同时每日将加密后的备份文件同步到本地。</para>
+		<para>备份内容只能在备份服务器上解密和查看</para>
+		<section>
+			<title>创建密钥对</title>
+			<procedure>
+				<title>密钥管理</title>
+				<step>
+					<para>创建密钥</para>
+					<screen>
+				<![CDATA[
+[root@netkiller ~]# gpg --generate-key
+gpg (GnuPG) 2.2.20; Copyright (C) 2020 Free Software Foundation, Inc.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Note: Use "gpg --full-generate-key" for a full featured key generation dialog.
+
+GnuPG needs to construct a user ID to identify your key.
+
+Real name: Backup
+Email address: backup@netkiller.cn
+You selected this USER-ID:
+    "Backup <backup@netkiller.cn>"
+
+Change (N)ame, (E)mail, or (O)kay/(Q)uit? O				
+				]]>
+					</screen>
+					<para>数据备份不需要 Passphrase 直接回车</para>
+					<screen>
+				<![CDATA[
+        ┌─.....................................................┐
+        │ Please enter the passphrase to                       │
+        │ protect your new key                                 │
+        │                                                      │
+        │ Passphrase: ________________________________________ │
+        │                                                      │
+        │       <OK>                              <Cancel>     │
+        └─                                                     ┘				
+				]]>
+					</screen>
+					<para>选择 “Yes, protection is not needed” 直接回车。</para>
+					<screen>
+				<![CDATA[
+
+                                        ┌─                                                                                              ┐
+                                        │ You have not entered a passphrase - this is in general a bad idea!                            │
+                                        │ Please confirm that you do not want to have any protection on your key.                       │
+                                        │                                                                                               │
+                                        │ <Yes, protection is not needed>                                    <Enter new passphrase>     │
+                                        └─                                                                                              ┘				
+				]]>
+					</screen>
+					<para>系统会重复上面👆步骤两次。然后创建密钥</para>
+					<screen>
+				<![CDATA[
+We need to generate a lot of random bytes. It is a good idea to perform
+some other action (type on the keyboard, move the mouse, utilize the
+disks) during the prime generation; this gives the random number
+generator a better chance to gain enough entropy.
+We need to generate a lot of random bytes. It is a good idea to perform
+some other action (type on the keyboard, move the mouse, utilize the
+disks) during the prime generation; this gives the random number
+generator a better chance to gain enough entropy.
+gpg: key 0C835D03507C8536 marked as ultimately trusted
+gpg: revocation certificate stored as '/root/.gnupg/openpgp-revocs.d/18235CBA04497C42EFAC78210C835D03507C8536.rev'
+public and secret key created and signed.
+
+pub   rsa2048 2021-10-09 [SC] [expires: 2023-10-09]
+      18235CBA04497C42EFAC78210C835D03507C8536
+uid                      Backup <backup@netkiller.cn>
+sub   rsa2048 2021-10-09 [E] [expires: 2023-10-09]				
+				]]>
+					</screen>
+				</step>
+				<step>
+					<para>导出公钥</para>
+					<para>查看用户ID</para>
+					<screen>
+				<![CDATA[
+[root@netkiller ~]# gpg --list-keys backup@netkiller.cn
+pub   rsa2048 2021-10-09 [SC] [expires: 2023-10-09]
+      18235CBA04497C42EFAC78210C835D03507C8536
+uid           [ultimate] Backup <backup@netkiller.cn>
+sub   rsa2048 2021-10-09 [E] [expires: 2023-10-09]				
+				]]>
+					</screen>
+					<para>导出 Backup 用户公钥</para>
+					<screen>
+				<![CDATA[
+[root@netkiller ~]# gpg --armor --output backup.gpg --export 18235CBA04497C42EFAC78210C835D03507C8536				
+				]]>
+					</screen>
+					<para>把公钥发送给数据库服务器</para>
+					<screen>
+				<![CDATA[
+[root@netkiller ~]# scp backup.gpg www@192.168.30.10:/home/www
+Warning: Permanently added '192.168.30.10' (ECDSA) to the list of known hosts.
+www@192.168.30.10's password: 
+backup.gpg				
+				]]>
+					</screen>
+				</step>
+			</procedure>
+		</section>
+		<section>
+			<title>数据库备份</title>
+
+			<procedure>
+				<title>数据库备份</title>
+				<step>
+					<para>导入公钥</para>
+					<screen>
+				<![CDATA[
+[www@testing ~]$ gpg --import backup.gpg 
+gpg: directory '/home/www/.gnupg' created
+gpg: keybox '/home/www/.gnupg/pubring.kbx' created
+gpg: /home/www/.gnupg/trustdb.gpg: trustdb created
+gpg: key 0C835D03507C8536: public key "Backup <backup@netkiller.cn>" imported
+gpg: Total number processed: 1
+gpg:               imported: 1				
+				]]>
+					</screen>
+					<screen>
+				<![CDATA[
+[www@testing ~]$ gpg -k
+/home/www/.gnupg/pubring.kbx
+----------------------------
+pub   rsa2048 2021-10-09 [SC] [expires: 2023-10-09]
+      18235CBA04497C42EFAC78210C835D03507C8536
+uid           [ unknown] Backup <backup@netkiller.cn>
+sub   rsa2048 2021-10-09 [E] [expires: 2023-10-09]
+				]]>
+					</screen>
+					<para>测试</para>
+					<screen>
+				<![CDATA[
+[www@testing ~]$ gpg -r 18235CBA04497C42EFAC78210C835D03507C8536 -e netkiller.sql.gz 
+gpg: 339634D92F842BE7: There is no assurance this key belongs to the named user
+
+sub  rsa2048/339634D92F842BE7 2021-10-09 Backup <backup@netkiller.cn>
+ Primary key fingerprint: 1823 5CBA 0449 7C42 EFAC  7821 0C83 5D03 507C 8536
+      Subkey fingerprint: BA6F 7A53 C82B 9945 C1B4  AB09 3396 34D9 2F84 2BE7
+
+It is NOT certain that the key belongs to the person named
+in the user ID.  If you *really* know what you are doing,
+you may answer the next question with yes.
+
+Use this key anyway? (y/N) y
+[www@testing ~]$ ls netkiller.sql.gz*
+netkiller.sql.gz  netkiller.sql.gz.gpg				
+				]]>
+					</screen>
+					<para>信任密钥</para>
+					<screen>
+				<![CDATA[
+[www@testing ~]$ gpg --edit-key 18235CBA04497C42EFAC78210C835D03507C8536
+gpg (GnuPG) 2.2.20; Copyright (C) 2020 Free Software Foundation, Inc.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+
+pub  rsa2048/0C835D03507C8536
+     created: 2021-10-09  expires: 2023-10-09  usage: SC  
+     trust: unknown       validity: unknown
+sub  rsa2048/339634D92F842BE7
+     created: 2021-10-09  expires: 2023-10-09  usage: E   
+[ unknown] (1). Backup <backup@netkiller.cn>
+
+gpg> trust
+pub  rsa2048/0C835D03507C8536
+     created: 2021-10-09  expires: 2023-10-09  usage: SC  
+     trust: unknown       validity: unknown
+sub  rsa2048/339634D92F842BE7
+     created: 2021-10-09  expires: 2023-10-09  usage: E   
+[ unknown] (1). Backup <backup@netkiller.cn>
+
+Please decide how far you trust this user to correctly verify other users' keys
+(by looking at passports, checking fingerprints from different sources, etc.)
+
+  1 = I don't know or won't say
+  2 = I do NOT trust
+  3 = I trust marginally
+  4 = I trust fully
+  5 = I trust ultimately
+  m = back to the main menu
+
+Your decision? 5
+Do you really want to set this key to ultimate trust? (y/N) y
+
+pub  rsa2048/0C835D03507C8536
+     created: 2021-10-09  expires: 2023-10-09  usage: SC  
+     trust: ultimate      validity: unknown
+sub  rsa2048/339634D92F842BE7
+     created: 2021-10-09  expires: 2023-10-09  usage: E   
+[ unknown] (1). Backup <backup@netkiller.cn>
+Please note that the shown key validity is not necessarily correct
+unless you restart the program.
+
+gpg> quit				
+				]]>
+					</screen>
+					<para>再次测试，密钥已信任</para>
+					<screen>
+				<![CDATA[
+[www@testing ~]$ rm netkiller.sql.gz.gpg 
+[www@testing ~]$ gpg -r 18235CBA04497C42EFAC78210C835D03507C8536 -e netkiller.sql.gz 			
+				]]>
+					</screen>
+				</step>
+				<step>
+					<para>数据库备份</para>
+					<para>在 /etc/cron.daily/ 目录下创建 mysql 脚本，然后赋予执行权限</para>
+					<screen>
+				<![CDATA[
+root@production:~# cat /etc/cron.daily/mysql 
+#!/bin/bash
+###################################
+# $Id: backup 379 2012-04-02 08:43:42Z netkiller $
+# Author: netkiller@msn.com
+# Home:	http://netkiller.github.com
+###################################
+# SELECT `user`, `host`, `password` FROM `mysql`.`user`;
+# CREATE USER 'backup'@'localhost' IDENTIFIED BY 'SaJePoM6BAPOmOFOd7Xo3e1A52vEPE';
+# GRANT SELECT, LOCK TABLES  ON *.* TO 'backup'@'localhost';
+# FLUSH PRIVILEGES;
+# SHOW GRANTS FOR 'backup'@'localhost';
+###################################
+BACKUP_HOST="172.188.122.155"
+BACKUP_USER="dba"
+BACKUP_PASS=""
+BACKUP_DIR=/opt/database/mysql
+BACKUP_DBNAME="netkiller neo test"
+#TIMEPOINT=$(date -u +%Y-%m-%d)
+TIMEPOINT=$(date +%Y-%m-%d.%H:%M:%S)
+#Number of copies
+COPIES=30
+####################################
+MYSQLDUMP="/usr/bin/mysqldump"
+MYSQLDUMP_OPTS="-h $BACKUP_HOST -u$BACKUP_USER -p$BACKUP_PASS --compress --events --triggers --routines --set-gtid-purged=OFF"
+# --skip-lock-tables
+####################################
+umask 0077
+test ! -d "$BACKUP_DIR" && mkdir -p "$BACKUP_DIR"
+test ! -w $BACKUP_DIR && echo "Error: $BACKUP_DIR is un-writeable." && exit 0
+
+for dbname in $BACKUP_DBNAME
+do
+	test ! -d "$BACKUP_DIR/$dbname" && mkdir -p "$BACKUP_DIR/$dbname"
+	LOGFILE=$BACKUP_DIR/$dbname/error.log
+	$MYSQLDUMP $MYSQLDUMP_OPTS --log-error=$LOGFILE $dbname | gpg -r backup@netkiller.cn -e -o $BACKUP_DIR/$dbname/$dbname.$TIMEPOINT.sql.gpg
+done
+find $BACKUP_DIR -type f -mtime +$COPIES -delete				
+				]]>
+					</screen>
+					<tip>gpg 自带压缩，所以备份数据无需使用 gzip 压缩</tip>
+					<screen>
+				<![CDATA[
+[www@testing ~]$ gpg -r backup@netkiller.cn -e netkiller.2021-8-28.sql
+[www@testing ~]$ ll
+-rw-r--r-- 1 www www 588143144 2021-08-28 10:31 netkiller.2021-8-28.sql
+-rw-r--r-- 1 www www  41395738 2021-10-09 12:01 netkiller.2021-8-28.sql.gpg				
+				]]>
+					</screen>
+					<para>源文件大小是 588143144，经过 gpg 压缩后 41395738</para>
+					<para>使用 -z 参数可以设置压缩级别，这里设置为最高级别9，压缩后大小是 39847904，但是通常我不建议设置，这会影响数据被备份时常，数据备份过程需要锁表，会影响用户访问，所以要尽快完成备份。</para>
+					<screen>
+				<![CDATA[
+[www@testing ~]$ gpg -r backup@netkiller.cn -z 9 -e netkiller.2021-8-28.sql
+File 'netkiller.2021-8-28.sql.gpg' exists. Overwrite? (y/N) y
+
+[www@testing ~]$ ll netkiller.2021-8-28.sql*
+-rw-r--r-- 1 www www 588143144 2021-08-28 10:31 netkiller.2021-8-28.sql
+-rw-r--r-- 1 www www  39847904 2021-10-09 12:17 netkiller.2021-8-28.sql.gpg				
+				]]>
+					</screen>
+				</step>
+			</procedure>
+		</section>
+		<section>
+			<title>数据库还原</title>
+
+			<procedure>
+				<title>数据库还原</title>
+				<step>
+					<para>定时同步</para>
+					<screen>
+				<![CDATA[
+[root@netkiller ~]# cat /etc/cron.daily/mysql 
+rsync -auzv www@db.netkiller.cn:/opt/database/mysql /opt/backup/database/				
+				]]>
+					</screen>
+				</step>
+				<step>
+					<para>解密数据库备份文件</para>
+					<screen>
+				<![CDATA[
+[root@netkiller ~]# gpg netkiller.2021-8-28.sql.gpg				
+				]]>
+					</screen>
+					<para>--output 指定文件名</para>
+					<screen>
+				<![CDATA[
+[root@netkiller ~]# gpg --output netkiller.2021-8-28.sql --decrypt netkiller.2021-8-28.sql.gpg
+gpg: encrypted with 2048-bit RSA key, ID 339634D92F842BE7, created 2021-10-09
+      "Backup <backup@netkiller.cn>"
+				]]>
+					</screen>
+					<para>直接恢复数据库</para>
+					<screen>
+				<![CDATA[
+[root@netkiller ~]# gpg --decrypt netkiller.2021-8-28.sql.gpg | mysql netkiller				
+				]]>
+					</screen>
+				</step>
+			</procedure>
+		</section>
+	</section>
+
+	<section id="gpg.old">
+		<title>旧版本 1.4.11</title>
+		<section id="gpg.conf">
+			<title>GnuPG</title>
+			<para>GnuPG</para>
+			<screen><![CDATA[
 ~/.gnupg/gpg.conf 	 – 配置文件
 ~/.gnupg/trustdb.gpg – 信任库
 ~/.gnupg/pubring.gpg – 公钥库
 ~/.gnupg/secring.gpg – 私钥库
-		</screen>
+		]]></screen>
+		</section>
 		<section>
 			<title>Creating a key (创建key) </title>
-			<subtitle>--gen-key                 generate a new key pair</subtitle>
+			<subtitle>--gen-key generate a new key pair</subtitle>
 			<screen>
 			<![CDATA[
 neo@neo-laptop:~$ gpg --gen-key
@@ -45,10 +954,10 @@ from the Real Name, Comment and Email Address in this form:
     "Heinrich Heine (Der Dichter) <heinrichh@duesseldorf.de>"
 
 Real name: Neo Chan
-Email address: 324@example.com
+Email address: netkiller@msn.com
 Comment: Office Email
 You selected this USER-ID:
-    "Neo Chan (Office Email) <324@example.com>"
+    "Neo Chan (Office Email) <netkiller@msn.com>"
 
 Change (N)ame, (C)omment, (E)mail or (O)kay/(Q)uit? O
 You need a Passphrase to protect your secret key.
@@ -77,7 +986,7 @@ gpg: depth: 0  valid:   1  signed:   0  trust: 0-, 0q, 0n, 0m, 0f, 1u
 gpg: next trustdb check due at 2013-10-22
 pub   2048R/CEF09301 2012-10-22 [expires: 2013-10-22]
       Key fingerprint = C5B7 50EF 762F 3F7F 1AE5  8AEC AF10 D50D CEF0 9301
-uid                  Neo Chan (Office Email) <324@example.com>
+uid                  Neo Chan (Office Email) <netkiller@msn.com>
 sub   2048R/0BF4D523 2012-10-22 [expires: 2013-10-22]
 			]]>
 			</screen>
@@ -92,13 +1001,14 @@ $ gpg --list-keys
 pub   1024R/63268A35 2013-09-11
 uid                  Neo Chen (netkiller) <netkiller@msn.com>
 sub   1024R/F4F946F9 2013-09-11
-			]]>	
+			]]>
 			</screen>
 		</section>
+
 		<section>
 			<title>Exporting keys (导出key)</title>
 			<section>
-				<title>--export                  export keys</title>
+				<title>--export export keys</title>
 				<para></para>
 				<screen>
 				<![CDATA[
@@ -107,7 +1017,7 @@ gpg --export -a
 				</screen>
 			</section>
 			<section>
-				<title>-o, --output                  use as output file</title>
+				<title>-o, --output use as output file</title>
 				<screen>
 				<![CDATA[
 $ gpg --export -a -o test.asc
@@ -118,13 +1028,13 @@ $ gpg --output yourname.asc --export -a
 		</section>
 		<section>
 			<title>Importing keys (导入key)</title>
-			<subtitle>--import                  import/merge keys</subtitle>
+			<subtitle>--import import/merge keys</subtitle>
 			<para></para>
 			<screen>
 			<![CDATA[
 neo@neo-laptop:~$ gpg --import 409.asc
 gpg: key 4D3A0803: public key "Phoenix.L <409@example.com>" imported
-gpg: key CEF09301: "Neo Chan (Office Email) <324@example.com>" not changed
+gpg: key CEF09301: "Neo Chan (Office Email) <netkiller@msn.com>" not changed
 gpg: Total number processed: 2
 gpg:               imported: 1  (RSA: 1)
 gpg:              unchanged: 1
@@ -132,6 +1042,7 @@ gpg:              unchanged: 1
 			]]>
 			</screen>
 		</section>
+
 		<section>
 			<title>Revoke a key (吊销key)</title>
 			<screen>
@@ -142,14 +1053,18 @@ gpg --gen-revoke
 		</section>
 	</section>
 
+
+
 	<section id="GnuPG4Windows">
 		<title>GnuPG For Windows</title>
 		<para>下载OpenGPG: http://www.gnupg.org/</para>
-		<note><para>GnuPG (OpenGPG)安装时可以选择语言，支持简体中文．但对中文支持不是很好，如真实姓名输入：王老五,系统提示"姓名至少要有五个字符长"</para></note>
+		<note>
+			<para>GnuPG (OpenGPG)安装时可以选择语言，支持简体中文．但对中文支持不是很好，如真实姓名输入：王老五,系统提示"姓名至少要有五个字符长"</para>
+		</note>
 
 		<section>
 			<title>生成密钥对</title>
-			<para>使用 gpg --gen-key	生成密钥对</para>
+			<para>使用 gpg --gen-key 生成密钥对</para>
 			<screen>
 			<![CDATA[
 C:\GNU>gpg --gen-key
@@ -259,71 +1174,41 @@ sig!         C9441A1A 2006-06-02  neo chen (netkiller) <openunix@163.com>
 		</section>
 		<section>
 			<title>验证签字</title>
-			<para>检查 PGP 签名 与 <link linkend="md5sum">md5sum</link> 作用类似: </para>
-			<screen>
+			<para>
+				检查 PGP 签名 与
+				<link linkend="md5sum">md5sum</link>
+				作用类似:
+			</para>
+			<screen><![CDATA[
 bash$ gpg --verify gnupg-x.x.x.tar.gz.sig gnupg-x.x.x.tar.gz
 bash$ md5sum gnupg-x.x.x.tar.gz
-			</screen>
+			]]></screen>
 
 		</section>
+		<section id="gpg4win">
+			<title>EMail-Security</title>
+			<para>EMail-Security using GnuPG for Windows</para>
+			<para>
+				<ulink url='http://www.gpg4win.org/'>gpg4win</ulink>
+			</para>
+		</section>
 	</section>
-	<section id="gpg4win">
-		<title>EMail-Security</title>
-		<para>EMail-Security using GnuPG for Windows</para>
-		<para><ulink url='http://www.gpg4win.org/'>gpg4win</ulink></para>
-	</section>
+
 	<section id="smartcard">
 		<title>Smart Card</title>
 		<para>http://www.gnupg.org/howtos/card-howto/en/smartcard-howto-single.html</para>
 
 	</section>
-	<section id="gpg.example">
-		<title>例子</title>
-		<section>
-			<title>加密文件</title>
-			<para>加密</para>
-			<screen>
-			<![CDATA[
-# echo hello > file.txt
-# gpg -c file.txt
 
-       lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk
-       x Enter passphrase                                    x
-       x                                                     x
-       x                                                     x
-       x Passphrase ****____________________________________ x
-       x                                                     x
-       x       <OK>                             <Cancel>     x
-       mqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj
-
-       lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk
-       x Please re-enter this passphrase                     x
-       x                                                     x
-       x Passphrase ****____________________________________ x
-       x                                                     x
-       x       <OK>                             <Cancel>     x
-       mqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj
-       		]]>
-			</screen>
-			<screen>
-# ls file.txt*
-file.txt  file.txt.gpg
-			</screen>
-			<para>解密</para>
-			<screen>
-			<![CDATA[
-# gpg -o myfile -d file.txt.gpg
-
-       lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk
-       x Enter passphrase                                    x
-       x                                                     x
-       x                                                     x
-       x Passphrase ________________________________________ x
-       x                                                     x
-       x       <OK>                             <Cancel>     x
-       mqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj
-       		]]>
-			</screen>
-		</section>
+	<section id="PGP">
+		<title>PGP</title>
+		<para>下载PGP: http://www.pgp.com/</para>
+	</section>
+	<section id="OpenPGP/">
+		<title>OpenPGP</title>
+		<para>
+			<ulink url="https://www.openpgp.org" />
+		</para>
+		<para>下载OpenPGP: http://www.pgpi.org/</para>
 	</section>
 </chapter>
