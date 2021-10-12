@@ -249,6 +249,38 @@ fi
 [[ -f /tmp/test ]] && echo "True" || echo "False"
 		]]>
 		</screen>
+		<section>
+			<title>判断变量是否包含字符串</title>
+			<para>str中是够包括特定的字符串</para>
+			<screen>
+			<![CDATA[
+str="www.netkiller.cn"
+
+方法一：
+
+if [[ "${str}" =~ "net" ]]; then
+   echo "true"
+fi
+
+方法二：
+
+if [[ ${str} = *killer* ]]; then
+   echo "true"
+fi
+
+方法三：
+
+if echo ${str} |grep -q "netkiller"; then
+   echo "true"
+fi
+
+方法四：
+
+echo ${str} |grep -q "kill" && echo "true" || echo "false"
+			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="case">
 		<title>case</title>
