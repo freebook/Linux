@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="firewalld">
-	<title>CentOS 7 Firewalld</title>
+	<title>CentOS 7/8 Firewalld</title>
 	<para>
 		<ulink url="http://www.firewalld.org" />
 	</para>
@@ -631,7 +631,13 @@ firewall-cmd --permanent --zone=internal --change-interface=enp03s
 		<title>端口操作</title>
 		<section>
 			<title>开放端口</title>
-			<para>开放端口 firewall-cmd --zone=public --add-port=80/tcp --permanent</para>
+			<screen>
+			<![CDATA[
+firewall-cmd --add-port=80/tcp --permanent
+firewall-cmd --reload
+			]]>
+			</screen>
+			<para>开放端口 --zone=public </para>
 			<screen>
 			<![CDATA[
 [root@localhost ~]# firewall-cmd --zone=public --add-port=80/tcp --permanent
@@ -653,6 +659,13 @@ no
 		<section>
 			<title>禁用端口</title>
 			<para>删除端口</para>
+			<screen>
+			<![CDATA[
+firewall-cmd --remove-port=80/tcp --permanent
+firewall-cmd --reload			
+			]]>
+			</screen>
+			<para>public 区域</para>
 			<screen>
 			<![CDATA[
 firewall-cmd --zone=public --remove-port=80/tcp --permanent

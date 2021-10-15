@@ -317,6 +317,14 @@ helm repo add elastic https://helm.elastic.co
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>Helm The package manager for Kubernetes</title>
+		<para>
+			<ulink url="https://helm.sh" />
+		</para>
+	</section>
+
+
 	<section id="helm.faq">
 		<title>Helm Faq</title>
 	</section>

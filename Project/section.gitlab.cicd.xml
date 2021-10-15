@@ -367,6 +367,14 @@ https://registry.npm.taobao.org/
 			</screen>
 		</section>
 		<section>
+			<title>Python 环境</title>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# dnf install -y python39			
+			]]>
+			</screen>
+		</section>
+		<section>
 			<title>远程执行 sudo 提示密码</title>
 			<screen>
 			<![CDATA[
