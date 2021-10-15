@@ -647,7 +647,7 @@ variables:
 <section id="gitlab-ci.yml.example">
 	<title>应用案例</title>
 
-	<section>
+	<section id="gitlab-ci.yml.java">
 		<title>Java</title>
 		<screen>
 			<![CDATA[
@@ -928,7 +928,7 @@ deploy-job:
 			</screen>
 		</section>
 	</section>
-	<section>
+	<section id="gitlab-ci.yml.node">
 		<title>Node</title>
 		<programlisting>
 			<![CDATA[
@@ -967,7 +967,7 @@ deploy-job:
 			]]>
 		</programlisting>
 	</section>
-	<section>
+	<section id="gitlab-ci.yml.vue">
 		<title>vue.js android</title>
 		<screen>
 			<![CDATA[
@@ -1002,7 +1002,62 @@ deploy:
 			]]>
 		</screen>
 	</section>
-	<section>
+	<section id="gitlab-ci.yml.python">
+		<title>Python</title>
+		<screen>
+		<![CDATA[
+cache:
+  # key: $CI_COMMIT_REF_SLUG
+  paths:
+    - .pytest_cache
+    - __pycache__
+
+stages:
+  - build
+  - test
+  - report
+
+build-job:
+  stage: build
+  tags: 
+    - shell
+  script:
+    - pip3 install -r requirements.txt
+
+unit-test-job:
+  stage: test
+  tags: 
+    - shell
+  before_script:
+    - wechat -t 2 开始接口自动化测试
+  after_script:
+    - wechat -t 2 接口自动化测试完成
+  script:
+    - cd api_test
+    - pytest --no-header --tb=no --alluredir=/dev/shm/allure-results --clean-alluredir | wechat -t 2 --stdin
+    # - wechat -t 2 "$(cat output.log)"
+
+# lint-test-job:
+#   stage: test
+#   tags: 
+#     - shell
+#   script:
+#     - pip3 install pylint
+#     - pylint -j 4 api_test/*
+
+report-job:
+  stage: report
+  tags: 
+    - shell
+  after_script:
+    - wechat -t 2 测试报告 http://192.168.30.11/test/index.html
+  script:
+    - allure generate /dev/shm/allure-results -o /dev/shm/allure-report --clean
+    - lrsync '/dev/shm/allure-report/*' www@192.168.30.11:/opt/netkiller.cn/test.netkiller.cn/test/		
+		]]>
+		</screen>
+	</section>
+	<section id="gitlab-ci.yml.docker">
 		<title>docker</title>
 		<screen>
 		<![CDATA[
