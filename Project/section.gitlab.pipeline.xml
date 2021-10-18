@@ -1050,10 +1050,10 @@ report-job:
   tags: 
     - shell
   after_script:
-    - wechat -t 2 测试报告 http://192.168.30.11/test/index.html
+    - wechat -t 2 测试报告 http://test.netkiller.cn/test/index.html
   script:
     - allure generate /dev/shm/allure-results -o /dev/shm/allure-report --clean
-    - lrsync '/dev/shm/allure-report/*' www@192.168.30.11:/opt/netkiller.cn/test.netkiller.cn/test/		
+    - lrsync '/dev/shm/allure-report/*' www@test.netkiller.cn:/opt/netkiller.cn/test.netkiller.cn/test/		
 		]]>
 		</screen>
 	</section>
