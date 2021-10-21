@@ -151,6 +151,28 @@ pub => 'PUBlic key'
 sub => 'public SUBkey'		
 		]]>
 		</screen>
+		<para>格式化</para>
+		<screen>
+		<![CDATA[
+[root@gitlab ~]# gpg --list-secret-keys --keyid-format LONG
+/root/.gnupg/pubring.kbx
+------------------------
+sec   rsa2048/F01C0CAEAAA458E6 2021-10-08 [SC] [expires: 2023-10-08]
+      70CECE32E5D67D12B95ED1E7F01C0CAEAAA458E6
+uid                 [ultimate] Neo Chen <netkiller@msn.com>
+ssb   rsa2048/EAA2F7FD813D2A2E 2021-10-08 [E] [expires: 2023-10-08]
+
+sec   rsa2048/4113D1268C351687 2021-10-09 [SC] [expires: 2023-10-09]
+      DBF998A60B206C9297ABC57A4113D1268C351687
+uid                 [ultimate] Tests <test@test.com>
+ssb   rsa2048/EA6FAF428416D577 2021-10-09 [E] [expires: 2023-10-09]
+
+sec   rsa2048/0C835D03507C8536 2021-10-09 [SC] [expires: 2023-10-09]
+      18235CBA04497C42EFAC78210C835D03507C8536
+uid                 [ultimate] Backup <backup@netkiller.cn>
+ssb   rsa2048/339634D92F842BE7 2021-10-09 [E] [expires: 2023-10-09]	
+		]]>
+		</screen>
 	</section>
 	<section id="gpg.gen-revoke">
 		<title>吊销密钥</title>
@@ -251,7 +273,7 @@ sub   rsa2048 2021-10-08 [E] [expires: 2023-10-08]
 		<section>
 			<title>导出密钥</title>
 			<section>
-				<title>显示所有公钥</title>
+				<title>导出所有公钥</title>
 				<para>--export export keys</para>
 				<screen>
 				<![CDATA[
@@ -351,6 +373,60 @@ sub   rsa2048 2021-10-09 [E] [expires: 2023-10-09]
 				]]>
 			</screen>
 			<para></para>
+		</section>
+		<section>
+			<title>密钥迁移</title>
+			<para>从一台机器，迁移到另一台机器</para>
+			<para>原电脑</para>
+			<screen>
+			<![CDATA[
+[root@gitlab ~]# gpg --list-keys
+/root/.gnupg/pubring.kbx
+------------------------
+pub   rsa2048 2021-10-08 [SC] [expires: 2023-10-08]
+      70CECE32E5D67D12B95ED1E7F01C0CAEAAA458E6
+uid           [ultimate] Neo Chen <netkiller@msn.com>
+sub   rsa2048 2021-10-08 [E] [expires: 2023-10-08]
+			
+[root@gitlab ~]# gpg --armor --export-secret-keys --output private_key.asc netkiller@msn.com			
+[root@gitlab ~]# gpg --armor --export --output public_key.asc netkiller@msn.com
+[root@gitlab ~]# scp private_key.asc public_key.asc root@other:/home/gitlab-runner/
+			]]>
+			</screen>
+			<para>目标电脑或另一个账号</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# gpg --import public_key.asc 
+gpg: /root/.gnupg/trustdb.gpg: trustdb created
+gpg: key F01C0CAEAAA458E6: public key "Neo Chen <netkiller@msn.com>" imported
+gpg: Total number processed: 1
+gpg:               imported: 1
+
+[root@localhost ~]# gpg --import private_key.asc 
+gpg: key F01C0CAEAAA458E6: "Neo Chen <netkiller@msn.com>" not changed
+gpg: key F01C0CAEAAA458E6: secret key imported
+gpg: Total number processed: 1
+gpg:              unchanged: 1
+gpg:       secret keys read: 1
+gpg:   secret keys imported: 1		
+
+[root@localhost ~]# gpg --list-keys
+/root/.gnupg/pubring.kbx
+------------------------
+pub   rsa2048 2021-10-08 [SC] [expires: 2023-10-08]
+      70CECE32E5D67D12B95ED1E7F01C0CAEAAA458E6
+uid           [ unknown] Neo Chen <netkiller@msn.com>
+sub   rsa2048 2021-10-08 [E] [expires: 2023-10-08]
+
+[root@localhost ~]# gpg --list-secret-keys --keyid-format LONG
+/root/.gnupg/pubring.kbx
+------------------------
+sec   rsa2048/F01C0CAEAAA458E6 2021-10-08 [SC] [expires: 2023-10-08]
+      70CECE32E5D67D12B95ED1E7F01C0CAEAAA458E6
+uid                 [ unknown] Neo Chen <netkiller@msn.com>
+ssb   rsa2048/EAA2F7FD813D2A2E 2021-10-08 [E] [expires: 2023-10-08]	
+			]]>
+			</screen>
 		</section>
 	</section>
 	<section id="gpg.sign">
@@ -580,6 +656,77 @@ gpg> sign
 Nothing to sign with key F01C0CAEAAA458E6
 
 gpg> save			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>公钥信任配置</title>
+			<para>当我们使用 GPG 加密文件的时候会提示如下。</para>
+			<screen>
+			<![CDATA[
+gpg: checking the trustdb
+gpg: no ultimately trusted keys found
+gpg: EAA2F7FD813D2A2E: There is no assurance this key belongs to the named user
+
+sub  rsa2048/EAA2F7FD813D2A2E 2021-10-08 Neo Chen <netkiller@msn.com>
+ Primary key fingerprint: 70CE CE32 E5D6 7D12 B95E  D1E7 F01C 0CAE AAA4 58E6
+      Subkey fingerprint: CEFB 98EA 8508 45F8 338B  3898 EAA2 F7FD 813D 2A2E
+
+It is NOT certain that the key belongs to the person named
+in the user ID.  If you *really* know what you are doing,
+you may answer the next question with yes.
+
+Use this key anyway? (y/N) 			
+			]]>
+			</screen>
+			<para>信任公钥</para>
+			<screen>
+			<![CDATA[
+[gitlab-runner@gitlab ~]$ gpg --edit-key netkiller@msn.com
+gpg (GnuPG) 2.2.20; Copyright (C) 2020 Free Software Foundation, Inc.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+
+pub  rsa2048/F01C0CAEAAA458E6
+     created: 2021-10-08  expires: 2023-10-08  usage: SC  
+     trust: undefined     validity: unknown
+sub  rsa2048/EAA2F7FD813D2A2E
+     created: 2021-10-08  expires: 2023-10-08  usage: E   
+[ unknown] (1). Neo Chen <netkiller@msn.com>
+
+gpg> trust
+pub  rsa2048/F01C0CAEAAA458E6
+     created: 2021-10-08  expires: 2023-10-08  usage: SC  
+     trust: undefined     validity: unknown
+sub  rsa2048/EAA2F7FD813D2A2E
+     created: 2021-10-08  expires: 2023-10-08  usage: E   
+[ unknown] (1). Neo Chen <netkiller@msn.com>
+
+Please decide how far you trust this user to correctly verify other users' keys
+(by looking at passports, checking fingerprints from different sources, etc.)
+
+  1 = I don't know or won't say
+  2 = I do NOT trust
+  3 = I trust marginally
+  4 = I trust fully
+  5 = I trust ultimately
+  m = back to the main menu
+
+Your decision? 5
+Do you really want to set this key to ultimate trust? (y/N) y
+
+pub  rsa2048/F01C0CAEAAA458E6
+     created: 2021-10-08  expires: 2023-10-08  usage: SC  
+     trust: ultimate      validity: unknown
+sub  rsa2048/EAA2F7FD813D2A2E
+     created: 2021-10-08  expires: 2023-10-08  usage: E   
+[ unknown] (1). Neo Chen <netkiller@msn.com>
+Please note that the shown key validity is not necessarily correct
+unless you restart the program.
+
+gpg> save
+Key not changed so no update needed.			
 			]]>
 			</screen>
 		</section>
