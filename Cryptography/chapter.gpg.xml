@@ -2,14 +2,34 @@
 	<title>GnuPG</title>
 	<section>
 		<title>安装 GnuPG</title>
-		<para>
-			<ulink url="http://www.gnupg.org" />
-		</para>
-		<screen>
+		<section>
+			<title>CentOS 8 Stream</title>
+
+			<para>
+				<ulink url="http://www.gnupg.org" />
+			</para>
+			<screen>
 		<![CDATA[
 [root@netkiller ~]# dnf install -y gnupg
 		]]>
-		</screen>
+			</screen>
+		</section>
+		<section>
+			<title>Ubuntu</title>
+			<screen>
+			<![CDATA[
+root@production:~# apt install gpgv2			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>macOS</title>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~ % brew install gpg			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="gpg.gen-key">
 		<title>创建密钥</title>
@@ -375,6 +395,15 @@ sub   rsa2048 2021-10-09 [E] [expires: 2023-10-09]
 			<para></para>
 		</section>
 		<section>
+			<title>导入所有密钥</title>
+			<para>使用通配符一次导入所有密钥，密钥包含了公钥和私钥</para>
+			<screen>
+			<![CDATA[
+root@production:~# gpg --import *.asc			
+			]]>
+			</screen>
+		</section>
+		<section>
 			<title>密钥迁移</title>
 			<para>从一台机器，迁移到另一台机器</para>
 			<para>原电脑</para>
@@ -729,6 +758,17 @@ gpg> save
 Key not changed so no update needed.			
 			]]>
 			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+  1 = 我不知道或不作答
+  2 = 我不相信
+  3 = 我勉强相信
+  4 = 我完全相信
+  5 = 我绝对相信
+  m = 回到主菜单			
+			]]>
+			</screen>
 		</section>
 	</section>
 
@@ -1054,7 +1094,7 @@ gpg: encrypted with 2048-bit RSA key, ID 339634D92F842BE7, created 2021-10-09
 			</procedure>
 		</section>
 	</section>
-	<section>
+	<section id="gpg.faq">
 		<title>FAQ</title>
 		<section>
 			<title>指定 passphrase</title>
