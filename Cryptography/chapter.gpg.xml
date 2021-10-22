@@ -1054,23 +1054,33 @@ gpg: encrypted with 2048-bit RSA key, ID 339634D92F842BE7, created 2021-10-09
 			</procedure>
 		</section>
 	</section>
+	<section>
+		<title>FAQ</title>
+		<section>
+			<title>指定 passphrase</title>
+			<screen>
+			<![CDATA[
+gpg --batch --passphrase "chen" --sign compose.yml			
+			]]>
+			</screen>
+		</section>
 
-	<section id="gpg.old">
-		<title>旧版本 1.4.11</title>
-		<section id="gpg.conf">
-			<title>GnuPG</title>
-			<para>GnuPG</para>
-			<screen><![CDATA[
+		<section id="gpg.old">
+			<title>旧版本 1.4.11</title>
+			<section id="gpg.conf">
+				<title>GnuPG</title>
+				<para>GnuPG</para>
+				<screen><![CDATA[
 ~/.gnupg/gpg.conf 	 – 配置文件
 ~/.gnupg/trustdb.gpg – 信任库
 ~/.gnupg/pubring.gpg – 公钥库
 ~/.gnupg/secring.gpg – 私钥库
 		]]></screen>
-		</section>
-		<section>
-			<title>Creating a key (创建key) </title>
-			<subtitle>--gen-key generate a new key pair</subtitle>
-			<screen>
+			</section>
+			<section>
+				<title>Creating a key (创建key) </title>
+				<subtitle>--gen-key generate a new key pair</subtitle>
+				<screen>
 			<![CDATA[
 neo@neo-laptop:~$ gpg --gen-key
 gpg (GnuPG) 1.4.11; Copyright (C) 2010 Free Software Foundation, Inc.
@@ -1136,11 +1146,11 @@ pub   2048R/CEF09301 2012-10-22 [expires: 2013-10-22]
 uid                  Neo Chan (Office Email) <netkiller@msn.com>
 sub   2048R/0BF4D523 2012-10-22 [expires: 2013-10-22]
 			]]>
-			</screen>
-		</section>
-		<section>
-			<title>--list-keys 列出已存在的证书</title>
-			<screen>
+				</screen>
+			</section>
+			<section>
+				<title>--list-keys 列出已存在的证书</title>
+				<screen>
 			<![CDATA[
 $ gpg --list-keys
 /home/neo/.gnupg/pubring.gpg
@@ -1149,35 +1159,35 @@ pub   1024R/63268A35 2013-09-11
 uid                  Neo Chen (netkiller) <netkiller@msn.com>
 sub   1024R/F4F946F9 2013-09-11
 			]]>
-			</screen>
-		</section>
+				</screen>
+			</section>
 
-		<section>
-			<title>Exporting keys (导出key)</title>
 			<section>
-				<title>--export export keys</title>
-				<para></para>
-				<screen>
+				<title>Exporting keys (导出key)</title>
+				<section>
+					<title>--export export keys</title>
+					<para></para>
+					<screen>
 				<![CDATA[
 gpg --export -a
 				]]>
-				</screen>
-			</section>
-			<section>
-				<title>-o, --output use as output file</title>
-				<screen>
+					</screen>
+				</section>
+				<section>
+					<title>-o, --output use as output file</title>
+					<screen>
 				<![CDATA[
 $ gpg --export -a -o test.asc
 $ gpg --output yourname.asc --export -a
 				]]>
-				</screen>
+					</screen>
+				</section>
 			</section>
-		</section>
-		<section>
-			<title>Importing keys (导入key)</title>
-			<subtitle>--import import/merge keys</subtitle>
-			<para></para>
-			<screen>
+			<section>
+				<title>Importing keys (导入key)</title>
+				<subtitle>--import import/merge keys</subtitle>
+				<para></para>
+				<screen>
 			<![CDATA[
 neo@neo-laptop:~$ gpg --import 409.asc
 gpg: key 4D3A0803: public key "Phoenix.L <409@example.com>" imported
@@ -1187,20 +1197,20 @@ gpg:               imported: 1  (RSA: 1)
 gpg:              unchanged: 1
 
 			]]>
-			</screen>
-		</section>
+				</screen>
+			</section>
 
-		<section>
-			<title>Revoke a key (吊销key)</title>
-			<screen>
+			<section>
+				<title>Revoke a key (吊销key)</title>
+				<screen>
 			<![CDATA[
 gpg --gen-revoke
 			]]>
-			</screen>
+				</screen>
+			</section>
 		</section>
+
 	</section>
-
-
 
 	<section id="GnuPG4Windows">
 		<title>GnuPG For Windows</title>
