@@ -4,7 +4,7 @@
 	<section id="system">
 		<title>系统变量</title>
 		<para>系统变量,Shell常用的系统变量并不多，但却十分有用，特别是在做一些参数检测的时候。下面是Shell常用的系统变量</para>
-		<screen>
+		<screen><![CDATA[
 表示方法	描述
 $n	 $1 表示第一个参数，$2 表示第二个参数 ...
 $#	 命令行参数的个数
@@ -14,10 +14,10 @@ $*	 以"参数1 参数2 ... " 形式保存所有参数
 $@	 以"参数1" "参数2" ... 形式保存所有参数
 $$	 本程序的(进程ID号)PID
 $!	 上一个命令的PID
-		</screen>
+		]]></screen>
 		<section>
 			<title>命令行参数传递</title>
-			<screen>
+			<screen><![CDATA[
 [root@cc tmp]# cat test.sh
 echo $#
 echo $@
@@ -25,12 +25,12 @@ echo $@
 [root@cc tmp]# ./test.sh  helloworld
 1
 helloworld
-			</screen>
+			]]></screen>
 		</section>
 		<section>
 			<title>$n $# $0 $?</title>
 			<para>其中使用得比较多得是 $n $# $0 $? ,看看下面的例子：</para>
-			<screen>
+			<screen><![CDATA[
 #!/bin/sh
 if [ $# -ne 2 ] ; then
 echo "Usage: $0 string file";
@@ -51,7 +51,7 @@ Not Found "usage" in chapter2.2.sh
 -bash-2.05b$ ./chapter2.2.sh Usage chapter2.2.sh
 echo "Usage: $0 string file";
 Found "Usage" in chapter2.2.sh
-			</screen>
+			]]></screen>
 		</section>
 		<section>
 			<title>$? 程序运行返回值</title>
@@ -110,7 +110,7 @@ $ ./test.sh aaa bbb ccc ddd
 aaa bbb ccc ddd
 bbb ccc ddd
 			]]>
-			</screen>			
+			</screen>
 			<screen>
 			<![CDATA[
 $ cat test.sh 
@@ -126,11 +126,11 @@ bbb ccc ddd eee
 ddd eee
 			]]>
 			</screen>
-		</section>		
+		</section>
 	</section>
-<section id="expression">
+	<section id="expression">
 		<title>表达式</title>
-		<screen>
+		<screen><![CDATA[
 !!：再次执行上一条命令
 
 !$：上一条命令的最后一个单词
@@ -150,8 +150,8 @@ $?：上一条命令的执行返回值。
 $$：该shell的进程号。
 
 $*：从$1开始，启动该shell脚本的所有参数。
-		</screen>
-		<screen>
+		]]></screen>
+		<screen><![CDATA[
 $ mkdir -p {a..z}
 $ ls
 a  b  c  d  e  f  g  h  i  j  k  l  m  n  o  p  q  r  s  t  u  v  w  x  y  z
@@ -193,10 +193,10 @@ a7  b7  c7  d7  e7  f7  g7  h7  i7  j7  k7  l7  m7  n7  o7  p7  q7  r7  s7  t7  
 a8  b8  c8  d8  e8  f8  g8  h8  i8  j8  k8  l8  m8  n8  o8  p8  q8  r8  s8  t8  u8  v8  w8  x8  y8  z8
 a9  b9  c9  d9  e9  f9  g9  h9  i9  j9  k9  l9  m9  n9  o9  p9  q9  r9  s9  t9  u9  v9  w9  x9  y9  z9
 
-		</screen>
+		]]></screen>
 
 	</section>
-		
+
 	<section id="environment">
 		<title>Internal Environment Variables</title>
 		<ulink url="http://tldp.org/LDP/abs/html/internalvariables.html" />
@@ -261,26 +261,59 @@ cc
 $ set -- aa bb cc
 		]]>
 		</screen>
+		<section>
+			<title>set -/+e 控制程序是否退出</title>
+			<para>set -e： 执行的时候如果出现了返回值为非零，整个脚本 就会立即退出("Exit immediately if a simple command exits with a non-zero status." )</para>
+			<para>set +e： 执行的时候如果出现了返回值为非零将会继续执行下面的脚本</para>
+			<para>演示脚本，使用 set -e 运行 aaa 找不到这个命令出错，脚本此时会退出。</para>
+			<screen>
+			<![CDATA[
+[root@gitlab ~]# cat test.sh 
+set -e
+echo "A"
+aaa
+echo "B"
+
+[root@gitlab ~]# bash test.sh 
+A
+test.sh: line 3: aaa: command not found
+			]]>
+			</screen>
+			<para>将 set -e 改为 set +e 后，aaa 虽然执行失败，程序不会退出，并且继续运行，我们可以看到输出 B</para>
+			<screen>
+			<![CDATA[
+[root@gitlab ~]# cat test.sh 
+set +e
+echo "A"
+aaa
+echo "B"
+[root@gitlab ~]# bash test.sh 
+A
+test.sh: line 3: aaa: command not found
+B			
+			]]>
+			</screen>
+		</section>
 	</section>
 
-    <section id="unset">
-    		<title>unset 变量销毁</title>
-    		<screen>
+	<section id="unset">
+		<title>unset 变量销毁</title>
+		<screen><![CDATA[
 $ unset logfile
-    		</screen>
-    </section>
+    		]]></screen>
+	</section>
 	<section id="variable.default">
-   		<title>设置变量默认值</title>
-   		<para>如果 CHANNEL_NAME 没有被赋值，那么他的默认值是 "mychannel"</para>
-   		<screen>
+		<title>设置变量默认值</title>
+		<para>如果 CHANNEL_NAME 没有被赋值，那么他的默认值是 "mychannel"</para>
+		<screen>
    		<![CDATA[
 CHANNEL_NAME=$1
 : ${CHANNEL_NAME:="mychannel"}
 echo $CHANNEL_NAME   		
    		]]>
-   		</screen>
-   		<para>如果 logfile 值已经存在侧不会覆盖</para>
-   		<screen>
+		</screen>
+		<para>如果 logfile 值已经存在侧不会覆盖</para>
+		<screen><![CDATA[
 $ logfile=/var/log/test.log
 
 $ echo $logfile
@@ -290,29 +323,29 @@ $ logfile=${logfile:-/tmp/test.log}
 
 $ echo $logfile
 /var/log/test.log
-    	</screen>
-    	<para>如果变量为空才能设置</para>
-    	<screen>
+    	]]></screen>
+		<para>如果变量为空才能设置</para>
+		<screen><![CDATA[
 $ unset logfile
 $ logfile=${logfile:-/tmp/test.log}
 $ echo $logfile
 /tmp/test.log
-    	</screen>
-    </section>
+    	]]></screen>
+	</section>
 
 	<section id="variable.export">
 		<title>export 设置全局变量</title>
-		<screen>
+		<screen><![CDATA[
 export CATALINA_OUT=/www/logs/tomcat/catalina.out
-		</screen>
+		]]></screen>
 		<para>unset 销毁变量</para>
-		<screen>
+		<screen><![CDATA[
 unset CATALINA_OUT
-		</screen>
+		]]></screen>
 	</section>
 	<section id="variable.declare">
 		<title>declare</title>
-		<screen>
+		<screen><![CDATA[
 功能说明：声明 shell 变量。
 
 语　　法：declare [+/-][rxi][变量名称＝设置值] 或 declare -f
@@ -325,29 +358,29 @@ unset CATALINA_OUT
 　r 　将变量设置为只读。
 　x 　指定的变量会成为环境变量，可供shell以外的程序来使用。
 　i 　[设置值]可以是数值，字符串或运算式。
-		</screen>
+		]]></screen>
 	</section>
-	
+
 	<section id="variable.number">
 		<title>Numerical 数值运算</title>
 		<para>数值运算表达式</para>
-		<screen>
+		<screen><![CDATA[
 $((EXPR))		
-		</screen>
+		]]></screen>
 		<para></para>
-		<screen>
+		<screen><![CDATA[
 neo@netkiller ~ % echo $((1+1))
 neo@netkiller ~ % echo $((5*5))
 
 neo@netkiller ~ % echo $(( (1 + 1) * 2 ))
 4
-		</screen>
-		<screen>
+		]]></screen>
+		<screen><![CDATA[
 num=$(awk "BEGIN {print $num1+$num2; exit}")
 num=$(python -c "print $num1+$num2")
 num=$(perl -e "print $num1+$num2")
 num=$(echo $num1 + $num2 | bc) 		
-		</screen>
+		]]></screen>
 		<para>巧用linux服务器下的/dev/shm, 实现斐波拉切数列</para>
 		<screen>
 		<![CDATA[
@@ -448,7 +481,7 @@ $ echo ${MYFOOD%%soup}
 chicken
 			]]>
 			</screen>
-			<screen>
+			<screen><![CDATA[
 $ test="aaa bbb ccc ddd"
 
 $ echo ${test% *}
@@ -457,7 +490,7 @@ aaa bbb ccc
 $ echo ${test%% *}
 aaa
 
-			</screen>
+			]]></screen>
 		</section>
 		<section>
 			<title>字符串截取</title>
@@ -522,24 +555,24 @@ jam zheng
 			</screen>
 		</section>
 		<section id="string.len">
-    		<title>计算字符串长度</title>
-    		<para>计算字符串长度</para>
-    		<screen>
+			<title>计算字符串长度</title>
+			<para>计算字符串长度</para>
+			<screen>
     		<![CDATA[
 echo ${#PATH}
     		]]>
-    		</screen>
-    		<screen>
+			</screen>
+			<screen>
     		<![CDATA[
 $ VAR="This string is stored in a variable VAR"
 $ echo ${#VAR}
 39    		
     		]]>
-    		</screen>
-    	</section>
-    	<section>
-    		<title>字符串查找替换</title>
-    		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>字符串查找替换</title>
+			<screen><![CDATA[
 # str="1 2 3 4";echo ${str// /}
 1234
 
@@ -551,37 +584,37 @@ $ echo ${#VAR}
 
 # str="neo netkiller";echo ${str//neo/hello}
 hello netkiller
-    		</screen>
-    	</section>
-    	
+    		]]></screen>
+		</section>
+
 	</section>
 	<section id="variable.array">
 		<title>Array 数组</title>
 		<para>定义数组</para>
-		<screen>
+		<screen><![CDATA[
 arr=(Hello World)
 
 arr[0]=Hello
 arr[1]=World
-		</screen>
+		]]></screen>
 		<para>访问数组</para>
-		<screen>
+		<screen><![CDATA[
 echo ${arr[0]} ${arr[1]}
 
 ${arr[*]}         # All of the items in the array
 ${!arr[*]}        # All of the indexes in the array
 ${#arr[*]}        # Number of items in the array
 ${#arr[0]}        # Length of item zero
-		</screen>
+		]]></screen>
 		<para>追加操作</para>
-		<screen>
+		<screen><![CDATA[
 ARRAY=()
 ARRAY+=('foo')
 ARRAY+=('bar')
-		</screen>
+		]]></screen>
 		<section>
 			<title>for 与 array</title>
-			<screen>
+			<screen><![CDATA[
 #!/bin/bash
 
 array=(one two three four [5]=five)
@@ -605,9 +638,9 @@ for index in ${!array[*]}
 do
     printf "%4d: %s\n" $index ${array[$index]}
 done
-			</screen>
-	
-			<screen>
+			]]></screen>
+
+			<screen><![CDATA[
 #!/bin/bash
 
 array=("first item" "second item" "third" "item")
@@ -641,8 +674,8 @@ for ix in ${!arr[*]}
 do
     printf "   %s\n" "${arr[$ix]}"
 done
-			</screen>
-			<screen>
+			]]></screen>
+			<screen><![CDATA[
 array=({23..32} {49,50} {81..92})
 
 echo "Array size: ${#array[*]}"
@@ -652,7 +685,7 @@ for item in ${array[*]}
 do
     printf "   %s\n" $item
 done
-			</screen>
+			]]></screen>
 		</section>
 		<section>
 			<title>while 与 array</title>
@@ -703,17 +736,17 @@ done
 			<title>拆分字符串并转换为数组</title>
 			<subtitle>Split string into an array in Bash</subtitle>
 			<para>字符串</para>
-			<screen>
+			<screen><![CDATA[
 QUEUES="example|sss"			
-			</screen>
+			]]></screen>
 			<para>类似列表的数据结构</para>
-			<screen>
+			<screen><![CDATA[
 for caption in $(echo $QUEUES | tr '|' ' '); do 
         echo $caption
 done			
-			</screen>
+			]]></screen>
 			<para>拆分为数组形式</para>
-			<screen>
+			<screen><![CDATA[
 captions=($(echo $QUEUES | tr '|' ' '))
 
 for element in "${captions[@]}"
@@ -724,11 +757,11 @@ done
 for key in ${!captions[@]}; do
     echo ${key} ${captions[${key}]}
 done
-			</screen>
+			]]></screen>
 		</section>
 		<section>
 			<title>数组转为字符串</title>
-			<screen>
+			<screen><![CDATA[
 ids=(1 2 3 4);echo ${ids[*]// /|}
 ids=(1 2 3 4); lst=$( IFS='|'; echo "${ids[*]}" ); echo $lst
 
@@ -738,9 +771,9 @@ array=(1 2 3 4);string="${ids[@]}";echo ${string// /,}
 
 
 IFS='|';echo "${[*]// /|}";
-			</screen>
+			]]></screen>
 		</section>
-		
+
 	</section>
 	<section id="read">
 		<title>read 赋值多个变量</title>
@@ -760,18 +793,18 @@ www.netkiller.cn
 	</section>
 	<section id="eval">
 		<title>eval</title>
-		<screen>
+		<screen><![CDATA[
 $ i=5
 $ a_5=250
 $ eval echo $"a_$i"
-		</screen>
-		<screen>
+		]]></screen>
+		<screen><![CDATA[
 # neo="Neo Chen"
 # name=neo
 # eval "echo \$$name"
 
 Neo Chen
-		</screen>
+		]]></screen>
 	</section>
 	<section id="typeset">
 		<title>typeset</title>

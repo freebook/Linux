@@ -641,7 +641,7 @@ $ hash -r
 $ hash -l
 hash: hash table empty
 		]]></screen>
-		</section>
+		</section>		
 	&chapter.bash.prompt.xml;
 	</section>
 

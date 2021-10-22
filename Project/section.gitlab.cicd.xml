@@ -7,7 +7,7 @@
 Gitlab(仓库) -> Gitlab Runner（持续集成/部署） -> Remote host（远程部署主机）
 	]]>
 	</screen>
-	<section>
+	<section id="gitlab.runner.user">
 		<title>远程服务器配置</title>
 		<para>为远程服务器创建 www 用户，我们将使用该用户远程部署，远程启动程序。</para>
 		<screen>
@@ -30,7 +30,7 @@ chown www:www -R /opt/netkiller.cn
 		]]>
 		</screen>
 	</section>
-	<section>
+	<section id="gitlab.runner.config">
 		<title>配置 CI / CD</title>
 		<para>进入项目设置界面，点击 Settings，再点击 CI / CD</para>
 		<graphic format="png" fileref="../images/gitlab/cicd/CI-CD.png" width="1024" srccredit="neo" />
@@ -619,6 +619,134 @@ deploy-job:
     - scp src/main/docker/docker-compose.yaml www@$HOST:/opt/netkiller.cn/api.netkiller.cn/
     - ssh www@$HOST "sudo docker-compose -f /opt/netkiller.cn/api.netkiller.cn/docker-compose.yaml up"
     - ssh www@$HOST "sudo docker-compose -f /opt/netkiller.cn/api.netkiller.cn/docker-compose.yaml restart"		
+		]]>
+		</screen>
+	</section>
+	<section id="gitlab.runner.JaCoCo">
+		<title>JaCoCo</title>
+		<para>JaCoCo Java Code Coverage Library<ulink url="https://www.jacoco.org/jacoco/index.html" /></para>
+		<para>pom.xml 中必须有单元测试依赖</para>
+		<screen>
+		<![CDATA[
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>		
+		]]>
+		</screen>
+		<para>不能跳过单元测试</para>
+		<screen>
+		<![CDATA[
+			 <plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<skip>false</skip>
+				</configuration>
+			</plugin> 		
+		]]>
+		</screen>
+		<para>添加 JaCoCo 插件</para>
+		<screen>
+		<![CDATA[
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>		
+		]]>
+		</screen>
+		<para>最后运行 mvn test 调试一下，输入类似下面</para>
+		<screen>
+		<![CDATA[
+[INFO] ------------------------< cn.netkiller:config >-------------------------
+[INFO] Building config 0.0.1-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.7:prepare-agent (default) @ config ---
+[INFO] argLine set to -javaagent:/Users/neo/.m2/repository/org/jacoco/org.jacoco.agent/0.8.7/org.jacoco.agent-0.8.7-runtime.jar=destfile=/Users/neo/workspace/microservice/config/target/jacoco.exec
+[INFO] 
+[INFO] --- maven-resources-plugin:3.2.0:resources (default-resources) @ config ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[INFO] Copying 1 resource
+[INFO] Copying 6 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.1:compile (default-compile) @ config ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-resources-plugin:3.2.0:testResources (default-testResources) @ config ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.1:testCompile (default-testCompile) @ config ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.22.2:test (default-test) @ config ---
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.7:report (report) @ config ---
+[INFO] Loading execution data file /Users/neo/workspace/microservice/config/target/jacoco.exec
+[INFO] Analyzed bundle 'config' with 1 classes
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  3.335 s
+[INFO] Finished at: 2021-10-22T15:52:36+08:00
+[INFO] ------------------------------------------------------------------------		
+		]]>
+		</screen>
+		<para>配置持续集成流水线 .gitlab-ci.yml 文件</para>
+		<screen>
+		<![CDATA[
+cache:
+  untracked: true
+
+stages:
+  - build
+  - test
+  - deploy
+		
+test-job:
+  stage: test
+  variables:
+    GIT_STRATEGY: none
+  only: 
+    - tags
+    - development
+    - testing
+  script:
+    - mvn test
+  after_script:
+    - lrsync 'zito-admin/target/site/*' www@report.netkiller.cn:/opt/netkiller.cn/report.netkiller.cn
+    - wechat -t 1 代码覆盖率报告 http://report.netkiller.cn/jacoco/index.html		
 		]]>
 		</screen>
 	</section>

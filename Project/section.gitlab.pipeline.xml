@@ -117,90 +117,7 @@ deploy-prod-job:
 		]]>
 		</screen>
 	</section>
-	<section id="gitlab-ci.yml.before_script">
-		<title>before_script / after_script</title>
-		<para>before_script: 在 pipeline 运行前执行脚本</para>
-		<para>after_script: 在 pipeline 完成之后执行脚本</para>
-		<screen>
-		<![CDATA[
-cache:
-  paths:
-    - node_modules
-    - dist
-
-before_script:
-  - cnpm install
-
-stages:
-  - build
-  - test
-  - deploy
-
-build-dev-job:
-  stage: build
-  only: 
-    - development
-  script:
-    - npm run build:dev
-
-build-test-job:
-  stage: build
-  only: 
-    - testing
-  script:
-    - npm run build:stage
-
-build-prod-job:
-  stage: build
-  only: 
-    - master
-  script:
-    - npm run build:prod
-
-test-job:
-  stage: test
-  variables:
-    GIT_STRATEGY: none
-  script:
-    - echo "Running unit tests..."
-    - find dist/
-    - echo "Test complete."
-
-deploy-dev-job:
-  stage: deploy
-  variables:
-    GIT_STRATEGY: none
-  only: 
-    - development
-  script:
-    - echo "Deploying application..."
-    - rsync -auzv --delete dist/* www@192.168.30.11:/opt/netkiller.cn/admin.netkiller.cn/
-    - echo "Application successfully deployed."
-
-deploy-test-job:
-  stage: deploy
-  variables:
-    GIT_STRATEGY: none
-  only: 
-    - testing
-  script:
-    - echo "Deploying application..."
-    - rsync -auzv --delete dist/* www@192.168.30.10:/opt/netkiller.cn/admin.netkiller.cn/
-    - echo "Application successfully deployed."
-
-deploy-prod-job:
-  stage: deploy
-  variables:
-    GIT_STRATEGY: none
-  only: 
-    - master
-  script:
-    - echo "Deploying application..."
-    - rsync -auzv --delete dist/* www@139.16.10.12:/opt/netkiller.cn/admin.netkiller.cn/
-    - echo "Application successfully deployed."		
-		]]>
-		</screen>
-	</section>
+	
 	<section id="gitlab-ci.yml.stages">
 		<title>stages</title>
 		<screen>
@@ -406,6 +323,151 @@ $ export
 133declare -x SHLVL="1"			
 			]]>
 			</screen>
+		</section>
+		<section id="gitlab-ci.yml.submodule">
+		<title>Git submodule</title>
+		<screen>
+		<![CDATA[
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive		
+		]]>
+		</screen>
+
+	</section>
+	</section>
+	<section id="gitlab-ci.yml.script">
+		<title>script /before_script / after_script</title>
+		<para>before_script: 在 pipeline 运行前执行脚本</para>
+		<para>after_script: 在 pipeline 完成之后执行脚本</para>
+		<screen>
+		<![CDATA[
+cache:
+  paths:
+    - node_modules
+    - dist
+
+before_script:
+  - cnpm install
+
+stages:
+  - build
+  - test
+  - deploy
+
+build-dev-job:
+  stage: build
+  only: 
+    - development
+  script:
+    - npm run build:dev
+
+build-test-job:
+  stage: build
+  only: 
+    - testing
+  script:
+    - npm run build:stage
+
+build-prod-job:
+  stage: build
+  only: 
+    - master
+  script:
+    - npm run build:prod
+
+test-job:
+  stage: test
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - echo "Running unit tests..."
+    - find dist/
+    - echo "Test complete."
+
+deploy-dev-job:
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none
+  only: 
+    - development
+  script:
+    - echo "Deploying application..."
+    - rsync -auzv --delete dist/* www@192.168.30.11:/opt/netkiller.cn/admin.netkiller.cn/
+    - echo "Application successfully deployed."
+
+deploy-test-job:
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none
+  only: 
+    - testing
+  script:
+    - echo "Deploying application..."
+    - rsync -auzv --delete dist/* www@192.168.30.10:/opt/netkiller.cn/admin.netkiller.cn/
+    - echo "Application successfully deployed."
+
+deploy-prod-job:
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none
+  only: 
+    - master
+  script:
+    - echo "Deploying application..."
+    - rsync -auzv --delete dist/* www@139.16.10.12:/opt/netkiller.cn/admin.netkiller.cn/
+    - echo "Application successfully deployed."		
+		]]>
+		</screen>
+		<section>
+			<title>条件判断</title>
+			<screen>
+			<![CDATA[
+script:
+    - (if [ "$flag" == "true" ]; then kubectl apply -f demo1 --record=true; else kubectl apply -f demo2 --record=true; fi);			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+deploy-dev:
+	image: maven
+	environment: dev
+	tags:
+	 - kubectl
+	script:
+	 - if [ "$flag" == "true" ]; then MODULE="demo1"; else MODULE="demo2"; fi
+	 - kubectl apply -f ${MODULE} --record=true			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>多行脚本</title>
+			<screen>
+			<![CDATA[
+script: |
+    if [ "$flag" == "true" ]; then
+      kubectl apply -f demo1 --record=true
+    else
+      kubectl apply -f demo2 --record=true
+    fi			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+deploy-dev:
+image: testimage
+environment: dev
+tags:
+  - kubectl
+script:
+  - >
+    if [ "$flag" == "true" ]; then
+      kubectl apply -f demo1 --record=true
+    else
+      kubectl apply -f demo2 --record=true
+    fi			
+			]]>
+			</screen>
+			
 		</section>
 	</section>
 	<section id="gitlab-ci.yml.only">
@@ -632,16 +694,57 @@ job-name:
     - if: '$CI_COMMIT_BRANCH != "potato"'		
 		]]>
 		</screen>
+		<section>
+			<title>条件判断</title>
+			<screen>
+			<![CDATA[
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: never
+    - when: always
+			
+job:
+  script: "echo Hello, Rules!"
+  rules:
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
+      when: always
+    - if: '$VAR =~ /pattern/'
+      when: manual
+    - when: on_success			
+			]]>
+			</screen>
+		</section>
 	</section>
-	<section id="gitlab-ci.yml.submodule">
-		<title>Git submodule</title>
+	<section id="gitlab-ci.yml.extends">
+		<title>模版</title>
 		<screen>
 		<![CDATA[
-variables:
-  GIT_SUBMODULE_STRATEGY: recursive		
+demo1-deploy-dev:
+  extends: .deploy-dev
+  only:
+    variables: [ $flag == "true" ]
+  variables:
+    MODULE: demo1
+        
+demo2-deploy-dev:
+  extends: .deploy-dev
+  only:
+    variables: [ $flag == "false" ]
+  variables:
+    MODULE: demo2
+        
+.deploy-dev:
+image: testimage
+environment: dev
+tags:
+  - kubectl
+script:
+  - kubectl apply -f ${MODULE} --record=true		
 		]]>
 		</screen>
-
 	</section>
 </section>
 <section id="gitlab-ci.yml.example">
