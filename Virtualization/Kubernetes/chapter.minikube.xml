@@ -103,6 +103,7 @@ machdep.cpu.features: FPU VME DE PSE TSC MSR PAE MCE CX8 APIC SEP MTRR PGE MCA C
 			</screen>
 			<screen>
 			<![CDATA[
+$ brew install hyperkit			
 $ brew install minikube
 $ brew install kubectl
 $ brew install kubernetes-helm
@@ -672,6 +673,27 @@ registry.cn-hangzhou.aliyuncs.com/google_containers/etcd:3.4.13-0
 registry.cn-hangzhou.aliyuncs.com/google_containers/dashboard:v2.1.0
 registry.cn-hangzhou.aliyuncs.com/google_containers/coredns:1.7.0
 docker.io/netkiller/flask:latest			
+			]]>
+			</screen>
+		</section>
+		<section id="minikube.kubectl">
+			<title>kubectl</title>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~ % minikube kubectl -- get pods -A
+    > kubectl.sha256: 64 B / 64 B [--------------------------] 100.00% ? p/s 0s
+    > kubectl: 44.08 MiB / 44.08 MiB [--------------] 100.00% 5.30 MiB p/s 8.5s
+NAMESPACE       NAME                                        READY   STATUS              RESTARTS   AGE
+ingress-nginx   ingress-nginx-admission-create-vzk2b        0/1     ImagePullBackOff    0          118d
+ingress-nginx   ingress-nginx-admission-patch-65b85         0/1     ImagePullBackOff    0          118d
+ingress-nginx   ingress-nginx-controller-7f79776f95-ncqkn   0/1     ContainerCreating   0          118d
+kube-system     coredns-54d67798b7-cnjgw                    1/1     Running             2          121d
+kube-system     etcd-minikube                               1/1     Running             2          121d
+kube-system     kube-apiserver-minikube                     1/1     Running             2          121d
+kube-system     kube-controller-manager-minikube            1/1     Running             2          121d
+kube-system     kube-proxy-tr8fd                            1/1     Running             2          121d
+kube-system     kube-scheduler-minikube                     1/1     Running             2          121d
+kube-system     storage-provisioner                         1/1     Running             2          121d			
 			]]>
 			</screen>
 		</section>
