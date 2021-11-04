@@ -16,6 +16,7 @@
 <!ENTITY section.gitlab.setup.xml			SYSTEM "section.gitlab.setup.xml">
 <!ENTITY section.gitlab.cicd.xml			SYSTEM "section.gitlab.cicd.xml">
 <!ENTITY section.gitlab.pipeline.xml		SYSTEM "section.gitlab.pipeline.xml">
+<!ENTITY section.gitlab.gpg.xml				SYSTEM "section.gitlab.gpg.xml">
 <!ENTITY chapter.redmine.xml 				SYSTEM "chapter.redmine.xml">
 <!ENTITY chapter.tutos.xml					SYSTEM "chapter.tutos.xml">
 
