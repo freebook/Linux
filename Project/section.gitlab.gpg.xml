@@ -168,7 +168,7 @@ user.signingkey=netkiller@msn.com
 			<title>提交代码</title>
 			<para>提交代码后可以看到“已验证”图标</para>
 			<graphic format="png"
-				fileref="../images/gitlab/gpg/02-public-key.png" width="1024"
+				fileref="../images/gitlab/gpg/03-Verified.png" width="1024"
 				srccredit="neo" />
 		</section>
 	</section>
@@ -176,7 +176,7 @@ user.signingkey=netkiller@msn.com
 	<section>
 		<title>FAQ</title>
 		<section>
-			<title></title>
+			<title>error: gpg failed to sign the data</title>
 			<screen>
 			<![CDATA[
 Neo-iMac:www.netkiller.cn neo$ git commit -a -m 'sign'
@@ -184,7 +184,7 @@ error: gpg failed to sign the data
 fatal: failed to write commit object			
 			]]>
 			</screen>
-			<para></para>
+			<para>解决方案</para>
 			<screen>
 			<![CDATA[
 Neo-iMac:workspace neo$ export GPG_TTY=$(tty)			
