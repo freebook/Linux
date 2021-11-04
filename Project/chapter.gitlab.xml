@@ -186,6 +186,7 @@ wontfix				This will not be worked on
 	<section id="gitlab.webhook">
 		<title>WebHook</title>
 	</section>
+	&section.gitlab.gpg.xml;
 	&section.gitlab.cicd.xml;
 	&section.gitlab.pipeline.xml;
 	<section id="gitlab.faq">

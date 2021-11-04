@@ -1076,6 +1076,57 @@ Receiving objects: 100% (3/3), done.
 	</section>
 	<section id="git.config">
 		<title>git config</title>
+		<section>
+			<title>查看配置</title>
+			<screen>
+			<![CDATA[
+Neo-iMac:workspace neo$ git config --list 
+credential.helper=osxkeychain
+user.name=Neo Chen
+user.email=netkiller@msn.com
+user.signingkey=netkiller@msn.com
+gpg.program=gpg
+commit.gpgsign=true			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>编辑配置</title>
+			<screen>
+			<![CDATA[
+git config --global --edit
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+git config --edit
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>替换配置项</title>
+			<screen>
+			<![CDATA[
+$  git config --global --replace-all user.email "输入你的邮箱"
+$  git config --global --replace-all user.name "输入你的用户名"			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>GPG签名</title>
+			<screen>
+			<![CDATA[
+开启GPG签名：
+
+git config commit.gpgsign true
+
+关闭：
+
+git config commit.gpgsign false			
+			]]>
+			</screen>
+		</section>
+		
 		<section id="core.sshCommand">
 			<title>core.sshCommand</title>
 			<para>git 默认使用 id_rsa，指定私钥方法是：</para>

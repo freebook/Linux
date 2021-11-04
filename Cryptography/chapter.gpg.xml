@@ -70,8 +70,10 @@ uid                      Neo Chen <netkiller@msn.com>
 sub   rsa2048 2021-10-08 [E] [expires: 2023-10-08]		
 		]]>
 		</screen>
-		<para></para>
-		<screen>
+		<section>
+			<title>创建密钥并指定过期时间</title>
+			<para></para>
+			<screen>
 		<![CDATA[
 [root@netkiller ~]# gpg --full-generate-key
 gpg (GnuPG) 2.2.20; Copyright (C) 2020 Free Software Foundation, Inc.
@@ -124,7 +126,16 @@ pub   rsa2048 2021-10-08 [SC]
 uid                      Netkiller (Test Key) <netkiller@msn.com>
 sub   rsa2048 2021-10-08 [E]
 		]]>
-		</screen>
+			</screen>
+		</section>
+		<section>
+			<title>快速创建密钥对</title>
+			<screen>
+			<![CDATA[
+Neo-iMac:workspace neo$ gpg --quick-generate-key netkiller@msn.com			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="gpg.list-keys">
 		<title>查看密钥</title>
@@ -1041,7 +1052,9 @@ find $BACKUP_DIR -type f -mtime +$COPIES -delete
 				]]>
 					</screen>
 					<para>源文件大小是 588143144，经过 gpg 压缩后 41395738</para>
-					<para>使用 -z 参数可以设置压缩级别，这里设置为最高级别9，压缩后大小是 39847904，但是通常我不建议设置，这会影响数据被备份时常，数据备份过程需要锁表，会影响用户访问，所以要尽快完成备份。</para>
+					<para>使用 -z 参数可以设置压缩级别，这里设置为最高级别9，压缩后大小是
+						39847904，但是通常我不建议设置，这会影响数据被备份时常，数据备份过程需要锁表，会影响用户访问，所以要尽快完成备份。
+					</para>
 					<screen>
 				<![CDATA[
 [www@testing ~]$ gpg -r backup@netkiller.cn -z 9 -e netkiller.2021-8-28.sql
@@ -1256,7 +1269,9 @@ gpg --gen-revoke
 		<title>GnuPG For Windows</title>
 		<para>下载OpenGPG: http://www.gnupg.org/</para>
 		<note>
-			<para>GnuPG (OpenGPG)安装时可以选择语言，支持简体中文．但对中文支持不是很好，如真实姓名输入：王老五,系统提示"姓名至少要有五个字符长"</para>
+			<para>GnuPG
+				(OpenGPG)安装时可以选择语言，支持简体中文．但对中文支持不是很好，如真实姓名输入：王老五,系统提示"姓名至少要有五个字符长"
+			</para>
 		</note>
 
 		<section>
@@ -1393,7 +1408,8 @@ bash$ md5sum gnupg-x.x.x.tar.gz
 
 	<section id="smartcard">
 		<title>Smart Card</title>
-		<para>http://www.gnupg.org/howtos/card-howto/en/smartcard-howto-single.html</para>
+		<para>http://www.gnupg.org/howtos/card-howto/en/smartcard-howto-single.html
+		</para>
 
 	</section>
 
