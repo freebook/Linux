@@ -130,13 +130,481 @@ SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="00:25:90:35:91:3
 		</section>
 
 	</section>
-	<section id="interfaces">
-		<title>Ethernet Interfaces 以太网接口</title>
+	<section id="sys.net.centos">
+		<title>CentOS 8 Stream</title>
+		<section id="hostnamectl">
+			<title>hostnamectl - Control the system hostname</title>
+			<screen><![CDATA[
+[root@netkiller ~]# hostnamectl
+   Static hostname: netkiller.localdomain
+         Icon name: computer-desktop
+           Chassis: desktop
+        Machine ID: 072e88a0fdd2447296554f3cd5129076
+           Boot ID: a978056f50544355abd723b328a89b6f
+  Operating System: CentOS Linux 7 (Core)
+       CPE OS Name: cpe:/o:centos:centos:7
+            Kernel: Linux 3.10.0-229.el7.x86_64
+      Architecture: x86_64
+			]]></screen>
+			<para>设置 hostname</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# hostnamectl set-hostname master
+			]]>
+			</screen>
+			<para>如果不生效执行下面命令</para>
+			<screen>
+			<![CDATA[
+systemctl restart systemd-hostnamed			
+			]]>
+			</screen>
+		</section>
+		<section id="nmtui">
+			<title>nmtui - Text User Interface for controlling NetworkManager</title>
+			<programlisting>
+			<![CDATA[
+# yum install NetworkManager-tui
+# nmtui		
+			]]>
+			</programlisting>
+			<screen>
+		<![CDATA[
+        ┌─┤ NetworkManager TUI ├──┐
+        │                         │ 
+        │ Please select an option │ 
+        │                         │ 
+        │ Edit a connection       │ 
+        │ Activate a connection   │ 
+        │ Set system hostname     │ 
+        │                         │ 
+        │ Quit                    │ 
+        │                         │ 
+        │                    <OK> │ 
+        │                         │ 
+        └─────────────────────────┘ 
+		]]>
+			</screen>
+			<screen>
+		<![CDATA[
+# nmtui
+# nmtui edit eno16777736
+# nmtui connect eno1677773
+		]]>
+			</screen>
+		</section>
+		<section id="nmcli">
+			<title>nmcli - command-line tool for controlling NetworkManager</title>
+			<para>nmcli 是 nmtui 命令行版本。</para>
+			<command>nmcli</command>
+			<screen>
+			<![CDATA[
+nmcli 有 8 个参数：
 
-		<para>restart</para>
+help 提供有关 nmcli 命令和使用方法的帮助信息
+general 返回 NetworkManager 的状态和总体配置信息
+networking 提供命令来查询某个网络连接的状态和启动、禁用连接的功能
+radio 提供命令来查询某个 WiFi 网络连接的状态和启动、禁用连接的功能
+monitor 提供命令来监控 NetworkManager 的活动并观察网络连接的状态改变
+connection 提供命令来启用或禁用网络接口、添加新的连接、删除已有连接等功能
+device 主要被用于更改与某个设备（例如接口名称）相关联的连接参数或者使用一个已有的连接来连接设备
+secret 注册 nmcli 来作为一个 NetworkManager 的秘密代理，用以监听秘密信息。这个子命令很少会被用到，因为当连接到网络时，nmcli 会自动做这些事
+			]]>
+			</screen>
+			<section>
+				<title>查看连接状态</title>
+				<screen>
+				<![CDATA[
+[root@localhost ~]# nmcli general
+STATE      CONNECTIVITY  WIFI-HW  WIFI     WWAN-HW  WWAN    
+connected  full          enabled  enabled  enabled  enabled 				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>查看接口状态</title>
+				<screen>
+				<![CDATA[
+[root@localhost ~]# nmcli connection show
+NAME                UUID                                  TYPE      DEVICE  
+enp8s0              ff04c285-bca6-48a3-b769-4871897bca7b  ethernet  enp8s0  
+docker0             b5bcd58d-b826-4bee-b100-4ae6976d6f76  bridge    docker0 
+The Peninsula 3-6   dc0d8214-3589-4044-9a05-8b5f50c3de1f  wifi      --  				
+				]]>
+				</screen>
+				<para>显示激活状态的接口</para>
+				<screen>
+				<![CDATA[
+[root@localhost ~]# nmcli connection show 
+NAME                UUID                                  TYPE      DEVICE 
+enp8s0              ff04c285-bca6-48a3-b769-4871897bca7b  ethernet  enp8s0 
+The Peninsula 3-6   dc0d8214-3589-4044-9a05-8b5f50c3de1f  wifi      --     
+
+[root@localhost ~]# nmcli connection show --active
+NAME    UUID                                  TYPE      DEVICE 
+enp8s0  ff04c285-bca6-48a3-b769-4871897bca7b  ethernet  enp8s0 				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>添加接口</title>
+				<screen>
+				<![CDATA[
+nmcli connection add type ethernet ifname enp0s8				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>修改IP地址</title>
+				<screen>
+				<![CDATA[
+$ nmcli connection modify enp8s0 ipv4.address 192.168.4.26/24
+$ nmcli connection modify enp8s0 ipv4.method manual				
+				]]>
+				</screen>
+				<para>DHCP</para>
+				<screen>
+				<![CDATA[
+$ nmcli connection modify enp8s0 ipv4.method auto				
+				]]>
+				</screen>
+				<screen>
+				<![CDATA[
+[root@localhost ~]# nmcli connection modify enp8s0 ipv4.address 192.168.3.26/24
+
+[root@localhost ~]# cat /etc/sysconfig/network-scripts/ifcfg-enp8s0 
+TYPE=Ethernet
+PROXY_METHOD=none
+BROWSER_ONLY=no
+BOOTPROTO=dhcp
+DEFROUTE=yes
+IPV4_FAILURE_FATAL=no
+IPV6INIT=yes
+IPV6_AUTOCONF=yes
+IPV6_DEFROUTE=yes
+IPV6_FAILURE_FATAL=no
+IPV6_ADDR_GEN_MODE=stable-privacy
+NAME=enp8s0
+UUID=ff04c285-bca6-48a3-b769-4871897bca7b
+DEVICE=enp8s0
+ONBOOT=yes
+IPADDR=192.168.3.26
+PREFIX=24
+
+[root@localhost ~]# ip addr show enp8s0:
+2: enp8s0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 00:26:9e:6f:bb:23 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.3.6/24 brd 192.168.3.255 scope global dynamic noprefixroute enp8s0
+       valid_lft 601424sec preferred_lft 601424sec
+    inet6 fe80::82e7:1911:232:d93/64 scope link noprefixroute 
+       valid_lft forever preferred_lft forever				
+				]]>
+				</screen>
+				<para>实操举例</para>
+				<screen>
+				<![CDATA[
+[root@localhost ~]# nmcli connection show
+NAME                UUID                                  TYPE      DEVICE          
+enp2s0              56d81f4d-ebad-4f3d-8c07-ccb4285b0108  ethernet  enp2s0          
+br-0e0f0a52c09e     70620a80-6bf8-443a-8b38-bc8796517eac  bridge    br-0e0f0a52c09e 
+docker0             290e3b83-1d88-4aa5-b8f4-ce92e0833a57  bridge    docker0  
+
+[root@localhost ~]# nmcli connection modify enp2s0 ipv4.address 192.168.30.13/24				
+				]]>
+				</screen>
+				<para>重启网络使配置生效</para>
+				<screen>
+				<![CDATA[
+[root@localhost ~]# nmcli device reapply enp2s0
+
+# 下面方法同样可以重启
+nmcli con reload && nmcli con up ens33				
+				]]>
+				</screen>
+				<para>在物理服务器上链接键盘和显示器的情况下使用，否则执行 nmcli networking off 后将无法再链接服务器。</para>
+				<screen>
+				<![CDATA[
+nmcli networking off && nmcli networking on				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>停止接口</title>
+				<screen>
+				<![CDATA[
+[root@localhost ~]# nmcli connection down docker0
+Connection 'docker0' successfully deactivated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/2)
+
+[root@localhost ~]# nmcli connection show 
+NAME                UUID                                  TYPE      DEVICE 
+enp8s0              ff04c285-bca6-48a3-b769-4871897bca7b  ethernet  enp8s0 
+The Peninsula 6-3C  dc0d8214-3589-4044-9a05-8b5f50c3de1f  wifi      --    				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>编辑接口</title>
+				<screen>
+				<![CDATA[
+[root@localhost ~]# nmcli connection edit enp8s0				
+				]]>
+				</screen>
+				<para>print 显示配置信息</para>
+				<screen>
+				<![CDATA[
+nmcli> print
+===============================================================================
+                      Connection profile details (enp8s0)
+===============================================================================
+connection.id:                          enp8s0
+connection.uuid:                        ff04c285-bca6-48a3-b769-4871897bca7b
+connection.stable-id:                   --
+connection.type:                        802-3-ethernet
+connection.interface-name:              enp8s0
+connection.autoconnect:                 yes
+connection.autoconnect-priority:        0
+connection.autoconnect-retries:         -1 (default)
+connection.multi-connect:               0 (default)
+connection.auth-retries:                -1
+connection.timestamp:                   1599726610
+connection.read-only:                   no
+connection.permissions:                 --
+connection.zone:                        --
+connection.master:                      --
+connection.slave-type:                  --
+connection.autoconnect-slaves:          -1 (default)
+connection.secondaries:                 --
+connection.gateway-ping-timeout:        0
+connection.metered:                     unknown
+connection.lldp:                        default
+connection.mdns:                        -1 (default)
+connection.llmnr:                       -1 (default)
+connection.wait-device-timeout:         -1
+-------------------------------------------------------------------------------
+802-3-ethernet.port:                    --
+802-3-ethernet.speed:                   0
+802-3-ethernet.duplex:                  --
+802-3-ethernet.auto-negotiate:          no
+802-3-ethernet.mac-address:             --
+802-3-ethernet.cloned-mac-address:      --
+802-3-ethernet.generate-mac-address-mask:--
+802-3-ethernet.mac-address-blacklist:   --
+802-3-ethernet.mtu:                     auto
+802-3-ethernet.s390-subchannels:        --
+802-3-ethernet.s390-nettype:            --
+802-3-ethernet.s390-options:            --
+802-3-ethernet.wake-on-lan:             default
+802-3-ethernet.wake-on-lan-password:    --
+-------------------------------------------------------------------------------
+ipv4.method:                            auto
+ipv4.dns:                               --
+ipv4.dns-search:                        --
+ipv4.dns-options:                       --
+ipv4.dns-priority:                      0
+ipv4.addresses:                         192.168.3.26/24
+ipv4.gateway:                           --
+ipv4.routes:                            --
+ipv4.route-metric:                      -1
+ipv4.route-table:                       0 (unspec)
+ipv4.routing-rules:                     --
+ipv4.ignore-auto-routes:                no
+ipv4.ignore-auto-dns:                   no
+ipv4.dhcp-client-id:                    --
+ipv4.dhcp-iaid:                         --
+ipv4.dhcp-timeout:                      0 (default)
+ipv4.dhcp-send-hostname:                yes
+ipv4.dhcp-hostname:                     --
+ipv4.dhcp-fqdn:                         --
+ipv4.dhcp-hostname-flags:               0x0 (none)
+ipv4.never-default:                     no
+ipv4.may-fail:                          yes
+ipv4.dad-timeout:                       -1 (default)
+-------------------------------------------------------------------------------
+ipv6.method:                            auto
+ipv6.dns:                               --
+ipv6.dns-search:                        --
+ipv6.dns-options:                       --
+ipv6.dns-priority:                      0
+ipv6.addresses:                         --
+ipv6.gateway:                           --
+ipv6.routes:                            --
+ipv6.route-metric:                      -1
+ipv6.route-table:                       0 (unspec)
+ipv6.routing-rules:                     --
+ipv6.ignore-auto-routes:                no
+ipv6.ignore-auto-dns:                   no
+ipv6.never-default:                     no
+ipv6.may-fail:                          yes
+ipv6.ip6-privacy:                       -1 (unknown)
+ipv6.addr-gen-mode:                     stable-privacy
+ipv6.ra-timeout:                        0 (default)
+ipv6.dhcp-duid:                         --
+ipv6.dhcp-iaid:                         --
+ipv6.dhcp-timeout:                      0 (default)
+ipv6.dhcp-send-hostname:                yes
+ipv6.dhcp-hostname:                     --
+ipv6.dhcp-hostname-flags:               0x0 (none)
+ipv6.token:                             --
+-------------------------------------------------------------------------------
+proxy.method:                           none
+proxy.browser-only:                     no
+proxy.pac-url:                          --
+proxy.pac-script:                       --
+-------------------------------------------------------------------------------
+nmcli> 				
+				]]>
+				</screen>
+				<para>设置 DHCP</para>
+				<screen>
+				<![CDATA[
+nmcli> goto ipv4
+You may edit the following properties: method, dns, dns-search, dns-options, dns-priority, addresses, gateway, routes, route-metric, route-table, routing-rules, ignore-auto-routes, ignore-auto-dns, dhcp-client-id, dhcp-iaid, dhcp-timeout, dhcp-send-hostname, dhcp-hostname, dhcp-fqdn, dhcp-hostname-flags, never-default, may-fail, dad-timeout
+nmcli ipv4> set method auto
+Do you also want to clear 'ipv4.addresses'? [yes]: 
+nmcli ipv4> save
+Connection 'enp8s0' (ff04c285-bca6-48a3-b769-4871897bca7b) successfully updated.
+nmcli ipv4> quit				
+				]]>
+				</screen>
+			</section>
+			<section id="nmcli.connection.delete">
+				<title>删除接口</title>
+				<para>查看接口</para>
+				<screen>
+				<![CDATA[
+[root@stage ~]# ifconfig
+br-8e039a79ebcc: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
+        inet 172.17.0.1  netmask 255.255.0.0  broadcast 172.17.255.255
+        ether 02:42:13:08:b4:52  txqueuelen 0  (Ethernet)
+        RX packets 42334  bytes 7746029 (7.3 MiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 29017  bytes 11857277 (11.3 MiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0        				
+				]]>
+				</screen>
+				<para>删除网桥</para>
+				<screen>
+				<![CDATA[
+[root@stage ~]# nmcli connection delete br-8e039a79ebcc
+Connection 'br-8e039a79ebcc' (d1a9382e-221e-4e5e-a97e-a098147a2f15) successfully deleted.				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>链接 WI-FI</title>
+				<screen>
+				<![CDATA[
+sudo nmcli dev wifi connect netkiller password ******** ifname wlp1s0
+sudo nmcli device
+				]]>
+				</screen>
+				<para>运行命令后，会在/etc/NetworkManager/system-connections目录下看到一个名为“netkiller.nmconnection”的文件</para>
+				<para>--ask 询问密码</para>
+				<screen>
+				<![CDATA[
+sudo nmcli --ask dev wifi connect netkiller
+ Password: 
+ Device 'wlp2s0' successfully activated with 'f74121b-3245-48a2-ae25-1b6f789243984'.				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>显示设备信息</title>
+				<screen>
+				<![CDATA[
+[root@localhost ~]# nmcli device status
+DEVICE   TYPE      STATE      CONNECTION 
+enp8s0   ethernet  connected  enp8s0     
+docker0  bridge    unmanaged  --         
+lo       loopback  unmanaged  --         
+wlp5s0   wifi      unmanaged  --     				
+				]]>
+				</screen>
+				<para>网卡设备详细信息</para>
+				<screen>
+				<![CDATA[
+[root@localhost ~]# nmcli device show enp8s0
+GENERAL.DEVICE:                         enp8s0
+GENERAL.TYPE:                           ethernet
+GENERAL.HWADDR:                         00:26:9E:6F:BB:23
+GENERAL.MTU:                            1500
+GENERAL.STATE:                          100 (connected)
+GENERAL.CONNECTION:                     enp8s0
+GENERAL.CON-PATH:                       /org/freedesktop/NetworkManager/ActiveConnection/1
+WIRED-PROPERTIES.CARRIER:               on
+IP4.ADDRESS[1]:                         192.168.3.6/24
+IP4.GATEWAY:                            192.168.3.1
+IP4.ROUTE[1]:                           dst = 0.0.0.0/0, nh = 192.168.3.1, mt = 100
+IP4.ROUTE[2]:                           dst = 192.168.3.0/24, nh = 0.0.0.0, mt = 100
+IP4.DNS[1]:                             192.168.3.1
+IP4.DOMAIN[1]:                          home
+IP6.ADDRESS[1]:                         fe80::82e7:1911:232:d93/64
+IP6.GATEWAY:                            --
+IP6.ROUTE[1]:                           dst = fe80::/64, nh = ::, mt = 100
+IP6.ROUTE[2]:                           dst = ff00::/8, nh = ::, mt = 256, table=255				
+				]]>
+				</screen>
+			</section>
+		</section>
+	</section>
+	<section id="netplan">
+		<title>Ubuntu netplan (Ubuntu 18.04 之后才用 netplan 管理网络)</title>
+		<para>https://netplan.io/examples 参考例子</para>
+		<section>
+			<title>DHCP</title>
+			<para>配置 DHCP</para>
+			<example>
+				<title>netplan dhcp 例子</title>
+				<screen>
+			<![CDATA[
+neo@netkiller ~ % cat /etc/netplan/interfaces.yaml 
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    enp2s1:
+      dhcp4: true
+			]]>
+				</screen>
+				<para>启用生效</para>
+				<screen>
+			<![CDATA[
+neo@netkiller ~ % sudo netplan apply			
+			]]>
+				</screen>
+			</example>
+		</section>
+		<section>
+			<title>静态IP地址</title>
+			<screen>
+			<![CDATA[
+sudo  vi /etc/netplan/00-installer-config.yaml
+ 
+# This is the network config written by 'subiquity'
+network:
+  ethernets:
+    ens33:
+      addresses: [192.168.0.102/24]
+      dhcp4: false
+      gateway4: 192.168.0.254			
+			]]>
+			</screen>
+		</section>
+	</section>
+
+	<section id="gateway">
+		<title>Gateway 设置默认网关</title>
+		<para>default gateway</para>
 		<screen><![CDATA[
-sudo /etc/init.d/networking restart
+$ sudo route add default gw 172.16.0.1
 		]]></screen>
+		<screen><![CDATA[
+$ sudo ip route default via 172.16.0.1 dev eth0
+		]]></screen>
+
+	</section>
+
+	<section id="interfaces">
+		<title>早期 Ubuntu</title>
 		<section id="interfaces.ifquery">
 			<title>ifquery</title>
 			<screen><![CDATA[
@@ -146,73 +614,7 @@ eth0
 eth1
 			]]></screen>
 		</section>
-		<section id="interfaces.dhcp">
-			<title>DHCP</title>
-			<para>DHCP</para>
-			<screen><![CDATA[
-sudo vi /etc/network/interfaces
-
-# The primary network interface - use DHCP to find our address
-auto eth0
-iface eth0 inet dhcp
-			]]></screen>
-
-		</section>
-		<section>
-			<title>CentOS</title>
-			<screen><![CDATA[
-ifconfig eth0 192.168.0.10 netmask 255.255.255.0
-or
-ip addr add 192.168.0.10 dev eth0
-		]]></screen>
-			<para>ifcfg-eth0,ifcfg-eth1,ifcfg-eth2 ... ifcfg-eth(n)</para>
-			<screen>
-		<![CDATA[
-[root@development httpd]# cat /etc/sysconfig/network-scripts/ifcfg-eth0
-# Broadcom Corporation NetLink BCM5784M Gigabit Ethernet PCIe
-DEVICE=eth0
-BOOTPROTO=static
-BROADCAST=192.168.3.255
-HWADDR=00:25:64:A3:59:BF
-IPADDR=192.168.3.40
-IPV6INIT=yes
-IPV6_AUTOCONF=yes
-NETMASK=255.255.255.0
-NETWORK=192.168.3.0
-ONBOOT=yes
-		]]>
-			</screen>
-			<para>eth0:1</para>
-			<screen>
-		<![CDATA[
-[root@development httpd]# cp /etc/sysconfig/network-scripts/ifcfg-eth0 /etc/sysconfig/network-scripts/ifcfg-eth0:1
-[root@development httpd]# vi /etc/sysconfig/network-scripts/ifcfg-eth0:1
-# Broadcom Corporation NetLink BCM5784M Gigabit Ethernet PCIe
-DEVICE=eth0:1
-BOOTPROTO=static
-BROADCAST=192.168.3.255
-HWADDR=00:25:64:A3:59:BF
-IPADDR=192.168.3.41
-IPV6INIT=yes
-IPV6_AUTOCONF=yes
-NETMASK=255.255.255.0
-NETWORK=192.168.3.0
-ONBOOT=yes
-		]]>
-			</screen>
-			<para>reload network</para>
-			<screen>
-		<![CDATA[
-[root@development ~]# /etc/init.d/network reload
-Shutting down interface eth0:                              [  OK  ]
-Shutting down loopback interface:                          [  OK  ]
-Bringing up loopback interface:                            [  OK  ]
-Bringing up interface eth0:
-		]]>
-			</screen>
-		</section>
 		<section id="interfaces.static">
-			<title>Ubuntu</title>
 			<para>Static IP</para>
 			<screen><![CDATA[
 # The primary network interface
@@ -241,16 +643,82 @@ gateway x.x.x.x
 dns-nameservers 8.8.8.8 4.4.4.4
 			]]></screen>
 		</section>
+		<section id="interfaces.dhcp">
+			<title>DHCP</title>
+			<para>DHCP</para>
+			<screen><![CDATA[
+sudo vi /etc/network/interfaces
+
+# The primary network interface - use DHCP to find our address
+auto eth0
+iface eth0 inet dhcp
+			]]></screen>
+
+		</section>
+		<section>
+			<title>配置生效</title>
+			<para>restart</para>
+			<screen>
+				<![CDATA[
+sudo /etc/init.d/networking restart
+				]]>
+			</screen>
+		</section>
+
 	</section>
-	<section id="gateway">
-		<title>Gateway 设置默认网关</title>
-		<para>default gateway</para>
+
+	<section>
+		<title>CentOS 6</title>
 		<screen><![CDATA[
-$ sudo route add default gw 172.16.0.1
+ifconfig eth0 192.168.0.10 netmask 255.255.255.0
+or
+ip addr add 192.168.0.10 dev eth0
 		]]></screen>
-		<screen><![CDATA[
-$ sudo ip route default via 172.16.0.1 dev eth0
-		]]></screen>
+		<para>ifcfg-eth0,ifcfg-eth1,ifcfg-eth2 ... ifcfg-eth(n)</para>
+		<screen>
+		<![CDATA[
+[root@development httpd]# cat /etc/sysconfig/network-scripts/ifcfg-eth0
+# Broadcom Corporation NetLink BCM5784M Gigabit Ethernet PCIe
+DEVICE=eth0
+BOOTPROTO=static
+BROADCAST=192.168.3.255
+HWADDR=00:25:64:A3:59:BF
+IPADDR=192.168.3.40
+IPV6INIT=yes
+IPV6_AUTOCONF=yes
+NETMASK=255.255.255.0
+NETWORK=192.168.3.0
+ONBOOT=yes
+		]]>
+		</screen>
+		<para>eth0:1</para>
+		<screen>
+		<![CDATA[
+[root@development httpd]# cp /etc/sysconfig/network-scripts/ifcfg-eth0 /etc/sysconfig/network-scripts/ifcfg-eth0:1
+[root@development httpd]# vi /etc/sysconfig/network-scripts/ifcfg-eth0:1
+# Broadcom Corporation NetLink BCM5784M Gigabit Ethernet PCIe
+DEVICE=eth0:1
+BOOTPROTO=static
+BROADCAST=192.168.3.255
+HWADDR=00:25:64:A3:59:BF
+IPADDR=192.168.3.41
+IPV6INIT=yes
+IPV6_AUTOCONF=yes
+NETMASK=255.255.255.0
+NETWORK=192.168.3.0
+ONBOOT=yes
+		]]>
+		</screen>
+		<para>reload network</para>
+		<screen>
+		<![CDATA[
+[root@development ~]# /etc/init.d/network reload
+Shutting down interface eth0:                              [  OK  ]
+Shutting down loopback interface:                          [  OK  ]
+Bringing up loopback interface:                            [  OK  ]
+Bringing up interface eth0:
+		]]>
+		</screen>
 		<section>
 			<title>CentOS</title>
 			<screen>
@@ -554,439 +1022,7 @@ Inter-| sta-|   Quality        |   Discarded packets               | Missed | WE
 
 	</section>
 
-	<section id="sys.net.centos">
-		<title>CentOS 8 Stream</title>
-		<section>
-			<title>hostnamectl - Control the system hostname</title>
-			<screen><![CDATA[
-[root@netkiller ~]# hostnamectl
-   Static hostname: netkiller.localdomain
-         Icon name: computer-desktop
-           Chassis: desktop
-        Machine ID: 072e88a0fdd2447296554f3cd5129076
-           Boot ID: a978056f50544355abd723b328a89b6f
-  Operating System: CentOS Linux 7 (Core)
-       CPE OS Name: cpe:/o:centos:centos:7
-            Kernel: Linux 3.10.0-229.el7.x86_64
-      Architecture: x86_64
-			]]></screen>
-			<para>设置 hostname</para>
-			<screen>
-			<![CDATA[
-[root@netkiller ~]# hostnamectl set-hostname master
-			]]>
-			</screen>
-			<para>如果不生效执行下面命令</para>
-			<screen>
-			<![CDATA[
-systemctl restart systemd-hostnamed			
-			]]>
-			</screen>
-		</section>
-		<section id="nmtui">
-			<title>nmtui - Text User Interface for controlling NetworkManager</title>
-			<programlisting>
-			<![CDATA[
-# yum install NetworkManager-tui
-# nmtui		
-			]]>
-			</programlisting>
-			<screen>
-		<![CDATA[
-        ┌─┤ NetworkManager TUI ├──┐
-        │                         │ 
-        │ Please select an option │ 
-        │                         │ 
-        │ Edit a connection       │ 
-        │ Activate a connection   │ 
-        │ Set system hostname     │ 
-        │                         │ 
-        │ Quit                    │ 
-        │                         │ 
-        │                    <OK> │ 
-        │                         │ 
-        └─────────────────────────┘ 
-		]]>
-			</screen>
-			<screen>
-		<![CDATA[
-# nmtui
-# nmtui edit eno16777736
-# nmtui connect eno1677773
-		]]>
-			</screen>
-		</section>
-		<section id="nmcli">
-			<title>nmcli - command-line tool for controlling NetworkManager</title>
-			<para>nmcli 是 nmtui 命令行版本。</para>
-			<command>nmcli</command>
-			<screen>
-			<![CDATA[
-nmcli 有 8 个参数：
-
-help 提供有关 nmcli 命令和使用方法的帮助信息
-general 返回 NetworkManager 的状态和总体配置信息
-networking 提供命令来查询某个网络连接的状态和启动、禁用连接的功能
-radio 提供命令来查询某个 WiFi 网络连接的状态和启动、禁用连接的功能
-monitor 提供命令来监控 NetworkManager 的活动并观察网络连接的状态改变
-connection 提供命令来启用或禁用网络接口、添加新的连接、删除已有连接等功能
-device 主要被用于更改与某个设备（例如接口名称）相关联的连接参数或者使用一个已有的连接来连接设备
-secret 注册 nmcli 来作为一个 NetworkManager 的秘密代理，用以监听秘密信息。这个子命令很少会被用到，因为当连接到网络时，nmcli 会自动做这些事
-			]]>
-			</screen>
-			<section>
-				<title>查看连接状态</title>
-				<screen>
-				<![CDATA[
-[root@localhost ~]# nmcli general
-STATE      CONNECTIVITY  WIFI-HW  WIFI     WWAN-HW  WWAN    
-connected  full          enabled  enabled  enabled  enabled 				
-				]]>
-				</screen>
-			</section>
-			<section>
-				<title>查看接口状态</title>
-				<screen>
-				<![CDATA[
-[root@localhost ~]# nmcli connection show
-NAME                UUID                                  TYPE      DEVICE  
-enp8s0              ff04c285-bca6-48a3-b769-4871897bca7b  ethernet  enp8s0  
-docker0             b5bcd58d-b826-4bee-b100-4ae6976d6f76  bridge    docker0 
-The Peninsula 3-6   dc0d8214-3589-4044-9a05-8b5f50c3de1f  wifi      --  				
-				]]>
-				</screen>
-				<para>显示激活状态的接口</para>
-				<screen>
-				<![CDATA[
-[root@localhost ~]# nmcli connection show 
-NAME                UUID                                  TYPE      DEVICE 
-enp8s0              ff04c285-bca6-48a3-b769-4871897bca7b  ethernet  enp8s0 
-The Peninsula 3-6   dc0d8214-3589-4044-9a05-8b5f50c3de1f  wifi      --     
-
-[root@localhost ~]# nmcli connection show --active
-NAME    UUID                                  TYPE      DEVICE 
-enp8s0  ff04c285-bca6-48a3-b769-4871897bca7b  ethernet  enp8s0 				
-				]]>
-				</screen>
-			</section>
-			<section>
-				<title>添加接口</title>
-				<screen>
-				<![CDATA[
-nmcli connection add type ethernet ifname enp0s8				
-				]]>
-				</screen>
-			</section>
-			<section>
-				<title>修改IP地址</title>
-				<screen>
-				<![CDATA[
-$ nmcli connection modify enp8s0 ipv4.address 192.168.4.26/24
-$ nmcli connection modify enp8s0 ipv4.method manual				
-				]]>
-				</screen>
-				<para>DHCP</para>
-				<screen>
-				<![CDATA[
-$ nmcli connection modify enp8s0 ipv4.method auto				
-				]]>
-				</screen>
-				<screen>
-				<![CDATA[
-[root@localhost ~]# nmcli connection modify enp8s0 ipv4.address 192.168.3.26/24
-
-[root@localhost ~]# cat /etc/sysconfig/network-scripts/ifcfg-enp8s0 
-TYPE=Ethernet
-PROXY_METHOD=none
-BROWSER_ONLY=no
-BOOTPROTO=dhcp
-DEFROUTE=yes
-IPV4_FAILURE_FATAL=no
-IPV6INIT=yes
-IPV6_AUTOCONF=yes
-IPV6_DEFROUTE=yes
-IPV6_FAILURE_FATAL=no
-IPV6_ADDR_GEN_MODE=stable-privacy
-NAME=enp8s0
-UUID=ff04c285-bca6-48a3-b769-4871897bca7b
-DEVICE=enp8s0
-ONBOOT=yes
-IPADDR=192.168.3.26
-PREFIX=24
-
-[root@localhost ~]# ip addr show enp8s0:
-2: enp8s0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
-    link/ether 00:26:9e:6f:bb:23 brd ff:ff:ff:ff:ff:ff
-    inet 192.168.3.6/24 brd 192.168.3.255 scope global dynamic noprefixroute enp8s0
-       valid_lft 601424sec preferred_lft 601424sec
-    inet6 fe80::82e7:1911:232:d93/64 scope link noprefixroute 
-       valid_lft forever preferred_lft forever				
-				]]>
-				</screen>
-
-			</section>
-			<section>
-				<title>停止接口</title>
-				<screen>
-				<![CDATA[
-[root@localhost ~]# nmcli connection down docker0
-Connection 'docker0' successfully deactivated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/2)
-
-[root@localhost ~]# nmcli connection show 
-NAME                UUID                                  TYPE      DEVICE 
-enp8s0              ff04c285-bca6-48a3-b769-4871897bca7b  ethernet  enp8s0 
-The Peninsula 6-3C  dc0d8214-3589-4044-9a05-8b5f50c3de1f  wifi      --    				
-				]]>
-				</screen>
-			</section>
-			<section>
-				<title>编辑接口</title>
-				<screen>
-				<![CDATA[
-[root@localhost ~]# nmcli connection edit enp8s0				
-				]]>
-				</screen>
-				<para>print 显示配置信息</para>
-				<screen>
-				<![CDATA[
-nmcli> print
-===============================================================================
-                      Connection profile details (enp8s0)
-===============================================================================
-connection.id:                          enp8s0
-connection.uuid:                        ff04c285-bca6-48a3-b769-4871897bca7b
-connection.stable-id:                   --
-connection.type:                        802-3-ethernet
-connection.interface-name:              enp8s0
-connection.autoconnect:                 yes
-connection.autoconnect-priority:        0
-connection.autoconnect-retries:         -1 (default)
-connection.multi-connect:               0 (default)
-connection.auth-retries:                -1
-connection.timestamp:                   1599726610
-connection.read-only:                   no
-connection.permissions:                 --
-connection.zone:                        --
-connection.master:                      --
-connection.slave-type:                  --
-connection.autoconnect-slaves:          -1 (default)
-connection.secondaries:                 --
-connection.gateway-ping-timeout:        0
-connection.metered:                     unknown
-connection.lldp:                        default
-connection.mdns:                        -1 (default)
-connection.llmnr:                       -1 (default)
-connection.wait-device-timeout:         -1
--------------------------------------------------------------------------------
-802-3-ethernet.port:                    --
-802-3-ethernet.speed:                   0
-802-3-ethernet.duplex:                  --
-802-3-ethernet.auto-negotiate:          no
-802-3-ethernet.mac-address:             --
-802-3-ethernet.cloned-mac-address:      --
-802-3-ethernet.generate-mac-address-mask:--
-802-3-ethernet.mac-address-blacklist:   --
-802-3-ethernet.mtu:                     auto
-802-3-ethernet.s390-subchannels:        --
-802-3-ethernet.s390-nettype:            --
-802-3-ethernet.s390-options:            --
-802-3-ethernet.wake-on-lan:             default
-802-3-ethernet.wake-on-lan-password:    --
--------------------------------------------------------------------------------
-ipv4.method:                            auto
-ipv4.dns:                               --
-ipv4.dns-search:                        --
-ipv4.dns-options:                       --
-ipv4.dns-priority:                      0
-ipv4.addresses:                         192.168.3.26/24
-ipv4.gateway:                           --
-ipv4.routes:                            --
-ipv4.route-metric:                      -1
-ipv4.route-table:                       0 (unspec)
-ipv4.routing-rules:                     --
-ipv4.ignore-auto-routes:                no
-ipv4.ignore-auto-dns:                   no
-ipv4.dhcp-client-id:                    --
-ipv4.dhcp-iaid:                         --
-ipv4.dhcp-timeout:                      0 (default)
-ipv4.dhcp-send-hostname:                yes
-ipv4.dhcp-hostname:                     --
-ipv4.dhcp-fqdn:                         --
-ipv4.dhcp-hostname-flags:               0x0 (none)
-ipv4.never-default:                     no
-ipv4.may-fail:                          yes
-ipv4.dad-timeout:                       -1 (default)
--------------------------------------------------------------------------------
-ipv6.method:                            auto
-ipv6.dns:                               --
-ipv6.dns-search:                        --
-ipv6.dns-options:                       --
-ipv6.dns-priority:                      0
-ipv6.addresses:                         --
-ipv6.gateway:                           --
-ipv6.routes:                            --
-ipv6.route-metric:                      -1
-ipv6.route-table:                       0 (unspec)
-ipv6.routing-rules:                     --
-ipv6.ignore-auto-routes:                no
-ipv6.ignore-auto-dns:                   no
-ipv6.never-default:                     no
-ipv6.may-fail:                          yes
-ipv6.ip6-privacy:                       -1 (unknown)
-ipv6.addr-gen-mode:                     stable-privacy
-ipv6.ra-timeout:                        0 (default)
-ipv6.dhcp-duid:                         --
-ipv6.dhcp-iaid:                         --
-ipv6.dhcp-timeout:                      0 (default)
-ipv6.dhcp-send-hostname:                yes
-ipv6.dhcp-hostname:                     --
-ipv6.dhcp-hostname-flags:               0x0 (none)
-ipv6.token:                             --
--------------------------------------------------------------------------------
-proxy.method:                           none
-proxy.browser-only:                     no
-proxy.pac-url:                          --
-proxy.pac-script:                       --
--------------------------------------------------------------------------------
-nmcli> 				
-				]]>
-				</screen>
-				<para>设置 DHCP</para>
-				<screen>
-				<![CDATA[
-nmcli> goto ipv4
-You may edit the following properties: method, dns, dns-search, dns-options, dns-priority, addresses, gateway, routes, route-metric, route-table, routing-rules, ignore-auto-routes, ignore-auto-dns, dhcp-client-id, dhcp-iaid, dhcp-timeout, dhcp-send-hostname, dhcp-hostname, dhcp-fqdn, dhcp-hostname-flags, never-default, may-fail, dad-timeout
-nmcli ipv4> set method auto
-Do you also want to clear 'ipv4.addresses'? [yes]: 
-nmcli ipv4> save
-Connection 'enp8s0' (ff04c285-bca6-48a3-b769-4871897bca7b) successfully updated.
-nmcli ipv4> quit				
-				]]>
-				</screen>
-			</section>
-			<section id="nmcli.connection.delete">
-				<title>删除接口</title>
-				<para>查看接口</para>
-				<screen>
-				<![CDATA[
-[root@stage ~]# ifconfig
-br-8e039a79ebcc: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
-        inet 172.17.0.1  netmask 255.255.0.0  broadcast 172.17.255.255
-        ether 02:42:13:08:b4:52  txqueuelen 0  (Ethernet)
-        RX packets 42334  bytes 7746029 (7.3 MiB)
-        RX errors 0  dropped 0  overruns 0  frame 0
-        TX packets 29017  bytes 11857277 (11.3 MiB)
-        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0        				
-				]]>
-				</screen>
-				<para>删除网桥</para>
-				<screen>
-				<![CDATA[
-[root@stage ~]# nmcli connection delete br-8e039a79ebcc
-Connection 'br-8e039a79ebcc' (d1a9382e-221e-4e5e-a97e-a098147a2f15) successfully deleted.				
-				]]>
-				</screen>
-			</section>
-			<section>
-				<title>链接 WI-FI</title>
-				<screen>
-				<![CDATA[
-sudo nmcli dev wifi connect netkiller password ******** ifname wlp1s0
-sudo nmcli device
-				]]>
-				</screen>
-				<para>运行命令后，会在/etc/NetworkManager/system-connections目录下看到一个名为“netkiller.nmconnection”的文件</para>
-				<para>--ask 询问密码</para>
-				<screen>
-				<![CDATA[
-sudo nmcli --ask dev wifi connect netkiller
- Password: 
- Device 'wlp2s0' successfully activated with 'f74121b-3245-48a2-ae25-1b6f789243984'.				
-				]]>
-				</screen>
-			</section>
-			<section>
-				<title>显示设备信息</title>
-				<screen>
-				<![CDATA[
-[root@localhost ~]# nmcli device status
-DEVICE   TYPE      STATE      CONNECTION 
-enp8s0   ethernet  connected  enp8s0     
-docker0  bridge    unmanaged  --         
-lo       loopback  unmanaged  --         
-wlp5s0   wifi      unmanaged  --     				
-				]]>
-				</screen>
-				<para>网卡设备详细信息</para>
-				<screen>
-				<![CDATA[
-[root@localhost ~]# nmcli device show enp8s0
-GENERAL.DEVICE:                         enp8s0
-GENERAL.TYPE:                           ethernet
-GENERAL.HWADDR:                         00:26:9E:6F:BB:23
-GENERAL.MTU:                            1500
-GENERAL.STATE:                          100 (connected)
-GENERAL.CONNECTION:                     enp8s0
-GENERAL.CON-PATH:                       /org/freedesktop/NetworkManager/ActiveConnection/1
-WIRED-PROPERTIES.CARRIER:               on
-IP4.ADDRESS[1]:                         192.168.3.6/24
-IP4.GATEWAY:                            192.168.3.1
-IP4.ROUTE[1]:                           dst = 0.0.0.0/0, nh = 192.168.3.1, mt = 100
-IP4.ROUTE[2]:                           dst = 192.168.3.0/24, nh = 0.0.0.0, mt = 100
-IP4.DNS[1]:                             192.168.3.1
-IP4.DOMAIN[1]:                          home
-IP6.ADDRESS[1]:                         fe80::82e7:1911:232:d93/64
-IP6.GATEWAY:                            --
-IP6.ROUTE[1]:                           dst = fe80::/64, nh = ::, mt = 100
-IP6.ROUTE[2]:                           dst = ff00::/8, nh = ::, mt = 256, table=255				
-				]]>
-				</screen>
-			</section>
-		</section>
-	</section>
-	<section id="netplan">
-		<title>Ubuntu netplan (Ubuntu 18.04 之后才用 netplan 管理网络)</title>
-		<para>https://netplan.io/examples 参考例子</para>
-		<section>
-			<title>DHCP</title>
-			<para>配置 DHCP</para>
-			<example>
-				<title>netplan dhcp 例子</title>
-				<screen>
-			<![CDATA[
-neo@netkiller ~ % cat /etc/netplan/interfaces.yaml 
-network:
-  version: 2
-  renderer: networkd
-  ethernets:
-    enp2s1:
-      dhcp4: true
-			]]>
-				</screen>
-				<para>启用生效</para>
-				<screen>
-			<![CDATA[
-neo@netkiller ~ % sudo netplan apply			
-			]]>
-				</screen>
-			</example>
-		</section>
-		<section>
-			<title>静态IP地址</title>
-			<screen>
-			<![CDATA[
-sudo  vi /etc/netplan/00-installer-config.yaml
- 
-# This is the network config written by 'subiquity'
-network:
-  ethernets:
-    ens33:
-      addresses: [192.168.0.102/24]
-      dhcp4: false
-      gateway4: 192.168.0.254			
-			]]>
-			</screen>
-		</section>
-	</section>
+	
+	
 	&section.network.router.xml;
 </chapter>
