@@ -173,29 +173,29 @@ docker run \
 				<ulink url="http://localhost:9000" />
 			</para>
 
-			<graphic format="png" fileref="../images/SonarQube/01-login.png" width="" />
+			<graphic format="png" fileref="../images/sonarqube/01-login.png" width="" />
 			<para>首次登陆会提示修改密码</para>
-			<graphic format="png" fileref="../images/SonarQube/02-changepassword.png" width="" />
+			<graphic format="png" fileref="../images/sonarqube/02-changepassword.png" width="" />
 			<para>登陆成功</para>
-			<graphic format="png" fileref="../images/SonarQube/03-project.png" width="1024" />
+			<graphic format="png" fileref="../images/sonarqube/03-project.png" width="1024" />
 		</section>
 
 		<section>
 			<title>本地 maven 执行 SonarQube</title>
 			<para>手工创建一个项目</para>
-			<graphic format="png" fileref="../images/SonarQube/maven/1.png" width="1024" />
+			<graphic format="png" fileref="../images/sonarqube/maven/1.png" width="1024" />
 			<para>输入项目名称和密钥，然后点击“Set Up” 按钮</para>
-			<graphic format="png" fileref="../images/SonarQube/maven/2.png" width="1024" />
+			<graphic format="png" fileref="../images/sonarqube/maven/2.png" width="1024" />
 			<para>点击 "Locally" 分析本地项目</para>
-			<graphic format="png" fileref="../images/SonarQube/maven/3.png" width="1024" />
+			<graphic format="png" fileref="../images/sonarqube/maven/3.png" width="1024" />
 			<para>输入项目名称，点击“Generate”按钮生成 Token</para>
-			<graphic format="png" fileref="../images/SonarQube/maven/4.png" width="1024" />
+			<graphic format="png" fileref="../images/sonarqube/maven/4.png" width="1024" />
 			<para>将 Token 保存好，然后点击 “Continue” 按钮继续 </para>
-			<graphic format="png" fileref="../images/SonarQube/maven/5.png" width="1024" />
+			<graphic format="png" fileref="../images/sonarqube/maven/5.png" width="1024" />
 			<para>选择你的构建方式，我使用的是 Maven</para>
-			<graphic format="png" fileref="../images/SonarQube/maven/6.png" width="1024" />
+			<graphic format="png" fileref="../images/sonarqube/maven/6.png" width="1024" />
 			<para>复制 Maven 命令，然后在你的项目下面执行。</para>
-			<graphic format="png" fileref="../images/SonarQube/maven/7.png" width="1024" />
+			<graphic format="png" fileref="../images/sonarqube/maven/7.png" width="1024" />
 			<screen>
 			<![CDATA[
 mvn clean verify sonar:sonar \
@@ -322,7 +322,7 @@ mvn clean verify sonar:sonar \
 		]]>
 			</screen>
 			<para>Maven 执行完成之后 SonarQube 会自动展示分析结果</para>
-			<graphic format="png" fileref="../images/SonarQube/maven/8.png" width="1024" />
+			<graphic format="png" fileref="../images/sonarqube/maven/8.png" width="1024" />
 			<para>这种方式需要手工执行 Maven，每次都需要指定三个参数，-Dsonar.projectKey=test -Dsonar.host.url=http://192.168.30.20:9000 -Dsonar.login=e4294feaa6e9f830bdb109a310de6cd59f3a0443，有没有更好的解决方案呢？</para>
 			<para>我们可以将这些参数写入到 setting.xml / pom.xml 文件，方法如下：</para>
 			<para>project/build/plugins 下面增加 sonar-maven-plugin</para>
@@ -575,23 +575,23 @@ Neo-iMac:microservice neo$ mvn verify sonar:sonar -Dmaven.test.skip=true
 		<section>
 			<title>集成 Gitlab</title>
 			<para>创建项目</para>
-			<graphic format="png" fileref="../images/SonarQube/gitlab/1.png" width="1024" />
+			<graphic format="png" fileref="../images/sonarqube/gitlab/1.png" width="1024" />
 			<para>选择 “From GitLab”，现在切换到 Gitlab，进入用户设置</para>
-			<graphic format="png" fileref="../images/SonarQube/gitlab/2.png" width="1024" />
+			<graphic format="png" fileref="../images/sonarqube/gitlab/2.png" width="1024" />
 			<para>选择访问令牌</para>
-			<graphic format="png" fileref="../images/SonarQube/gitlab/3.png" width="1024" />
+			<graphic format="png" fileref="../images/sonarqube/gitlab/3.png" width="1024" />
 			<para>输入令牌名称，勾选 api 和 read_api，最后点击“创建个人访问令牌”按钮</para>
-			<graphic format="png" fileref="../images/SonarQube/gitlab/4.png" width="1024" />
+			<graphic format="png" fileref="../images/sonarqube/gitlab/4.png" width="1024" />
 			<para>复制“您的新个人访问令牌”</para>
-			<graphic format="png" fileref="../images/SonarQube/gitlab/5.png" width="1024" />
+			<graphic format="png" fileref="../images/sonarqube/gitlab/5.png" width="1024" />
 			<para>回到 SonarQube，输入配置名称 Configuration name，GitLab API URL和Personal Access Token (Gitlab 中创建的个人访问令牌)</para>
-			<graphic format="png" fileref="../images/SonarQube/gitlab/6.png" width="1024" />
+			<graphic format="png" fileref="../images/sonarqube/gitlab/6.png" width="1024" />
 			<para>再次输入个人访问令牌</para>
-			<graphic format="png" fileref="../images/SonarQube/gitlab/7.png" width="1024" />
+			<graphic format="png" fileref="../images/sonarqube/gitlab/7.png" width="1024" />
 			<para>如果令牌正确，将会看到 Gitlab 那边的项目列表，如果项目很多，可以在查询框内输入关键字查找，选择你需要扫描的项目，点击“Set up” 按钮</para>
-			<graphic format="png" fileref="../images/SonarQube/gitlab/8.png" width="1024" />
+			<graphic format="png" fileref="../images/sonarqube/gitlab/8.png" width="1024" />
 			<para>选择 With GitLab CI</para>
-			<graphic format="png" fileref="../images/SonarQube/gitlab/9.png" width="1024" />
+			<graphic format="png" fileref="../images/sonarqube/gitlab/9.png" width="1024" />
 			<para>选择 Maven，复制配置项，添加到 Maven 的 pom.xml 中，配置类似下面</para>
 			<programlisting>
 			<![CDATA[
@@ -651,25 +651,25 @@ Neo-iMac:microservice neo$ mvn verify sonar:sonar -Dmaven.test.skip=true
 </project>			
 			]]>
 			</programlisting>
-			<graphic format="png" fileref="../images/SonarQube/gitlab/10.png" width="1024" />
+			<graphic format="png" fileref="../images/sonarqube/gitlab/10.png" width="1024" />
 			<para>配置 Gitlab 环境变量，点击 “Generate a token” 按钮，生成 SONAR_TOKEN</para>
-			<graphic format="png" fileref="../images/SonarQube/gitlab/11.png" width="" />
+			<graphic format="png" fileref="../images/sonarqube/gitlab/11.png" width="" />
 			<para>点击 “Generate” 按钮</para>
-			<graphic format="png" fileref="../images/SonarQube/gitlab/12.png" width="1024" />
+			<graphic format="png" fileref="../images/sonarqube/gitlab/12.png" width="1024" />
 			<para>点击加号“➕”图标复制SONAR_TOKEN</para>
 			<para>现在切换到 Gitlab 窗口，进入项目 - 设置 - CI/CD，展开 “变量”</para>
-			<graphic format="png" fileref="../images/SonarQube/gitlab/13.png" width="1024" />
+			<graphic format="png" fileref="../images/sonarqube/gitlab/13.png" width="1024" />
 			<para>点击 “添加变量” 按钮，从 SonarQube 窗口复制并添加变量 SONAR_TOKEN 和 SONAR_HOST_URL</para>
-			<graphic format="png" fileref="../images/SonarQube/gitlab/14.png" width="1024" />
+			<graphic format="png" fileref="../images/sonarqube/gitlab/14.png" width="1024" />
 			<para>添加完成后，点击 “显示值” 按钮，检查变量是否正确</para>
-			<graphic format="png" fileref="../images/SonarQube/gitlab/15.png" width="1024" />
+			<graphic format="png" fileref="../images/sonarqube/gitlab/15.png" width="1024" />
 			<para>点击即 “Continue” 按钮</para>
-			<graphic format="png" fileref="../images/SonarQube/gitlab/16.png" width="1024" />
+			<graphic format="png" fileref="../images/sonarqube/gitlab/16.png" width="1024" />
 			<para>复制内容，并添加到 .gitlab-ci.yml 文件中</para>
 			<tip>注意：你的项目必须使用 Java 11 以上的版本，否则会出错，具体请看 FAQ 章节。</tip>
 			<para>所有工作完成之后，点击 “Finish this tutorial” 按钮，SonarQube 窗口放在那里不用管它。</para>
 			<para>现在提交和推送代码，然后盯着流水线，如果不出错，SonarQube 就会生成下面这样的报告</para>
-			<graphic format="png" fileref="../images/SonarQube/gitlab/17.png" width="1024" />
+			<graphic format="png" fileref="../images/sonarqube/gitlab/17.png" width="1024" />
 		</section>
 		<section id="SonarScanner">
 			<title>SonarScanner</title>
