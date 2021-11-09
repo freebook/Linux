@@ -19,18 +19,20 @@ root@production:~# curl bot.whatismyipaddress.com
 			<screen>
 			<![CDATA[
 apt install net-tools
-apt install iputils-ping		
+apt install iputils-ping
+apt install -y iproute2	
+apt install -y telnet
 			]]>
 			</screen>
 			<para></para>
 			<screen>
 			<![CDATA[
-apt install -y procps iproute2			
+apt install -y procps 	
 			]]>
 			</screen>
 			<screen>
 			<![CDATA[
-apt install -y telnet			
+		
 			]]>
 			</screen>
 		</section>

@@ -10,7 +10,7 @@
 			</para>
 			<screen>
 		<![CDATA[
-[root@netkiller ~]# dnf install -y gnupg
+[root@netkiller ~]# dnf install -y gnupg2
 		]]>
 			</screen>
 		</section>
