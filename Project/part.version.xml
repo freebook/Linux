@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: part.version.xml 385 2012-04-10 10:40:06Z netkiller $ -->
-<part id="index"><?dbhtml dir="version" ?>
+<part id="version">
 	<title>软件版本控制</title>
 	&chapter.git.xml;
 	&chapter.version.svn;

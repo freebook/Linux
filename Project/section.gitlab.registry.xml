@@ -74,6 +74,7 @@ deploy:
 	</section>
 	<section>
 		<title>Docker registry</title>
+		<!-- https://docs.gitlab.com/ee/user/packages/container_registry/ -->
 		<para>Gitlab 默认不打开 docker registry 的功能，需要修改配置打开。</para>
 		<para>修改配置 /etc/gitlab/gitlab.rb 文件，将 registry_external_url 的值修改为 http://registry.netkiller.cn</para>
 		<tip>注意不能使用IP地址，如果使用IP地址必须配合端口号，且端口不能跟 Gitlab 冲突。</tip>
