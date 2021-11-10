@@ -958,11 +958,36 @@ root      1045  0.0  0.2 216420  4452 ?        Ssl  08:50   0:00 /usr/sbin/rsysl
 			</screen>
 		</section>
 	</section>
+	<section id="renice">
+		<title>renice</title>
+		<screen>
+		<![CDATA[
+renice 命令详解
+
+功能说明：调整优先权。
+
+语　　法：renice [优先等级][-g <程序群组名称>...][-p <程序识别码>...][-u <用户名称>...]
+
+补充说明：renice指令可重新调整程序执行的优先权等级。预设是以程序识别码指定程序调整其优先权，您亦可以指定程序群组或用户名称调整优先权等级，并修改所有隶属于该程序群组或用户的程序的优先权。等级范围从-20–19，只有系统管理者可以改变其他用户程序的优先权，也仅有系统管理者可以设置负数等级。
+参　　数：
+-g <程序群组名称> 　使用程序群组名称，修改所有隶属于该程序群组的程序的优先权。
+-p <程序识别码> 　改变该程序的优先权等级，此参数为预设值。
+-u <用户名称> 　指定用户名称，修改所有隶属于该用户的程序的优先权。		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+[root@gitlab ~]# renice -n -15 -p 2140922
+2140922 (process ID) old priority 0, new priority -15		
+		]]>
+		</screen>
+	</section>
 	<section id="kill">
 		<title>kill - terminate a process</title>
 		<section>
 			<title>列出信号名称</title>
-			<subtitle>-l, --list [number] Print  a  list  of signal names, or convert the given signal number to a name.  The signals can be found in /usr/include/linux/signal.h</subtitle>
+			<subtitle>-l, --list [number] Print a list of signal names, or convert the given signal number to a name. The signals can be found in /usr/include/linux/signal.h</subtitle>
 			<screen>
 			<![CDATA[
 [root@localhost ~]# kill -l
@@ -1029,15 +1054,24 @@ Linux 2.6.18-194.el5 (localhost)        09/20/2010
 
 	<section id="pid">
 		<title>pid</title>
-		<section id="pgrep">
-			<title>pgrep, pkill - look up or signal processes based on name and other attributes</title>
-			<para>pgrep</para>
+		<section>
+			<title>查找进程 ID</title>
+			<para>pgrep, pkill - look up or signal processes based on name and other attributes</para>
 			<screen>
 			<![CDATA[
 $ pgrep lighttpd
 6045
 			]]>
 			</screen>
+			<screen>
+		<![CDATA[
+[root@netkiller ~]# pgrep -u redis redis
+1346809		
+		]]>
+			</screen>
+		</section>
+		<section id="pkill">
+			<title>pkill</title>
 			<para>pkill</para>
 			<screen>
 			<![CDATA[
@@ -1170,17 +1204,17 @@ neo@MacBook-Pro ~ % wait
 		<screen>
 		<![CDATA[
 EXAMPLES
-       # ionice -c3 -p89
+# ionice -c3 -p89
 
-       Sets process with PID 89 as an idle io process.
+Sets process with PID 89 as an idle io process.
 
-       # ionice -c2 -n0 bash
+# ionice -c2 -n0 bash
 
-       Runs ’bash’ as a best-effort program with highest priority.
+Runs ’bash’ as a best-effort program with highest priority.
 
-       # ionice -p89
+# ionice -p89
 
-       Returns the class and priority of the process with PID 89.
+Returns the class and priority of the process with PID 89.
 		]]>
 		</screen>
 	</section>
@@ -1262,15 +1296,7 @@ sshd(3158)─┬─sshd(9409)───bash(9411)
 			</screen>
 		</section>
 	</section>
-	<section>
-		<title>查找进程 ID</title>
-		<screen>
-		<![CDATA[
-[root@netkiller ~]# pgrep -u redis redis
-1346809		
-		]]>
-		</screen>
-	</section>
+
 	<section id="pkexec">
 		<title>pkexec - Execute a command as another user</title>
 		<screen>
