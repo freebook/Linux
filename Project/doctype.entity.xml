@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!ENTITY part.version.xml			SYSTEM "part.version.xml">
-<!ENTITY chapter.version.cvs	 	SYSTEM "Version/chapter.version.cvs.xml">
-<!ENTITY chapter.version.svn 		SYSTEM "Version/chapter.version.svn.xml">
-<!ENTITY chapter.git.xml	 		SYSTEM "Version/chapter.git.xml">
-<!ENTITY chapter.git.dotfiles.xml 	SYSTEM "Version/chapter.git.dotfiles.xml">
-<!ENTITY chapter.git.gitolite.xml 	SYSTEM "Version/chapter.git.gitolite.xml">
-<!ENTITY chapter.git.web.xml	 	SYSTEM "Version/chapter.git.web.xml">
-<!ENTITY section.git.lfs.xml	 	SYSTEM "Version/section.git.lfs.xml">
-<!ENTITY section.git.submodule.xml 	SYSTEM "Version/section.git.submodule.xml">
+<!ENTITY part.version.xml					SYSTEM "part.version.xml">
+<!ENTITY chapter.version.cvs	 			SYSTEM "Version/chapter.version.cvs.xml">
+<!ENTITY chapter.version.svn 				SYSTEM "Version/chapter.version.svn.xml">
+<!ENTITY chapter.git.xml	 				SYSTEM "Version/chapter.git.xml">
+<!ENTITY chapter.git.dotfiles.xml 			SYSTEM "Version/chapter.git.dotfiles.xml">
+<!ENTITY chapter.git.gitolite.xml 			SYSTEM "Version/chapter.git.gitolite.xml">
+<!ENTITY chapter.git.web.xml	 			SYSTEM "Version/chapter.git.web.xml">
+<!ENTITY section.git.lfs.xml	 			SYSTEM "Version/section.git.lfs.xml">
+<!ENTITY section.git.submodule.xml 			SYSTEM "Version/section.git.submodule.xml">
 
 <!ENTITY part.project.xml					SYSTEM "part.project.xml">
 <!ENTITY chapter.project.xml				SYSTEM "chapter.project.xml">
@@ -17,6 +17,9 @@
 <!ENTITY section.gitlab.cicd.xml			SYSTEM "section.gitlab.cicd.xml">
 <!ENTITY section.gitlab.pipeline.xml		SYSTEM "section.gitlab.pipeline.xml">
 <!ENTITY section.gitlab.gpg.xml				SYSTEM "section.gitlab.gpg.xml">
+<!ENTITY section.gitlab.registry.xml		SYSTEM "section.gitlab.registry.xml">
+
+
 <!ENTITY chapter.redmine.xml 				SYSTEM "chapter.redmine.xml">
 <!ENTITY chapter.tutos.xml					SYSTEM "chapter.tutos.xml">
 

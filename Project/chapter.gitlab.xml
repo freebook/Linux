@@ -189,6 +189,7 @@ wontfix				This will not be worked on
 	&section.gitlab.gpg.xml;
 	&section.gitlab.cicd.xml;
 	&section.gitlab.pipeline.xml;
+	&section.gitlab.registry.xml;
 	<section id="gitlab.faq">
 		<title>FAQ</title>
 		<section>
