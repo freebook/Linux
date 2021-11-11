@@ -246,4 +246,83 @@ latest: digest: sha256:fbb365b3dbb302bc29ef2253fbf6b9acced54fa5337fd1cb804a52713
 		<para>查看镜像</para>
 		<graphic format="png" fileref="../images/gitlab/registry/3.png" width="1024" srccredit="neo" />
 	</section>
+	<section>
+		<title>Python Pypi 仓库</title>
+		<para>创建访问令牌</para>
+		<graphic format="png" fileref="../images/gitlab/package/python/1.png" width="1024" srccredit="neo" />
+		<tip>需要勾选 ☑️ api, read_api, read_registry, write_registry 四个授权️</tip>
+		<para>创建或编辑 ~/.pypirc 文件</para>
+		<screen>
+		<![CDATA[
+[distutils]
+index-servers =
+    gitlab
+
+[gitlab]
+repository = https://gitlab.example.com/api/v4/projects/<project_id>/packages/pypi
+username = <your_personal_access_token_name>
+password = <your_personal_access_token>		
+		]]>
+		</screen>
+		<para>用户和密码，可以使用个人访问令牌、部署令牌和 Gitlab 用户密码</para>
+		<para></para>
+		<screen>
+		<![CDATA[
+<project_id> 替换成你的项目URL 或者 项目 ID
+
+例如我的项目地址是：http://192.168.30.5/netkiller.cn/python.netkiller.cn/-/packages
+
+repository = https://gitlab.example.com/api/v4/projects/netkiller.cn%2Fpython.netkiller.cn/packages/pypi	
+
+将 “/” 替换成 “%2F”
+		]]>
+		</screen>
+		<para>查看项目 ID</para>
+		<graphic format="png" fileref="../images/gitlab/package/python/projectid.png" width="1024" srccredit="neo" />
+		<para>下面是我配置，仅供参考</para>
+		<screen>
+		<![CDATA[
+Neo-iMac:devops neo$ cat ~/.pypirc 
+[distutils]
+index-servers =
+    gitlab
+
+[gitlab]
+repository = http://192.168.30.5/api/v4/projects/30/packages/pypi
+username=pypi
+password=QFatUEzEybBR6gxxF5K2		
+		]]>
+		</screen>
+		<para>上传命令</para>
+		<screen>
+		<![CDATA[
+Neo-iMac:devops neo$ python3 setup.py sdist bdist_wheel
+Neo-iMac:devops neo$ twine upload --repository gitlab dist/*
+		]]>
+		</screen>
+		<para>上传演示</para>
+		<screen>
+		<![CDATA[
+Neo-iMac:devops neo$ twine upload --repository gitlab dist/netkiller-devops-0.3.*
+Uploading distributions to http://192.168.30.5/api/v4/projects/30/packages/pypi
+Uploading netkiller-devops-0.3.0.tar.gz
+100%|███████████████████████████████████████████████████████████████████| 37.3k/37.3k [00:00<00:00, 426kB/s]
+Uploading netkiller-devops-0.3.1.tar.gz
+100%|███████████████████████████████████████████████████████████████████| 37.3k/37.3k [00:00<00:00, 462kB/s]
+Uploading netkiller-devops-0.3.2.tar.gz
+100%|███████████████████████████████████████████████████████████████████| 37.3k/37.3k [00:00<00:00, 436kB/s]
+Uploading netkiller-devops-0.3.3.tar.gz
+100%|███████████████████████████████████████████████████████████████████| 37.5k/37.5k [00:00<00:00, 486kB/s]
+Uploading netkiller-devops-0.3.4.tar.gz
+100%|███████████████████████████████████████████████████████████████████| 37.4k/37.4k [00:00<00:00, 475kB/s]
+Uploading netkiller-devops-0.3.5.tar.gz
+100%|███████████████████████████████████████████████████████████████████| 37.5k/37.5k [00:00<00:00, 490kB/s]
+Neo-iMac:devops neo$ 		
+		]]>
+		</screen>
+		<para>查看软件包</para>
+		<graphic format="png" fileref="../images/gitlab/package/python/2.png" width="1024" srccredit="neo" />
+		<para>查看详细信息</para>
+		<graphic format="png" fileref="../images/gitlab/package/python/3.png" width="1024" srccredit="neo" />
+	</section>
 </section>
