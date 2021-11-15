@@ -130,4 +130,22 @@ iMac:redis neo$ docker network inspect test
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>网络命令空间</title>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# docker inspect --format="{{ .State.Pid }}"  b279738af403
+2180
+
+[root@localhost ~]# mkdir -p /var/run/netns
+[root@localhost ~]# ln -s /proc/2180/ns/net /var/run/netns/2180
+
+[root@localhost ~]# ip netns exec 2180 ip route
+default via 192.168.49.1 dev eth0 
+172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1 
+192.168.30.0/24 via 192.168.49.1 dev eth0 
+192.168.49.0/24 dev eth0 proto kernel scope link src 192.168.49.2 		
+		]]>
+		</screen>
+	</section>
 </section>

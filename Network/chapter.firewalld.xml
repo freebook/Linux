@@ -796,6 +796,20 @@ firewall-cmd --zone=public --remove-masquerade
 			</screen>
 		</section>
 	</section>
+	<section>
+		<title>端口转发</title>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# firewall-cmd --permanent --add-masquerade
+success
+[root@localhost ~]# firewall-cmd --permanent --add-forward-port=port=8443:proto=tcp:toaddr=192.168.49.2:toport=8443
+success
+[root@localhost ~]# firewall-cmd --reload
+success		
+		]]>
+		</screen>
+	</section>
+	
 	<section id="firewall.rich-rules">
 		<title>富规则</title>
 		<para>使用 --add-rich-rule, --list-rich-rules, --remove-rich-rule 命令来管理富规则</para>

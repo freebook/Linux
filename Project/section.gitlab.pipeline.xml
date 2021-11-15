@@ -117,11 +117,24 @@ deploy-prod-job:
 		]]>
 		</screen>
 	</section>
-	
+
 	<section id="gitlab-ci.yml.stages">
 		<title>stages</title>
+		<para>定义 stages</para>
 		<screen>
 		<![CDATA[
+stages:
+  - build
+  - test
+  - deploy
+		]]>
+		</screen>
+
+		<section>
+			<title>依赖关系</title>
+			<para>dependencies 可以设置 job 的依赖关系</para>
+			<screen>
+			<![CDATA[
 image: mileschou/php-testing-base:7.0
 
 stages:
@@ -152,18 +165,27 @@ deploy_job:
     - echo Deploy OK
   only:
     - release
-  when: manual
-				]]>
-		</screen>
-		<screen>
-				<![CDATA[
-  only: 
-    - master
-  tags:
-    - ansible
-				
-				]]>
-		</screen>
+  when: manual			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>禁用 stage</title>
+			<para>出于某种原因，我们想禁用某些 stage。可以在 job 前加一个 “.” 禁用它。</para>
+			<screen>
+			<![CDATA[
+.deploy:
+  image: maven:3.6-jdk-11
+  tags: 
+    - shell
+  script:
+    - 'mvn deploy -s ci_settings.xml'
+  # only:
+    # - main			
+			]]>
+			</screen>
+		</section>
+
 	</section>
 	<section id="gitlab-ci.yml.variables">
 		<title>variables</title>
@@ -325,15 +347,15 @@ $ export
 			</screen>
 		</section>
 		<section id="gitlab-ci.yml.submodule">
-		<title>Git submodule</title>
-		<screen>
+			<title>Git submodule</title>
+			<screen>
 		<![CDATA[
 variables:
   GIT_SUBMODULE_STRATEGY: recursive		
 		]]>
-		</screen>
+			</screen>
 
-	</section>
+		</section>
 	</section>
 	<section id="gitlab-ci.yml.script">
 		<title>script /before_script / after_script</title>
@@ -467,7 +489,7 @@ script:
     fi			
 			]]>
 			</screen>
-			
+
 		</section>
 	</section>
 	<section id="gitlab-ci.yml.only">
@@ -512,8 +534,20 @@ job:
 			<listitem>tags 匹配所有 git tag</listitem>
 			<listitem>triggers</listitem>
 		</itemizedlist>
-		<para>匹配 feature / hotfix 分支</para>
-		<screen>
+		<section>
+			<title>匹配 feature / hotfix 分支</title>
+			<screen>
+			<![CDATA[
+  only:  # 只对 feature/.* 开头 和 以 feature-.* 开头分支有效
+    - /^feature\/.*$/
+    - /^feature-.*$/
+    - /^hotfix\/.*$/
+    - /^hotfix-.*$/			
+			]]>
+			</screen>
+
+			<para>匹配 feature / hotfix 分支</para>
+			<screen>
 		<![CDATA[
 
 deploy-feature-job:
@@ -569,7 +603,8 @@ deploy-hotfix-job:
     - ssh www@$HOST "sudo docker-compose -f /opt/netkiller.cn/api.netkiller.cn/docker-compose.yaml restart"
   when: manual		
 		]]>
-		</screen>
+			</screen>
+		</section>
 	</section>
 	<section id="gitlab-ci.yml.allow_failure">
 		<title>允许失败</title>
@@ -634,6 +669,15 @@ connect:
 		<title>tags</title>
 		<para>在 gitlab-runner register 的时候会提示：Please enter the gitlab-ci tags for this runner (comma separated): </para>
 		<para>如果你输入了标签就需要在 Pipeline 中设置 tags 否则 Pipeline 将不运行。</para>
+		<screen>
+		<![CDATA[
+  only: 
+    - master
+  tags:
+    - ansible
+				
+		]]>
+		</screen>
 		<screen>
 				<![CDATA[
 # This file is a template, and might need editing before it works on your project.
@@ -745,6 +789,33 @@ script:
   - kubectl apply -f ${MODULE} --record=true		
 		]]>
 		</screen>
+	</section>
+	<section id="gitlab-ci.yml.release">
+		<title>release</title>
+		<screen>
+		<![CDATA[
+stages:
+  - build
+  - test
+  - deploy
+  - release
+
+release_job:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  tags:
+    - docker
+  rules:
+    - if: $CI_COMMIT_TAG                  # Run this job when a tag is created manually
+  script:
+    - echo 'Running the release job.'
+  release:
+    name: 'Release $CI_COMMIT_TAG'
+    tag_name: '$CI_COMMIT_TAG'
+    description: 'Release created using the release-cli.'		
+		]]>
+		</screen>
+		<graphic format="png" fileref="../images/gitlab/pipeline/release.png" width="1024" srccredit="neo" />
 	</section>
 </section>
 <section id="gitlab-ci.yml.example">

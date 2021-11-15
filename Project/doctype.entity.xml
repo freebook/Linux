@@ -30,8 +30,8 @@
 <!ENTITY section.jenkins.job-dsl.xml		SYSTEM "section.jenkins.job-dsl.xml">
 <!ENTITY section.jenkins.example.xml		SYSTEM "section.jenkins.example.xml">
 <!ENTITY chapter.sonarqube.xml				SYSTEM "chapter.sonarqube.xml">
-<!ENTITY chapter.review.xml					SYSTEM "chapter.review.xml">
 
+<!ENTITY chapter.review.xml					SYSTEM "chapter.review.xml">
 <!ENTITY chapter.nexus.xml					SYSTEM "chapter.nexus.xml">
 
 <!ENTITY chapter.miscellaneous.xml 			SYSTEM "chapter.miscellaneous.xml">

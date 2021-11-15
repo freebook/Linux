@@ -32,6 +32,30 @@ useradd -G root  -p $(openssl passwd -1 redhat@@admin) admin
 			
 			]]>
 			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+groupadd -g 80 www
+adduser -o --uid 80 --gid 80 -G wheel -c "Web Application" www
+
+PASSWORD=$(cat /dev/urandom | tr -dc [:alnum:] | head -c 32)
+echo "www password: ${PASSWORD}"
+echo www:${PASSWORD} | chpasswd
+			
+[root@localhost ~]# id www
+uid=80(www) gid=80(www) groups=80(www),10(wheel)			
+			]]>
+			</screen>
+			<para>创建用户，使用已存在的组</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# grep docker /etc/group
+docker:x:992:gitlab-runner
+[root@localhost ~]# adduser -g 992 -c "Docker" docker
+[root@localhost ~]# id docker
+uid=1000(docker) gid=992(docker) groups=992(docker)
+			]]>
+			</screen>
 		</section>
 		<section id="userdel">
 			<title>删除用户</title>

@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="gitlib.kubernetes">
+	<title>集成 Kubernetes</title>
+	<para>这里我们使用 minikube 启动 Kubernetes</para>
+	<section>
+		<title>安装启动 Minikube</title>
+		<para>创建 docker 用户</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# grep docker /etc/group
+docker:x:992:gitlab-runner
+[root@localhost ~]# adduser -g 992 -c "Docker" docker
+[root@localhost ~]# id docker
+uid=1000(docker) gid=992(docker) groups=992(docker)		
+		]]>
+		</screen>
+		<para>启动命令</para>
+		<screen>
+		<![CDATA[
+minikube start --memory=max --cpus=max  \
+--image-mirror-country=cn --registry-mirror="https://registry.docker-cn.com,https://docker.mirrors.ustc.edu.cn" \
+--insecure-registry="registry.netkiller.cn" \
+--addons=dashboard,ingress,logviewer	
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# su - docker
+[docker@localhost ~]$ minikube start --memory=max --cpus=max  \
+> --image-mirror-country=cn --registry-mirror="https://registry.docker-cn.com,https://docker.mirrors.ustc.edu.cn" \
+> --insecure-registry="registry.netkiller.cn" 
+😄  minikube v1.22.0 on Centos 8
+✨  Automatically selected the docker driver
+❗  Your cgroup does not allow setting memory.
+    ▪ More information: https://docs.docker.com/engine/install/linux-postinstall/#your-kernel-does-not-support-cgroup-swap-limit-capabilities
+🎉  minikube 1.24.0 is available! Download it: https://github.com/kubernetes/minikube/releases/tag/v1.24.0
+
+💡  To disable this notice, run: 'minikube config set WantUpdateNotification false'
+
+🧯  The requested memory allocation of 7694MiB does not leave room for system overhead (total system memory: 7694MiB). You may face stability issues.
+💡  Suggestion: Start minikube with less memory allocated: 'minikube start --memory=2200mb'
+
+✅  Using image repository registry.cn-hangzhou.aliyuncs.com/google_containers
+👍  Starting control plane node minikube in cluster minikube
+🚜  Pulling base image ...
+❗  The image 'registry.cn-hangzhou.aliyuncs.com/google_containers/coredns/coredns:v1.8.0' was not found; unable to add it to cache.
+    > registry.cn-hangzhou.aliyun...: 361.09 MiB / 361.09 MiB  100.00% 506.51 K
+🔥  Creating docker container (CPUs=4, Memory=7694MB) ...
+🐳  Preparing Kubernetes v1.21.2 on Docker 20.10.7 ...
+❌  Unable to load cached images: loading cached images: stat /home/docker/.minikube/cache/images/registry.cn-hangzhou.aliyuncs.com/google_containers/coredns/coredns_v1.8.0: no such file or directory
+    > kubectl.sha256: 64 B / 64 B [--------------------------] 100.00% ? p/s 0s
+    > kubeadm.sha256: 64 B / 64 B [--------------------------] 100.00% ? p/s 0s
+    > kubelet.sha256: 64 B / 64 B [--------------------------] 100.00% ? p/s 0s
+    > kubectl: 44.27 MiB / 44.27 MiB [--------------] 100.00% 5.06 MiB p/s 8.9s
+    > kubeadm: 42.57 MiB / 42.57 MiB [---------------] 100.00% 3.27 MiB p/s 13s
+    > kubelet: 112.68 MiB / 112.68 MiB [-------------] 100.00% 8.89 MiB p/s 13s
+    ▪ Generating certificates and keys ...
+    ▪ Booting up control plane ...
+    ▪ Configuring RBAC rules ...
+🔎  Verifying Kubernetes components...
+    ▪ Using image registry.cn-hangzhou.aliyuncs.com/google_containers/k8s-minikube/storage-provisioner:v5 (global image repository)
+🌟  Enabled addons: storage-provisioner, default-storageclass
+💡  kubectl not found. If you need it, try: 'minikube kubectl -- get pods -A'
+🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
+		]]>
+		</screen>
+		<para>查看 minikube 状态和 pod</para>
+		<screen>
+		<![CDATA[
+[docker@localhost ~]$ minikube status
+minikube
+type: Control Plane
+host: Running
+kubelet: Running
+apiserver: Running
+kubeconfig: Configured
+		
+[docker@localhost ~]$ minikube kubectl -- get pods -A
+NAMESPACE     NAME                               READY   STATUS             RESTARTS   AGE
+kube-system   coredns-6f6b8cc4f6-x5ztk           1/1     Running            0          76s
+kube-system   etcd-minikube                      1/1     Running            0          82s
+kube-system   kube-apiserver-minikube            1/1     Running            0          82s
+kube-system   kube-controller-manager-minikube   1/1     Running            0          92s
+kube-system   kube-proxy-gprzp                   1/1     Running            0          76s
+kube-system   kube-scheduler-minikube            1/1     Running            0          82s
+kube-system   storage-provisioner                0/1     ImagePullBackOff   0          84s		
+		]]>
+		</screen>
+		<!-- max  --cache-images=true --driver=hyperkit --service-cluster-ip-range='10.10.0.0/24' -->
+		<para>启动仪表板</para>
+		<screen>
+		<![CDATA[
+[docker@localhost ~]$ minikube dashboard
+		]]>
+		</screen>
+		<para>logviewer</para>
+		<screen>
+		<![CDATA[
+[docker@localhost ~]$ minikube addons enable logviewer
+    ▪ Using image registry.cn-hangzhou.aliyuncs.com/google_containers/ivans3/minikube-log-viewer:latest@sha256:75854f45305cc47d17b04c6c588fa60777391761f951e3a34161ddf1f1b06405 (global image repository)
+🌟  The 'logviewer' addon is enabled		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>安装 kubectl 命令</title>
+		<para>使用 minikube kubectl 携带很多参数会用问题，所以我们还是需要原生的 kubectl 命令</para>
+		<para>下载 kubectl</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   154  100   154    0     0    135      0  0:00:01  0:00:01 --:--:--   135
+100 44.7M  100 44.7M    0     0  2833k      0  0:00:16  0:00:16 --:--:-- 4176k
+		]]>
+		</screen>
+		<para>下载校验文件</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   154  100   154    0     0    639      0 --:--:-- --:--:-- --:--:--   636
+100    64  100    64    0     0     54      0  0:00:01  0:00:01 --:--:--     0		
+		]]>
+		</screen>
+		<para>校验 kubectl， 输出 OK 表示正确，可以放心使用，</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# echo "$(<kubectl.sha256) kubectl" | sha256sum --check
+kubectl: OK		
+		]]>
+		</screen>
+		<para>安装 kubectl 到 /usr/local/bin/kubectl 目录</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl		
+		]]>
+		</screen>
+		<para>查看版本</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# kubectl version --client
+Client Version: version.Info{Major:"1", Minor:"22", GitVersion:"v1.22.3", GitCommit:"c92036820499fedefec0f847e2054d824aea6cd1", GitTreeState:"clean", BuildDate:"2021-10-27T18:41:28Z", GoVersion:"go1.16.9", Compiler:"gc", Platform:"linux/amd64"}		
+		]]>
+		</screen>
+	</section>
+	
+	<section>
+		<title>连接到 Kubernetes 集群</title>
+		<para>API 地址</para>
+		<screen>
+		<![CDATA[
+[docker@localhost ~]$ kubectl cluster-info | grep -E 'Kubernetes master|Kubernetes control plane' | awk '/http/ {print $NF}'
+https://192.168.49.2:8443
+		]]>
+		</screen>
+		<para>CA 证书</para>
+		<screen>
+		<![CDATA[
+[docker@localhost ~]$ kubectl get secret $(kubectl get secret | grep default-token | awk '{print $1}') -o jsonpath="{['data']['ca\.crt']}" | base64 --decode
+-----BEGIN CERTIFICATE-----
+MIIDBjCCAe6gAwIBAgIBATANBgkqhkiG9w0BAQsFADAVMRMwEQYDVQQDEwptaW5p
+a3ViZUNBMB4XDTIxMTExMTAzMTcyNFoXDTMxMTExMDAzMTcyNFowFTETMBEGA1UE
+AxMKbWluaWt1YmVDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANdf
+z1ylL5h71z+mp6ICgTTCEHn14z5iYjoY5APv1gyZrFfAP2TRG8vQ6GtYzbFgvCYn
+sXv24mcSmms5ITMd0q6B5I43wmQ4zhWqiJDbz3Cs51S2npSvI2EFYpWlC/n0wfUA
+Yr1xElabO/saCrwVBJNF7bCz/RCYkiHyfVgbcyi2tkAb+zXJUIPUVDt3pGQQLHR/
+g3VSKv675XLgcIfk8B5A+64aowYoOzUrivfdgezElRKUeW3tqQzaJ8T5ESvtClAT
+0XAhy+kHijVbsfxPAJkjPN6U4wR1IH1R2ZvCroT+0bmZBgWQIssHMwpgoUHSm3ej
+Ue99ZZRQUvQ2lsk9krMCAwEAAaNhMF8wDgYDVR0PAQH/BAQDAgKkMB0GA1UdJQQW
+MBQGCCsGAQUFBwMCBggrBgEFBQcDATAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQW
+BBTQwxG/RVLsK45Th0OKOkIDGiHHbDANBgkqhkiG9w0BAQsFAAOCAQEAmQAnNcee
+R2aazejh3V0QK7UbPQovlXaTd8Hbwh6A8VlXjZzzjttQvMAglCd9I2ubmQ2EVOex
+hyQP5ZJILZQS132knhBKyp37LPwfeJpPF7VnVVfT+wCQYOK6BZ6j90655hsxPz3f
+eEUNv++FOGnYoezNn8bGzG768ktMJI/YwUCEV2Rl7b8yQpIqVFnixotT6HhR82Lf
+Y3Ery0+hpwrfgvxohZYisOP42/zURY8pFsBFhYAIRBTA6qnwsK6pnSFaYYEZIKUJ
+yQkH2Br7wZeGAHIChb3r0OxqRXnp76k/8g+azftfk7IC7wffcZmrDrSemoWjdFzu
+u4Hw+jJA3yiilA==
+-----END CERTIFICATE-----		
+		]]>
+		</screen>
+		<para>创建 ServiceAccount 文件</para>
+		<screen>
+		<![CDATA[
+cat <<'EOF'> gitlab-admin-service-account.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: gitlab
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: gitlab-admin
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: gitlab
+    namespace: kube-system
+EOF		
+		]]>
+		</screen>
+		<para>创建 gitlab 服务账号</para>
+		<screen>
+		<![CDATA[
+[docker@localhost ~]$ cat <<'EOF'> gitlab-admin-service-account.yaml
+> apiVersion: v1
+> kind: ServiceAccount
+> metadata:
+>   name: gitlab
+>   namespace: kube-system
+> ---
+> apiVersion: rbac.authorization.k8s.io/v1
+> kind: ClusterRoleBinding
+> metadata:
+>   name: gitlab-admin
+> roleRef:
+>   apiGroup: rbac.authorization.k8s.io
+>   kind: ClusterRole
+>   name: cluster-admin
+> subjects:
+>   - kind: ServiceAccount
+>     name: gitlab
+>     namespace: kube-system
+> EOF
+
+[docker@localhost ~]$ cat gitlab-admin-service-account.yaml 
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: gitlab
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: gitlab-admin
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: gitlab
+    namespace: kube-system
+
+[docker@localhost ~]$ kubectl apply -f gitlab-admin-service-account.yaml
+serviceaccount/gitlab created
+clusterrolebinding.rbac.authorization.k8s.io/gitlab-admin created
+		
+		]]>
+		</screen>
+		<para>查看 Token</para>
+		<screen>
+		<![CDATA[
+[docker@localhost ~]$ kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep gitlab | awk '{print $1}')
+Name:         gitlab-token-s7llp
+Namespace:    kube-system
+Labels:       <none>
+Annotations:  kubernetes.io/service-account.name: gitlab
+              kubernetes.io/service-account.uid: a8acbd98-6ac4-4c90-870f-b7cd094a6a85
+
+Type:  kubernetes.io/service-account-token
+
+Data
+====
+ca.crt:     1111 bytes
+namespace:  11 bytes
+token:      eyJhbGciOiJSUzI1NiIsImtpZCI6IlRzYVBrM1dicEhieF9mNXc1ZDZwdEpaTnFma0d1b043eXl2VlhWWHAtaG8ifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLXN5c3RlbSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJnaXRsYWItdG9rZW4tczdsbHAiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiZ2l0bGFiIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiYThhY2JkOTgtNmFjNC00YzkwLTg3MGYtYjdjZDA5NGE2YTg1Iiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50Omt1YmUtc3lzdGVtOmdpdGxhYiJ9.ipki0Y6rUbESuwzj3abY0nfNSq_XRQCa5ti5dKFVPK9d-akNZPpAuz31rAceiKra27ez-PTfgYGwjjid79Qa4vCYMfwxhBAp2ZnJb1AjektmjPdMlZyzZSaHkwadrgtWLBuHpgT9UGUHy1OJSU13qGTF_K5jf1EPeC42n17OX3ta4qAB9Zg6fmgBWe203P1FXoCkOsZ2HefbI1j_XlkYPGlR-nKtiOrANAIdLURMxizfGMHP6n3eQfkWSzBnxB48XG5refKi77OzJCne6W-FZHykBPqWBY9_7d5OqZpJ46mNLtH6kBNfvcZum58JtVatumt4RXkakuTvt-reQ98LdA		
+		]]>
+		</screen>
+		<para>检查 Kubenetes SSL 证书</para>
+		<screen>
+		<![CDATA[
+[docker@localhost ~]$ kubectl cluster-info | grep -E 'Kubernetes master|Kubernetes control plane' | awk '/http/ {print $NF}'
+https://192.168.49.2:8443
+		
+[docker@localhost ~]$ echo | openssl s_client -showcerts -connect 192.168.49.2:8443 2>/dev/null | openssl x509 -inform pem -noout -text
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number: 2 (0x2)
+        Signature Algorithm: sha256WithRSAEncryption
+        Issuer: CN = minikubeCA
+        Validity
+            Not Before: Nov 11 03:17:24 2021 GMT
+            Not After : Nov 12 03:17:24 2022 GMT
+        Subject: O = system:masters, CN = minikube
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                RSA Public-Key: (2048 bit)
+                Modulus:
+                    00:a5:e6:48:fa:f7:03:d8:4a:e0:c2:44:4d:af:05:
+                    48:a2:d5:da:6d:a5:ec:65:71:06:52:15:a5:a4:70:
+                    b3:5d:fe:52:7c:c6:79:f4:58:1a:ed:e2:24:13:b9:
+                    0a:0a:6b:3c:2a:4b:68:77:dd:01:17:19:f9:a0:90:
+                    53:8a:b8:95:24:0b:e0:21:aa:2c:37:43:fc:d7:96:
+                    80:40:c3:5a:14:9e:63:26:61:1b:a2:90:90:0c:32:
+                    01:f5:3d:a9:78:3a:f0:e4:11:6c:e2:85:7f:b5:99:
+                    ad:ae:f4:56:0b:04:ad:41:92:82:4b:44:ae:fb:47:
+                    3b:2f:ea:61:26:ec:80:ba:61:95:82:41:26:f8:7f:
+                    f5:b5:c5:83:a2:85:21:32:de:3e:79:b3:a5:58:47:
+                    b2:ef:6d:54:64:7b:36:06:e8:cd:1c:aa:ac:d3:83:
+                    64:3c:f3:e0:f5:3a:2e:7c:bd:4e:e5:9f:fb:3c:68:
+                    b6:6f:8b:c0:d4:07:86:e0:f2:c0:c5:b3:63:fd:b7:
+                    70:e0:ea:93:a5:3d:b1:c0:1d:b8:da:95:21:a7:a5:
+                    41:6c:8a:78:62:fd:1c:72:4f:4f:25:cd:6f:d6:1f:
+                    aa:9e:c1:b3:63:9c:27:90:76:03:d6:3f:8d:37:ad:
+                    4a:ea:72:e7:67:5a:ea:90:b0:1f:52:3d:6f:4a:1e:
+                    f3:d3
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Key Usage: critical
+                Digital Signature, Key Encipherment
+            X509v3 Extended Key Usage: 
+                TLS Web Server Authentication, TLS Web Client Authentication
+            X509v3 Basic Constraints: critical
+                CA:FALSE
+            X509v3 Authority Key Identifier: 
+                keyid:D0:C3:11:BF:45:52:EC:2B:8E:53:87:43:8A:3A:42:03:1A:21:C7:6C
+
+            X509v3 Subject Alternative Name: 
+                DNS:minikubeCA, DNS:control-plane.minikube.internal, DNS:kubernetes.default.svc.cluster.local, DNS:kubernetes.default.svc, DNS:kubernetes.default, DNS:kubernetes, DNS:localhost, IP Address:192.168.49.2, IP Address:10.96.0.1, IP Address:127.0.0.1, IP Address:10.0.0.1
+    Signature Algorithm: sha256WithRSAEncryption
+         29:7d:36:43:59:72:97:dc:cf:48:48:8d:9b:e4:64:69:42:87:
+         5f:52:72:bc:f7:99:8e:54:17:ef:25:70:a9:d3:35:ef:45:6c:
+         8c:d3:0a:39:e2:f5:0e:cc:ce:fa:27:3a:c9:d1:8c:0b:66:72:
+         4a:0b:77:d5:7c:8e:45:11:5a:94:bf:f7:35:e6:26:55:5b:91:
+         40:7e:69:b2:99:e9:4d:44:92:7c:63:00:1a:5d:9b:42:57:14:
+         a3:b3:d0:11:44:91:c1:b5:1a:9b:a0:a7:ee:44:fb:07:ea:51:
+         40:db:16:a9:d7:32:c4:fa:aa:33:48:8c:26:d5:57:f9:bc:53:
+         23:f6:77:81:17:4b:e3:f3:4d:9e:84:0c:1c:4a:ff:08:05:64:
+         72:2c:d5:63:b2:d6:42:fd:67:fa:6b:8e:c4:bd:73:69:d7:cb:
+         b5:b9:47:f2:86:dc:ab:3f:3d:d6:e3:3f:06:56:63:8e:ae:ce:
+         57:6f:67:ea:16:88:92:18:04:ae:9a:9c:5a:4d:fe:c0:57:da:
+         c0:a5:68:bb:e0:7f:ee:60:e1:e6:78:6f:63:99:3a:6d:d4:e7:
+         81:5e:78:97:0e:8e:c6:7a:ba:6b:a4:c5:95:ff:81:04:7a:a8:
+         fa:d0:d3:b8:33:bf:b3:69:2c:09:9f:92:03:f2:e1:fc:7e:e6:
+         83:8e:0e:13		
+		]]>
+		</screen>
+	</section>
+	
+</section>

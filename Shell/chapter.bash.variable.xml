@@ -844,5 +844,85 @@ netkiller
 		]]>
 		</screen>
 	</section>
+	<section id="envsubst">
+		<title>envsubst - substitutes environment variables in shell format strings</title>
+		<subtitle>替换 shell 中的环境变量字符串</subtitle>
+		<para>envsubst 的功能非常类似模版引擎，我这么一说，做开发的小伙伴瞬间秒懂。现在做一个实验。</para>
+		<para>添加环境变量到预设文件 source.sh</para>
+		<screen>
+		<![CDATA[
+export NAME=Neo
+export NICKNAME=Netkiller
+		]]>
+		</screen>
+		<para>模版文件 template.tpl</para>
+		<screen>
+		<![CDATA[
+NAME=${NAME}
+NICKNAME=${NICKNAME}
+		]]>
+		</screen>
+		<para>生成目标文件</para>
+		<screen>
+		<![CDATA[
+[root@localhost tmp]# source source.sh && envsubst < template.tpl > my.conf
+[root@localhost tmp]# cat my.conf
+NAME=Neo
+NICKNAME=Netkiller	
+		]]>
+		</screen>
+		<para>设置默认值</para>
+		<screen>
+		<![CDATA[
+cat <<'EOF'> template.tpl
+#!/bin/bash
+echo ${NAME}
+echo ${NICKNAME}
+echo ${AGE}
+echo ${HOST}
+EOF
+
+export NAME=${NAME:-'NONE'}
+export NICKNAME=${NICKNAME:-'NONE'}
+export AGE=${AGE:-'26'}
+export HOST=${HOST:-`hostname -I|awk '{print $1}'`}
+envsubst < template.tpl > my.sh
+
+cat my.sh
+bash my.sh
+		]]>
+		</screen>
+		<para>运行结果</para>
+		<screen>
+		<![CDATA[
+[root@localhost tmp]# cat <<'EOF'> template.tpl
+> #!/bin/bash
+> echo ${NAME}
+> echo ${NICKNAME}
+> echo ${AGE}
+> echo ${HOST}
+> EOF
+[root@localhost tmp]# 
+[root@localhost tmp]# export NAME=${NAME:-'NONE'}
+[root@localhost tmp]# export NICKNAME=${NICKNAME:-'NONE'}
+[root@localhost tmp]# export AGE=${AGE:-'26'}
+[root@localhost tmp]# export HOST=${HOST:-`hostname -I|awk '{print $1}'`}
+[root@localhost tmp]# envsubst < template.tpl > my.sh
+[root@localhost tmp]# 
+[root@localhost tmp]# cat my.sh
+#!/bin/bash
+echo NONE
+echo Netkiller
+echo 26
+echo 192.168.30.12
+[root@localhost tmp]# bash my.sh
+NONE
+Netkiller
+26
+192.168.30.12		
+		]]>
+		</screen>
+		
+	</section>
 </section>
 

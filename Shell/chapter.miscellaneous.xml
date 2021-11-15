@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="miscellaneous">
-	<title>其他命令</title>
-
+	<title>常用命令</title>
+	<section>
+		<title>获取IP地址</title>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# hostname -I|awk '{print $1}'
+192.168.30.12		
+		]]>
+		</screen>
+	</section>
+	
 </chapter>
