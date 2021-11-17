@@ -86,6 +86,15 @@ To disable the rename detection limit (which is set "pretty low" according to Li
 $ git config --global   diff.renamelimit "0"
 		]]></screen>
 		</section>
+		<section>
+			<title>克隆代码</title>
+			<para>克隆到指定目录</para>
+			<screen>
+			<![CDATA[
+➜  workspace git clone http://neo@192.168.30.5/netkiller.cn/api.netkiller.cn.git tmp.netkiller.cn			
+			]]>
+			</screen>
+		</section>
 		<section id="git-checkout">
 			<title>git-checkout - Checkout and switch to a branch</title>
 			<section>
@@ -1257,6 +1266,91 @@ git reset --hard 33ba6503b4fa8eed35182262770e4eab646396cd --
 git push origin --force --all
 or
 git push --force --progress "origin" master:master
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>撤回单个文件提交</title>
+			<para>例如撤回 project/src/main/java/cn/netkiller/controller/DemoSceneController.java 到上一个版本</para>
+			<screen>
+			<![CDATA[
+➜  api.sfzito.com git:(testing) git log project/src/main/java/cn/netkiller/controller/DemoSceneController.java
+
+commit b4609646ee60927fe4c1c563d07e78f63ab106ea (HEAD -> testing, origin/testing)
+Author: Neo Chen <netkiller@msn.com>
+Date:   Wed Nov 17 18:49:27 2021 +0800
+
+    手工合并，临时提交
+
+commit bc96eb68ad73d5248c8135609191c51e258edf10
+Author: Tom <tom@qq.com>
+Date:   Thu Oct 21 16:29:20 2021 +0800
+
+    获取激活场景
+
+commit d564ea25bd556324f1f576357563a8ee77b3bdd9
+Author: Tom <tom@qq.com>
+Date:   Thu Oct 21 15:15:26 2021 +0800
+
+    获取激活场景
+
+commit d5a40165ad24a3a021fe58c6d78e0b7d97ab3cc5
+Author: Tom <tom@qq.com>
+Date:   Thu Oct 21 14:43:16 2021 +0800
+
+    新增场景角色增加
+
+commit aa98662cb9e781e328ee3d5cec23af29c81050d9
+Author: Tom <tom@qq.com>
+Date:   Thu Oct 21 09:55:29 2021 +0800
+
+    新增场景角色增加
+
+commit 140d22a8d4ea7fcc775d4372e8beb6d854831512
+Author: Jerry <jerry@qq.com>
+Date:   Sat Oct 16 15:27:30 2021 +0800
+
+    场景接口修改
+
+commit 2ddbb1ff933de663305db2396d99030c938c267a
+Author: Tom <tom@qq.com>
+Date:   Fri Oct 15 10:55:30 2021 +0800			
+			]]>
+			</screen>
+			<para>只显示最后五条记录</para>
+			<screen>
+			<![CDATA[
+➜  api.sfzito.com git:(testing) git log -5 project/src/main/java/cn/netkiller/controller/DemoSceneController.java			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+➜  api.sfzito.com git:(testing) git reset bc96eb68ad73d5248c8135609191c51e258edf10 project/src/main/java/cn/netkiller/controller/DemoSceneController.java
+Unstaged changes after reset:
+M	project/src/main/java/cn/netkiller/controller/DemoSceneController.java			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+➜  api.sfzito.com git:(testing) ✗ git status
+On branch testing
+Your branch is up to date with 'origin/testing'.
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+	modified:   project/src/main/java/cn/netkiller/controller/DemoSceneController.java
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   project/src/main/java/cn/netkiller/controller/DemoSceneController.java
+
+➜  api.sfzito.com git:(testing) ✗ git add project/src/main/java/cn/netkiller/controller/DemoSceneController.java
+➜  api.sfzito.com git:(testing) ✗ git commit -m '恢复到上一个版本'
+[testing 9959acd4] 恢复到上一个版本
+ 1 file changed, 6 insertions(+), 8 deletions(-)			
 			]]>
 			</screen>
 		</section>

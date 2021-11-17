@@ -338,6 +338,33 @@ ENTRYPOINT [ "top", "-b" ]
 CMD [ "-c" ]			
 			]]>
 			</screen>
+			<section>
+				<title>docker-entrypoint.sh 文件</title>
+				<screen>
+				<![CDATA[
+ENTRYPOINT ["docker-entrypoint.sh"]				
+				]]>
+				</screen>
+				<para>你不能写成</para>
+				<screen>
+				<![CDATA[
+ENTRYPOINT docker-entrypoint.sh				
+				]]>
+				</screen>
+				<para>ENTRYPOINT docker-entrypoint.sh 会使用 sh -c 执行</para>
+				<screen>
+				<![CDATA[
+ "/bin/sh -c /srv/docker-entrypoint.sh /srv/rocketmq/bin/mqnamesrv" 				
+				]]>
+				</screen>
+				<para>而我们需要的是</para>
+				<screen>
+				<![CDATA[
+/srv/docker-entrypoint.sh /srv/rocketmq/bin/mqnamesrv				
+				]]>
+				</screen>
+				<para>所以需要写成 ENTRYPOINT ["docker-entrypoint.sh"]	</para>
+			</section>
 		</section>
 	</section>
 </section>

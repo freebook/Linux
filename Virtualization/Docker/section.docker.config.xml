@@ -3,15 +3,18 @@
 	<title>配置 Docker</title>
 	<section>
 		<title>开启远程访问</title>
-		<para>修改/etc/sysconfig/docker文件，在最后增加一行DOCKER_OPTS</para>
-		<para>vim /etc/sysconfig/docker</para>
-		<screen>
+		<section>
+			<title></title>
+
+			<para>修改/etc/sysconfig/docker文件，在最后增加一行DOCKER_OPTS</para>
+			<para>vim /etc/sysconfig/docker</para>
+			<screen>
 			<![CDATA[
 DOCKER_OPTS="-H unix:///var/run/docker.sock -H tcp://0.0.0.0:2375"
 			]]>
-		</screen>
-		<para>修改/usr/lib/systemd/system/docker.service 在[Service]的ExexStart=下面增加一行$DOCKER_OPTS</para>
-		<screen>
+			</screen>
+			<para>修改/usr/lib/systemd/system/docker.service 在[Service]的ExexStart=下面增加一行$DOCKER_OPTS</para>
+			<screen>
 			<![CDATA[
 [Unit]
 Description=Docker Application Container Engine
@@ -62,28 +65,185 @@ KillMode=process
 [Install]
 WantedBy=multi-user.target
 			]]>
-		</screen>
-		<para>重启 docker </para>
-		<screen>
+			</screen>
+			<para>重启 docker </para>
+			<screen>
 			<![CDATA[
 [root@localhost ~]# systemctl daemon-reload
 [root@localhost ~]# systemctl restart docker			
 			]]>
-		</screen>
-		<para>查看端口</para>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>/etc/docker/daemon.json</title>
+			<para> 编辑 /etc/docker/daemon.json 文件加入</para>
+			<screen>
+			<![CDATA[
+{
+  "hosts":[
+    "unix:///var/run/docker.sock",
+    "tcp://0.0.0.0:2375"
+  ]
+}			
+			]]>
+			</screen>
+			<para>重启 docker </para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# systemctl daemon-reload
+[root@localhost ~]# systemctl restart docker			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+$ docker -H docker.netkiller.cn:2375 info			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+$ export DOCKER_HOST="tcp://docker.netkiller.cn:2375"
+$ docker info			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title></title>
+			<para>查看端口</para>
+			<screen>
 			<![CDATA[
 [root@localhost ~]# ss -lnt | grep 2375
 LISTEN     0      1024        :::2375                    :::*  			
 			]]>
-		</screen>
-		<para>检查 docker 信息</para>
-		<screen>
+			</screen>
+			<para>检查 docker 信息</para>
+			<screen>
 			<![CDATA[
-[root@localhost ~]# curl -s http://localhost:2375/info
+[root@localhost ~]# curl -s http://your-docker-ip-address:2375/info
 {"ID":"YNK5:OJTT:FELN:H4DQ:AG7H:W3RE:WGLD:TOOI:32CH:S6HR:AJ45:4VLZ","Containers":4,"ContainersRunning":0,"ContainersPaused":0,"ContainersStopped":4,"Images":10,"Driver":"btrfs","DriverStatus":[["Build Version","Btrfs v4.9.1"],["Library Version","102"]],"SystemStatus":null,"Plugins":{"Volume":["local"],"Network":["bridge","host","macvlan","null","overlay"],"Authorization":null,"Log":["awslogs","fluentd","gcplogs","gelf","journald","json-file","local","logentries","splunk","syslog"]},"MemoryLimit":true,"SwapLimit":true,"KernelMemory":true,"CpuCfsPeriod":true,"CpuCfsQuota":true,"CPUShares":true,"CPUSet":true,"IPv4Forwarding":true,"BridgeNfIptables":false,"BridgeNfIp6tables":false,"Debug":false,"NFd":23,"OomKillDisable":true,"NGoroutines":37,"SystemTime":"2019-01-24T23:30:56.230913047-05:00","LoggingDriver":"json-file","CgroupDriver":"cgroupfs","NEventsListener":0,"KernelVersion":"3.10.0-693.el7.x86_64","OperatingSystem":"CentOS Linux 7 (Core)","OSType":"linux","Architecture":"x86_64","IndexServerAddress":"https://index.docker.io/v1/","RegistryConfig":{"AllowNondistributableArtifactsCIDRs":[],"AllowNondistributableArtifactsHostnames":[],"InsecureRegistryCIDRs":["127.0.0.0/8"],"IndexConfigs":{"docker.io":{"Name":"docker.io","Mirrors":[],"Secure":true,"Official":true}},"Mirrors":[]},"NCPU":2,"MemTotal":1958645760,"GenericResources":null,"DockerRootDir":"/var/lib/docker","HttpProxy":"","HttpsProxy":"","NoProxy":"","Name":"localhost.localdomain","Labels":[],"ExperimentalBuild":false,"ServerVersion":"18.09.1","ClusterStore":"","ClusterAdvertise":"","Runtimes":{"runc":{"path":"runc"}},"DefaultRuntime":"runc","Swarm":{"NodeID":"","NodeAddr":"","LocalNodeState":"inactive","ControlAvailable":false,"Error":"","RemoteManagers":null},"LiveRestoreEnabled":false,"Isolation":"","InitBinary":"docker-init","ContainerdCommit":{"ID":"9754871865f7fe2f4e74d43e2fc7ccd237edcbce","Expected":"9754871865f7fe2f4e74d43e2fc7ccd237edcbce"},"RuncCommit":{"ID":"96ec2177ae841256168fcf76954f7177af9446eb","Expected":"96ec2177ae841256168fcf76954f7177af9446eb"},"InitCommit":{"ID":"fec3683","Expected":"fec3683"},"SecurityOptions":["name=seccomp,profile=default"],"ProductLicense":"Community Engine","Warnings":["WARNING: API is accessible on http://0.0.0.0:2375 without encryption.\n         Access to the remote API is equivalent to root access on the host. Refer\n         to the 'Docker daemon attack surface' section in the documentation for\n         more information: https://docs.docker.com/engine/security/security/#docker-daemon-attack-surface","WARNING: bridge-nf-call-iptables is disabled","WARNING: bridge-nf-call-ip6tables is disabled"]}			
 			]]>
-		</screen>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+$ docker -H 192.168.10.11:2375 info			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+DOCKER_HOST=tcp://192.168.57.110:2376
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>配置SSL证书</title>
+			<para></para>
+			<screen>
+			<![CDATA[
+{
+  "tlsverify": true,
+  "tlscert": "/etc/docker/server-cert.pem",
+  "tlskey": "/etc/docker/server-key.pem",
+  "tlscacert": "/etc/docker/ca.pem",
+  "hosts":[
+    "unix:///var/run/docker.sock",
+    "tcp://0.0.0.0:2376"
+  ]
+}			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+$ docker --tlsverify \
+  --tlscacert=/Users/neo/test/ca.pem \
+  --tlscert=/Users/neo/test/cert.pem \
+  --tlskey=/Users/neo/test/key.pem \
+  -H=192.168.57.110:2376 \
+  info			
+			]]>
+			</screen>
+			<para>我们可以把 ca.pem cert.pem key.pem 三个文件放入客户端 ~/.docker 中，然后配置环境变量就可以简化命令了</para>
+			<screen>
+			<![CDATA[
+$ export DOCKER_HOST=tcp://192.168.5.10:2376 DOCKER_TLS_VERIFY=1
+$ docker info			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>通过 SSH 连接远程 Docker </title>
+			<screen>
+			<![CDATA[
+export DOCKER_HOST=ssh://docker-user@host1.example.com
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+Neo-iMac:Shell neo$ export DOCKER_HOST=ssh://root@192.168.30.11
+Neo-iMac:Shell neo$ docker info
+Client:
+ Context:    default
+ Debug Mode: false
+ Plugins:
+  buildx: Build with BuildKit (Docker Inc., v0.6.3)
+  compose: Docker Compose (Docker Inc., v2.0.0)
+  scan: Docker Scan (Docker Inc., v0.8.0)
+
+Server:
+ Containers: 9
+  Running: 7
+  Paused: 0
+  Stopped: 2
+ Images: 12
+ Server Version: 20.10.10
+ Storage Driver: overlay2
+  Backing Filesystem: xfs
+  Supports d_type: true
+  Native Overlay Diff: true
+  userxattr: false
+ Logging Driver: json-file
+ Cgroup Driver: cgroupfs
+ Cgroup Version: 1
+ Plugins:
+  Volume: local
+  Network: bridge host ipvlan macvlan null overlay
+  Log: awslogs fluentd gcplogs gelf journald json-file local logentries splunk syslog
+ Swarm: inactive
+ Runtimes: io.containerd.runc.v2 io.containerd.runtime.v1.linux runc
+ Default Runtime: runc
+ Init Binary: docker-init
+ containerd version: 5b46e404f6b9f661a205e28d59c982d3634148f8
+ runc version: v1.0.2-0-g52b36a2
+ init version: de40ad0
+ Security Options:
+  seccomp
+   Profile: default
+ Kernel Version: 4.18.0-348.el8.x86_64
+ Operating System: CentOS Stream 8
+ OSType: linux
+ Architecture: x86_64
+ CPUs: 4
+ Total Memory: 15.39GiB
+ Name: localhost.localdomain
+ ID: UODB:ETXF:35NV:DDSK:B5QU:RTNZ:7DM4:3ABZ:RZUB:SHOE:W6EP:UK4K
+ Docker Root Dir: /var/lib/docker
+ Debug Mode: false
+ Registry: https://index.docker.io/v1/
+ Labels:
+ Experimental: false
+ Insecure Registries:
+  127.0.0.0/8
+ Registry Mirrors:
+  https://registry.docker-cn.com/
+  http://hub-mirror.c.163.com/
+  https://docker.mirrors.ustc.edu.cn/
+ Live Restore Enabled: false			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section>
 		<title>镜像配置</title>
@@ -137,7 +297,7 @@ $ docker --registry-mirror=https://registry.docker-cn.com daemon
 		]]>
 		</screen>
 	</section>
-	
+
 	<section>
 		<title>ulimit 资源</title>
 		<para>/etc/docker/daemon.json</para>
@@ -147,5 +307,5 @@ $ docker --registry-mirror=https://registry.docker-cn.com daemon
 		]]>
 		</screen>
 	</section>
-	
+
 </section>

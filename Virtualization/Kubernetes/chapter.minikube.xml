@@ -260,7 +260,15 @@ Flags:
 Use "minikube [command] --help" for more information about a command.			
 			]]>
 		</screen>
-
+		<section>
+			<title>minikube ip 地址</title>
+			<screen>
+			<![CDATA[
+[docker@localhost ~]$ minikube ip
+192.168.58.2
+			]]>
+			</screen>
+		</section>
 		<section id="minikube.start">
 			<title>启动 minikube</title>
 			<section>
@@ -548,7 +556,8 @@ iMac:registry neo$ minikube addons list
 |-----------------------------|----------|--------------|				
 				]]>
 				</screen>
-			</section><section>
+			</section>
+			<section>
 				<title>启用 addons</title>
 				<screen>
 				<![CDATA[
@@ -589,7 +598,8 @@ dashboard was successfully enabled
 - storage-provisioner-gluster: disabled			
 				]]>
 				</screen>
-			</section><section>
+			</section>
+			<section>
 				<title>开启 registry 私有库</title>
 				<screen>
 		<![CDATA[
@@ -629,13 +639,55 @@ $ docker push 10.0.0.240/busybox
 		]]>
 				</screen>
 				<!-- minikube addons enable registry docker tag ubuntu $(minikube ip):5000/ubuntu docker push $(minikube ip):5000/ubuntu -->
-			</section><section>
+			</section>
+			<section>
 				<title>启用 ingress</title>
 				<screen>
 				<![CDATA[
 iMac:kubernetes neo$ minikube addons enable ingress				
 				]]>
 				</screen>
+				<para>运行一个简单的demo</para>
+
+				<screen>
+				<![CDATA[
+
+运行 nginx 服务
+kubectl run nginx --image=nginx --port=80
+暴露服务
+kubectl expose deployment nginx --port=80 --target-port=80
+
+创建ingress
+yaml 定义 ingress.yaml
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nginx
+spec:
+  rules:
+  - host: www.netkiller.cn
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: nginx
+          servicePort: 80
+
+运行 
+kubectl apply -f ingress.yaml
+
+配置本机host
+获取minikube ip 对吹成
+ 
+[docker@localhost ~]$ minikube ip
+192.168.58.2
+
+配置 /etc/hosts 文件 
+192.168.58.2 www.netkiller.cn			
+				]]>
+				</screen>
+				<para>访问 http://www.netkiller.cn</para>
 			</section>
 		</section>
 		<section id="minikube.ssh">

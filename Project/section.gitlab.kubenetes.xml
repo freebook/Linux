@@ -20,7 +20,7 @@ uid=1000(docker) gid=992(docker) groups=992(docker)
 minikube start --memory=max --cpus=max  \
 --image-mirror-country=cn --registry-mirror="https://registry.docker-cn.com,https://docker.mirrors.ustc.edu.cn" \
 --insecure-registry="registry.netkiller.cn" \
---addons=dashboard,ingress,logviewer	
+--addons=dashboard,ingress,logviewer
 		]]>
 		</screen>
 		<screen>

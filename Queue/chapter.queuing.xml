@@ -11,6 +11,7 @@
     &chapter.queuing.zeromq.xml;
 	&chapter.queuing.gearman.xml;
 	&chapter.kafka.xml;
+	&section.queue.rocketmq.xml;
 	
 	<section id="celery">
 		<title>Celery</title>

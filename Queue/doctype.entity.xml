@@ -4,3 +4,4 @@
 <!ENTITY chapter.queuing.zeromq.xml	    SYSTEM "chapter.queuing.zeromq.xml">
 <!ENTITY chapter.queuing.gearman.xml	SYSTEM "chapter.queuing.gearman.xml">
 <!ENTITY chapter.kafka.xml				SYSTEM "chapter.kafka.xml">
+<!ENTITY section.queue.rocketmq.xml		SYSTEM "section.queue.rocketmq.xml">

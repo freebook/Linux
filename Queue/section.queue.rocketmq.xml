@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="rocketmq">
+	<title>RocketMQ</title>
+	<section>
+		<title>安装 RocketMQ</title>
+		<para>二进制包下载地址 https://dlcdn.apache.org/rocketmq/4.9.2/rocketmq-all-4.9.2-bin-release.zip</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# dnf install -y unzip
+[root@localhost ~]# cd /usr/local/src/
+[root@localhost src]# wget https://dlcdn.apache.org/rocketmq/4.9.2/rocketmq-all-4.9.2-bin-release.zip
+[root@localhost src]# mv rocketmq-4.9.2 /srv/		
+[root@localhost src]# ln -s /srv/rocketmq-4.9.2 /srv/rocketmq
+[root@localhost src]# ll /srv/
+total 0
+lrwxrwxrwx 1 root root  19 2021-11-15 15:58 rocketmq -> /srv/rocketmq-4.9.2
+drwxr-xr-x 6 root root 103 2021-10-22 13:56 rocketmq-4.9.2
+[root@localhost src]# cd
+		]]>
+		</screen>
+		<para>启动 Name Server</para>
+		<screen>
+		<![CDATA[		
+[root@localhost ~]# nohup sh /srv/rocketmq/bin/mqnamesrv &
+[1] 2661846
+
+[root@localhost ~]# nohup: ignoring input and appending output to 'nohup.out'
+	
+[root@localhost ~]# ss -lnt | grep 9876
+LISTEN 0      1024               *:9876            *:* 
+	
+[root@localhost ~]# tail -f ~/logs/rocketmqlogs/namesrv.log
+2021-11-15 16:01:25 INFO main - tls.client.authServer = false
+2021-11-15 16:01:25 INFO main - tls.client.trustCertPath = null
+2021-11-15 16:01:25 INFO main - Using JDK SSL provider
+2021-11-15 16:01:25 INFO main - SSLContext created for server
+2021-11-15 16:01:25 INFO main - Try to start service thread:FileWatchService started:false lastThread:null
+2021-11-15 16:01:25 INFO NettyEventExecutor - NettyEventExecutor service started
+2021-11-15 16:01:25 INFO FileWatchService - FileWatchService service started
+2021-11-15 16:01:25 INFO main - The Name Server boot success. serializeType=JSON
+2021-11-15 16:02:25 INFO NSScheduledThread1 - --------------------------------------------------------
+2021-11-15 16:02:25 INFO NSScheduledThread1 - configTable SIZE: 0
+		]]>
+		</screen>
+		<para>启动 Broker</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# nohup sh /srv/rocketmq/bin/mqbroker -n localhost:9876 &
+[2] 2662012
+[root@localhost ~]# nohup: ignoring input and appending output to 'nohup.out'
+
+[root@localhost ~]# tail -f ~/logs/rocketmqlogs/broker.log 
+2021-11-15 16:08:58 INFO main - Try to start service thread:FlushConsumeQueueService started:false lastThread:null
+2021-11-15 16:08:58 INFO main - Try to start service thread:FlushRealTimeService started:false lastThread:null
+2021-11-15 16:08:58 INFO main - Try to start service thread:StoreStatsService started:false lastThread:null
+2021-11-15 16:08:58 INFO main - Try to start service thread:FileWatchService started:false lastThread:null
+2021-11-15 16:08:58 INFO FileWatchService - FileWatchService service started
+2021-11-15 16:08:58 INFO main - Try to start service thread:PullRequestHoldService started:false lastThread:null
+2021-11-15 16:08:58 INFO PullRequestHoldService - PullRequestHoldService service started
+2021-11-15 16:08:58 INFO main - Try to start service thread:TransactionalMessageCheckService started:false lastThread:null
+2021-11-15 16:08:58 INFO brokerOutApi_thread_1 - register broker[0]to name server localhost:9876 OK
+2021-11-15 16:08:58 INFO main - The broker[localhost.localdomain, 192.168.30.12:10911] boot success. serializeType=JSON and name server is localhost:9876
+2021-11-15 16:09:07 INFO BrokerControllerScheduledThread1 - dispatch behind commit log 0 bytes
+2021-11-15 16:09:07 INFO BrokerControllerScheduledThread1 - Slave fall behind master: 0 bytes
+2021-11-15 16:09:08 INFO brokerOutApi_thread_2 - register broker[0]to name server localhost:9876 OK		
+
+[root@localhost ~]# ss -lnt | grep 109
+LISTEN 0      1024               *:10909            *:*          
+LISTEN 0      1024               *:10911            *:*          
+LISTEN 0      50                 *:10912            *:*  
+		]]>
+		</screen>
+		<para>测试发送和接收信息，需要开启两个中断窗口</para>
+		<para>窗口 A</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# export NAMESRV_ADDR=localhost:9876		
+[root@localhost ~]# sh /srv/rocketmq/bin/tools.sh org.apache.rocketmq.example.quickstart.Producer
+		]]>
+		</screen>
+		<para>窗口 B</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# export NAMESRV_ADDR=localhost:9876
+[root@localhost ~]# sh /srv/rocketmq/bin/tools.sh org.apache.rocketmq.example.quickstart.Consumer		
+		]]>
+		</screen>
+	</section>
+</section>
