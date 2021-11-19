@@ -7,4 +7,53 @@
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"	
 	]]>
 	</screen>
+	<section>
+		<title>OpenJDK 8</title>
+		<screen>
+		<![CDATA[
+brew install openjdk@8
+sudo ln -sfn /usr/local/opt/openjdk@8/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-8.jdk		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>Maven</title>
+		<para>配置 Maven</para>
+		<screen>
+		<![CDATA[
+Neo-iMac:~ neo$ brew info maven
+maven: stable 3.8.3 (bottled)
+Java-based project management
+https://maven.apache.org/
+Conflicts with:
+  mvnvm (because also installs a 'mvn' executable)
+/usr/local/Cellar/maven/3.8.3 (79 files, 10MB) *
+  Poured from bottle on 2021-11-08 at 14:04:51
+From: https://github.com/Homebrew/homebrew-core/blob/HEAD/Formula/maven.rb
+License: Apache-2.0
+==> Dependencies
+Required: openjdk ✔
+==> Analytics
+install: 63,168 (30 days), 200,658 (90 days), 634,767 (365 days)
+install-on-request: 62,864 (30 days), 199,051 (90 days), 630,240 (365 days)
+build-error: 0 (30 days)		
+		]]>
+		</screen>
+		<para>找到 /usr/local/Cellar/maven/3.8.3 文件夹</para>
+		<screen>
+		<![CDATA[
+Neo-iMac:~ neo$ vim /usr/local/Cellar/maven/3.8.3/libexec/conf/settings.xml
+
+屏蔽下面配置
+
+    <mirror>
+      <id>maven-default-http-blocker</id>
+      <mirrorOf>external:http:*</mirrorOf>
+      <name>Pseudo repository to mirror external repositories initially using HTTP.</name>
+      <url>http://0.0.0.0/</url>
+      <blocked>true</blocked>
+    </mirror>		
+		]]>
+		</screen>
+	</section>
 </section>

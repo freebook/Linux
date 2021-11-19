@@ -178,6 +178,31 @@ services:
         - /opt/gitlab/data:/var/opt/gitlab		
 		]]>
 		</screen>
+
+		<example>
+			<title>Docker 部署 GitLab 查看登陆密码</title>
+			<screen>
+			<![CDATA[
+Neo-iMac:docker neo$ docker ps
+CONTAINER ID   IMAGE                     COMMAND                  CREATED          STATUS                    PORTS                                              NAMES
+a762c0c8c950   gitlab/gitlab-ce:latest   "/assets/wrapper"        14 minutes ago   Up 14 minutes (healthy)   0.0.0.0:80->80/tcp, 22/tcp, 0.0.0.0:443->443/tcp   gitlab
+433a04f60108   sonarqube:community       "/opt/sonarqube/bin/…"   10 days ago      Up 15 minutes             0.0.0.0:9000->9000/tcp                             sonarqube
+ea753b0905f7   postgres:latest           "docker-entrypoint.s…"   10 days ago      Up 15 minutes             5432/tcp                                           postgresql
+
+Neo-iMac:docker neo$ docker exec -it gitlab cat /etc/gitlab/initial_root_password
+# WARNING: This value is valid only in the following conditions
+#          1. If provided manually (either via `GITLAB_ROOT_PASSWORD` environment variable or via `gitlab_rails['initial_root_password']` setting in `gitlab.rb`, it was provided before database was seeded for the first time (usually, the first reconfigure run).
+#          2. Password hasn't been changed manually, either via UI or via command line.
+#
+#          If the password shown here doesn't work, you must reset the admin password following https://docs.gitlab.com/ee/security/reset_user_password.html#reset-your-root-password.
+
+Password: LnfGjN5ySHSyTev8VSqCNFna0m43i3oF6FTU8QThoSQ=
+
+# NOTE: This file will be automatically deleted in the first reconfigure run after 24 hours.			
+			]]>
+			</screen>
+		</example>
+
 		<para>安装 gitlab-runner</para>
 		<programlisting>
 		<![CDATA[
@@ -235,7 +260,7 @@ Runner registered successfully. Feel free to start it, but if it's running alrea
 		</example>
 	</section>
 
-	
+
 	<section id="install.centos6">
 		<title>Yum 安装 GitLab</title>
 		<screen><![CDATA[

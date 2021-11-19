@@ -248,11 +248,18 @@ latest: digest: sha256:fbb365b3dbb302bc29ef2253fbf6b9acced54fa5337fd1cb804a52713
 	</section>
 	<section>
 		<title>Python Pypi 仓库</title>
-		<para>创建访问令牌</para>
-		<graphic format="png" fileref="../images/gitlab/package/python/1.png" width="1024" srccredit="neo" />
-		<tip>需要勾选 ☑️ api, read_api, read_registry, write_registry 四个授权️</tip>
-		<para>创建或编辑 ~/.pypirc 文件</para>
-		<screen>
+		<section>
+			<title>个人访问令牌</title>
+			<para>创建访问令牌</para>
+			<graphic format="png" fileref="../images/gitlab/package/python/1.png" width="1024" srccredit="neo" />
+			<tip>需要勾选 ☑️ api, read_api, read_registry, write_registry 四个授权️</tip>
+			<graphic format="png" fileref="../images/gitlab/package/python/1-1.png" width="1024" srccredit="neo" />
+			<para>将令牌复制出来保存好</para>
+		</section>
+		<section>
+			<title>手工上传包</title>
+			<para>创建或编辑 ~/.pypirc 文件</para>
+			<screen>
 		<![CDATA[
 [distutils]
 index-servers =
@@ -263,10 +270,10 @@ repository = https://gitlab.example.com/api/v4/projects/<project_id>/packages/py
 username = <your_personal_access_token_name>
 password = <your_personal_access_token>		
 		]]>
-		</screen>
-		<para>用户和密码，可以使用个人访问令牌、部署令牌和 Gitlab 用户密码</para>
-		<para></para>
-		<screen>
+			</screen>
+			<para>用户和密码，可以使用个人访问令牌、部署令牌和 Gitlab 用户密码</para>
+			<para></para>
+			<screen>
 		<![CDATA[
 <project_id> 替换成你的项目URL 或者 项目 ID
 
@@ -276,11 +283,11 @@ repository = https://gitlab.example.com/api/v4/projects/netkiller.cn%2Fpython.ne
 
 将 “/” 替换成 “%2F”
 		]]>
-		</screen>
-		<para>查看项目 ID</para>
-		<graphic format="png" fileref="../images/gitlab/package/python/projectid.png" width="1024" srccredit="neo" />
-		<para>下面是我配置，仅供参考</para>
-		<screen>
+			</screen>
+			<para>查看项目 ID</para>
+			<graphic format="png" fileref="../images/gitlab/package/python/projectid.png" width="1024" srccredit="neo" />
+			<para>下面是我配置，仅供参考</para>
+			<screen>
 		<![CDATA[
 Neo-iMac:devops neo$ cat ~/.pypirc 
 [distutils]
@@ -292,16 +299,16 @@ repository = http://192.168.30.5/api/v4/projects/30/packages/pypi
 username=pypi
 password=QFatUEzEybBR6gxxF5K2		
 		]]>
-		</screen>
-		<para>上传命令</para>
-		<screen>
+			</screen>
+			<para>上传命令</para>
+			<screen>
 		<![CDATA[
 Neo-iMac:devops neo$ python3 setup.py sdist bdist_wheel
 Neo-iMac:devops neo$ twine upload --repository gitlab dist/*
 		]]>
-		</screen>
-		<para>上传演示</para>
-		<screen>
+			</screen>
+			<para>上传演示</para>
+			<screen>
 		<![CDATA[
 Neo-iMac:devops neo$ twine upload --repository gitlab dist/netkiller-devops-0.3.*
 Uploading distributions to http://192.168.30.5/api/v4/projects/30/packages/pypi
@@ -319,10 +326,154 @@ Uploading netkiller-devops-0.3.5.tar.gz
 100%|███████████████████████████████████████████████████████████████████| 37.5k/37.5k [00:00<00:00, 490kB/s]
 Neo-iMac:devops neo$ 		
 		]]>
+			</screen>
+			<para>查看软件包</para>
+			<graphic format="png" fileref="../images/gitlab/package/python/2.png" width="1024" srccredit="neo" />
+			<para>查看详细信息</para>
+			<graphic format="png" fileref="../images/gitlab/package/python/3.png" width="1024" srccredit="neo" />
+		</section>
+		<section>
+			<title>在持续集成中配置</title>
+			<para>登陆 gitlab-runner 所在的服务器，如果只有 python 项目，建议使用 root 账号安装 twine 包</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# pip3 install twine
+			]]>
+			</screen>
+			<para>如果 gitlab-runner 是公共服务器，上面还会持续部署其他项目，为了项目更好隔离，可以使用 --user 参数，本地化安装</para>
+			<para>切换到 gitlab-runner，因为编译和打包，上传包都需要工作在 gitlab-runner 账号下面</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# su - gitlab-runner
+			]]>
+			</screen>
+			<para>安装 twine wheel 包</para>
+			<screen>
+			<![CDATA[
+[gitlab-runner@localhost ~]$ pip3 install --user twine wheel
+			]]>
+			</screen>
+			<para>twine 将会被安装到 ~/.local/bin/twine 目录</para>
+			<screen>
+			<![CDATA[
+[gitlab-runner@localhost ~]$ ls ~/.local/bin/twine 
+/home/gitlab-runner/.local/bin/twine			
+			]]>
+			</screen>
+			<para>当然也可以将 twine wheel 放在 .gitlab-ci.yml 文件中，只是每次都安装一次，会影响构建性能。</para>
+			<screen>
+			<![CDATA[
+cache:
+  key: "$CI_COMMIT_REF_SLUG"
+  paths:
+    - dist/
+stages: 
+  - build
+  - test
+  - deploy
+
+build-job:
+  stage: build
+  tags:
+    - shell
+  before_script:
+    - pip3 install --user netkiller-devops
+    - pip3 install --user wheel twine
+  script:
+    - python3 setup.py sdist bdist_wheel
+  # after_script:
+
+deploy-job:
+  stage: deploy
+  tags:
+    - shell
+  before_script:
+    - |
+      cat > ~/.pypirc <<EOF
+      [distutils]
+      index-servers =
+          gitlab
+
+      [gitlab]
+      repository = http://192.168.30.5/api/v4/projects/30/packages/pypi
+      username=pypi
+      password=TUyGJW89wkdfjdh7QWAe
+      EOF
+    - cat  ~/.pypirc
+  script:
+    - ~/.local/bin/twine upload --repository gitlab dist/*			
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>Node JS</title>
+		<para>创建项目访问令牌，这里不再赘述，前面已经讲过。</para>
+		<para>登陆到 gitlab-runner 服务器，安装 Node JS 环境</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# dnf install -y nodejs
+[root@localhost ~]# npm install -g --registry=https://registry.npm.taobao.org cnpm
+[root@localhost ~]# npm install -g --registry=https://registry.npm.taobao.org yarn2
+		]]>
 		</screen>
-		<para>查看软件包</para>
-		<graphic format="png" fileref="../images/gitlab/package/python/2.png" width="1024" srccredit="neo" />
-		<para>查看详细信息</para>
-		<graphic format="png" fileref="../images/gitlab/package/python/3.png" width="1024" srccredit="neo" />
+		<para>打开 Node JS 项目，编辑 package.json 文件，修改项目名称 加入 scope 例如 "name": "demo" 改为 "name": "@netkiller/demo"，设置一个版本号 "version": "0.0.1"，然后将  "private": true 改为  "private": false</para>
+		<screen>
+		<![CDATA[
+{
+  "name": "@netkiller/demo",
+  "version": "0.0.1",
+  "private": false,
+  "scripts": {
+    "start": "node ./bin/www",
+    "test": "mocha"
+  },
+  "dependencies": {
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "express": "~4.16.0",
+    "http-errors": "~1.6.2",
+    "morgan": "~1.9.0",
+    "pug": "2.0.0-beta11"
+  },
+  "devDependencies": {
+    "mocha": "^5.1.1",
+    "supertest": "^3.0.0"
+  }
+}
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+cache:
+  paths:
+    - node_modules
+    - dist
+
+stages:
+  - build
+  - test
+  - deploy
+
+build-job:
+  stage: build
+  tags:
+    - shell
+  script:
+    - cnpm install
+
+deploy-job:
+  stage: deploy
+  tags:
+    - shell  
+  script:
+    - |
+      echo -e "
+      @netkiller:registry=http://${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/
+      //${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${CI_JOB_TOKEN}
+      " > .npmrc
+    - cnpm publish		
+		]]>
+		</screen>
 	</section>
 </section>
