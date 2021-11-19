@@ -443,6 +443,7 @@ deploy-job:
 }
 		]]>
 		</screen>
+		<para>配置 .gitlab-ci.yml 文件</para>
 		<screen>
 		<![CDATA[
 cache:
