@@ -116,6 +116,30 @@ deploy-prod-job:
     - echo "Application successfully deployed."
 		]]>
 		</screen>
+		<section>
+			<title>Cache Key</title>
+			<para>缓存在所有流水线间是共享的，如果同时有两个JOB在跑，缓存就可能受到影响，这时可以使用 cache key 解决。</para>
+			<screen>
+			<![CDATA[
+对每个分支的每个 job 使用不同的 cache :
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+
+每个分支的每个 job 使用不同的 stage：
+cache:
+  key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
+
+分支之间需要共享 cache，但是 pipeline 中的 job 之间的 cache 是相互独立的：
+cache:
+  key: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
+
+缓存只在相同 CI_PIPELINE_ID 中共享
+cache:
+  key: ${CI_PIPELINE_ID}			
+			]]>
+			</screen>
+		</section>
 	</section>
 
 	<section id="gitlab-ci.yml.stages">

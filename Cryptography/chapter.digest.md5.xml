@@ -6,6 +6,7 @@
 		<para>生成杂凑值,有些文章叫指纹</para>
 		<para>md5sum file.txt</para>
 		<screen>
+		<![CDATA[
 C:\GnuWin32\neo>md5sum file.txt
 7012acbb1d394b20567dffbf0992b677 *file.txt
 
@@ -13,10 +14,12 @@ C:\GnuWin32\neo>md5sum file.txt > file.txt.md5
 
 C:\GnuWin32\neo>md5sum -c file.txt.md5
 file.txt: OK
+		]]>
 		</screen>
 		<para>生成指纹并重订向到文件</para>
 		<para>md5sum file.txt &gt; file.txt.md5</para>
 		<screen>
+		<![CDATA[
 C:\GnuWin32\neo>md5sum file.txt
 7012acbb1d394b20567dffbf0992b677 *file.txt
 
@@ -24,24 +27,30 @@ C:\GnuWin32\neo>md5sum file.txt > file.txt.md5
 
 C:\GnuWin32\neo>md5sum -c file.txt.md5
 file.txt: OK
+		]]>
 		</screen>
 		<para>生成一组文件 </para>
 		<screen>
+		<![CDATA[
 md5sum file0.txt > file.txt.md5
 md5sum file1.txt >> file.txt.md5
 md5sum file2.txt >> file.txt.md5
+		]]>
 		</screen>
 		<para>使用通配符</para>
 		<screen>
+		<![CDATA[
 C:\GnuWin32\neo>md5sum *
 7012acbb1d394b20567dffbf0992b677 *file.txt
 d9226d4bd8779baa69db272f89a2e05c *message.txt
 
 C:\GnuWin32\neo>md5sum * >file.txt.md5
+		]]>
 		</screen>
 		<para>验证文件是否被人更改过</para>
 		<para>md5sum -c file.txt.md5</para>
 		<screen>
+		<![CDATA[
 C:\GnuWin32\neo>md5sum file.txt
 7012acbb1d394b20567dffbf0992b677 *file.txt
 
@@ -49,13 +58,14 @@ C:\GnuWin32\neo>md5sum file.txt > file.txt.md5
 
 C:\GnuWin32\neo>md5sum -c file.txt.md5
 file.txt: OK
+		]]>
 		</screen>
 	</section>
 
-		<section id="md5.php">
-			<title>PHP md5()</title>
-			<screen>
-<![CDATA[
+	<section id="md5.php">
+		<title>PHP md5()</title>
+		<screen>
+			<![CDATA[
 # cat md5.php
 
 <html>
@@ -77,13 +87,13 @@ $enpw=md5($passwd);
 echo "password is: $enpw";
 
 ?>
-]]>
-			</screen>
-		</section>
-		<section id="md5.mysql">
-			<title>MySQL md5()</title>
-			<para>select md5('password');</para>
-			<screen>
+			]]>
+		</screen>
+	</section>
+	<section id="md5.mysql">
+		<title>MySQL md5()</title>
+		<para>select md5('password');</para>
+		<screen>
 <![CDATA[
 [chen@linux chen]$ mysql
 
@@ -119,14 +129,14 @@ mysql> select md5('chen') as passwd;
 
 mysql>
 ]]>
-			</screen>
-		</section>
-		<section id="md5.java">
-			<title>Java MD5</title>
-			<section>
-				<title>JDK 1.2</title>
-				<para>1.2版之前的JDK没有实现md5;</para>
-				<screen>
+		</screen>
+	</section>
+	<section id="md5.java">
+		<title>Java MD5</title>
+		<section>
+			<title>JDK 1.2</title>
+			<para>1.2版之前的JDK没有实现md5;</para>
+			<screen>
 				<![CDATA[
 /************************************************
 MD5 算法的Java Bean
@@ -774,12 +784,12 @@ public class MD5 {
 
 }
 				]]>
-				</screen>
-			</section>
-			<section>
-				<title>JDK 1.5</title>
-				<para>以下使用JDK 1.5.x版实现;</para>
-				<screen>
+			</screen>
+		</section>
+		<section>
+			<title>JDK 1.5</title>
+			<para>以下使用JDK 1.5.x版实现;</para>
+			<screen>
 				<![CDATA[
 import java.security.*;
 
@@ -819,18 +829,20 @@ public class md5Test {
 
 }
 				]]>
-				</screen>
-				<para>编译运行,输入字符串:a1a8887793acfc199182a649e905daab</para>
-			</section>
-			<section>
-				<title>JDK 1.8</title>
-				<para>JDK 1.8</para>
-				<programlisting>
-String hash = DatatypeConverter.printHexBinary(MessageDigest.getInstance("MD5").digest("Helloword!!!".getBytes("UTF-8")));		
-				</programlisting>
-			</section>				
+			</screen>
+			<para>编译运行,输入字符串:a1a8887793acfc199182a649e905daab</para>
 		</section>
-			
+		<section>
+			<title>JDK 1.8</title>
+			<para>JDK 1.8</para>
+			<programlisting>
+				<![CDATA[
+String hash = DatatypeConverter.printHexBinary(MessageDigest.getInstance("MD5").digest("Helloword!!!".getBytes("UTF-8")));				
+				]]>
+			</programlisting>
+		</section>
+	</section>
+
 	<section id="md5.perl">
 		<title>perl md5</title>
 		<programlisting>

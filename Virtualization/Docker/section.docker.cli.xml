@@ -813,7 +813,7 @@ neo@MacBook-Pro-Neo ~/workspace/Linux % docker history --no-trunc docker.io/mysq
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="docker.scan">
 			<title>安全漏洞扫描</title>
 			<screen>
 			<![CDATA[
@@ -843,6 +843,158 @@ Neo-iMac:nginx neo$ docker scan redis:latest
 Neo-iMac:nginx neo$ docker scan 192.168.30.5/netkiller.cn/java	
 			]]>
 			</screen>
+		</section>
+		<section id="docker.contexts">
+			<title>Contexts</title>
+			<screen>
+			<![CDATA[
+Neo-iMac:~ neo$ docker context
+Manage contexts
+
+Usage:
+  docker context [command]
+
+Available Commands:
+  create      Create new context
+  export      Export a context to a tar or kubeconfig file
+  import      Import a context from a tar or zip file
+  inspect     Display detailed information on one or more contexts
+  list        List available contexts
+  rm          Remove one or more contexts
+  show        Print the current context
+  update      Update a context
+  use         Set the default context
+
+Flags:
+  -h, --help   Help for context
+
+Use "docker context [command] --help" for more information about a command.			
+			]]>
+			</screen>
+			<section>
+				<title>查看</title>
+				<screen>
+				<![CDATA[
+Neo-iMac:~ neo$ docker context ls
+NAME                TYPE                DESCRIPTION                               DOCKER ENDPOINT                             KUBERNETES ENDPOINT   ORCHESTRATOR
+default *           moby                Current DOCKER_HOST based configuration   unix:///var/run/docker.sock                                       swarm
+desktop-linux       moby                                                          unix:///Users/neo/.docker/run/docker.sock   				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>创建</title>
+				<screen>
+				<![CDATA[
+localhost	default	unix:///var/run/docker.sock
+Remote host	remote	ssh://user@remotemachine
+docker-in-docker	dind	tcp://127.0.0.1:2375				
+				]]>
+				</screen>
+				<screen>
+				<![CDATA[
+Neo-iMac:~ neo$ docker context create development --docker "host=ssh://root@192.168.30.11"
+development
+Successfully created context "development"
+
+Neo-iMac:~ neo$ docker context create testing --docker "host=tcp://192.168.30.11:2376"
+testing
+Successfully created context "testing"				
+				]]>
+				</screen>
+				<para></para>
+				<screen>
+				<![CDATA[
+Neo-iMac:~ neo$ docker context ls
+NAME                TYPE                DESCRIPTION                               DOCKER ENDPOINT                             KUBERNETES ENDPOINT   ORCHESTRATOR
+default *           moby                Current DOCKER_HOST based configuration   unix:///var/run/docker.sock                                       swarm
+desktop-linux       moby                                                          unix:///Users/neo/.docker/run/docker.sock                         
+development         moby                                                          ssh://root@192.168.30.11                                          
+testing             moby                                                          tcp://192.168.30.11:2376  
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>inspect</title>
+				<screen>
+				<![CDATA[
+Neo-iMac:~ neo$ docker context inspect
+[
+    {
+        "Name": "default",
+        "Metadata": {
+            "StackOrchestrator": "swarm"
+        },
+        "Endpoints": {
+            "docker": {
+                "Host": "unix:///var/run/docker.sock",
+                "SkipTLSVerify": false
+            }
+        },
+        "TLSMaterial": {},
+        "Storage": {
+            "MetadataPath": "\u003cIN MEMORY\u003e",
+            "TLSPath": "\u003cIN MEMORY\u003e"
+        }
+    }
+]				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>使用 context</title>
+				<para>切换默认为 development</para>
+				<screen>
+				<![CDATA[
+Neo-iMac:~ neo$ docker context use development
+development				
+				]]>
+				</screen>
+				<para>查看，注意 * 指标</para>
+				<screen>
+				<![CDATA[
+Neo-iMac:~ neo$ docker context ls
+NAME                TYPE                DESCRIPTION                               DOCKER ENDPOINT                             KUBERNETES ENDPOINT   ORCHESTRATOR
+default             moby                Current DOCKER_HOST based configuration   unix:///var/run/docker.sock                                       swarm
+desktop-linux       moby                                                          unix:///Users/neo/.docker/run/docker.sock                         
+development *       moby                                                          ssh://root@192.168.30.11                                          
+testing             moby                                                          tcp://192.168.30.11:2376                                          				
+				]]>
+				</screen>
+				<para>连接到 development 查看 ps </para>
+				<screen>
+				<![CDATA[
+Neo-iMac:~ neo$ docker ps
+CONTAINER ID   IMAGE                         COMMAND                  CREATED        STATUS        PORTS                                                                                  NAMES
+be36eb55d2a7   openjdk:8                     "java -jar /app/neo…"   6 days ago     Up 40 hours   0.0.0.0:8088->8080/tcp, :::8088->8080/tcp                                               api
+5c6892c6d488   redis:alpine                  "docker-entrypoint.s…"   2 months ago   Up 2 weeks    0.0.0.0:6379->6379/tcp, :::6379->6379/tcp                                              redis
+9ee2a3aab354   portainer/agent               "./agent"                3 months ago   Up 2 weeks    0.0.0.0:9001->9001/tcp, :::9001->9001/tcp                                              portainer-agent
+84639b1810a1   mysql:5.7                     "docker-entrypoint.s…"   3 months ago   Up 2 weeks    0.0.0.0:3306->3306/tcp, :::3306->3306/tcp, 33060/tcp                                   mysql				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>删除</title>
+				<screen>
+				<![CDATA[
+Neo-iMac:~ neo$ docker context rm testing
+testing				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>--context 参数</title>
+				<screen>
+				<![CDATA[
+Neo-iMac:~ neo$ docker --context default ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+
+Neo-iMac:~ neo$ docker --context development ps
+CONTAINER ID   IMAGE                         COMMAND                  CREATED        STATUS        PORTS                                                                                  NAMES
+be36eb55d2a7   openjdk:8                     "java -jar /app/neo…"   6 days ago     Up 41 hours   0.0.0.0:8088->8080/tcp, :::8088->8080/tcp                                              api				
+				]]>
+				</screen>
+			</section>
 		</section>
 	</section>
 	<section id="docker-compose">
