@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="gitlab.faq">
+	<title>FAQ</title>
+	<section>
+		<title>查看日志</title>
+		<screen>
+				<![CDATA[
+gitlab-ctl tail
+gitlab-ctl tail gitlab-rails
+gitlab-ctl tail nginx/gitlab_error.log				
+				]]>
+		</screen>
+	</section>
+	<section>
+		<title>debug runner</title>
+		<screen>
+				<![CDATA[
+gitlab-runner -debug run				
+				]]>
+		</screen>
+	</section>
+	<section>
+		<title>gitolite 向 gitlab 迁移</title>
+		<para>早期gitlab使用gitolite为用户提供SSH服务，新版gitlab有了更好的解决方案gitlab-shell。安装新版本是必会涉及gitolite 向 gitlab 迁移，下面是我总结的一些迁移经验。</para>
+		<para>第一步,将gitolite复制到gitlab仓库目录下</para>
+		<screen><![CDATA[
+# cp -r /gitroot/gitolite/repositories/* /var/opt/gitlab/git-data/repositories/
+			]]></screen>
+		<para>执行导入处理程序</para>
+		<screen><![CDATA[
+# gitlab-rake gitlab:import:repos
+			]]></screen>
+		<para>上面程序会处理一下目录结构，例如</para>
+		<para>进入gitlab web界面，创建仓库与导入的仓库同名，这样就完成了导入工作。</para>
+		<tip>
+			<para>转换最好在git用户下面操作，否则你需要运行</para>
+			<screen><![CDATA[
+# chown git:git -R /var/opt/gitlab/git-data/repositories				
+				]]></screen>
+		</tip>
+	</section>
+	<section>
+		<title>修改主机名</title>
+		<para>默认Gitlab采用主机名，给我使用代理一定麻烦</para>
+		<screen><![CDATA[
+git@hostname:example.com/www.example.com.git
+http://hostname/example.com/www.example.com.git
+			]]></screen>
+		<para>我们希望使用IP地址替代主机名</para>
+		<screen><![CDATA[
+git@172.16.0.1:example.com/www.example.com.git
+http://172.16.0.1/example.com/www.example.com.git
+			]]></screen>
+		<para>编辑 /etc/gitlab/gitlab.rb 配置文件</para>
+		<screen><![CDATA[
+external_url 'http://172.16.0.1'
+			]]></screen>
+		<para>重新启动Gitlab</para>
+		<screen><![CDATA[
+# gitlab-ctl reconfigure
+# gitlab-ctl restart
+			]]></screen>
+	</section>
+	<section>
+		<title>ERROR: Uploading artifacts as "archive" to coordinator... too large archive</title>
+		<para>持续集成提示错误</para>
+		<screen>
+			<![CDATA[
+ERROR: Uploading artifacts as "archive" to coordinator... too large archive  id=185 responseStatus=413 Request Entity Too Large status=413 token=HKerPDE6
+FATAL: too large                                   
+ERROR: Job failed: exit status 1			
+			]]>
+		</screen>
+		<para>解决方案</para>
+		<para>Admin - Settings - CI/CD - Continuous Integration and Deployment</para>
+		<para>点击 Expand 展开配置项</para>
+		<para>Maximum artifacts size (MB): 修改构建无最大尺寸</para>
+	</section>
+</section>

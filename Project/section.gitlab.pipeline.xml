@@ -489,6 +489,24 @@ deploy-dev:
 			<title>多行脚本</title>
 			<screen>
 			<![CDATA[
+release-job:
+  stage: release
+  tags:
+    - shell
+  only:
+    - master
+  script:
+    - |
+      echo -e "
+      @sfzito:registry=http://${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/
+      //${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${CI_JOB_TOKEN}
+      " > .npmrc
+    - cnpm publish
+  when: manual			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
 script: |
     if [ "$flag" == "true" ]; then
       kubectl apply -f demo1 --record=true
