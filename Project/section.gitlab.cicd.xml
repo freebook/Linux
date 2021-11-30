@@ -492,6 +492,21 @@ check_interval = 0
 	</section>
 	<section id="gitlab.runner.docker">
 		<title>Docker 执行器</title>
+		<para>gitlab-runner 用户需要 访问 /var/run/docker.sock 所以需要将 gitlab-runner 用户加入到 docker 组中。</para>
+		<screen>
+		<![CDATA[
+[root@gitlab ~]# ll /var/run/docker.sock 
+srw-rw---- 1 root docker 0 Nov 25 17:04 /var/run/docker.sock
+		
+[root@gitlab ~]# id gitlab-runner
+uid=989(gitlab-runner) gid=984(gitlab-runner) groups=984(gitlab-runner)
+
+[root@gitlab ~]# usermod -aG docker gitlab-runner
+
+[root@gitlab ~]# id gitlab-runner
+uid=989(gitlab-runner) gid=984(gitlab-runner) groups=984(gitlab-runner),991(docker)		
+		]]>
+		</screen>
 		<para>注册 Docker 执行器</para>
 		<screen>
 		<![CDATA[

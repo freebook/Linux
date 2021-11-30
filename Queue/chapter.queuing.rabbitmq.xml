@@ -277,6 +277,15 @@ Management","path":"/","port":15672}
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>rabbitmq_delayed_message_exchange</title>
+			<para>下载地址 <ulink url="https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases" /></para>
+			<screen>
+			<![CDATA[
+rabbitmq-plugins enable rabbitmq_delayed_message_exchange	
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="rabbitmq.python.pika">
 		<title>Python - Pika</title>

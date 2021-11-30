@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+	<title>Rancher Demo</title>
+	<section id="rancher.nginx">
+		<title>Rancher 部署 Nginx</title>
+		<para>准备编排脚本</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# cat nginx.yaml 
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  ports:
+  - port: 88
+    targetPort: 80
+  selector:
+    app: nginx
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80		
+		]]>
+		</screen>
+		<para>部署</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# rancher kubectl create -f nginx.yaml 
+service/nginx created
+deployment.apps/nginx created
+		]]>
+		</screen>
+		<!-- rancher export project && cd project &&  rancher up -p --force-upgrade --batch-size 99 -u -c -d && cd .. && rm -rf project -->
+		<para>查看状态</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# rancher kubectl get deployment -n default
+NAME    READY   UP-TO-DATE   AVAILABLE   AGE
+nginx   3/3     3            3           113s
+
+[root@localhost ~]# rancher kubectl get service -n default
+NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+kubernetes   ClusterIP   10.43.0.1       <none>        443/TCP        156m
+nginx        NodePort    10.43.111.205   <none>        88:32646/TCP   119s		
+		
+[root@localhost ~]# rancher kubectl get pods -n default
+NAME                    READY   STATUS              RESTARTS   AGE
+nginx-585449566-kd2mk   0/1     ContainerCreating   0          14s
+nginx-585449566-mdl8n   0/1     ContainerCreating   0          14s
+nginx-585449566-v8s5k   0/1     ContainerCreating   0          14s		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# rancher kubectl describe services nginx
+Name:                     nginx
+Namespace:                default
+Labels:                   app=nginx
+Annotations:              field.cattle.io/publicEndpoints: [{"port":32646,"protocol":"TCP","serviceName":"default:nginx","allNodes":true}]
+Selector:                 app=nginx
+Type:                     NodePort
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.43.111.205
+IPs:                      10.43.111.205
+Port:                     <unset>  88/TCP
+TargetPort:               80/TCP
+NodePort:                 <unset>  32646/TCP
+Endpoints:                10.42.0.40:80,10.42.0.41:80,10.42.0.42:80
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   <none>		
+		]]>
+		</screen>
+	</section>
+</section>

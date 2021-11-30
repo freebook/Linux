@@ -559,7 +559,7 @@ spec:
     effect: "NoExecute"				
 				]]>
 				</screen>
-				<para>如果给node加上Taint effect=NoExecute的，该节点上的没有设置toleration的pod都会被立刻驱逐，设置 tolerationSeconds 后会给 Pod 一个宽限期。</para>				
+				<para>如果给node加上Taint effect=NoExecute的，该节点上的没有设置toleration的pod都会被立刻驱逐，设置 tolerationSeconds 后会给 Pod 一个宽限期。</para>
 				<screen>
 				<![CDATA[
 spec:		
@@ -1456,6 +1456,58 @@ FIELDS:
 			<![CDATA[
 kubelet --experimental-allowed-unsafe-sysctls 'kernel.msg*,kernel.shmmax,kernel.sem,net.ipv4.route.min_pmtu'
 			]]>
+			</screen>
+		</section>
+	</section>
+	<section id="kubectl.example">
+		<title>kubectl example</title>
+		<section>
+			<title>私有 registry</title>
+			<screen>
+			<![CDATA[
+kubectl create deployment registry --image=registry:latest
+kubectl expose deployment registry --port=5000 --target-port=5000
+kubectl delete -n default deployment registry
+			]]>
+			</screen>
+			<screen>
+		<![CDATA[
+iMac:registry neo$ docker pull nginx:latest
+iMac:registry neo$ docker tag nginx:latest 192.168.64.2:30050/nginx:latest
+iMac:registry neo$ docker push 192.168.64.2:30050/nginx:latest
+
+
+
+kubectl create deployment nginx --image=192.168.64.2:30050/nginx:latest
+kubectl expose deployment nginx --port=80 --target-port=30080 --type=NodePort
+
+kubectl create deployment busybox --image=docker.io/busybox
+kubectl create deployment busybox --image=busybox
+kubectl create deployment welcome --image=127.0.0.1:5000/netkiller/welcome
+
+docker tag busybox:latest 192.168.64.6:32070/busybox:latest
+docker push 192.168.64.6:32070/busybox:latest
+
+		]]>
+			</screen>
+		</section>
+		<section>
+			<title>mongodb</title>
+			<screen>
+		<![CDATA[
+kubectl run mongodb  --image=docker.io/mongo  --env="p='27017:27017'" --env="v='/opt/mongodb:/data'" 
+kubectl expose deployment mongodb --port=27017 --target-port=27017
+		]]>
+			</screen>
+		</section>
+		<section>
+			<title>tomcat</title>
+			<screen>
+		<![CDATA[
+kubectl create deployment hello-minikube --image=tomcat:8.0 
+kubectl expose deployment hello-minikube --type=NodePort --port=80
+minikube service hello-minikube --url		
+		]]>
 			</screen>
 		</section>
 	</section>

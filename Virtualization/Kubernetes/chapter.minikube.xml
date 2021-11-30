@@ -12,11 +12,10 @@ egrep --color 'vmx|svm' /proc/cpuinfo
 			]]>
 			</screen>
 			<para>如果没有任何输出，请重启服务器进入 BIOS 启用 VT-X 或 AMD-v</para>
-
 			<screen>
 			<![CDATA[
 curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 \
-  && install minikube-linux-amd64 /usr/local/bin/minikube			
+  && install minikube-linux-amd64 /usr/local/bin/minikube		 	
 			]]>
 			</screen>
 			<para>尝试运行 minikube 如果输出帮助信息表示安装成功</para>
@@ -600,6 +599,31 @@ dashboard was successfully enabled
 				</screen>
 			</section>
 			<section>
+				<title>dashboard</title>
+				<screen>
+				<![CDATA[
+Neo-iMac:~ neo$ minikube addons enable dashboard
+    ▪ Using image registry.cn-hangzhou.aliyuncs.com/google_containers/metrics-scraper:v1.0.7
+    ▪ Using image registry.cn-hangzhou.aliyuncs.com/google_containers/dashboard:v2.3.1
+💡  Some dashboard features require the metrics-server addon. To enable all features please run:
+
+	minikube addons enable metrics-server	
+
+
+🌟  The 'dashboard' addon is enabled				
+				]]>
+				</screen>				
+				<screen>
+				<![CDATA[
+Neo-iMac:~ neo$ minikube dashboard
+🤔  Verifying dashboard health ...
+🚀  Launching proxy ...
+🤔  Verifying proxy health ...
+🎉  Opening http://127.0.0.1:62433/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/ in your default browser...				
+				]]>
+				</screen>
+			</section>
+			<section>
 				<title>开启 registry 私有库</title>
 				<screen>
 		<![CDATA[
@@ -1015,6 +1039,29 @@ iMac:~ neo$ minikube addons enable registry
 
 😿  If the above advice does not help, please let us know: 
 👉  https://github.com/kubernetes/minikube/issues/new/choose			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title> Exiting due to SVC_URL_TIMEOUT: http://127.0.0.1:11068/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/ is not accessible: Temporary Error: unexpected response code: 503</title>
+			<screen>
+			<![CDATA[
+minikube dashboard --alsologtostderr -v=1
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+[docker@localhost ~]$ kubectl get pods --all-namespaces | grep dashboard
+kubernetes-dashboard   dashboard-metrics-scraper-6f7955cd98-xjzkq   0/1     ImagePullBackOff    0          11d
+kubernetes-dashboard   kubernetes-dashboard-7bf64fd654-ckr7v        0/1     ImagePullBackOff    0          11d			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+[docker@localhost ~]$ kubectl logs --namespace=kubernetes-dashboard kubernetes-dashboard-7bf64fd654-ckr7v
+Error from server (BadRequest): container "kubernetes-dashboard" in pod "kubernetes-dashboard-7bf64fd654-ckr7v" is waiting to start: trying and failing to pull image			
 			]]>
 			</screen>
 		</section>

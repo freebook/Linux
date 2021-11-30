@@ -4,14 +4,26 @@
 	<para>这里我们使用 minikube 启动 Kubernetes</para>
 	<section>
 		<title>安装启动 Minikube</title>
-		<para>创建 docker 用户</para>
+		<para>查看 docker 组 GID</para>
 		<screen>
 		<![CDATA[
 [root@localhost ~]# grep docker /etc/group
-docker:x:992:gitlab-runner
-[root@localhost ~]# adduser -g 992 -c "Docker" docker
+docker:x:991:gitlab-runner		
+		]]>
+		</screen>
+		<para>创建 docker 用户，指定 uid 和 gid</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# adduser -u 991 -g 991 -c "Docker" docker
 [root@localhost ~]# id docker
-uid=1000(docker) gid=992(docker) groups=992(docker)		
+uid=991(docker) gid=991(docker) groups=991(docker)
+		]]>
+		</screen>
+		<para>安装 minikube 和 kubectl 命令</para>
+		<screen>
+		<![CDATA[
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64   && install minikube-linux-amd64 /usr/local/bin/minikube
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && install kubectl /usr/local/bin/kubectl
 		]]>
 		</screen>
 		<para>启动命令</para>
@@ -26,9 +38,7 @@ minikube start --memory=max --cpus=max  \
 		<screen>
 		<![CDATA[
 [root@localhost ~]# su - docker
-[docker@localhost ~]$ minikube start --memory=max --cpus=max  \
-> --image-mirror-country=cn --registry-mirror="https://registry.docker-cn.com,https://docker.mirrors.ustc.edu.cn" \
-> --insecure-registry="registry.netkiller.cn" 
+[docker@localhost ~]$ minikube start --memory=max --cpus=max  --cache-images=true --image-mirror-country=cn --insecure-registry="registry.netkiller.cn"
 😄  minikube v1.22.0 on Centos 8
 ✨  Automatically selected the docker driver
 ❗  Your cgroup does not allow setting memory.
@@ -343,6 +353,15 @@ Certificate:
          81:5e:78:97:0e:8e:c6:7a:ba:6b:a4:c5:95:ff:81:04:7a:a8:
          fa:d0:d3:b8:33:bf:b3:69:2c:09:9f:92:03:f2:e1:fc:7e:e6:
          83:8e:0e:13		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>GitLab Kubernetes Agent</title>
+		<subtitle>通过 Gitlab 代理连接到 Kubernetes</subtitle>
+		<screen>
+		<![CDATA[
+		
 		]]>
 		</screen>
 	</section>

@@ -4,7 +4,6 @@
 	&chapter.minikube.xml;
 	&section.microk8s.xml;
 	&section.kubectl.xml;
-	&section.kubectl.example.xml;
 	&section.kubectl.yaml.xml;
 	&section.istio.xml;
 	&section.kubeapps.xml;

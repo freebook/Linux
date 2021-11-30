@@ -36,12 +36,14 @@
 <!ENTITY chapter.kubernetes.xml			SYSTEM "Kubernetes/chapter.kubernetes.xml">
 <!ENTITY chapter.minikube.xml			SYSTEM "Kubernetes/chapter.minikube.xml">
 <!ENTITY section.kubectl.xml			SYSTEM "Kubernetes/section.kubectl.xml">
-<!ENTITY section.rancher.xml			SYSTEM "Kubernetes/section.rancher.xml">
 <!ENTITY section.microk8s.xml  			SYSTEM "Kubernetes/section.microk8s.xml">
 <!ENTITY section.kubeapps.xml			SYSTEM "Kubernetes/section.kubeapps.xml">
-<!ENTITY section.kubectl.example.xml	SYSTEM "Kubernetes/section.kubectl.example.xml">
 <!ENTITY section.kubectl.yaml.xml		SYSTEM "Kubernetes/section.kubectl.yaml.xml">
 <!ENTITY section.istio.xml				SYSTEM "Kubernetes/section.istio.xml">
+
+<!ENTITY section.rancher.xml			SYSTEM "Kubernetes/section.rancher.xml">
+<!ENTITY section.rancher.cli.xml		SYSTEM "Kubernetes/section.rancher.cli.xml">
+<!ENTITY section.rancher.example.xml	SYSTEM "Kubernetes/section.rancher.example.xml">
 
 <!ENTITY chapter.container.xml					SYSTEM "chapter.container.xml">
 <!ENTITY section.container.portainer.xml		SYSTEM "section.container.portainer.xml">

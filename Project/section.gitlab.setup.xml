@@ -372,3 +372,25 @@ nginx['http2_enabled'] = true
 		</screen>
 	</section>
 </section>
+<section>
+	<title>Gitlab 命令行</title>
+	<section>
+		<title>重置密码</title>
+		<para>进入容器</para>
+		<screen>
+		<![CDATA[
+[root@localhost ~]# docker exec -it gitlab bash		
+		]]>
+		</screen>
+		<para>重置密码</para>
+		<screen>
+		<![CDATA[
+root@gitlab:~# gitlab-rake "gitlab:password:reset"
+Enter username: neo
+Enter password: 
+Confirm password: 
+Password successfully updated for user with username neo.		
+		]]>
+		</screen>
+	</section>
+</section>

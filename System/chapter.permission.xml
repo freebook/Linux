@@ -1,8 +1,9 @@
 <chapter id="index"><?dbhtml dir="permission" ?>
-	<title>Permission 权限管理</title>
-	<section id="adduser">
+	<title>权限管理</title>
+	<subtitle>Permission</subtitle>
+	<section>
 		<title>User 用户管理</title>
-		<section>
+		<section id="adduser">
 			<title>添加用户</title>
 			<screen>
 		<![CDATA[
@@ -56,6 +57,41 @@ docker:x:992:gitlab-runner
 uid=1000(docker) gid=992(docker) groups=992(docker)
 			]]>
 			</screen>
+
+			<section>
+				<title>创建系统账号</title>
+				<para>所谓系统账号就是没有 HOME 目录的账号</para>
+				<screen>
+				<![CDATA[
+[root@localhost ~]# adduser -r netkiller
+[root@localhost ~]# id netkiller
+uid=990(netkiller) gid=988(netkiller) groups=988(netkiller)
+
+[root@localhost ~]# grep netkiller /etc/group
+netkiller:x:988:				
+
+[root@localhost ~]# grep netkiller /etc/passwd
+netkiller:x:990:988::/home/netkiller:/bin/bash
+				]]>
+				</screen>
+				<para>虽然 /etc/passwd 中有 /home/netkiller 我们去查看 /home 目录并没有 netkiller 文件夹</para>
+				<screen>
+				<![CDATA[
+[root@localhost ~]# ls /home/
+docker  gitlab-runner  www				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>修改用户名</title>
+				<screen>
+		<![CDATA[
+usermod -l new_username old_username
+groupmod -n newname	oldname
+usermod -d /home/susan -m susan
+		]]>
+				</screen>
+			</section>
 		</section>
 		<section id="userdel">
 			<title>删除用户</title>
@@ -250,36 +286,27 @@ docker:x:993:jenkins
 
 		</section>
 	</section>
-	<section id="umask">
-		<title>umask</title>
-		<screen>
-		<![CDATA[
+
+	<section id="permissions">
+		<title>访问权限</title>
+		<subtitle>Access Permissions</subtitle>
+		<section id="umask">
+			<title>umask</title>
+			<screen>
+			<![CDATA[
 [root@development ~]# umask
 0022
 [root@development ~]# umask -S
 u=rwx,g=rx,o=rx		
-		]]>
-		</screen>
-		<para>设置</para>
-		<screen>
-		<![CDATA[
+			]]>
+			</screen>
+			<para>设置</para>
+			<screen>
+			<![CDATA[
 umask 002
-		]]>
-		</screen>
-	</section>
-	<section>
-		<title>修改用户名</title>
-		<screen>
-		<![CDATA[
-usermod -l new_username old_username
-groupmod -n newname	oldname
-usermod -d /home/susan -m susan
-		]]>
-		</screen>
-	</section>
-	
-	<section id="permissions">
-		<title>Access Permissions</title>
+			]]>
+			</screen>
+		</section>
 		<section id="chown">
 			<title>chown - change file owner and group</title>
 			<para>chown - change file owner and group</para>

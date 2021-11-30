@@ -2,130 +2,13 @@
 <section id="rancher">
 	<title>Rancher - Multi-Cluster Kubernetes Management</title>
 	<subtitle>Rancher is open-source software for delivering Kubernetes-as-a-Service.</subtitle>
-	<section>
-		<title>安装</title>
-		<para>如果只是学习，可以安装最新版</para>
-		<screen>
-		<![CDATA[
-docker run -d --restart=unless-stopped -p 80:80 -p 443:443 --name=rancher rancher/rancher:latest
-		]]>
-		</screen>
-		<para>稳定版</para>
-		<screen>
-		<![CDATA[
-docker run -d --restart=unless-stopped -p 80:80 -p 443:443 -v /var/lib/rancher/:/var/lib/rancher/ --name=rancher rancher/rancher:stable
-		]]>
-		</screen>
-		<para>审计日志</para>
-		<screen>
-		<![CDATA[
-docker run -d --restart=unless-stopped -p 80:80 -p 443:443 -v /var/lib/rancher/:/var/lib/rancher/ -v /var/log/auditlog:/var/log/auditlog --name=rancher rancher/rancher:stable		
-		
-		]]>
-		</screen>
-		<para>安装完，浏览器输入 https://your-ip-address 即可进入WebUI</para>
-		<para>防火墙放行 etcd </para>
-		<screen>
-		<![CDATA[
-iptables -I INPUT -s 172.16.0.0/0 -p tcp --dport 2379 -j ACCEPT
-iptables -I INPUT -s 172.16.0.0/0 -p tcp --dport 2380 -j ACCEPT		
-		]]>
-		</screen>
-		<screen>
-		<![CDATA[
-systemctl restart firewalld
-systemctl enable firewalld
-
-iptables -A INPUT -p tcp --dport 6443 -j ACCEPT
-iptables -A INPUT -p tcp --dport 2379 -j ACCEPT
-iptables -A INPUT -p tcp --dport 2380 -j ACCEPT
-iptables -A INPUT -p tcp --dport 10250 -j ACCEPT
-
-firewall-cmd --zone=public --add-port=6443/tcp --permanent
-firewall-cmd --zone=public --add-port=2379/tcp --permanent
-firewall-cmd --zone=public --add-port=2380/tcp --permanent
-firewall-cmd --zone=public --add-port=10250/tcp --permanent
-firewall-cmd --reload
-		
-		]]>
-		</screen>
-		<screen>
-		<![CDATA[
-hostnamectl set-hostname m-1d41c853af58
-		]]>
-		</screen>
-		<section>
-			<title>Ubuntu</title>
-			<screen>
-			<![CDATA[
-$ sudo ufw disable			
-			]]>
-			</screen>
-		</section>
-		<section>
-			<title>SSL 证书</title>
-			<para>第一种方式</para>
-			<screen>
-			<![CDATA[
-docker run -d -p 8443:443 -v /srv/rancher/cacerts.pem:/etc/rancher/ssl/cacerts.pem -v /srv/rancher/key.pem:/etc/rancher/ssl/key.pem -v /srv/rancher/cert.crt:/etc/rancher/ssl/cert.pem rancher/rancher:latest
-			]]>
-			</screen>
-			<para>第二种方式</para>
-			<screen>
-			<![CDATA[
-docker run -d --name rancher-server rancher/rancher:latest			
-docker run -d --name=nginx --restart=unless-stopped -p 80:80 -p 443:443 -v /your_certificates:/your_certificates -v /etc/nginx.conf:/etc/nginx/conf.d/default.conf --link=rancher-server nginx:1.11			
-			]]>
-			</screen>
-		</section>
-		<section>
-			<title>进入容器</title>
-			<screen>
-			<![CDATA[
-$ docker exec -it rancher /bin/bash 			
-			]]>
-			</screen>
-		</section>
-		<section>
-			<title>Rancher CLI</title>
-			<screen>
-			<![CDATA[
-cd /tmp
-wget https://github.com/rancher/cli/releases/download/v2.2.0-rc16/rancher-linux-amd64-v2.2.0-rc16.tar.xz
-tar Jxvf rancher-linux-amd64-v2.2.0-rc16.tar.xz
-mv ./rancher-v2.2.0-rc16/rancher /usr/local/bin/
-cd
-			]]>
-			</screen>
-
-
-		</section>
-		<section id="rancher-compose">
-			<title>rancher-compose</title>
-			<para>Rancher Compose是一个多主机版本的Docker Compose</para>
-			<para>
-				下载地址：
-				<ulink url="https://github.com/rancher/rancher-compose/releases" />
-			</para>
-			<screen>
-			<![CDATA[
-cd /tmp
-
-wget https://github.com/rancher/rancher-compose/releases/download/v0.12.5/rancher-compose-linux-amd64-v0.12.5.tar.xz
-tar Jxvf rancher-compose-linux-amd64-v0.12.5.tar.xz
-mv ./rancher-compose-v0.12.5/rancher-compose /usr/local/bin/
-
-cd
-			]]>
-			</screen>
-		</section>
-	</section>
+	&section.rancher.xml;
 	<section>
 		<title>快速入门</title>
 		<para>
 			<ulink url="https://www.cnrancher.com/docs/rancher/v2.x/cn/overview/quick-start-guide/" />
 		</para>
-		<graphic format="png" fileref="../images/rancher/password.png" width="800" srccredit="neo" />
+
 		<graphic format="png" fileref="../images/rancher/url.png" width="800" srccredit="neo" />
 		<graphic format="png" fileref="../images/rancher/webui.png" width="800" srccredit="neo" />
 		<section>
@@ -135,215 +18,6 @@ cd
 			<graphic format="png" fileref="../images/rancher/api3.png" width="800" srccredit="neo" />
 			<graphic format="png" fileref="../images/rancher/api4.png" width="800" srccredit="neo" />
 			<graphic format="png" fileref="../images/rancher/api5.png" width="800" srccredit="neo" />
-		</section>
-	</section>
-	<section>
-		<title>Rancher CLI</title>
-		<screen>
-		<![CDATA[
-[root@localhost ~]# rancher
-Rancher CLI, managing containers one UTF-8 character at a time
-
-Usage: rancher [OPTIONS] COMMAND [arg...]
-
-Version: v2.2.0-rc16
-
-Options:
-  --debug        Debug logging
-  --help, -h     show help
-  --version, -v  print the version
-  
-Commands:
-  apps, [app]                                       Operations with apps
-  catalog                                           Operations with catalogs
-  clusters, [cluster]                               Operations on clusters
-  context                                           Operations for the context
-  globaldns                                         Operations on global DNS providers and entries
-  inspect                                           View details of resources
-  kubectl                                           Run kubectl commands
-  login, [l]                                        Login to a Rancher server
-  multiclusterapps, [multiclusterapp mcapps mcapp]  Operations with multi-cluster apps
-  namespaces, [namespace]                           Operations on namespaces
-  nodes, [node]                                     Operations on nodes
-  projects, [project]                               Operations on projects
-  ps                                                Show workloads in a project
-  settings, [setting]                               Show settings for the current server
-  ssh                                               SSH into a node
-  up                                                apply compose config
-  wait                                              Wait for resources cluster, app, project
-  help, [h]                                         Shows a list of commands or help for one command
-  
-Run 'rancher COMMAND --help' for more information on a command.		
-		]]>
-		</screen>
-		<section>
-			<title>登陆 Rancher</title>
-			<para>链接到 Rancher</para>
-			<screen>
-			<![CDATA[
-$ rancher login https://<SERVER_URL> --token <BEARER_TOKEN>			
-			]]>
-			</screen>
-			<para>登陆演示</para>
-			<screen>
-			<![CDATA[
-[root@localhost ~]# rancher login https://192.168.0.157/v3 --token token-ljjbw:6flrltb5fw7j7rnjlzvx574p9jckr74bkl2l9jcxn55wpk8drwzpkj
-The authenticity of server 'https://192.168.0.157' can't be established.
-Cert chain is : [Certificate:
-    Data:
-        Version: 3 (0x2)
-        Serial Number: 3365063357028956089 (0x2eb31b4b5a64f7b9)
-    Signature Algorithm: SHA256-RSA
-        Issuer: O=the-ranch,CN=cattle-ca
-        Validity
-            Not Before: Mar 19 08:51:53 2019 UTC
-            Not After : Mar 18 08:53:05 2020 UTC
-        Subject: O=the-ranch,CN=cattle
-        Subject Public Key Info:
-            Public Key Algorithm: RSA
-                Public-Key: (2048 bit)
-                Modulus:
-                    c1:33:e9:64:5d:a6:23:a8:4e:c1:3c:2f:97:1b:2c:
-                    ad:27:17:1c:e4:bf:a9:e0:45:96:ae:e6:2e:96:28:
-                    f9:f5:dd:aa:97:12:1c:14:84:6b:15:df:f3:56:33:
-                    27:5b:70:fe:5a:be:65:6d:25:df:92:55:17:82:97:
-                    a4:2e:07:d4:56:de:48:3c:21:c9:ae:f4:66:5d:30:
-                    8e:7a:a6:89:b6:41:b9:27:15:44:4d:37:64:84:3d:
-                    e3:70:85:b5:aa:74:83:71:c9:81:e3:2c:c9:1f:5b:
-                    3b:13:1d:3a:37:cf:be:be:45:da:b7:36:2d:71:29:
-                    86:fc:ba:91:10:44:f2:b0:0d:97:dc:9b:5f:55:7f:
-                    7e:fa:85:d4:b0:61:b0:63:68:e7:8c:75:83:0c:1e:
-                    21:a4:0d:78:ff:97:53:ca:f4:92:cb:a0:02:8b:f1:
-                    04:7c:63:2a:e9:d8:da:fe:77:61:c9:d0:d8:6a:f5:
-                    11:b2:bf:cb:46:fa:9a:59:f0:24:97:39:58:eb:ce:
-                    21:53:b4:b4:5e:c6:f3:d7:1e:8f:e8:54:b4:86:5a:
-                    62:e3:0c:5a:9f:24:ca:02:2b:ad:76:a4:f8:8f:87:
-                    f4:fe:06:38:31:e8:13:6f:07:26:6e:74:08:eb:4c:
-                    a4:34:1e:ff:99:f1:c6:c2:c7:e9:7f:df:cc:66:1b:
-                    29
-                Exponent: 65537 (0x10001)
-        X509v3 extensions:
-            X509v3 Key Usage: critical
-                Digital Signature, Key Encipherment
-            X509v3 Extended Key Usage:
-                TLS Web Server Authentication
-            X509v3 Subject Alternative Name:
-                DNS:
-                IP Address:192.168.0.157
-
-    Signature Algorithm: SHA256-RSA
-         74:6a:32:54:e2:89:35:94:e1:22:35:4e:58:d9:74:dc:6c:9b:
-         83:03:99:b5:0d:99:09:64:95:75:93:4c:c9:eb:b1:ab:5a:4a:
-         c3:b7:b6:78:34:16:ad:5d:2f:a5:5c:c3:0b:15:10:a1:d4:de:
-         22:ee:df:18:36:96:0c:ed:c4:ad:28:15:d7:1e:40:5b:7c:d1:
-         1c:53:d3:57:0b:47:4b:ae:b7:e8:e0:7c:29:3b:6d:63:b4:29:
-         cc:0a:bd:58:c3:a4:bf:5d:55:83:ec:96:0f:f3:af:dd:c6:fe:
-         90:b4:7a:71:d1:48:2f:5d:ac:59:8d:98:c2:d8:bd:81:92:63:
-         5d:75:bf:cc:25:01:c2:40:d8:8d:a5:de:59:b3:8d:59:e1:10:
-         d0:0d:29:ec:a4:97:7b:65:3a:00:d0:2a:13:1a:06:8f:aa:a1:
-         98:88:0d:87:fe:4b:83:4e:d2:bc:8c:33:fd:6c:f6:65:49:ec:
-         a1:fc:e7:d3:46:59:eb:af:fe:b8:e7:66:3c:83:10:be:d1:1d:
-         97:55:72:aa:34:2d:6b:d0:3b:dc:92:f9:18:d5:6c:25:bb:30:
-         c2:81:06:d5:12:b0:50:3d:a0:be:de:fa:42:2c:f6:ca:6b:3c:
-         af:89:1e:42:a1:8a:93:2b:06:fc:52:35:c1:c8:f4:41:96:c9:
-         51:3f:4d:d6
-] 
-Do you want to continue connecting (yes/no)? yes
-INFO[0004] Saving config to /root/.rancher/cli2.json    			
-			]]>
-			</screen>
-		</section>
-		<section>
-			<title>查看集群</title>
-			<screen>
-			<![CDATA[
-[root@localhost ~]# rancher clusters
-CURRENT   ID        STATE     NAME      PROVIDER                    NODES     CPU       RAM             PODS
-*         c-b554b   active    test      Rancher Kubernetes Engine   1         0.54/8    0.14/15.57 GB   9/110			
-			]]>
-			</screen>
-		</section>
-		<section>
-			<title>查看节点</title>
-			<screen>
-			<![CDATA[
-[root@localhost ~]# rancher node
-ID                       NAME      STATE         POOL      DESCRIPTION
-c-b554b:m-6353a97eb992   ubuntu    unavailable      			
-			]]>
-			</screen>
-		</section>
-		<section>
-			<title>catalog</title>
-			<screen>
-			<![CDATA[
-[root@localhost ~]# rancher catalog
-ID        NAME      URL                                                 BRANCH    KIND
-helm      helm      https://kubernetes-charts.storage.googleapis.com/   master    helm
-library   library   https://git.rancher.io/charts                       master    helm			
-			]]>
-			</screen>
-		</section>
-		<section>
-			<title>查看设置</title>
-			<screen>
-			<![CDATA[
-[root@localhost ~]# rancher settings
-ID               NAME             VALUE
-agent-image      agent-image      rancher/rancher-agent:v2.1.6
-api-ui-version   api-ui-version   1.1.6
-cacerts          cacerts          -----BEGIN CERTIFICATE-----
-MIIC7jCCAdagAwIBAgIBADANBgkqhkiG9w0BAQsFADAoMRIwEAYDVQQKEwl0aGUt
-cmFuY2gxEjAQBgNVBAMTCWNhdHRsZS1jYTAeFw0xOTAzMTkwODUxNTNaFw0yOTAz
-MTYwODUxNTNaMCgxEjAQBgNVBAoTCXRoZS1yYW5jaDESMBAGA1UEAxMJY2F0dGxl
-LWNhMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2j/x0F+VpdPHv6ce
-zKYAcGeGDjHfv8YL4Q6NpO4m6N3z3WwC9e9qNq062TGWml3q3xIu0ll229vTXYZG
-YaW7hdIYdNcgE4d2DSFiM0rV2CCiBheAidcvGWTmVuRqDaH7+ofxUeuz940osjcY
-GKYkugUnPA9n6cXRF8KF9a6d6t2Kcwqyd3A5c5ld+lPsu2u6lbJhJArdGWmi8Iiq
-CpkgmPyabCJhpF/YRtLfZ6+mQ0SpcapAuVvXiSGyHjnXykxywthSnTHgSJp48SV7
-XCYJx5skU4rqKOWRgwfgQLWnLdV6kWLTH7EE+aiBwt2lygZUR3Ekpr3rXe7Q+dHh
-ygOYVwIDAQABoyMwITAOBgNVHQ8BAf8EBAMCAqQwDwYDVR0TAQH/BAUwAwEB/zAN
-BgkqhkiG9w0BAQsFAAOCAQEAMfDWlobAEGKvhLW380JA93IcafbQGgTLyhBglqwF
-B4SBj56ZTki2mZrccUZXYKzIPTRwY39cnBakjkkczm4Hkci3Ag+4hz9g5mJWAa/H
-mYrxNEdUJNiih7RNwBne0MaLSHH1MjBfmCSExCJkqlXuD4XXY7dJ05ZQ6urWB2ZI
-lC7oqwGUxnvDSEMONHLTNQy+5yA+jSae9holJ5kpvEq6vE9A1PoUg4/leHZXsI5L
-h+gDJX+WbAn5rdyDB0F4XJxn/glQPGxFNib8EUGt4b58re4x9A8ZaVbzL+KEKrS1
-7QO13jU95Cy5+FA5GKO3YILrkvCFIoEaRe83jlbiQZSSaw==
------END CERTIFICATE-----
-cli-url-darwin            cli-url-darwin            https://releases.rancher.com/cli2/v2.0.6/rancher-darwin-amd64-v2.0.6.tar.gz
-cli-url-linux             cli-url-linux             https://releases.rancher.com/cli2/v2.0.6/rancher-linux-amd64-v2.0.6.tar.gz
-cli-url-windows           cli-url-windows           https://releases.rancher.com/cli2/v2.0.6/rancher-windows-386-v2.0.6.zip
-engine-install-url        engine-install-url        https://releases.rancher.com/install-docker/17.03.sh
-engine-iso-url            engine-iso-url            https://releases.rancher.com/os/latest/rancheros-vmware.iso
-engine-newest-version     engine-newest-version     v17.12.0
-engine-supported-range    engine-supported-range    ~v1.11.2 || ~v1.12.0 || ~v1.13.0 || ~v17.03.0
-first-login               first-login               false
-helm-version              helm-version              v2.10.0-rancher5
-ingress-ip-domain         ingress-ip-domain         xip.io
-install-uuid              install-uuid              6002fd6a-f4ae-454b-a17b-f90c64aafa2a
-k8s-version               k8s-version               v1.11.6-rancher1-1
-k8s-version-to-images     k8s-version-to-images     {"v1.10.12-rancher1-1":null,"v1.11.6-rancher1-1":null,"v1.12.4-rancher1-1":null,"v1.9.7-rancher2-2":null}
-machine-version           machine-version           v0.15.0-rancher1-1
-namespace                 namespace                 
-peer-service              peer-service              
-rdns-base-url             rdns-base-url             https://api.lb.rancher.cloud/v1
-rke-version               rke-version               v0.1.15
-server-image              server-image              rancher/rancher
-server-url                server-url                https://192.168.0.157
-server-version            server-version            v2.1.6
-system-default-registry   system-default-registry   
-system-namespaces         system-namespaces         kube-system,kube-public,cattle-system,cattle-alerting,cattle-logging,cattle-pipeline,ingress-nginx
-telemetry-opt             telemetry-opt             in
-telemetry-uid             telemetry-uid             bf1dd7d1-e0ed-475e-9dfe-e9af2d71f9b3
-ui-feedback-form          ui-feedback-form          
-ui-index                  ui-index                  https://releases.rancher.com/ui/latest2/index.html
-ui-path                   ui-path                   /usr/share/rancher/ui
-ui-pl                     ui-pl                     rancher
-whitelist-domain          whitelist-domain          forums.rancher.com
-windows-agent-image       windows-agent-image       rancher/rancher-agent:v2.1.6-nanoserver-1803
-			
-			]]>
-			</screen>
 		</section>
 	</section>
 	<section>
@@ -459,57 +133,27 @@ rancher-compose --url https://rancher.netkiller.cn/v3 --access-key token-pk9n2 -
 			</screen>
 		</section>
 	</section>
+	&section.rancher.cli.xml;
+	&section.rancher.example.xml;
 	<section>
-		<title>Rancher Kubernetes Engine (RKE)</title>
-		<para>
-			<ulink url="https://github.com/rancher/rke/releases" />
-		</para>
-		<para>https://rancher.com/an-introduction-to-rke/</para>
-		<screen>
-		<![CDATA[
-[root@localhost ~]# wget https://github.com/rancher/rke/releases/download/v0.1.17/rke
-[root@localhost ~]# chmod +x rke 
-[root@localhost ~]# ./rke --version
-rke version v0.1.17		
-		]]>
-		</screen>
-		<para></para>
-		<screen>
-		<![CDATA[
-
-		]]>
-		</screen>
-	</section>
-
-
-	<section id="rancher.cli">
-		<title>Rancher CLI</title>
-		<screen>
-		<![CDATA[
-rancher export project && cd project &&  rancher up -p --force-upgrade --batch-size 99 -u -c -d && cd .. && rm -rf project
-		]]>
-		</screen>
-	</section>
-
-	<section>
-		<title>调试</title>
-		<screen>
+		<title>FAQ</title>
+		<section>
+			<title>调试 Rancher 查看日志</title>
+			<screen>
 		<![CDATA[
 neo@ubuntu:~$ docker logs -f rancher		
 		]]>
-		</screen>
+			</screen>
 
-		<screen>
+			<screen>
 		<![CDATA[
 $ curl -L http://127.0.0.1:2379/health
 
 {"health": "true"}
 		
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>FAQ</title>
+			</screen>
+		</section>
 		<section>
 			<title> [network] Host [rancher.netkiller.cn] is not able to connect to the following ports: [rancher.netkiller.cn:2379]. Please check network policies and firewall rules</title>
 			<para>提示错误</para>

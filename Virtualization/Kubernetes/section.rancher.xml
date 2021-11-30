@@ -1,1 +1,219 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<section>
+	<title>安装 Rancher</title>
+	<section>
+		<title>Rancher Server</title>
+		<para>如果只是学习，可以安装最新版</para>
+		<screen>
+		<![CDATA[
+docker run -d --restart=unless-stopped -p 80:80 -p 443:443 --name=rancher rancher/rancher:latest
+		]]>
+		</screen>
+		<para>稳定版</para>
+		<screen>
+		<![CDATA[
+docker run -d --privileged --restart=unless-stopped -p 80:80 -p 443:443 -v /var/lib/rancher/:/var/lib/rancher/ --name=rancher rancher/rancher:stable
+		]]>
+		</screen>
+		<para>审计日志</para>
+		<screen>
+		<![CDATA[
+docker run -d --restart=unless-stopped -p 80:80 -p 443:443 -v /var/lib/rancher/:/var/lib/rancher/ -v /var/log/auditlog:/var/log/auditlog --name=rancher rancher/rancher:stable
+		]]>
+		</screen>
+		<para>防火墙放行 etcd </para>
+		<screen>
+		<![CDATA[
+iptables -I INPUT -s 172.16.0.0/0 -p tcp --dport 2379 -j ACCEPT
+iptables -I INPUT -s 172.16.0.0/0 -p tcp --dport 2380 -j ACCEPT		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+systemctl restart firewalld
+systemctl enable firewalld
+
+iptables -A INPUT -p tcp --dport 6443 -j ACCEPT
+iptables -A INPUT -p tcp --dport 2379 -j ACCEPT
+iptables -A INPUT -p tcp --dport 2380 -j ACCEPT
+iptables -A INPUT -p tcp --dport 10250 -j ACCEPT
+
+firewall-cmd --zone=public --add-port=6443/tcp --permanent
+firewall-cmd --zone=public --add-port=2379/tcp --permanent
+firewall-cmd --zone=public --add-port=2380/tcp --permanent
+firewall-cmd --zone=public --add-port=10250/tcp --permanent
+firewall-cmd --reload			
+		]]>
+		</screen>
+		<!-- $ sudo ufw disable -->
+		<screen>
+		<![CDATA[
+hostnamectl set-hostname m-1d41c853af58
+		]]>
+		</screen>
+		<section>
+			<title>Web UI</title>
+			<para>安装完之后运行下面命令查看密码</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# docker logs rancher 2>&1 | grep "Bootstrap Password:"
+2021/11/26 10:27:14 [INFO] Bootstrap Password: wkz68vmmx4gqfwxwzq4vxrzl5zgjqxlmxkfwkdltmpkxl5clqc9dw9
+			]]>
+			</screen>
+			<para>浏览器输入 https://your-ip-address 即可进入WebUI</para>
+			<graphic format="png" fileref="../images/rancher/password.png" width="800" srccredit="neo" />
+			<para>设置密码</para>
+			<graphic format="png" fileref="../images/rancher/randomly.png" width="800" srccredit="neo" />
+		</section>
+		<section>
+			<title>SSL 证书</title>
+			<para>第一种方式</para>
+			<screen>
+			<![CDATA[
+docker run -d -p 8443:443 -v /srv/rancher/cacerts.pem:/etc/rancher/ssl/cacerts.pem -v /srv/rancher/key.pem:/etc/rancher/ssl/key.pem -v /srv/rancher/cert.crt:/etc/rancher/ssl/cert.pem rancher/rancher:latest
+			]]>
+			</screen>
+			<para>第二种方式</para>
+			<screen>
+			<![CDATA[
+docker run -d --name rancher-server rancher/rancher:latest			
+docker run -d --name=nginx --restart=unless-stopped -p 80:80 -p 443:443 -v /your_certificates:/your_certificates -v /etc/nginx.conf:/etc/nginx/conf.d/default.conf --link=rancher-server nginx:1.11			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>进入容器</title>
+			<screen>
+			<![CDATA[
+$ docker exec -it rancher /bin/bash 			
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>Rancher Kubernetes Engine (RKE)</title>
+		<para>
+			<ulink url="https://github.com/rancher/rke/releases" />
+		</para>
+		<para>https://rancher.com/an-introduction-to-rke/</para>
+		<section>
+			<title>安装 RKE</title>
+			<section>
+				<title>v1.3.2</title>
+				<screen>
+			<![CDATA[
+cd /usr/local/src/
+wget https://github.com/rancher/rke/releases/download/v1.3.2/rke_linux-amd64
+mkdir -p /srv/rancher/bin
+install rke_linux-amd64 /srv/rancher/bin/			
+			]]>
+				</screen>
+			</section>
+			<section>
+				<title>v0.1.17</title>
+				<screen>
+				<![CDATA[
+[root@localhost ~]# wget https://github.com/rancher/rke/releases/download/v0.1.17/rke
+[root@localhost ~]# chmod +x rke 
+[root@localhost ~]# ./rke --version
+rke version v0.1.17		
+				]]>
+				</screen>
+			</section>
+		</section>
+		<section>
+			<title>配置 RKE</title>
+			<para></para>
+			<screen>
+		<![CDATA[
+[root@localhost ~]# /srv/rancher/bin/rke_linux-amd64 config
+[+] Cluster Level SSH Private Key Path [~/.ssh/id_rsa]: 
+		]]>
+			</screen>
+		</section>
+		<section>
+			<title>启动 RKE</title>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# /srv/rancher/bin/rke_linux-amd64 up			
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>Rancher CLI</title>
+		<para>http://mirror.cnrancher.com</para>
+		<screen>
+			<![CDATA[
+cd /usr/local/src
+wget http://rancher-mirror.cnrancher.com/cli/v2.4.13/rancher-linux-amd64-v2.4.13.tar.xz
+tar Jxvf rancher-linux-amd64-v2.4.13.tar.xz
+install rancher-v2.4.13/rancher /usr/local/bin/
+			]]>
+		</screen>
+		<para></para>
+		<screen>
+			<![CDATA[
+[root@localhost src]# rancher
+Rancher CLI, managing containers one UTF-8 character at a time
+
+Usage: rancher [OPTIONS] COMMAND [arg...]
+
+Version: v2.4.13
+
+Options:
+  --debug                   Debug logging
+  --config value, -c value  Path to rancher config (default: "/root/.rancher") [$RANCHER_CONFIG_DIR]
+  --help, -h                show help
+  --version, -v             print the version
+  
+Commands:
+  apps, [app]                                       Operations with apps. Uses helm. Flags prepended with "helm" can also be accurately described by helm documentation.
+  catalog                                           Operations with catalogs
+  clusters, [cluster]                               Operations on clusters
+  context                                           Operations for the context
+  globaldns                                         Operations on global DNS providers and entries
+  inspect                                           View details of resources
+  kubectl                                           Run kubectl commands
+  login, [l]                                        Login to a Rancher server
+  multiclusterapps, [multiclusterapp mcapps mcapp]  Operations with multi-cluster apps
+  namespaces, [namespace]                           Operations on namespaces
+  nodes, [node]                                     Operations on nodes
+  projects, [project]                               Operations on projects
+  ps                                                Show workloads in a project
+  server                                            Operations for the server
+  settings, [setting]                               Show settings for the current server
+  ssh                                               SSH into a node
+  up                                                apply compose config
+  wait                                              Wait for resources cluster, app, project, multiClusterApp
+  token                                             Authenticate and generate new kubeconfig token
+  help, [h]                                         Shows a list of commands or help for one command
+  
+Run 'rancher COMMAND --help' for more information on a command.
+			
+			]]>
+		</screen>
+	</section>
+	<section id="rancher-compose">
+		<title>rancher-compose</title>
+		<para>Rancher Compose是一个多主机版本的Docker Compose</para>
+		<para>
+			下载地址：
+			<ulink url="https://github.com/rancher/rancher-compose/releases" />
+		</para>
+		<section>
+			<title>v0.12.5</title>
+			<screen>
+			<![CDATA[
+cd /tmp
+
+wget https://github.com/rancher/rancher-compose/releases/download/v0.12.5/rancher-compose-linux-amd64-v0.12.5.tar.xz
+tar Jxvf rancher-compose-linux-amd64-v0.12.5.tar.xz
+mv ./rancher-compose-v0.12.5/rancher-compose /usr/local/bin/
+
+cd
+			]]>
+			</screen>
+		</section>
+	</section>
+</section>
