@@ -6,7 +6,7 @@
 		<para>如果只是学习，可以安装最新版</para>
 		<screen>
 		<![CDATA[
-docker run -d --restart=unless-stopped -p 80:80 -p 443:443 --name=rancher rancher/rancher:latest
+docker run -d --privileged --restart=unless-stopped -p 80:80 -p 443:443 --name=rancher rancher/rancher:latest
 		]]>
 		</screen>
 		<para>稳定版</para>
@@ -21,15 +21,17 @@ docker run -d --privileged --restart=unless-stopped -p 80:80 -p 443:443 -v /var/
 docker run -d --restart=unless-stopped -p 80:80 -p 443:443 -v /var/lib/rancher/:/var/lib/rancher/ -v /var/log/auditlog:/var/log/auditlog --name=rancher rancher/rancher:stable
 		]]>
 		</screen>
-		<para>防火墙放行 etcd </para>
-		<screen>
-		<![CDATA[
+		<section>
+			<title>防火墙配置</title>
+			<para>防火墙放行 etcd </para>
+			<screen>
+			<![CDATA[
 iptables -I INPUT -s 172.16.0.0/0 -p tcp --dport 2379 -j ACCEPT
 iptables -I INPUT -s 172.16.0.0/0 -p tcp --dport 2380 -j ACCEPT		
-		]]>
-		</screen>
-		<screen>
-		<![CDATA[
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
 systemctl restart firewalld
 systemctl enable firewalld
 
@@ -43,14 +45,15 @@ firewall-cmd --zone=public --add-port=2379/tcp --permanent
 firewall-cmd --zone=public --add-port=2380/tcp --permanent
 firewall-cmd --zone=public --add-port=10250/tcp --permanent
 firewall-cmd --reload			
-		]]>
-		</screen>
-		<!-- $ sudo ufw disable -->
-		<screen>
-		<![CDATA[
+			]]>
+			</screen>
+			<!-- $ sudo ufw disable -->
+			<screen>
+			<![CDATA[
 hostnamectl set-hostname m-1d41c853af58
-		]]>
-		</screen>
+			]]>
+			</screen>
+		</section>
 		<section>
 			<title>Web UI</title>
 			<para>安装完之后运行下面命令查看密码</para>
@@ -142,17 +145,20 @@ rke version v0.1.17
 	</section>
 	<section>
 		<title>Rancher CLI</title>
-		<para>http://mirror.cnrancher.com</para>
-		<screen>
+		<section>
+			<title>二进制安装</title>
+
+			<para>http://mirror.cnrancher.com</para>
+			<screen>
 			<![CDATA[
 cd /usr/local/src
 wget http://rancher-mirror.cnrancher.com/cli/v2.4.13/rancher-linux-amd64-v2.4.13.tar.xz
 tar Jxvf rancher-linux-amd64-v2.4.13.tar.xz
 install rancher-v2.4.13/rancher /usr/local/bin/
 			]]>
-		</screen>
-		<para></para>
-		<screen>
+			</screen>
+			<para></para>
+			<screen>
 			<![CDATA[
 [root@localhost src]# rancher
 Rancher CLI, managing containers one UTF-8 character at a time
@@ -192,7 +198,20 @@ Commands:
 Run 'rancher COMMAND --help' for more information on a command.
 			
 			]]>
-		</screen>
+			</screen>
+		</section>
+		<section>
+			<title>Mac 安装</title>
+			<screen>
+			<![CDATA[
+Neo-iMac:~ neo$ brew install rancher-cli
+
+Neo-iMac:~ neo$ rancher -v
+rancher version 2.4.13
+			]]>
+			</screen>
+		</section>
+		
 	</section>
 	<section id="rancher-compose">
 		<title>rancher-compose</title>

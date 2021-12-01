@@ -801,7 +801,16 @@ kubectl logs --previous <pod-name>
 		]]>
 		</screen>
 	</section>
-
+	<section id="kubectl.endpoints">
+		<title>endpoints</title>
+		<screen>
+		<![CDATA[
+Neo-iMac:kubernetes neo$ rancher kubectl get endpoints nginx
+NAME    ENDPOINTS                                   AGE
+nginx   10.42.0.19:80,10.42.0.20:80,10.42.0.21:80   3m56s		
+		]]>
+		</screen>
+	</section>
 	<section id="kubectl.exec">
 		<title>执行 Shell</title>
 		<para>进入容器内部.</para>

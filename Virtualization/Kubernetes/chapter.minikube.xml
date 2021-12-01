@@ -132,6 +132,13 @@ $ minikube start —vm-driver=virtualbox
 $ minikube dashboard			
 			]]>
 			</screen>
+			<para>检查 minikube 启动状态</para>
+			<programlisting>
+			<![CDATA[
+Neo-iMac:~ neo$ docker container inspect minikube --format={{.State.Status}}
+running			
+			]]>
+			</programlisting>
 		</section>
 	</section>
 	<section id="minikube.Quickstart">
@@ -259,12 +266,18 @@ Flags:
 Use "minikube [command] --help" for more information about a command.			
 			]]>
 		</screen>
-		<section>
+		<section id="minikube.ip">
 			<title>minikube ip 地址</title>
 			<screen>
 			<![CDATA[
 [docker@localhost ~]$ minikube ip
 192.168.58.2
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+kubectl get nodes -o jsonpath='{.items[*].status.addresses[].address}'			
 			]]>
 			</screen>
 		</section>
@@ -397,7 +410,7 @@ Machine stopped.
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="minikube.docker-env">
 			<title>Docker 环境变量</title>
 			<screen>
 			<![CDATA[
@@ -436,7 +449,7 @@ $
 			</screen>
 		</section>
 
-		<section>
+		<section id="minikube.cache">
 			<title>缓存镜像</title>
 			<screen>
 			<![CDATA[
@@ -456,7 +469,7 @@ $ minikube cache delete $(minikube cache list)
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="minikube.delete">
 			<title>清理 minikube</title>
 			<screen>
 			<![CDATA[
@@ -466,7 +479,7 @@ minikube start
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="minikube.dashboard">
 			<title>Kubernetes 控制面板</title>
 			<para>Dashboard是基于Web的Kubernetes管理界面。使用下面的命令启动：</para>
 			<screen>
@@ -482,9 +495,46 @@ http://192.168.3.14:30000
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="minikube.service">
 			<title>service</title>
-			<para></para>
+			<para>列出所有服务</para>
+			<screen>
+			<![CDATA[
+Neo-iMac:~ neo$ minikube service list
+|----------------------|------------------------------------|--------------|-----|
+|      NAMESPACE       |                NAME                | TARGET PORT  | URL |
+|----------------------|------------------------------------|--------------|-----|
+| default              | kubernetes                         | No node port |
+| default              | nginx                              |           80 |     |
+| ingress-nginx        | ingress-nginx-controller           | http/80      |     |
+|                      |                                    | https/443    |     |
+| ingress-nginx        | ingress-nginx-controller-admission | No node port |
+| kube-system          | kube-dns                           | No node port |
+| kubernetes-dashboard | dashboard-metrics-scraper          | No node port |
+| kubernetes-dashboard | kubernetes-dashboard               | No node port |
+|----------------------|------------------------------------|--------------|-----|			
+			]]>
+			</screen>
+			<para>查看指定服务</para>
+			<screen>
+			<![CDATA[
+Neo-iMac:~ neo$ minikube service nginx
+|-----------|-------|-------------|---------------------------|
+| NAMESPACE | NAME  | TARGET PORT |            URL            |
+|-----------|-------|-------------|---------------------------|
+| default   | nginx |          80 | http://192.168.49.2:30330 |
+|-----------|-------|-------------|---------------------------|
+🏃  Starting tunnel for service nginx.
+|-----------|-------|-------------|------------------------|
+| NAMESPACE | NAME  | TARGET PORT |          URL           |
+|-----------|-------|-------------|------------------------|
+| default   | nginx |             | http://127.0.0.1:55815 |
+|-----------|-------|-------------|------------------------|
+🎉  Opening service default/nginx in default browser...
+❗  Because you are using a Docker driver on darwin, the terminal needs to be open to run it.			
+			]]>
+			</screen>
+			 <para>查看服务的网址</para>
 			<screen>
 			<![CDATA[
 [root@localhost ~]# minikube service hello-minikube --url
@@ -492,7 +542,7 @@ http://172.16.0.121:30436
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="minikube.logs">
 			<title>查看日志</title>
 			<screen>
 			<![CDATA[
@@ -500,11 +550,19 @@ minikube logs -v10
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="minikube.docker-env">
 			<title>查看 Docker 环境变量</title>
+			<para>minikube docker-env</para>
 			<screen>
 			<![CDATA[
-minikube docker-env
+Neo-iMac:~ neo$ minikube docker-env
+export DOCKER_TLS_VERIFY="1"
+export DOCKER_HOST="tcp://127.0.0.1:54734"
+export DOCKER_CERT_PATH="/Users/neo/.minikube/certs"
+export MINIKUBE_ACTIVE_DOCKERD="minikube"
+
+# To point your shell to minikube's docker-daemon, run:
+# eval $(minikube -p minikube docker-env)
 			]]>
 			</screen>
 		</section>
@@ -668,14 +726,18 @@ $ docker push 10.0.0.240/busybox
 				<title>启用 ingress</title>
 				<screen>
 				<![CDATA[
-iMac:kubernetes neo$ minikube addons enable ingress				
+Neo-iMac:~ neo$ minikube addons enable ingress
+💡  After the addon is enabled, please run "minikube tunnel" and your ingress resources would be available at "127.0.0.1"
+    ▪ Using image registry.cn-hangzhou.aliyuncs.com/google_containers/kube-webhook-certgen:v1.1.1
+    ▪ Using image registry.cn-hangzhou.aliyuncs.com/google_containers/kube-webhook-certgen:v1.1.1
+    ▪ Using image registry.cn-hangzhou.aliyuncs.com/google_containers/nginx-ingress-controller:v1.0.4
+🔎  Verifying ingress addon...
+🌟  The 'ingress' addon is enabled				
 				]]>
 				</screen>
 				<para>运行一个简单的demo</para>
-
 				<screen>
 				<![CDATA[
-
 运行 nginx 服务
 kubectl run nginx --image=nginx --port=80
 暴露服务
@@ -701,8 +763,7 @@ spec:
 运行 
 kubectl apply -f ingress.yaml
 
-配置本机host
-获取minikube ip 对吹成
+配置本机host获取minikube ip 
  
 [docker@localhost ~]$ minikube ip
 192.168.58.2
@@ -773,6 +834,10 @@ kube-system     storage-provisioner                         1/1     Running     
 			]]>
 			</screen>
 		</section>
+	</section>
+	<section>
+		<title>Minikube 案例演示</title>
+		
 	</section>
 	<section id="minikube.faq">
 		<title>FAQ</title>
@@ -1062,6 +1127,99 @@ kubernetes-dashboard   kubernetes-dashboard-7bf64fd654-ckr7v        0/1     Imag
 			<![CDATA[
 [docker@localhost ~]$ kubectl logs --namespace=kubernetes-dashboard kubernetes-dashboard-7bf64fd654-ckr7v
 Error from server (BadRequest): container "kubernetes-dashboard" in pod "kubernetes-dashboard-7bf64fd654-ckr7v" is waiting to start: trying and failing to pull image			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Mac minikube ip 不通，ingress 不工作</title>
+			<screen>
+			<![CDATA[
+minikube start --image-mirror-country=cn --insecure-registry="registry.netkiller.cn" --cache-images=true			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+Neo-iMac:~ neo$ kubectl get pods -n ingress-nginx
+NAME                                        READY   STATUS      RESTARTS   AGE
+ingress-nginx-admission-create--1-qpckk     0/1     Completed   0          18h
+ingress-nginx-admission-patch--1-5x94l      0/1     Completed   0          18h
+ingress-nginx-controller-78d858bdc7-nrszs   1/1     Running     1          18h
+
+Neo-iMac:~ neo$ kubectl create deployment web --image=nginx:latest
+deployment.apps/web created
+
+Neo-iMac:~ neo$ kubectl expose deployment web --type=NodePort --port=80
+service/web exposed
+
+Neo-iMac:~ neo$ kubectl get service web
+NAME   TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+web    NodePort   10.109.55.204   <none>        8080:30857/TCP   19s
+
+Neo-iMac:~ neo$ minikube service web --url
+🏃  Starting tunnel for service web.
+|-----------|------|-------------|------------------------|
+| NAMESPACE | NAME | TARGET PORT |          URL           |
+|-----------|------|-------------|------------------------|
+| default   | web  |             | http://127.0.0.1:62956 |
+|-----------|------|-------------|------------------------|
+http://127.0.0.1:62956
+❗  Because you are using a Docker driver on darwin, the terminal needs to be open to run it.			
+			]]>
+			</screen>
+			<para>ingress.yaml</para>
+			<screen>
+			<![CDATA[
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx
+  annotations:
+    kubernetes.io/ingress.class: nginx  
+spec:
+  rules:
+    - host: www.netkiller.cn
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: web
+                port:
+                  number: 80			
+			]]>
+			</screen>
+			<para>http://www.netkiller.cn 无法访问，解决方案 minikube tunnel</para>
+			<screen>
+			<![CDATA[
+Neo-iMac:~ neo$ minikube tunnel
+❗  The service/ingress example-ingress requires privileged ports to be exposed: [80 443]
+🔑  sudo permission will be asked for it.
+🏃  Starting tunnel for service example-ingress.
+Password:			
+			]]>
+			</screen>
+			<para>如果注意观察，在启动的时候系统已经提示：After the addon is enabled, please run "minikube tunnel" and your ingress resources would be available at "127.0.0.1"</para>
+			<screen>
+			<![CDATA[
+Neo-iMac:nginx neo$ minikube start --image-mirror-country=cn --insecure-registry="registry.netkiller.cn" --cache-images=true
+😄  minikube v1.24.0 on Darwin 12.0.1
+✨  Using the docker driver based on existing profile
+👍  Starting control plane node minikube in cluster minikube
+🚜  Pulling base image ...
+🔄  Restarting existing docker container for "minikube" ...
+🐳  Preparing Kubernetes v1.22.3 on Docker 20.10.8 ...
+🔎  Verifying Kubernetes components...
+💡  After the addon is enabled, please run "minikube tunnel" and your ingress resources would be available at "127.0.0.1"
+    ▪ Using image registry.cn-hangzhou.aliyuncs.com/google_containers/dashboard:v2.3.1
+    ▪ Using image registry.cn-hangzhou.aliyuncs.com/google_containers/storage-provisioner:v5
+    ▪ Using image registry.cn-hangzhou.aliyuncs.com/google_containers/nginx-ingress-controller:v1.0.4
+    ▪ Using image registry.cn-hangzhou.aliyuncs.com/google_containers/metrics-scraper:v1.0.7
+    ▪ Using image registry.cn-hangzhou.aliyuncs.com/google_containers/kube-webhook-certgen:v1.1.1
+    ▪ Using image registry.cn-hangzhou.aliyuncs.com/google_containers/kube-webhook-certgen:v1.1.1
+🔎  Verifying ingress addon...
+🌟  Enabled addons: dashboard, storage-provisioner, default-storageclass, ingress
+🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default			
 			]]>
 			</screen>
 		</section>

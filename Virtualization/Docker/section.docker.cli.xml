@@ -4,6 +4,145 @@
 	<title>docker 命令</title>
 	<section>
 		<title>docker - A self-sufficient runtime for containers</title>
+		<section>
+			<title>连接远程主机</title>
+			<para>TCP 2375</para>
+			<screen>
+			<![CDATA[
+Neo-iMac:~ neo$ docker -H 192.168.30.10:2375 info			
+			]]>
+			</screen>
+			<para>SSH 方式</para>
+			<screen>
+			<![CDATA[
+Neo-iMac:~ neo$ docker -H ssh://root@192.168.30.13 info
+
+Client:
+ Context:    default
+ Debug Mode: false
+ Plugins:
+  buildx: Build with BuildKit (Docker Inc., v0.6.3)
+  compose: Docker Compose (Docker Inc., v2.1.1)
+  scan: Docker Scan (Docker Inc., 0.9.0)
+
+Server:
+ Containers: 3
+  Running: 2
+  Paused: 0
+  Stopped: 1
+ Images: 178
+ Server Version: 20.10.11
+ Storage Driver: overlay2
+  Backing Filesystem: xfs
+  Supports d_type: true
+  Native Overlay Diff: true
+  userxattr: false
+ Logging Driver: json-file
+ Cgroup Driver: cgroupfs
+ Cgroup Version: 1
+ Plugins:
+  Volume: local
+  Network: bridge host ipvlan macvlan null overlay
+  Log: awslogs fluentd gcplogs gelf journald json-file local logentries splunk syslog
+ Swarm: inactive
+ Runtimes: io.containerd.runtime.v1.linux runc io.containerd.runc.v2
+ Default Runtime: runc
+ Init Binary: docker-init
+ containerd version: 7b11cfaabd73bb80907dd23182b9347b4245eb5d
+ runc version: v1.0.2-0-g52b36a2
+ init version: de40ad0
+ Security Options:
+  seccomp
+   Profile: default
+ Kernel Version: 4.18.0-338.el8.x86_64
+ Operating System: CentOS Stream 8
+ OSType: linux
+ Architecture: x86_64
+ CPUs: 4
+ Total Memory: 7.514GiB
+ Name: localhost.localdomain
+ ID: XGEY:2L25:2GTC:LGK5:3D7D:TC5B:EBBU:5GZJ:VDZ2:S67Z:T7VK:O7WD
+ Docker Root Dir: /var/lib/docker
+ Debug Mode: false
+ Registry: https://index.docker.io/v1/
+ Labels:
+ Experimental: false
+ Insecure Registries:
+  registry.netkiller.cn
+  127.0.0.0/8
+ Registry Mirrors:
+  https://registry.cn-hangzhou.aliyuncs.com/
+  https://docker.mirrors.ustc.edu.cn/
+  https://registry.docker-cn.com/
+  http://hub-mirror.c.163.com/
+ Live Restore Enabled: false			
+			]]>
+			</screen>
+			<para>设置 DOCKER_HOST 环境变量</para>
+			<screen>
+			<![CDATA[
+Neo-iMac:~ neo$ export DOCKER_HOST=tcp://192.168.30.10:2375
+Neo-iMac:~ neo$ docker info
+Client:
+ Context:    default
+ Debug Mode: false
+ Plugins:
+  buildx: Build with BuildKit (Docker Inc., v0.6.3)
+  compose: Docker Compose (Docker Inc., v2.1.1)
+  scan: Docker Scan (Docker Inc., 0.9.0)
+
+Server:
+ Containers: 11
+  Running: 11
+  Paused: 0
+  Stopped: 0
+ Images: 11
+ Server Version: 20.10.10
+ Storage Driver: overlay2
+  Backing Filesystem: xfs
+  Supports d_type: true
+  Native Overlay Diff: true
+  userxattr: false
+ Logging Driver: json-file
+ Cgroup Driver: cgroupfs
+ Cgroup Version: 1
+ Plugins:
+  Volume: local
+  Network: bridge host ipvlan macvlan null overlay
+  Log: awslogs fluentd gcplogs gelf journald json-file local logentries splunk syslog
+ Swarm: inactive
+ Runtimes: io.containerd.runc.v2 io.containerd.runtime.v1.linux runc
+ Default Runtime: runc
+ Init Binary: docker-init
+ containerd version: 5b46e404f6b9f661a205e28d59c982d3634148f8
+ runc version: v1.0.2-0-g52b36a2
+ init version: de40ad0
+ Security Options:
+  seccomp
+   Profile: default
+ Kernel Version: 4.18.0-348.el8.x86_64
+ Operating System: CentOS Stream 8
+ OSType: linux
+ Architecture: x86_64
+ CPUs: 4
+ Total Memory: 15.39GiB
+ Name: testing
+ ID: 5GBU:CMWS:VIVP:TREZ:Y5AP:OGOW:EABK:NP4R:AWUA:S4J2:2YQ2:U7MT
+ Docker Root Dir: /var/lib/docker
+ Debug Mode: false
+ Registry: https://index.docker.io/v1/
+ Labels:
+ Experimental: false
+ Insecure Registries:
+  127.0.0.0/8
+ Registry Mirrors:
+  https://hub-mirror.c.163.com/
+  https://mirror.baidubce.com/
+  https://docker.mirrors.ustc.edu.cn/
+ Live Restore Enabled: false			
+			]]>
+			</screen>
+		</section>
 		<section id="docker.info">
 			<title>查看 docker 信息</title>
 			<screen>
