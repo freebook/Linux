@@ -7,7 +7,7 @@
 	<!ENTITY % common.doctype.entity.xml 		SYSTEM "../common/doctype.entity.xml">
 	%common.doctype.entity.xml;
 	
-	<!ENTITY book.info.abstract.xml 			SYSTEM "../book.info.abstract.xml">
+	<!ENTITY book.info.abstract.xml 			SYSTEM "book.info.abstract.xml">
 
 	<!ENTITY % doctype.entity.xml 				SYSTEM "doctype.entity.xml">
 	%doctype.entity.xml;
@@ -41,7 +41,7 @@
 		</cover>
 
 		&book.info.legalnotice.xml;
-<!-- 		&book.info.abstract.xml; -->
+ 		&book.info.abstract.xml; 
 
 		<keywordset>
 			<keyword>

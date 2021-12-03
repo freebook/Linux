@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<abstract>
+	<title>系列文档</title>
+	<simplelist type='horiz' columns='4'>
+		<title>操作系统</title>
+		<member>
+			<ulink url="../linux/index.html">Netkiller Linux 手札</ulink>
+		</member>
+		<member>
+			<ulink url="../freebsd/index.html">Netkiller FreeBSD 手札</ulink>
+		</member>
+		<member>
+			<ulink url="../shell/index.html">Netkiller Shell 手札</ulink>
+		</member>
+		<member>
+			<ulink url="../security/index.html">Netkiller Security 手札</ulink>
+		</member>
+		<member>
+			<ulink url="../www/index.html">Netkiller Web 手札</ulink>
+		</member>
+		<member>
+			<ulink url="../monitoring/index.html">Netkiller Monitoring 手札</ulink>
+		</member>
+		<member>
+			<ulink url="../storage/index.html">Netkiller Storage 手札</ulink>
+		</member>
+		<member>
+			<ulink url="../mail/index.html">Netkiller Mail 手札</ulink>
+		</member>
+		<member>
+			<ulink url="../virtualization/index.html">Netkiller Virtualization 手札</ulink>
+		</member>
+		<member>
+			<ulink url="../cryptography/index.html">Netkiller Cryptography 手札</ulink>
+		</member>
+	</simplelist>
+</abstract>
