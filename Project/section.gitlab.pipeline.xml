@@ -859,13 +859,13 @@ release_job:
 		</screen>
 		<graphic format="png" fileref="../images/gitlab/pipeline/release.png" width="1024" srccredit="neo" />
 	</section>
-</section>
-<section id="gitlab-ci.yml.example">
-	<title>应用案例</title>
 
-	<section id="gitlab-ci.yml.java">
-		<title>Java</title>
-		<screen>
+	<section id="gitlab-ci.yml.example">
+		<title>应用案例</title>
+
+		<section id="gitlab-ci.yml.java">
+			<title>Java</title>
+			<screen>
 			<![CDATA[
 before_script:
  - echo "Execute scripts which are required to bootstrap the application. !"
@@ -923,10 +923,10 @@ deploy_prod:
   - master
  environment: production			
 			]]>
-		</screen>
-		<section>
-			<title>使用 Docker 编译并收集构建物</title>
-			<screen>
+			</screen>
+			<section>
+				<title>使用 Docker 编译并收集构建物</title>
+				<screen>
 			<![CDATA[
 #image: java:8
 #image: maven:latest
@@ -954,12 +954,12 @@ package:
       - target/java-project-0.0.1-SNAPSHOT.jar
 
 			]]>
-			</screen>
-		</section>
+				</screen>
+			</section>
 
-		<section>
-			<title>Shell 执行器，远程部署物理机/虚拟机</title>
-			<programlisting>
+			<section>
+				<title>Shell 执行器，远程部署物理机/虚拟机</title>
+				<programlisting>
 		<![CDATA[
 cache:
   untracked: true
@@ -1015,11 +1015,11 @@ deploy-job:
     - rsync -auzv target/*.jar www@$HOST:/opt/netkiller.cn/api.netkiller.cn/
     - ssh -f -C -q www@$HOST "pkill java; sleep 5; java -jar /opt/netkiller.cn/api.netkiller.cn/alertmanager-0.0.1.jar >/dev/null 2>&1 &"
 		]]>
-			</programlisting>
-		</section>
-		<section>
-			<title>Shell 执行器，远程部使用容器启动项目</title>
-			<screen>
+				</programlisting>
+			</section>
+			<section>
+				<title>Shell 执行器，远程部使用容器启动项目</title>
+				<screen>
 			<![CDATA[
 cache:
   untracked: true
@@ -1077,11 +1077,11 @@ deploy-job:
     - ssh www@$HOST "sudo docker-compose -f /opt/netkiller.cn/api.netkiller.cn/docker-compose.yaml up -d api"
     - ssh www@$HOST "sudo docker-compose -f /opt/netkiller.cn/api.netkiller.cn/docker-compose.yaml restart api"			
 			]]>
-			</screen>
-		</section>
-		<section>
-			<title>Docker 执行器</title>
-			<screen>
+				</screen>
+			</section>
+			<section>
+				<title>Docker 执行器</title>
+				<screen>
 			<![CDATA[
 cache:
   untracked: true
@@ -1141,12 +1141,12 @@ deploy-job:
     - ssh www@$HOST "sudo docker-compose -f /opt/netkiller.cn/api.netkiller.cn/docker-compose.yaml up"
     - ssh www@$HOST "sudo docker-compose -f /opt/netkiller.cn/api.netkiller.cn/docker-compose.yaml restart"			
 			]]>
-			</screen>
+				</screen>
+			</section>
 		</section>
-	</section>
-	<section id="gitlab-ci.yml.node">
-		<title>Node</title>
-		<programlisting>
+		<section id="gitlab-ci.yml.node">
+			<title>Node</title>
+			<programlisting>
 			<![CDATA[
 cache:
   paths:
@@ -1181,11 +1181,11 @@ deploy-job:
     - rsync -auzv --delete * www@192.168.30.10:/opt/netkiller.cn/www.netkiller.cn/
     - ssh www@192.168.0.10 "sudo pm2 --update-env restart /opt/netkiller.cn/www.netkiller.cn/main.js"
 			]]>
-		</programlisting>
-	</section>
-	<section id="gitlab-ci.yml.vue">
-		<title>vue.js android</title>
-		<screen>
+			</programlisting>
+		</section>
+		<section id="gitlab-ci.yml.vue">
+			<title>vue.js android</title>
+			<screen>
 			<![CDATA[
 build site:
   image: node:6
@@ -1216,11 +1216,11 @@ deploy:
     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
     - rsync -rav --delete dist/ user@server.com:/your/project/path/			
 			]]>
-		</screen>
-	</section>
-	<section id="gitlab-ci.yml.python">
-		<title>Python</title>
-		<screen>
+			</screen>
+		</section>
+		<section id="gitlab-ci.yml.python">
+			<title>Python</title>
+			<screen>
 		<![CDATA[
 cache:
   # key: $CI_COMMIT_REF_SLUG
@@ -1271,11 +1271,11 @@ report-job:
     - allure generate /dev/shm/allure-results -o /dev/shm/allure-report --clean
     - lrsync '/dev/shm/allure-report/*' www@test.netkiller.cn:/opt/netkiller.cn/test.netkiller.cn/test/		
 		]]>
-		</screen>
-	</section>
-	<section id="gitlab-ci.yml.docker">
-		<title>docker</title>
-		<screen>
+			</screen>
+		</section>
+		<section id="gitlab-ci.yml.docker">
+			<title>docker</title>
+			<screen>
 		<![CDATA[
 cache:
   untracked: true
@@ -1335,8 +1335,7 @@ deploy-job:
     - ssh www@$HOST "sudo docker-compose -f /opt/netkiller.cn/api.netkiller.cn/docker-compose.yaml up"
     - ssh www@$HOST "sudo docker-compose -f /opt/netkiller.cn/api.netkiller.cn/docker-compose.yaml restart"		
 		]]>
-		</screen>
+			</screen>
+		</section>
 	</section>
 </section>
-
-	

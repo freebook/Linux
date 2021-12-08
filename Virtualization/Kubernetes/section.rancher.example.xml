@@ -52,7 +52,6 @@ service/nginx created
 deployment.apps/nginx created
 		]]>
 		</screen>
-		<!-- rancher export project && cd project &&  rancher up -p --force-upgrade --batch-size 99 -u -c -d && cd .. && rm -rf project -->
 		<para>查看状态</para>
 		<screen>
 		<![CDATA[

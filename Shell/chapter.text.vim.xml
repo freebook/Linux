@@ -123,6 +123,15 @@ The 1 scanned port on www.example.com (10.10.1.7) is closed
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>删除操作</title>
+		<para>删除指定行</para>
+		<screen>
+		<![CDATA[
+:158,158d		
+		]]>
+		</screen>
+	</section>
 	<section id="file">
 		<title>插入文件</title>
 		<para>当前光标处插入文件</para>

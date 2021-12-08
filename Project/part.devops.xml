@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.project.xml 534 2013-03-13 07:18:58Z netkiller $ -->
 <part id="project">
-	<title>软件项目管理工具</title>
+	<title>项目管理工具</title>
 	<subtitle>project management tool</subtitle>
 
-	&chapter.project.xml;
+	&chapter.devops.xml;
 
 </part>

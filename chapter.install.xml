@@ -1,3 +1,55 @@
+<section>
+	<title>Rocky Linux</title>
+	<para>CentOS 8 的后续版本</para>
+	<section>
+		<title>制作 U 盘</title>
+		<para>查看 U 盘设备</para>
+		<screen>
+	<![CDATA[
+Neo-iMac:~ neo$ diskutil list
+/dev/disk0 (internal, physical):
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:      GUID_partition_scheme                        *28.0 GB    disk0
+   1:                        EFI ⁨EFI⁩                     314.6 MB   disk0s1
+   2:                 Apple_APFS ⁨Container disk2⁩         27.7 GB    disk0s2
+
+/dev/disk1 (internal, physical):
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:      GUID_partition_scheme                        *1.0 TB     disk1
+   1:                        EFI ⁨EFI⁩                     209.7 MB   disk1s1
+   2:                 Apple_APFS ⁨Container disk2⁩         1000.0 GB  disk1s2
+
+/dev/disk2 (synthesized):
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:      APFS Container Scheme -                      +1.0 TB     disk2
+                                 Physical Stores disk0s2, disk1s2
+   1:                APFS Volume ⁨Macintosh HD - 数据⁩     148.6 GB   disk2s1
+   2:                APFS Volume ⁨Preboot⁩                 269.0 MB   disk2s2
+   3:                APFS Volume ⁨Recovery⁩                1.1 GB     disk2s3
+   4:                APFS Volume ⁨VM⁩                      2.2 GB     disk2s4
+   5:                APFS Volume ⁨Macintosh HD⁩            15.7 GB    disk2s5
+   6:              APFS Snapshot ⁨com.apple.os.update-...⁩ 15.7 GB    disk2s5s1
+   7:                APFS Volume ⁨Data⁩                    2.1 GB     disk2s7
+
+/dev/disk3 (external, physical):
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:                                                   *30.8 GB    disk3	
+	]]>
+		</screen>
+		<para>/dev/disk3 是 U 盘，使用下面命令将ISO镜像制作成启动盘</para>
+		<screen>
+	<![CDATA[
+Neo-iMac:Data neo$ ls
+Rocky-8.5-x86_64-minimal.iso
+ 
+Neo-iMac:Data neo$ sudo dd if=Rocky-8.5-x86_64-minimal.iso of=/dev/rdisk3 bs=10m
+Password:
+	]]>
+		</screen>
+		<para>过程比较缓慢，请耐心等待</para>
+		<para>Rocky Linux 安装过程与 CentOS 8 没有太大差异。</para>
+	</section>
+</section>
 <section id="install.centos8">
 	<title>CentOS 8 Stream</title>
 	<para>Centos 8 较之前的版本改动比较大</para>
@@ -714,7 +766,10 @@ Firewall stopped and disabled on system startup
 </section>
 <section id="linux.alpine">
 	<title>Alpine Linux</title>
-	<para>Small. Simple. Secure. <ulink url="https://www.alpinelinux.org">https://www.alpinelinux.org</ulink></para>
+	<para>
+		Small. Simple. Secure.
+		<ulink url="https://www.alpinelinux.org">https://www.alpinelinux.org</ulink>
+	</para>
 	<para>Alpine Linux is a security-oriented, lightweight Linux distribution based on musl libc and busybox.</para>
 	<!-- <section> <title>HDD Partition</title> <para>partition</para> <table> <title>Linux partition</title> <tgroup cols="2"> <thead> <row> <entry>volume</entry> <entry>size</entry> </row> </thead> <tbody> <row> <entry>/boot</entry> <entry>500M</entry> </row> <row> <entry>/</entry> <entry>50G</entry> </row> <row> <entry>/opt</entry> <entry>remainder</entry> </row> <row> <entry>swap</entry> <entry>memory * 2</entry> </row> </tbody> </tgroup> </table> </section> -->
 </section>

@@ -120,28 +120,35 @@ docker restart gitlab-ce
 sudo docker logs -f gitlab
 		]]>
 		</screen>
-	</section>
-
-	<section id="gitlab.docker-compose">
-		<title>docker-compose 安装</title>
-		<para>宿主主机开放 80/443 端口</para>
+		<para>修改 /etc/gitlab/gitlab.rb 配置文件</para>
 		<screen>
+		<![CDATA[
+docker exec -it gitlab editor /etc/gitlab/gitlab.rb
+gitlab  |   docker restart gitlab		
+		]]>
+		</screen>
+
+
+		<section id="gitlab.docker-compose">
+			<title>docker-compose 安装</title>
+			<para>宿主主机开放 80/443 端口</para>
+			<screen>
 		<![CDATA[
 systemctl status firewalld 
 firewall-cmd --permanent --add-service=http 
 firewall-cmd --permanent --add-service=https 
 systemctl reload firewalld
 		]]>
-		</screen>
-		<para>创建工作目录</para>
-		<screen>
+			</screen>
+			<para>创建工作目录</para>
+			<screen>
 		<![CDATA[
 [root@localhost ~]# mkdir -p /opt/gitlab/{config,data,logs} 
 [root@localhost ~]# cd /opt/gitlab/
 		]]>
-		</screen>
-		<para>安装 gitlab</para>
-		<screen>
+			</screen>
+			<para>安装 gitlab</para>
+			<screen>
 		<![CDATA[
 [root@localhost gitlab]# vim docker-compose.yaml		
 version: '3.9'
@@ -177,11 +184,11 @@ services:
         - /opt/gitlab/logs:/var/log/gitlab
         - /opt/gitlab/data:/var/opt/gitlab		
 		]]>
-		</screen>
+			</screen>
 
-		<example>
-			<title>Docker 部署 GitLab 查看登陆密码</title>
-			<screen>
+			<example>
+				<title>Docker 部署 GitLab 查看登陆密码</title>
+				<screen>
 			<![CDATA[
 Neo-iMac:docker neo$ docker ps
 CONTAINER ID   IMAGE                     COMMAND                  CREATED          STATUS                    PORTS                                              NAMES
@@ -200,11 +207,11 @@ Password: LnfGjN5ySHSyTev8VSqCNFna0m43i3oF6FTU8QThoSQ=
 
 # NOTE: This file will be automatically deleted in the first reconfigure run after 24 hours.			
 			]]>
-			</screen>
-		</example>
+				</screen>
+			</example>
 
-		<para>安装 gitlab-runner</para>
-		<programlisting>
+			<para>安装 gitlab-runner</para>
+			<programlisting>
 		<![CDATA[
 version: '3.9'
 services:
@@ -219,24 +226,24 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /bin/docker:/bin/docker
 		]]>
-		</programlisting>
-		<para>启动 Gitlab runner</para>
-		<screen>
+			</programlisting>
+			<para>启动 Gitlab runner</para>
+			<screen>
 		<![CDATA[
 sudo chmod 666 /var/run/docker.sock
 sudo usermod -aG docker $USER
 docker-compose up -d
 		]]>
-		</screen>
-		<para>注册 gitlab-runner 到 Gitlab</para>
-		<screen>
+			</screen>
+			<para>注册 gitlab-runner 到 Gitlab</para>
+			<screen>
 		<![CDATA[
 docker exec -it gitlab-runner gitlab-runner register		
 		]]>
-		</screen>
-		<example>
-			<title>Docker 部署 gitlab-runner 注册演示</title>
-			<screen>
+			</screen>
+			<example>
+				<title>Docker 部署 gitlab-runner 注册演示</title>
+				<screen>
 			<![CDATA[
 [root@localhost gitlab]# docker-compose exec gitlab-runner gitlab-runner register
 Runtime platform                                    arch=amd64 os=linux pid=77 revision=8b63c432 version=14.3.1
@@ -256,10 +263,10 @@ shell
 Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded! 
 [root@localhost gitlab]# 			
 			]]>
-			</screen>
-		</example>
+				</screen>
+			</example>
+		</section>
 	</section>
-
 
 	<section id="install.centos6">
 		<title>Yum 安装 GitLab</title>
@@ -353,8 +360,6 @@ yum install gitlab-ci-multi-runner
 		</section>
 	</section>
 
-
-
 	<section id="gitlab.ssl">
 		<title>绑定SSL证书</title>
 		<para>编辑 /etc/gitlab/gitlab.rb 文件</para>
@@ -371,19 +376,18 @@ nginx['http2_enabled'] = true
 		]]>
 		</screen>
 	</section>
-</section>
-<section>
-	<title>Gitlab 命令行</title>
 	<section>
-		<title>重置密码</title>
-		<para>进入容器</para>
-		<screen>
+		<title>Gitlab 命令行</title>
+		<section>
+			<title>重置密码</title>
+			<para>进入容器</para>
+			<screen>
 		<![CDATA[
 [root@localhost ~]# docker exec -it gitlab bash		
 		]]>
-		</screen>
-		<para>重置密码</para>
-		<screen>
+			</screen>
+			<para>重置密码</para>
+			<screen>
 		<![CDATA[
 root@gitlab:~# gitlab-rake "gitlab:password:reset"
 Enter username: neo
@@ -391,6 +395,7 @@ Enter password:
 Confirm password: 
 Password successfully updated for user with username neo.		
 		]]>
-		</screen>
+			</screen>
+		</section>
 	</section>
 </section>

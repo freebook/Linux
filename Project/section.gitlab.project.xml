@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="gitlab.project">
+	<title>项目管理</title>
+	<section>
+		<title>Milestones 里程碑</title>
+		<para>敏捷开发中可以每周一个里程碑，或者每个月一个里程碑。</para>
+	</section>
+	<section id="gitlab.issue">
+		<title>Issue</title>
+		<para>Issues 任务</para>
+	</section>
+	<section id="gitlab.merge">
+		<title>合并</title>
+		<graphic format="png" fileref="../images/gitlab/group.png" width="" srccredit="neo" />
+
+	</section>
+	<section id="gitlab.codereview">
+		<title>代码审查</title>
+	</section>
+</section>

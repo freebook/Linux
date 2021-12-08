@@ -475,7 +475,17 @@ git remote remove origin
 		<title>合并分支</title>
 		<section>
 			<title>合并分支</title>
-
+			<para>从 development 像 testing 分支合并</para>
+			<screen>
+			<![CDATA[
+git checkout development
+git pull
+git checkout testing
+git pull
+git merge --no-ff "development"
+git push
+			]]>
+			</screen>
 			<para>testing 分支向 master 分支合并</para>
 			<para>获取 testing 合并请求的分支</para>
 			<screen>
@@ -619,6 +629,41 @@ git merge --about
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>合并单个文件</title>
+			<para>从 development 到 testing</para>
+			<screen>
+			<![CDATA[
+git checkout development
+git pull
+checkout testing
+git checkout development public/doc/UserGuide.pdf 
+git status
+git commit -a -m '手工合并'
+git push			
+			]]>
+			</screen>
+			<para>从 testing 到 staging</para>
+			<screen>
+			<![CDATA[
+git checkout staging
+git pull
+git checkout testing public/doc/UserGuide.pdf 
+git commit -a -m '手工合并'
+git push			
+			]]>
+			</screen>
+			<para>从 stage 到 master</para>
+			<screen>
+			<![CDATA[
+git checkout master
+git pull
+git checkout staging public/doc/UserGuide.pdf 
+git commit -a -m '手工合并'
+git push			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="git.log">
 		<title>git log</title>
@@ -635,7 +680,7 @@ git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(
 			<![CDATA[
 Neo-iMac:test.netkiller.cn neo$ git log --name-status
 commit 120f1bb6ff391c6b9b24899804f0292370873485 (HEAD -> main)
-Author: 陈景峰 <neo@sfzito.com>
+Author: 陈景峰 <neo@netkiller.cn>
 Date:   Thu Dec 2 04:10:16 2021 +0000
 
     Initial commit
@@ -1282,9 +1327,11 @@ git-svn rebase
 		<section id="HEAD">
 			<title>导出最后一次修改过的文件</title>
 			<para>有时我们希望把刚刚修改的文件复制出来，同时维持原有的目录结构，这样可能交给运维直接覆盖服务器上的代码。我们可以使用下面的命令完成这样的操作，而不用一个一个文件的复制。</para>
-			<screen><![CDATA[
+			<screen>
+			<![CDATA[
 git archive -o update.zip HEAD $(git diff --name-only HEAD^)
-			]]></screen>
+			]]>
+			</screen>
 		</section>
 		<section id="range">
 			<title>导出指定版本区间修改过的文件</title>
@@ -1318,9 +1365,11 @@ Date:   Wed Oct 14 17:27:15 2015 +0800
 	   		]]>
 			</screen>
 			<para>导入 b111c253321fb4b9c5858302a0707ba0adc3cd07 至 ee808bb4b3ed6b7c0e7b24eeec39d299b6054dd0 间修改过的文件。</para>
-			<screen><![CDATA[
+			<screen>
+			<![CDATA[
 $ git archive -o update2.zip HEAD $(git diff --name-only b111c253321fb4b9c5858302a0707ba0adc3cd07)
-			]]></screen>
+			]]>
+			</screen>
 		</section>
 
 		<section>
@@ -1346,7 +1395,7 @@ git push --force --progress "origin" master:master
 			<para>例如撤回 project/src/main/java/cn/netkiller/controller/DemoSceneController.java 到上一个版本</para>
 			<screen>
 			<![CDATA[
-➜  api.sfzito.com git:(testing) git log project/src/main/java/cn/netkiller/controller/DemoSceneController.java
+➜  api.netkiller.cn git:(testing) git log project/src/main/java/cn/netkiller/controller/DemoSceneController.java
 
 commit b4609646ee60927fe4c1c563d07e78f63ab106ea (HEAD -> testing, origin/testing)
 Author: Neo Chen <netkiller@msn.com>
@@ -1392,13 +1441,13 @@ Date:   Fri Oct 15 10:55:30 2021 +0800
 			<para>只显示最后五条记录</para>
 			<screen>
 			<![CDATA[
-➜  api.sfzito.com git:(testing) git log -5 project/src/main/java/cn/netkiller/controller/DemoSceneController.java			
+➜  api.netkiller.cn git:(testing) git log -5 project/src/main/java/cn/netkiller/controller/DemoSceneController.java			
 			]]>
 			</screen>
 			<para></para>
 			<screen>
 			<![CDATA[
-➜  api.sfzito.com git:(testing) git reset bc96eb68ad73d5248c8135609191c51e258edf10 project/src/main/java/cn/netkiller/controller/DemoSceneController.java
+➜  api.netkiller.cn git:(testing) git reset bc96eb68ad73d5248c8135609191c51e258edf10 project/src/main/java/cn/netkiller/controller/DemoSceneController.java
 Unstaged changes after reset:
 M	project/src/main/java/cn/netkiller/controller/DemoSceneController.java			
 			]]>
@@ -1406,7 +1455,7 @@ M	project/src/main/java/cn/netkiller/controller/DemoSceneController.java
 			<para></para>
 			<screen>
 			<![CDATA[
-➜  api.sfzito.com git:(testing) ✗ git status
+➜  api.netkiller.cn git:(testing) ✗ git status
 On branch testing
 Your branch is up to date with 'origin/testing'.
 
@@ -1419,8 +1468,8 @@ Changes not staged for commit:
   (use "git restore <file>..." to discard changes in working directory)
 	modified:   project/src/main/java/cn/netkiller/controller/DemoSceneController.java
 
-➜  api.sfzito.com git:(testing) ✗ git add project/src/main/java/cn/netkiller/controller/DemoSceneController.java
-➜  api.sfzito.com git:(testing) ✗ git commit -m '恢复到上一个版本'
+➜  api.netkiller.cn git:(testing) ✗ git add project/src/main/java/cn/netkiller/controller/DemoSceneController.java
+➜  api.netkiller.cn git:(testing) ✗ git commit -m '恢复到上一个版本'
 [testing 9959acd4] 恢复到上一个版本
  1 file changed, 6 insertions(+), 8 deletions(-)			
 			]]>

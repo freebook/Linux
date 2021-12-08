@@ -9,15 +9,18 @@
 <!ENTITY section.git.lfs.xml	 			SYSTEM "Version/section.git.lfs.xml">
 <!ENTITY section.git.submodule.xml 			SYSTEM "Version/section.git.submodule.xml">
 
-<!ENTITY part.project.xml					SYSTEM "part.project.xml">
-<!ENTITY chapter.project.xml				SYSTEM "chapter.project.xml">
+<!ENTITY part.devops.xml					SYSTEM "part.devops.xml">
+<!ENTITY chapter.devops.xml					SYSTEM "chapter.devops.xml">
 <!ENTITY chapter.trac.xml					SYSTEM "chapter.trac.xml">
 <!ENTITY chapter.gitlab.xml 				SYSTEM "chapter.gitlab.xml">
 <!ENTITY section.gitlab.setup.xml			SYSTEM "section.gitlab.setup.xml">
+<!ENTITY section.gitlab.init.xml			SYSTEM "section.gitlab.init.xml">
+<!ENTITY section.gitlab.project.xml			SYSTEM "section.gitlab.project.xml">
 <!ENTITY section.gitlab.cicd.xml			SYSTEM "section.gitlab.cicd.xml">
 <!ENTITY section.gitlab.pipeline.xml		SYSTEM "section.gitlab.pipeline.xml">
 <!ENTITY section.gitlab.gpg.xml				SYSTEM "section.gitlab.gpg.xml">
 <!ENTITY section.gitlab.registry.xml		SYSTEM "section.gitlab.registry.xml">
+<!ENTITY section.gitlab.webhook.xml			SYSTEM "section.gitlab.webhook.xml">
 <!ENTITY section.gitlab.faq.xml				SYSTEM "section.gitlab.faq.xml">
 
 

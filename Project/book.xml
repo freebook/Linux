@@ -11,6 +11,9 @@
 
 	<!ENTITY % doctype.entity.xml 				SYSTEM "doctype.entity.xml">
 	%doctype.entity.xml;
+	
+	<!ENTITY % project.doctype.entity.xml 		SYSTEM "Management/Project/doctype.entity.xml">
+	%project.doctype.entity.xml;
 
 ]>
 <book xml:base="http://netkiller.github.com/book/version/"
@@ -56,6 +59,7 @@ git,git-add,git-add--interactive,git-am,git-annotate,git-apply,git-archive,git-b
 	&book.dedication.xml;
 	&book.preface.xml;
 	&part.project.xml;
+	&part.devops.xml;
 	&part.version.xml;
 	
 </book>

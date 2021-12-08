@@ -189,7 +189,7 @@
 	&chapter.management.xml;
 	&part.virtualization.xml;
 	<!-- =========================================================================== -->
-	&part.project.xml;
+	&part.devops.xml;
 	&part.version.xml;
 	<!-- =========================================================================== -->	
 	&part.graphics.xml;
