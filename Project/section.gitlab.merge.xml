@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="DevOps实践">
+	<title>DevOps 实践</title>
+
+		<section>
+			<title>网络机房管理</title>
+			<section>
+				<title>网络拓扑图</title>
+			</section>
+			<section>
+				<title>机柜机架</title>
+				<para>机架图</para>
+			</section>
+			<section>
+				<title>Router</title>
+			</section>
+			<section>
+				<title>Switch</title>
+				<para>端口分配</para>
+			</section>
+		</section>
+	
+</chapter>

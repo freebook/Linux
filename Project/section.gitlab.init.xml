@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section>
+<section id="gitlab.init">
 	<title>初始化 Gitlab</title>
 	<para>Gitlab 安装完成之后，我们需要对它做一个初始化操作。</para>
 	<section id="gitlab.user">
