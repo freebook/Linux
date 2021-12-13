@@ -1,9 +1,6 @@
 [submodule "common"]
 	path = common
-	url = https://github.com/freebook/common.git
+	url = git@github.com:freebook/common.git
 [submodule "docbook-xsl"]
 	path = docbook-xsl
-	url = https://github.com/freebook/docbook-xsl.git
-[submodule "Project/Management"]
-	path = Project/Management
-	url = git@github.com:freebook/Management.git
+	url = git@github.com:freebook/docbook-xsl.git
