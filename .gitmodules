@@ -4,3 +4,6 @@
 [submodule "docbook-xsl"]
 	path = docbook-xsl
 	url = git@github.com:freebook/docbook-xsl.git
+[submodule "Project/Management"]
+	path = Project/Management
+	url = git@github.com:freebook/Management.git
