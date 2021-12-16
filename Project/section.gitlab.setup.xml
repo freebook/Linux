@@ -7,9 +7,201 @@
 	<para>GitLab是一个利用 Ruby on Rails 开发的开源应用程序，实现一个自托管的Git项目仓库，可通过Web界面进行访问公开的或者私人项目。</para>
 	<para>它拥有与Github类似的功能，能够浏览源代码，管理缺陷和注释。可以管理团队对仓库的访问，它非常易于浏览提交过的版本并提供一个文件历史库。团队成员可以利用内置的简单聊天程序(Wall)进行交流。它还提供一个代码片段收集功能可以轻松实现代码复用，便于日后有需要的时候进行查找。</para>
 	<para>GitLab 5.0以前版本要求服务器端采用 Gitolite 搭建，5.0版本以后不再使用 Gitolite ，采用自己开发的 gitlab-shell 来实现。如果你觉得安装麻烦可以使用 GitLab Installers 一键安装程序。</para>
+	<section>
+		<title>操作系统初始化</title>
+		<para>CentOS 8 / Rockey 8.5 初始化脚本</para>
+		<screen>
+		<![CDATA[
+dnf -y upgrade
+dnf -y install epel-release
 
+dnf install -y bzip2 tree psmisc \
+telnet wget rsync vim-enhanced \
+net-tools bind-utils
+
+timedatectl set-timezone Asia/Shanghai	
+dnf install -y langpacks-en glibc-langpack-en
+localectl set-locale LANG=en_US.UTF-8
+
+cat >> /etc/environment <<EOF
+LC_ALL=en_US.UTF-8
+LANG=en_US.UTF-8
+LC_CTYPE=UTF-8
+EOF
+
+cat >> /etc/profile.d/history.sh <<EOF
+# Administrator specific aliases and functions for system security
+export HISTSIZE=10000
+export HISTFILESIZE=10000
+export HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S "
+export TIME_STYLE=long-iso
+EOF
+source /etc/profile.d/history.sh
+
+cp /etc/selinux/config{,.original}
+sed -i "s/SELINUX=enforcing/SELINUX=disabled/" /etc/selinux/config
+setenforce Permissive
+
+cat >> /etc/sysctl.conf <<EOF
+
+# Netkiller
+net.ipv4.ip_local_port_range = 1025 65500
+net.ipv4.tcp_tw_reuse = 1
+net.ipv4.tcp_keepalive_time = 1800
+net.core.netdev_max_backlog=3000
+net.ipv4.tcp_max_syn_backlog = 1024
+net.ipv4.tcp_max_tw_buckets = 4096
+net.core.somaxconn = 1024
+
+# TCP BBR
+net.core.default_qdisc=fq
+net.ipv4.tcp_congestion_control=bbr
+EOF
+
+sysctl -p
+
+cat > /etc/security/limits.d/20-nofile.conf <<EOF
+
+* soft nofile 65535
+* hard nofile 65535
+
+EOF		
+
+groupadd -g 80 www
+adduser -o --uid 80 --gid 80 -G wheel -c "Web Application" www
+
+curl -L "https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.rpm.sh" | sudo bash
+dnf install -y gitlab-runner
+cp /etc/gitlab-runner/config.toml{,.original}
+systemctl enable gitlab-runner
+		]]>
+		</screen>
+		<section>
+			<title>Docker</title>
+			<screen>
+			<![CDATA[
+dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+dnf install -y docker-ce
+
+systemctl enable docker
+systemctl start docker
+
+GID=$(egrep -o 'docker:x:([0-9]+)' /etc/group | egrep -o '([0-9]+)')
+adduser -u ${GID} -g ${GID} docker
+
+usermod -aG docker www
+usermod -aG docker gitlab-runner
+usermod -aG www gitlab-runner
+
+dnf install -y python39
+pip3 install docker-compose netkiller-devops
+			]]>
+			</screen>
+			<para>Mirror</para>
+			<screen>
+			<![CDATA[
+cat << EOF > /etc/docker/daemon.json
+
+{
+	"registry-mirrors": [
+    	"https://docker.mirrors.ustc.edu.cn",
+		"https://registry.docker-cn.com",
+		"https://registry.cn-hangzhou.aliyuncs.com",
+    	"http://hub-mirror.c.163.com"
+	]
+}
+
+EOF			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Java 环境 安装脚本</title>
+			<screen>
+			<![CDATA[
+dnf install -y java-1.8.0-openjdk java-1.8.0-openjdk-devel maven
+			]]>
+			</screen>
+			<para>最新版 3.8.4 安装脚本</para>
+			<screen>
+			<![CDATA[
+
+cd /usr/local/src/
+wget https://dlcdn.apache.org/maven/maven-3/3.8.4/binaries/apache-maven-3.8.4-bin.tar.gz
+tar zxf apache-maven-3.8.4-bin.tar.gz
+mv apache-maven-3.8.4 /srv/
+rm -f /srv/apache-maven
+ln -s /srv/apache-maven-3.8.4 /srv/apache-maven
+
+alternatives --remove mvn /usr/share/maven/bin/mvn
+alternatives --install /usr/local/bin/mvn apache-maven-3.8.4 /srv/apache-maven-3.8.4/bin/mvn 0
+
+cp /srv/apache-maven/conf/settings.xml{,.original}
+vim /srv/apache-maven/conf/settings.xml <<end > /dev/null 2>&1
+:158,158d
+:164,164s/$/ -->/
+:wq
+end
+
+mvn -v			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Node 环境</title>
+			<para>默认安装</para>
+			<screen>
+			<![CDATA[
+dnf install -y nodejs
+npm config set registry https://registry.npm.taobao.org
+npm install -g cnpm	
+			
+			]]>
+			</screen>
+			<para>官网最新版</para>
+			<screen>
+			<![CDATA[
+dnf remove -y nodejs
+
+cd /usr/local/src
+wget https://nodejs.org/dist/v16.13.1/node-v16.13.1-linux-x64.tar.xz
+tar xf node-v16.13.1-linux-x64.tar.xz
+mv node-v16.13.1-linux-x64 /srv/node-v16.13.1
+rm -f /srv/node
+ln -s /srv/node-v16.13.1 /srv/node
+
+alternatives --install /usr/local/bin/node node /srv/node/bin/node 100 \
+--slave /usr/local/bin/npm npm /srv/node/bin/npm \
+--slave /usr/local/bin/npx npx /srv/node/bin/npx \
+--slave /usr/local/bin/corepack corepack /srv/node/bin/corepack
+
+node -v			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+dnf remove -y nodejs
+
+cd /usr/local/src
+wget https://nodejs.org/dist/v17.2.0/node-v17.2.0-linux-x64.tar.xz
+tar xf node-v17.2.0-linux-x64.tar.xz
+mv node-v17.2.0-linux-x64 /srv/node-v17.2.0
+rm -f /srv/node
+ln -s /srv/node-v17.2.0 /srv/node
+
+alternatives --install /usr/local/bin/node node /srv/node/bin/node 100 \
+--slave /usr/local/bin/npm npm /srv/node/bin/npm \
+--slave /usr/local/bin/npx npx /srv/node/bin/npx \
+--slave /usr/local/bin/corepack corepack /srv/node/bin/corepack
+
+node -v			
+			]]>
+			</screen>
+		</section>
+	</section>
 	<section id="gitlab.centos">
-		<title>CentOS 8 Stream</title>
+		<title>CentOS 8 Stream 安装 Gitlab</title>
 		<screen>
 			<![CDATA[
 dnf install langpacks-en glibc-all-langpacks -y			

@@ -648,6 +648,47 @@ deploy-hotfix-job:
 			</screen>
 		</section>
 	</section>
+	<section id="gitlab-ci.yml.artifacts">
+		<title>构建物</title>
+		<para>保留 api.netkiller.cn/target/*.jar 文件</para>
+		<screen>
+		<![CDATA[
+cache:
+#   untracked: true
+  paths:
+    - api.netkiller.cn/target/
+
+stages:
+  - build
+  - test
+  - deploy
+  - database
+
+build-job:
+  stage: build
+  before_script:
+    - wechat -t 1 api.netkiller.cn $CI_COMMIT_AUTHOR 在 $CI_COMMIT_BRANCH 分支提交了代码 $CI_COMMIT_MESSAGE 正在构建中
+    - voice $(echo "$CI_COMMIT_AUTHOR" | cut -d ' ' -f1) 在 API 项目 $CI_COMMIT_BRANCH 分支提交了代码，正在构建中
+    - if [ "$CI_PIPELINE_SOURCE" == "schedule" ]; then mvn clean; fi
+  after_script:
+    - wechat -t 1 api.netkiller.cn $CI_COMMIT_AUTHOR 在 $CI_COMMIT_BRANCH 分支代码完成编译和打包
+  script:
+    - mvn -T 1C -Dmaven.test.skip=true package
+    - md5sum */target/*.jar
+  artifacts:
+    name: "$CI_PROJECT_NAME"
+    paths:
+      - api.netkiller.cn/target/*.jar
+		]]>
+		</screen>
+		<para>所有git没有追踪的文件视为构建物</para>
+		<screen>
+		<![CDATA[
+artifacts:
+  untracked: true		
+		]]>
+		</screen>
+	</section>
 	<section id="gitlab-ci.yml.allow_failure">
 		<title>允许失败</title>
 		<para>设置当一个job运行失败之后并不影响后续的CI构建过程</para>
