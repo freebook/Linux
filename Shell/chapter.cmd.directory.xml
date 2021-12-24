@@ -287,15 +287,37 @@ cp -r /etc/* ~/myetc
 			]]></screen>
 		</section>
 		<section>
-			<title>overwrite an existing file</title>
-			<screen><![CDATA[
+			<title>覆盖已存在的文件</title>
+			<subtitle>overwrite an existing file</subtitle>
+		
+			<para>-f, --force 覆盖已经存在的目标文件而不给出提示。
+				if an existing destination file cannot be opened, remove it and try again (this option is ignored when the -n option is also used)
+			</para>
+			<para>当使用 -f 参数时仍然会提示询问覆盖</para>
+			<screen>
+			<![CDATA[
+cp -f file1 file2
+
+cp: overwrite 'file2'?			
+			]]>
+			</screen>
+			<para>使用 alias 命令查看，可以看到 cp 命令 增加 -i 参数，使用 unalias cp 可以删除 cp 别名。</para>
+			<screen>
+			<![CDATA[
 # alias cp
 alias cp='cp -i'
 
 # unalias cp
 # alias cp
 -bash: alias: cp: not found
-			]]></screen>
+			]]>
+			</screen>
+			<para>另一种解决方案是在 cp 前增加斜杠禁止别名</para>
+			<screen>
+			<![CDATA[
+\cp -f file1 file2			
+			]]>
+			</screen>
 		</section>
 		<section>
 			<title>-a, --archive same as -dR --preserve=all</title>

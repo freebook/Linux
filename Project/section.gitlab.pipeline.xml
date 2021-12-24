@@ -647,6 +647,23 @@ deploy-hotfix-job:
 		]]>
 			</screen>
 		</section>
+		<section>
+			<title>监控文件变化</title>
+			<screen>
+			<![CDATA[
+docker build:
+  script: docker build -t netkiller:$CI_COMMIT_REF_SLUG .
+  only:
+    refs:
+      - branches
+    changes:
+      - Dockerfile
+      - dockerfiles/**/*
+      - more_scripts/*.{rb,py,sh}
+      - "**/*.json"			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="gitlab-ci.yml.artifacts">
 		<title>构建物</title>
@@ -870,6 +887,121 @@ tags:
   - kubectl
 script:
   - kubectl apply -f ${MODULE} --record=true		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+cache:
+  untracked: true
+
+stages:
+  - build
+  # - test
+  - deploy
+
+build development:
+  stage: build
+  tags:
+    - cloud
+  only:
+    - development
+  except:
+    - feature
+  script:
+    - mvn -T 1C -Dmaven.test.skip=true clean package
+  # when: manual
+
+# unit-test-job:
+#   stage: test
+#   script:
+#     - echo "Running unit tests... This will take about 60 seconds."
+#     - echo "Code coverage is 90%"
+
+# lint-test-job:
+#   stage: test
+#   script:
+#     - echo "Linting code... This will take about 10 seconds."
+#     - echo "No lint issues found."
+
+deploy development:
+  stage: deploy
+  tags:
+    - cloud
+  only:
+    - development
+  script:
+    - \cp -f auth/target/*.jar /opt/netkiller.cn/cloud.netkiller.cn
+    - \cp -f gateway/target/*.jar /opt/netkiller.cn/cloud.netkiller.cn
+    - \cp -f modules/*/target/*.jar /opt/netkiller.cn/cloud.netkiller.cn
+  after_script:
+    - python3 /opt/netkiller.cn/ops.netkiller.cn/docker.py -e experiment up
+    - python3 /opt/netkiller.cn/ops.netkiller.cn/docker.py -e experiment restart
+  when: manual
+
+gateway-dev:
+  extends: .deploy-dev
+  # only:
+    # variables: [ $flag == "true" ]
+  variables:
+    MODULE: gateway
+  environment:
+    url: https://${MODULE}.netkiller.cn
+  script:
+    - \cp -f ${MODULE}/target/*.jar /opt/netkiller.cn/cloud.netkiller.cn
+  
+auth-dev:
+  extends: .deploy-dev
+  variables:
+    MODULE: auth
+  script:
+    - \cp -f ${MODULE}/target/*.jar /opt/netkiller.cn/cloud.netkiller.cn
+
+queue-dev:
+  extends: .deploy-dev
+  variables:
+    MODULE: incar
+  script:
+    - \cp -f modules/queue/target/*.jar /opt/netkiller.cn/cloud.netkiller.cn
+
+ms-dev:
+  extends: .deploy-dev
+  variables:
+    MODULE: ms
+  script:
+    - \cp -f modules/ms/target/*.jar /opt/netkiller.cn/cloud.netkiller.cn
+
+system-dev:
+  extends: .deploy-dev
+  variables:
+    MODULE: system
+  script:
+    - \cp -f modules/system/target/*.jar /opt/netkiller.cn/cloud.netkiller.cn
+
+job-dev:
+  extends: .deploy-dev
+  variables:
+    MODULE: job
+  script:
+    - \cp -f modules/job/target/*.jar /opt/netkiller.cn/cloud.netkiller.cn
+
+
+.deploy-dev:
+  stage: deploy
+  tags:
+  - cloud 
+  only:
+  - development
+  environment:
+    name: development
+  when: manual
+  # before_script:
+    # - mvn -T 1C -Dmaven.test.skip=true clean package
+    # - python3 /opt/netkiller.cn/ops.netkiller.cn/docker.py -e experiment ps
+  after_script:
+    - python3 /opt/netkiller.cn/ops.netkiller.cn/docker.py -e experiment up ${MODULE}
+    - python3 /opt/netkiller.cn/ops.netkiller.cn/docker.py -e experiment restart ${MODULE} 
+		
 		]]>
 		</screen>
 	</section>
