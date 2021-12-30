@@ -63,4 +63,5 @@ make: *** [GNUmakefile:65: install] Error 1
 		]]>
 		</screen>
 	</section>
+	&section.utility.asciinema.xml;
 </chapter>

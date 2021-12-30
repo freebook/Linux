@@ -27,15 +27,16 @@
 	<!ENTITY section.cmd.sum.xml				SYSTEM "section.cmd.sum.xml">
 	<!ENTITY section.cmd.template.xml			SYSTEM "section.cmd.template.xml">
 	
-	<!ENTITY chapter.text.vim.xml	 		SYSTEM "chapter.text.vim.xml">
-	<!ENTITY chapter.text.awk.xml			SYSTEM "chapter.text.awk.xml">
-	<!ENTITY chapter.text.sed.xml			SYSTEM "chapter.text.sed.xml">
+	<!ENTITY chapter.text.vim.xml	 			SYSTEM "chapter.text.vim.xml">
+	<!ENTITY chapter.text.awk.xml				SYSTEM "chapter.text.awk.xml">
+	<!ENTITY chapter.text.sed.xml				SYSTEM "chapter.text.sed.xml">
 
 	<!ENTITY chapter.utility.xml		 		SYSTEM "chapter.utility.xml">
-	<!ENTITY chapter.utility.curl.xml	 	SYSTEM "chapter.utility.curl.xml">
-	<!ENTITY chapter.utility.wget.xml		SYSTEM "chapter.utility.wget.xml">
+	<!ENTITY chapter.utility.curl.xml	 		SYSTEM "chapter.utility.curl.xml">
+	<!ENTITY chapter.utility.wget.xml			SYSTEM "chapter.utility.wget.xml">
 	<!ENTITY chapter.utility.tui.xml	 		SYSTEM "chapter.utility.tui.xml">
-	<!ENTITY chapter.utility.jq.xml	 		SYSTEM "chapter.utility.jq.xml">
+	<!ENTITY chapter.utility.jq.xml	 			SYSTEM "chapter.utility.jq.xml">
+	<!ENTITY section.utility.asciinema.xml 		SYSTEM "section.utility.asciinema.xml">
 	<!ENTITY chapter.klish.xml			 		SYSTEM "chapter.klish.xml">
 	<!ENTITY chapter.utility.expect.xml		 	SYSTEM "chapter.utility.expect.xml">
 	<!ENTITY chapter.tui.xml 					SYSTEM "chapter.tui.xml">

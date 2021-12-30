@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="asciinema">
+	<title>asciinema 终端录屏</title>
+	<para>asciinema [as-kee-nuh-muh] is a free and open source solution for recording terminal sessions and sharing them on the web.</para>
+	<para>
+		<ulink url="https://asciinema.org/" />
+	</para>
+	<screen>
+	<![CDATA[
+brew install asciinema	
+	]]>
+	</screen>
+
+</section>
