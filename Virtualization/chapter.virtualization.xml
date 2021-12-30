@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 	&chapter.docker.xml;
 	&chapter.kubernetes.xml;
+	&chapter.rancher.xml;
 	&chapter.container.xml;
 	&chapter.vm.xml;

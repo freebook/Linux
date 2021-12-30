@@ -862,6 +862,41 @@ job:
 			</screen>
 		</section>
 	</section>
+	<section>
+		<title>include 包含</title>
+		<screen>
+		<![CDATA[
+include:
+  - local: '.gitlab-ci-development.yml'
+    rules:
+      - if: '$CI_COMMIT_BRANCH == "development"'
+  - local: '.gitlab-ci-staging.yml'
+    rules:
+      - if: '$CI_COMMIT_BRANCH == "staging"'		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+include:
+  - local: builds.yml
+    rules:
+      - exists:
+          - file.md		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+include: 'configs/*.yml'
+
+# This matches all `.yml` files in `configs` and any subfolder in it.
+include: 'configs/**.yml'
+
+# This matches all `.yml` files only in subfolders of `configs`.
+include: 'configs/**/*.yml'		
+		]]>
+		</screen>
+	</section>
 	<section id="gitlab-ci.yml.extends">
 		<title>模版</title>
 		<screen>

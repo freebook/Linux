@@ -41,11 +41,12 @@
 <!ENTITY section.kubectl.yaml.xml		SYSTEM "Kubernetes/section.kubectl.yaml.xml">
 <!ENTITY section.istio.xml				SYSTEM "Kubernetes/section.istio.xml">
 
-<!ENTITY section.rancher.xml			SYSTEM "Kubernetes/section.rancher.xml">
-<!ENTITY section.rancher.cli.xml		SYSTEM "Kubernetes/section.rancher.cli.xml">
-<!ENTITY section.rancher.example.xml	SYSTEM "Kubernetes/section.rancher.example.xml">
+<!ENTITY chapter.rancher.xml			SYSTEM "Rancher/chapter.rancher.xml">
+<!ENTITY section.rancher.xml			SYSTEM "Rancher/section.rancher.xml">
+<!ENTITY section.rancher.cli.xml		SYSTEM "Rancher/section.rancher.cli.xml">
+<!ENTITY section.rancher.k3s.xml		SYSTEM "Rancher/section.rancher.k3s.xml">
+<!ENTITY section.rancher.example.xml	SYSTEM "Rancher/section.rancher.example.xml">
 
 <!ENTITY chapter.container.xml					SYSTEM "chapter.container.xml">
 <!ENTITY section.container.portainer.xml		SYSTEM "section.container.portainer.xml">
-<!ENTITY section.container.rancher.xml			SYSTEM "section.container.rancher.xml">
 <!ENTITY section.container.helm.xml	  			SYSTEM "section.container.helm.xml">

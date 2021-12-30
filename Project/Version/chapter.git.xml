@@ -1500,5 +1500,16 @@ $ ssh-agent sh -c 'ssh-add ~/.ssh/id_rsa; git fetch user@host'
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>fatal: Not possible to fast-forward, aborting.</title>
+			<screen>
+			<![CDATA[
+$ git pull
+fatal: Not possible to fast-forward, aborting.			
+$ git rebase
+$ git push			
+			]]>
+			</screen>
+		</section>
 	</section>
 </chapter>

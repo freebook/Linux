@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="k3s">
+	<title>K3s</title>
+	<section>
+		<title>安装 K3s</title>
+		<screen>
+		<![CDATA[
+curl -sfL http://rancher-mirror.cnrancher.com/k3s/k3s-install.sh | INSTALL_K3S_MIRROR=cn sh -		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+k3s server &
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+k3s kubectl get node		
+		]]>
+		</screen>
+	</section>
+</section>

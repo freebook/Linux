@@ -24,20 +24,20 @@
 	%doctype.entity.xml;
 
 ]>
-<book xml:base="http://netkiller.sf.com/book/linux/www" xmlns="http://docbook.org/ns/docbook" xml:lang="zh-cn">
+<book xml:base="http://www.netkiller.cn/book/linux/www" xmlns="http://docbook.org/ns/docbook" xml:lang="zh-cn">
 	<info>
-		<title>Netkiller Virtualization 手札</title>
-		<subtitle>Docker, Kubernetes, KVM, Vagrant, OpenVZ, VirtualBox ...</subtitle>
+		<title>Netkiller Container 手札</title>
+		<subtitle>Virtualization、Docker、Kubernetes、KVM、Vagrant、OpenVZ、VirtualBox ...</subtitle>
 
 		&book.info.author.xml;
 
 		<copyright>
-			<year>2015-2021</year>
+			<year>2015-2022</year>
 			<holder>Netkiller(Neo Chan). All rights reserved.</holder>
 		</copyright>
 
 		<cover>
-			<para role="tagline">Netkiller Virtualization 手札</para>
+			<para role="tagline">Netkiller Container 手札</para>
 			<mediaobject>
 				<imageobject>
 					<imagedata fileref="images/cover.png" />
@@ -59,9 +59,9 @@
 
 		<keywordset>
 			<keyword>qmeu,kvm,xen,openvz</keyword>
-			<keyword>docker, coreos</keyword>
-			<keyword></keyword>
-			<keyword></keyword>
+			<keyword>docker, coreos,docker-compose</keyword>
+			<keyword>kubernetes,kubeadmin,kubectl</keyword>
+			<keyword>netkiller-devops</keyword>
 		</keywordset>
 	</info>
 
