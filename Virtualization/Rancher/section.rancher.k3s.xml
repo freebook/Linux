@@ -31,6 +31,54 @@ k3s kubectl get node
 Neo-iMac:~ neo$ brew install k3d			
 			]]>
 			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+Neo-iMac:~ neo$ k3d cluster create mycluster
+INFO[0000] Prep: Network                                
+INFO[0000] Created network 'k3d-mycluster'              
+INFO[0000] Created volume 'k3d-mycluster-images'        
+INFO[0000] Starting new tools node...                   
+INFO[0001] Creating node 'k3d-mycluster-server-0'       
+INFO[0006] Pulling image 'docker.io/rancher/k3d-tools:5.2.2' 
+INFO[0006] Pulling image 'docker.io/rancher/k3s:v1.21.7-k3s1' 
+INFO[0016] Starting Node 'k3d-mycluster-tools'          
+INFO[0036] Creating LoadBalancer 'k3d-mycluster-serverlb' 
+INFO[0041] Pulling image 'docker.io/rancher/k3d-proxy:5.2.2' 
+INFO[0057] Using the k3d-tools node to gather environment information 
+INFO[0058] Starting cluster 'mycluster'                 
+INFO[0058] Starting servers...                          
+INFO[0059] Starting Node 'k3d-mycluster-server-0'       
+INFO[0078] All agents already running.                  
+INFO[0078] Starting helpers...                          
+INFO[0079] Starting Node 'k3d-mycluster-serverlb'       
+INFO[0087] Injecting '192.168.65.2 host.k3d.internal' into /etc/hosts of all nodes... 
+INFO[0087] Injecting records for host.k3d.internal and for 2 network members into CoreDNS configmap... 
+INFO[0088] Cluster 'mycluster' created successfully!    
+INFO[0088] You can now use it like this:                
+kubectl cluster-info			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+Neo-iMac:~ neo$ kubectl cluster-info
+Kubernetes control plane is running at https://0.0.0.0:60268
+CoreDNS is running at https://0.0.0.0:60268/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+Metrics-server is running at https://0.0.0.0:60268/api/v1/namespaces/kube-system/services/https:metrics-server:/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+Neo-iMac:~ neo$ 			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+Neo-iMac:~ neo$ kubectl get nodes
+NAME                     STATUS   ROLES                  AGE     VERSION
+k3d-mycluster-server-0   Ready    control-plane,master   2m10s   v1.21.7+k3s1			
+			]]>
+			</screen>
 		</section>
 
 	</section>

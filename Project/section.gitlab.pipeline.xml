@@ -140,6 +140,44 @@ cache:
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>禁用 Cache</title>
+			<para>当定义了全局 cahce 后，想在 job 中禁用 Cache</para>
+			<screen>
+			<![CDATA[
+cache:
+  paths:
+    - node_modules
+    - dist			
+job:
+  cache: {}
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>定义多个缓存</title>
+			<screen>
+			<![CDATA[
+test-job:
+  stage: build
+  cache:
+    - key:
+        files:
+          - Gemfile.lock
+      paths:
+        - vendor/ruby
+    - key:
+        files:
+          - yarn.lock
+      paths:
+        - .yarn-cache/
+  script:
+    - bundle install --path=vendor
+    - yarn install --cache-folder .yarn-cache
+    - echo Run tests...			
+			]]>
+			</screen>
+		</section>
 	</section>
 
 	<section id="gitlab-ci.yml.stages">
@@ -862,7 +900,7 @@ job:
 			</screen>
 		</section>
 	</section>
-	<section>
+	<section id="gitlab-ci.yml.include">
 		<title>include 包含</title>
 		<screen>
 		<![CDATA[
