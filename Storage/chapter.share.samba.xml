@@ -3,12 +3,12 @@
 	<title>Samba</title>
 	<section id="install">
 		<title>install</title>
-		<section>
-			<title>CentOS 8 Stream</title>
+		<section id="samba.rocky">
+			<title>CentOS 8 Stream / Rocky Linux 8.5</title>
 			<para>服务器端</para>
 			<screen>
 			<![CDATA[
-[root@netkiller ~]# dnf install samba	
+[root@netkiller ~]# dnf install -y samba	
 [root@netkiller ~]# cp /etc/samba/smb.conf{,.original}
 [root@netkiller ~]# systemctl enable smb
 [root@netkiller ~]# systemctl start smb		
@@ -17,11 +17,24 @@
 			<para>客户端</para>
 			<screen>
 			<![CDATA[
-[root@netkiller ~]# dnf install samba-client			
+[root@netkiller ~]# dnf install -y samba-client			
+			]]>
+			</screen>
+			<para>配置防火墙</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# firewall-cmd --permanent --add-service=samba
+[root@netkiller ~]# firewall-cmd --reload
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# dnf install -y cifs-utils			
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="samba.ubuntu">
 			<title>Ubuntu</title>
 			<para>环境 ubuntu 17.10</para>
 			<screen><![CDATA[
@@ -36,7 +49,7 @@ neo@shenzhen:~$
 			]]></screen>
 		</section>
 		<section id="centos6">
-			<title>Samba</title>
+			<title>CentOS 6</title>
 			<screen><![CDATA[
 # yum -y install samba
 # service smbd start
@@ -259,7 +272,7 @@ hosts deny=192.168.50.10 192.168.10.   ## 禁止IP 192.168.50.10 及 192.168.10.
 			</screen>
 		</section>
 	</section>
-	<section>
+	<section id="smb.cli">
 		<title>Samba 相关命令</title>
 
 		<section id="testparm">
@@ -361,27 +374,89 @@ Looking up status of 172.16.0.5
 		</section>
 		<section id="smbfs">
 			<title>smbfs/smbmount/smbumount</title>
-			<screen><![CDATA[
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# dnf install -y cifs-utils			
+			]]>
+			</screen>
+			<para>挂载匿名共享目录</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# mount -t cifs //192.168.30.7/share /mnt
+			]]>
+			</screen>
+			<para>或者</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# mount.cifs //192.168.30.7/share /mnt			
+			]]>
+			</screen>	
+			<para>挂载用户共享目录</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# mount.cifs -o user=developer,password=123456 //192.168.30.7/developer /mnt
+			]]>
+			</screen>
+			<section>
+				<title>/etc/fstab 配置</title>
+				<screen>
+				<![CDATA[
+[root@netkiller ~]# cat /etc/fstab 
+
+#
+# /etc/fstab
+# Created by anaconda on Fri Dec 17 08:19:10 2021
+#
+# Accessible filesystems, by reference, are maintained under '/dev/disk/'.
+# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info.
+#
+# After editing this file, run 'systemctl daemon-reload' to update systemd
+# units generated from this file.
+#
+UUID=ecdc2a0e-e6cf-40bf-83eb-85788baaced3 /                       xfs     defaults        0 0
+UUID=3064c079-b411-4992-ac37-6def07de0bfd /boot                   xfs     defaults        0 0
+UUID=7FBB-A83B          /boot/efi               vfat    umask=0077,shortname=winnt 0 2
+//192.168.30.7/share		/mnt/share		cifs	auto,password=				0 0
+//192.168.30.7/developer	/mnt/developer	cifs	auto,username=developer,password=123456 0 0				
+				]]>
+				</screen>
+				<para>挂载 /etc/fstab 中的配置项</para>
+				<screen>
+				<![CDATA[
+[root@netkiller ~]# mount -a				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>已废弃方法</title>
+
+				<screen><![CDATA[
 sudo apt-get install smbfs
-		]]></screen>
-			<para>smbmount</para>
-			<screen><![CDATA[
+				]]>
+				</screen>
+				<para>smbmount</para>
+				<screen><![CDATA[
 $ sudo mkdir /mnt/winfs
 $ sudo smbmount //172.16.0.92/tmp /mnt/winfs
 $ ls /mnt/winfs/
-		]]></screen>
-			<para>使用neo帐号登录</para>
-			<screen><![CDATA[
+				]]>
+				</screen>
+				<para>使用neo帐号登录</para>
+				<screen><![CDATA[
 $ sudo smbmount //172.16.0.92/tmp /mnt/winfs -o username=neo
-		]]></screen>
-			<para>mount</para>
-			<screen><![CDATA[
+				]]>
+				</screen>
+				<para>mount</para>
+				<screen><![CDATA[
 $ mount -t smbfs -o username=jwhittal \\\\172.16.1.3\\c$ /mnt/thumb
-		]]></screen>
-			<para>linux 不再使用smbfs, 替换为 cifs</para>
-			<screen><![CDATA[
+				]]>
+				</screen>
+				<para>linux 不再使用smbfs, 替换为 cifs</para>
+				<screen><![CDATA[
 $ mount -t cifs //192.168.0.2/ /mnt/
-		]]></screen>
+				]]>
+				</screen>
+			</section>
 		</section>
 		<section id="smbclient">
 			<title>smbclient - ftp-like client to access SMB/CIFS resources on servers</title>
