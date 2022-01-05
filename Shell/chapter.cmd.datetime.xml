@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.cmd.datetime.xml 381 2012-04-03 09:49:08Z netkiller $ -->
 <section id="datatime">
-	<title>date and time</title>
-	
+	<title>日期和时间</title>
+	<subtitle>date and time</subtitle>
 	<section id="data.format">
 		<title>日期格式</title>
 		<para>自定义格式化显示日期</para>
-		<screen>
+		<screen><![CDATA[
 %n : 下一行
 %t : 跳格
 %H : 小时(00..23)
@@ -36,40 +36,40 @@
 %x : 直接显示日期 (mm/dd/yy)
 %y : 年份的最后两位数字 (00.99)
 %Y : 完整年份 (0000..9999)	
-		</screen>
+		]]></screen>
 		<para>2010/06/18 17:57:38</para>
-		<screen>
+		<screen><![CDATA[
 $ date '+%Y/%m/%d %H:%M:%S'
-		</screen>
+		]]></screen>
 		<para>2010-06-18 17:57:58</para>
-		<screen>
+		<screen><![CDATA[
 $ date '+%Y-%m-%d %H:%M:%S'
-		</screen>
-		<screen>
+		]]></screen>
+		<screen><![CDATA[
 $ date +'%Y-%m-01 00:00:01'
 2010-10-01 00:00:01
-		</screen>
-		<screen>
+		]]></screen>
+		<screen><![CDATA[
 [root@netkiller ~]# date +%F
 2015-07-30
 
 [root@netkiller ~]# date +%Y-%m-%d-%H-%M
 2015-07-30-13-49			
-		</screen>
+		]]></screen>
 		<section id="weekday">
 			<title>weekday name</title>
-			<screen>
+			<screen><![CDATA[
 $ date +%a
 Fri
 
 $ date +%A
 Friday
-			</screen>
+			]]></screen>
 		</section>
 	</section>
 	<section id="data.d">
 		<title>-d --date=</title>
-		<screen>
+		<screen><![CDATA[
 # date -d next-day +%Y%m%d
 20060328
 # date -d last-day +%Y%m%d
@@ -84,8 +84,8 @@ Friday
 200604
 # date -d next-year +%Y
 2007
-		</screen>
-		<screen>
+		]]></screen>
+		<screen><![CDATA[
 date 命令的另一个扩展是 -d 选项
 
 1) 2周后的日期 和一天前的日期
@@ -116,10 +116,10 @@ date 命令的另一个扩展是 -d 选项
 2015年 06月 16日 星期二 00:00:00 HKT
 [root@netkiller ~]# date -d 'jun 30 -2 weeks'  +%Y_%m_%d
 2015_06_16		
-		</screen>
-		<section >
+		]]></screen>
+		<section>
 			<title>日期偏移量</title>
-			<screen>
+			<screen><![CDATA[
 昨天 (前一天)
 date --date='1 days ago' "+%Y-%m-%d"
 date -d '1 days ago' "+%Y-%m-%d"
@@ -129,41 +129,41 @@ date -d yesterday "+%Y-%m-%d"
 date --date='1 days' "+%Y-%m-%d"
 date -d '1 days' "+%Y-%m-%d"
 date -d tomorrow "+%Y-%m-%d"
-			</screen>
+			]]></screen>
 			<section>
 				<title>day</title>
-				<screen>
+				<screen><![CDATA[
 $ date -d '-1 day' +'%Y-%m-%d 00:00:01'
 2010-10-14 00:00:01
 
 $ date -d '+5 day' +'%Y-%m-%d 00:00:01'
 2010-10-20 00:00:01
-				</screen>
+				]]></screen>
 			</section>
 			<section>
 				<title>month</title>
-				<screen>
+				<screen><![CDATA[
 $ date -d '+2 month' +'%Y-%m-%d 00:00:01'
 2010-12-15 00:00:01
 
 $ date -d '-1 month' +'%Y-%m-%d 00:00:01'
 2010-09-15 00:00:01
-				</screen>
+				]]></screen>
 			</section>
 			<section>
 				<title>year</title>
-				<screen>
+				<screen><![CDATA[
 $ date -d '-5 year' +'%Y-%m-%d'
 2005-10-15
 $ date -d '+1 year' +'%Y-%m-%d'
 2011-10-15
-				</screen>
+				]]></screen>
 			</section>
 
 		</section>
 		<section>
 			<title>时间偏移</title>
-			<screen>
+			<screen><![CDATA[
 1小時前
 date --date='1 hours ago' "+%Y-%m-%d %H:%M:%S"
 1小時後
@@ -176,12 +176,12 @@ date --date='1 minutes' "+%Y-%m-%d %H:%M:%S"
 date --date='1 seconds ago' "+%Y-%m-%d %H:%M:%S"
 1秒後
 date --date='1 seconds' "+%Y-%m-%d %H:%M:%S"
-			</screen>
+			]]></screen>
 		</section>
 	</section>
 	<section>
 		<title>时间戳</title>
-		<screen>
+		<screen><![CDATA[
 1 计算当天的时间戳
 
 
@@ -202,28 +202,44 @@ date --date='1 seconds' "+%Y-%m-%d %H:%M:%S"
 格式输出
 [root@mygitlab ~]# date -d @1440661395  +%Y-%m-%d-%H-%M
 2015-08-27-00-43		
-		</screen>
+		]]></screen>
 	</section>
 	<section id="RFC2822">
 		<title>RFC 2822</title>
 		<para>RFC 2822 的日期与时间输出格式, RFC 2822 的格式像这样: 星期,日-月-年,小时:分钟:秒 时区</para>
 		<para>时区 +0800 等同于 GMT +8</para>
-		<screen>
+		<screen><![CDATA[
 [root@netkiller ~]# date -R
 Thu, 30 Jul 2015 11:29:00 +0800
-		</screen>
+		]]></screen>
 	</section>
 	<section id="datatime.utc">
 		<title>UTC</title>
-		<para>UTC time  以UTC形式显示日期和时间</para>
-		<screen>
+		<para>UTC time 以UTC形式显示日期和时间</para>
+		<screen><![CDATA[
 $ datetime=$(date -u '+%Y%m%d %H:%M:%S')
 $ echo $datetime
 20091203 06:22:03
-		</screen>
-		<screen>
+		]]></screen>
+		<screen><![CDATA[
 [root@netkiller ~]# date -u
 2015年 07月 30日 星期四 03:35:01 UTC		
+		]]></screen>
+	</section>
+	<section>
+		<title>字符串转日期</title>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# date -d "$(echo 20220103T1430 | sed 's/T/ /')"
+Fri Jan  3 14:30:00 CST 2022		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# date -d "$(echo 20220103T143011 | sed -r 's/(.*)T(..)(..)(..)/\1 \2:\3:\4/')"
+Mon Jan  3 14:30:11 CST 2022		
+		]]>
 		</screen>
 	</section>
 </section>

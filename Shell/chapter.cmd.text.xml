@@ -155,6 +155,12 @@ $ nl /etc/issue
 $ cat /etc/passwd |tr ":" "\n"
 			]]>
 			</screen>
+			<screen>
+			<![CDATA[
+[root@gitlab ~]# echo "/opt/netkiller.cn/www.netkiller.cn" | tr -- '/.' ':-'
+:opt:netkiller-cn:www-netkiller-cn			
+			]]>
+			</screen>
 		</section>
 		<section>
 			<title>英文大小写转换</title>
