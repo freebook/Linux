@@ -379,7 +379,7 @@ nginx['http2_enabled'] = true
 	<section>
 		<title>Gitlab 命令行</title>
 		<section>
-			<title>重置密码</title>
+			<title>gitlab-rake 命令</title>
 			<para>进入容器</para>
 			<screen>
 		<![CDATA[
@@ -397,5 +397,24 @@ Password successfully updated for user with username neo.
 		]]>
 			</screen>
 		</section>
+	</section>
+	<section id="gitlab-runner">
+		<title>gitlab-runner 命令</title>
+		<screen>
+		<![CDATA[
+gitlab-runner register  #注册，非交互模式添加 --non-interactive
+gitlab-runner list      #列出配置文件中已注册的配置项
+gitlab-runner verify    #检查注册
+		
+#注销所有配置项
+gitlab-runner unregister --all-runners
+
+#使用令牌注销
+gitlab-runner unregister --url http://gitlab.example.com/ --token XXXXXXXX
+
+#使用名称注销
+gitlab-runner unregister --name test-runner
+		]]>
+		</screen>
 	</section>
 </section>

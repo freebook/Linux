@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section>
+<section id="rancher.cli">
 	<title>Rancher CLI</title>
 	<para>帮助信息</para>
 	<screen>

@@ -16,7 +16,7 @@ sed -n 's/root/AAA&BBB/2p' /etc/passwd       				#将root替换成AAArootBBB，&
 sed -ne 's/root/AAA&BBB/' -ne 's/bash/AAA&BBB/p' /etc/passwd #-e将多个命令连接起来，将root或bash行作替换
 sed -n 's/root/AAA&BBB/;s/bash/AAA&BBB/p' /etc/passwd   	#与上命令功能相同
 sed -nr 's/(root)(.*)(bash)/\3\2\1/p' /etc/passwd     		#将root与bash位置替换，两标记替换 或sed -n 's/root.∗bash/\3\2\1/p' /etc/passwd
-		]]>		
+		]]>
 		</screen>
 		<programlisting>
 		<![CDATA[
@@ -35,9 +35,9 @@ echo $str | sed "s:$my::g"
 		</programlisting>
 		<section>
 			<title>正则</title>
-			<programlisting>
+			<programlisting><![CDATA[
 sed s/[[:space:]]//g  filename          删除空格
-			</programlisting>
+			]]></programlisting>
 		</section>
 		<section>
 			<title>aaa="bbb" 提取bbb</title>
@@ -50,8 +50,270 @@ $ curl -s http://www.example.com | egrep -o '<a href="(.*)">.*</a>' | sed -e 's/
 			]]>
 			</screen>
 			<para>Mac 地址转换</para>
-			<screen>
+			<screen><![CDATA[
 echo 192.168.2.1-a1f4.40c1.5756 | sed -r 's|(.*-)(..)(..).(..)(..).(..)(..)|\1\2:\3:\4:\5:\6:\7|g'
+			]]></screen>
+		</section>
+		<section>
+			<title>"aaa": "bbb" 提取bbb</title>
+			<para>数据样本</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# curl -s https://registry.hub.docker.com/v1/repositories/centos/tags | jq
+[
+  {
+    "layer": "",
+    "name": "latest"
+  },
+  {
+    "layer": "",
+    "name": "5"
+  },
+  {
+    "layer": "",
+    "name": "5.11"
+  },
+  {
+    "layer": "",
+    "name": "6"
+  },
+  {
+    "layer": "",
+    "name": "6.10"
+  },
+  {
+    "layer": "",
+    "name": "6.6"
+  },
+  {
+    "layer": "",
+    "name": "6.7"
+  },
+  {
+    "layer": "",
+    "name": "6.8"
+  },
+  {
+    "layer": "",
+    "name": "6.9"
+  },
+  {
+    "layer": "",
+    "name": "7"
+  },
+  {
+    "layer": "",
+    "name": "7.0.1406"
+  },
+  {
+    "layer": "",
+    "name": "7.1.1503"
+  },
+  {
+    "layer": "",
+    "name": "7.2.1511"
+  },
+  {
+    "layer": "",
+    "name": "7.3.1611"
+  },
+  {
+    "layer": "",
+    "name": "7.4.1708"
+  },
+  {
+    "layer": "",
+    "name": "7.5.1804"
+  },
+  {
+    "layer": "",
+    "name": "7.6.1810"
+  },
+  {
+    "layer": "",
+    "name": "7.7.1908"
+  },
+  {
+    "layer": "",
+    "name": "7.8.2003"
+  },
+  {
+    "layer": "",
+    "name": "7.9.2009"
+  },
+  {
+    "layer": "",
+    "name": "8"
+  },
+  {
+    "layer": "",
+    "name": "8.1.1911"
+  },
+  {
+    "layer": "",
+    "name": "8.2.2004"
+  },
+  {
+    "layer": "",
+    "name": "8.3.2011"
+  },
+  {
+    "layer": "",
+    "name": "8.4.2105"
+  },
+  {
+    "layer": "",
+    "name": "centos5"
+  },
+  {
+    "layer": "",
+    "name": "centos5.11"
+  },
+  {
+    "layer": "",
+    "name": "centos6"
+  },
+  {
+    "layer": "",
+    "name": "centos6.10"
+  },
+  {
+    "layer": "",
+    "name": "centos6.6"
+  },
+  {
+    "layer": "",
+    "name": "centos6.7"
+  },
+  {
+    "layer": "",
+    "name": "centos6.8"
+  },
+  {
+    "layer": "",
+    "name": "centos6.9"
+  },
+  {
+    "layer": "",
+    "name": "centos7"
+  },
+  {
+    "layer": "",
+    "name": "centos7.0.1406"
+  },
+  {
+    "layer": "",
+    "name": "centos7.1.1503"
+  },
+  {
+    "layer": "",
+    "name": "centos7.2.1511"
+  },
+  {
+    "layer": "",
+    "name": "centos7.3.1611"
+  },
+  {
+    "layer": "",
+    "name": "centos7.4.1708"
+  },
+  {
+    "layer": "",
+    "name": "centos7.5.1804"
+  },
+  {
+    "layer": "",
+    "name": "centos7.6.1810"
+  },
+  {
+    "layer": "",
+    "name": "centos7.7.1908"
+  },
+  {
+    "layer": "",
+    "name": "centos7.8.2003"
+  },
+  {
+    "layer": "",
+    "name": "centos7.9.2009"
+  },
+  {
+    "layer": "",
+    "name": "centos8"
+  },
+  {
+    "layer": "",
+    "name": "centos8.1.1911"
+  },
+  {
+    "layer": "",
+    "name": "centos8.2.2004"
+  },
+  {
+    "layer": "",
+    "name": "centos8.3.2011"
+  },
+  {
+    "layer": "",
+    "name": "centos8.4.2105"
+  }
+]			
+			]]>
+			</screen>
+			<para>提取方法</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# curl -s https://registry.hub.docker.com/v1/repositories/centos/tags | sed 's/}/}\n/g' | sed -e 's/.*"name": "\([^#]*\)".*/\1/'
+latest
+5
+5.11
+6
+6.10
+6.6
+6.7
+6.8
+6.9
+7
+7.0.1406
+7.1.1503
+7.2.1511
+7.3.1611
+7.4.1708
+7.5.1804
+7.6.1810
+7.7.1908
+7.8.2003
+7.9.2009
+8
+8.1.1911
+8.2.2004
+8.3.2011
+8.4.2105
+centos5
+centos5.11
+centos6
+centos6.10
+centos6.6
+centos6.7
+centos6.8
+centos6.9
+centos7
+centos7.0.1406
+centos7.1.1503
+centos7.2.1511
+centos7.3.1611
+centos7.4.1708
+centos7.5.1804
+centos7.6.1810
+centos7.7.1908
+centos7.8.2003
+centos7.9.2009
+centos8
+centos8.1.1911
+centos8.2.2004
+centos8.3.2011
+centos8.4.2105			
+			]]>
 			</screen>
 		</section>
 		<section>
@@ -98,65 +360,65 @@ Zookeeper
 		<title>insert 插入字符</title>
 		<para>i 命令插入一行，并且在当前行前面有两个空格</para>
 		<para>在root行前插入一个admin</para>
-		<screen>
+		<screen><![CDATA[
 sed '/root/i admin' /etc/passwd		
-		</screen>
+		]]></screen>
 		<para>33 行处插入字符</para>
-		<screen>
+		<screen><![CDATA[
 sed -i "33 i \ \ authorization: enabled" /etc/mongod.conf
-		</screen>
+		]]></screen>
 	</section>
 	<section id="sed.append">
 		<title>追加字符</title>
 		<para>在root行后追加一个admin行</para>
-		<screen>
+		<screen><![CDATA[
 sed '/root/a admin' /etc/passwd
-		</screen>
+		]]></screen>
 	</section>
 	<section id="sed.change">
 		<title>修改字符</title>
 		<para>将root行替换为admin</para>
-		<screen>
+		<screen><![CDATA[
 sed '/root/c admin' /etc/passwd
-		</screen>
+		]]></screen>
 	</section>
 	<section id="sed.delete">
 		<title>删除字符</title>
 		<para>删除含有root的行</para>
-		<screen>
+		<screen><![CDATA[
 sed '/root/d' /etc/passwd 
-		</screen>
+		]]></screen>
 		<section>
 			<title>delete</title>
 			<para>删除空行</para>
-			<programlisting>
+			<programlisting><![CDATA[
 sed /^$/d         filename
 sed '/./!d' filename
-			</programlisting>
+			]]></programlisting>
 		</section>
 	</section>
 	<section id="sed.line">
 		<title>行操作</title>
 		<para>模式空间中的内容全部打印出来</para>
 		<para>定位行：</para>
-		<screen>
+		<screen><![CDATA[
 sed -n '12,~3p' pass #从第12行开始，直到下一个3的倍数行（12-15行）
 sed -n '12,+4p' pass #从第12行开始，连续4行（12-16行）
 sed -n '12~3p' pass #从第12行开始，间隔3行输出一次（12，15，18，21...）
 sed -n '10,$p' pass   #从第10行至结尾
 sed -n '4!p' pass   #除去第4行
-		</screen>
-		
+		]]></screen>
+
 		<para>打印3~6行间的内容</para>
-		<screen>
+		<screen><![CDATA[
 $ sed -n '3,6p' /etc/passwd
 bin:x:2:2:bin:/bin:/usr/sbin/nologin
 sys:x:3:3:sys:/dev:/usr/sbin/nologin
 sync:x:4:65534:sync:/bin:/bin/sync
 games:x:5:60:games:/usr/games:/usr/sbin/nologin
-		</screen>
+		]]></screen>
 		<para>打印35行至行尾</para>
-		<screen>
+		<screen><![CDATA[
 $ sed -n '35,$p' /etc/passwd
 sshd:x:116:65534::/var/run/sshd:/usr/sbin/nologin
 mysql:x:117:126:MySQL Server,,,:/nonexistent:/bin/false
@@ -164,13 +426,14 @@ uuidd:x:100:101::/run/uuidd:/bin/false
 libvirt-qemu:x:118:128:Libvirt Qemu,,,:/var/lib/libvirt:/bin/false
 libvirt-dnsmasq:x:119:129:Libvirt Dnsmasq,,,:/var/lib/libvirt/dnsmasq:/bin/false
 redis:x:120:130::/var/lib/redis:/bin/false		
-		</screen>
-	</section><section id="sed.in-place">
+		]]></screen>
+	</section>
+	<section id="sed.in-place">
 		<title>编辑文件</title>
-		<screen>
+		<screen><![CDATA[
 -i[SUFFIX], --in-place[=SUFFIX]
                  edit files in place (makes backup if extension supplied)
-		</screen>
+		]]></screen>
 		<para>下面例子是替换t.php中的java字符串为php</para>
 		<screen>
 		<![CDATA[
@@ -195,7 +458,7 @@ sed -i "7,7 s/#server.host: \"localhost\"/server.host: \"0.0.0.0\"/" /etc/kibana
 		]]>
 		</screen>
 	</section>
-	
+
 	<section id="sed.regular">
 		<title>正则表达式</title>
 		<para>正则：'/正则式/'</para>
@@ -229,7 +492,7 @@ sed -nr '/(root)*/p' /etc/passwd   #匹配0-n次前导单词
 		]]>
 		</screen>
 	</section>
-	
+
 	<section id="sed.pipeline">
 		<title>管道操作</title>
 		<screen>
@@ -261,10 +524,10 @@ netkiller
 	</section>
 	<section id="sed.perl">
 		<title>perl</title>
-		<programlisting>
+		<programlisting><![CDATA[
 sed -i -e 's/aaa/bbb/g' *
 perl -p -i -e 's/aaa/bbb/g' *
-		</programlisting>
+		]]></programlisting>
 	</section>
 	<section>
 		<title>案例</title>

@@ -23,5 +23,5 @@
 	&section.gitlab.registry.xml;
 	&section.gitlab.webhook.xml;
 	&section.gitlab.faq.xml;
-
+	
 </chapter>

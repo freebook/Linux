@@ -23,15 +23,25 @@ k3s kubectl get node
 		]]>
 			</screen>
 		</section>
+
+
+	</section>
+	<section id="k3d">
+		<title>k3d</title>
+		<para>k3d is a lightweight wrapper to run k3s (Rancher Lab’s minimal Kubernetes distribution) in docker.</para>
 		<section>
-			<title>k3d</title>
-			<para>k3d is a lightweight wrapper to run k3s (Rancher Lab’s minimal Kubernetes distribution) in docker.</para>
+			<title>安装 k3d</title>
+
+			<para>安装 k3d</para>
 			<screen>
 			<![CDATA[
 Neo-iMac:~ neo$ brew install k3d			
 			]]>
 			</screen>
-			<para></para>
+		</section>
+		<section>
+			<title>创建集群</title>
+			<para>创建并启动集群</para>
 			<screen>
 			<![CDATA[
 Neo-iMac:~ neo$ k3d cluster create mycluster
@@ -59,7 +69,84 @@ INFO[0088] You can now use it like this:
 kubectl cluster-info			
 			]]>
 			</screen>
+			<para>映射80端口</para>
+			<screen>
+			<![CDATA[
+k3d cluster create mycluster --api-port 127.0.0.1:6445 --servers 3 --agents 2 --port '80:80@loadbalancer'
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+Neo-iMac:~ neo$ k3d cluster create mycluster --api-port 127.0.0.1:6445 --servers 3 --agents 2 --port '80:80@loadbalancer'
+INFO[0000] portmapping '80:80' targets the loadbalancer: defaulting to [servers:*:proxy agents:*:proxy] 
+INFO[0000] Prep: Network                                
+INFO[0000] Created network 'k3d-mycluster'              
+INFO[0000] Created volume 'k3d-mycluster-images'        
+INFO[0000] Creating initializing server node            
+INFO[0000] Creating node 'k3d-mycluster-server-0'       
+INFO[0000] Starting new tools node...                   
+INFO[0001] Starting Node 'k3d-mycluster-tools'          
+INFO[0002] Creating node 'k3d-mycluster-server-1'       
+INFO[0003] Creating node 'k3d-mycluster-server-2'       
+INFO[0004] Creating node 'k3d-mycluster-agent-0'        
+INFO[0005] Creating node 'k3d-mycluster-agent-1'        
+INFO[0005] Creating LoadBalancer 'k3d-mycluster-serverlb' 
+INFO[0005] Using the k3d-tools node to gather environment information 
+INFO[0007] Starting cluster 'mycluster'                 
+INFO[0007] Starting the initializing server...          
+INFO[0007] Starting Node 'k3d-mycluster-server-0'       
+INFO[0012] Starting servers...                          
+INFO[0013] Starting Node 'k3d-mycluster-server-1'
+INFO[0045] Starting Node 'k3d-mycluster-server-2'       
+INFO[0069] Starting agents...                           
+INFO[0070] Starting Node 'k3d-mycluster-agent-1'        
+INFO[0070] Starting Node 'k3d-mycluster-agent-0'        
+INFO[0081] Starting helpers...                          
+INFO[0081] Starting Node 'k3d-mycluster-serverlb'       
+INFO[0089] Injecting '192.168.65.2 host.k3d.internal' into /etc/hosts of all nodes... 
+INFO[0089] Injecting records for host.k3d.internal and for 6 network members into CoreDNS configmap... 
+INFO[0090] Cluster 'mycluster' created successfully!    
+INFO[0091] You can now use it like this:                
+kubectl cluster-info			
+			]]>
+			</screen>
+			<para>除了使用命令，还可以使用 yaml 配置文件创建集群</para>
+			<programlisting>
+			<![CDATA[
+apiVersion: k3d.io/v1alpha2
+kind: Simple
+name: mycluster
+servers: 1
+agents: 2
+kubeAPI:
+  hostPort: "6443" # same as `--api-port '6443'`
+ports:
+  - port: 8080:80  # same as `--port '8080:80@loadbalancer'`
+    nodeFilters:
+      - loadbalancer
+  - port: 8443:443 # same as `--port '8443:443@loadbalancer'`
+    nodeFilters:
+      - loadbalancer			
+			]]>
+			</programlisting>
 			<para></para>
+			<screen>
+			<![CDATA[
+$ k3d cluster create --config /path/to/mycluster.yaml			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>查看信息</title>
+			<para></para>
+			<screen>
+			<![CDATA[
+Neo-iMac:~ neo$ k3d cluster list
+NAME        SERVERS   AGENTS   LOADBALANCER
+mycluster   3/3       2/2      true			
+			]]>
+			</screen>
+			<para>查看集群信息</para>
 			<screen>
 			<![CDATA[
 Neo-iMac:~ neo$ kubectl cluster-info
@@ -71,7 +158,7 @@ To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 Neo-iMac:~ neo$ 			
 			]]>
 			</screen>
-			<para></para>
+			<para>查看节点</para>
 			<screen>
 			<![CDATA[
 Neo-iMac:~ neo$ kubectl get nodes
@@ -80,6 +167,150 @@ k3d-mycluster-server-0   Ready    control-plane,master   2m10s   v1.21.7+k3s1
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>删除集群</title>
+			<para>删除集群</para>
+			<screen>
+			<![CDATA[
+Neo-iMac:~ neo$ k3d cluster delete mycluster
+INFO[0000] Deleting cluster 'mycluster'                 
+INFO[0002] Deleting cluster network 'k3d-mycluster'     
+INFO[0003] Deleting image volume 'k3d-mycluster-images' 
+INFO[0003] Removing cluster details from default kubeconfig... 
+INFO[0003] Removing standalone kubeconfig file (if there is one)... 
+INFO[0003] Successfully deleted cluster mycluster!   			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>演示</title>
+			<section>
+				<title>部署 nginx</title>
+				<screen>
+				<![CDATA[
+Neo-iMac:~ neo$ kubectl create deployment nginx --image=nginx:alpine
+deployment.apps/nginx created
+Neo-iMac:~ neo$ kubectl create service clusterip nginx --tcp=80:80
+service/nginx created
+Neo-iMac:~ neo$ cat <<EOF | kubectl apply -f -
+> apiVersion: networking.k8s.io/v1
+> kind: Ingress
+> metadata:
+>   name: nginx
+>   annotations:
+>     ingress.kubernetes.io/ssl-redirect: "false"
+> spec:
+>   rules:
+>   - http:
+>       paths:
+>       - path: /
+>         pathType: Prefix
+>         backend:
+>           service:
+>             name: nginx
+>             port:
+>               number: 80
+> EOF
+ingress.networking.k8s.io/nginx created				
+				]]>
+				</screen>
+				<para>查看 ingress 状态</para>
+				<screen>
+				<![CDATA[
+Netkiller-iMac:~ neo$ kubectl get ingress  -o wide
+NAME    CLASS    HOSTS   ADDRESS                                                  PORTS   AGE
+nginx   <none>   *       172.19.0.2,172.19.0.3,172.19.0.4,172.19.0.5,172.19.0.6   80      54m				
+				]]>
+				</screen>
+				<para>使用浏览器或者CURL命令访问 http://localhost</para>
+				<screen>
+				<![CDATA[
+Neo-iMac:~ neo$ curl http://localhost
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+html { color-scheme: light dark; }
+body { width: 35em; margin: 0 auto;
+font-family: Tahoma, Verdana, Arial, sans-serif; }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
 
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>				
+				]]>
+				</screen>
+			</section>
+		</section>
+		<section>
+			<title>配置文件</title>
+			<section>
+				<title>导出集群配置文件</title>
+				<screen>
+				<![CDATA[
+Netkiller-iMac:~ neo$ k3d kubeconfig write mycluster
+/Users/neo/.k3d/kubeconfig-mycluster.yaml
+Netkiller-iMac:~ neo$ cat /Users/neo/.k3d/kubeconfig-mycluster.yaml
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJkakNDQVIyZ0F3SUJBZ0lCQURBS0JnZ3Foa2pPUFFRREFqQWpNU0V3SHdZRFZRUUREQmhyTTNNdGMyVnkKZG1WeUxXTmhRREUyTkRFME16WTVNelV3SGhjTk1qSXdNVEEyTURJME1qRTFXaGNOTXpJd01UQTBNREkwTWpFMQpXakFqTVNFd0h3WURWUVFEREJock0zTXRjMlZ5ZG1WeUxXTmhRREUyTkRFME16WTVNelV3V1RBVEJnY3Foa2pPClBRSUJCZ2dxaGtqT1BRTUJCd05DQUFUQVZKN01XdVY3dzA5dGZybUswbDAybkxOcjFiaGpXM1hIZEgrQUtCdWEKREFBZ3UrNHF4dVdyNHBkbGpraVNrL3ZZMEJjVWJMZ1RkemJnSEY4UnA1OVpvMEl3UURBT0JnTlZIUThCQWY4RQpCQU1DQXFRd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBZEJnTlZIUTRFRmdRVUZ2UXVRTVBjeStrbTFla2pqaUtUCmRoZ1c4TjB3Q2dZSUtvWkl6ajBFQXdJRFJ3QXdSQUlnVGMvZDBHWjN5aWRuZ2dXamZGWnowc0R6V3diVXkzV0IKVmZYamZ1Tis3UjRDSUJ4ZmttSUs1Z1NTL0RNUjltc0VxYUsxZVNGTEl2bHZuNXhaeE53RDJoUlgKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+    server: https://127.0.0.1:6445
+  name: k3d-mycluster
+contexts:
+- context:
+    cluster: k3d-mycluster
+    user: admin@k3d-mycluster
+  name: k3d-mycluster
+current-context: k3d-mycluster
+kind: Config
+preferences: {}
+users:
+- name: admin@k3d-mycluster
+  user:
+    client-certificate-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJrVENDQVRlZ0F3SUJBZ0lJVnR3SGsxWDlUam93Q2dZSUtvWkl6ajBFQXdJd0l6RWhNQjhHQTFVRUF3d1kKYXpOekxXTnNhV1Z1ZEMxallVQXhOalF4TkRNMk9UTTFNQjRYRFRJeU1ERXdOakF5TkRJeE5Wb1hEVEl6TURFdwpOakF5TkRJMU0xb3dNREVYTUJVR0ExVUVDaE1PYzNsemRHVnRPbTFoYzNSbGNuTXhGVEFUQmdOVkJBTVRESE41CmMzUmxiVHBoWkcxcGJqQlpNQk1HQnlxR1NNNDlBZ0VHQ0NxR1NNNDlBd0VIQTBJQUJCcFNScmNGMW9VQUFCRW4Kb2hZM1haWmpoMUhkNks0eEtXVUpsc3A2blR0UzNFbDJJQjZrUmZIcGNwaDdjQ3NaUnFvV2RsT1MxdlFtNGM3VgplNVZ6aEY2alNEQkdNQTRHQTFVZER3RUIvd1FFQXdJRm9EQVRCZ05WSFNVRUREQUtCZ2dyQmdFRkJRY0RBakFmCkJnTlZIU01FR0RBV2dCVFhrTVpDYnJXVTNKQmxIb0t2Z0F4MDF6TUJUVEFLQmdncWhrak9QUVFEQWdOSUFEQkYKQWlFQTFIQ0M1OUlaS3FieVQ2MExSS2pvcWNWMFJiK3BWZ1FLdU1aR3YxZXFvOGdDSUZFMjB6OTg1ZStnR3dGYQppK3FkenFYQTVKU2FrV05naVE0TUZLcExpVDI3Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0KLS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJlRENDQVIyZ0F3SUJBZ0lCQURBS0JnZ3Foa2pPUFFRREFqQWpNU0V3SHdZRFZRUUREQmhyTTNNdFkyeHAKWlc1MExXTmhRREUyTkRFME16WTVNelV3SGhjTk1qSXdNVEEyTURJME1qRTFXaGNOTXpJd01UQTBNREkwTWpFMQpXakFqTVNFd0h3WURWUVFEREJock0zTXRZMnhwWlc1MExXTmhRREUyTkRFME16WTVNelV3V1RBVEJnY3Foa2pPClBRSUJCZ2dxaGtqT1BRTUJCd05DQUFTd0c2dk9tay8vL01jNlUwU3BLZm9ERFM1NDNkQnZSdzVZUnNlZmpmWm0KT01BQUNRbkViYS9QY0FGc2ZIUlBWWU9HczRnWTQ3TVlDbzF3L2swV3had3lvMEl3UURBT0JnTlZIUThCQWY4RQpCQU1DQXFRd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBZEJnTlZIUTRFRmdRVTE1REdRbTYxbE55UVpSNkNyNEFNCmROY3pBVTB3Q2dZSUtvWkl6ajBFQXdJRFNRQXdSZ0loQUtQcjE3T0lDNk94a1hBYnpxUGl2R0QwZkptVjFmTnIKVFNzc2IvMktWMjh4QWlFQTFEUVlHU2F0V3R6Y2tFdk1JNnYzeTcyQ2hwdDZWMHZUdWNEWWJsOWxRVFU9Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+    client-key-data: LS0tLS1CRUdJTiBFQyBQUklWQVRFIEtFWS0tLS0tCk1IY0NBUUVFSUxjTWt1aW9mTHo1Z1lUZGVrWmlsOEhTZVMzSXVONHVHUGU2VXFxRWJkN0dvQW9HQ0NxR1NNNDkKQXdFSG9VUURRZ0FFR2xKR3R3WFdoUUFBRVNlaUZqZGRsbU9IVWQzb3JqRXBaUW1XeW5xZE8xTGNTWFlnSHFSRgo4ZWx5bUh0d0t4bEdxaFoyVTVMVzlDYmh6dFY3bFhPRVhnPT0KLS0tLS1FTkQgRUMgUFJJVkFURSBLRVktLS0tLQo=				
+				]]>
+				</screen>
+			</section>
+		</section>
+		<section>
+			<title>镜像管理</title>
+			<para>导入本地镜像</para>
+			<screen>
+			<![CDATA[
+Netkiller-iMac:~ neo$ docker image ls | grep netkiller
+netkiller                                                     openjdk8       52e22fa28d43   3 weeks ago    552MB			
+			]]>
+			</screen>
+			<para>将本地 netkiller:openjdk8 镜像导入到 mycluster 中</para>
+			<screen>
+			<![CDATA[
+Netkiller-iMac:~ neo$ k3d image import netkiller:openjdk8 -c mycluster
+INFO[0000] Importing image(s) into cluster 'mycluster'  
+INFO[0000] Loading 1 image(s) from runtime into nodes... 
+INFO[0051] Importing images '[netkiller:openjdk8]' into node 'k3d-mycluster-server-0'... 
+INFO[0050] Importing images '[netkiller:openjdk8]' into node 'k3d-mycluster-server-2'... 
+INFO[0050] Importing images '[netkiller:openjdk8]' into node 'k3d-mycluster-agent-1'... 
+INFO[0050] Importing images '[netkiller:openjdk8]' into node 'k3d-mycluster-server-1'... 
+INFO[0050] Importing images '[netkiller:openjdk8]' into node 'k3d-mycluster-agent-0'... 
+INFO[0355] Successfully imported image(s)               
+INFO[0355] Successfully imported 1 image(s) into 1 cluster(s) 			
+			]]>
+			</screen>
+		</section>
+		
 	</section>
+
 </section>

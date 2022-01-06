@@ -3,7 +3,7 @@
 	<title>Rancher - Multi-Cluster Kubernetes Management</title>
 	<subtitle>Rancher is open-source software for delivering Kubernetes-as-a-Service.</subtitle>
 	&section.rancher.xml;
-	<section>
+	<section id="rancher.start">
 		<title>快速入门</title>
 		<para>
 			<ulink url="https://www.cnrancher.com/docs/rancher/v2.x/cn/overview/quick-start-guide/" />
@@ -136,7 +136,7 @@ rancher-compose --url https://rancher.netkiller.cn/v3 --access-key token-pk9n2 -
 	&section.rancher.cli.xml;
 	&section.rancher.k3s.xml;
 	&section.rancher.example.xml;
-	<section>
+	<section id="rancher.faq">
 		<title>FAQ</title>
 		<section>
 			<title>调试 Rancher 查看日志</title>

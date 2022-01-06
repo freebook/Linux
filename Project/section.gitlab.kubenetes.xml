@@ -1,41 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="gitlib.kubernetes">
 	<title>集成 Kubernetes</title>
-	<para>这里我们使用 minikube 启动 Kubernetes</para>
 	<section>
-		<title>安装启动 Minikube</title>
-		<para>查看 docker 组 GID</para>
+		<title>k3d 方案</title>
 		<screen>
+		<![CDATA[
+k3d cluster create mycluster --api-port 6443 --servers 1 --agents 1 --port '80:80@loadbalancer' --port '443:443@loadbalancer'		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>Agent Server</title>
+		<para>编辑 /etc/gitlab/gitlab.rb 配置文件，启用 Agent Server</para>
+		<screen>
+		<![CDATA[
+[root@gitlab ~]# vim /etc/gitlab/gitlab.rb
+gitlab_kas['enable'] = true		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+[root@gitlab ~]# gitlab-ctl reconfigure		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+[root@gitlab ~]# cat /var/log/gitlab/gitlab-kas/current 
+2022-01-06_04:01:20.18664 {"level":"info","time":"2022-01-06T12:01:20.186+0800","msg":"Observability endpoint is up","mod_name":"observability","net_network":"tcp","net_address":"127.0.0.1:8151"}
+2022-01-06_04:01:20.18690 {"level":"info","time":"2022-01-06T12:01:20.186+0800","msg":"Private API endpoint is up","net_network":"tcp","net_address":"127.0.0.1:8155"}
+2022-01-06_04:01:20.18693 {"level":"info","time":"2022-01-06T12:01:20.186+0800","msg":"Kubernetes API endpoint is up","mod_name":"kubernetes_api","net_network":"tcp","net_address":"127.0.0.1:8154"}
+2022-01-06_04:01:20.18703 {"level":"info","time":"2022-01-06T12:01:20.187+0800","msg":"Agentk API endpoint is up","net_network":"tcp","net_address":"127.0.0.1:8150","is_websocket":true}
+2022-01-06_04:01:20.18708 {"level":"info","time":"2022-01-06T12:01:20.187+0800","msg":"API endpoint is up","net_network":"tcp","net_address":"127.0.0.1:8153"}
+2022-01-06_04:01:44.34443 {"level":"info","time":"2022-01-06T12:01:44.343+0800","msg":"Observability endpoint is up","mod_name":"observability","net_network":"tcp","net_address":"127.0.0.1:8151"}
+2022-01-06_04:01:44.34447 {"level":"info","time":"2022-01-06T12:01:44.343+0800","msg":"Agentk API endpoint is up","net_network":"tcp","net_address":"127.0.0.1:8150","is_websocket":true}
+2022-01-06_04:01:44.34447 {"level":"info","time":"2022-01-06T12:01:44.343+0800","msg":"Private API endpoint is up","net_network":"tcp","net_address":"127.0.0.1:8155"}
+2022-01-06_04:01:44.34447 {"level":"info","time":"2022-01-06T12:01:44.343+0800","msg":"API endpoint is up","net_network":"tcp","net_address":"127.0.0.1:8153"}
+2022-01-06_04:01:44.34448 {"level":"info","time":"2022-01-06T12:01:44.343+0800","msg":"Kubernetes API endpoint is up","mod_name":"kubernetes_api","net_network":"tcp","net_address":"127.0.0.1:8154"}		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>Minikube 方案</title>
+
+		<para>这里我们使用 minikube 启动 Kubernetes</para>
+		<section>
+			<title>安装启动 Minikube</title>
+			<para>查看 docker 组 GID</para>
+			<screen>
 		<![CDATA[
 [root@localhost ~]# grep docker /etc/group
 docker:x:991:gitlab-runner		
 		]]>
-		</screen>
-		<para>创建 docker 用户，指定 uid 和 gid</para>
-		<screen>
+			</screen>
+			<para>创建 docker 用户，指定 uid 和 gid</para>
+			<screen>
 		<![CDATA[
 [root@localhost ~]# adduser -u 991 -g 991 -c "Docker" docker
 [root@localhost ~]# id docker
 uid=991(docker) gid=991(docker) groups=991(docker)
 		]]>
-		</screen>
-		<para>安装 minikube 和 kubectl 命令</para>
-		<screen>
+			</screen>
+			<para>安装 minikube 和 kubectl 命令</para>
+			<screen>
 		<![CDATA[
 curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64   && install minikube-linux-amd64 /usr/local/bin/minikube
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && install kubectl /usr/local/bin/kubectl
 		]]>
-		</screen>
-		<para>启动命令</para>
-		<screen>
+			</screen>
+			<para>启动命令</para>
+			<screen>
 		<![CDATA[
 minikube start --memory=max --cpus=max  \
 --image-mirror-country=cn --registry-mirror="https://registry.docker-cn.com,https://docker.mirrors.ustc.edu.cn" \
 --insecure-registry="registry.netkiller.cn" \
 --addons=dashboard,ingress,logviewer
 		]]>
-		</screen>
-		<screen>
+			</screen>
+			<screen>
 		<![CDATA[
 [root@localhost ~]# su - docker
 [docker@localhost ~]$ minikube start --memory=max --cpus=max  --cache-images=true --image-mirror-country=cn --insecure-registry="registry.netkiller.cn"
@@ -73,9 +115,9 @@ minikube start --memory=max --cpus=max  \
 💡  kubectl not found. If you need it, try: 'minikube kubectl -- get pods -A'
 🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
 		]]>
-		</screen>
-		<para>查看 minikube 状态和 pod</para>
-		<screen>
+			</screen>
+			<para>查看 minikube 状态和 pod</para>
+			<screen>
 		<![CDATA[
 [docker@localhost ~]$ minikube status
 minikube
@@ -95,28 +137,28 @@ kube-system   kube-proxy-gprzp                   1/1     Running            0   
 kube-system   kube-scheduler-minikube            1/1     Running            0          82s
 kube-system   storage-provisioner                0/1     ImagePullBackOff   0          84s		
 		]]>
-		</screen>
-		<!-- max  --cache-images=true --driver=hyperkit --service-cluster-ip-range='10.10.0.0/24' -->
-		<para>启动仪表板</para>
-		<screen>
+			</screen>
+			<!-- max --cache-images=true --driver=hyperkit --service-cluster-ip-range='10.10.0.0/24' -->
+			<para>启动仪表板</para>
+			<screen>
 		<![CDATA[
 [docker@localhost ~]$ minikube dashboard
 		]]>
-		</screen>
-		<para>logviewer</para>
-		<screen>
+			</screen>
+			<para>logviewer</para>
+			<screen>
 		<![CDATA[
 [docker@localhost ~]$ minikube addons enable logviewer
     ▪ Using image registry.cn-hangzhou.aliyuncs.com/google_containers/ivans3/minikube-log-viewer:latest@sha256:75854f45305cc47d17b04c6c588fa60777391761f951e3a34161ddf1f1b06405 (global image repository)
 🌟  The 'logviewer' addon is enabled		
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>安装 kubectl 命令</title>
-		<para>使用 minikube kubectl 携带很多参数会用问题，所以我们还是需要原生的 kubectl 命令</para>
-		<para>下载 kubectl</para>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>安装 kubectl 命令</title>
+			<para>使用 minikube kubectl 携带很多参数会用问题，所以我们还是需要原生的 kubectl 命令</para>
+			<para>下载 kubectl</para>
+			<screen>
 		<![CDATA[
 [root@localhost ~]# curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
@@ -124,9 +166,9 @@ kube-system   storage-provisioner                0/1     ImagePullBackOff   0   
 100   154  100   154    0     0    135      0  0:00:01  0:00:01 --:--:--   135
 100 44.7M  100 44.7M    0     0  2833k      0  0:00:16  0:00:16 --:--:-- 4176k
 		]]>
-		</screen>
-		<para>下载校验文件</para>
-		<screen>
+			</screen>
+			<para>下载校验文件</para>
+			<screen>
 		<![CDATA[
 [root@localhost ~]# curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
@@ -134,40 +176,40 @@ kube-system   storage-provisioner                0/1     ImagePullBackOff   0   
 100   154  100   154    0     0    639      0 --:--:-- --:--:-- --:--:--   636
 100    64  100    64    0     0     54      0  0:00:01  0:00:01 --:--:--     0		
 		]]>
-		</screen>
-		<para>校验 kubectl， 输出 OK 表示正确，可以放心使用，</para>
-		<screen>
+			</screen>
+			<para>校验 kubectl， 输出 OK 表示正确，可以放心使用，</para>
+			<screen>
 		<![CDATA[
 [root@localhost ~]# echo "$(<kubectl.sha256) kubectl" | sha256sum --check
 kubectl: OK		
 		]]>
-		</screen>
-		<para>安装 kubectl 到 /usr/local/bin/kubectl 目录</para>
-		<screen>
+			</screen>
+			<para>安装 kubectl 到 /usr/local/bin/kubectl 目录</para>
+			<screen>
 		<![CDATA[
 [root@localhost ~]# sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl		
 		]]>
-		</screen>
-		<para>查看版本</para>
-		<screen>
+			</screen>
+			<para>查看版本</para>
+			<screen>
 		<![CDATA[
 [root@localhost ~]# kubectl version --client
 Client Version: version.Info{Major:"1", Minor:"22", GitVersion:"v1.22.3", GitCommit:"c92036820499fedefec0f847e2054d824aea6cd1", GitTreeState:"clean", BuildDate:"2021-10-27T18:41:28Z", GoVersion:"go1.16.9", Compiler:"gc", Platform:"linux/amd64"}		
 		]]>
-		</screen>
-	</section>
-	
-	<section>
-		<title>连接到 Kubernetes 集群</title>
-		<para>API 地址</para>
-		<screen>
+			</screen>
+		</section>
+
+		<section>
+			<title>连接到 Kubernetes 集群</title>
+			<para>API 地址</para>
+			<screen>
 		<![CDATA[
 [docker@localhost ~]$ kubectl cluster-info | grep -E 'Kubernetes master|Kubernetes control plane' | awk '/http/ {print $NF}'
 https://192.168.49.2:8443
 		]]>
-		</screen>
-		<para>CA 证书</para>
-		<screen>
+			</screen>
+			<para>CA 证书</para>
+			<screen>
 		<![CDATA[
 [docker@localhost ~]$ kubectl get secret $(kubectl get secret | grep default-token | awk '{print $1}') -o jsonpath="{['data']['ca\.crt']}" | base64 --decode
 -----BEGIN CERTIFICATE-----
@@ -190,9 +232,9 @@ yQkH2Br7wZeGAHIChb3r0OxqRXnp76k/8g+azftfk7IC7wffcZmrDrSemoWjdFzu
 u4Hw+jJA3yiilA==
 -----END CERTIFICATE-----		
 		]]>
-		</screen>
-		<para>创建 ServiceAccount 文件</para>
-		<screen>
+			</screen>
+			<para>创建 ServiceAccount 文件</para>
+			<screen>
 		<![CDATA[
 cat <<'EOF'> gitlab-admin-service-account.yaml
 apiVersion: v1
@@ -215,9 +257,9 @@ subjects:
     namespace: kube-system
 EOF		
 		]]>
-		</screen>
-		<para>创建 gitlab 服务账号</para>
-		<screen>
+			</screen>
+			<para>创建 gitlab 服务账号</para>
+			<screen>
 		<![CDATA[
 [docker@localhost ~]$ cat <<'EOF'> gitlab-admin-service-account.yaml
 > apiVersion: v1
@@ -265,9 +307,9 @@ serviceaccount/gitlab created
 clusterrolebinding.rbac.authorization.k8s.io/gitlab-admin created
 		
 		]]>
-		</screen>
-		<para>查看 Token</para>
-		<screen>
+			</screen>
+			<para>查看 Token</para>
+			<screen>
 		<![CDATA[
 [docker@localhost ~]$ kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep gitlab | awk '{print $1}')
 Name:         gitlab-token-s7llp
@@ -284,9 +326,9 @@ ca.crt:     1111 bytes
 namespace:  11 bytes
 token:      eyJhbGciOiJSUzI1NiIsImtpZCI6IlRzYVBrM1dicEhieF9mNXc1ZDZwdEpaTnFma0d1b043eXl2VlhWWHAtaG8ifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLXN5c3RlbSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJnaXRsYWItdG9rZW4tczdsbHAiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiZ2l0bGFiIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiYThhY2JkOTgtNmFjNC00YzkwLTg3MGYtYjdjZDA5NGE2YTg1Iiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50Omt1YmUtc3lzdGVtOmdpdGxhYiJ9.ipki0Y6rUbESuwzj3abY0nfNSq_XRQCa5ti5dKFVPK9d-akNZPpAuz31rAceiKra27ez-PTfgYGwjjid79Qa4vCYMfwxhBAp2ZnJb1AjektmjPdMlZyzZSaHkwadrgtWLBuHpgT9UGUHy1OJSU13qGTF_K5jf1EPeC42n17OX3ta4qAB9Zg6fmgBWe203P1FXoCkOsZ2HefbI1j_XlkYPGlR-nKtiOrANAIdLURMxizfGMHP6n3eQfkWSzBnxB48XG5refKi77OzJCne6W-FZHykBPqWBY9_7d5OqZpJ46mNLtH6kBNfvcZum58JtVatumt4RXkakuTvt-reQ98LdA		
 		]]>
-		</screen>
-		<para>检查 Kubenetes SSL 证书</para>
-		<screen>
+			</screen>
+			<para>检查 Kubenetes SSL 证书</para>
+			<screen>
 		<![CDATA[
 [docker@localhost ~]$ kubectl cluster-info | grep -E 'Kubernetes master|Kubernetes control plane' | awk '/http/ {print $NF}'
 https://192.168.49.2:8443
@@ -354,16 +396,16 @@ Certificate:
          fa:d0:d3:b8:33:bf:b3:69:2c:09:9f:92:03:f2:e1:fc:7e:e6:
          83:8e:0e:13		
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>GitLab Kubernetes Agent</title>
-		<subtitle>通过 Gitlab 代理连接到 Kubernetes</subtitle>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>GitLab Kubernetes Agent</title>
+			<subtitle>通过 Gitlab 代理连接到 Kubernetes</subtitle>
+			<screen>
 		<![CDATA[
 		
 		]]>
-		</screen>
+			</screen>
+		</section>
 	</section>
-	
 </section>
