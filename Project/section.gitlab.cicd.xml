@@ -265,6 +265,9 @@ mysql>
   </mirrors>			
 			]]>
 			</screen>
+			<section>
+				<title>安装最新版 maven</title>
+			
 			<para>如果需要安装最新版本 maven 使用下面脚本。</para>
 			<screen>
 			<![CDATA[
@@ -325,6 +328,30 @@ OS name: "linux", version: "4.18.0-338.el8.x86_64", arch: "amd64", family: "unix
 [gitlab-runner@gitlab ~]$ mvn -v
 			]]>
 			</screen>
+			</section>
+			<section id="mvnd">
+				<title>mvnd</title>
+				<para>mvnd 是一个实验产品，用于替代 maven 编译速度比较快</para>
+				<screen>
+			<![CDATA[
+cd /usr/local/src
+wget https://github.com/apache/maven-mvnd/releases/download/0.7.1/mvnd-0.7.1-linux-amd64.zip
+unzip mvnd-0.7.1-linux-amd64.zip 
+mv mvnd-0.7.1-linux-amd64 /srv/mvnd-0.7.1
+ln -s /srv/mvnd-0.7.1 /srv/mvnd
+
+alternatives --remove mvnd /usr/local/bin/mvnd
+alternatives --install /usr/local/bin/mvnd mvnd-0.7.1 /srv/mvnd-0.7.1/bin/mvnd 0
+			]]>
+				</screen>
+				<para>修改配置文件 mvnd.properties 制定 JAVA_HOME</para>
+				<screen>
+			<![CDATA[
+[root@localhost cloud.netkiller.cn]# grep java.home /srv/mvnd/conf/mvnd.properties 
+java.home=/usr/lib/jvm/java	
+			]]>
+				</screen>
+			</section>
 		</section>
 		<section>
 			<title>NodeJS</title>
@@ -891,5 +918,5 @@ deploy-job:
 			</screen>
 		</section>
 	</section>
-	
+
 </section>
