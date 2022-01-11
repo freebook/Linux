@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="">
+	<title></title>
+	<section>
+		<title>查看 Mac 版本</title>
+		<screen>
+		<![CDATA[
+Netkiller-iMac:~ neo$ sw_vers
+ProductName:	macOS
+ProductVersion:	12.1
+BuildVersion:	21C52		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title></title>
+		<screen>
+		<![CDATA[
+Netkiller-iMac:~ neo$ csrutil status
+System Integrity Protection status: disabled.		
+		]]>
+		</screen>
+		<para>重启电脑，一直按着 Command +R，然后进入终端输入下面命令</para>
+		<screen>
+		<![CDATA[
+Netkiller-iMac:~ neo$ csrutil disable		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+		
+		]]>
+		</screen>
+		
+	</section>
+</chapter>
