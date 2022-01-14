@@ -78,7 +78,16 @@ Runner registered successfully. Feel free to start it, but if it's running alrea
 			<para>返回 gitlab 查看注册状态</para>
 			<graphic format="png" fileref="../images/gitlab/cicd/Runners-status.png" width="1024" srccredit="neo" />
 		</section>
-
+		<section>
+			<title>并发链接数设置</title>
+			<para>编辑 /etc/gitlab-runner/config.toml 配置文件，修改 concurrent 数量</para>
+			<screen>
+			<![CDATA[ 
+[root@localhost ~]# grep con /etc/gitlab-runner/config.toml 
+concurrent = 10			
+			]]>
+			</screen>
+		</section>
 	</section>
 
 	<section id="gitlab.runner.shell">
