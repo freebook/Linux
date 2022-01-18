@@ -472,5 +472,65 @@ vm.overcommit_memory = 1
 			</screen>
 		</section>
 	</section>
+	<section id="资源配置">
+		<title>资源配置</title>
+		<section id="ulimit">
+			<title>ulimit - Modify shell resource limits.</title>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# ulimit 
+unlimited
+[root@localhost ~]# ulimit -a
+core file size          (blocks, -c) 0
+data seg size           (kbytes, -d) unlimited
+scheduling priority             (-e) 0
+file size               (blocks, -f) unlimited
+pending signals                 (-i) 62880
+max locked memory       (kbytes, -l) 64
+max memory size         (kbytes, -m) unlimited
+open files                      (-n) 1024
+pipe size            (512 bytes, -p) 8
+POSIX message queues     (bytes, -q) 819200
+real-time priority              (-r) 0
+stack size              (kbytes, -s) 8192
+cpu time               (seconds, -t) unlimited
+max user processes              (-u) 62880
+virtual memory          (kbytes, -v) unlimited
+file locks                      (-x) unlimited			
+			]]>
+			</screen>
+		</section>
+		<section id="prlimit">
+			<title>prlimit - Show or change the resource limits of a process.</title>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# prlimit
+RESOURCE   DESCRIPTION                             SOFT      HARD UNITS
+AS         address space limit                unlimited unlimited bytes
+CORE       max core file size                         0 unlimited bytes
+CPU        CPU time                           unlimited unlimited seconds
+DATA       max data size                      unlimited unlimited bytes
+FSIZE      max file size                      unlimited unlimited bytes
+LOCKS      max number of file locks held      unlimited unlimited locks
+MEMLOCK    max locked-in-memory address space     65536     65536 bytes
+MSGQUEUE   max bytes in POSIX mqueues            819200    819200 bytes
+NICE       max nice prio allowed to raise             0         0 
+NOFILE     max number of open files                1024    262144 files
+NPROC      max number of processes                62880     62880 processes
+RSS        max resident set size              unlimited unlimited bytes
+RTPRIO     max real-time priority                     0         0 
+RTTIME     timeout for real-time tasks        unlimited unlimited microsecs
+SIGPENDING max number of pending signals          62880     62880 signals
+STACK      max stack size                       8388608 unlimited bytes			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+prlimit --pid 14644 --nofile=655360:655360 			
+			]]>
+			</screen>
+		</section>
+	</section>
 	&chapter.kernel.module.xml;
 </chapter>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+	<title>FAQ</title>
+	<section>
+		<title>failed to create fsnotify watcher: too many open files⏎</title>
+		<para></para>
+		<screen>
+		<![CDATA[
+		
+		]]>
+		</screen>
+	</section>
+</section>
