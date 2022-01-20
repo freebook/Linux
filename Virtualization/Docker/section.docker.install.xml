@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="install">
-	<title>Installation</title>
+	<title>安装 Docker</title>
 	<section id="docker.centos8">
 		<title>CentOS 8 Stream</title>
 		<para>安装 Docker</para>
