@@ -15,8 +15,6 @@
 	&section.docker.logs.xml;
 	&section.docker.registry.xml;
 	&section.docker.swarms.xml;
-	
-	&section.docker.dockerfile.xml;
 	&section.docker-compose.xml;
 	&section.docker.example.xml;
 	&section.docker.faq.xml;
