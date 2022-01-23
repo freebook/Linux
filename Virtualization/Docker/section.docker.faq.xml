@@ -16,35 +16,11 @@ root@production:~# curl bot.whatismyipaddress.com
 		</screen>
 		<section>
 			<title>Debian/Ubuntu</title>
-			<screen>
-			<![CDATA[
-apt install iputils-ping
-apt install -y iproute2	
-apt install -y telnet
-			]]>
-			</screen>
-			<para></para>
-			<screen>
-			<![CDATA[
-apt install -y procps 	
-			]]>
-			</screen>
-			<para>dig</para>
-			<screen>
-			<![CDATA[
-apt install -y dnsutils
-			]]>
-			</screen>
+			
+			
+			
 		</section>
-		<section>
-			<title>CentOS</title>
-			<para></para>
-			<screen>
-			<![CDATA[
-dnf install -y net-tools			
-			]]>
-			</screen>
-		</section>
+		
 	</section>
 	<section>
 		<title>检查 Docker 是否可用</title>

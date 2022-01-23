@@ -202,11 +202,23 @@ nginx: digest: sha256:ad9bd1ae3a3e17dac70f32afc14baf90932949d3eaa8bebbe907726aca
 		<title>Dockerfile 缺失的工具</title>
 		<para>工作中我们常常发现官方镜像裁剪的面目全非，里面缺失很多常用工具，这种情况给我们工作带来诸多不便。</para>
 		<section>
-			<title>debian 镜像</title>
+			<title>Debian/Ubuntu 镜像</title>
 			<para>ps,top 等系统工具</para>
 			<screen>
 			<![CDATA[
 apt update -y && apt install -y procps		
+			]]>
+			</screen>
+			<para>ping</para>
+			<screen>
+			<![CDATA[
+apt install iputils-ping
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+apt install -y telnet			
 			]]>
 			</screen>
 			<para>ip, ss</para>
@@ -221,9 +233,15 @@ apt install -y iproute2
 apt install -y net-tools			
 			]]>
 			</screen>
+			<para>dig</para>
+			<screen>
+			<![CDATA[
+apt install -y dnsutils
+			]]>
+			</screen>
 		</section>
 		<section>
-			<title>centos</title>
+			<title>CentOS</title>
 			<para>psmisc 里面包含 ps, top 等命令</para>
 			<screen>
 			<![CDATA[
@@ -232,7 +250,25 @@ telnet wget rsync vim-enhanced \
 net-tools bind-utils			
 			]]>
 			</screen>
-			
+			<para>nslookup</para>
+			<screen>
+			<![CDATA[
+dnf install -y bind-utils
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+dnf install -y net-tools			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>alpine</title>
+			<para></para>
+			<screen>
+			<![CDATA[
+			]]>
+			</screen>
 		</section>
 	</section>
 	<section>

@@ -389,7 +389,7 @@ kubectl run busybox --rm=true --image=busybox --restart=Never -it
 			</screen>
 		</section>
 		<section id="get.pod">
-			<title>pod</title>
+			<title>查看 pod</title>
 			<para></para>
 			<screen>
 		<![CDATA[
@@ -415,6 +415,15 @@ kubernetes-dashboard-ccc79bfc9-dxcq2   1/1     Running   5          16m
 storage-provisioner                    1/1     Running   0          39m		
 		]]>
 			</screen>
+			<section>
+				<title>通过标签查找 pod</title>
+				<screen>
+			<![CDATA[
+neo@Netkiller-iMac ~> kubectl get pods -l app=nacos -o jsonpath='{.items[0].metadata.name}'
+nacos-0⏎   			
+			]]>
+				</screen>
+			</section>
 		</section>
 		<section>
 			<title>删除 pod</title>
@@ -1457,8 +1466,8 @@ FIELDS:
 			</screen>
 		</section>
 	</section>
-	<section id="kubectl.sysctls">
-		<title>操作系统</title>
+	<section id="kubelet.sysctls">
+		<title>操作系统资源配置</title>
 		<section>
 			<title>sysctls</title>
 			<screen>
@@ -1468,6 +1477,17 @@ kubelet --experimental-allowed-unsafe-sysctls 'kernel.msg*,kernel.shmmax,kernel.
 			</screen>
 		</section>
 	</section>
+	<section id="kubectl.port-forward">
+		<title>端口转发</title>
+		<para>将 本地 0.0.0.0:27017 端口转发到 service 端口</para>
+		<screen>
+		<![CDATA[
+neo@Netkiller-iMac ~> kubectl port-forward --address 0.0.0.0 service/mongo 27017
+Forwarding from 0.0.0.0:27017 -> 27017		
+		]]>
+		</screen>
+	</section>
+
 	<section id="kubectl.example">
 		<title>kubectl example</title>
 		<section>

@@ -28,7 +28,7 @@ version.BuildInfo{Version:"v3.3.3", GitCommit:"55e3ca022e40fe200fbc855938995f40b
 			<para>旧版本</para>
 			<screen>
 			<![CDATA[
-brew install kubernetes-helm		
+brew install kubernetes-helm	
 			]]>
 			</screen>
 		</section>

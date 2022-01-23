@@ -312,5 +312,81 @@ INFO[0355] Successfully imported 1 image(s) into 1 cluster(s)
 		</section>
 		
 	</section>
-
+	<section>
+		<title>traefik 入口配置</title>
+		<screen>
+		<![CDATA[
+neo@Netkiller-iMac ~> kubectl edit -n kube-system deployment traefik
+deployment.apps/traefik edited		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+    spec:
+      containers:
+      - args:
+        - --global.checknewversion
+        - --global.sendanonymoususage
+        - --entryPoints.traefik.address=:9000/tcp
+        - --entryPoints.web.address=:8000/tcp
+        - --entryPoints.websecure.address=:8443/tcp
+        - --entryPoints.redis.address=:6379/tcp
+        - --entryPoints.mysql.address=:3306/tcp
+        - --entryPoints.mongo.address=:27017/tcp
+        - --api.dashboard=true
+        - --ping=true
+        - --providers.kubernetescrd
+        - --providers.kubernetesingress
+        - --providers.kubernetesingress.ingressendpoint.publishedservice=kube-system/traefik
+        - --entrypoints.websecure.http.tls=true
+        image: rancher/library-traefik:2.4.8
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /ping
+            port: 9000
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
+        name: traefik
+        ports:
+        - containerPort: 9000
+          name: traefik
+          protocol: TCP
+        - containerPort: 8000
+          name: web
+          protocol: TCP
+        - containerPort: 8443
+          name: websecure
+          protocol: TCP
+        - containerPort: 6379
+          name: redis
+          protocol: TCP
+        - containerPort: 3306
+          name: mysql
+          protocol: TCP
+        - containerPort: 27017
+          name: mongo
+          protocol: TCP		
+		]]>
+		</screen>
+		<para>args 处加入</para>
+		<screen>
+		<![CDATA[
+- --entryPoints.redis.address=:6379/tcp		
+		]]>
+		</screen>
+		<para>ports 处加入</para>
+		<screen>
+		<![CDATA[
+		- containerPort: 6379
+          name: redis
+          protocol: TCP		
+		]]>
+		</screen>
+	</section>
 </section>

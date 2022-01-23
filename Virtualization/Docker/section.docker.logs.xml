@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="docker.log-driver">
-	<title>日志</title>
+	<title>日志管理</title>
 	<section>
 		<title>查看默认驱动</title>
 		<para>查看默认驱动 docker info --format '{{.LoggingDriver}}'</para>

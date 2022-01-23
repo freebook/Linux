@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="docker.images">
-	<title>镜像</title>
+	<title>镜像管理</title>
 	<para>
 		Docker 镜像地址
 		<ulink url="https://registry.hub.docker.com/">https://registry.hub.docker.com/</ulink>
@@ -193,4 +193,5 @@ ba296c26886a        4 weeks ago         /bin/sh -c #(nop)  CMD ["/usr/local/bin/
 		]]>
 		</screen>
 	</section>
+	&section.docker.dockerfile.xml;
 </section>

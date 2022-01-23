@@ -91,7 +91,7 @@ package:
 			</screen>
 		</section>
 	</section>
-	
+
 	<section>
 		<title>Python Pypi 仓库</title>
 		<section>
@@ -263,7 +263,7 @@ deploy-job:
 [root@localhost ~]# npm install -g --registry=https://registry.npm.taobao.org yarn2
 		]]>
 		</screen>
-		<para>打开 Node JS 项目，编辑 package.json 文件，修改项目名称 加入 scope 例如 "name": "demo" 改为 "name": "@netkiller/demo"，设置一个版本号 "version": "0.0.1"，然后将  "private": true 改为  "private": false</para>
+		<para>打开 Node JS 项目，编辑 package.json 文件，修改项目名称 加入 scope 例如 "name": "demo" 改为 "name": "@netkiller/demo"，设置一个版本号 "version": "0.0.1"，然后将 "private": true 改为 "private": false</para>
 		<screen>
 		<![CDATA[
 {
@@ -398,8 +398,11 @@ server {
 		]]>
 		</screen>
 		<graphic format="png" fileref="../images/gitlab/registry/1.png" width="1024" srccredit="neo" />
-		<para>配置 Docker 的 daemon.json 配置文件</para>
-		<screen>
+		<section>
+			<title>配置 Docker registry</title>
+			<para>在 Gitlab Runner 运行的机器上配置 Docker registry</para>
+			<para>配置 Docker 的 daemon.json 配置文件</para>
+			<screen>
 		<![CDATA[
 {
   "experimental": false,
@@ -417,31 +420,31 @@ server {
   ]
 }		
 		]]>
-		</screen>
-		<para>重启 Docker 让 daemon.json</para>
-		<screen>
+			</screen>
+			<para>重启 Docker 让 daemon.json</para>
+			<screen>
 		<![CDATA[
-[root@gitlab ~]# systemctl restart docker		
+[root@gitlab ~]# systemctl reload docker		
 		]]>
-		</screen>
-		<para>我使用的 Docker Desktop for Mac，在 GUI 中配置 daemon.json 然后重启 Docker Desktop</para>
-		<para>配置 /etc/hosts 文件</para>
-		<screen>
+			</screen>
+			<para>我使用的 Docker Desktop for Mac，在 GUI 中配置 daemon.json 然后重启 Docker Desktop</para>
+			<para>配置 /etc/hosts 文件</para>
+			<screen>
 		<![CDATA[
 Neo-iMac:nginx neo$ grep 'registry' /etc/hosts
 192.168.30.5	registry.netkiller.cn		
 		]]>
-		</screen>
-		<para>Docker 登陆到 registry.netkiller.cn，登陆可以使用 gitlab 用户和密码，可以使用“个人访问令牌”和“部署令牌”，创建令牌需要给予 read_registry 和 write_registry 权限。</para>
-		<screen>
+			</screen>
+			<para>Docker 登陆到 registry.netkiller.cn，登陆可以使用 gitlab 用户和密码，可以使用“个人访问令牌”和“部署令牌”，创建令牌需要给予 read_registry 和 write_registry 权限。</para>
+			<screen>
 		<![CDATA[
 Neo-iMac:nginx neo$ docker login registry.netkiller.cn -u neo 
 Password: 
 Login Succeeded	
 		]]>
-		</screen>
-		<para>登陆成功会显示 Login Succeeded 并且会在 ~/.docker/config.json 产生配置项</para>
-		<screen>
+			</screen>
+			<para>登陆成功会显示 Login Succeeded 并且会在 ~/.docker/config.json 产生配置项</para>
+			<screen>
 		<![CDATA[
 Neo-iMac:nginx neo$ cat ~/.docker/config.json
 {
@@ -452,9 +455,12 @@ Neo-iMac:nginx neo$ cat ~/.docker/config.json
 	"credsStore": "desktop"
 }
 		]]>
-		</screen>
-		<para>构建镜像</para>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>手动构建镜像并上传至容器镜像库</title>
+			<para>构建镜像</para>
+			<screen>
 		<![CDATA[
 Neo-iMac:nginx neo$ docker build -t registry.netkiller.cn/netkiller.cn/java .
 [+] Building 4.5s (9/9) FINISHED                                                                                                                                                                                                                                          
@@ -473,9 +479,9 @@ Neo-iMac:nginx neo$ docker build -t registry.netkiller.cn/netkiller.cn/java .
  => => writing image sha256:549089448b9450a2515fd4653f35c4bb828079624edcbdbc2f0607ba3656598b                                                                                                                                                                         0.0s
  => => naming to registry.netkiller.cn/netkiller.cn/java		
 		]]>
-		</screen>
-		<para>推送镜像</para>
-		<screen>
+			</screen>
+			<para>推送镜像</para>
+			<screen>
 		<![CDATA[
 Neo-iMac:nginx neo$ docker push registry.netkiller.cn/netkiller.cn/java
 Using default tag: latest
@@ -491,10 +497,170 @@ ea56d6ebf7e5: Pushed
 e8b689711f21: Pushed 
 latest: digest: sha256:fbb365b3dbb302bc29ef2253fbf6b9acced54fa5337fd1cb804a52713f46a0a5 size: 2199	
 		]]>
-		</screen>
-		<para>推送完成后，前往“容器镜像库”可以看到镜像</para>
-		<graphic format="png" fileref="../images/gitlab/registry/2.png" width="1024" srccredit="neo" />
-		<para>查看镜像</para>
-		<graphic format="png" fileref="../images/gitlab/registry/3.png" width="1024" srccredit="neo" />
+			</screen>
+			<para>推送完成后，前往“容器镜像库”可以看到镜像</para>
+			<graphic format="png" fileref="../images/gitlab/registry/2.png" width="1024" srccredit="neo" />
+			<para>查看镜像</para>
+			<graphic format="png" fileref="../images/gitlab/registry/3.png" width="1024" srccredit="neo" />
+		</section>
+		<section>
+			<title>CI/CD 流水线配置</title>
+			<para>Maven 项目</para>
+			<para>pom.xml 中添加</para>
+			<screen>
+			<![CDATA[
+	<properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+        <docker.registry>registry.netkiller.cn</docker.registry>
+        <docker.registry.name>netkiller.cn</docker.registry.name>
+        <docker.image>api.netkiller.cn</docker.image>
+        <docker.baseImage>openjdk:8-alpine</docker.baseImage>
+    </properties>
+			]]>
+			</screen>
+			<para>plugins 插件添加</para>
+			<programlisting>
+			<![CDATA[
+ 			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>1.2.2</version>
+				<configuration>
+					<!-- <imageName>${docker.registry}/${docker.registry.name}/${project.artifactId}</imageName> -->
+                    <imageName>${docker.registry}/${docker.registry.name}/${docker.image}</imageName>
+					<baseImage>${docker.baseImage}</baseImage>
+					<maintainer>netkiller@msn.com</maintainer>
+					<volumes>/tmp</volumes>
+					<workdir>/srv</workdir>
+					<env>
+						<JAVA_OPTS>-server -Xms512m -Xmx4096m -Djava.security.egd=file:/dev/./urandom</JAVA_OPTS>
+					</env>
+					<exposes>8080</exposes>
+					<entryPoint>["sh", "-c", "java ${JAVA_OPTS} -jar /srv/${project.build.finalName}.jar"]</entryPoint>
+					<resources>
+						<resource>
+							<targetPath>/srv</targetPath>
+							<directory>${project.build.directory}</directory>
+							<include>${project.build.finalName}.jar</include>
+						</resource>
+					</resources>
+					<registryUrl>http://${docker.registry}/v2/</registryUrl>
+					<imageTags>
+						<imageTag>${project.version}</imageTag>
+						<imageTag>latest</imageTag>
+					</imageTags>
+				</configuration>
+			</plugin>
+			]]>
+			</programlisting>
+			<para>.gitlab-ci.yml</para>
+			<screen>
+			<![CDATA[
+docker:
+  stage: deploy
+  before_script:
+    - echo "glpat-amwpx6FWS1_mHTNUV7RU" | docker login -u "docker" --password-stdin registry.netkiller.cn
+  script:
+    - mvn docker:build && mvn docker:push
+  after_script:
+    - wechat -t 1 api.netkiller.cn Docker 镜像制作完成 http://192.168.30.5/netkiller.cn/api.netkiller.cn/container_registry
+  when: manual
+  allow_failure: true
+  only:
+    - testing			
+			]]>
+			</screen>
+			<para>下面在给一个 node js 项目的例子</para>
+			<para>准备 Dockerfile 文件</para>
+			<programlisting>
+			<![CDATA[
+FROM nginx:alpine
+LABEL author="neo"
+VOLUME /etc/nginx
+COPY dist/ /usr/share/nginx/html/
+EXPOSE 80
+WORKDIR /usr/share/nginx/html/			
+			]]>
+			</programlisting>
+			<para>.gitlab-ci.yml</para>
+			<screen>
+			<![CDATA[
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
+    - dist/
+    - .sonar/ 
+
+stages:
+  - build
+  - test
+  - deploy
+  - release
+
+deploy feature:
+  stage: build
+  # variables:
+  environment:
+    name: feature
+    url: https://www.netkiller.cn
+  only: 
+    - /^feature\/.*/
+    - feature
+  tags:
+    - cloud
+  before_script:
+    - cnpm install
+    - rm -rf dist/*
+    - cnpm run build:stage
+  after_script:
+    - wechat -t 1 www.netkiller.cn $CI_COMMIT_AUTHOR 在 $CI_COMMIT_BRANCH 环境部署完成
+    - voice feature 环境部署完成
+  script:
+    - sed -i "s/{{description}}/$(date +"%Y-%m-%d %H:%M:%S")/" dist/index.html
+    # - rsync -auv --delete dist/* /opt/netkiller.cn/car.netkiller.cn/
+    - rm -rf /opt/netkiller.cn/car.netkiller.cn/*
+    - \cp -af dist/* /opt/netkiller.cn/car.netkiller.cn/
+
+feature docker:
+  stage: deploy
+  # variables:
+  environment:
+    name: feature
+    url: https://www.netkiller.cn
+  only: 
+    - /^feature\/.*/
+    - feature
+  tags:
+    - cloud
+  before_script:
+    - echo "glpat-amwpx6FWS1_mHTNUV7RU" | docker login -u "docker" --password-stdin registry.netkiller.cn
+  after_script:
+    - docker push registry.netkiller.cn/netkiller.cn/www.netkiller.cn -a
+    - wechat -t 1 www.netkiller.cn $CI_COMMIT_AUTHOR 在 $CI_COMMIT_BRANCH Docker 镜像构建完成
+    - voice feature 环境部署完成
+  script:
+    - docker build -t "registry.netkiller.cn/netkiller.cn/www.netkiller.cn:$(date +%Y-%m-%d.%H%M)" .
+
+release-job:
+  stage: release
+  tags:
+    - shell
+  only:
+    - master
+  script:
+    - |
+      echo -e "
+      @sfzito:registry=http://${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/
+      //${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${CI_JOB_TOKEN}
+      " > .npmrc
+    - cnpm publish
+  when: manual    
+
+			]]>
+			</screen>
+		</section>
 	</section>
 </section>
