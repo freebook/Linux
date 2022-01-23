@@ -1215,7 +1215,7 @@ configmap/apache-httpd-users created
 			</screen>
 		</section>
 		<section>
-			<title></title>
+			<title>从环境变量文件创建 ConfigMap</title>
 			<screen>
 			<![CDATA[
 cat <<EOF > /tmp/test.env
@@ -1457,7 +1457,7 @@ FIELDS:
 			</screen>
 		</section>
 	</section>
-	<section>
+	<section id="kubectl.sysctls">
 		<title>操作系统</title>
 		<section>
 			<title>sysctls</title>

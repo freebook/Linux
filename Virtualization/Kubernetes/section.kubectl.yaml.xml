@@ -595,6 +595,42 @@ data:
 			</screen>
 		</section>
 		<section>
+			<title>Secret</title>
+			<para>制作私钥证书</para>
+			<screen>
+			<![CDATA[
+openssl genrsa -out ingress.key 2048
+			]]>
+			</screen>
+			<para>制作公钥证书</para>
+			<screen>
+			<![CDATA[
+openssl req -new -x509 -days 3650 -key ingress.key -out ingress.crt						
+			]]>
+			</screen>
+			<para>生成 BASE64</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~/workspace/devops/demo % base64 ingress.crt 
+LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURhRENDQWxBQ0NRRFdsVG0x……
+neo@MacBook-Pro-Neo ~/workspace/devops/demo % base64 ingress.key
+LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFb3dJQkFBS0NBUUVB……
+			]]>
+			</screen>
+			<programlisting>
+			<![CDATA[
+apiVersion: v1
+kind: Secret
+metadata:
+  name: tls
+  namespace: development
+data:
+  tls.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURhRENDQWxBQ0NRRFdsVG0x……
+  tls.key: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFb3dJQkFBS0NBUUVB……		
+			]]>
+			</programlisting>
+		</section>
+		<section>
 			<title>环境变量</title>
 			<para>envFrom 可将 ConfigMap 中的配置项定义为容器环境变量</para>
 			<screen>
