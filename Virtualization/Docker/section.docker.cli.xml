@@ -272,6 +272,16 @@ Hello world
 			]]>
 			</screen>
 			<section>
+				<title></title>
+				<screen>
+				<![CDATA[
+neo@Netkiller-iMac ~> docker run -it nginx:latest /bin/sh				
+				]]>
+				</screen>
+			</section>
+			
+			
+			<section>
 				<title>--privileged 让 root 具备真正的 root 权限</title>
 				<screen>
 				<![CDATA[

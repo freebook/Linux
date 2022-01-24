@@ -661,6 +661,30 @@ release-job:
 
 			]]>
 			</screen>
+			<para>使用 ${CI_COMMIT_SHORT_SHA} 版本号作为镜像版本</para>
+			<programlisting>
+			<![CDATA[
+feature docker:
+  stage: deploy
+  # variables:
+  environment:
+    name: feature
+    url: https://admin.netkiller.cn
+  only: 
+    - /^feature\/.*/
+    - feature
+  tags:
+    - cloud
+  before_script:
+    - echo "glpat-amwpx6FWS1_mHTNUV7RU" | docker login -u "docker" --password-stdin registry.netkiller.cn
+  after_script:
+    - docker push "registry.netkiller.cn/netkiller.cn/admin.netkiller.cn:${CI_COMMIT_SHORT_SHA}"
+    - wechat -t 1 admin.netkiller.cn $CI_COMMIT_AUTHOR 在 $CI_COMMIT_BRANCH Docker 镜像构建完成
+    - voice feature 环境部署完成
+  script:
+    - docker build -t "registry.netkiller.cn/netkiller.cn/admin.netkiller.cn:${CI_COMMIT_SHORT_SHA}" .			
+			]]>
+			</programlisting>
 		</section>
 	</section>
 </section>

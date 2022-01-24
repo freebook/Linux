@@ -313,6 +313,24 @@ INFO[0355] Successfully imported 1 image(s) into 1 cluster(s)
 		
 	</section>
 	<section>
+		<title>容器镜像库</title>
+		<screen>
+		<![CDATA[
+neo@Netkiller-iMac ~> vim ~/.k3d/registries.yaml
+mirrors:
+  "registry.sfzito.com":
+    endpoint:
+      - http://registry.sfzito.com
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+neo@Netkiller-iMac ~> k3d cluster create mycluster --api-port 6443 --servers 1 --agents 1 --port '80:80@loadbalancer' --port '443:443@loadbalancer' --registry-config ~/.k3d/registries.yaml		
+		]]>
+		</screen>
+	</section>
+	<section id="traefik">
 		<title>traefik 入口配置</title>
 		<screen>
 		<![CDATA[
