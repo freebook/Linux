@@ -94,6 +94,13 @@ $ git config --global   diff.renamelimit "0"
 ➜  workspace git clone http://neo@192.168.30.5/netkiller.cn/api.netkiller.cn.git tmp.netkiller.cn			
 			]]>
 			</screen>
+			<para>克隆单分支（非 master）</para>
+			<screen>
+			<![CDATA[
+ git clone -b 分支名 https://xxx.git			
+			]]>
+			</screen>
+
 		</section>
 		<section id="git-checkout">
 			<title>git-checkout - Checkout and switch to a branch</title>
@@ -133,6 +140,18 @@ git checkout fda886b0ae1526020c366cea2b747b3ceda18ff6 -- setup.py
 git add setup.py
 git commit -a -m '还原丢失文件'
 git push
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>checkout 所有远程分支</title>
+				<screen>
+				<![CDATA[
+for branch in $(git branch -r | grep -v HEAD) ; do
+# git checkout -b ${branch#*/} $branch;
+git checkout ${branch#*/};
+git pull;
+done				
 				]]>
 				</screen>
 			</section>
@@ -1543,6 +1562,25 @@ git config receive.denyCurrentBranch ignore
 			]]>
 			</screen>
 			<para>再次尝试 git push 问题解决。</para>
+		</section>
+		<section>
+			<title>更新所有项目以及分支</title>
+			<screen>
+			<![CDATA[
+for project in $(ls -1 | grep com); do
+
+cd $project && \
+for branch in $(git branch -r | grep -v HEAD) ; do
+# git checkout -b ${branch#*/} $branch;
+git checkout ${branch#*/};
+git pull;
+done;
+cd ..;
+done;
+
+rsync -auzv --delete * git@netkiller.cn:/opt/backup/code/			
+			]]>
+			</screen>
 		</section>
 	</section>
 </chapter>
