@@ -89,12 +89,13 @@ systemctl enable docker
 systemctl start docker
 
 GID=$(egrep -o 'docker:x:([0-9]+)' /etc/group | egrep -o '([0-9]+)')
-adduser -u ${GID} -g ${GID} docker
+adduser -u ${GID} -g ${GID} -G wheel -c "Container Administrator" docker
 
 usermod -aG docker www
 usermod -aG docker gitlab-runner
 usermod -aG www gitlab-runner
 
+dnf remove -y python36
 dnf install -y python39
 pip3 install docker-compose netkiller-devops
 			]]>

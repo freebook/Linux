@@ -2,7 +2,7 @@
 <section id="install">
 	<title>安装 Docker</title>
 	<section id="docker.centos8">
-		<title>CentOS 8 Stream</title>
+		<title>CentOS 8 Stream / Rocky Linux 8.5</title>
 		<para>安装 Docker</para>
 		<screen>
 		<![CDATA[
@@ -23,13 +23,56 @@ Docker version 19.03.12, build 48a66213fe
 		]]>
 		</screen>
 		<section>
-			<title>docker-compose</title>
+			<title>添加容器管理员</title>
+			<screen>
+			<![CDATA[
+GID=$(egrep -o 'docker:x:([0-9]+)' /etc/group | egrep -o '([0-9]+)')
+adduser -u ${GID} -g ${GID} -G wheel -c "Container Administrator" docker		
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+[root@cloud ~]# id docker
+uid=986(docker) gid=986(docker) groups=986(docker)
+
+[root@cloud ~]# su - docker
+Last login: Mon Mar 21 15:43:39 CST 2022 on pts/3
+
+[docker@cloud ~]$ docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>docker-compose 1.29</title>
 			<para>https://docs.docker.com/compose/install/</para>
 			<screen>
 			<![CDATA[
 curl -sL "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 docker-compose -v
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>docker-compose 2.x</title>
+			<screen>
+			<![CDATA[
+DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
+mkdir -p $DOCKER_CONFIG/cli-plugins
+curl -SL https://github.com/docker/compose/releases/download/v2.2.3/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
+chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
+			]]>
+			</screen>
+			<para>使用 docker compose version 命令查看版本好，确认 docker compose 被成功安装</para>
+			<screen>
+			<![CDATA[
+[root@cloud ~]# docker compose version
+Docker Compose version v2.2.3
+
+[root@cloud ~]# alias docker-compose='docker compose'
+[root@cloud ~]# docker-compose version
+Docker Compose version v2.2.3
 			]]>
 			</screen>
 		</section>
