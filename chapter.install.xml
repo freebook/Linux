@@ -53,7 +53,12 @@ Password:
 	<section>
 		<title>阿里云 Rocky Linux 镜像初始化</title>
 		<para>首次安装后初始化系统</para>
-		<!-- <screen> <![CDATA[ cp /etc/dnf/dnf.conf{,.original} echo "fastestmirror=True" >> /etc/dnf/dnf.conf dnf makecache ]]> </screen> -->
+		<screen>
+		<![CDATA[ 
+cp /etc/dnf/dnf.conf{,.original} 
+echo "fastestmirror=true" >> /etc/dnf/dnf.conf dnf makecache 
+		]]>
+		</screen>
 		<para>Extra Packages for Enterprise Linux repository configuration</para>
 		<screen>
 			<![CDATA[
@@ -254,6 +259,97 @@ dnf remove -y python36
 dnf install -y python39		
 		]]>
 		</screen>
+	</section>
+	<section>
+		<title>阿里云平台 Rocky Linux 系统 BUG</title>
+		<para>系统更新链接不上</para>
+		<screen>
+		<![CDATA[
+[root@cloud ~]# dnf upgrade -y
+Last metadata expiration check: 0:15:31 ago on Mon 28 Mar 2022 03:49:10 PM CST.
+Dependencies resolved.
+====================================================================================================
+ Package                         Architecture Version                  Repository              Size
+====================================================================================================
+Upgrading:
+ containerd.io                   x86_64       1.5.11-3.1.el8           docker-ce-stable        29 M
+ docker-ce                       x86_64       3:20.10.14-3.el8         docker-ce-stable        22 M
+ docker-ce-cli                   x86_64       1:20.10.14-3.el8         docker-ce-stable        30 M
+ docker-ce-rootless-extras       x86_64       20.10.14-3.el8           docker-ce-stable       4.6 M
+ epel-release                    noarch       8-15.el8                 epel                    23 k
+ tzdata                          noarch       2022a-1.el8              baseos                 473 k
+ tzdata-java                     noarch       2022a-1.el8              appstream              190 k
+
+Transaction Summary
+====================================================================================================
+Upgrade  7 Packages
+
+Total download size: 86 M
+Downloading Packages:
+[MIRROR] tzdata-2022a-1.el8.noarch.rpm: Status code: 404 for https://www.netkiller.cn/rockylinux/8/BaseOS/x86_64/os/Packages/t/tzdata-2022a-1.el8.noarch.rpm (IP: 139.196.170.132)
+[MIRROR] tzdata-java-2022a-1.el8.noarch.rpm: Status code: 404 for https://www.netkiller.cn/rockylinux/8/AppStream/x86_64/os/Packages/t/tzdata-java-2022a-1.el8.noarch.rpm (IP: 139.196.170.132)
+[MIRROR] tzdata-2022a-1.el8.noarch.rpm: Status code: 404 for https://www.netkiller.cn/rockylinux/8/BaseOS/x86_64/os/Packages/t/tzdata-2022a-1.el8.noarch.rpm (IP: 139.196.170.132)
+[MIRROR] tzdata-java-2022a-1.el8.noarch.rpm: Status code: 404 for https://www.netkiller.cn/rockylinux/8/AppStream/x86_64/os/Packages/t/tzdata-java-2022a-1.el8.noarch.rpm (IP: 139.196.170.132)
+[MIRROR] tzdata-2022a-1.el8.noarch.rpm: Status code: 404 for https://www.netkiller.cn/rockylinux/8/BaseOS/x86_64/os/Packages/t/tzdata-2022a-1.el8.noarch.rpm (IP: 139.196.170.132)
+[MIRROR] tzdata-java-2022a-1.el8.noarch.rpm: Status code: 404 for https://www.netkiller.cn/rockylinux/8/AppStream/x86_64/os/Packages/t/tzdata-java-2022a-1.el8.noarch.rpm (IP: 139.196.170.132)
+[MIRROR] tzdata-2022a-1.el8.noarch.rpm: Status code: 404 for https://www.netkiller.cn/rockylinux/8/BaseOS/x86_64/os/Packages/t/tzdata-2022a-1.el8.noarch.rpm (IP: 139.196.170.132)
+[FAILED] tzdata-2022a-1.el8.noarch.rpm: No more mirrors to try - All mirrors were already tried without success
+(2-3/7): tzdata-java-2022a-1.e  0% [                              ] 943 kB/s | 792 kB     01:32 ETA
+The downloaded packages were saved in cache until the next successful transaction.
+You can remove cached packages by executing 'dnf clean packages'.
+Error: Error downloading packages:
+  Cannot download Packages/t/tzdata-2022a-1.el8.noarch.rpm: All mirrors were tried		
+		]]>
+		</screen>
+		<para>查找原因后发现, mirrorlist 被禁用了。</para>
+		<screen>
+		<![CDATA[
+[root@cloud ~]# cat /etc/yum.repos.d/Rocky-BaseOS.repo 
+# Rocky-BaseOS.repo
+#
+# The mirrorlist system uses the connecting IP address of the client and the
+# update status of each mirror to pick current mirrors that are geographically
+# close to the client.  You should use this for Rocky updates unless you are
+# manually picking other mirrors.
+#
+# If the mirrorlist does not work for you, you can try the commented out
+# baseurl line instead.
+
+[baseos]
+name=Rocky Linux $releasever - BaseOS
+#mirrorlist=https://mirrors.rockylinux.org/mirrorlist?arch=$basearch&repo=BaseOS-$releasever
+baseurl=http://mirrors.cloud.aliyuncs.com/rockylinux/$releasever/BaseOS/$basearch/os/
+gpgcheck=1
+enabled=1
+countme=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-rockyofficial		
+		]]>
+		</screen>
+		<para>将 /etc/yum.repos.d/Rocky-BaseOS.repo 和 /etc/yum.repos.d/Rocky-AppStream.repo 中的 mirrorlist 注释去掉，配置如下。</para>
+		<screen>
+		<![CDATA[
+[root@cloud ~]# cat /etc/yum.repos.d/Rocky-AppStream.repo 
+# Rocky-AppStream.repo
+#
+# The mirrorlist system uses the connecting IP address of the client and the
+# update status of each mirror to pick current mirrors that are geographically
+# close to the client.  You should use this for Rocky updates unless you are
+# manually picking other mirrors.
+#
+# If the mirrorlist does not work for you, you can try the commented out
+# baseurl line instead.
+
+[appstream]
+name=Rocky Linux $releasever - AppStream
+mirrorlist=https://mirrors.rockylinux.org/mirrorlist?arch=$basearch&repo=AppStream-$releasever
+baseurl=http://mirrors.cloud.aliyuncs.com/rockylinux/$releasever/AppStream/$basearch/os/
+gpgcheck=1
+enabled=1
+countme=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-rockyofficial		
+		]]>
+		</screen>
+		<para>再次运行 dnf upgrade -y 顺利通过</para>
 	</section>
 </section>
 <section id="install.ubuntu">
@@ -1294,6 +1390,14 @@ Aug 16 12:57:16 testing systemd[1]: Started /etc/rc.d/rc.local Compatibility.
 root@production:~# ufw disable
 Firewall stopped and disabled on system startup			
 			]]>
+		</screen>
+	</section>
+	<section>
+		<title>更换包镜像</title>
+		<screen>
+		<![CDATA[
+sudo sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list		
+		]]>
 		</screen>
 	</section>
 </section>
