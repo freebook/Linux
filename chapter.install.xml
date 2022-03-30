@@ -261,9 +261,11 @@ dnf install -y python39
 		</screen>
 	</section>
 	<section>
-		<title>阿里云平台 Rocky Linux 系统 BUG</title>
-		<para>系统更新链接不上</para>
-		<screen>
+		<title>阿里云</title>
+		<section>
+			<title>阿里云平台 Rocky Linux 系统 BUG</title>
+			<para>系统更新链接不上</para>
+			<screen>
 		<![CDATA[
 [root@cloud ~]# dnf upgrade -y
 Last metadata expiration check: 0:15:31 ago on Mon 28 Mar 2022 03:49:10 PM CST.
@@ -300,9 +302,9 @@ You can remove cached packages by executing 'dnf clean packages'.
 Error: Error downloading packages:
   Cannot download Packages/t/tzdata-2022a-1.el8.noarch.rpm: All mirrors were tried		
 		]]>
-		</screen>
-		<para>查找原因后发现, mirrorlist 被禁用了。</para>
-		<screen>
+			</screen>
+			<para>查找原因后发现, mirrorlist 被禁用了。</para>
+			<screen>
 		<![CDATA[
 [root@cloud ~]# cat /etc/yum.repos.d/Rocky-BaseOS.repo 
 # Rocky-BaseOS.repo
@@ -324,9 +326,9 @@ enabled=1
 countme=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-rockyofficial		
 		]]>
-		</screen>
-		<para>将 /etc/yum.repos.d/Rocky-BaseOS.repo 和 /etc/yum.repos.d/Rocky-AppStream.repo 中的 mirrorlist 注释去掉，配置如下。</para>
-		<screen>
+			</screen>
+			<para>将 /etc/yum.repos.d/Rocky-BaseOS.repo 和 /etc/yum.repos.d/Rocky-AppStream.repo 中的 mirrorlist 注释去掉，配置如下。</para>
+			<screen>
 		<![CDATA[
 [root@cloud ~]# cat /etc/yum.repos.d/Rocky-AppStream.repo 
 # Rocky-AppStream.repo
@@ -348,8 +350,86 @@ enabled=1
 countme=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-rockyofficial		
 		]]>
-		</screen>
-		<para>再次运行 dnf upgrade -y 顺利通过</para>
+			</screen>
+			<para>再次运行 dnf upgrade -y 顺利通过</para>
+		</section>
+		<section>
+			<title>开启交换分区</title>
+			<para>开启交换分区</para>
+			<screen>
+			<![CDATA[
+dd if=/dev/zero of=/opt/memory.swap bs=1024M count=8
+mkswap /opt/memory.swap
+swapon /opt/memory.swap			
+			]]>
+			</screen>
+			<para>挂载交换分区</para>
+			<screen>
+			<![CDATA[
+挂在 swap 打开 /etc/fstab 文件编辑追加以下内容
+
+/opt/memory.swap		swap		swap		default 0 0
+
+编辑 /etc/sysctl.conf 修改 swap 利用率
+
+vm.swappiness=80		
+			]]>
+			</screen>
+			<para>查看交换分区</para>
+			<screen>
+			<![CDATA[
+# 查看交换分区文件
+[root@cloud ~]# swapon -s
+Filename				Type		Size	Used	Priority
+/opt/memory.swap  
+
+# 查看使用率			
+[root@cloud ~]# cat /proc/sys/vm/swappiness
+0			
+			]]>
+			</screen>
+			<para>设置使用率</para>
+			<screen>
+			<![CDATA[
+[root@cloud ~]# sysctl vm.swappiness=80
+vm.swappiness = 80
+[root@cloud ~]# cat /proc/sys/vm/swappiness
+80			
+			]]>
+			</screen>
+			<example>
+				<title>开启交换分区</title>
+				<screen>
+				<![CDATA[
+[root@cloud ~]# dd if=/dev/zero of=/opt/memory.swap bs=1024M count=8
+8+0 records in
+8+0 records out
+8589934592 bytes (8.6 GB, 8.0 GiB) copied, 56.7535 s, 151 MB/s
+
+[root@cloud ~]# chmod 600 /opt/memory.swap 
+
+[root@cloud ~]# mkswap /opt/memory.swap
+mkswap: /opt/memory.swap: warning: wiping old swap signature.
+Setting up swapspace version 1, size = 8 GiB (8589930496 bytes)
+no label, UUID=07fda341-e558-4a99-9f63-394ca2b34d5a
+
+[root@cloud ~]# swapon /opt/memory.swap
+
+[root@cloud ~]# swapon -s
+Filename				Type		Size	Used	Priority
+/opt/memory.swap                       	file    	8388604	12	-2
+
+[root@cloud ~]# free -g
+              total        used        free      shared  buff/cache   available
+Mem:             30          21           1           0           7           8
+Swap:             7           0           7				
+
+[root@cloud ~]# cat /proc/sys/vm/swappiness
+0
+				]]>
+				</screen>
+			</example>
+		</section>
 	</section>
 </section>
 <section id="install.ubuntu">
