@@ -37,5 +37,6 @@
 
 <!ENTITY chapter.review.xml					SYSTEM "chapter.review.xml">
 <!ENTITY chapter.nexus.xml					SYSTEM "chapter.nexus.xml">
+<!ENTITY chapter.dagger.xml					SYSTEM "chapter.dagger.xml">
 
 <!ENTITY chapter.miscellaneous.xml 			SYSTEM "chapter.miscellaneous.xml">

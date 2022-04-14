@@ -2,6 +2,7 @@
 	&chapter.gitlab.xml;
 	&chapter.jenkins.xml;
 	&chapter.sonarqube.xml;
+	&chapter.dagger.xml;
 	&chapter.integration.xml;
 	&chapter.trac.xml;
 	&chapter.redmine.xml;

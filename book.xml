@@ -77,8 +77,8 @@
 	%virtualization.doctype.entity.xml;	
 	<!ENTITY part.virtualization.xml				SYSTEM "part.virtualization.xml">
 	
-	<!ENTITY % project.doctype.entity.xml 			SYSTEM "Project/doctype.entity.xml">
-	%project.doctype.entity.xml;
+	<!ENTITY % devops.doctype.entity.xml 			SYSTEM "DevOps/doctype.entity.xml">
+	%devops.doctype.entity.xml;
 	
 	<!ENTITY % queue.doctype.entity.xml				SYSTEM "Queue/doctype.entity.xml">
 	%queue.doctype.entity.xml;
