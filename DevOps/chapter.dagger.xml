@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="Dagger">
+<chapter id="index"><?dbhtml dir="dagger" ?>
 	<title>Dagger</title>
 	<subtitle>Dagger: a new way to create CI/CD pipelines!</subtitle>
 	<para>Dagger 是 Docker 公司推出的一个 DevOps 产品</para>
