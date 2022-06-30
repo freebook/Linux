@@ -2,14 +2,14 @@
 <section id="install">
 	<title>安装 Docker</title>
 	<section id="docker.centos8">
-		<title>CentOS 8 Stream / Rocky Linux 8.5</title>
+		<title>CentOS 8 Stream / Rocky Linux 8.6 / AlmiLinux 8.6</title>
 		<para>安装 Docker</para>
 		<screen>
 		<![CDATA[
 [root@localhost ~]# dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
 Adding repo from: https://download.docker.com/linux/centos/docker-ce.repo
 
-[root@localhost ~]# dnf install -y docker-ce
+[root@localhost ~]# dnf install -y docker-ce docker-compose-plugin
 
 [root@localhost ~]# systemctl enable docker
 [root@localhost ~]# systemctl start docker
@@ -32,25 +32,28 @@ adduser -u ${GID} -g ${GID} -G wheel -c "Container Administrator" docker
 			</screen>
 			<screen>
 			<![CDATA[
-[root@cloud ~]# id docker
-uid=986(docker) gid=986(docker) groups=986(docker)
-
-[root@cloud ~]# su - docker
-Last login: Mon Mar 21 15:43:39 CST 2022 on pts/3
-
-[docker@cloud ~]$ docker ps
-CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES			
+[root@netkiller ~]# id docker
+uid=986(docker) gid=986(docker) groups=986(docker),10(wheel)		
 			]]>
 			</screen>
-		</section>
-		<section>
-			<title>docker-compose 1.29</title>
-			<para>https://docs.docker.com/compose/install/</para>
+			<para>配置 sudo 无需密码</para>
 			<screen>
 			<![CDATA[
-curl -sL "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-chmod +x /usr/local/bin/docker-compose
-docker-compose -v
+cat > /etc/sudoers.d/docker <<-EOF
+docker    ALL=(ALL)    NOPASSWD: ALL			
+EOF			
+			]]>
+			</screen>
+			<para>检查 sudo 是否工作正常</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# su - docker
+Last login: Mon Mar 21 15:43:39 CST 2022 on pts/3
+
+[docker@netkiller ~]$ docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES				
+
+[docker@iZt4nazp2u494r8p1dr1zdZ ~]$ sudo ls /sbin
 			]]>
 			</screen>
 		</section>
@@ -67,11 +70,11 @@ chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
 			<para>使用 docker compose version 命令查看版本好，确认 docker compose 被成功安装</para>
 			<screen>
 			<![CDATA[
-[root@cloud ~]# docker compose version
+[root@netkiller ~]# docker compose version
 Docker Compose version v2.2.3
 
-[root@cloud ~]# alias docker-compose='docker compose'
-[root@cloud ~]# docker-compose version
+[root@netkiller ~]# alias docker-compose='docker compose'
+[root@netkiller ~]# docker-compose version
 Docker Compose version v2.2.3
 			]]>
 			</screen>

@@ -15,7 +15,7 @@
 	</para>
 	&chapter.install.xml;
 	<section id="linux.distribution">
-		<title>Linux 发行版本</title>
+		<title>其他 Linux 发行版本</title>
 		<para>下面是我常用的Linux本版，Debian/Ubuntu适合做实验，快速安装定制，Gentoo适合DIY</para>
 		<para>如果是企业服务器还是建议使用CentOS，Scientific Linux， 所以CentOS是IDC装机量怎大的操作系统。</para>
 		<section>
