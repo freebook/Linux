@@ -1258,6 +1258,14 @@ $  git config --global --replace-all user.name "输入你的用户名"
 			</screen>
 		</section>
 		<section>
+			<title>配置默认分之</title>
+			<screen>
+			<![CDATA[
+git config --global init.defaultBranch <名称>			
+			]]>
+			</screen>
+		</section>
+		<section>
 			<title>GPG签名</title>
 			<screen>
 			<![CDATA[
