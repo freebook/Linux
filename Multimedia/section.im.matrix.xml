@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="Matrix">
+	<title>Matrix</title>
+	<section>
+		<title>Synapse</title>
+		<section>
+			<title>Docker 安装</title>
+			<para><ulink url="https://github.com/matrix-org/synapse/tree/master/docker"/></para>
+			<screen>
+			<![CDATA[
+docker run -it --rm \
+    --mount type=volume,src=synapse-data,dst=/data \
+    -e SYNAPSE_SERVER_NAME=chat.netkiller.cn \
+    -e SYNAPSE_REPORT_STATS=yes \
+    matrixdotorg/synapse:latest generate
+    
+docker run -d --name synapse \
+    --mount type=volume,src=synapse-data,dst=/data \
+    -p 8008:8008 \
+    matrixdotorg/synapse:latest
+    
+[root@netkiller ~]# docker logs synapse
+			]]>
+			</screen>
+			<para>创建用户</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# docker exec -it synapse register_new_matrix_user http://localhost:8008 -c /data/homeserver.yaml
+New user localpart [root]: 
+Password: 
+Confirm password: 
+Make admin [no]: yes
+Sending registration request...
+Success!
+
+[root@netkiller ~]# docker exec -it synapse register_new_matrix_user http://localhost:8008 -c /data/homeserver.yaml
+New user localpart [root]: neo
+Password: 
+Confirm password: 
+Make admin [no]: 
+Sending registration request...
+Success!
+
+[root@netkiller ~]# docker exec -it synapse register_new_matrix_user http://localhost:8008 -c /data/homeserver.yaml
+New user localpart [root]: netkiller
+Password: 
+Confirm password: 
+Make admin [no]: 
+Sending registration request...
+Success!
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>挂载 SSL 证书</title>
+			<para>使用 Caddy Web 服务器挂载免费 SSL 证书</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# cat /etc/caddy/Caddyfile
+chat.netkiller.cn:80 {
+	respond /.well-known/acme-challenge/h27fzgPCxW9Kmhcd9af3YPwuYFCizmZZ_JLvoCeNSQ4 "h27fzgPCxW9Kmhcd9af3YPwuYFCizmZZ_JLvoCeNSQ4.sD2SO-myCgf0JjzYqkA9LA3nN9Pau98bk_fmlBWmzII" 200
+}
+chat.netkiller.cn {
+	# reverse_proxy 127.0.0.1:8008
+	reverse_proxy /_matrix/*  {
+    		to 127.0.0.1:8008
+	}
+}
+			]]>
+			</screen>
+		</section>
+	</section>
+</section>

@@ -4,31 +4,41 @@
 	<subtitle>Caddy is a powerful, enterprise-ready, open source web server with automatic HTTPS written in Go.</subtitle>
 	<section>
 		<title>安装 Caddy</title>
-		<screen>
-		<![CDATA[
-		
-		]]>
-		</screen>
-	</section>
-	<section>
-		<title>启动 Caddy</title>
-		<para>前台运行</para>
-		<screen>
-		<![CDATA[
-caddy run --config /etc/caddy/Caddyfile --adapter caddyfile		
-		]]>
-		</screen>
 		<section>
-			<title>开启 QUIC</title>
-			<screen>
-			<![CDATA[
-caddy run --config /etc/caddy/Caddyfile --adapter caddyfile --quic			
-			]]>
-			</screen>
+			<title>CentOS/Rocky Linux/AlmiLinux</title>
 		</section>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# dnf install 'dnf-command(copr)'
+[root@netkiller ~]# dnf copr enable @caddy/caddy
+[root@netkiller ~]# dnf install caddy
+
+[root@netkiller ~]# systemctl enable caddy
+[root@netkiller ~]# systemctl start caddy	
+
+[root@netkiller ~]# cp /etc/caddy/Caddyfile{,.original}
+		]]>
+		</screen>
 	</section>
 	<section>
 		<title>命令行</title>
+		<section>
+			<title>启动 Caddy</title>
+			<para>前台运行</para>
+			<screen>
+		<![CDATA[
+caddy run --config /etc/caddy/Caddyfile --adapter caddyfile		
+		]]>
+			</screen>
+			<section>
+				<title>开启 QUIC</title>
+				<screen>
+			<![CDATA[
+caddy run --config /etc/caddy/Caddyfile --adapter caddyfile --quic			
+			]]>
+				</screen>
+			</section>
+		</section>
 		<section>
 			<title>文件服务器</title>
 			<para>将当前目录作为文件服务器的根目录</para>
@@ -168,5 +178,167 @@ www.netkiller.cn {
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>Let's Encrypt 免费 SSL 证书</title>
+			<para>准备域名</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo-3 ~> dig chat.netkiller.cn
+
+; <<>> DiG 9.10.6 <<>> chat.netkiller.cn
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 24569
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 512
+;; QUESTION SECTION:
+;chat.netkiller.cn.		IN	A
+
+;; ANSWER SECTION:
+chat.netkiller.cn.	600	IN	A	8.219.73.35
+
+;; Query time: 109 msec
+;; SERVER: 8.8.8.8#53(8.8.8.8)
+;; WHEN: Mon Jul 04 19:31:02 CST 2022
+;; MSG SIZE  rcvd: 62			
+			]]>
+			</screen>
+			<para>这里准备了一个域名 chat.netkiller.cn 并且已经做好了解析</para>
+			<para>安装 certbot 工具</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# dnf install -y certbot			
+			]]>
+			</screen>
+			<para>生成 SSL 证书</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# certbot certonly --manual
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+Enter email address (used for urgent renewal and security notices)
+ (Enter 'c' to cancel): netkiller@msn.com
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Please read the Terms of Service at
+https://letsencrypt.org/documents/LE-SA-v1.2-November-15-2017.pdf. You must
+agree in order to register with the ACME server. Do you agree?
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(Y)es/(N)o: Y
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Would you be willing, once your first certificate is successfully issued, to
+share your email address with the Electronic Frontier Foundation, a founding
+partner of the Let's Encrypt project and the non-profit organization that
+develops Certbot? We'd like to send you email about our work encrypting the web,
+EFF news, campaigns, and ways to support digital freedom.
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(Y)es/(N)o: Y
+Account registered.
+Please enter the domain name(s) you would like on your certificate (comma and/or
+space separated) (Enter 'c' to cancel): chat.netkiller.cn
+Requesting a certificate for chat.netkiller.cn
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Create a file containing just this data:
+
+h27fzgPCxW9Kmhcd9af3YPwuYFCizmZZ_JLvoCeNSQ4.sD2SO-myCgf0JjzYqkA9LA3nN9Pau98bk_fmlBWmzII
+
+And make it available on your web server at this URL:
+
+http://chat.netkiller.cn/.well-known/acme-challenge/h27fzgPCxW9Kmhcd9af3YPwuYFCizmZZ_JLvoCeNSQ4
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Press Enter to Continue
+			]]>
+			</screen>
+			<para>此时不要按回车继续，放在一边，开一个新终端窗口，配置 Caddy 服务器</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# vim /etc/caddy/Caddyfile
+chat.netkiller.cn:80 {
+        respond /.well-known/acme-challenge/h27fzgPCxW9Kmhcd9af3YPwuYFCizmZZ_JLvoCeNSQ4 "h27fzgPCxW9Kmhcd9af3YPwuYFCizmZZ_JLvoCeNSQ4.sD2SO-myCgf0JjzYqkA9LA3nN9Pau98bk_fmlBWmzII" 200
+}
+
+[root@netkiller ~]# systemctl reload caddy
+
+[root@netkiller ~]# curl http://chat.netkiller.cn/.well-known/acme-challenge/h27fzgPCxW9Kmhcd9af3YPwuYFCizmZZ_JLvoCeNSQ4
+h27fzgPCxW9Kmhcd9af3YPwuYFCizmZZ_JLvoCeNSQ4.sD2SO-myCgf0JjzYqkA9LA3nN9Pau98bk_fmlBWmzII
+			]]>
+			</screen>
+			<para>回到 certonly 按回车继续</para>
+			<screen>
+			<![CDATA[
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Press Enter to Continue
+
+Successfully received certificate.
+Certificate is saved at: /etc/letsencrypt/live/chat.netkiller.cn/fullchain.pem
+Key is saved at:         /etc/letsencrypt/live/chat.netkiller.cn/privkey.pem
+This certificate expires on 2022-10-02.
+These files will be updated when the certificate renews.
+
+NEXT STEPS:
+- This certificate will not be renewed automatically. Autorenewal of --manual certificates requires the use of an authentication hook script (--manual-auth-hook) but one was not provided. To renew this certificate, repeat this same certbot command before the certificate's expiry date.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+If you like Certbot, please consider supporting our work by:
+ * Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
+ * Donating to EFF:                    https://eff.org/donate-le
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -			
+			]]>
+			</screen>
+			<para>证书创建完毕，接着配置 Caddy Web 服务器</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# vim /etc/caddy/Caddyfile			
+chat.netkiller.cn:80 {
+        respond /.well-known/acme-challenge/h27fzgPCxW9Kmhcd9af3YPwuYFCizmZZ_JLvoCeNSQ4 "h27fzgPCxW9Kmhcd9af3YPwuYFCizmZZ_JLvoCeNSQ4.sD2SO-myCgf0JjzYqkA9LA3nN9Pau98bk_fmlBWmzII" 200
+}
+chat.netkiller.cn {
+        respond "Hello world!!!"
+}
+
+[root@netkiller ~]# systemctl reload caddy
+
+[root@netkiller ~]# curl https://chat.netkiller.cn
+Hello world!!!
+			]]>
+			</screen>
+			<para>使用 MySSL 工具检查证书
+				<ulink url="https://myssl.com/chat.netkiller.cn?domain=chat.netkiller.cn" />
+			</para>
+		</section>
+		<section>
+			<title>返回内容</title>
+			<screen>
+			<![CDATA[
+chat.netkiller.cn {
+	respond "Hello, world!"
+}			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# curl https://chat.netkiller.cn
+Hello, world!			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# cat /etc/caddy/Caddyfile
+chat.netkiller.cn {
+	respond /.well-known/acme-challenge/V7-P_SdeHeXDk3qyj0HhvYrrQ2PFbZrKv4ck6FNQSys "V7-P_SdeHeXDk3qyj0HhvYrrQ2PFbZrKv4ck6FNQSys.sD2SO-myCgf0JjzYqkA9LA3nN9Pau98bk_fmlBWmzII" 200
+}
+
+			
+[root@netkiller ~]# curl https://chat.netkiller.cn/.well-known/acme-challenge/V7-P_SdeHeXDk3qyj0HhvYrrQ2PFbZrKv4ck6FNQSys
+V7-P_SdeHeXDk3qyj0HhvYrrQ2PFbZrKv4ck6FNQSys.sD2SO-myCgf0JjzYqkA9LA3nN9Pau98bk_fmlBWmzII			
+			]]>
+			</screen>
+		</section>
+
 	</section>
 </chapter>
