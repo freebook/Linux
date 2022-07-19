@@ -62,12 +62,16 @@ chat.netkiller.cn:80 {
 }
 chat.netkiller.cn {
 	# reverse_proxy 127.0.0.1:8008
-	reverse_proxy /_matrix/*  {
-    		to 127.0.0.1:8008
-	}
+	#reverse_proxy /_matrix/*  {
+    #		to 127.0.0.1:8008
+	#}
+
+	reverse_proxy /_matrix/* http://localhost:8008
+	reverse_proxy /_synapse/client/* http://localhost:8008
 }
 			]]>
 			</screen>
 		</section>
 	</section>
 </section>
+

@@ -7,8 +7,12 @@
 	&chapter.network.dnsmasq.xml;
 	&chapter.network.rinetd.xml;
 	&chapter.network.innd;
-	&chapter.network.irc;
-	&chapter.network.jabber;
+	<chapter>
+		<title>即时通信</title>
+		&section.im.matrix.xml;
+		&section.im.irc.xml;
+		&section.im.jabber.xml;
+	</chapter>
 	&chapter.network.proxy;
 	&chapter.firewall.xml;
 	&chapter.network.tc.xml;

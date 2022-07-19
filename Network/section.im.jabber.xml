@@ -1,4 +1,4 @@
-<chapter id="jabber">
+<section id="jabber">
 	<title>jabber XMPP</title>
 	<para>
 		<ulink url="http://www.jabber.org/">jabber homepage</ulink>
@@ -145,4 +145,4 @@ cl.disconnect()
 			</screen>
 		</section>
 	</section>
-</chapter>
+</section>

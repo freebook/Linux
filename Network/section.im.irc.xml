@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.network.irc.xml 340 2012-02-03 09:18:44Z netkiller $ -->
-<chapter id="irc">
+<section id="irc">
 	<title>IRC -  Internet Relay Chat</title>
 	<ulink url="http://www.irchelp.org/" />
 	<section id="irc.proto">
@@ -427,4 +427,4 @@ xchat --url=irc://irc.freenode.net/trac -e
 			<para>https://webirc.hackint.org</para>
 		</section>
 	</section>
-</chapter>
+</section>
