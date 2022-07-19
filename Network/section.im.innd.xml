@@ -1,4 +1,4 @@
-<chapter id="index"><?dbhtml dir="innd" ?>
+<section id="index"><?dbhtml dir="innd" ?>
 	<title>News Group (innd)</title>
 	<para>homepage: http://www.isc.org/inn.html</para>
 	<section>
@@ -260,4 +260,4 @@ sudo -u news /usr/lib/news/bin/inncheck
 		<para><ulink url="news://news.nntp.hk"></ulink></para>
 		<para><ulink url="news://news.idsam.com"></ulink></para>
 	</section>
-</chapter>
+</section>

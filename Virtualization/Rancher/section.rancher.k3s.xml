@@ -32,10 +32,20 @@ k3s kubectl get node
 		<section>
 			<title>安装 k3d</title>
 
-			<para>安装 k3d</para>
+			<para>Mac 安装 k3d</para>
 			<screen>
 			<![CDATA[
 Neo-iMac:~ neo$ brew install k3d			
+			]]>
+			</screen>
+			<para>Linux 安装 k3d</para>
+			<command>wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash</command>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+Preparing to install k3d into /usr/local/bin
+k3d installed into /usr/local/bin/k3d
+Run 'k3d --help' to see what you can do with it.
 			]]>
 			</screen>
 		</section>

@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	<!ENTITY chapter.network.xml			SYSTEM "chapter.network.xml">
-	<!ENTITY chapter.network.ntpd.xml		SYSTEM "chapter.network.ntpd.xml">
-	<!ENTITY chapter.network.dhcp			SYSTEM "chapter.network.dhcp.xml">
-	<!ENTITY chapter.network.bind 			SYSTEM "chapter.network.bind.xml">
-	<!ENTITY chapter.network.dnsmasq.xml	SYSTEM "chapter.network.dnsmasq.xml">
-	
-	<!ENTITY chapter.network.proxy 			SYSTEM "chapter.network.proxy.xml">
-	<!ENTITY chapter.network.proxy.squid 	SYSTEM "chapter.network.proxy.squid.xml">
-	<!ENTITY chapter.network.proxy.web 		SYSTEM "chapter.network.proxy.web.xml">
-	<!ENTITY chapter.network.proxy.socks 	SYSTEM "chapter.network.proxy.socks.xml">
-	<!ENTITY chapter.network.p2p	 		SYSTEM "chapter.network.p2p.xml">
-	<!ENTITY chapter.network.innd 			SYSTEM "chapter.network.innd.xml">
-	<!ENTITY chapter.network.rinetd.xml		SYSTEM "chapter.network.rinetd.xml">
-	<!ENTITY section.network.ddns.xml		SYSTEM "section.network.ddns.xml">
+<!ENTITY chapter.network.xml			SYSTEM "chapter.network.xml">
+<!ENTITY chapter.network.ntpd.xml		SYSTEM "chapter.network.ntpd.xml">
+<!ENTITY chapter.network.dhcp			SYSTEM "chapter.network.dhcp.xml">
+<!ENTITY chapter.network.bind 			SYSTEM "chapter.network.bind.xml">
+<!ENTITY chapter.network.dnsmasq.xml	SYSTEM "chapter.network.dnsmasq.xml">
 
-	<!ENTITY chapter.firewall.xml 			SYSTEM "chapter.firewall.xml">
-	<!ENTITY chapter.firewall.iptables.xml	SYSTEM "chapter.firewall.iptables.xml">
-	<!ENTITY chapter.firewalld.xml	 		SYSTEM "chapter.firewalld.xml">
-	<!ENTITY chapter.security.stunnel 		SYSTEM "chapter.security.stunnel.xml">
-	<!ENTITY chapter.security.openssh 		SYSTEM "chapter.security.openssh.xml">	
-	<!ENTITY chapter.network.tc.xml 		SYSTEM "chapter.network.tc.xml">
+<!ENTITY chapter.network.proxy 			SYSTEM "chapter.network.proxy.xml">
+<!ENTITY chapter.network.proxy.squid 	SYSTEM "chapter.network.proxy.squid.xml">
+<!ENTITY chapter.network.proxy.web 		SYSTEM "chapter.network.proxy.web.xml">
+<!ENTITY chapter.network.proxy.socks 	SYSTEM "chapter.network.proxy.socks.xml">
+<!ENTITY chapter.network.p2p	 		SYSTEM "chapter.network.p2p.xml">
+<!ENTITY chapter.network.rinetd.xml		SYSTEM "chapter.network.rinetd.xml">
+<!ENTITY section.network.ddns.xml		SYSTEM "section.network.ddns.xml">
 
-	<!ENTITY chapter.vpn.xml 				SYSTEM "chapter.vpn.xml">
-	<!ENTITY chapter.vpn.openvpn.xml		SYSTEM "chapter.vpn.openvpn.xml">
-	<!ENTITY chapter.vpn.pptpd.xml 			SYSTEM "chapter.vpn.pptpd.xml">
-	<!ENTITY chapter.vpn.l2tp.xml 			SYSTEM "chapter.vpn.l2tp.xml">
-	<!ENTITY chapter.vpn.ipsec.xml			SYSTEM "chapter.vpn.ipsec.xml">
-	<!ENTITY chapter.vpn.openswan.xml	 	SYSTEM "chapter.vpn.openswan.xml">
-	<!ENTITY chapter.vpn.strongswan.xml	 	SYSTEM "chapter.vpn.strongswan.xml">
-	
-	<!ENTITY section.im.irc.xml				SYSTEM "section.im.irc.xml">
-	<!ENTITY section.im.jabber.xml			SYSTEM "section.im.jabber.xml">
-	<!ENTITY section.im.matrix.xml 			SYSTEM "section.im.matrix.xml">
+<!ENTITY chapter.firewall.xml 			SYSTEM "chapter.firewall.xml">
+<!ENTITY chapter.firewall.iptables.xml	SYSTEM "chapter.firewall.iptables.xml">
+<!ENTITY chapter.firewalld.xml	 		SYSTEM "chapter.firewalld.xml">
+<!ENTITY chapter.security.stunnel 		SYSTEM "chapter.security.stunnel.xml">
+<!ENTITY chapter.security.openssh 		SYSTEM "chapter.security.openssh.xml">	
+<!ENTITY chapter.network.tc.xml 		SYSTEM "chapter.network.tc.xml">
+
+<!ENTITY chapter.vpn.xml 				SYSTEM "chapter.vpn.xml">
+<!ENTITY chapter.vpn.openvpn.xml		SYSTEM "chapter.vpn.openvpn.xml">
+<!ENTITY chapter.vpn.pptpd.xml 			SYSTEM "chapter.vpn.pptpd.xml">
+<!ENTITY chapter.vpn.l2tp.xml 			SYSTEM "chapter.vpn.l2tp.xml">
+<!ENTITY chapter.vpn.ipsec.xml			SYSTEM "chapter.vpn.ipsec.xml">
+<!ENTITY chapter.vpn.openswan.xml	 	SYSTEM "chapter.vpn.openswan.xml">
+<!ENTITY chapter.vpn.strongswan.xml	 	SYSTEM "chapter.vpn.strongswan.xml">
+
+<!ENTITY section.im.irc.xml				SYSTEM "section.im.irc.xml">
+<!ENTITY section.im.jabber.xml			SYSTEM "section.im.jabber.xml">
+<!ENTITY section.im.matrix.xml 			SYSTEM "section.im.matrix.xml">
+<!ENTITY section.im.innd.xml 			SYSTEM "section.im.innd.xml">
