@@ -1487,7 +1487,29 @@ Forwarding from 0.0.0.0:27017 -> 27017
 		]]>
 		</screen>
 	</section>
-
+	<section id="kubectl.images">
+		<title>更新镜像</title>
+		<para>更新资源对象的容器镜像</para>
+		<para>可使用资源对象包括（不区分大小写）：pod (po)、replicationcontroller (rc)、deployment (deploy)、daemonset (ds)、job、replicaset (rs)</para>
+		<screen>
+		<![CDATA[
+kubectl set image deployment/nginx nginx=nginx:1.20.0
+kubectl set image deployment/nginx busybox=busybox nginx=nginx:1.10.1
+		]]>
+		</screen>
+		<para>携带参数</para>
+		<screen>
+		<![CDATA[
+kubectl set image deployments,rc nginx=nginx:1.9.1 --all		
+		]]>
+		</screen>
+		<para>使用通配符</para>
+		<screen>
+		<![CDATA[
+kubectl set image daemonset abc *=nginx:1.9.1		
+		]]>
+		</screen>
+	</section>
 	<section id="kubectl.example">
 		<title>kubectl example</title>
 		<section>
