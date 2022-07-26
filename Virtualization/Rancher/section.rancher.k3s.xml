@@ -320,7 +320,15 @@ INFO[0355] Successfully imported 1 image(s) into 1 cluster(s)
 			]]>
 			</screen>
 		</section>
-		
+
+	</section>
+	<section>
+		<title>管理 k3d 集群</title>
+		<screen>
+		<![CDATA[
+[root@netkiller k3d]# k3d cluster start mycluster		
+		]]>
+		</screen>
 	</section>
 	<section>
 		<title>容器镜像库</title>
@@ -328,9 +336,9 @@ INFO[0355] Successfully imported 1 image(s) into 1 cluster(s)
 		<![CDATA[
 neo@Netkiller-iMac ~> vim ~/.k3d/registries.yaml
 mirrors:
-  "registry.sfzito.com":
+  "registry.netkiller.cn":
     endpoint:
-      - http://registry.sfzito.com
+      - http://registry.netkiller.cn
 		]]>
 		</screen>
 		<para></para>
@@ -341,27 +349,30 @@ neo@Netkiller-iMac ~> k3d cluster create mycluster --api-port 6443 --servers 1 -
 		</screen>
 	</section>
 	<section id="traefik">
-		<title>traefik 入口配置</title>
-		<screen>
+		<title>traefik 配置</title>
+		<section>
+			<title>增加 Redis 6379 端口</title>
+
+			<screen>
 		<![CDATA[
 neo@Netkiller-iMac ~> kubectl edit -n kube-system deployment traefik
 deployment.apps/traefik edited		
 		]]>
-		</screen>
-		<para></para>
-		<screen>
+			</screen>
+			<para></para>
+			<screen>
 		<![CDATA[
     spec:
       containers:
       - args:
         - --global.checknewversion
         - --global.sendanonymoususage
-        - --entryPoints.traefik.address=:9000/tcp
-        - --entryPoints.web.address=:8000/tcp
-        - --entryPoints.websecure.address=:8443/tcp
-        - --entryPoints.redis.address=:6379/tcp
-        - --entryPoints.mysql.address=:3306/tcp
-        - --entryPoints.mongo.address=:27017/tcp
+        - --entrypoints.traefik.address=:9000/tcp
+        - --entrypoints.web.address=:8000/tcp
+        - --entrypoints.websecure.address=:8443/tcp
+        - --entrypoints.redis.address=:6379/tcp
+        - --entrypoints.mysql.address=:3306/tcp
+        - --entrypoints.mongo.address=:27017/tcp
         - --api.dashboard=true
         - --ping=true
         - --providers.kubernetescrd
@@ -401,20 +412,102 @@ deployment.apps/traefik edited
           name: mongo
           protocol: TCP		
 		]]>
-		</screen>
-		<para>args 处加入</para>
-		<screen>
+			</screen>
+			<para>args 处加入</para>
+			<screen>
 		<![CDATA[
-- --entryPoints.redis.address=:6379/tcp		
+- --entrypoints.redis.address=:6379/tcp		
 		]]>
-		</screen>
-		<para>ports 处加入</para>
-		<screen>
+			</screen>
+			<para>ports 处加入</para>
+			<screen>
 		<![CDATA[
 		- containerPort: 6379
           name: redis
-          protocol: TCP		
+          protocol: TCP
 		]]>
-		</screen>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+[root@netkiller k3d]# k3d cluster edit mycluster --port-add '6379:6379@loadbalancer'			      
+			]]>
+			</screen>
+			<programlisting>
+			<![CDATA[
+[root@netkiller k3d]# cat redis.yaml 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+spec:
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:latest
+        ports:
+        - containerPort: 6379
+          protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+spec:
+  ports:
+  - port: 6379
+    targetPort: 6379
+  selector:
+    app: redis
+--- 
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: redis
+spec:
+  entryPoints:
+    - redis
+  routes:
+  - match: HostSNI(`*`)
+    services:
+    - name: redis
+      port: 6379			
+			]]>
+			</programlisting>
+			<screen>
+			<![CDATA[
+[root@netkiller k3d]# kubectl apply -f redis.yaml
+deployment.apps/redis created
+service/redis created
+ingressroutetcp.traefik.containo.us/redis created
+
+[root@netkiller k3d]# kubectl get pods
+NAME                     READY   STATUS    RESTARTS   AGE
+redis-5c9986b94b-gsctv   1/1     Running   0          6m49s
+[root@netkiller k3d]# kubectl exec redis-5c9986b94b-gsctv -it  -- redis-cli
+127.0.0.1:6379> set nickname netkiller
+OK
+127.0.0.1:6379> get nickname
+"netkiller"
+127.0.0.1:6379>		
+127.0.0.1:6379> exit
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+[root@netkiller k3d]# dnf install redis
+[root@netkiller k3d]# redis-cli -h 127.0.0.1
+127.0.0.1:6379> get nickname
+			]]>
+			</screen>
+		</section>
 	</section>
 </section>

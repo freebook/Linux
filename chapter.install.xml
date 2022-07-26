@@ -1,72 +1,12 @@
-<section id="AlmaLinux">
-	<title>AlmaLinux</title>
-	<section>
-		<title>阿里云 AlmaLinux 8.6 镜像初始化</title>
-		<para>阿里云ECS购买之后建议对 AlmaLinux 做标准初始化配置</para>
-		<screen>
-		<![CDATA[
-dnf -y upgrade
-dnf -y install epel-release		
-		]]>
-		</screen>
-		<para>系统默认语言是中文</para>
-		<screen>
-		<![CDATA[
-[root@almilinux ~]# echo $LANG
-zh_CN.UTF-8		
-		]]>
-		</screen>
-		<para>将其改为英文</para>
-		<screen>
-		<![CDATA[
-cat >> /etc/environment <<EOF
-LC_ALL=en_US.UTF-8
-LANG=en_US.UTF-8
-LC_CTYPE=UTF-8
-EOF		
-		]]>
-		</screen>
-		<para>设置历史记录格式，可以看到命令的执行时间</para>
-		<screen>
-			<![CDATA[			
-cat >> /etc/profile.d/history.sh <<EOF
-# Administrator specific aliases and functions for system security
-export HISTSIZE=10000
-export HISTFILESIZE=10000
-export HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S "
-export TIME_STYLE=long-iso
-EOF
-
-source /etc/profile.d/history.sh
-			]]>
-		</screen>
-		<para>sysctl 优化</para>
-		<screen>
-			<![CDATA[
-cat >> /etc/sysctl.conf <<EOF
-
-# add by netkiller
-net.ipv4.ip_local_port_range = 1025 65500
-net.core.somaxconn = 1024
-
-# TCP BBR
-net.core.default_qdisc=fq
-net.ipv4.tcp_congestion_control=bbr
-EOF
-
-sysctl -p			
-			]]>
-		</screen>
-	</section>
-</section>
-
-<section id="RockyLinuxInstall">
-	<title>Rocky Linux</title>
-	<para>CentOS 8 的后续版本</para>
-	<section>
-		<title>制作 U 盘</title>
-		<para>查看 U 盘设备</para>
-		<screen>
+<section>
+	<title>CentOS 替代方案</title>
+	<para>CentOS 8 的后续版本，CentOS 替代方案</para>
+	<section id="RockyLinuxInstall">
+		<title>Rocky Linux</title>
+		<section>
+			<title>制作 U 盘</title>
+			<para>查看 U 盘设备</para>
+			<screen>
 	<![CDATA[
 Neo-iMac:~ neo$ diskutil list
 /dev/disk0 (internal, physical):
@@ -97,47 +37,52 @@ Neo-iMac:~ neo$ diskutil list
    #:                       TYPE NAME                    SIZE       IDENTIFIER
    0:                                                   *30.8 GB    disk3	
 	]]>
-		</screen>
-		<para>/dev/disk3 是 U 盘，使用下面命令将ISO镜像制作成启动盘</para>
-		<screen>
-	<![CDATA[
+			</screen>
+			<para>/dev/disk3 是 U 盘，使用下面命令将ISO镜像制作成启动盘</para>
+			<screen>
+		<![CDATA[
 Neo-iMac:Data neo$ ls
 Rocky-8.5-x86_64-minimal.iso
  
-Neo-iMac:Data neo$ sudo dd if=Rocky-8.5-x86_64-minimal.iso of=/dev/rdisk3 bs=10m
+Neo-iMac:Data neo$ sudo dd if=Rocky-8.5-x86_64-minimal.iso of=/dev/rdisk3 bs=100m
 Password:
-	]]>
-		</screen>
-		<para>过程比较缓慢，请耐心等待</para>
-		<para>Rocky Linux 安装过程与 CentOS 8 没有太大差异。</para>
-	</section>
+		]]>
+			</screen>
+			<para>过程比较缓慢，请耐心等待</para>
+			<screen>
+		<![CDATA[
+sudo dd if=Rocky-9.0-x86_64-minimal.iso of=/dev/rdisk4 bs=100m		
+		]]>
+			</screen>
+			<para>Rocky Linux 安装过程与 CentOS 8 没有太大差异。</para>
+		</section>
 
-	<section>
-		<title>阿里云 Rocky Linux 镜像初始化</title>
-		<para>首次安装后初始化系统</para>
-		<screen>
+		<section>
+			<title>阿里云 Rocky Linux 镜像初始化</title>
+			<para>首次安装后初始化系统</para>
+			<screen>
 		<![CDATA[ 
 cp /etc/dnf/dnf.conf{,.original} 
 echo "fastestmirror=true" >> /etc/dnf/dnf.conf dnf makecache 
 		]]>
-		</screen>
-		<para>Extra Packages for Enterprise Linux repository configuration</para>
-		<screen>
+			</screen>
+			<para>Extra Packages for Enterprise Linux repository configuration</para>
+			<screen>
 			<![CDATA[
 dnf -y upgrade
 dnf -y install epel-release
 			]]>
-		</screen>
-		<para>管理员常用工具</para>
-		<screen>
+			</screen>
+			<para>管理员常用工具</para>
+			<screen>
 			<![CDATA[
 dnf install -y bzip2 tree psmisc \
 telnet wget rsync vim-enhanced \
 net-tools bind-utils			
 			]]>
-		</screen>
-		<para>设置终端字符集（这样对 macOS 更友好），还可以解决 Failed to set locale, defaulting to C.UTF-8 问题</para>
-		<screen>
+			</screen>
+			<para>设置终端字符集（这样对 macOS 更友好），还可以解决 Failed to set locale, defaulting to C.UTF-8 问题</para>
+			<screen>
 			<![CDATA[
 dnf install -y langpacks-en glibc-langpack-en
 localectl set-locale LANG=en_US.UTF-8
@@ -148,10 +93,10 @@ LANG=en_US.UTF-8
 LC_CTYPE=UTF-8
 EOF
 			]]>
-		</screen>
-		<!-- dnf install langpacks-en glibc-all-langpacks -y -->
-		<para>设置历史记录格式，可以看到命令的执行时间</para>
-		<screen>
+			</screen>
+			<!-- dnf install langpacks-en glibc-all-langpacks -y -->
+			<para>设置历史记录格式，可以看到命令的执行时间</para>
+			<screen>
 			<![CDATA[			
 cat >> /etc/profile.d/history.sh <<EOF
 # Administrator specific aliases and functions for system security
@@ -163,9 +108,9 @@ EOF
 
 source /etc/profile.d/history.sh
 			]]>
-		</screen>
-		<para>sysctl 优化</para>
-		<screen>
+			</screen>
+			<para>sysctl 优化</para>
+			<screen>
 			<![CDATA[
 cat >> /etc/sysctl.conf <<EOF
 
@@ -180,35 +125,35 @@ EOF
 
 sysctl -p			
 			]]>
-		</screen>
-		<para>确认 ulimit 已经优化</para>
-		<screen>
+			</screen>
+			<para>确认 ulimit 已经优化</para>
+			<screen>
 			<![CDATA[
 # grep "^*" /etc/security/limits.conf
 * soft nofile 65535
 * hard nofile 65535	
 			]]>
-		</screen>
-		<para>设置时区</para>
-		<screen>
+			</screen>
+			<para>设置时区</para>
+			<screen>
 			<![CDATA[
 timedatectl set-timezone Asia/Shanghai			
 			]]>
-		</screen>
-		<para>确认时间同步服务器 chronyd 工作正常</para>
-		<screen>
+			</screen>
+			<para>确认时间同步服务器 chronyd 工作正常</para>
+			<screen>
 			<![CDATA[
 systemctl status chronyd
 			]]>
-		</screen>
-		<para>zmodem 用来上传和下载文件（注意 macOS 的 Terminal.app 不支持）</para>
-		<screen>
+			</screen>
+			<para>zmodem 用来上传和下载文件（注意 macOS 的 Terminal.app 不支持）</para>
+			<screen>
 			<![CDATA[
 dnf install -y lrzsz			
 			]]>
-		</screen>
-		<para>优化 SSH</para>
-		<screen>
+			</screen>
+			<para>优化 SSH</para>
+			<screen>
 			<![CDATA[
 cp /etc/ssh/sshd_config{,.original}
 
@@ -222,10 +167,10 @@ vim /etc/ssh/sshd_config <<EOF > /dev/null 2>&1
 :wq
 EOF
 			]]>
-		</screen>
-		<para>禁止 root 登陆，开启 sudo</para>
-		<para>禁用普通用户，我们需要一个普通用户登陆，然后使用 sudo 暂时获得 root 权限，我不打算新建一个用户，发现系统里面内置了 operator 这个操作员用户符合我的需求。</para>
-		<screen>
+			</screen>
+			<para>禁止 root 登陆，开启 sudo</para>
+			<para>禁用普通用户，我们需要一个普通用户登陆，然后使用 sudo 暂时获得 root 权限，我不打算新建一个用户，发现系统里面内置了 operator 这个操作员用户符合我的需求。</para>
+			<screen>
 			<![CDATA[
 usermod -s /bin/bash -aG wheel operator
 
@@ -234,9 +179,9 @@ PASSWORD=$(cat /dev/urandom | tr -dc [:alnum:] | head -c 32)
 echo operator:${PASSWORD} | chpasswd
 echo "operator password: ${PASSWORD}"			
 			]]>
-		</screen>
-		<para>将 /usr/local/sbin:/usr/local/bin 路径加入到 Defaults secure_path = /sbin:/bin:/usr/sbin:/usr/bin，否则sudo找不到 /usr/local/sbin:/usr/local/bin 中的可执行文件。</para>
-		<screen>
+			</screen>
+			<para>将 /usr/local/sbin:/usr/local/bin 路径加入到 Defaults secure_path = /sbin:/bin:/usr/sbin:/usr/bin，否则sudo找不到 /usr/local/sbin:/usr/local/bin 中的可执行文件。</para>
+			<screen>
 			<![CDATA[
 sed -i "s/#PermitRootLogin yes/PermitRootLogin no/" /etc/ssh/sshd_config
 systemctl restart sshd
@@ -247,12 +192,12 @@ sed -i '88s#$#:/usr/local/sbin:/usr/local/bin#' /etc/sudoers
 
 visudo -c
 			]]>
-		</screen>
-	</section>
-	<section>
-		<title>启用 rc.local</title>
-		<para>/etc/rc.local 是一个开机启动脚本</para>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>启用 rc.local</title>
+			<para>/etc/rc.local 是一个开机启动脚本</para>
+			<screen>
 		<![CDATA[
 [root@testing ~]# cat /etc/rc.local
 #!/bin/bash
@@ -269,10 +214,10 @@ visudo -c
 
 touch /var/lock/subsys/local		
 		]]>
-		</screen>
-		<para>如果你想使用 rc.local 需要做如下配置</para>
-		<para>rc-local.service 需要做如下配置</para>
-		<screen>
+			</screen>
+			<para>如果你想使用 rc.local 需要做如下配置</para>
+			<para>rc-local.service 需要做如下配置</para>
+			<screen>
 			<![CDATA[
 cat >> /lib/systemd/system/rc-local.service <<EOF
 
@@ -280,9 +225,9 @@ cat >> /lib/systemd/system/rc-local.service <<EOF
 WantedBy=multi-user.target
 EOF
 			]]>
-		</screen>
-		<para>配置执行权限</para>
-		<screen>
+			</screen>
+			<para>配置执行权限</para>
+			<screen>
 		<![CDATA[
 [root@cloud ~]# ll /etc/rc.d/rc.local
 -rw-r--r--. 1 root root 474 2022-03-15 23:59 /etc/rc.d/rc.local
@@ -292,9 +237,9 @@ EOF
 [root@cloud ~]# ll /etc/rc.d/rc.local
 -rwxr-xr-x. 1 root root 474 2022-03-15 23:59 /etc/rc.d/rc.local		
 		]]>
-		</screen>
-		<para>启动 rc-local</para>
-		<screen>
+			</screen>
+			<para>启动 rc-local</para>
+			<screen>
 		<![CDATA[
 [root@testing ~]# systemctl enable rc-local
 Created symlink /etc/systemd/system/multi-user.target.wants/rc-local.service → /usr/lib/systemd/system/rc-local.service.
@@ -311,23 +256,23 @@ Created symlink /etc/systemd/system/multi-user.target.wants/rc-local.service →
 Aug 16 12:57:16 testing systemd[1]: Starting /etc/rc.d/rc.local Compatibility...
 Aug 16 12:57:16 testing systemd[1]: Started /etc/rc.d/rc.local Compatibility.	
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>Python 环境</title>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>Python 环境</title>
+			<screen>
 		<![CDATA[
 dnf remove -y python36
 dnf install -y python39		
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>阿里云</title>
+			</screen>
+		</section>
 		<section>
-			<title>阿里云平台 Rocky Linux 系统 BUG</title>
-			<para>系统更新链接不上</para>
-			<screen>
+			<title>阿里云</title>
+			<section>
+				<title>阿里云平台 Rocky Linux 系统 BUG</title>
+				<para>系统更新链接不上</para>
+				<screen>
 		<![CDATA[
 [root@cloud ~]# dnf upgrade -y
 Last metadata expiration check: 0:15:31 ago on Mon 28 Mar 2022 03:49:10 PM CST.
@@ -364,9 +309,9 @@ You can remove cached packages by executing 'dnf clean packages'.
 Error: Error downloading packages:
   Cannot download Packages/t/tzdata-2022a-1.el8.noarch.rpm: All mirrors were tried		
 		]]>
-			</screen>
-			<para>查找原因后发现, mirrorlist 被禁用了。</para>
-			<screen>
+				</screen>
+				<para>查找原因后发现, mirrorlist 被禁用了。</para>
+				<screen>
 		<![CDATA[
 [root@cloud ~]# cat /etc/yum.repos.d/Rocky-BaseOS.repo 
 # Rocky-BaseOS.repo
@@ -388,9 +333,9 @@ enabled=1
 countme=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-rockyofficial		
 		]]>
-			</screen>
-			<para>将 /etc/yum.repos.d/Rocky-BaseOS.repo 和 /etc/yum.repos.d/Rocky-AppStream.repo 中的 mirrorlist 注释去掉，配置如下。</para>
-			<screen>
+				</screen>
+				<para>将 /etc/yum.repos.d/Rocky-BaseOS.repo 和 /etc/yum.repos.d/Rocky-AppStream.repo 中的 mirrorlist 注释去掉，配置如下。</para>
+				<screen>
 		<![CDATA[
 [root@cloud ~]# cat /etc/yum.repos.d/Rocky-AppStream.repo 
 # Rocky-AppStream.repo
@@ -412,21 +357,21 @@ enabled=1
 countme=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-rockyofficial		
 		]]>
-			</screen>
-			<para>再次运行 dnf upgrade -y 顺利通过</para>
-		</section>
-		<section>
-			<title>开启交换分区</title>
-			<para>开启交换分区</para>
-			<screen>
+				</screen>
+				<para>再次运行 dnf upgrade -y 顺利通过</para>
+			</section>
+			<section>
+				<title>开启交换分区</title>
+				<para>开启交换分区</para>
+				<screen>
 			<![CDATA[
 dd if=/dev/zero of=/opt/memory.swap bs=1024M count=8
 mkswap /opt/memory.swap
 swapon /opt/memory.swap			
 			]]>
-			</screen>
-			<para>挂载交换分区</para>
-			<screen>
+				</screen>
+				<para>挂载交换分区</para>
+				<screen>
 			<![CDATA[
 挂在 swap 打开 /etc/fstab 文件编辑追加以下内容
 
@@ -436,9 +381,9 @@ swapon /opt/memory.swap
 
 vm.swappiness=80		
 			]]>
-			</screen>
-			<para>查看交换分区</para>
-			<screen>
+				</screen>
+				<para>查看交换分区</para>
+				<screen>
 			<![CDATA[
 # 查看交换分区文件
 [root@cloud ~]# swapon -s
@@ -449,19 +394,19 @@ Filename				Type		Size	Used	Priority
 [root@cloud ~]# cat /proc/sys/vm/swappiness
 0			
 			]]>
-			</screen>
-			<para>设置使用率</para>
-			<screen>
+				</screen>
+				<para>设置使用率</para>
+				<screen>
 			<![CDATA[
 [root@cloud ~]# sysctl vm.swappiness=80
 vm.swappiness = 80
 [root@cloud ~]# cat /proc/sys/vm/swappiness
 80			
 			]]>
-			</screen>
-			<example>
-				<title>开启交换分区</title>
-				<screen>
+				</screen>
+				<example>
+					<title>开启交换分区</title>
+					<screen>
 				<![CDATA[
 [root@cloud ~]# dd if=/dev/zero of=/opt/memory.swap bs=1024M count=8
 8+0 records in
@@ -489,8 +434,70 @@ Swap:             7           0           7
 [root@cloud ~]# cat /proc/sys/vm/swappiness
 0
 				]]>
-				</screen>
-			</example>
+					</screen>
+				</example>
+			</section>
+		</section>
+	</section>
+	<section id="AlmaLinux">
+		<title>AlmaLinux</title>
+		<section>
+			<title>阿里云 AlmaLinux 8.6 镜像初始化</title>
+			<para>阿里云ECS购买之后建议对 AlmaLinux 做标准初始化配置</para>
+			<screen>
+		<![CDATA[
+dnf -y upgrade
+dnf -y install epel-release		
+		]]>
+			</screen>
+			<para>系统默认语言是中文</para>
+			<screen>
+		<![CDATA[
+[root@almilinux ~]# echo $LANG
+zh_CN.UTF-8		
+		]]>
+			</screen>
+			<para>将其改为英文</para>
+			<screen>
+		<![CDATA[
+cat >> /etc/environment <<EOF
+LC_ALL=en_US.UTF-8
+LANG=en_US.UTF-8
+LC_CTYPE=UTF-8
+EOF		
+		]]>
+			</screen>
+			<para>设置历史记录格式，可以看到命令的执行时间</para>
+			<screen>
+			<![CDATA[			
+cat >> /etc/profile.d/history.sh <<EOF
+# Administrator specific aliases and functions for system security
+export HISTSIZE=10000
+export HISTFILESIZE=10000
+export HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S "
+export TIME_STYLE=long-iso
+EOF
+
+source /etc/profile.d/history.sh
+			]]>
+			</screen>
+			<para>sysctl 优化</para>
+			<screen>
+			<![CDATA[
+cat >> /etc/sysctl.conf <<EOF
+
+# add by netkiller
+net.ipv4.ip_local_port_range = 1025 65500
+net.core.somaxconn = 1024
+
+# TCP BBR
+net.core.default_qdisc=fq
+net.ipv4.tcp_congestion_control=bbr
+EOF
+
+sysctl -p			
+			]]>
+			</screen>
 		</section>
 	</section>
 </section>
