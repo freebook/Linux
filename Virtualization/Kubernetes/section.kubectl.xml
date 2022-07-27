@@ -71,6 +71,45 @@ Use "kubectl <command> --help" for more information about a given command.
 Use "kubectl options" for a list of global command-line options (applies to all commands).	
 	]]>
 	</screen>
+	<section id="kubectl.config">
+		<title>配置</title>
+		<section>
+			<title>KUBECONFIG</title>
+			<para>KUBECONFIG 环境变量</para>
+		</section>
+		<section>
+			<title>use-context</title>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# kubectl config view
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: DATA+OMITTED
+    server: https://127.0.0.1:6445
+  name: k3d-mycluster
+contexts:
+- context:
+    cluster: k3d-mycluster
+    user: admin@k3d-mycluster
+  name: k3d-mycluster
+current-context: k3d-mycluster
+kind: Config
+preferences: {}
+users:
+- name: admin@k3d-mycluster
+  user:
+    client-certificate-data: REDACTED
+    client-key-data: REDACTED			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+$ kubectl config use-context
+			]]>
+			</screen>
+		</section>
+	</section>
 	<section>
 		<title>如何从 docker 过渡到 kubectl 命令</title>
 		<para>docker run 命令</para>
@@ -117,8 +156,6 @@ mongodba-6d5d6ddf64-jw4fv   1/1     Running   0          16h
 	</section>
 	<section id="kubectl.info">
 		<title>查看信息</title>
-
-
 		<section>
 			<title>api-versions</title>
 			<screen>

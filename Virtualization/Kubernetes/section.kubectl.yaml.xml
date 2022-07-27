@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="kubectl.yaml">
-	<title>Kubectl YAML</title>
+	<title>Kubernetes YAML</title>
 	<section id="ServiceAccount">
 		<title>ServiceAccount</title>
 		<screen>
@@ -68,6 +68,15 @@ iMac:kubernetes neo$ kubectl logs counter
 9: Sun Oct  4 12:32:53 UTC 2020
 		]]>
 		</screen>
+		<section>
+			<title>容器编排</title>
+			<section id="imagePullPolicy ">
+				<title>镜像拉取策略</title>
+				<para>imagePullPolicy: Always 总是拉取</para>
+				<para>imagePullPolicy: IfNotPresent 默认值,本地有则使用本地镜像,不拉取</para>
+				<para>imagePullPolicy: Never 只使用本地镜像，从不拉取</para>
+			</section>
+		</section>
 		<section>
 			<title>指定主机名</title>
 			<screen>
@@ -306,7 +315,7 @@ spec:
 			]]>
 			</screen>
 		</section>
-		
+
 	</section>
 
 	<section id="Service">
@@ -1289,7 +1298,7 @@ $ for i in $(seq 1 5); do curl -b 'canary=always' http://canary.netkiller.cn; ec
 				</screen>
 			</section>
 		</section>
-		
+
 		<section>
 			<title>管理 Ingress</title>
 			<screen>

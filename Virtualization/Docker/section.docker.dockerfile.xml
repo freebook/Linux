@@ -264,9 +264,26 @@ dnf install -y net-tools
 		</section>
 		<section>
 			<title>alpine</title>
-			<para></para>
+			<para>添加 apk 仓库</para>
 			<screen>
 			<![CDATA[
+FROM python:3.9-alpine
+MAINTAINER netkiller "netkiller@msn.com"
+
+RUN echo https://mirrors.aliyun.com/alpine/latest-stable/main/ > /etc/apk/repositories
+RUN pip3 install flask && pip3 install python-jenkins
+RUN mkdir -p /data 
+
+ADD ./ /data
+
+RUN chmod +x /data/devops
+RUN rm -rf /var/cache/apk/*
+
+WORKDIR /data
+
+EXPOSE 8080
+
+CMD ["python3", "app.py"]
 			]]>
 			</screen>
 		</section>
