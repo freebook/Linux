@@ -142,4 +142,16 @@ services:
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>将日志输出到 /dev/stdout 和 /dev/stderr</title>
+		<para></para>
+		<screen>
+		<![CDATA[
+# ls -l /var/log/nginx/
+total 0
+lrwxrwxrwx    1 root     root            11 Jan 31  2022 access.log -> /dev/stdout
+lrwxrwxrwx    1 root     root            11 Jan 31  2022 error.log -> /dev/stderr		
+		]]>
+		</screen>
+	</section>
 </section>

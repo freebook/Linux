@@ -108,7 +108,7 @@ BASEDIR="/www/netkiller.cn/api.netkiller.cn"
 JAVA_HOME=/srv/java
 JAVA_OPTS="-server -Xms2048m -Xmx8192m -Djava.security.egd=file:/dev/./urandom"
 PACKAGE="api.netkiller.cn-0.0.2-release.jar"
-CONFIG="--spring.config.location=$BASEDIR/application.properties"
+CONFIG="--spring.config.location=$BASEDIR/application.properties -Dspring.profiles.active=production -Dserver.port=8080 -Dlog.level=info"
 USER=www
 ##############################################
 NAME=springbootd
