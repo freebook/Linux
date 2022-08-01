@@ -1,0 +1,886 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="nmap">
+	<title>nmap - Network exploration tool and security / port scanner</title>
+	<command>nmap</command>
+	<section id="nmap.install">
+		<title>安装 nmap</title>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# dnf install -y nmap		
+		]]>
+		</screen>
+		<screen>
+	<![CDATA[
+Nmap支持的四种最基本的扫描方式:
+
+    * TCP connect()端口扫描（-sT参数）
+
+    * TCP同步（SYN）端口扫描（-sS参数）
+
+    * UDP端口扫描（-sU参数）
+
+    * Ping扫描（-sP参数）
+
+如果要勾画一个网络的整体情况,Ping扫描和TCP SYN扫描最为实用
+
+ Ping扫描通过发送ICMP（Internet Control Message Protocol，Internet控制消息协议）回应请求数据包和TCP应答（Acknowledge，简写ACK）数据包，确定主机的状态，非常适合于检测指定网段内正在运行的主机数量.
+
+ TCP SYN扫描与TCP connect()扫描比较
+    TCP connect()扫描中,扫描器利用操作系统本身的系统调用打开一个完整的TCP连接也就是说,扫描器打开了两个主机之间的完整握手过程（SYN, SYN-ACK和ACK）.一次完整执行的握手过程表明远程主机端口是打开的.
+
+    TCP SYN扫描创建的是半打开的连接,它与TCP connect()扫描的不同之处在于,TCP SYN扫描发送的是复位（RST）标记而不是结束ACK标记（即SYN,SYN-ACK,或RST）：如果远程主机正在监听且端口是打开的,远程主机用 SYN-ACK应答,Nmap发送一个RST:如果远程主机的端口是关闭的,它的应答将是RST,此时Nmap转入下一个端口
+
+
+-sS 使用SYN＋ACK的方法,使用TCP SYN，
+
+-sT 使用TCP的方法,3次握手全做
+
+-sU 使用UDP的方法
+
+-sP ICMP ECHO Request 送信，有反应的端口进行检查
+
+-sN 全部FLAG OFF的无效的TCP包送信，根据错误代码判断端口情况
+
+-P0 无视ICMP ECHO request的结果，SCAN
+
+-p scan port range 指定SCAN的目标端口的范围
+
+   1-100, 或者使用25,100的方式
+
+-O 侦测OS的类型
+
+-A 全面进攻性扫描(包括各种主机发现、端口扫描、版本扫描、OS扫描及默认脚本扫描)
+
+-oN 文件名 通常格式文件输出
+
+-oX 文件名 通过DTD,使用XML格式输出结果
+
+-oG 文件名, grep容易的格式输出
+
+-sV 服务的程序名和版本SCAN	
+	]]>
+		</screen>
+		<screen><![CDATA[
+$ nmap localhost
+
+Starting Nmap 4.20 ( http://insecure.org ) at 2007-11-19 05:20 EST
+Interesting ports on localhost (127.0.0.1):
+Not shown: 1689 closed ports
+PORT     STATE SERVICE
+21/tcp   open  ftp
+22/tcp   open  ssh
+25/tcp   open  smtp
+80/tcp   open  http
+139/tcp  open  netbios-ssn
+443/tcp  open  https
+445/tcp  open  microsoft-ds
+3306/tcp open  mysql
+	]]></screen>
+	</section>
+	<section id="nmap.host">
+		<title>HOST DISCOVERY</title>
+		<section>
+			<title>-sP: Ping Scan - go no further than determining if host is online</title>
+			<para>扫描一个网段</para>
+			<screen><![CDATA[
+$ nmap  -v -sP 172.16.0.0/24
+
+Starting Nmap 4.62 ( http://nmap.org ) at 2010-11-27 10:00 CST
+Initiating Ping Scan at 10:00
+Scanning 256 hosts [1 port/host]
+Completed Ping Scan at 10:00, 0.80s elapsed (256 total hosts)
+Initiating Parallel DNS resolution of 256 hosts. at 10:00
+Completed Parallel DNS resolution of 256 hosts. at 10:00, 2.77s elapsed
+Host 172.16.0.0 appears to be down.
+Host 172.16.0.1 appears to be up.
+Host 172.16.0.2 appears to be up.
+Host 172.16.0.3 appears to be down.
+Host 172.16.0.4 appears to be down.
+Host 172.16.0.5 appears to be up.
+Host 172.16.0.6 appears to be down.
+Host 172.16.0.7 appears to be down.
+Host 172.16.0.8 appears to be down.
+Host 172.16.0.9 appears to be up.
+...
+...
+Host 172.16.0.253 appears to be down.
+Host 172.16.0.254 appears to be down.
+Host 172.16.0.255 appears to be down.
+Read data files from: /usr/share/nmap
+Nmap done: 256 IP addresses (8 hosts up) scanned in 3.596 seconds
+			]]></screen>
+			<para>扫描正在使用的IP地址</para>
+			<screen><![CDATA[
+$ nmap  -v -sP 172.16.0.0/24 | grep up
+Host 172.16.0.1 appears to be up.
+Host 172.16.0.2 appears to be up.
+Host 172.16.0.5 appears to be up.
+Host 172.16.0.9 appears to be up.
+Host 172.16.0.19 appears to be up.
+Host 172.16.0.40 appears to be up.
+Host 172.16.0.188 appears to be up.
+Host 172.16.0.252 appears to be up.
+Nmap done: 256 IP addresses (8 hosts up) scanned in 6.574 seconds
+
+
+$ nmap -sn -oG - 172.16.1.0/24 | grep Up
+Host: 172.16.1.1 ()	Status: Up
+Host: 172.16.1.2 ()	Status: Up
+Host: 172.16.1.3 ()	Status: Up
+Host: 172.16.1.4 ()	Status: Up
+Host: 172.16.1.5 ()	Status: Up
+Host: 172.16.1.6 ()	Status: Up
+
+			]]></screen>
+			<para>扫描MAC地址</para>
+			<screen><![CDATA[
+nmap -sP -PI -PT -oN ipandmaclist.txt 192.168.80.0/24
+			]]></screen>
+		</section>
+	</section>
+	<section id="nmap.udp">
+		<title>SCAN TECHNIQUES</title>
+		<section>
+			<title>-sU: UDP Scan 扫描</title>
+			<para>扫描DNS端口</para>
+			<command>$ sudo nmap -sU -p 53 xxx.xxx.xxx.xxx</command>
+			<screen><![CDATA[
+neo@deployment:~$ sudo nmap -sU -p 53 localhost
+
+Starting Nmap 5.00 ( http://nmap.org ) at 2012-02-02 15:24 CST
+Warning: Hostname localhost resolves to 2 IPs. Using 127.0.0.1.
+Interesting ports on localhost (127.0.0.1):
+PORT   STATE         SERVICE
+53/udp open|filtered domain
+
+Nmap done: 1 IP address (1 host up) scanned in 2.14 seconds
+
+
+neo@deployment:~$ sudo nmap -sU -p 1194 localhost
+
+Starting Nmap 5.00 ( http://nmap.org ) at 2012-02-02 15:24 CST
+Warning: Hostname localhost resolves to 2 IPs. Using 127.0.0.1.
+Interesting ports on localhost (127.0.0.1):
+PORT     STATE  SERVICE
+1194/udp closed unknown
+
+Nmap done: 1 IP address (1 host up) scanned in 0.13 seconds
+
+
+neo@deployment:~$ sudo nmap -sU -v localhost
+
+Starting Nmap 5.00 ( http://nmap.org ) at 2012-02-02 15:22 CST
+NSE: Loaded 0 scripts for scanning.
+Warning: Hostname localhost resolves to 2 IPs. Using 127.0.0.1.
+Initiating UDP Scan at 15:22
+Scanning localhost (127.0.0.1) [1000 ports]
+Completed UDP Scan at 15:22, 1.26s elapsed (1000 total ports)
+Host localhost (127.0.0.1) is up (0.000010s latency).
+Interesting ports on localhost (127.0.0.1):
+Not shown: 993 closed ports
+PORT     STATE         SERVICE
+53/udp   open|filtered domain
+111/udp  open|filtered rpcbind
+123/udp  open|filtered ntp
+137/udp  open|filtered netbios-ns
+138/udp  open|filtered netbios-dgm
+1812/udp open|filtered radius
+1813/udp open|filtered radacct
+
+Read data files from: /usr/share/nmap
+Nmap done: 1 IP address (1 host up) scanned in 1.33 seconds
+           Raw packets sent: 1007 (28.196KB) | Rcvd: 993 (55.608KB)
+
+			]]></screen>
+			<para>以UDP数据包格式进行扫描,
+				如果你想知道在某台主机上提供哪些UDP(用户数据报协议,RFC768)服务,可以使用这种扫描方法.nmap首先向目标主机的每个端口发出一个0字节的UDP包,如果我们收到端口不可达的ICMP消息,端口就是关闭的,否则我们就假设它是打开的.
+			</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# nmap -sU x.x.x.x
+
+Nmap scan report for x.x.x.x
+Host is up (0.023s latency).
+Not shown: 984 closed ports
+PORT     STATE         SERVICE
+67/udp   open|filtered dhcps
+68/udp   open|filtered dhcpc
+80/udp   open|filtered http
+111/udp  open          rpcbind
+135/udp  open|filtered msrpc
+136/udp  open|filtered profile
+137/udp  open|filtered netbios-ns
+138/udp  open|filtered netbios-dgm
+139/udp  open|filtered netbios-ssn
+445/udp  open|filtered microsoft-ds
+520/udp  open|filtered route
+626/udp  open|filtered serialnumberd
+631/udp  open|filtered ipp
+1433/udp open|filtered ms-sql-s
+1434/udp open|filtered ms-sql-m
+5353/udp open          zeroconf
+
+Nmap done: 1 IP address (1 host up) scanned in 1026.28 seconds
+	
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title><![CDATA[-b <FTP relay host>: FTP bounce scan]]></title>
+			<screen><![CDATA[
+
+			]]></screen>
+		</section>
+	</section>
+	<section id="nmap.port">
+		<title>PORT SPECIFICATION AND SCAN ORDER</title>
+		<section>
+			<title><![CDATA[-p <port ranges>: Only scan specified ports]]></title>
+			<para>Ex: -p22; -p1-65535; -p U:53,111,137,T:21-25,80,139,8080</para>
+			<screen><![CDATA[
+sudo nmap -sU -p 53 localhost
+			]]></screen>
+			<para>扫描DHCP服务器</para>
+			<screen><![CDATA[
+sudo nmap -sU -p U:67,68 192.168.0.0/24
+
+sudo nmap -sU -p U:67,68 192.168.0.0/24 > /tmp/dhcp.log
+			]]></screen>
+			<para></para>
+			<screen><![CDATA[
+$ sudo nmap -sU -p161 192.168.0.0/24 > /tmp/snmp.log
+			]]></screen>
+			<para>扫描多台主机</para>
+			<screen>
+			<![CDATA[
+1) 扫描子网
+nmap 192.168.0.*
+nmap 192.168.0.0/24
+
+2) 指定几台主机
+nmap 192.168.0.123,124,125
+
+3) 指定一段主机
+nmap 192.168.0.123-140			
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section id="nmap.script">
+		<title>SCRIPT SCAN</title>
+		<para>nmap script 使用lua编写，请先安装lua环境。</para>
+		<screen>
+		<![CDATA[
+$ sudo apt-get install lua5.1
+
+$ lua
+Lua 5.1.4  Copyright (C) 1994-2008 Lua.org, PUC-Rio
+> ^C
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+$ nmap --script "default and safe" localhost
+
+Starting Nmap 5.21 ( http://nmap.org ) at 2012-02-02 16:23 CST
+Nmap scan report for localhost (127.0.0.1)
+Host is up (0.00023s latency).
+Not shown: 993 closed ports
+PORT     STATE SERVICE
+22/tcp   open  ssh
+| ssh-hostkey: 1024 a6:ab:76:a5:fb:80:4e:2c:bc:06:d4:85:ff:22:18:1a (DSA)
+|_2048 c7:da:16:7a:e7:01:cc:f0:d2:02:b4:17:52:c9:c2:50 (RSA)
+80/tcp   open  http
+|_html-title: 500 Internal Server Error
+139/tcp  open  netbios-ssn
+445/tcp  open  microsoft-ds
+631/tcp  open  ipp
+3000/tcp open  ppp
+9000/tcp open  cslistener
+
+Host script results:
+|_nbstat: NetBIOS name: NEO-OPTIPLEX-38, NetBIOS user: <unknown>, NetBIOS MAC: <unknown>
+|_smbv2-enabled: Server doesn't support SMBv2 protocol
+| smb-os-discovery:
+|   OS: Unix (Samba 3.5.11)
+|   Name: WORKGROUP\Unknown
+|_  System time: 2012-02-02 16:23:08 UTC+8
+
+Nmap done: 1 IP address (1 host up) scanned in 0.21 seconds
+
+
+$ nmap --script=default 172.16.1.5
+
+Starting Nmap 5.21 ( http://nmap.org ) at 2012-02-02 16:25 CST
+Nmap scan report for 172.16.1.5
+Host is up (0.024s latency).
+Not shown: 997 closed ports
+PORT     STATE SERVICE
+22/tcp   open  ssh
+| ssh-hostkey: 1024 c1:40:33:3b:be:4d:ef:52:40:a9:08:0a:e1:ae:d7:91 (DSA)
+|_2048 9d:db:c5:41:94:63:c7:51:d1:97:36:d3:87:ad:8f:a5 (RSA)
+3306/tcp open  mysql
+| mysql-info: Protocol: 10
+| Version: 5.1.48-community-log
+| Thread ID: 6647320
+| Some Capabilities: Long Passwords, Connect with DB, Compress, ODBC, Transactions, Secure Connection
+| Status: Autocommit
+|_Salt: 0%eRHQ?'Fi_!%6|4+w9U
+5666/tcp open  nrpe
+
+Nmap done: 1 IP address (1 host up) scanned in 3.23 seconds
+		]]>
+		</screen>
+		<section>
+			<title>Nmap Scripting Engine (NSE)</title>
+			<para>http://nmap.org/nsedoc/</para>
+			<para>预置脚本</para>
+			<screen><![CDATA[
+$ ls /usr/share/nmap/scripts
+asn-query.nse                http-malware-host.nse    smb-enum-groups.nse
+auth-owners.nse              http-open-proxy.nse      smb-enum-processes.nse
+auth-spoof.nse               http-passwd.nse          smb-enum-sessions.nse
+banner.nse                   http-trace.nse           smb-enum-shares.nse
+citrix-brute-xml.nse         http-userdir-enum.nse    smb-enum-users.nse
+citrix-enum-apps.nse         iax2-version.nse         smb-os-discovery.nse
+citrix-enum-apps-xml.nse     imap-capabilities.nse    smb-psexec.nse
+citrix-enum-servers.nse      irc-info.nse             smb-security-mode.nse
+citrix-enum-servers-xml.nse  ms-sql-info.nse          smb-server-stats.nse
+daytime.nse                  mysql-info.nse           smb-system-info.nse
+db2-info.nse                 nbstat.nse               smbv2-enabled.nse
+dhcp-discover.nse            nfs-showmount.nse        smtp-commands.nse
+dns-random-srcport.nse       ntp-info.nse             smtp-open-relay.nse
+dns-random-txid.nse          oracle-sid-brute.nse     smtp-strangeport.nse
+dns-recursion.nse            p2p-conficker.nse        sniffer-detect.nse
+dns-zone-transfer.nse        pjl-ready-message.nse    snmp-brute.nse
+finger.nse                   pop3-brute.nse           snmp-sysdescr.nse
+ftp-anon.nse                 pop3-capabilities.nse    socks-open-proxy.nse
+ftp-bounce.nse               pptp-version.nse         sql-injection.nse
+ftp-brute.nse                realvnc-auth-bypass.nse  ssh-hostkey.nse
+html-title.nse               robots.txt.nse           sshv1.nse
+http-auth.nse                rpcinfo.nse              ssl-cert.nse
+http-date.nse                script.db                sslv2.nse
+http-enum.nse                skypev2-version.nse      telnet-brute.nse
+http-favicon.nse             smb-brute.nse            upnp-info.nse
+http-headers.nse             smb-check-vulns.nse      whois.nse
+http-iis-webdav-vuln.nse     smb-enum-domains.nse     x11-access.nse
+		]]></screen>
+			<para>使用所有脚本进行扫描</para>
+			<screen><![CDATA[
+nmap --script all localhost
+		]]></screen>
+		</section>
+		<section>
+			<title>ftp-anon</title>
+			<screen><![CDATA[
+$ nmap -p21 --script=ftp-anon 172.16.3.100
+
+Starting Nmap 5.21 ( http://nmap.org ) at 2012-02-02 16:51 CST
+NSE: Script Scanning completed.
+Nmap scan report for 172.16.3.100
+Host is up (0.0066s latency).
+PORT   STATE SERVICE
+21/tcp open  ftp
+|_ftp-anon: Anonymous FTP login allowed
+
+Nmap done: 1 IP address (1 host up) scanned in 0.09 seconds
+			]]></screen>
+		</section>
+		<section>
+			<title>mysql-info</title>
+			<screen><![CDATA[
+$ nmap -p3306 --script=mysql-info 172.16.0.5
+
+Starting Nmap 5.00 ( http://nmap.org ) at 2012-02-02 16:58 CST
+Interesting ports on 172.16.0.5:
+PORT     STATE SERVICE
+3306/tcp open  mysql
+|  mysql-info: Protocol: 10
+|  Version: 5.1.48-community-log
+|  Thread ID: 62837508
+|  Some Capabilities: Long Passwords, Connect with DB, Compress, ODBC, Transactions, Secure Connection
+|  Status: Autocommit
+|_ Salt: T{3(moe.R2C;?fgP:rQ|
+
+Nmap done: 1 IP address (1 host up) scanned in 0.06 seconds
+			]]></screen>
+		</section>
+		<section>
+			<title>http</title>
+			<para>http-date</para>
+			<screen><![CDATA[
+$ nmap -p80 --script=http-date www.baidu.com
+
+Starting Nmap 5.21 ( http://nmap.org ) at 2012-02-02 18:37 CST
+NSE: Script Scanning completed.
+Nmap scan report for www.baidu.com (220.181.111.147)
+Host is up (0.037s latency).
+PORT   STATE SERVICE
+80/tcp open  http
+|_http-date: Thu, 02 Feb 2012 10:37:40 GMT; 0s from local time.
+
+Nmap done: 1 IP address (1 host up) scanned in 1.55 seconds
+
+			]]></screen>
+			<para>http-headers</para>
+			<screen><![CDATA[
+$ nmap -p80 --script=http-headers www.baidu.com
+
+Starting Nmap 5.21 ( http://nmap.org ) at 2012-02-02 18:38 CST
+NSE: Script Scanning completed.
+Nmap scan report for www.baidu.com (220.181.111.147)
+Host is up (0.036s latency).
+PORT   STATE SERVICE
+80/tcp open  http
+| http-headers:
+|   Date: Thu, 02 Feb 2012 10:38:15 GMT
+|   Server: BWS/1.0
+|   Content-Length: 7677
+|   Content-Type: text/html;charset=gb2312
+|   Cache-Control: private
+|   Expires: Thu, 02 Feb 2012 10:38:15 GMT
+|   Set-Cookie: BAIDUID=0279AEA82B65E8B74C03D5B6AA92326C:FG=1; expires=Thu, 02-Feb-42 10:38:15 GMT; path=/; domain=.baidu.com
+|   P3P: CP=" OTI DSP COR IVA OUR IND COM "
+|   Connection: Close
+|
+|_  (Request type: HEAD)
+
+Nmap done: 1 IP address (1 host up) scanned in 1.54 seconds
+			]]></screen>
+			<screen><![CDATA[
+$ nmap -p80 --script=http-date,http-headers,http-malware-host,http-trace,http-enum 192.168.3.5
+
+Starting Nmap 5.21 ( http://nmap.org ) at 2012-02-02 19:15 CST
+NSE: Script Scanning completed.
+Nmap scan report for 192.168.3.5
+Host is up (0.0015s latency).
+PORT   STATE SERVICE
+80/tcp open  http
+| http-headers:
+|   Date: Thu, 02 Feb 2012 11:15:00 GMT
+|   Server: Apache
+|   Last-Modified: Mon, 29 Nov 2010 14:56:50 GMT
+|   ETag: "7bcaa3-2c-496324828b080"
+|   Accept-Ranges: bytes
+|   Content-Length: 44
+|   Connection: close
+|   Content-Type: text/html
+|
+|_  (Request type: HEAD)
+|_http-malware-host: Host appears to be clean
+|_http-date: Thu, 02 Feb 2012 11:15:00 GMT; 0s from local time.
+|_http-enum:
+
+Nmap done: 1 IP address (1 host up) scanned in 0.08 seconds
+
+			]]></screen>
+		</section>
+		<section>
+			<title>snmp</title>
+			<screen><![CDATA[
+$ sudo nmap -sU -p161 --script=snmp-sysdescr 172.16.3.250
+
+Starting Nmap 5.00 ( http://nmap.org ) at 2012-02-02 19:20 CST
+Interesting ports on 172.16.3.250:
+PORT    STATE SERVICE
+161/udp open  snmp
+|  snmp-sysdescr: Cisco Adaptive Security Appliance Version 8.2(5)
+|_   System uptime: 84 days, 18:39:55.00 (732479500 timeticks)
+
+Nmap done: 1 IP address (1 host up) scanned in 0.49 seconds
+			]]></screen>
+		</section>
+		<section>
+			<title>SSHv1</title>
+			<screen><![CDATA[
+$ sudo nmap -sT -p22 --script=sshv1 172.16.0.0/24
+
+$ sudo nmap -sT -p22 --script=sshv1 172.16.3.0/24 --open | grep -B4 sshv1
+
+Interesting ports on 172.16.3.250:
+PORT   STATE SERVICE
+22/tcp open  ssh
+|_ sshv1: Server supports SSHv1
+
+Interesting ports on 172.16.3.251:
+PORT   STATE SERVICE
+22/tcp open  ssh
+|_ sshv1: Server supports SSHv1
+			]]></screen>
+			<screen><![CDATA[
+$ nmap -sT -p22 172.16.0.0/24 --script=ssh-hostkey --script-args=ssh_hostkey=all > ssh.log
+
+$ nmap -sT -p22 172.16.0.5 --script=ssh-hostkey --script-args=ssh_hostkey=full
+
+Starting Nmap 5.21 ( http://nmap.org ) at 2012-02-02 19:35 CST
+NSE: Script Scanning completed.
+Nmap scan report for 172.16.0.5
+Host is up (0.0017s latency).
+PORT   STATE SERVICE
+22/tcp open  ssh
+| ssh-hostkey: ssh-dss AAAAB3NzaC1kc3MAAACBANinhMHgAGFMhkYW0qmFTNsJKuim8P7vFfPV3+c9R0urqF42HwZrIbhEZhRlUDSGo0v5cFzufabQaQ58//L4UXYqKOHaiqSo4ju5CWquH6YY+SNhszJY4OSessioJJfjbLCXx73pfqX8akEV13jQujLhYD0Tuela0/c4iQW+ktnjAAAAFQDxCjX3PK+dAUKviG6xX2C6DstqUQAAAIBrEephaZhQJg3ctO3Y7OMAOu/uRKt9VpeChbptsh4DGXk6Lmet5hYJ1/UOzEAZd4dEO0uijy8iKYSZoAaZh2qGa9PynIWuD1ENt8feEMwRv5VV7zaNitmjYedmPO9rLAja1/49mxUq9XAeRYTOhWJlbwrc38sybTsCrDsdoxDqUwAAAIEAzV7w+dy0lzER0OHfy/E70So80V8/2Bo3AIwnACWGMTqKC2CrFm6VWDKA9P4x0bq+JBshpjtur/3H0sgAt+Zky3Z2EWpdf+9z1AqTy3l95J+xQhQTzD2lw+NqroInxEqJU0eip3YgdTqksQuDRCSy/hKJDLJOELkWbDLMlb1vXA8=
+|_ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAlgJcaT8/F0Ah+Jq9PifhQ3Bvfh4Nl5/WWiyoF0yIhhKlNnO04Vnbi8Qb39BDVRKaqIrfhgbG3vxfyF3TeSEOoAiXXyCns6Ivl7HUEHVsjHOVu7nwwMqo94CaM1+pUgJtXmbmTWyfWGCm8kGD2xNaxs10uxIcuukBN7jlN2TGyEmOD8QkA+1Dx7XGBjpMZT+DQwmEo72V2taAo3a0UOz9ivAakZ/kysP+PN+Kz106iT3BWMkvQScyt96HAwbq8Z0tO531mz90UGVBS1KqNMtNsLHsXYJnQ3obXUTwo8KvtEvJ1UHDs6QdEP55PiBTVvCS+CbEwZZ9O1yGNfznBWmp4Q==
+
+Nmap done: 1 IP address (1 host up) scanned in 0.11 seconds
+
+
+$ nmap -sT -p22 172.16.0.5 --script=ssh-hostkey --script-args=ssh_hostkey=all
+
+Starting Nmap 5.21 ( http://nmap.org ) at 2012-02-02 19:35 CST
+NSE: Script Scanning completed.
+Nmap scan report for 172.16.0.5
+Host is up (0.0014s latency).
+PORT   STATE SERVICE
+22/tcp open  ssh
+| ssh-hostkey: 1024 26:89:a4:1d:f1:28:3c:36:88:ea:49:6d:1b:df:de:70 (DSA)
+| 1024 xumep-dynut-poheh-cenys-dyfyz-tubap-lupoz-fofyd-figuf-timaz-byxox (DSA)
+| +--[ DSA 1024]----+
+| |    .            |
+| |.o   +           |
+| |o * + .          |
+| |...B o .         |
+| |...+o o S        |
+| |o o + .o         |
+| | o . . o E       |
+| |      . +        |
+| |       . .       |
+| +-----------------+
+| ssh-dss AAAAB3NzaC1kc3MAAACBANinhMHgAGFMhkYW0qmFTNsJKuim8P7vFfPV3+c9R0urqF42HwZrIbhEZhRlUDSGo0v5cFzufabQaQ58//L4UXYqKOHaiqSo4ju5CWquH6YY+SNhszJY4OSessioJJfjbLCXx73pfqX8akEV13jQujLhYD0Tuela0/c4iQW+ktnjAAAAFQDxCjX3PK+dAUKviG6xX2C6DstqUQAAAIBrEephaZhQJg3ctO3Y7OMAOu/uRKt9VpeChbptsh4DGXk6Lmet5hYJ1/UOzEAZd4dEO0uijy8iKYSZoAaZh2qGa9PynIWuD1ENt8feEMwRv5VV7zaNitmjYedmPO9rLAja1/49mxUq9XAeRYTOhWJlbwrc38sybTsCrDsdoxDqUwAAAIEAzV7w+dy0lzER0OHfy/E70So80V8/2Bo3AIwnACWGMTqKC2CrFm6VWDKA9P4x0bq+JBshpjtur/3H0sgAt+Zky3Z2EWpdf+9z1AqTy3l95J+xQhQTzD2lw+NqroInxEqJU0eip3YgdTqksQuDRCSy/hKJDLJOELkWbDLMlb1vXA8=
+| 2048 98:fb:db:e0:a3:99:18:04:cb:8c:42:25:f0:f5:b3:5a (RSA)
+| 2048 xogok-vykec-zacyg-ruzup-baral-kotyv-latoz-hygyz-hysis-zadun-hyxix (RSA)
+| +--[ RSA 2048]----+
+| |o. ..            |
+| | .o. .           |
+| | .o   o          |
+| |.+ o   =         |
+| |o + . E S        |
+| |.  . o .         |
+| |    o . .        |
+| |     o =.o       |
+| |    . +.+o.      |
+| +-----------------+
+|_ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAlgJcaT8/F0Ah+Jq9PifhQ3Bvfh4Nl5/WWiyoF0yIhhKlNnO04Vnbi8Qb39BDVRKaqIrfhgbG3vxfyF3TeSEOoAiXXyCns6Ivl7HUEHVsjHOVu7nwwMqo94CaM1+pUgJtXmbmTWyfWGCm8kGD2xNaxs10uxIcuukBN7jlN2TGyEmOD8QkA+1Dx7XGBjpMZT+DQwmEo72V2taAo3a0UOz9ivAakZ/kysP+PN+Kz106iT3BWMkvQScyt96HAwbq8Z0tO531mz90UGVBS1KqNMtNsLHsXYJnQ3obXUTwo8KvtEvJ1UHDs6QdEP55PiBTVvCS+CbEwZZ9O1yGNfznBWmp4Q==
+
+Nmap done: 1 IP address (1 host up) scanned in 0.12 seconds
+
+
+$ nmap -sT -p22 172.16.0.5 --script=ssh-hostkey --script-args=ssh_hostkey='visual bubble'
+
+Starting Nmap 5.21 ( http://nmap.org ) at 2012-02-02 19:36 CST
+NSE: Script Scanning completed.
+Nmap scan report for 172.16.0.5
+Host is up (0.0017s latency).
+PORT   STATE SERVICE
+22/tcp open  ssh
+| ssh-hostkey: 1024 xumep-dynut-poheh-cenys-dyfyz-tubap-lupoz-fofyd-figuf-timaz-byxox (DSA)
+| +--[ DSA 1024]----+
+| |    .            |
+| |.o   +           |
+| |o * + .          |
+| |...B o .         |
+| |...+o o S        |
+| |o o + .o         |
+| | o . . o E       |
+| |      . +        |
+| |       . .       |
+| +-----------------+
+| 2048 xogok-vykec-zacyg-ruzup-baral-kotyv-latoz-hygyz-hysis-zadun-hyxix (RSA)
+| +--[ RSA 2048]----+
+| |o. ..            |
+| | .o. .           |
+| | .o   o          |
+| |.+ o   =         |
+| |o + . E S        |
+| |.  . o .         |
+| |    o . .        |
+| |     o =.o       |
+| |    . +.+o.      |
+|_+-----------------+
+
+Nmap done: 1 IP address (1 host up) scanned in 0.12 seconds
+
+			]]></screen>
+		</section>
+		<section>
+			<title>--script-updatedb 更新脚本</title>
+			<screen><![CDATA[
+$ sudo nmap --script-updatedb
+
+Starting Nmap 5.00 ( http://nmap.org ) at 2012-02-02 16:34 CST
+NSE: Updating rule database.
+NSE script database updated successfully.
+Nmap done: 0 IP addresses (0 hosts up) scanned in 0.12 seconds
+
+			]]></screen>
+		</section>
+	</section>
+	<section id="nmap.os">
+		<title>OS DETECTION</title>
+		<section>
+			<title>-O: Enable OS detection 操作系统探测</title>
+			<screen><![CDATA[
+nmap -O -v scanme.nmap.org
+			]]></screen>
+			<para>探测目标主机的操作系统和 tcp 端口</para>
+			<screen>
+			<![CDATA[
+[root@cacti ~]# nmap -O 192.168.2.40
+
+Starting Nmap 5.51 ( http://nmap.org ) at 2014-02-11 16:22 HKT
+Nmap scan report for 192.168.2.40
+Host is up (0.00039s latency).
+Not shown: 999 filtered ports
+PORT    STATE SERVICE
+135/tcp open  msrpc
+MAC Address: 78:E3:B5:90:D0:A8 (Unknown)
+Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
+Device type: general purpose
+Running (JUST GUESSING): Microsoft Windows 2008|7|Vista (97%), FreeBSD 6.X (88%)
+Aggressive OS guesses: Microsoft Windows Server 2008 (97%), Microsoft Windows Server 2008 Beta 3 (97%), Microsoft Windows 7 Professional (97%), Microsoft Windows Vista SP0 or SP1, Server 2008 SP1, or Windows 7 (97%), Microsoft Windows Vista Business SP1 (91%), Microsoft Windows Vista Home Premium SP1, Windows 7, or Server 2008 (90%), FreeBSD 6.2-RELEASE (88%), FreeBSD 6.3-RELEASE (88%), Microsoft Windows Server 2008 R2 (88%)
+No exact OS matches for host (test conditions non-ideal).
+Network Distance: 1 hop
+
+OS detection performed. Please report any incorrect results at http://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 16.00 seconds			
+			]]>
+			</screen>
+		</section>
+	</section>
+
+	<section id="nmap.output">
+		<title>OUTPUT</title>
+		<section>
+			<title>--open: Only show open (or possibly open) ports 操作系统探测</title>
+			<screen><![CDATA[
+nmap -O -v scanme.nmap.org
+			]]></screen>
+		</section>
+	</section>
+	<section id="nmap.exclude">
+		<title>排除指定的主机</title>
+		<screen><![CDATA[
+1) nmap 192.168.0.* --exclude 192.168.0.100
+
+2) 也可以使用 --excludefile 指定排除的列表
+
+nmap -iL hostlist.txt --excludefile excludelist.txt		
+		]]></screen>
+	</section>
+	<section id="nmap.iflist">
+		<title>查看本地路由与接口</title>
+		<screen>
+		<![CDATA[
+Nmap中提供了 --iflist 选项来查看本地主机的接口信息与路由信息.
+
+[root@test23 ~]# nmap --iflist
+
+Starting Nmap 5.51 ( http://nmap.org ) at 2017-03-30 14:23 CST
+************************INTERFACES************************
+DEV     (SHORT)   IP/MASK        TYPE     UP MTU   MAC
+lo      (lo)      127.0.0.1/8    loopback up 65536
+eth0    (eth0)    10.1.2.23/24   ethernet up 1500  00:50:56:80:04:FA
+docker0 (docker0) 172.17.42.1/16 ethernet up 1500  56:84:7A:FE:97:99
+
+**************************ROUTES**************************
+DST/MASK       DEV     GATEWAY
+10.1.2.0/24    eth0
+169.254.0.0/16 eth0
+172.17.0.0/16  docker0
+0.0.0.0/0      eth0    10.1.2.1
+
+> 指定网口与IP地址
+
+
+1) 在Nmap可指定用哪个网口发送数据, -e <interface>选项.
+
+2) Nmap也可以显式地指定发送的源端IP地址, 使用-S <spoofip>选项, nmap将用指定的spoofip作为源端IP来发送探测包.
+
+3) Nmap 使用 Decoy(诱骗)方式来掩盖真实的扫描地址,例如-D ip1,ip2,ip3,ip4,ME,这样就会产生多个虚假的ip同时对目标机进行探测,其中ME代表本机的真实地址,这样对方的防火墙不容易识别出是扫描者的身份.
+
+nmap -F -n -Pn -D192.168.1.100,192.168.1.101,192.168.1.102,ME 192.168.1.1
+
+> 定制探测包
+
+
+Nmap 提供 --scanflags 选项, 用户可以对需要发送的TCP探测包的标志位进行完全的控制.可以使用数字或符号指定 TCP 标志位:URG ACK PSH RST SYN FIN.
+例如, --scanflags URGACKPSHRSTSYNFIN 设置了所有标志位,但是这对扫描没有太大用处. 标志位的顺序不重要.
+
+-sN; -sF; -sX (TCP Null，FIN，and Xmas扫描)
+
+Null扫描 (-sN)
+    不设置任何标志位(tcp标志头是0)
+
+FIN扫描 (-sF)
+    只设置TCP FIN标志位
+Xmas扫描 (-sX)
+    设置FIN, PSH, 和URG标志位
+
+
+#### nmap scan port shell
+
+#!/bin/bash
+#author junun
+#This script for scan the port for you commit servers
+#
+#
+server_list=(x.x.x.x x1.x1.x1.x1)
+port_list=(5307 5308)
+while true ;do
+    for i in `seq 0 $[${#server_list[*]}-1]`; do
+        nmap -p ${port_list[$i]} ${server_list[$i]} | grep open
+        if  [ $? -gt 0 ];then
+            for m in {1..3};do
+                nmap -p ${port_list[$i]} ${server_list[$i]} | grep open
+                if [ $?  -gt 0 ] ;then
+                     let result$m=$m
+                else
+                     break
+                fi
+                sleep 1
+            done
+            if [ $result1 -gt 0 -a $result2 -gt 0 -a $result3 -gt 0 ];then
+                echo "error port"
+            fi
+        fi
+    done
+    sleep 30
+done
+		]]>
+		</screen>
+	</section>
+	<section id="nmap.misc">
+		<title>MISC</title>
+		<section>
+			<title>-6: Enable IPv6 scanning</title>
+		</section>
+		<section>
+			<title>-A: Enables OS detection and Version detection, Script scanning and Traceroute</title>
+			<screen>
+			<![CDATA[
+  $ nmap -A -T4 localhost
+
+Starting Nmap 5.21 ( http://nmap.org ) at 2012-02-02 14:54 CST
+Nmap scan report for localhost (127.0.0.1)
+Host is up (0.00025s latency).
+Not shown: 993 closed ports
+PORT     STATE SERVICE     VERSION
+22/tcp   open  ssh         OpenSSH 5.8p1 Debian 7ubuntu1 (protocol 2.0)
+| ssh-hostkey: 1024 a6:ab:76:a5:fb:80:4e:2c:bc:06:d4:85:ff:22:18:1a (DSA)
+|_2048 c7:da:16:7a:e7:01:cc:f0:d2:02:b4:17:52:c9:c2:50 (RSA)
+80/tcp   open  http        nginx 1.0.5
+|_html-title: 500 Internal Server Error
+139/tcp  open  netbios-ssn Samba smbd 3.X (workgroup: WORKGROUP)
+445/tcp  open  netbios-ssn Samba smbd 3.X (workgroup: WORKGROUP)
+631/tcp  open  ipp         CUPS 1.4
+3000/tcp open  ntop-http   Ntop web interface 4.0.3
+9000/tcp open  tcpwrapped
+Service Info: OS: Linux
+
+Host script results:
+|_nbstat: NetBIOS name: NEO-OPTIPLEX-38, NetBIOS user: <unknown>, NetBIOS MAC: <unknown>
+|_smbv2-enabled: Server doesn't support SMBv2 protocol
+| smb-os-discovery:
+|   OS: Unix (Samba 3.5.11)
+|   Name: WORKGROUP\Unknown
+|_  System time: 2012-02-02 14:54:19 UTC+8
+
+Service detection performed. Please report any incorrect results at http://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 11.24 seconds
+			]]>
+			</screen>
+		</section>
+	</section>
+
+	<section id="ncat">
+		<title>ncat - Concatenate and redirect sockets</title>
+		<subtitle>nc - TCP/IP swiss army knife</subtitle>
+		<para>按照 ncat</para>
+		<screen><![CDATA[
+# yum search nc | grep nmap
+nmap-ncat.x86_64 : Nmap's Netcat replacement
+
+yum install nmap-ncat
+		]]></screen>
+
+		<section>
+			<title>TCP 数据传输</title>
+			<para>Server</para>
+			<screen><![CDATA[
+nc -l 8080 > test.txt
+			]]></screen>
+			<para>Client</para>
+			<screen><![CDATA[
+cat /etc/hosts | nc your_server 8080
+			]]></screen>
+		</section>
+
+		<section>
+			<title>UDP 数据传输</title>
+			<para>Server 端</para>
+			<screen><![CDATA[
+nc -4 -u -l 9000
+			]]></screen>
+			<para>Client 端</para>
+			<screen><![CDATA[
+cat /etc/passwd | nc -4 -u 47.90.1.240 9000
+			]]></screen>
+		</section>
+		<section>
+			<title>始终保持服务器开启</title>
+			<para>-k, --keep-open Accept multiple connections in listen mode</para>
+			<screen><![CDATA[
+# nc -l 8087 -k
+			]]></screen>
+			<para>这是你可以持续想服务器端发送数据</para>
+		</section>
+		<section>
+			<title>传输视频流</title>
+			<para>服务端，这里我们从一个视频文件中读入并重定向输出到netcat客户端</para>
+			<screen><![CDATA[
+$cat video.avi | nc -l 3000
+			]]></screen>
+			<para>客户端，从socket中读入数据并通过管道传递给 mplayer播放该视频。</para>
+			<screen><![CDATA[
+$nc 172.16.0.10 3000 | mplayer -vo x11 -cache 3000 -			
+			]]></screen>
+		</section>
+	</section>
+	<section id="nmap.example">
+		<title>nmap 应用案例</title>
+		<screen><![CDATA[
+# nmap -Pn 192.168.4.13
+
+Starting Nmap 6.40 ( http://nmap.org ) at 2016-11-04 15:41 CST
+Nmap scan report for gts2apidemo.cfddealer88.com (192.168.4.13)
+Host is up (0.0051s latency).
+Not shown: 999 filtered ports
+PORT     STATE SERVICE
+8008/tcp open  http
+
+Nmap done: 1 IP address (1 host up) scanned in 7.50 seconds
+		]]></screen>
+		<para>扫描网段内开机的主机</para>
+		<screen><![CDATA[
+nmap -sP 140.15.35.0/24		
+		]]></screen>
+		<section>
+			<title>扫描一组IP地址</title>
+			<screen>
+			<![CDATA[
+while read ipaddress
+do
+	echo "----- $ipaddress ----- "
+    nmap -p 1-65535 $ipaddress | tail -n +5 | head -n -1
+    echo 
+done << EOF
+121.196.46.10
+120.27.153.17
+121.40.210.21
+将需要扫描的IP地址放在这里，一行一条
+EOF			
+			]]>
+			</screen>
+		</section>
+		
+	</section>
+</section>

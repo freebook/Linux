@@ -451,6 +451,79 @@ tail -f example.log | sed \
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>跳过 n 行，输出后面内容</title>
+			<para>首先看看源文件内容</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# head -n 5 /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin			
+			]]>
+			</screen>
+			<para>现在跳过第一行，显示后面所有内容</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# tail -n +2 /etc/passwd
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+sync:x:5:0:sync:/sbin:/bin/sync
+shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+halt:x:7:0:halt:/sbin:/sbin/halt
+mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
+operator:x:11:0:operator:/root:/sbin/nologin
+games:x:12:100:games:/usr/games:/sbin/nologin
+ftp:x:14:50:FTP User:/var/ftp:/sbin/nologin
+nobody:x:65534:65534:Kernel Overflow User:/:/sbin/nologin
+systemd-coredump:x:999:996:systemd Core Dumper:/:/sbin/nologin
+dbus:x:81:81:System message bus:/:/sbin/nologin
+tss:x:59:59:Account used for TPM access:/dev/null:/sbin/nologin
+polkitd:x:998:995:User for polkitd:/:/sbin/nologin
+sssd:x:997:994:User for sssd:/:/sbin/nologin
+sshd:x:74:74:Privilege-separated SSH:/usr/share/empty.sshd:/sbin/nologin
+systemd-oom:x:992:992:systemd Userspace OOM Killer:/:/usr/sbin/nologin
+mysql:x:27:27:MySQL Server:/var/lib/mysql:/sbin/nologin
+chrony:x:991:991::/var/lib/chrony:/sbin/nologin
+docker:x:990:990:Container Administrator:/home/docker:/bin/bash
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>尾部剪掉 n 行</title>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# nmap -F 121.196.46.109
+Starting Nmap 7.91 ( https://nmap.org ) at 2022-08-01 14:52 CST
+Nmap scan report for 121.196.46.109
+Host is up (0.016s latency).
+Not shown: 97 filtered ports
+PORT     STATE  SERVICE
+113/tcp  closed ident
+2000/tcp open   cisco-sccp
+5060/tcp open   sip
+
+Nmap done: 1 IP address (1 host up) scanned in 4.38 seconds
+[root@netkiller ~]# nmap -F 121.196.46.109 | tail -n +5
+PORT     STATE  SERVICE
+113/tcp  closed ident
+2000/tcp open   cisco-sccp
+5060/tcp open   sip
+
+Nmap done: 1 IP address (1 host up) scanned in 1.83 seconds
+[root@netkiller ~]# nmap -F 121.196.46.109 | tail -n +5 | head -n -1
+PORT     STATE  SERVICE
+113/tcp  closed ident
+2000/tcp open   cisco-sccp
+5060/tcp open   sip
+
+			]]>
+			</screen>
+		</section>
 	</section>
 
 	<section id="rev">

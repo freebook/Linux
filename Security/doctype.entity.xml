@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!ENTITY chapter.security.xml 	SYSTEM "chapter.security.xml">
 <!ENTITY chapter.sniffer.xml 	SYSTEM "chapter.sniffer.xml">
+<!ENTITY section.sniffer.nmap.xml	SYSTEM "section.sniffer.nmap.xml">
 <!ENTITY chapter.scanner.xml 	SYSTEM "chapter.scanner.xml">
 <!ENTITY chapter.sqlmap.xml 	SYSTEM "chapter.sqlmap.xml">
 <!ENTITY chapter.selinux.xml 	SYSTEM "chapter.selinux.xml">
