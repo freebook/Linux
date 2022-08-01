@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="index"><?dbhtml dir="gui" ?>
-	<title>容器图形化管理界面</title>
-	&section.container.portainer.xml;
+<chapter id="container"><!-- <?dbhtml dir="gui" ?> -->
+	<title>容器管理</title>
 	&section.container.helm.xml;
+	&section.container.portainer.xml;
+	&section.container.podman.xml;
 	<section>
 		<title>k9s</title>
 	</section>

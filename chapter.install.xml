@@ -56,6 +56,154 @@ sudo dd if=Rocky-9.0-x86_64-minimal.iso of=/dev/rdisk4 bs=100m
 			</screen>
 			<para>Rocky Linux 安装过程与 CentOS 8 没有太大差异。</para>
 		</section>
+		<section>
+			<title>Rocky-9.0-x86_64-minimal.iso 镜像初始化</title>
+			<para></para>
+			<para>首次安装后初始化系统</para>
+			<screen>
+		<![CDATA[ 
+cp /etc/dnf/dnf.conf{,.original} 
+echo "fastestmirror=true" >> /etc/dnf/dnf.conf
+dnf makecache 
+		]]>
+			</screen>
+			<para>Extra Packages for Enterprise Linux repository configuration</para>
+			<screen>
+			<![CDATA[
+dnf -y upgrade
+dnf -y install epel-release
+			]]>
+			</screen>
+			<para>管理员常用工具</para>
+			<screen>
+			<![CDATA[
+dnf install -y bzip2 tree psmisc \
+telnet wget rsync vim-enhanced \
+net-tools bind-utils			
+			]]>
+			</screen>
+			<para>设置终端字符集（这样对 macOS 更友好），还可以解决 Failed to set locale, defaulting to C.UTF-8 问题</para>
+			<screen>
+			<![CDATA[
+dnf install -y langpacks-en glibc-langpack-en
+localectl set-locale LANG=en_US.UTF-8
+
+cat >> /etc/environment <<EOF
+LC_ALL=en_US.UTF-8
+LANG=en_US.UTF-8
+LC_CTYPE=UTF-8
+EOF
+			]]>
+			</screen>
+			<!-- dnf install langpacks-en glibc-all-langpacks -y -->
+			<para>设置历史记录格式，可以看到命令的执行时间</para>
+			<screen>
+			<![CDATA[			
+cat >> /etc/profile.d/history.sh <<EOF
+# Administrator specific aliases and functions for system security
+export HISTSIZE=10000
+export HISTFILESIZE=10000
+export HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S "
+export TIME_STYLE=long-iso
+EOF
+
+source /etc/profile.d/history.sh
+			]]>
+			</screen>
+			<para>sysctl 优化</para>
+			<screen>
+			<![CDATA[
+cat >> /etc/sysctl.conf <<EOF
+
+# add by netkiller
+net.ipv4.ip_local_port_range = 10000 65500
+net.core.somaxconn = 1024
+
+# TCP BBR
+net.core.default_qdisc=fq
+net.ipv4.tcp_congestion_control=bbr
+EOF
+
+sysctl -p			
+			]]>
+			</screen>
+			<para>确认 ulimit 已经优化</para>
+			<screen>
+			<![CDATA[
+cat > /etc/security/limits.d/20-nofile.conf <<EOF
+
+root soft nofile 65535
+root hard nofile 65535
+
+docker soft nofile 65535
+docker hard nofile 65535
+
+EOF
+	
+			]]>
+			</screen>
+			<para>设置时区</para>
+			<screen>
+			<![CDATA[
+timedatectl set-timezone Asia/Shanghai			
+			]]>
+			</screen>
+			<para>安装时间同步服务 chronyd 并确认工作正常</para>
+			<screen>
+			<![CDATA[
+dnf install -y chrony
+systemctl enable chronyd
+systemctl start chronyd	
+			]]>
+			</screen>
+			<para>zmodem 用来上传和下载文件（注意 macOS 的 Terminal.app 不支持）</para>
+			<screen>
+			<![CDATA[
+dnf install -y lrzsz			
+			]]>
+			</screen>
+			<para>优化 SSH</para>
+			<screen>
+			<![CDATA[
+cp /etc/ssh/sshd_config{,.original}
+
+vim /etc/ssh/sshd_config <<EOF > /dev/null 2>&1
+:43,43s/PermitRootLogin yes/PermitRootLogin no/
+:84,84s/GSSAPIAuthentication yes/GSSAPIAuthentication no/
+:99,99s/#AllowTcpForwarding yes/AllowTcpForwarding no/
+:106,106/X11Forwarding yes/X11Forwarding no/
+:116,116s/#TCPKeepAlive yes/TCPKeepAlive yes/
+:121,121s/#UseDNS no/UseDNS no/
+:wq
+EOF
+			]]>
+			</screen>
+			<para>禁止 root 登陆，开启 sudo</para>
+			<para>禁用普通用户，我们需要一个普通用户登陆，然后使用 sudo 暂时获得 root 权限，我不打算新建一个用户，发现系统里面内置了 operator 这个操作员用户符合我的需求。</para>
+			<screen>
+			<![CDATA[
+usermod -s /bin/bash -aG wheel operator
+
+PASSWORD=$(cat /dev/urandom | tr -dc [:alnum:] | head -c 32)
+
+echo operator:${PASSWORD} | chpasswd
+echo "operator password: ${PASSWORD}"			
+			]]>
+			</screen>
+			<para>将 /usr/local/sbin:/usr/local/bin 路径加入到 Defaults secure_path = /sbin:/bin:/usr/sbin:/usr/bin，否则sudo找不到 /usr/local/sbin:/usr/local/bin 中的可执行文件。</para>
+			<screen>
+			<![CDATA[
+sed -i "s/#PermitRootLogin yes/PermitRootLogin no/" /etc/ssh/sshd_config
+systemctl restart sshd
+			
+cp /etc/sudoers{,.original}
+
+sed -i '88s#$#:/usr/local/sbin:/usr/local/bin#' /etc/sudoers
+
+visudo -c
+			]]>
+			</screen>
+		</section>
 
 		<section>
 			<title>阿里云 Rocky Linux 镜像初始化</title>
@@ -63,7 +211,8 @@ sudo dd if=Rocky-9.0-x86_64-minimal.iso of=/dev/rdisk4 bs=100m
 			<screen>
 		<![CDATA[ 
 cp /etc/dnf/dnf.conf{,.original} 
-echo "fastestmirror=true" >> /etc/dnf/dnf.conf dnf makecache 
+echo "fastestmirror=true" >> /etc/dnf/dnf.conf
+dnf makecache 
 		]]>
 			</screen>
 			<para>Extra Packages for Enterprise Linux repository configuration</para>

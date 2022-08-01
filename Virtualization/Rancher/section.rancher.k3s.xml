@@ -7,6 +7,12 @@
 		<section>
 			<title>官方 k3s-install.sh</title>
 			<screen>
+			<![CDATA[
+curl -sfL https://get.k3s.io | sh -			
+			]]>
+			</screen>
+			<para>国内镜像</para>
+			<screen>
 		<![CDATA[
 curl -sfL http://rancher-mirror.cnrancher.com/k3s/k3s-install.sh | INSTALL_K3S_MIRROR=cn sh -		
 		]]>
@@ -329,6 +335,79 @@ INFO[0355] Successfully imported 1 image(s) into 1 cluster(s)
 [root@netkiller k3d]# k3d cluster start mycluster		
 		]]>
 		</screen>
+		<section>
+			<title>配置 api-port 端口</title>
+			<screen>
+			<![CDATA[
+k3d cluster create netkiller --api-port 6443 --servers 1 --agents 1 --port '80:80@loadbalancer' --port '443:443@loadbalancer'
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# cat .kube/config | grep server
+    server: https://0.0.0.0:6445
+    
+[root@netkiller ~]# ss -lnt | grep 6445
+LISTEN 0      1024         0.0.0.0:6445       0.0.0.0:*  			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# firewall-cmd --add-service=http --permanent
+success
+[root@netkiller ~]# firewall-cmd --add-service=https --permanent
+success
+[root@netkiller ~]# firewall-cmd --zone=public --add-service=kube-api --permanent  
+success			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title></title>
+			<para></para>
+			<screen>
+			<![CDATA[
+k3d cluster create netkiller --api-port 172.16.0.1:6443 --servers 1 --agents 1 --port '80:80@loadbalancer' --port '443:443@loadbalancer' --k3s-arg "--no-deploy=traefik@server:*"
+			]]>
+			</screen>
+export http_proxy="socks://127.0.0.1:1080"
+export https_proxy="socks://127.0.0.1:1080"
+		</section>
+		<section>
+			<title>kubectl 管理指定集群</title>
+			<screen>
+			<![CDATA[
+export KUBECONFIG="$(k3d kubeconfig write netkiller)"			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# kubectl config view
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: DATA+OMITTED
+    server: https://172.18.200.10:6445
+  name: k3d-netkiller
+contexts:
+- context:
+    cluster: k3d-netkiller
+    user: admin@k3d-netkiller
+  name: k3d-netkiller
+current-context: k3d-netkiller
+kind: Config
+preferences: {}
+users:
+- name: admin@k3d-netkiller
+  user:
+    client-certificate-data: REDACTED
+    client-key-data: REDACTED			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section>
 		<title>容器镜像库</title>
@@ -506,6 +585,100 @@ OK
 [root@netkiller k3d]# dnf install redis
 [root@netkiller k3d]# redis-cli -h 127.0.0.1
 127.0.0.1:6379> get nickname
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>卸载 traefik</title>
+			<para>我们希望使用 nginx ingress，所以需要讲 traefik 卸载</para>
+			<screen>
+			<![CDATA[
+kubectl -n kube-system delete helmcharts.helm.cattle.io traefik
+helm uninstall traefik-crd --namespace kube-system			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>安装 ingress-nginx</title>
+			<para>ingress-nginx: https://kubernetes.github.io/ingress-nginx/deploy/</para>
+			<screen>
+			<![CDATA[
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.3.0/deploy/static/provider/cloud/deploy.yaml
+			]]>
+			</screen>
+			<para>修改镜像库地址，否则无法下载</para>
+			<screen>
+			<![CDATA[
+wget https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.3.0/deploy/static/provider/cloud/deploy.yaml
+vim deploy.yaml
+:%s:registry.k8s.io/ingress-nginx/:registry.cn-hangzhou.aliyuncs.com/google_containers/:g  			
+:%s:registry.cn-hangzhou.aliyuncs.com/google_containers/controller:registry.cn-hangzhou.aliyuncs.com/google_containers/nginx-ingress-controller:g 
+			]]>
+			</screen>
+			<para>svclb-ingress-nginx-controller 启动不起来</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo-3 ~ [1]> kubectl logs -n kube-system svclb-ingress-nginx-controller-8b62cc7d-qbqtv
+Defaulted container "lb-tcp-80" out of: lb-tcp-80, lb-tcp-443
++ trap exit TERM INT
++ echo 10.43.36.160
++ grep -Eq :
++ cat /proc/sys/net/ipv4/ip_forward
++ '[' 1 '!=' 1 ]
++ iptables -t nat -I PREROUTING '!' -s 10.43.36.160/32 -p TCP --dport 80 -j DNAT --to 10.43.36.160:80
+iptables v1.8.4 (legacy): can't initialize iptables table `nat': Table does not exist (do you need to insmod?)
+Perhaps iptables or your kernel needs to be upgraded.			
+			]]>
+			</screen>
+			<para>解决方法</para>
+			<screen>
+			<![CDATA[
+root@netkiller ~ # modprobe ip_tables
+
+root@netkiller ~# lsmod|grep iptable
+iptable_nat            16384  2
+ip_tables              28672  1 iptable_nat
+nf_nat                 53248  4 xt_nat,nft_chain_nat,iptable_nat,xt_MASQUERADE
+
+root@netkiller ~# kubectl get pods --all-namespaces
+NAMESPACE       NAME                                            READY   STATUS      RESTARTS         AGE
+ingress-nginx   ingress-nginx-admission-create-nqv2f            0/1     Completed   0                6m9s
+ingress-nginx   ingress-nginx-admission-patch-m9hcf             0/1     Completed   1                6m9s
+kube-system     metrics-server-7cd5fcb6b7-8wrqx                 1/1     Running     3 (6m30s ago)    82m
+ingress-nginx   ingress-nginx-controller-75d55647d-nstch        1/1     Running     0                6m9s
+kube-system     coredns-d76bd69b-rgvwj                          1/1     Running     3 (6m21s ago)    82m
+kube-system     local-path-provisioner-6c79684f77-psmgs         1/1     Running     3 (6m21s ago)    82m
+kube-system     svclb-ingress-nginx-controller-8b62cc7d-5lb8d   2/2     Running     12 (3m17s ago)   6m9s
+kube-system     svclb-ingress-nginx-controller-8b62cc7d-qbqtv   2/2     Running     12 (3m20s ago)   6m9s
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>FAQ</title>
+		<section>
+			<title>ghcr.io 镜像下载问题</title>
+			<para>创建集群始终停止在这里，这是因为 ghcr.io 被墙，无法访问。</para>
+			<screen>
+			<![CDATA[
+INFO[0004] Pulling image 'ghcr.io/k3d-io/k3d-proxy:5.4.4' 			
+			]]>
+			</screen>
+			<para>找一台境外VPS安装K3D并创建集群，然后讲 k3d-proxy 镜像保存为文件。</para>
+			<screen>
+			<![CDATA[
+[docker@netkiller ~]$ docker images
+REPOSITORY                 TAG            IMAGE ID       CREATED        SIZE
+ghcr.io/k3d-io/k3d-proxy   5.4.4          5a963719cb39   2 weeks ago    42.4MB
+ghcr.io/k3d-io/k3d-tools   5.4.4          741f01cb5093   2 weeks ago    18.7MB
+			
+[docker@netkiller ~]$ docker save 5a963719cb39 -o k3d-proxy.tar			
+			]]>
+			</screen>
+			<para>复制到国内，导入镜像</para>
+			<screen>
+			<![CDATA[
+docker load --input k3d-proxy.tar			
 			]]>
 			</screen>
 		</section>

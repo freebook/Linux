@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="index"><?dbhtml dir="podman" ?>
+<section id="index"><?dbhtml dir="podman" ?>
 	<title>Podman</title>
 	<section>
 		<title>安装 Podman</title>
@@ -10,4 +10,4 @@ brew install podman
 		]]>
 		</screen>
 	</section>
-</chapter>
+</section>

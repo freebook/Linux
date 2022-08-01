@@ -6,6 +6,27 @@
 	<section id="helm.setup">
 		<title>安装 Helm</title>
 		<section>
+			<title>Rocky Linux / AlmiLinux</title>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# dnf install -y snapd
+[root@netkiller ~]# ln -s /var/lib/snapd/snap /snap
+[root@netkiller ~]# systemctl enable --now snapd.socket
+[root@netkiller ~]# systemctl start --now snapd.socket
+[root@netkiller ~]# snap install helm --classic
+			]]>
+			</screen>
+			<para></para>
+			<programlisting>
+			<![CDATA[
+cat >> /etc/profile.d/snap.sh <<EOF
+export PATH=$PATH:/snap/bin
+EOF
+source /etc/profile.d/snap.sh
+			]]>
+			</programlisting>
+		</section>
+		<section>
 			<title>Ubuntu</title>
 			<para></para>
 			<screen>
@@ -308,6 +329,31 @@ To connect to your database from outside the cluster execute the following comma
 			]]>
 			</screen>
 		</section>
+	</section>
+	<section>
+		<title>ingress-nginx</title>
+		<screen>
+		<![CDATA[
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo update
+		]]>
+		</screen>
+		<para>安装 ingress-nginx 并且设置为默认 ingress</para>
+		<screen>
+		<![CDATA[
+helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx \
+--namespace ingress-nginx --set controller.service.type=LoadBalancer \
+--set controller.ingressClassResource.default=true \
+--set controller.watchIngressWithoutClass=true \
+--create-namespace
+		]]>
+		</screen>
+		<para>让Nginx获取客户端IP地址，找到spec下的externalTrafficPolicy，把值改为Local。</para>
+		<screen>
+		<![CDATA[
+kubectl edit service/ingress-nginx-controller --namespace ingress-nginx		
+		]]>
+		</screen>
 	</section>
 	<section>
 		<title>elastic</title>

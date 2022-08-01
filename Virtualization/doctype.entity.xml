@@ -50,3 +50,4 @@
 <!ENTITY chapter.container.xml					SYSTEM "chapter.container.xml">
 <!ENTITY section.container.portainer.xml		SYSTEM "section.container.portainer.xml">
 <!ENTITY section.container.helm.xml	  			SYSTEM "section.container.helm.xml">
+<!ENTITY section.container.podman.xml  			SYSTEM "section.container.podman.xml">

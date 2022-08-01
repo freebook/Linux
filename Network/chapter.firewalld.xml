@@ -630,6 +630,14 @@ firewall-cmd --permanent --zone=internal --change-interface=enp03s
 	<section id="firewall.port">
 		<title>端口操作</title>
 		<section>
+			<title>查看端口列表</title>
+			<screen>
+			<![CDATA[
+firewall-cmd --zone=public --list-ports			
+			]]>
+			</screen>
+		</section>
+		<section>
 			<title>开放端口</title>
 			<screen>
 			<![CDATA[
@@ -709,7 +717,7 @@ firewall-cmd --zone="public" --add-forward-port=port=80:proto=tcp:toport=8080:to
 
 	</section>
 
-	
+
 	<section id="firewall.service">
 		<title>服务</title>
 		<section>
@@ -722,7 +730,18 @@ RH-Satellite-6 amanda-client amanda-k5-client bacula bacula-client bgp bitcoin b
 			</screen>
 		</section>
 		<section>
-			<title>启用服务</title>
+			<title>添加服务</title>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# firewall-cmd --add-service=http --permanent
+success
+[root@netkiller ~]# firewall-cmd --add-service=https --permanent
+success			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>指定区域启用服务</title>
 			<screen>
 			<![CDATA[
 [root@localhost ~]# firewall-cmd --zone=public --add-service=mysql --permanent
@@ -731,7 +750,7 @@ success
 			</screen>
 		</section>
 		<section>
-			<title>禁用服务</title>
+			<title>指定区域禁用服务</title>
 			<screen>
 			<![CDATA[
 [root@localhost ~]# firewall-cmd --zone=public --remove-service=mysql --permanent
@@ -766,7 +785,6 @@ firewall-cmd --get-service --permanent
 			]]>
 			</screen>
 		</section>
-		
 	</section>
 	<section id="firewall.masquerade">
 		<title>IP 伪装</title>
@@ -786,7 +804,7 @@ firewall-cmd --zone=external --query-masquerade
 			]]>
 			</screen>
 		</section>
-		
+
 		<section>
 			<title>关闭 IP 伪装</title>
 			<screen>
@@ -809,7 +827,7 @@ success
 		]]>
 		</screen>
 	</section>
-	
+
 	<section id="firewall.rich-rules">
 		<title>富规则</title>
 		<para>使用 --add-rich-rule, --list-rich-rules, --remove-rich-rule 命令来管理富规则</para>
@@ -847,5 +865,5 @@ firewall-cmd --list-rich-rules
 
 	</section>
 
-	
+
 </section>

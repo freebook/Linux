@@ -2,23 +2,23 @@
 <section id="install">
 	<title>安装 Docker</title>
 	<section id="docker.centos8">
-		<title>CentOS 8 Stream / Rocky Linux 8.6 / AlmiLinux 8.6</title>
+		<title>Rocky Linux 9.0 / AlmiLinux 9.0 / CentOS 8 Stream</title>
 		<para>安装 Docker</para>
 		<screen>
 		<![CDATA[
-[root@localhost ~]# dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+[root@netkiller ~]# dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
 Adding repo from: https://download.docker.com/linux/centos/docker-ce.repo
 
-[root@localhost ~]# dnf install -y docker-ce docker-compose-plugin
+[root@netkiller ~]# dnf install -y docker-ce docker-compose-plugin
 
-[root@localhost ~]# systemctl enable docker
-[root@localhost ~]# systemctl start docker
+[root@netkiller ~]# systemctl enable docker
+[root@netkiller ~]# systemctl start docker
 		]]>
 		</screen>
 		<para></para>
 		<screen>
 		<![CDATA[
-[root@localhost ~]# docker -v
+[root@netkiller ~]# docker -v
 Docker version 19.03.12, build 48a66213fe
 		]]>
 		</screen>
@@ -59,6 +59,13 @@ CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
 		</section>
 		<section>
 			<title>docker-compose 2.x</title>
+			<para>正常情况使用 docker-compose-plugin 安装</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# dnf install -y docker-compose-plugin
+			]]>
+			</screen>
+			<para>如需手工安装</para>
 			<screen>
 			<![CDATA[
 DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
@@ -71,11 +78,11 @@ chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
 			<screen>
 			<![CDATA[
 [root@netkiller ~]# docker compose version
-Docker Compose version v2.2.3
+Docker Compose version v2.6.0
 
 [root@netkiller ~]# alias docker-compose='docker compose'
 [root@netkiller ~]# docker-compose version
-Docker Compose version v2.2.3
+Docker Compose version v2.6.0
 			]]>
 			</screen>
 		</section>
@@ -403,7 +410,7 @@ docker volume rm $(docker volume ls -q)
 			</para>
 			<screen>
 		<![CDATA[
-[root@localhost ~]# yum install https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.13-3.2.el7.x86_64.rpm
+[root@netkiller ~]# yum install https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.13-3.2.el7.x86_64.rpm
 		]]>
 			</screen>
 			<para>从官方网站获得最新社区版</para>

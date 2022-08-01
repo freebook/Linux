@@ -221,6 +221,19 @@ connected  full          enabled  enabled  enabled  enabled
 				</screen>
 			</section>
 			<section>
+				<title>ONBOOT 设置</title>
+				<para>设置 ONBOOT=yes 启动系统激活网卡</para>
+				<screen>
+				<![CDATA[
+[root@netkiller ~]# nmcli connection
+NAME         UUID                                  TYPE      DEVICE 
+enp2s0       e80cafe2-abbc-4939-8c66-ca89d3a651f0  ethernet  enp2s0 
+   
+[root@netkiller ~]# nmcli connection modify enp2s0 connection.autoconnect yes				
+				]]>
+				</screen>
+			</section>
+			<section>
 				<title>查看接口状态</title>
 				<screen>
 				<![CDATA[
