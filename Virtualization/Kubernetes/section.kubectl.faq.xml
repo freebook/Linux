@@ -2,6 +2,21 @@
 <section>
 	<title>FAQ</title>
 	<section>
+		<title>tar: removing leading '/' from member names</title>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-Neo ~ > kubectl cp netkiller/job-executor-77fc6b4db-5dzxz:/logs/info.2022-07-29.log Downloads/info.2022-07-29.log -c job-executor
+tar: removing leading '/' from member names		
+		]]>
+		</screen>
+		<para>解决方案，路径 /logs/info.2022-07-29.log 改为 logs/info.2022-07-29.log</para>
+		<screen>
+		<![CDATA[
+kubectl cp netkiller/job-executor-77fc6b4db-5dzxz:logs/info.2022-07-29.log Downloads/info.2022-07-29.log -c job-executor		
+		]]>
+		</screen>
+	</section>
+	<section>
 		<title>failed to create fsnotify watcher: too many open files⏎</title>
 		<para></para>
 		<screen>

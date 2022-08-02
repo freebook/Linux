@@ -372,8 +372,8 @@ success
 k3d cluster create netkiller --api-port 172.16.0.1:6443 --servers 1 --agents 1 --port '80:80@loadbalancer' --port '443:443@loadbalancer' --k3s-arg "--no-deploy=traefik@server:*"
 			]]>
 			</screen>
-export http_proxy="socks://127.0.0.1:1080"
-export https_proxy="socks://127.0.0.1:1080"
+			export http_proxy="socks://127.0.0.1:1080"
+			export https_proxy="socks://127.0.0.1:1080"
 		</section>
 		<section>
 			<title>kubectl 管理指定集群</title>
@@ -588,6 +588,10 @@ OK
 			]]>
 			</screen>
 		</section>
+
+	</section>
+	<section>
+		<title>ingress-nginx</title>
 		<section>
 			<title>卸载 traefik</title>
 			<para>我们希望使用 nginx ingress，所以需要讲 traefik 卸载</para>
@@ -653,6 +657,45 @@ kube-system     svclb-ingress-nginx-controller-8b62cc7d-qbqtv   2/2     Running 
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>验证安装是否正确</title>
+			<para>部署 Nginx Web 服务器，用来检查 ingress</para>
+			<screen>
+			<![CDATA[
+Neo-iMac:~ neo$ kubectl create deployment nginx --image=nginx:alpine
+deployment.apps/nginx created
+
+Neo-iMac:~ neo$ kubectl create service clusterip nginx --tcp=80:80
+service/nginx created			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+cat <<EOF | kubectl apply -f -
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx
+            port:
+              number: 80
+EOF			
+			]]>
+			</screen>
+		</section>
+		
 	</section>
 	<section>
 		<title>FAQ</title>

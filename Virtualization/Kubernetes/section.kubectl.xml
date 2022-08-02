@@ -1547,6 +1547,19 @@ kubectl set image daemonset abc *=nginx:1.9.1
 		]]>
 		</screen>
 	</section>
+	<section id="kubectl.cp">
+		<title>复制文件</title>
+		<screen>
+		<![CDATA[
+kubectl cp netkiller/job-executor-77fc6b4db-5dzxz:logs/info.2022-07-29.log Downloads/info.2022-07-29.log -c job-executor		
+		]]>
+		</screen>		
+		<screen>
+		<![CDATA[
+kubectl cp Downloads/myfile netkiller/job-executor-77fc6b4db-5dzxz:/tmp/myfile -c job-executor		
+		]]>
+		</screen>
+	</section>
 	<section id="kubectl.example">
 		<title>kubectl example</title>
 		<section>
