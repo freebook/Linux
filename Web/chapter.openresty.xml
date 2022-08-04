@@ -324,6 +324,45 @@ server {
 		</programlisting>
 	</section>
 	<section>
+		<title>logs</title>
+		<para>在 server 下面增加 error_log 配置，这里只记录 notice</para>
+		<screen>
+		<![CDATA[
+server {
+    listen 8080;
+	error_log logs/lua.log notice;		
+		]]>
+		</screen>
+		<para>打印日志</para>
+		<programlisting>
+		<![CDATA[
+ngx.log(ngx.NOTICE, "det: ", json_string)		
+		]]>
+		</programlisting>
+		<para>日志输出</para>
+		<screen>
+		<![CDATA[
+2022/08/04 13:58:52 [notice] 830752#0: *247 [lua] content_by_lua(nginx.conf:159):18: get: {"key":"platfrom","status":false,"value":""}, client: 127.0.0.1, server: , request: "GET /grey/get?key=platfrom HTTP/1.1", host: "localhost:8080"
+2022/08/04 13:58:55 [notice] 830752#0: *248 [lua] content_by_lua(nginx.conf:185):22: set: {"exptime":0,"key":"platfrom","status":true,"value":"111"}, client: 127.0.0.1, server: , request: "GET /grey/set?key=platfrom&value=111 HTTP/1.1", host: "localhost:8080"
+2022/08/04 13:58:59 [notice] 830752#0: *249 [lua] content_by_lua(nginx.conf:203):13: det: {"status":true,"key":"platfrom"}, client: 127.0.0.1, server: , request: "GET /grey/del?key=platfrom HTTP/1.1", host: "localhost:8080"		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+日志级别： 
+ngx.STDERR 标准输出 
+ngx.EMERG 紧急报错 
+ngx.ALERT 报警 
+ngx.CRIT 严重，系统故障， 触发运维告警系统 
+ngx.ERR 错误，业务不可恢复性错误 
+ngx.WARN 提醒， 业务中可忽略错误 
+ngx.NOTICE 提醒， 业务中比较重要信息 
+ngx.INFO 信息， 业务琐碎日志信息， 包含不同情况判断等 
+ngx.DEBUG 调试		
+		]]>
+		</screen>
+	</section>
+	<section>
 		<title>实现灰度发布</title>
 		<para>grey.lua 规则文件</para>
 		<programlisting>

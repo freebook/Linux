@@ -604,7 +604,7 @@ proxy_pass_request_headers on;
 
 		</screen>
 	</section>
-	<section>
+	<section id="proxy.sub_filter">
 		<title>sub_filter 文本替换</title>
 		<screen>
 		<![CDATA[
@@ -612,6 +612,22 @@ proxy_pass_request_headers on;
 	sub_filter '景峰' '景峯'; # 有效
 	sub_filter 'neo' 'netkiller';
 	sub_filter_once off;	# 全部替换		
+		]]>
+		</screen>
+	</section>
+	<section id="proxy.url">
+		<title>站外代理</title>
+		<screen>
+		<![CDATA[
+	location /neo {
+            proxy_pass  https://www.netkiller.cn;
+            proxy_redirect     off;
+            proxy_set_header   Host             $host;
+            proxy_set_header   X-Real-IP        $remote_addr;
+            proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
+        }
+
+    }		
 		]]>
 		</screen>
 	</section>
