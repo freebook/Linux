@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="openresty"?>
+	<title>Openresty</title>
+	<section>
+		<title>安装 Openresty</title>
+		<para>CentOS</para>
+		<screen>
+		<![CDATA[
+wget https://openresty.org/package/centos/openresty.repo -O /etc/yum.repos.d/openresty.repo
+		]]>
+		</screen>
+		<para>RockyLinux</para>
+		<screen>
+		<![CDATA[
+wget https://openresty.org/package/rocky/openresty.repo -O /etc/yum.repos.d/openresty.repo
+
+或者
+
+yum-config-manager --add-repo https://openresty.org/package/rocky/openresty.repo
+		]]>
+		</screen>
+		<para>安装</para>
+		<screen>
+		<![CDATA[
+dnf install -y openresty		
+		]]>
+		</screen>
+		<section>
+			<title>源码安装</title>
+			<para></para>
+			<screen>
+			<![CDATA[
+dnf install pcre-devel openssl-devel gcc zlib-devel	
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+cd /usr/local/src
+wget https://openresty.org/download/openresty-1.21.4.1.tar.gz
+tar zxvf openresty-1.21.4.1.tar.gz 
+cd openresty-1.21.4.1/
+./configure --prefix=/srv/openresty-1.21.4.1
+gmake
+gmake install
+
+ln -s /srv/openresty-1.21.4.1 /srv/openresty
+			]]>
+			</screen>
+		</section>
+
+	</section>
+	<section>
+		<title>Hello world!!!</title>
+		<screen>
+		<![CDATA[
+[root@netkiller openresty]# vim /srv/openresty/nginx/conf/nginx.conf
+
+    server {
+        listen 8080;
+        location / {
+            default_type text/html;
+            content_by_lua_block {
+                ngx.say("<p>Hello world!!!</p>")
+            }
+        }
+    }		
+		]]>
+		</screen>
+		<para>重载配置文件</para>
+		<screen>
+		<![CDATA[
+[root@netkiller openresty]# bin/openresty -s reload		
+		]]>
+		</screen>
+		<para>测试效果</para>
+		<screen>
+		<![CDATA[
+[root@netkiller openresty]# curl http://www.netkiller.cn
+<p>Hello world!!!</p>		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>获取参数</title>
+		<section>
+			<title>GET/POST 参数</title>
+			<programlisting>
+			<![CDATA[
+	location /param {
+       content_by_lua_block {
+           local arg = ngx.req.get_uri_args()
+           for k,v in pairs(arg) do
+               ngx.say("[GET ] key:", k, " value:", v)
+           end
+
+           ngx.req.read_body()
+           local arg = ngx.req.get_post_args()
+           for k,v in pairs(arg) do
+               ngx.say("[POST] key:", k, " value:", v)
+           end
+       }
+   }			
+			]]>
+			</programlisting>
+			<screen>
+			<![CDATA[
+[root@netkiller nginx]# curl 'http://www.netkiller.cn/param?id=111&name=neo&nickname=netkiller'
+[GET ] key:nickname value:netkiller
+[GET ] key:name value:neo
+[GET ] key:id value:111
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+[root@netkiller nginx]# curl http://www.netkiller.cn/param -d 'name=Neo&nickname=netkiller'
+[POST] key:nickname value:netkiller
+[POST] key:name value:Neo			
+			]]>
+			</screen>
+		</section>
+
+		<section>
+			<title>获取 body 数据</title>
+			<programlisting>
+		<![CDATA[
+		lua_need_request_body on;
+        location /body {
+            content_by_lua_block {
+                local data = ngx.req.get_body_data()
+                ngx.say("body: ", data)
+            }
+        }		
+		]]>
+			</programlisting>
+			<para></para>
+			<screen>
+		<![CDATA[
+[root@netkiller openresty]# bin/openresty -s reload
+
+[root@netkiller openresty]# curl http://www.netkiller.cn/body -d Hello
+body: Hello
+
+[root@netkiller openresty]# curl http://www.netkiller.cn/body -d name=neo
+body: name=neo
+
+[root@netkiller openresty]# curl http://www.netkiller.cn/body -d "{\"status\":true}"
+body: {"status":true}		
+		]]>
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>Nginx 变量</title>
+		<section>
+			<title>访问变量</title>
+			<para>ngx.var.[variable]</para>
+			<screen>
+			<![CDATA[
+        location /test {
+            set $name 'chen';
+
+            content_by_lua_block {
+                ngx.say("Name: ",ngx.var.name)
+            }
+        }
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>set_by_lua 拼接字符串变量</title>
+			<screen>
+			<![CDATA[
+localtion ^~ /static/ { 
+
+   set_by_lua $domain 'return "https://"..os.getenv("ENV")..".netkiller.cn"'; 
+   proxy_pass $domain/resource$request_uri;
+
+}
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>从 lua 文件设置变量</title>
+			<para>set_by_lua_file</para>
+			<screen>
+			<![CDATA[
+        location /proxy {
+            set_by_lua_file $name lua/test.lua;
+
+            content_by_lua_block {
+                ngx.say("Name: ", ngx.var.name)
+            }
+        }			
+			]]>
+			</screen>
+			<programlisting>
+			<![CDATA[
+[root@netkiller openresty]# cat nginx/lua/test.lua 
+#!/usr/bin/env lua
+
+return "Netkiller";			
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section>
+		<title>Json</title>
+		<section>
+			<title>解码 json</title>
+			<screen>
+			<![CDATA[
+location /json {
+	content_by_lua_block {
+		local cjson = require("cjson");
+        local json_text = '{"foo":"bar"}'
+        local data = cjson.decode(json_text)
+        ngx.say("foo: ", data["foo"])
+	}
+
+}			
+			]]>
+			</screen>
+			<para>剥离一层数组，注意第一个元素下标是1，不是0</para>
+			<programlisting>
+			<![CDATA[
+local cjson = require("cjson");
+local json_text = '[{"foo":"bar"}]'
+local data = cjson.decode(json_text)
+ngx.say("foo: ", data[1]["foo"])			
+			]]>
+			</programlisting>
+		</section>
+
+	</section>
+	<section>
+		<title>Redis</title>
+		<programlisting>
+		<![CDATA[
+local redisClient = require("resty.redis");
+local redis = redisClient:new();
+local ip = "127.0.0.1";
+local port = 6379;
+local ok,err = redis:connect(ip,port);		
+if not ok then
+    log.local_println("redis","Cannot connect, host: " .. ip .. ", port: " .. port)
+    return nil, err
+end;
+
+local ok,err = redis:get("key");
+if not ok then
+   ngx.say("get key err",err);
+   return;
+else
+	ngx.say(ok);
+end;
+		]]>
+		</programlisting>
+		<screen>
+		<![CDATA[
+location /redis {
+	content_by_lua_block {
+		local redisClient = require("resty.redis");
+		local redis = redisClient:new();
+		local ip = "127.0.0.1";
+		local port = 6379;
+		local ok,err = redis:connect(ip,port);
+		if not ok then
+		    log.local_println("redis","Cannot connect, host: " .. ip .. ", port: " .. port)
+		    return nil, err
+		end;
+		
+		local ok,err = redis:get("key");
+		if not ok then
+		   ngx.say("get key err",err);
+		   return;
+		else
+		        ngx.say(ok);
+		end;
+	}
+}
+		
+		]]>
+		</screen>
+		<para>测试</para>
+		<screen>
+		<![CDATA[
+[root@netkiller openresty]# redis-cli 
+127.0.0.1:6379> set key Helloworld!!!
+OK
+127.0.0.1:6379> exit
+
+[root@netkiller openresty]# curl http://www.netkiller.cn/redis
+Helloworld!!!		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>Nginx 缓存</title>
+		<programlisting>
+		<![CDATA[
+lua_shared_dict my_cache 128m;
+server {
+	listen 8080;
+	location /cache {
+	
+		content_by_lua_block {
+			local cache = ngx.shared.my_cache
+			local key = 'nickname'
+			local value ='netkiller'
+			local exptime  = 0
+
+			local result = cache:get(key)
+			if not result then
+			        local succ, err, forcible = cache:set(key, value, exptime)
+			        ngx.say("set", succ)
+			else
+			        ngx.say("Value: ".. result)
+			end;
+		}
+	}		
+}
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>实现灰度发布</title>
+		<para>grey.lua 规则文件</para>
+		<programlisting>
+		<![CDATA[
+[root@netkiller nginx]# cat /srv/openresty/nginx/lua/grey.lua 
+local cache = ngx.shared.my_cache
+local args = ngx.req.get_uri_args()
+local key = args['key']
+local result = cache:get(key)
+local proxy_pass_url = ''
+if not result then
+        proxy_pass_url = '127.0.0.1/a'
+else
+        proxy_pass_url = '127.0.0.1/b'
+end
+ngx.log(ngx.NOTICE, "url: ", proxy_pass_url)
+return proxy_pass_url		
+		]]>
+		</programlisting>
+		<para>nginx.conf 配置</para>
+		<screen>
+		<![CDATA[
+lua_shared_dict my_cache 128m;	
+
+server {
+    listen 8080;
+
+	error_log logs/lua.log; 
+
+    location / {
+        default_type text/html;
+        content_by_lua_block {
+            ngx.say("<p>hello, world</p>")
+        }
+    }
+        
+	
+	location /cache/get {
+		content_by_lua_block {
+			local cache = ngx.shared.my_cache
+			local args = ngx.req.get_uri_args()
+			local value = cache:get(args['key'])		
+	
+			json = require("cjson")
+	                data = {}
+			if not value then
+				data["status"] = false
+				data['value'] = ''
+			else
+				data["status"] = true
+				data['value'] = value
+			end
+	                data["key"] = args['key']
+			json_string = json.encode(data)
+	                ngx.say(json_string)
+			ngx.log(ngx.INFO, "get: ", json_string)
+		}
+	}
+
+    location /cache/set {
+        content_by_lua_block {
+            local cache = ngx.shared.my_cache
+            local args = ngx.req.get_uri_args()
+			local exptime = tonumber(args['ttl'])
+			local key = args['key']
+			local value = args['value']
+			if not exptime then
+	       			exptime = 0
+	    		end
+			local status, err, forcible = cache:set(key, value, exptime)
+			
+			ngx.header['Content-Type'] = 'application/json; charset=utf-8'
+			
+			json = require("cjson")
+			data = {}
+			data["status"] = status 
+			data["key"] = key
+			data['value'] = value
+			data["exptime"] = exptime
+			json_string = json.encode(data)
+            ngx.say(json_string)
+            ngx.log(ngx.INFO, "set: ", json_string)
+		}
+    }
+
+    location /cache/del {
+        content_by_lua_block {
+            local cache = ngx.shared.my_cache
+            local args = ngx.req.get_uri_args()
+            local status, err, forcible = cache:delete(args['key'])
+            ngx.header['Content-Type'] = 'application/json; charset=utf-8'
+
+            json = require("cjson")
+            data = {}
+            data["status"] = status
+            data["key"] = args['key']
+			json_string = json.encode(data)
+            ngx.say(json_string)
+            ngx.log(ngx.INFO, "det: ", json_string)
+
+		}
+    }
+	
+	location /test {
+		set_by_lua_file $proxy_pass_url lua/grey.lua;
+		proxy_pass http://$proxy_pass_url;
+		#echo $proxy_pass_url;
+	}
+}		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+默认访问 A 环境
+
+[root@netkiller nginx]# curl http://localhost:8080/cache/test
+A
+
+neo 默认也是 A 环境
+[root@netkiller nginx]# curl http://localhost:8080/cache/test?key=neo
+A
+
+将 neo 分配到 B 环境
+[root@netkiller nginx]# curl 'http://localhost:8080/cache/set?key=neo&value=true'
+{"exptime":0,"value":"true","key":"neo","status":true}
+
+默认仍是 A
+[root@netkiller nginx]# curl http://localhost:8080/cache/test
+A
+
+现在 neo 默认是 B
+[root@netkiller nginx]# curl http://localhost:8080/cache/test?key=neo 
+B
+
+将 neo 从灰度名单中移除
+[root@netkiller nginx]# curl http://localhost:8080/cache/del?key=neo
+{"key":"neo","status":true}
+
+现在 neo 被重新分配回 A
+[root@netkiller nginx]# curl http://localhost:8080/cache/test?key=neo
+A
+		]]>
+		</screen>
+	</section>
+</chapter>
