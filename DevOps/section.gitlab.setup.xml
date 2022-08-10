@@ -71,6 +71,7 @@ dnf install gitlab-runner
 	</section>
 	<section id="gitlab.docker">
 		<title>Docker 方式安装 Gitlab</title>
+		<para>Docker 安装有个小缺点，不能使用 22 端口，因为 22 端口已经被宿主主机占用。</para>
 		<screen>
 		<![CDATA[
 export GITLAB_HOME=/srv/gitlab
@@ -185,7 +186,12 @@ services:
         - /opt/gitlab/data:/var/opt/gitlab		
 		]]>
 			</screen>
-
+			<para>启动</para>
+			<screen>
+			<![CDATA[
+[root@gitlab gitlab]# docker compose up			
+			]]>
+			</screen>
 			<example>
 				<title>Docker 部署 GitLab 查看登陆密码</title>
 				<screen>

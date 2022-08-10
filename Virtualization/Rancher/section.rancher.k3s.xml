@@ -590,7 +590,7 @@ OK
 		</section>
 
 	</section>
-	<section>
+	<section id="k3d.ingress-nginx">
 		<title>ingress-nginx</title>
 		<section>
 			<title>卸载 traefik</title>

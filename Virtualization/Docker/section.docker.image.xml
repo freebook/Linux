@@ -90,13 +90,25 @@ ubuntu              latest              5506de2b643b        3 days ago          
 	</section>
 	<section id="docker.image.tag">
 		<title>tag</title>
+		<para>版本标签</para>
 		<programlisting>
 		<![CDATA[
 docker tag ubuntu:15.10 runoob/ubuntu:v3
-
-iMac:registry neo$ docker tag 127.0.0.1:5000/netkiller/config:latest 192.168.64.2:30050/netkiller/config:latest		
 		]]>
 		</programlisting>
+		<para>latest 标签</para>
+		<screen>
+		<![CDATA[
+docker tag netkiller/config:10.10 netkiller/config
+		]]>
+		</screen>
+		<para>在不同仓库间打标签</para>
+		<screen>
+		<![CDATA[
+iMac:registry neo$ docker tag 127.0.0.1:5000/netkiller/config:latest 192.168.64.2:30050/netkiller/config:latest		
+		]]>
+		</screen>
+		
 	</section>
 	<section id="docker.image.save">
 		<title>保存和载入镜像</title>
@@ -128,6 +140,12 @@ Untagged: ubuntu:12.04
 			<![CDATA[
 docker rmi -f $(docker images -q)			
 			]]>
+		</screen>
+		<para>删除 none 标签镜像</para>
+		<screen>
+		<![CDATA[
+docker images | grep none | awk '{ print $3; }' | xargs docker rmi		
+		]]>
 		</screen>
 	</section>
 	<section id="docker.image.history">
@@ -190,6 +208,50 @@ ba296c26886a        4 weeks ago         /bin/sh -c #(nop)  CMD ["/usr/local/bin/
 <missing>           2 months ago        /bin/sh -c #(nop)  CMD ["/bin/bash"]            0B                  
 <missing>           2 months ago        /bin/sh -c #(nop)  LABEL org.label-schema.sc…   0B                  
 <missing>           2 months ago        /bin/sh -c #(nop) ADD file:61908381d3142ffba…   203MB  		
+		]]>
+		</screen>
+	</section>
+	<section id="docker.image.format">
+		<title>format 用法</title>
+		<screen>
+		<![CDATA[
+docker images --format "{{.Repository}}:{{.Tag}}" | grep ':latest' 		
+		]]>
+		</screen>
+	</section>
+	<section id="docker.image.inspect">
+		<title>inspect</title>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# docker image inspect redis:latest | grep -i version
+                "GOSU_VERSION=1.14",
+                "REDIS_VERSION=7.0.4",
+        "DockerVersion": "20.10.12",
+                "GOSU_VERSION=1.14",
+                "REDIS_VERSION=7.0.4",		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>查看镜像内容</title>
+		<screen>
+		<![CDATA[
+docker run -it --entrypoint sh <images>
+		]]>
+		</screen>
+		<para>操作演示</para>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# docker run -it --entrypoint sh nginx:latest
+# find / | more
+/
+/bin
+/bin/bash
+/bin/cat
+/bin/chgrp
+/bin/chmod
+/bin/chown
+
 		]]>
 		</screen>
 	</section>
