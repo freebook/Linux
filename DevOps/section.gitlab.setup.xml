@@ -7,6 +7,38 @@
 	<para>GitLab是一个利用 Ruby on Rails 开发的开源应用程序，实现一个自托管的Git项目仓库，可通过Web界面进行访问公开的或者私人项目。</para>
 	<para>它拥有与Github类似的功能，能够浏览源代码，管理缺陷和注释。可以管理团队对仓库的访问，它非常易于浏览提交过的版本并提供一个文件历史库。团队成员可以利用内置的简单聊天程序(Wall)进行交流。它还提供一个代码片段收集功能可以轻松实现代码复用，便于日后有需要的时候进行查找。</para>
 	<para>GitLab 5.0以前版本要求服务器端采用 Gitolite 搭建，5.0版本以后不再使用 Gitolite ，采用自己开发的 gitlab-shell 来实现。如果你觉得安装麻烦可以使用 GitLab Installers 一键安装程序。</para>
+	<section>
+		<title>Almalinux 9.0</title>
+		<para>目前 gitlab 官方包还不支持，需要手工安装</para>
+		<section>
+			<title>Gitlab Runner</title>
+
+			<screen>
+		<![CDATA[
+[root@netkiller gitlab]# curl -L --output /usr/local/bin/gitlab-runner "https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-amd64"
+[root@netkiller gitlab]# chmod +x /usr/local/bin/gitlab-runner
+[root@netkiller gitlab]# useradd --comment 'GitLab Runner' --create-home gitlab-runner --shell /bin/bash
+[root@netkiller gitlab]# sudo chmod 666 /var/run/docker.sock
+[root@netkiller gitlab]# usermod -aG docker gitlab-runner
+[root@cloud gitlab]# gitlab-runner install --user=gitlab-runner --working-directory=/home/gitlab-runner
+Runtime platform                                    arch=amd64 os=linux pid=66582 revision=32fc1585 version=15.2.1
+
+[root@cloud gitlab]# systemctl enable gitlab-runner
+[root@cloud gitlab]# systemctl start gitlab-runner
+[root@cloud gitlab]# systemctl status gitlab-runner
+● gitlab-runner.service - GitLab Runner
+     Loaded: loaded (/etc/systemd/system/gitlab-runner.service; enabled; vendor preset: disabled)
+     Active: active (running) since Wed 2022-08-10 19:42:39 CST; 6s ago
+   Main PID: 66679 (gitlab-runner)
+      Tasks: 12 (limit: 203532)
+     Memory: 11.3M
+        CPU: 49ms
+     CGroup: /system.slice/gitlab-runner.service
+             └─66679 /usr/local/bin/gitlab-runner run --working-directory /home/gitlab-runner --config /etc/gitlab-runner/config.toml --service gitlab-runner --user gitlab-runner
+		]]>
+			</screen>
+		</section>
+	</section>
 
 	<section id="gitlab.centos">
 		<title>CentOS 8 Stream 安装 Gitlab</title>
@@ -72,12 +104,14 @@ dnf install gitlab-runner
 	<section id="gitlab.docker">
 		<title>Docker 方式安装 Gitlab</title>
 		<para>Docker 安装有个小缺点，不能使用 22 端口，因为 22 端口已经被宿主主机占用。</para>
-		<screen>
+		<section>
+			<title>Docker 运行</title>
+			<screen>
 		<![CDATA[
 export GITLAB_HOME=/srv/gitlab
 		]]>
-		</screen>
-		<screen>
+			</screen>
+			<screen>
 		<![CDATA[
 sudo docker run --detach \
   --hostname gitlab.example.com \
@@ -89,17 +123,17 @@ sudo docker run --detach \
   --volume $GITLAB_HOME/data:/var/opt/gitlab \
   gitlab/gitlab-ce:latest
 		]]>
-		</screen>
-		<para>配置对外url，域名或者ip，公网能访问即可</para>
-		<screen>
+			</screen>
+			<para>配置对外url，域名或者ip，公网能访问即可</para>
+			<screen>
 			<![CDATA[
 vim /mnt/gitlab/etc/gitlab.rb
 添加一下配置：
 external_url	'http://127.0.0.1' （你的域名或者ip地址）	
 		]]>
-		</screen>
-		<para>配置邮箱</para>
-		<screen>
+			</screen>
+			<para>配置邮箱</para>
+			<screen>
 		<![CDATA[
 vim /mnt/gitlab/etc/gitlab.rb
 gitlab_rails['smtp_enable'] = true
@@ -113,25 +147,24 @@ gitlab_rails['smtp_enable_starttls_auto'] = true
 gitlab_rails['smtp_tls'] = true
 gitlab_rails['gitlab_email_from'] = '13721218@qq.com'  (替换成自己的QQ邮箱，且与smtp_user_name一致)		
 		]]>
-		</screen>
-		<para>重新启动gitlab</para>
-		<screen>
+			</screen>
+			<para>重新启动gitlab</para>
+			<screen>
 		<![CDATA[
 docker restart gitlab-ce
 sudo docker logs -f gitlab
 		]]>
-		</screen>
-		<para>修改 /etc/gitlab/gitlab.rb 配置文件</para>
-		<screen>
+			</screen>
+			<para>修改 /etc/gitlab/gitlab.rb 配置文件</para>
+			<screen>
 		<![CDATA[
 docker exec -it gitlab editor /etc/gitlab/gitlab.rb
 gitlab  |   docker restart gitlab		
 		]]>
-		</screen>
-
-
+			</screen>
+		</section>
 		<section id="gitlab.docker-compose">
-			<title>docker-compose 安装</title>
+			<title>Docker compose 安装 Gitlab</title>
 			<para>宿主主机开放 80/443 端口</para>
 			<screen>
 		<![CDATA[
@@ -215,20 +248,46 @@ Password: LnfGjN5ySHSyTev8VSqCNFna0m43i3oF6FTU8QThoSQ=
 			]]>
 				</screen>
 			</example>
+		</section>
+		<section>
+			<title>Docker Compose 安装 gitlab-runner</title>
+			<para>恢复配置文件，首次配置请跳过这步</para>
+			<screen>
+			<![CDATA[
+cat > /srv/gitlab-runner/config.toml << EOF
+concurrent = 1
+check_interval = 0
 
+[session_server]
+  session_timeout = 1800
+
+[[runners]]
+  name = "microservice"
+  url = "https://gitlab.netkiller.cn/"
+  token = "cSB87csLVQnP-JfiU3rX"
+  executor = "shell"
+  [runners.custom_build_dir]
+  [runners.cache]
+    [runners.cache.s3]
+    [runners.cache.gcs]
+    [runners.cache.azure]
+EOF			
+			]]>
+			</screen>
 			<para>安装 gitlab-runner</para>
 			<programlisting>
 		<![CDATA[
 version: '3.9'
 services:
   gitlab-runner:
+    container_name: "gitlab-runner"
     image: gitlab/gitlab-runner:alpine
     restart: unless-stopped
     depends_on:
       - gitlab
     privileged: true
     volumes:
-      - ./config/gitlab-runner:/etc/gitlab-runner
+      - /srv/gitlab-runner:/etc/gitlab-runner
       - /var/run/docker.sock:/var/run/docker.sock
       - /bin/docker:/bin/docker
 		]]>
@@ -236,15 +295,14 @@ services:
 			<para>启动 Gitlab runner</para>
 			<screen>
 		<![CDATA[
-sudo chmod 666 /var/run/docker.sock
-sudo usermod -aG docker $USER
-docker-compose up -d
+[root@netkiller gitlab]# docker compose up -d
 		]]>
 			</screen>
 			<para>注册 gitlab-runner 到 Gitlab</para>
 			<screen>
 		<![CDATA[
-docker exec -it gitlab-runner gitlab-runner register		
+docker exec -it gitlab-runner gitlab-runner register	
+docker exec -it gitlab-runner gitlab-runner registe--url https://gitlab.netkiller.cn/ --registration-token GR13489417SgFtcXMtuyPSqNn9TCoCo	
 		]]>
 			</screen>
 			<example>
