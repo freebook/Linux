@@ -262,7 +262,7 @@ Server:
 		]]>
 			</screen>
 		</section>
-		<section id="run">
+		<section id="docker.run">
 			<title>run</title>
 			<para>run</para>
 			<screen>
@@ -272,15 +272,33 @@ Hello world
 			]]>
 			</screen>
 			<section>
-				<title></title>
+				<title>-it</title>
 				<screen>
 				<![CDATA[
 neo@Netkiller-iMac ~> docker run -it nginx:latest /bin/sh				
 				]]>
 				</screen>
 			</section>
-			
-			
+			<section>
+				<title>--restart 参数</title>
+				<para>该参数用于指定自动重启docker容器策略，包含3个选项：no，on-failure[:times]，always，unless-stopped</para>
+				<screen>
+				<![CDATA[
+no 默认值，表示容器退出时，docker不自动重启容器
+docker run --restart=no [容器名]
+
+on-failure 若容器的退出状态非0，则docker自动重启容器，还可以指定重启次数，若超过指定次数未能启动容器则放弃
+docker run --restart=on-failure:3 [容器名]
+
+always 容器退出时总是重启
+docker run --restart=always [容器名]
+
+unless-stopped 容器退出时总是重启，但不考虑Docker守护进程启动时就已经停止的容器
+docker run --restart=unless-stopped [容器名]			
+				]]>
+				</screen>
+			</section>
+
 			<section>
 				<title>--privileged 让 root 具备真正的 root 权限</title>
 				<screen>
@@ -304,7 +322,7 @@ mount: permission denied
 				</screen>
 			</section>
 		</section>
-		<section id="start">
+		<section id="docker.start">
 			<title>start / stop / restart</title>
 			<screen>
 			<![CDATA[
@@ -319,7 +337,17 @@ silly_bohr
 			]]>
 			</screen>
 		</section>
-		<section id="ps">
+		<section id="docker.update">
+			<title>更新容器参数</title>
+			<para>为容器增加 --restart 参数</para>
+			<screen>
+				<![CDATA[
+如果容器启动时没有设置–restart参数，则通过下面命令进行更新：
+docker update --restart=always [容器名]					
+				]]>
+			</screen>
+		</section>
+		<section id="docker.ps">
 			<title>ps</title>
 			<screen>
 			<![CDATA[
@@ -374,7 +402,7 @@ docker kill -s HUP <CONTAINER ID>
 			]]>
 			</screen>
 		</section>
-		<section id="top">
+		<section id="docker.top">
 			<title>top</title>
 			<screen>
 			<![CDATA[
@@ -388,7 +416,7 @@ root 23225 22908 0 12:17 pts/14 00:00:00 /bin/bash
 			]]>
 			</screen>
 		</section>
-		<section id="inspect">
+		<section id="docker.inspect">
 			<title>inspect</title>
 			<screen>
 			<![CDATA[
@@ -741,7 +769,7 @@ docker inspect --format '{{ .Config.Hostname }}:{{range .NetworkSettings.Network
 				</screen>
 			</section>
 		</section>
-		<section id="images">
+		<section id="docker.images">
 			<title>镜像管理</title>
 			<screen>
 		<![CDATA[
@@ -813,7 +841,7 @@ Deleted: sha256:4e741a99e2f707b6957be436d384d087200ebd11c8673b2c0c1e8baef304fbfb
 				</screen>
 			</section>
 		</section>
-		<section id="logs">
+		<section id="docker.logs">
 			<title>logs</title>
 			<para>显示容器运行日志，用于排查异常情况</para>
 
@@ -867,7 +895,7 @@ $ docker logs -t --since="2019-02-08T12:20:30" --until "2019-02-09T12:23:30" CON
 			</section>
 		</section>
 
-		<section id="reset">
+		<section id="docker.reset">
 			<title>重置 Docker </title>
 			<screen>
 		<![CDATA[
