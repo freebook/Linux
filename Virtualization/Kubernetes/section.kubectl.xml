@@ -310,7 +310,8 @@ users:
 			</screen>
 			<section>
 				<title>use-context</title>
-				<para>如果之前用其他方式运行Kubernetes，如 minikube, mircok8s 等等，可以使用下面命令切换。</para>
+				<para>如果之前用其他方式运行Kubernetes，如 minikube, mircok8s 等等，可以使用下面命令切换。
+				</para>
 				<screen>
 			<![CDATA[
 $ kubectl config use-context docker-for-desktop		
@@ -351,18 +352,58 @@ kubectl label nodes <node-name> <label-key>=<label-value>
 		</screen>
 	</section>
 	<section id="kubectl.pods">
-		<title>pods</title>
-		<para></para>
+		<title>Pod 管理</title>
+		<para>Pod 状态说明</para>
+		<itemizedlist>
+			<title>Pod 状态：</title>
+			<listitem>Pending：Pod已经被创建，但还没有完成调度，或者说有一个或多个镜像正处于从远程仓库下载的过程。处在这个阶段的Pod可能正在写数据到etcd中、调度、pull镜像或启动容器。
+			</listitem>
+			<listitem>Pending：Pod已经被创建，但还没有完成调度，或者说有一个或多个镜像正处于从远程仓库下载的过程。处在这个阶段的Pod可能正在写数据到etcd中、调度、pull镜像或启动容器。
+			</listitem>
+			<listitem>Running：该Pod已经绑定到了一个节点上，Pod中所有的容器都已被创建。至少有一个容器正在运行，或者正处于启动或重启状态。
+			</listitem>
+			<listitem>Succeeded：Pod中的所有的容器已经正常的执行后退出，并且不会自动重启，一般会是在部署job的时候会出现。
+			</listitem>
+			<listitem>Failed：Pod中的所有容器都已终止了，并且至少有一个容器是因为失败终止。也就是说，容器以非0状态退出或者被系统终止。
+			</listitem>
+			<listitem>Unkonwn：APIServer无法正常获取到Pod对象的状态信息，通常是由于其无法与所在工作节点的kubelet通信所致。
+			</listitem>
+		</itemizedlist>
+		<para>Pod 错误的详细的说明</para>
 		<screen>
 		<![CDATA[
-kubectl get pod <pod-name> -o wide		
-kubectl get pods --all-namespaces
+状态						描述
+CrashLoopBackOff		容器退出，kubelet正在将它重启
+InvalidImageName		无法解析镜像名称
+ImageInspectError		无法校验镜像
+ErrImageNeverPull		策略禁止拉取镜像
+ImagePullBackOff		正在重试拉取
+RegistryUnavailable		连接不到镜像中心
+ErrImagePull			通用的拉取镜像出错
+CreateContainerConfigError	不能创建kubelet使用的容器配置
+CreateContainerError	创建容器失败
+m.internalLifecycle.PreStartContainer	执行hook报错
+RunContainerError		启动容器失败
+PostStartHookError		执行hook报错
+ContainersNotInitialized	容器没有初始化完毕
+ContainersNotRead		容器没有准备完毕
+ContainerCreating		容器创建中
+PodInitializing	pod 	初始化中
+DockerDaemonNotReady	docker还没有完全启动
+NetworkPluginNotReady	网络插件还没有完全启动		
 		]]>
 		</screen>
 		<section>
-			<title>查看所有POD</title>
+			<title>查看 POD 状态</title>
+			<para></para>
 			<screen>
-		<![CDATA[
+			<![CDATA[
+kubectl get pod <pod-name> -o wide		
+kubectl get pods --all-namespaces			
+			]]>
+			</screen>
+			<screen>
+		<![CDATA[		
 [root@localhost ~]# kubectl get pods --all-namespaces
 NAMESPACE     NAME                                   READY   STATUS    RESTARTS   AGE
 default       hello-minikube-5c856cbf98-6vfvp        1/1     Running   1          4d18h
@@ -530,8 +571,11 @@ Events:
 		</section>
 		<section>
 			<title>Taint（污点）和 Toleration（容忍）</title>
-			<para>其目的是分配 pod 在集群间的调度，Taint 和 toleration 相互配合，可以用来避免 pod 被分配到某个节点上。这跟节点亲和性作用相反。</para>
-			<para>给 node 节点设置 label，通过给 pod 设置 nodeSelector 将 pod 调度到匹配标签的节点上。</para>
+			<para>其目的是分配 pod 在集群间的调度，Taint 和 toleration 相互配合，可以用来避免 pod
+				被分配到某个节点上。这跟节点亲和性作用相反。
+			</para>
+			<para>给 node 节点设置 label，通过给 pod 设置 nodeSelector 将 pod 调度到匹配标签的节点上。
+			</para>
 			<para>如果设置 toleration 应用于 pod 上，则表示 pod 可以被调度到 taint 的节点上。</para>
 			<section>
 				<title>Taint（污点）设置</title>
@@ -605,7 +649,10 @@ spec:
     effect: "NoExecute"				
 				]]>
 				</screen>
-				<para>如果给node加上Taint effect=NoExecute的，该节点上的没有设置toleration的pod都会被立刻驱逐，设置 tolerationSeconds 后会给 Pod 一个宽限期。</para>
+				<para>如果给node加上Taint
+					effect=NoExecute的，该节点上的没有设置toleration的pod都会被立刻驱逐，设置
+					tolerationSeconds 后会给 Pod 一个宽限期。
+				</para>
 				<screen>
 				<![CDATA[
 spec:		
@@ -620,7 +667,8 @@ spec:
 			</section>
 			<section>
 				<title>使用场景</title>
-				<para>例如有些节点上挂了SSD，给redis,mongodb,mysql 使用，有些节点上安装了显卡GPU。就可以使用 taint </para>
+				<para>例如有些节点上挂了SSD，给redis,mongodb,mysql 使用，有些节点上安装了显卡GPU。就可以使用 taint
+				</para>
 				<screen>
 				<![CDATA[
 kubectl taint nodes shenzhen special=true:NoSchedule
@@ -1527,7 +1575,9 @@ Forwarding from 0.0.0.0:27017 -> 27017
 	<section id="kubectl.images">
 		<title>更新镜像</title>
 		<para>更新资源对象的容器镜像</para>
-		<para>可使用资源对象包括（不区分大小写）：pod (po)、replicationcontroller (rc)、deployment (deploy)、daemonset (ds)、job、replicaset (rs)</para>
+		<para>可使用资源对象包括（不区分大小写）：pod (po)、replicationcontroller (rc)、deployment
+			(deploy)、daemonset (ds)、job、replicaset (rs)
+		</para>
 		<screen>
 		<![CDATA[
 kubectl set image deployment/nginx nginx=nginx:1.20.0
@@ -1553,7 +1603,7 @@ kubectl set image daemonset abc *=nginx:1.9.1
 		<![CDATA[
 kubectl cp netkiller/job-executor-77fc6b4db-5dzxz:logs/info.2022-07-29.log Downloads/info.2022-07-29.log -c job-executor		
 		]]>
-		</screen>		
+		</screen>
 		<screen>
 		<![CDATA[
 kubectl cp Downloads/myfile netkiller/job-executor-77fc6b4db-5dzxz:/tmp/myfile -c job-executor		

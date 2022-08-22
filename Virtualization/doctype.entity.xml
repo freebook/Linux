@@ -34,7 +34,7 @@
 <!ENTITY section.harbor.xml				SYSTEM "Docker/section.harbor.xml">
 
 <!ENTITY chapter.kubernetes.xml			SYSTEM "Kubernetes/chapter.kubernetes.xml">
-<!ENTITY chapter.minikube.xml			SYSTEM "Kubernetes/chapter.minikube.xml">
+<!ENTITY section.minikube.xml			SYSTEM "Kubernetes/section.minikube.xml">
 <!ENTITY section.kubectl.xml			SYSTEM "Kubernetes/section.kubectl.xml">
 <!ENTITY section.microk8s.xml  			SYSTEM "Kubernetes/section.microk8s.xml">
 <!ENTITY section.kubeapps.xml			SYSTEM "Kubernetes/section.kubeapps.xml">
