@@ -321,6 +321,15 @@ mount: permission denied
 				]]>
 				</screen>
 			</section>
+			<section>
+				<title>设置环境变量</title>
+				<screen>
+				<![CDATA[
+docker run -e VAR1=value1 --env VAR2=value2 ubuntu
+docker run --env VAR1=value1 --env VAR2=value2 ubuntu				
+				]]>
+				</screen>
+			</section>
 		</section>
 		<section id="docker.start">
 			<title>start / stop / restart</title>

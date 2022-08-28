@@ -3,34 +3,36 @@
 	<title>安装 Rancher</title>
 	<section>
 		<title>Rancher Server</title>
-		<para>如果只是学习，可以安装最新版</para>
-		<screen>
+		<section>
+			<title>Docker 安装</title>
+			<para>如果只是学习，可以安装最新版</para>
+			<screen>
 		<![CDATA[
 docker run -d --privileged --restart=unless-stopped -p 80:80 -p 443:443 --name=rancher rancher/rancher:latest
 		]]>
-		</screen>
-		<para>稳定版</para>
-		<screen>
+			</screen>
+			<para>稳定版</para>
+			<screen>
 		<![CDATA[
 docker run -d --privileged --restart=unless-stopped -p 80:80 -p 443:443 -v /var/lib/rancher/:/var/lib/rancher/ --name=rancher rancher/rancher:stable
 		]]>
-		</screen>
-		<para>审计日志</para>
-		<screen>
+			</screen>
+			<para>审计日志</para>
+			<screen>
 		<![CDATA[
 docker run -d --restart=unless-stopped -p 80:80 -p 443:443 -v /var/lib/rancher/:/var/lib/rancher/ -v /var/log/auditlog:/var/log/auditlog --name=rancher rancher/rancher:stable
 		]]>
-		</screen>
-		<section>
-			<title>防火墙配置</title>
-			<para>防火墙放行 etcd </para>
-			<screen>
+			</screen>
+			<section>
+				<title>防火墙配置</title>
+				<para>防火墙放行 etcd </para>
+				<screen>
 			<![CDATA[
 iptables -I INPUT -s 172.16.0.0/0 -p tcp --dport 2379 -j ACCEPT
 iptables -I INPUT -s 172.16.0.0/0 -p tcp --dport 2380 -j ACCEPT		
 			]]>
-			</screen>
-			<screen>
+				</screen>
+				<screen>
 			<![CDATA[
 systemctl restart firewalld
 systemctl enable firewalld
@@ -46,13 +48,100 @@ firewall-cmd --zone=public --add-port=2380/tcp --permanent
 firewall-cmd --zone=public --add-port=10250/tcp --permanent
 firewall-cmd --reload			
 			]]>
-			</screen>
-			<!-- $ sudo ufw disable -->
-			<screen>
+				</screen>
+				<!-- $ sudo ufw disable -->
+				<para>从阿里云安装</para>
+				<screen>
+				<![CDATA[
+docker run -itd -p 80:80 -p 443:443 \
+    --restart=unless-stopped \
+    -e CATTLE_AGENT_IMAGE="registry.cn-hangzhou.aliyuncs.com/rancher/rancher-agent:v2.4.2" \
+    registry.cn-hangzhou.aliyuncs.com/rancher/rancher				
+				]]>
+				</screen>
+				<para>仅用 unsupported-storage-drivers</para>
+				<screen>
 			<![CDATA[
-hostnamectl set-hostname m-1d41c853af58
+[root@localhost ~]# docker run -d --privileged --restart=unless-stopped -p 8080:80 -p 8443:443 --name=rancher --env unsupported-storage-drivers=true rancher/rancher:stable
+[root@localhost ~]# docker run -d --privileged --restart=unless-stopped -p 8080:80 -p 8443:443 --name=rancher rancher/rancher:stable  --features=unsupported-storage-drivers=true
 			]]>
-			</screen>
+				</screen>
+			</section>
+			<section>
+				<title>Helm 安装 Rancher</title>
+				<para>安装 k3s</para>
+				<screen>
+				<![CDATA[
+hostnamectl set-hostname master				
+curl -sfL https://rancher-mirror.oss-cn-beijing.aliyuncs.com/k3s/k3s-install.sh | INSTALL_K3S_MIRROR=cn sh -
+				]]>
+				</screen>
+				<para>安装最新版</para>
+				<screen>
+				<![CDATA[
+helm repo add rancher-latest https://releases.rancher.com/server-charts/latest				
+				]]>
+				</screen>
+				<para>安装用于生产环境的稳定版</para>
+				<screen>
+				<![CDATA[
+helm repo add rancher-stable https://releases.rancher.com/server-charts/stable
+				]]>
+				</screen>
+				<para>创建命名空间</para>
+				<screen>
+				<![CDATA[
+kubectl create namespace cattle-system				
+				]]>
+				</screen>
+				<para>安装 cert-manager</para>
+				<screen>
+				<![CDATA[
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.7.1/cert-manager.crds.yaml
+
+helm repo add jetstack https://charts.jetstack.io
+
+helm repo update
+
+helm install cert-manager jetstack/cert-manager \
+  --namespace cert-manager \
+  --create-namespace \
+  --version v1.7.1
+				]]>
+				</screen>
+				<screen>
+			<![CDATA[
+helm install rancher rancher-stable/rancher \
+  --create-namespace \
+  --namespace cattle-system \
+  --set hostname=rancher.netkiller.cn \
+  --set ingress.tls.source=letsEncrypt \
+  --set bootstrapPassword=admin \
+  --set replicas=1 \
+  --set systemDefaultRegistry=registry.cn-hangzhou.aliyuncs.com
+			]]>
+				</screen>
+
+			</section>
+			<section>
+				<title>Mac 安装</title>
+				<screen>
+			<![CDATA[
+Neo-iMac:~ neo$ brew install rancher-cli
+
+Neo-iMac:~ neo$ rancher -v
+rancher version 2.4.13
+			]]>
+				</screen>
+			</section>
+			<section>
+				<title>进入容器</title>
+				<screen>
+			<![CDATA[
+$ docker exec -it rancher /bin/bash 			
+			]]>
+				</screen>
+			</section>
 		</section>
 		<section>
 			<title>Web UI</title>
@@ -64,9 +153,11 @@ hostnamectl set-hostname m-1d41c853af58
 			]]>
 			</screen>
 			<para>浏览器输入 https://your-ip-address 即可进入WebUI</para>
-			<graphic format="png" fileref="../images/rancher/password.png" width="800" srccredit="neo" />
+			<graphic format="png"
+				fileref="../images/rancher/password.png" width="800" srccredit="neo" />
 			<para>设置密码</para>
-			<graphic format="png" fileref="../images/rancher/randomly.png" width="800" srccredit="neo" />
+			<graphic format="png"
+				fileref="../images/rancher/randomly.png" width="800" srccredit="neo" />
 		</section>
 		<section>
 			<title>SSL 证书</title>
@@ -84,17 +175,57 @@ docker run -d --name=nginx --restart=unless-stopped -p 80:80 -p 443:443 -v /your
 			]]>
 			</screen>
 		</section>
+	</section>
+	<section>
+		<title>Rancher Kubernetes Engine (RKE) 2</title>
 		<section>
-			<title>进入容器</title>
+			<title>Server</title>
+			<screen>
+		<![CDATA[
+curl -sfL https://get.rke2.io | sh -		
+		]]>
+			</screen>
+			<para></para>
 			<screen>
 			<![CDATA[
-$ docker exec -it rancher /bin/bash 			
+systemctl enable rke2-server.service
+systemctl start rke2-server.service
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Linux Agent（Worker）</title>
+			<screen>
+			<![CDATA[
+curl -sfL https://get.rke2.io | INSTALL_RKE2_TYPE="agent" sh -			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+systemctl enable rke2-agent.service			
+			]]>
+			</screen>
+			<para>配置 rke2-agent 服务</para>
+			<screen>
+			<![CDATA[
+mkdir -p /etc/rancher/rke2/
+vim /etc/rancher/rke2/config.yaml
+
+server: https://<server>:9345
+token: <token from server node>
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+systemctl start rke2-agent.service			
 			]]>
 			</screen>
 		</section>
 	</section>
+
 	<section>
-		<title>Rancher Kubernetes Engine (RKE)</title>
+		<title>Rancher Kubernetes Engine (RKE) 1</title>
 		<para>
 			<ulink url="https://github.com/rancher/rke/releases" />
 		</para>
@@ -200,25 +331,15 @@ Run 'rancher COMMAND --help' for more information on a command.
 			]]>
 			</screen>
 		</section>
-		<section>
-			<title>Mac 安装</title>
-			<screen>
-			<![CDATA[
-Neo-iMac:~ neo$ brew install rancher-cli
 
-Neo-iMac:~ neo$ rancher -v
-rancher version 2.4.13
-			]]>
-			</screen>
-		</section>
-		
 	</section>
 	<section id="rancher-compose">
 		<title>rancher-compose</title>
 		<para>Rancher Compose是一个多主机版本的Docker Compose</para>
 		<para>
 			下载地址：
-			<ulink url="https://github.com/rancher/rancher-compose/releases" />
+			<ulink
+				url="https://github.com/rancher/rancher-compose/releases" />
 		</para>
 		<section>
 			<title>v0.12.5</title>

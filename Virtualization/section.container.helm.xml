@@ -6,7 +6,26 @@
 	<section id="helm.setup">
 		<title>安装 Helm</title>
 		<section>
-			<title>Rocky Linux / AlmiLinux</title>
+			<title>AlmaLinux</title>
+			<para>CURL 安装</para>
+			<screen>
+			<![CDATA[
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash			
+			]]>
+			</screen>
+			<para>二进制安装</para>
+			<screen>
+			<![CDATA[
+cd /usr/local/src/
+wget https://get.helm.sh/helm-v3.9.4-linux-amd64.tar.gz
+tar zxvf helm-v3.9.4-linux-amd64.tar.gz 
+mv linux-amd64 /srv/helm-v3.9.4
+alternatives --install /usr/local/bin/helm helm /srv/helm-v3.9.4/helm 10
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Rocky Linux</title>
 			<screen>
 			<![CDATA[
 [root@netkiller ~]# dnf install -y snapd

@@ -5,7 +5,13 @@
 		<title>安装 K3s</title>
 		<para>K3S 的安装方式有多种，官方提供的 k3s-install.sh，还有第三方的 k3d 和 k3sup</para>
 		<section>
-			<title>官方 k3s-install.sh</title>
+			<title>Server 服务安装</title>
+			<para></para>
+			<screen>
+			<![CDATA[
+hostnamectl set-hostname master
+			]]>
+			</screen>
 			<screen>
 			<![CDATA[
 curl -sfL https://get.k3s.io | sh -			
@@ -14,27 +20,68 @@ curl -sfL https://get.k3s.io | sh -
 			<para>国内镜像</para>
 			<screen>
 		<![CDATA[
-curl -sfL http://rancher-mirror.cnrancher.com/k3s/k3s-install.sh | INSTALL_K3S_MIRROR=cn sh -		
+curl -sfL http://rancher-mirror.cnrancher.com/k3s/k3s-install.sh | INSTALL_K3S_MIRROR=cn sh -
+systemctl enable k3s
 		]]>
 			</screen>
-			<para></para>
+			<para>查看节点启动状态</para>
 			<screen>
-		<![CDATA[
-k3s server &
-		]]>
+			<![CDATA[
+[root@master ~]# kubectl get node
+NAME                    STATUS   ROLES                  AGE    VERSION
+localhost.localdomain   Ready    control-plane,master   28m    v1.24.4+k3s1
+			]]>
 			</screen>
+			<para>查看节点 Pod 状态</para>
 			<screen>
 		<![CDATA[
-k3s kubectl get node		
+kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml get pods --all-namespaces
 		]]>
 			</screen>
 		</section>
+		<section>
+			<title>Agent 代理安装</title>
+			<para></para>
+			<screen>
+			<![CDATA[
+hostnamectl set-hostname node1			
+			]]>
+			</screen>
+			<para>查看 Master Token</para>
+			<screen>
+			<![CDATA[
+[root@master ~]# kubectl get node
+NAME                    STATUS   ROLES                  AGE    VERSION
+localhost.localdomain   Ready    control-plane,master   28m    v1.24.4+k3s1
 
-
+[root@master ~]# cat /var/lib/rancher/k3s/server/node-token
+K1000ba39a142b3712d2ffb1459a63f6a7f58b082aeb53406dab15d8cee0f3c2ff0::server:5713047feb086388c19663f69cccc966
+			]]>
+			</screen>
+			<para>在节点服务器安装代理</para>
+			<screen>
+			<![CDATA[
+SERVER=172.18.200.5
+TOKEN=K1000ba39a142b3712d2ffb1459a63f6a7f58b082aeb53406dab15d8cee0f3c2ff0::server:5713047feb086388c19663f69cccc966			
+curl -sfL https://rancher-mirror.oss-cn-beijing.aliyuncs.com/k3s/k3s-install.sh | INSTALL_K3S_MIRROR=cn K3S_URL=https://${SERVER}:6443 K3S_TOKEN=${TOKEN} sh -
+systemctl enable k3s-agent
+			]]>
+			</screen>
+			<para>回到 Master 查看节点</para>
+			<screen>
+			<![CDATA[
+[root@master ~]# kubectl get node
+NAME                    STATUS   ROLES                  AGE    VERSION
+localhost.localdomain   Ready    control-plane,master   28m    v1.24.4+k3s1
+node1                   Ready    <none>                 117s   v1.24.4+k3s1			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="k3d">
 		<title>k3d</title>
-		<para>k3d is a lightweight wrapper to run k3s (Rancher Lab’s minimal Kubernetes distribution) in docker.</para>
+		<para>k3d is a lightweight wrapper to run k3s (Rancher Lab’s minimal
+			Kubernetes distribution) in docker.</para>
 		<section>
 			<title>安装 k3d</title>
 
@@ -45,7 +92,9 @@ Neo-iMac:~ neo$ brew install k3d
 			]]>
 			</screen>
 			<para>Linux 安装 k3d</para>
-			<command>wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash</command>
+			<command>wget -q -O -
+				https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+			</command>
 			<screen>
 			<![CDATA[
 [root@netkiller ~]# wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
@@ -373,7 +422,8 @@ k3d cluster create netkiller --api-port 172.16.0.1:6443 --servers 1 --agents 1 -
 			]]>
 			</screen>
 			export http_proxy="socks://127.0.0.1:1080"
-			export https_proxy="socks://127.0.0.1:1080"
+			export
+			https_proxy="socks://127.0.0.1:1080"
 		</section>
 		<section>
 			<title>kubectl 管理指定集群</title>
@@ -604,7 +654,8 @@ helm uninstall traefik-crd --namespace kube-system
 		</section>
 		<section>
 			<title>安装 ingress-nginx</title>
-			<para>ingress-nginx: https://kubernetes.github.io/ingress-nginx/deploy/</para>
+			<para>ingress-nginx:
+				https://kubernetes.github.io/ingress-nginx/deploy/</para>
 			<screen>
 			<![CDATA[
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.3.0/deploy/static/provider/cloud/deploy.yaml
@@ -695,7 +746,7 @@ EOF
 			]]>
 			</screen>
 		</section>
-		
+
 	</section>
 	<section>
 		<title>FAQ</title>
