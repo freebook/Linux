@@ -78,10 +78,229 @@ node1                   Ready    <none>                 117s   v1.24.4+k3s1
 			</screen>
 		</section>
 	</section>
+
+	<section id="AutoK3s">
+		<title>AutoK3s</title>
+		<para>https://github.com/cnrancher/autok3s</para>
+		<para>挂载 iptables 内核模块，否则 traefik slb 和 service 起不来</para>
+		<screen>
+		<![CDATA[
+modprobe ip_tables		
+		]]>
+		</screen>
+		<para>设置主机名</para>
+		<screen>
+			<![CDATA[
+hostnamectl set-hostname master
+			]]>
+		</screen>
+		<para>安装 AutoK3s</para>
+		<screen>
+			<![CDATA[
+docker run -itd --name=autok3s --restart=unless-stopped --net=host -v /var/run/docker.sock:/var/run/docker.sock cnrancher/autok3s:v0.5.2
+			]]>
+		</screen>
+		<para>安装 AutoK3s 命令行</para>
+		<screen>
+		<![CDATA[
+curl -sS https://rancher-mirror.oss-cn-beijing.aliyuncs.com/autok3s/install.sh  | INSTALL_AUTOK3S_MIRROR=cn sh
+		]]>
+		</screen>
+		<para>首次运行</para>
+		<screen>
+			<![CDATA[
+[root@master ~]# autok3s 
+? This is the very first time using autok3s,
+  would you like to share metrics with us?
+  You can always your mind with telemetry command Yes
+
+               ,        , 
+  ,------------|'------'|             _        _    _____ 
+ / .           '-'    |-             | |      | |  |____ | 
+ \\/|             |    |   __ _ _   _| |_ ___ | | __   / / ___
+   |   .________.'----'   / _  | | | | __/ _ \| |/ /   \ \/ __|
+   |   |        |   |    | (_| | |_| | || (_) |   <.___/ /\__ \
+   \\___/        \\___/   \__,_|\__,_|\__\___/|_|\_\____/ |___/
+
+Usage:
+  autok3s [flags]
+  autok3s [command]
+
+Available Commands:
+  completion  Generate completion script
+  create      Create a K3s cluster
+  delete      Delete a K3s cluster
+  describe    Show details of a specific resource
+  explorer    Enable kube-explorer for K3s cluster
+  help        Help about any command
+  join        Join one or more K3s node(s) to an existing cluster
+  kubectl     Kubectl controls the Kubernetes cluster manager
+  list        Display all K3s clusters
+  serve       Run as daemon and serve HTTP/HTTPS request
+  ssh         Connect to a K3s node through SSH
+  telemetry   Telemetry status for autok3s
+  upgrade     Upgrade a K3s cluster to specified version
+  version     Display autok3s version
+
+Flags:
+  -d, --debug                          Enable log debug level
+  -h, --help                           help for autok3s
+      --log-flush-frequency duration   Maximum number of seconds between log flushes (default 5s)
+
+Global Environments:
+  AUTOK3S_CONFIG  Path to the cfg file to use for CLI requests (default ~/.autok3s)
+  AUTOK3S_RETRY   The number of retries waiting for the desired state (default 20)
+
+Use "autok3s [command] --help" for more information about a command.
+			]]>
+		</screen>
+		<para>如果你想卸载它</para>
+		<screen>
+		<![CDATA[
+Creating uninstall script /usr/local/bin/autok3s-uninstall.sh
+kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml get pods --all-namespaces
+		]]>
+		</screen>
+		<para>创建 k3d 集群</para>
+		<screen>
+		<![CDATA[
+autok3s create --provider k3d --master 1 --name test --worker 1 --api-port 0.0.0.0:6443 --image rancher/k3s:v1.21.7-k3s1		
+		]]>
+		</screen>
+		<para>指定私有镜像库</para>
+		<screen>
+		<![CDATA[
+autok3s create --provider  k3d --master  1 --name  test --worker  1 --api-port  0.0.0.0:6443 --image  rancher/k3s:v1.21.7-k3s1 --registry  https://registry.netkiller.cn		
+		]]>
+		</screen>
+		<para>https://rancher.com/docs/k3s/latest/en/installation/private-registry/
+		</para>
+		<para>给宿主主机暴漏 ingress 80/443 端口</para>
+		<screen>
+		<![CDATA[
+autok3s create --provider k3d --master 1 --name test --token 0ab46344f7f62488f771f1332feeabf6 --worker 1 --k3s-install-script https://get.k3s.io --api-port 172.18.200.5:6443 --image rancher/k3s:v1.21.7-k3s1 --ports '80:80@loadbalancer' --ports '443:443@loadbalancer'		
+		]]>
+		</screen>
+
+		<section>
+			<title>验证集群是否工作正常</title>
+			<screen>
+				<![CDATA[
+kubectl create deployment nginx --image=nginx:alpine
+kubectl create service clusterip nginx --tcp=80:80
+
+cat <<EOF | kubectl apply -f -
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx
+            port:
+              number: 80
+EOF
+				]]>
+			</screen>
+			<para>默认 ingress 地址是 br 网桥的</para>
+			<screen>
+		<![CDATA[
+[root@master ~]# ip addr | grep  br-
+4: br-2ad0dd2291af: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default 
+    inet 172.19.0.1/16 brd 172.19.255.255 scope global br-2ad0dd2291af		
+		]]>
+			</screen>
+			<screen>
+		<![CDATA[
+# Run kubectl commands inside here
+# e.g. kubectl get all
+> kubectl get ingress 
+NAME    CLASS    HOSTS   ADDRESS                 PORTS   AGE
+nginx   <none>   *       172.19.0.2,172.19.0.3   80      4m18s		
+		]]>
+			</screen>
+			<para>我们已经将 80/443 暴漏给了宿主主机，所以可以直接用宿主主机IP访问 kubernetes 集群</para>
+			<screen>
+		<![CDATA[
+[root@master ~]# curl http://localhost
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+html { color-scheme: light dark; }
+body { width: 35em; margin: 0 auto;
+font-family: Tahoma, Verdana, Arial, sans-serif; }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>		
+		]]>
+			</screen>
+		</section>
+		<section>
+			<title>Agent 代理安装</title>
+			<para></para>
+			<screen>
+			<![CDATA[
+hostnamectl set-hostname node1			
+			]]>
+			</screen>
+			<para>查看 Master Token</para>
+			<screen>
+			<![CDATA[
+[root@master ~]# kubectl get node
+NAME                    STATUS   ROLES                  AGE    VERSION
+localhost.localdomain   Ready    control-plane,master   28m    v1.24.4+k3s1
+
+[root@master ~]# cat /var/lib/rancher/k3s/server/node-token
+K1000ba39a142b3712d2ffb1459a63f6a7f58b082aeb53406dab15d8cee0f3c2ff0::server:5713047feb086388c19663f69cccc966
+			]]>
+			</screen>
+			<para>在节点服务器安装代理</para>
+			<screen>
+			<![CDATA[
+SERVER=172.18.200.5
+TOKEN=K1000ba39a142b3712d2ffb1459a63f6a7f58b082aeb53406dab15d8cee0f3c2ff0::server:5713047feb086388c19663f69cccc966			
+curl -sfL https://rancher-mirror.oss-cn-beijing.aliyuncs.com/k3s/k3s-install.sh | INSTALL_K3S_MIRROR=cn K3S_URL=https://${SERVER}:6443 K3S_TOKEN=${TOKEN} sh -
+systemctl enable k3s-agent
+			]]>
+			</screen>
+			<para>回到 Master 查看节点</para>
+			<screen>
+			<![CDATA[
+[root@master ~]# kubectl get node
+NAME                    STATUS   ROLES                  AGE    VERSION
+localhost.localdomain   Ready    control-plane,master   28m    v1.24.4+k3s1
+node1                   Ready    <none>                 117s   v1.24.4+k3s1			
+			]]>
+			</screen>
+		</section>
+	</section>
 	<section id="k3d">
 		<title>k3d</title>
 		<para>k3d is a lightweight wrapper to run k3s (Rancher Lab’s minimal
-			Kubernetes distribution) in docker.</para>
+			Kubernetes distribution) in docker.
+		</para>
 		<section>
 			<title>安装 k3d</title>
 
@@ -253,6 +472,33 @@ INFO[0003] Successfully deleted cluster mycluster!
 				<title>部署 nginx</title>
 				<screen>
 				<![CDATA[
+kubectl create deployment nginx --image=nginx:alpine
+kubectl create service clusterip nginx --tcp=80:80
+
+cat <<EOF | kubectl apply -f -
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx
+            port:
+              number: 80
+EOF
+				]]>
+				</screen>
+				<para>操作演示</para>
+				<screen>
+				<![CDATA[
 Neo-iMac:~ neo$ kubectl create deployment nginx --image=nginx:alpine
 deployment.apps/nginx created
 Neo-iMac:~ neo$ kubectl create service clusterip nginx --tcp=80:80
@@ -277,14 +523,6 @@ Neo-iMac:~ neo$ cat <<EOF | kubectl apply -f -
 >               number: 80
 > EOF
 ingress.networking.k8s.io/nginx created				
-				]]>
-				</screen>
-				<para>查看 ingress 状态</para>
-				<screen>
-				<![CDATA[
-Netkiller-iMac:~ neo$ kubectl get ingress  -o wide
-NAME    CLASS    HOSTS   ADDRESS                                                  PORTS   AGE
-nginx   <none>   *       172.19.0.2,172.19.0.3,172.19.0.4,172.19.0.5,172.19.0.6   80      54m				
 				]]>
 				</screen>
 				<para>使用浏览器或者CURL命令访问 http://localhost</para>
@@ -376,23 +614,23 @@ INFO[0355] Successfully imported 1 image(s) into 1 cluster(s)
 			</screen>
 		</section>
 
-	</section>
-	<section>
-		<title>管理 k3d 集群</title>
-		<screen>
+
+		<section>
+			<title>管理 k3d 集群</title>
+			<screen>
 		<![CDATA[
 [root@netkiller k3d]# k3d cluster start mycluster		
 		]]>
-		</screen>
-		<section>
-			<title>配置 api-port 端口</title>
-			<screen>
+			</screen>
+			<section>
+				<title>配置 api-port 端口</title>
+				<screen>
 			<![CDATA[
 k3d cluster create netkiller --api-port 6443 --servers 1 --agents 1 --port '80:80@loadbalancer' --port '443:443@loadbalancer'
 			]]>
-			</screen>
-			<para></para>
-			<screen>
+				</screen>
+				<para></para>
+				<screen>
 			<![CDATA[
 [root@netkiller ~]# cat .kube/config | grep server
     server: https://0.0.0.0:6445
@@ -400,9 +638,9 @@ k3d cluster create netkiller --api-port 6443 --servers 1 --agents 1 --port '80:8
 [root@netkiller ~]# ss -lnt | grep 6445
 LISTEN 0      1024         0.0.0.0:6445       0.0.0.0:*  			
 			]]>
-			</screen>
-			<para></para>
-			<screen>
+				</screen>
+				<para></para>
+				<screen>
 			<![CDATA[
 [root@netkiller ~]# firewall-cmd --add-service=http --permanent
 success
@@ -411,29 +649,29 @@ success
 [root@netkiller ~]# firewall-cmd --zone=public --add-service=kube-api --permanent  
 success			
 			]]>
-			</screen>
-		</section>
-		<section>
-			<title></title>
-			<para></para>
-			<screen>
+				</screen>
+			</section>
+			<section>
+				<title></title>
+				<para></para>
+				<screen>
 			<![CDATA[
 k3d cluster create netkiller --api-port 172.16.0.1:6443 --servers 1 --agents 1 --port '80:80@loadbalancer' --port '443:443@loadbalancer' --k3s-arg "--no-deploy=traefik@server:*"
 			]]>
-			</screen>
-			export http_proxy="socks://127.0.0.1:1080"
-			export
-			https_proxy="socks://127.0.0.1:1080"
-		</section>
-		<section>
-			<title>kubectl 管理指定集群</title>
-			<screen>
+				</screen>
+				export http_proxy="socks://127.0.0.1:1080"
+				export
+				https_proxy="socks://127.0.0.1:1080"
+			</section>
+			<section>
+				<title>kubectl 管理指定集群</title>
+				<screen>
 			<![CDATA[
 export KUBECONFIG="$(k3d kubeconfig write netkiller)"			
 			]]>
-			</screen>
-			<para></para>
-			<screen>
+				</screen>
+				<para></para>
+				<screen>
 			<![CDATA[
 [root@netkiller ~]# kubectl config view
 apiVersion: v1
@@ -456,12 +694,12 @@ users:
     client-certificate-data: REDACTED
     client-key-data: REDACTED			
 			]]>
-			</screen>
+				</screen>
+			</section>
 		</section>
-	</section>
-	<section>
-		<title>容器镜像库</title>
-		<screen>
+		<section>
+			<title>容器镜像库</title>
+			<screen>
 		<![CDATA[
 neo@Netkiller-iMac ~> vim ~/.k3d/registries.yaml
 mirrors:
@@ -469,27 +707,27 @@ mirrors:
     endpoint:
       - http://registry.netkiller.cn
 		]]>
-		</screen>
-		<para></para>
-		<screen>
+			</screen>
+			<para></para>
+			<screen>
 		<![CDATA[
 neo@Netkiller-iMac ~> k3d cluster create mycluster --api-port 6443 --servers 1 --agents 1 --port '80:80@loadbalancer' --port '443:443@loadbalancer' --registry-config ~/.k3d/registries.yaml		
 		]]>
-		</screen>
-	</section>
-	<section id="traefik">
-		<title>traefik 配置</title>
-		<section>
-			<title>增加 Redis 6379 端口</title>
+			</screen>
+		</section>
+		<section id="traefik">
+			<title>traefik 配置</title>
+			<section>
+				<title>增加 Redis 6379 端口</title>
 
-			<screen>
+				<screen>
 		<![CDATA[
 neo@Netkiller-iMac ~> kubectl edit -n kube-system deployment traefik
 deployment.apps/traefik edited		
 		]]>
-			</screen>
-			<para></para>
-			<screen>
+				</screen>
+				<para></para>
+				<screen>
 		<![CDATA[
     spec:
       containers:
@@ -541,28 +779,28 @@ deployment.apps/traefik edited
           name: mongo
           protocol: TCP		
 		]]>
-			</screen>
-			<para>args 处加入</para>
-			<screen>
+				</screen>
+				<para>args 处加入</para>
+				<screen>
 		<![CDATA[
 - --entrypoints.redis.address=:6379/tcp		
 		]]>
-			</screen>
-			<para>ports 处加入</para>
-			<screen>
+				</screen>
+				<para>ports 处加入</para>
+				<screen>
 		<![CDATA[
 		- containerPort: 6379
           name: redis
           protocol: TCP
 		]]>
-			</screen>
-			<para></para>
-			<screen>
+				</screen>
+				<para></para>
+				<screen>
 			<![CDATA[
 [root@netkiller k3d]# k3d cluster edit mycluster --port-add '6379:6379@loadbalancer'			      
 			]]>
-			</screen>
-			<programlisting>
+				</screen>
+				<programlisting>
 			<![CDATA[
 [root@netkiller k3d]# cat redis.yaml 
 apiVersion: apps/v1
@@ -609,8 +847,8 @@ spec:
     - name: redis
       port: 6379			
 			]]>
-			</programlisting>
-			<screen>
+				</programlisting>
+				<screen>
 			<![CDATA[
 [root@netkiller k3d]# kubectl apply -f redis.yaml
 deployment.apps/redis created
@@ -628,50 +866,51 @@ OK
 127.0.0.1:6379>		
 127.0.0.1:6379> exit
 			]]>
-			</screen>
-			<para></para>
-			<screen>
+				</screen>
+				<para></para>
+				<screen>
 			<![CDATA[
 [root@netkiller k3d]# dnf install redis
 [root@netkiller k3d]# redis-cli -h 127.0.0.1
 127.0.0.1:6379> get nickname
 			]]>
-			</screen>
-		</section>
+				</screen>
+			</section>
 
-	</section>
-	<section id="k3d.ingress-nginx">
-		<title>ingress-nginx</title>
-		<section>
-			<title>卸载 traefik</title>
-			<para>我们希望使用 nginx ingress，所以需要讲 traefik 卸载</para>
-			<screen>
+		</section>
+		<section id="k3d.ingress-nginx">
+			<title>ingress-nginx</title>
+			<section>
+				<title>卸载 traefik</title>
+				<para>我们希望使用 nginx ingress，所以需要讲 traefik 卸载</para>
+				<screen>
 			<![CDATA[
 kubectl -n kube-system delete helmcharts.helm.cattle.io traefik
 helm uninstall traefik-crd --namespace kube-system			
 			]]>
-			</screen>
-		</section>
-		<section>
-			<title>安装 ingress-nginx</title>
-			<para>ingress-nginx:
-				https://kubernetes.github.io/ingress-nginx/deploy/</para>
-			<screen>
+				</screen>
+			</section>
+			<section>
+				<title>安装 ingress-nginx</title>
+				<para>ingress-nginx:
+					https://kubernetes.github.io/ingress-nginx/deploy/
+				</para>
+				<screen>
 			<![CDATA[
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.3.0/deploy/static/provider/cloud/deploy.yaml
 			]]>
-			</screen>
-			<para>修改镜像库地址，否则无法下载</para>
-			<screen>
+				</screen>
+				<para>修改镜像库地址，否则无法下载</para>
+				<screen>
 			<![CDATA[
 wget https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.3.0/deploy/static/provider/cloud/deploy.yaml
 vim deploy.yaml
 :%s:registry.k8s.io/ingress-nginx/:registry.cn-hangzhou.aliyuncs.com/google_containers/:g  			
 :%s:registry.cn-hangzhou.aliyuncs.com/google_containers/controller:registry.cn-hangzhou.aliyuncs.com/google_containers/nginx-ingress-controller:g 
 			]]>
-			</screen>
-			<para>svclb-ingress-nginx-controller 启动不起来</para>
-			<screen>
+				</screen>
+				<para>svclb-ingress-nginx-controller 启动不起来</para>
+				<screen>
 			<![CDATA[
 neo@MacBook-Pro-Neo-3 ~ [1]> kubectl logs -n kube-system svclb-ingress-nginx-controller-8b62cc7d-qbqtv
 Defaulted container "lb-tcp-80" out of: lb-tcp-80, lb-tcp-443
@@ -684,9 +923,9 @@ Defaulted container "lb-tcp-80" out of: lb-tcp-80, lb-tcp-443
 iptables v1.8.4 (legacy): can't initialize iptables table `nat': Table does not exist (do you need to insmod?)
 Perhaps iptables or your kernel needs to be upgraded.			
 			]]>
-			</screen>
-			<para>解决方法</para>
-			<screen>
+				</screen>
+				<para>解决方法</para>
+				<screen>
 			<![CDATA[
 root@netkiller ~ # modprobe ip_tables
 
@@ -706,12 +945,12 @@ kube-system     local-path-provisioner-6c79684f77-psmgs         1/1     Running 
 kube-system     svclb-ingress-nginx-controller-8b62cc7d-5lb8d   2/2     Running     12 (3m17s ago)   6m9s
 kube-system     svclb-ingress-nginx-controller-8b62cc7d-qbqtv   2/2     Running     12 (3m20s ago)   6m9s
 			]]>
-			</screen>
-		</section>
-		<section>
-			<title>验证安装是否正确</title>
-			<para>部署 Nginx Web 服务器，用来检查 ingress</para>
-			<screen>
+				</screen>
+			</section>
+			<section>
+				<title>验证安装是否正确</title>
+				<para>部署 Nginx Web 服务器，用来检查 ingress</para>
+				<screen>
 			<![CDATA[
 Neo-iMac:~ neo$ kubectl create deployment nginx --image=nginx:alpine
 deployment.apps/nginx created
@@ -719,9 +958,9 @@ deployment.apps/nginx created
 Neo-iMac:~ neo$ kubectl create service clusterip nginx --tcp=80:80
 service/nginx created			
 			]]>
-			</screen>
-			<para></para>
-			<screen>
+				</screen>
+				<para></para>
+				<screen>
 			<![CDATA[
 cat <<EOF | kubectl apply -f -
 apiVersion: networking.k8s.io/v1
@@ -744,11 +983,12 @@ spec:
               number: 80
 EOF			
 			]]>
-			</screen>
-		</section>
+				</screen>
+			</section>
 
+		</section>
 	</section>
-	<section>
+	<section id="k3s.faq">
 		<title>FAQ</title>
 		<section>
 			<title>ghcr.io 镜像下载问题</title>
@@ -773,6 +1013,89 @@ ghcr.io/k3d-io/k3d-tools   5.4.4          741f01cb5093   2 weeks ago    18.7MB
 			<screen>
 			<![CDATA[
 docker load --input k3d-proxy.tar			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>k3s 80/443 端口问题</title>
+			<screen>
+			<![CDATA[
+[root@master ~]# kubectl get svc --namespace=kube_system
+NAME             TYPE           CLUSTER-IP     EXTERNAL-IP                  PORT(S)                      AGE
+kube-dns         ClusterIP      10.43.0.10     <none>                       53/UDP,53/TCP,9153/TCP       4d2h
+metrics-server   ClusterIP      10.43.88.112   <none>                       443/TCP                      4d2h
+traefik          LoadBalancer   10.43.125.52   172.18.200.5,172.18.200.51   80:32623/TCP,443:31516/TCP   4d2h			
+			]]>
+			</screen>
+			<para>本地没有 80 和 443 端口</para>
+			<screen>
+			<![CDATA[
+[root@master ~]# ss -tnlp | egrep "80|443"
+LISTEN 0      1024               *:6443             *:*    users:(("k3s-server",pid=173779,fd=17)) 		
+
+[root@master ~]# lsof -i :80
+[root@master ~]# lsof -i :443	
+			]]>
+			</screen>
+			<para>telnet 测试后可工作</para>
+			<screen>
+			<![CDATA[
+[root@master ~]# telnet 172.18.200.5 80
+Trying 172.18.200.5...
+Connected to 172.18.200.5.
+Escape character is '^]'.			
+			]]>
+			</screen>
+			<para>80/443 是 Iptable NAT映射出来的端口</para>
+			<screen>
+			<![CDATA[
+[root@master ~]# iptables -nL -t nat | grep traefik
+# Warning: iptables-legacy tables present, use iptables-legacy to see them
+KUBE-MARK-MASQ  all  --  0.0.0.0/0            0.0.0.0/0            /* masquerade traffic for kube-system/traefik:websecure external destinations */
+KUBE-MARK-MASQ  all  --  0.0.0.0/0            0.0.0.0/0            /* masquerade traffic for kube-system/traefik:web external destinations */
+KUBE-EXT-CVG3OEGEH7H5P3HQ  tcp  --  0.0.0.0/0            0.0.0.0/0            /* kube-system/traefik:websecure */ tcp dpt:31516
+KUBE-EXT-UQMCRMJZLI3FTLDP  tcp  --  0.0.0.0/0            0.0.0.0/0            /* kube-system/traefik:web */ tcp dpt:32623
+KUBE-MARK-MASQ  all  --  10.42.2.3            0.0.0.0/0            /* kube-system/traefik:web */
+DNAT       tcp  --  0.0.0.0/0            0.0.0.0/0            /* kube-system/traefik:web */ tcp to:10.42.2.3:8000
+KUBE-MARK-MASQ  all  --  10.42.2.3            0.0.0.0/0            /* kube-system/traefik:websecure */
+DNAT       tcp  --  0.0.0.0/0            0.0.0.0/0            /* kube-system/traefik:websecure */ tcp to:10.42.2.3:8443
+KUBE-SVC-CVG3OEGEH7H5P3HQ  tcp  --  0.0.0.0/0            10.43.125.52         /* kube-system/traefik:websecure cluster IP */ tcp dpt:443
+KUBE-EXT-CVG3OEGEH7H5P3HQ  tcp  --  0.0.0.0/0            172.18.200.5         /* kube-system/traefik:websecure loadbalancer IP */ tcp dpt:443
+KUBE-EXT-CVG3OEGEH7H5P3HQ  tcp  --  0.0.0.0/0            172.18.200.51        /* kube-system/traefik:websecure loadbalancer IP */ tcp dpt:443
+KUBE-SVC-UQMCRMJZLI3FTLDP  tcp  --  0.0.0.0/0            10.43.125.52         /* kube-system/traefik:web cluster IP */ tcp dpt:80
+KUBE-EXT-UQMCRMJZLI3FTLDP  tcp  --  0.0.0.0/0            172.18.200.5         /* kube-system/traefik:web loadbalancer IP */ tcp dpt:80
+KUBE-EXT-UQMCRMJZLI3FTLDP  tcp  --  0.0.0.0/0            172.18.200.51        /* kube-system/traefik:web loadbalancer IP */ tcp dpt:80
+KUBE-MARK-MASQ  tcp  -- !10.42.0.0/16         10.43.125.52         /* kube-system/traefik:websecure cluster IP */ tcp dpt:443
+KUBE-SEP-NTYW4CRSJDKN6UYK  all  --  0.0.0.0/0            0.0.0.0/0            /* kube-system/traefik:websecure -> 10.42.2.3:8443 */
+KUBE-MARK-MASQ  tcp  -- !10.42.0.0/16         10.43.125.52         /* kube-system/traefik:web cluster IP */ tcp dpt:80
+KUBE-SEP-M4A3OJBNTWBZ5ISS  all  --  0.0.0.0/0            0.0.0.0/0            /* kube-system/traefik:web -> 10.42.2.3:8000 */			
+			]]>
+			</screen>
+			<para>NAT 端口可以通过 nmap 扫描出来</para>
+			<screen>
+			<![CDATA[
+[root@master ~]# nmap localhost
+Starting Nmap 7.91 ( https://nmap.org ) at 2022-09-01 10:04 CST
+Nmap scan report for localhost (127.0.0.1)
+Host is up (0.0000050s latency).
+Other addresses for localhost (not scanned): ::1
+Not shown: 996 closed ports
+PORT      STATE    SERVICE
+22/tcp    open     ssh
+80/tcp    filtered http
+443/tcp   filtered https
+10010/tcp open     rxapi
+
+Nmap done: 1 IP address (1 host up) scanned in 1.26 seconds			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+[root@master ~]# iptables-save | grep "CNI-DN" | grep "to-destination"
+# Warning: iptables-legacy tables present, use iptables-legacy-save to see them
+-A CNI-DN-485265bef43fea7142e9d -p tcp -m tcp --dport 80 -j DNAT --to-destination 10.42.0.10:80
+-A CNI-DN-485265bef43fea7142e9d -p tcp -m tcp --dport 443 -j DNAT --to-destination 10.42.0.10:443			
 			]]>
 			</screen>
 		</section>
