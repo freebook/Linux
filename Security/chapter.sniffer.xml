@@ -609,5 +609,12 @@ $ cat /proc/net/nf_conntrack
 		<para>Wireshark is a network protocol analyzer for Unix and Windows.</para>
 		<para>http://www.wireshark.org/</para>
 	</section>
-	
+	<section>
+		<title>conntrack-tools : Manipulate netfilter connection tracking table and run High Availability</title>
+		<screen>
+		<![CDATA[
+sudo conntrack -I -s 192.168.7.10 -d 10.1.1.1 --protonum 17 --timeout 120 --sport 12345 --dport 80		
+		]]>
+		</screen>
+	</section>
 </chapter>

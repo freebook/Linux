@@ -95,4 +95,38 @@ Events:                   <none>
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>local-path-provisioner</title>
+		<para>https://github.com/rancher/local-path-provisioner</para>
+		<para>local-path 即 pod 销毁之后，数据仍然存储在磁盘上，实验过程：</para>
+		<screen>
+		<![CDATA[
+kubectl create -f https://raw.githubusercontent.com/rancher/local-path-provisioner/master/examples/pvc/pvc.yaml
+kubectl create -f https://raw.githubusercontent.com/rancher/local-path-provisioner/master/examples/pod/pod.yaml		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+kubectl exec volume-test -- sh -c "echo local-path-test > /data/test"		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+kubectl delete -f https://raw.githubusercontent.com/rancher/local-path-provisioner/master/examples/pod/pod.yaml
+kubectl create -f https://raw.githubusercontent.com/rancher/local-path-provisioner/master/examples/pod/pod.yaml		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+$ kubectl exec volume-test -- sh -c "cat /data/test"
+local-path-test		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+kubectl delete -f https://raw.githubusercontent.com/rancher/local-path-provisioner/master/examples/pod/pod.yaml
+kubectl delete -f https://raw.githubusercontent.com/rancher/local-path-provisioner/master/examples/pvc/pvc.yaml		
+		]]>
+		</screen>
+	</section>
 </section>

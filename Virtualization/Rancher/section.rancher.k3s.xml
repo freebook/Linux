@@ -1,84 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="k3s">
 	<title>K3s</title>
-	<section>
-		<title>安装 K3s</title>
-		<para>K3S 的安装方式有多种，官方提供的 k3s-install.sh，还有第三方的 k3d 和 k3sup</para>
-		<section>
-			<title>Server 服务安装</title>
-			<para></para>
-			<screen>
-			<![CDATA[
-hostnamectl set-hostname master
-			]]>
-			</screen>
-			<screen>
-			<![CDATA[
-curl -sfL https://get.k3s.io | sh -			
-			]]>
-			</screen>
-			<para>国内镜像</para>
-			<screen>
-		<![CDATA[
-curl -sfL http://rancher-mirror.cnrancher.com/k3s/k3s-install.sh | INSTALL_K3S_MIRROR=cn sh -
-systemctl enable k3s
-		]]>
-			</screen>
-			<para>查看节点启动状态</para>
-			<screen>
-			<![CDATA[
-[root@master ~]# kubectl get node
-NAME                    STATUS   ROLES                  AGE    VERSION
-localhost.localdomain   Ready    control-plane,master   28m    v1.24.4+k3s1
-			]]>
-			</screen>
-			<para>查看节点 Pod 状态</para>
-			<screen>
-		<![CDATA[
-kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml get pods --all-namespaces
-		]]>
-			</screen>
-		</section>
-		<section>
-			<title>Agent 代理安装</title>
-			<para></para>
-			<screen>
-			<![CDATA[
-hostnamectl set-hostname node1			
-			]]>
-			</screen>
-			<para>查看 Master Token</para>
-			<screen>
-			<![CDATA[
-[root@master ~]# kubectl get node
-NAME                    STATUS   ROLES                  AGE    VERSION
-localhost.localdomain   Ready    control-plane,master   28m    v1.24.4+k3s1
-
-[root@master ~]# cat /var/lib/rancher/k3s/server/node-token
-K1000ba39a142b3712d2ffb1459a63f6a7f58b082aeb53406dab15d8cee0f3c2ff0::server:5713047feb086388c19663f69cccc966
-			]]>
-			</screen>
-			<para>在节点服务器安装代理</para>
-			<screen>
-			<![CDATA[
-SERVER=172.18.200.5
-TOKEN=K1000ba39a142b3712d2ffb1459a63f6a7f58b082aeb53406dab15d8cee0f3c2ff0::server:5713047feb086388c19663f69cccc966			
-curl -sfL https://rancher-mirror.oss-cn-beijing.aliyuncs.com/k3s/k3s-install.sh | INSTALL_K3S_MIRROR=cn K3S_URL=https://${SERVER}:6443 K3S_TOKEN=${TOKEN} sh -
-systemctl enable k3s-agent
-			]]>
-			</screen>
-			<para>回到 Master 查看节点</para>
-			<screen>
-			<![CDATA[
-[root@master ~]# kubectl get node
-NAME                    STATUS   ROLES                  AGE    VERSION
-localhost.localdomain   Ready    control-plane,master   28m    v1.24.4+k3s1
-node1                   Ready    <none>                 117s   v1.24.4+k3s1			
-			]]>
-			</screen>
-		</section>
-	</section>
-
+	<para>autok3s/k3s/k3d 三种封装，安装最简单的是 autok3s，其次是 k3d，如果喜欢蒸腾就安装原生 k3s。</para>
 	<section id="AutoK3s">
 		<title>AutoK3s</title>
 		<para>https://github.com/cnrancher/autok3s</para>
@@ -161,29 +84,34 @@ Creating uninstall script /usr/local/bin/autok3s-uninstall.sh
 kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml get pods --all-namespaces
 		]]>
 		</screen>
-		<para>创建 k3d 集群</para>
-		<screen>
-		<![CDATA[
-autok3s create --provider k3d --master 1 --name test --worker 1 --api-port 0.0.0.0:6443 --image rancher/k3s:v1.21.7-k3s1		
-		]]>
-		</screen>
-		<para>指定私有镜像库</para>
-		<screen>
-		<![CDATA[
-autok3s create --provider  k3d --master  1 --name  test --worker  1 --api-port  0.0.0.0:6443 --image  rancher/k3s:v1.21.7-k3s1 --registry  https://registry.netkiller.cn		
-		]]>
-		</screen>
-		<para>https://rancher.com/docs/k3s/latest/en/installation/private-registry/
-		</para>
-		<para>给宿主主机暴漏 ingress 80/443 端口</para>
-		<screen>
-		<![CDATA[
-autok3s create --provider k3d --master 1 --name test --token 0ab46344f7f62488f771f1332feeabf6 --worker 1 --k3s-install-script https://get.k3s.io --api-port 172.18.200.5:6443 --image rancher/k3s:v1.21.7-k3s1 --ports '80:80@loadbalancer' --ports '443:443@loadbalancer'		
-		]]>
-		</screen>
-
 		<section>
-			<title>验证集群是否工作正常</title>
+			<title>命令行创建集群</title>
+			<para>创建 k3d 集群</para>
+			<screen>
+			<![CDATA[
+autok3s create --provider k3d --master 1 --name test --worker 1 --api-port 0.0.0.0:6443 --image rancher/k3s:v1.21.7-k3s1		
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>私有镜像库</title>
+			<para>指定私有镜像库</para>
+			<screen>
+			<![CDATA[
+autok3s create --provider  k3d --master  1 --name  test --worker  1 --api-port  0.0.0.0:6443 --image  rancher/k3s:v1.21.7-k3s1 --registry  https://registry.netkiller.cn		
+			]]>
+			</screen>
+			<para>https://rancher.com/docs/k3s/latest/en/installation/private-registry/</para>
+		</section>
+		<section>
+			<title>暴漏 80/443</title>
+			<para>给宿主主机暴漏 ingress 80/443 端口</para>
+			<screen>
+			<![CDATA[
+autok3s create --provider k3d --master 1 --name test --token 0ab46344f7f62488f771f1332feeabf6 --worker 1 --k3s-install-script https://get.k3s.io --api-port 172.18.200.5:6443 --image rancher/k3s:v1.21.7-k3s1 --ports '80:80@loadbalancer' --ports '443:443@loadbalancer'		
+			]]>
+			</screen>
+			<para>验证集群是否工作正常</para>
 			<screen>
 				<![CDATA[
 kubectl create deployment nginx --image=nginx:alpine
@@ -254,6 +182,128 @@ Commercial support is available at
 <p><em>Thank you for using nginx.</em></p>
 </body>
 </html>		
+		]]>
+			</screen>
+		</section>
+		<section>
+			<title>扩展本地存储</title>
+			<para>服务器是OS安装在一块 256G 的 SSD 上，默认本地存储路径是 /var/lib/rancher/k3s/storage，我们需要扩展本地存储的空间容量，有两个方案：</para>
+			<para>将 1TB 硬盘挂载到 /var/lib/rancher/k3s/storage，另一种方案，由于1TB硬盘已经在使用，并且挂载到了 /opt 目录，这时我们使用 --volumes '/opt/kubernetes:/var/lib/rancher/k3s/storage' 将 /var/lib/rancher/k3s/storage 挂载到 /opt/kubernetes 目录。</para>
+			<screen>
+			<![CDATA[
+autok3s create --provider k3d --master 1 --name dev --token 7fc4b9a088a3c02ed9f3285359f1d322 --worker 1 --k3s-install-script https://get.k3s.io --api-port 0.0.0.0:26080 --image rancher/k3s:v1.21.7-k3s1 --volumes '/opt/kubernetes:/var/lib/rancher/k3s/storage'			
+			]]>
+			</screen>
+			<para>配置节点路径映射，修改 local-path-config</para>
+			<screen>
+			<![CDATA[
+config.json: |-
+        {
+                "nodePathMap":[
+                {
+                        "node":"DEFAULT_PATH_FOR_NON_LISTED_NODES",
+                        "paths":["/opt/local-path-provisioner"]
+                },
+                {
+                        "node":"yasker-lp-dev1",
+                        "paths":["/opt/local-path-provisioner", "/data1"]
+                },
+                {
+                        "node":"yasker-lp-dev3",
+                        "paths":[]
+                }
+                ]
+        }			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Agent 代理安装</title>
+			<para></para>
+			<screen>
+			<![CDATA[
+hostnamectl set-hostname node1			
+			]]>
+			</screen>
+			<para>查看 Master Token</para>
+			<screen>
+			<![CDATA[
+[docker@master ~]$ docker ps | egrep "k3d.*server" |grep -v lb
+12b9c210b858   rancher/k3s:v1.21.7-k3s1   "/bin/k3d-entrypoint…"   2 days ago          Up 2 days           k3d-test-server-0
+
+[docker@master ~]$ docker exec -it k3d-test-server-0 cat /var/lib/rancher/k3s/server/node-token
+K1083de74aba3f4fe80d744ab2a506d037165f4c475d0ca3636d48a371aac6ef0ac::server:0ab46344f7f62488f771f1332feeabf6
+			]]>
+			</screen>
+			<para>在节点服务器安装代理</para>
+			<screen>
+			<![CDATA[
+SERVER=172.18.200.5
+TOKEN=K1083de74aba3f4fe80d744ab2a506d037165f4c475d0ca3636d48a371aac6ef0ac::server:0ab46344f7f62488f771f1332feeabf6
+curl -sfL https://rancher-mirror.oss-cn-beijing.aliyuncs.com/k3s/k3s-install.sh | INSTALL_K3S_MIRROR=cn K3S_URL=https://${SERVER}:6443 K3S_TOKEN=${TOKEN} sh -
+systemctl enable k3s-agent
+			]]>
+			</screen>
+			<para>回到 Master 查看节点</para>
+			<screen>
+			<![CDATA[
+[root@master ~]# kubectl get node
+NAME                    STATUS   ROLES                  AGE    VERSION
+localhost.localdomain   Ready    control-plane,master   28m    v1.24.4+k3s1
+node1                   Ready    <none>                 117s   v1.24.4+k3s1			
+			]]>
+			</screen>
+			<para>如果此前已经安装了 K3s，需要手工加入 Master</para>
+			<screen>
+			<![CDATA[
+k3s agent --server https://10.12.1.40:6443 --token "K1083de74aba3f4fe80d744ab2a506d037165f4c475d0ca3636d48a371aac6ef0ac::server:0ab46344f7f62488f771f1332feeabf6"
+			]]>
+			</screen>
+			<para>也可以修改环境变量配置文件</para>
+			<screen>
+			<![CDATA[
+[root@node1 ~]# cat /etc/systemd/system/k3s-agent.service.env
+K3S_TOKEN="K1083de74aba3f4fe80d744ab2a506d037165f4c475d0ca3636d48a371aac6ef0ac::server:0ab46344f7f62488f771f1332feeabf6"
+K3S_URL="https://172.18.200.5:6443"			
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section id="k3s.server">
+		<title>安装 K3s</title>
+		<para>K3S 的安装方式有多种，官方提供的 k3s-install.sh，还有第三方的 k3d 和 k3sup</para>
+		<section>
+			<title>Server 服务安装</title>
+			<para></para>
+			<screen>
+			<![CDATA[
+hostnamectl set-hostname master
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+curl -sfL https://get.k3s.io | sh -			
+			]]>
+			</screen>
+			<para>国内镜像</para>
+			<screen>
+		<![CDATA[
+curl -sfL http://rancher-mirror.cnrancher.com/k3s/k3s-install.sh | INSTALL_K3S_MIRROR=cn sh -
+systemctl enable k3s
+		]]>
+			</screen>
+			<para>查看节点启动状态</para>
+			<screen>
+			<![CDATA[
+[root@master ~]# kubectl get node
+NAME                    STATUS   ROLES                  AGE    VERSION
+localhost.localdomain   Ready    control-plane,master   28m    v1.24.4+k3s1
+			]]>
+			</screen>
+			<para>查看节点 Pod 状态</para>
+			<screen>
+		<![CDATA[
+kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml get pods --all-namespaces
 		]]>
 			</screen>
 		</section>
