@@ -11,6 +11,13 @@
 modprobe ip_tables		
 		]]>
 		</screen>
+		<screen>
+		<![CDATA[
+/etc/modules-load.d/k3s.conf		
+ip_conntrack
+br_netfilter
+		]]>
+		</screen>
 		<para>设置主机名</para>
 		<screen>
 			<![CDATA[
@@ -114,7 +121,7 @@ autok3s create --provider k3d --master 1 --name test --token 0ab46344f7f62488f77
 			<para>验证集群是否工作正常</para>
 			<screen>
 				<![CDATA[
-kubectl create deployment nginx --image=nginx:alpine
+l
 kubectl create service clusterip nginx --tcp=80:80
 
 cat <<EOF | kubectl apply -f -
@@ -244,6 +251,14 @@ curl -sfL https://rancher-mirror.oss-cn-beijing.aliyuncs.com/k3s/k3s-install.sh 
 systemctl enable k3s-agent
 			]]>
 			</screen>
+			<para>加入集群</para>
+			<screen>
+			<![CDATA[
+K3S_TOKEN="K104fddbe58cad213694b0346db17ae060fc0974e7cfdbb9063aa1309363de16996::server:0ab46344f7f62488f771f1332feeabf6"
+K3S_URL="https://172.18.200.5:6443"
+curl -sfL https://rancher-mirror.oss-cn-beijing.aliyuncs.com/k3s/k3s-install.sh | INSTALL_K3S_MIRROR=cn K3S_URL=${K3S_URL} K3S_TOKEN=${K3S_TOKEN} sh -s - --docker				
+			]]>
+			</screen>
 			<para>回到 Master 查看节点</para>
 			<screen>
 			<![CDATA[
@@ -267,6 +282,103 @@ K3S_TOKEN="K1083de74aba3f4fe80d744ab2a506d037165f4c475d0ca3636d48a371aac6ef0ac::
 K3S_URL="https://172.18.200.5:6443"			
 			]]>
 			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+> kubectl describe nodes agent-1 
+Name:               agent-1
+Roles:              <none>
+Labels:             beta.kubernetes.io/arch=amd64
+                    beta.kubernetes.io/instance-type=k3s
+                    beta.kubernetes.io/os=linux
+                    egress.k3s.io/cluster=true
+                    kubernetes.io/arch=amd64
+                    kubernetes.io/hostname=agent-1
+                    kubernetes.io/os=linux
+                    node.kubernetes.io/instance-type=k3s
+Annotations:        flannel.alpha.coreos.com/backend-data: {"VNI":1,"VtepMAC":"0e:14:1e:7c:fc:e9"}
+                    flannel.alpha.coreos.com/backend-type: vxlan
+                    flannel.alpha.coreos.com/kube-subnet-manager: true
+                    flannel.alpha.coreos.com/public-ip: 172.18.200.51
+                    k3s.io/hostname: agent-1
+                    k3s.io/internal-ip: 172.18.200.51
+                    k3s.io/node-args: ["agent"]
+                    k3s.io/node-config-hash: HJIVMRMG74UTQMXBAZD4NLDPY3FZHN7PYGB7RA7CUGXEDUTUTBTQ====
+                    k3s.io/node-env:
+                      {"K3S_DATA_DIR":"/var/lib/rancher/k3s/data/577968fa3d58539cc4265245941b7be688833e6bf5ad7869fa2afe02f15f1cd2","K3S_TOKEN":"********","K3S_U...
+                    node.alpha.kubernetes.io/ttl: 0
+                    volumes.kubernetes.io/controller-managed-attach-detach: true
+CreationTimestamp:  Tue, 06 Sep 2022 17:33:21 +0000
+Taints:             <none>
+Unschedulable:      false
+Lease:
+  HolderIdentity:  agent-1
+  AcquireTime:     <unset>
+  RenewTime:       Wed, 07 Sep 2022 18:40:08 +0000
+Conditions:
+  Type             Status  LastHeartbeatTime                 LastTransitionTime                Reason                       Message
+  ----             ------  -----------------                 ------------------                ------                       -------
+  MemoryPressure   False   Wed, 07 Sep 2022 18:35:57 +0000   Wed, 07 Sep 2022 03:48:43 +0000   KubeletHasSufficientMemory   kubelet has sufficient memory available
+  DiskPressure     False   Wed, 07 Sep 2022 18:35:57 +0000   Wed, 07 Sep 2022 03:48:43 +0000   KubeletHasNoDiskPressure     kubelet has no disk pressure
+  PIDPressure      False   Wed, 07 Sep 2022 18:35:57 +0000   Wed, 07 Sep 2022 03:48:43 +0000   KubeletHasSufficientPID      kubelet has sufficient PID available
+  Ready            True    Wed, 07 Sep 2022 18:35:57 +0000   Wed, 07 Sep 2022 03:48:43 +0000   KubeletReady                 kubelet is posting ready status
+Addresses:
+  InternalIP:  172.18.200.51
+  Hostname:    agent-1
+Capacity:
+  cpu:                16
+  ephemeral-storage:  181197372Ki
+  hugepages-1Gi:      0
+  hugepages-2Mi:      0
+  memory:             65237592Ki
+  pods:               110
+Allocatable:
+  cpu:                16
+  ephemeral-storage:  176268803344
+  hugepages-1Gi:      0
+  hugepages-2Mi:      0
+  memory:             65237592Ki
+  pods:               110
+System Info:
+  Machine ID:                 bfc31b708a794f8bad984bd60770ed0f
+  System UUID:                1514a1f0-c451-11eb-8522-ac3ccdeb3900
+  Boot ID:                    5c0c8375-220a-4abd-8a6d-7debafc6a331
+  Kernel Version:             5.14.0-70.22.1.el9_0.x86_64
+  OS Image:                   AlmaLinux 9.0 (Emerald Puma)
+  Operating System:           linux
+  Architecture:               amd64
+  Container Runtime Version:  containerd://1.6.6-k3s1
+  Kubelet Version:            v1.24.4+k3s1
+  Kube-Proxy Version:         v1.24.4+k3s1
+PodCIDR:                      10.42.2.0/24
+PodCIDRs:                     10.42.2.0/24
+ProviderID:                   k3s://agent-1
+Non-terminated Pods:          (11 in total)
+  Namespace                   Name                       CPU Requests  CPU Limits  Memory Requests  Memory Limits  AGE
+  ---------                   ----                       ------------  ----------  ---------------  -------------  ---
+  kube-system                 svclb-traefik-hhvvv        0 (0%)        0 (0%)      0 (0%)           0 (0%)         25h
+  default                     nacos-0                    0 (0%)        0 (0%)      0 (0%)           0 (0%)         14h
+  default                     nacos-1                    0 (0%)        0 (0%)      0 (0%)           0 (0%)         14h
+  default                     elasticsearch-data-1       0 (0%)        0 (0%)      0 (0%)           0 (0%)         36m
+  default                     nginx-565785f75c-gmblp     0 (0%)        0 (0%)      0 (0%)           0 (0%)         35m
+  default                     nginx-565785f75c-lhhcl     0 (0%)        0 (0%)      0 (0%)           0 (0%)         30m
+  default                     nginx-565785f75c-rpc4k     0 (0%)        0 (0%)      0 (0%)           0 (0%)         29m
+  default                     nginx-565785f75c-fr2s7     0 (0%)        0 (0%)      0 (0%)           0 (0%)         29m
+  default                     nginx-565785f75c-5rjj9     0 (0%)        0 (0%)      0 (0%)           0 (0%)         29m
+  default                     nginx-565785f75c-2bc9p     0 (0%)        0 (0%)      0 (0%)           0 (0%)         28m
+  default                     quickstart-es-default-0    100m (0%)     100m (0%)   2Gi (3%)         2Gi (3%)       10h
+Allocated resources:
+  (Total limits may be over 100 percent, i.e., overcommitted.)
+  Resource           Requests   Limits
+  --------           --------   ------
+  cpu                100m (0%)  100m (0%)
+  memory             2Gi (3%)   2Gi (3%)
+  ephemeral-storage  0 (0%)     0 (0%)
+  hugepages-1Gi      0 (0%)     0 (0%)
+  hugepages-2Mi      0 (0%)     0 (0%)
+Events:              <none>			
+			]]>
+			</screen>
 		</section>
 	</section>
 	<section id="k3s.server">
@@ -280,6 +392,7 @@ K3S_URL="https://172.18.200.5:6443"
 hostnamectl set-hostname master
 			]]>
 			</screen>
+			<para>运行在虚拟机之下</para>
 			<screen>
 			<![CDATA[
 curl -sfL https://get.k3s.io | sh -			
@@ -291,6 +404,12 @@ curl -sfL https://get.k3s.io | sh -
 curl -sfL http://rancher-mirror.cnrancher.com/k3s/k3s-install.sh | INSTALL_K3S_MIRROR=cn sh -
 systemctl enable k3s
 		]]>
+			</screen>
+			<para>Docker 方式安装</para>
+			<screen>
+			<![CDATA[
+curl -sfL https://rancher-mirror.oss-cn-beijing.aliyuncs.com/k3s/k3s-install.sh | INSTALL_K3S_MIRROR=cn sh -s - --docker				
+			]]>
 			</screen>
 			<para>查看节点启动状态</para>
 			<screen>
