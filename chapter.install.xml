@@ -206,32 +206,34 @@ visudo -c
 		</section>
 
 		<section>
-			<title>阿里云 Rocky Linux 镜像初始化</title>
-			<para>首次安装后初始化系统</para>
-			<screen>
+			<title>阿里云</title>
+			<section>
+				<title>阿里云 Rocky Linux 镜像初始化</title>
+				<para>首次安装后初始化系统</para>
+				<screen>
 		<![CDATA[ 
 cp /etc/dnf/dnf.conf{,.original} 
 echo "fastestmirror=true" >> /etc/dnf/dnf.conf
 dnf makecache 
 		]]>
-			</screen>
-			<para>Extra Packages for Enterprise Linux repository configuration</para>
-			<screen>
+				</screen>
+				<para>Extra Packages for Enterprise Linux repository configuration</para>
+				<screen>
 			<![CDATA[
 dnf -y upgrade
 dnf -y install epel-release
 			]]>
-			</screen>
-			<para>管理员常用工具</para>
-			<screen>
+				</screen>
+				<para>管理员常用工具</para>
+				<screen>
 			<![CDATA[
 dnf install -y bzip2 tree psmisc \
 telnet wget rsync vim-enhanced \
 net-tools bind-utils			
 			]]>
-			</screen>
-			<para>设置终端字符集（这样对 macOS 更友好），还可以解决 Failed to set locale, defaulting to C.UTF-8 问题</para>
-			<screen>
+				</screen>
+				<para>设置终端字符集（这样对 macOS 更友好），还可以解决 Failed to set locale, defaulting to C.UTF-8 问题</para>
+				<screen>
 			<![CDATA[
 dnf install -y langpacks-en glibc-langpack-en
 localectl set-locale LANG=en_US.UTF-8
@@ -242,10 +244,10 @@ LANG=en_US.UTF-8
 LC_CTYPE=UTF-8
 EOF
 			]]>
-			</screen>
-			<!-- dnf install langpacks-en glibc-all-langpacks -y -->
-			<para>设置历史记录格式，可以看到命令的执行时间</para>
-			<screen>
+				</screen>
+				<!-- dnf install langpacks-en glibc-all-langpacks -y -->
+				<para>设置历史记录格式，可以看到命令的执行时间</para>
+				<screen>
 			<![CDATA[			
 cat >> /etc/profile.d/history.sh <<EOF
 # Administrator specific aliases and functions for system security
@@ -257,9 +259,9 @@ EOF
 
 source /etc/profile.d/history.sh
 			]]>
-			</screen>
-			<para>sysctl 优化</para>
-			<screen>
+				</screen>
+				<para>sysctl 优化</para>
+				<screen>
 			<![CDATA[
 cat >> /etc/sysctl.conf <<EOF
 
@@ -274,35 +276,35 @@ EOF
 
 sysctl -p			
 			]]>
-			</screen>
-			<para>确认 ulimit 已经优化</para>
-			<screen>
+				</screen>
+				<para>确认 ulimit 已经优化</para>
+				<screen>
 			<![CDATA[
 # grep "^*" /etc/security/limits.conf
 * soft nofile 65535
 * hard nofile 65535	
 			]]>
-			</screen>
-			<para>设置时区</para>
-			<screen>
+				</screen>
+				<para>设置时区</para>
+				<screen>
 			<![CDATA[
 timedatectl set-timezone Asia/Shanghai			
 			]]>
-			</screen>
-			<para>确认时间同步服务器 chronyd 工作正常</para>
-			<screen>
+				</screen>
+				<para>确认时间同步服务器 chronyd 工作正常</para>
+				<screen>
 			<![CDATA[
 systemctl status chronyd
 			]]>
-			</screen>
-			<para>zmodem 用来上传和下载文件（注意 macOS 的 Terminal.app 不支持）</para>
-			<screen>
+				</screen>
+				<para>zmodem 用来上传和下载文件（注意 macOS 的 Terminal.app 不支持）</para>
+				<screen>
 			<![CDATA[
 dnf install -y lrzsz			
 			]]>
-			</screen>
-			<para>优化 SSH</para>
-			<screen>
+				</screen>
+				<para>优化 SSH</para>
+				<screen>
 			<![CDATA[
 cp /etc/ssh/sshd_config{,.original}
 
@@ -316,10 +318,10 @@ vim /etc/ssh/sshd_config <<EOF > /dev/null 2>&1
 :wq
 EOF
 			]]>
-			</screen>
-			<para>禁止 root 登陆，开启 sudo</para>
-			<para>禁用普通用户，我们需要一个普通用户登陆，然后使用 sudo 暂时获得 root 权限，我不打算新建一个用户，发现系统里面内置了 operator 这个操作员用户符合我的需求。</para>
-			<screen>
+				</screen>
+				<para>禁止 root 登陆，开启 sudo</para>
+				<para>禁用普通用户，我们需要一个普通用户登陆，然后使用 sudo 暂时获得 root 权限，我不打算新建一个用户，发现系统里面内置了 operator 这个操作员用户符合我的需求。</para>
+				<screen>
 			<![CDATA[
 usermod -s /bin/bash -aG wheel operator
 
@@ -328,9 +330,9 @@ PASSWORD=$(cat /dev/urandom | tr -dc [:alnum:] | head -c 32)
 echo operator:${PASSWORD} | chpasswd
 echo "operator password: ${PASSWORD}"			
 			]]>
-			</screen>
-			<para>将 /usr/local/sbin:/usr/local/bin 路径加入到 Defaults secure_path = /sbin:/bin:/usr/sbin:/usr/bin，否则sudo找不到 /usr/local/sbin:/usr/local/bin 中的可执行文件。</para>
-			<screen>
+				</screen>
+				<para>将 /usr/local/sbin:/usr/local/bin 路径加入到 Defaults secure_path = /sbin:/bin:/usr/sbin:/usr/bin，否则sudo找不到 /usr/local/sbin:/usr/local/bin 中的可执行文件。</para>
+				<screen>
 			<![CDATA[
 sed -i "s/#PermitRootLogin yes/PermitRootLogin no/" /etc/ssh/sshd_config
 systemctl restart sshd
@@ -341,83 +343,17 @@ sed -i '88s#$#:/usr/local/sbin:/usr/local/bin#' /etc/sudoers
 
 visudo -c
 			]]>
-			</screen>
-		</section>
-		<section>
-			<title>启用 rc.local</title>
-			<para>/etc/rc.local 是一个开机启动脚本</para>
-			<screen>
-		<![CDATA[
-[root@testing ~]# cat /etc/rc.local
-#!/bin/bash
-# THIS FILE IS ADDED FOR COMPATIBILITY PURPOSES
-#
-# It is highly advisable to create own systemd services or udev rules
-# to run scripts during boot instead of using this file.
-#
-# In contrast to previous versions due to parallel execution during boot
-# this script will NOT be run after all other services.
-#
-# Please note that you must run 'chmod +x /etc/rc.d/rc.local' to ensure
-# that this script will be executed during boot.
-
-touch /var/lock/subsys/local		
-		]]>
-			</screen>
-			<para>如果你想使用 rc.local 需要做如下配置</para>
-			<para>rc-local.service 需要做如下配置</para>
-			<screen>
-			<![CDATA[
-cat >> /lib/systemd/system/rc-local.service <<EOF
-
-[Install]
-WantedBy=multi-user.target
-EOF
-			]]>
-			</screen>
-			<para>配置执行权限</para>
-			<screen>
-		<![CDATA[
-[root@cloud ~]# ll /etc/rc.d/rc.local
--rw-r--r--. 1 root root 474 2022-03-15 23:59 /etc/rc.d/rc.local
-
-[root@cloud ~]# chmod +x /etc/rc.d/rc.local 
-
-[root@cloud ~]# ll /etc/rc.d/rc.local
--rwxr-xr-x. 1 root root 474 2022-03-15 23:59 /etc/rc.d/rc.local		
-		]]>
-			</screen>
-			<para>启动 rc-local</para>
-			<screen>
-		<![CDATA[
-[root@testing ~]# systemctl enable rc-local
-Created symlink /etc/systemd/system/multi-user.target.wants/rc-local.service → /usr/lib/systemd/system/rc-local.service.
-
-[root@testing ~]# systemctl start rc-local	
-
-[root@testing ~]# systemctl status rc-local
-● rc-local.service - /etc/rc.d/rc.local Compatibility
-   Loaded: loaded (/usr/lib/systemd/system/rc-local.service; enabled; vendor preset: disabled)
-   Active: active (exited) since Mon 2021-08-16 12:57:16 CST; 2s ago
-     Docs: man:systemd-rc-local-generator(8)
-  Process: 532000 ExecStart=/etc/rc.d/rc.local start (code=exited, status=0/SUCCESS)
-
-Aug 16 12:57:16 testing systemd[1]: Starting /etc/rc.d/rc.local Compatibility...
-Aug 16 12:57:16 testing systemd[1]: Started /etc/rc.d/rc.local Compatibility.	
-		]]>
-			</screen>
-		</section>
-		<section>
-			<title>Python 环境</title>
-			<screen>
+				</screen>
+			</section>
+			<section>
+				<title>Python 环境</title>
+				<screen>
 		<![CDATA[
 dnf remove -y python36
 dnf install -y python39		
 		]]>
-			</screen>
-		</section>
-		<section>
-			<title>阿里云</title>
+				</screen>
+			</section>
 			<section>
 				<title>阿里云平台 Rocky Linux 系统 BUG</title>
 				<para>系统更新链接不上</para>
@@ -585,6 +521,70 @@ Swap:             7           0           7
 				]]>
 					</screen>
 				</example>
+			</section>
+			<section>
+				<title>启用 rc.local</title>
+				<para>/etc/rc.local 是一个开机启动脚本</para>
+				<screen>
+		<![CDATA[
+[root@testing ~]# cat /etc/rc.local
+#!/bin/bash
+# THIS FILE IS ADDED FOR COMPATIBILITY PURPOSES
+#
+# It is highly advisable to create own systemd services or udev rules
+# to run scripts during boot instead of using this file.
+#
+# In contrast to previous versions due to parallel execution during boot
+# this script will NOT be run after all other services.
+#
+# Please note that you must run 'chmod +x /etc/rc.d/rc.local' to ensure
+# that this script will be executed during boot.
+
+touch /var/lock/subsys/local		
+		]]>
+				</screen>
+				<para>如果你想使用 rc.local 需要做如下配置</para>
+				<para>rc-local.service 需要做如下配置</para>
+				<screen>
+			<![CDATA[
+cat >> /lib/systemd/system/rc-local.service <<EOF
+
+[Install]
+WantedBy=multi-user.target
+EOF
+			]]>
+				</screen>
+				<para>配置执行权限</para>
+				<screen>
+		<![CDATA[
+[root@cloud ~]# ll /etc/rc.d/rc.local
+-rw-r--r--. 1 root root 474 2022-03-15 23:59 /etc/rc.d/rc.local
+
+[root@cloud ~]# chmod +x /etc/rc.d/rc.local 
+
+[root@cloud ~]# ll /etc/rc.d/rc.local
+-rwxr-xr-x. 1 root root 474 2022-03-15 23:59 /etc/rc.d/rc.local		
+		]]>
+				</screen>
+				<para>启动 rc-local</para>
+				<screen>
+		<![CDATA[
+[root@testing ~]# systemctl enable rc-local
+Created symlink /etc/systemd/system/multi-user.target.wants/rc-local.service → /usr/lib/systemd/system/rc-local.service.
+
+[root@testing ~]# systemctl start rc-local	
+
+[root@testing ~]# systemctl status rc-local
+● rc-local.service - /etc/rc.d/rc.local Compatibility
+   Loaded: loaded (/usr/lib/systemd/system/rc-local.service; enabled; vendor preset: disabled)
+   Active: active (exited) since Mon 2021-08-16 12:57:16 CST; 2s ago
+     Docs: man:systemd-rc-local-generator(8)
+  Process: 532000 ExecStart=/etc/rc.d/rc.local start (code=exited, status=0/SUCCESS)
+
+Aug 16 12:57:16 testing systemd[1]: Starting /etc/rc.d/rc.local Compatibility...
+Aug 16 12:57:16 testing systemd[1]: Started /etc/rc.d/rc.local Compatibility.	
+		]]>
+				</screen>
 			</section>
 		</section>
 	</section>

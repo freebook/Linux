@@ -609,7 +609,7 @@ $ cat /proc/net/nf_conntrack
 		<para>Wireshark is a network protocol analyzer for Unix and Windows.</para>
 		<para>http://www.wireshark.org/</para>
 	</section>
-	<section>
+	<section id="conntrack">
 		<title>conntrack-tools : Manipulate netfilter connection tracking table and run High Availability</title>
 		<screen>
 		<![CDATA[
@@ -617,5 +617,93 @@ dnf install -y conntrack-tools
 sudo conntrack -I -s 192.168.7.10 -d 10.1.1.1 --protonum 17 --timeout 120 --sport 12345 --dport 80		
 		]]>
 		</screen>
+		<section>
+			<title>帮助信息</title>
+			<screen>
+			<![CDATA[
+连接跟踪系统的命令行界面。
+用法：conntrack [命令] [选项]
+ 
+命令：
+  -L [表] [选项]列出conntrack或期望表
+  -G [表]参数获取conntrack或期望值
+  -D [表]参数删除conntrack或期望
+  -I [表]参数创建连接跟踪或期望
+  -U [table]参数更新conntrack
+  -E [表] [选项]显示事件
+  -F [表]刷新表
+  -C [表]显示计数器
+  -S显示统计
+ 
+表格：conntrack，期望，死亡，未确认
+ 
+Conntrack参数和选项：
+  -n，--src-nat ip源NAT ip
+  -g，--dst-nat ip目标NAT ip
+  -j，-any-nat ip源或目标NAT ip
+  -m，--mark标记设置标记
+  -c，--secmark secmark设置selinux secmark
+  -e，--event-mask eventmask事件掩码，例如。新，毁灭
+  -z，--zero列出时的零计数器
+  -o，--output type [，...]输出格式，例如XML文件
+  -l，--label标签[，...] conntrack标签
+ 
+期望参数和选项：
+  --tuple-src ip预期元组中的源地址
+  --tuple-dst ip预期的元组中的目标地址
+ 
+更新参数和选项：
+  --label-添加标签添加标签
+  --label-del标签删除标签
+ 
+常用参数和选项：
+  -s，-src，-orig-src ip原始方向的源地址
+  -d，--dst，--orig-dst ip原始方向的目标地址
+  -r，--reply-src ip来自回复方向的源地址
+  -q，--reply-dst ip回复方向的目标地址
+  -p，--protonum proto第4层协议，例如'tcp'
+  -f，--family proto第3层协议，例如。 'ipv6'
+  -t，--timeout超时设置超时
+  -u，--status status设置状态，例如保证
+  -w，--zone值设置conntrack区域
+  --orig-zone值设置原始方向的区域
+  --reply-zone值设置回复方向的区域
+  -b，--buffer-size Netlink套接字缓冲区大小
+  --mask-src ip源掩码地址
+  --mask-dst ip目标掩码地址	
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>协议跟踪</title>
+			<screen>
+			<![CDATA[
+[root@agent-1 ~]# conntrack -L -p 'udp'
+udp      17 12 src=10.42.1.41 dst=10.43.0.10 sport=40528 dport=53 [UNREPLIED] src=10.42.0.47 dst=10.42.1.41 sport=53 dport=40528 mark=0 use=1
+udp      17 2 src=10.42.1.41 dst=10.43.0.10 sport=34088 dport=53 [UNREPLIED] src=10.42.0.47 dst=10.42.1.41 sport=53 dport=34088 mark=0 use=1
+udp      17 28 src=172.18.200.51 dst=172.18.200.5 sport=15240 dport=8472 [UNREPLIED] src=172.18.200.5 dst=172.18.200.51 sport=8472 dport=15240 mark=0 use=1
+udp      17 13 src=172.18.200.51 dst=172.18.200.5 sport=25888 dport=8472 [UNREPLIED] src=172.18.200.5 dst=172.18.200.51 sport=8472 dport=25888 mark=0 use=1
+udp      17 11 src=10.42.1.42 dst=10.43.0.10 sport=46765 dport=53 [UNREPLIED] src=10.42.0.47 dst=10.42.1.42 sport=53 dport=46765 mark=0 use=1
+			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+[root@master ~]# nc -l -u -p 1111			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+[root@agent-1 ~]# cat /etc/passwd | nc -u 172.18.200.5 1111		
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+[root@agent-1 ~]# conntrack -L -p 'udp' | grep 1111
+conntrack v1.4.5 (conntrack-tools): 59 flow entries have been shown.
+udp      17 24 src=172.18.200.51 dst=172.18.200.5 sport=26832 dport=1111 [UNREPLIED] src=172.18.200.5 dst=172.18.200.51 sport=1111 dport=26832 mark=0 use=1	
+			]]>
+			</screen>
+		</section>
 	</section>
 </chapter>
