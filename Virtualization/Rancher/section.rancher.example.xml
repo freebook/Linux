@@ -129,4 +129,5 @@ kubectl delete -f https://raw.githubusercontent.com/rancher/local-path-provision
 		]]>
 		</screen>
 	</section>
+
 </section>
