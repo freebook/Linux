@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="Kubernetes.Fluentd">
+	<title>Kubernetes Fluentd</title>
+	<screen>
+	<![CDATA[
+kubectl label nodes 节点名 beta.kubernetes.io/fluentd-ds-ready=true	
+	]]>
+	</screen>
+</section>

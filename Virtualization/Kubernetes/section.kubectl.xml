@@ -350,6 +350,30 @@ $ kubectl create namespace new-namespace
 kubectl label nodes <node-name> <label-key>=<label-value>		
 		]]>
 		</screen>
+		<para>打标签，例如 disk-type=ssd</para>
+		<screen>
+			<![CDATA[
+[root@master ~]# kubectl label nodes agent-1 disk-type=ssd
+node/agent-1 labeled			
+			]]>
+		</screen>
+		<para>查看标签</para>
+		<screen>
+			<![CDATA[
+[root@master ~]# kubectl get node --show-labels
+NAME         STATUS   ROLES    AGE   VERSION   LABELS
+master   Ready    master   42d   v1.17.4   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/arch=amd64,kubernetes.io/hostname=master,kubernetes.io/os=linux,node-role.kubernetes.io/master=
+agent-1   Ready    <none>   42d   v1.17.4   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,disk-type=ssd,kubernetes.io/arch=amd64,kubernetes.io/hostname=agent-1,kubernetes.io/os=linux
+agent-2   Ready    <none>   42d   v1.17.4   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/arch=amd64,kubernetes.io/hostname=agent-2,kubernetes.io/os=linux			
+			]]>
+		</screen>
+		<para>删除标签</para>
+		<screen>
+			<![CDATA[
+[root@master ~]# kubectl label nodes agent-1 disk-type-
+node/agent-1 unlabeled		
+			]]>
+		</screen>
 	</section>
 	<section id="kubectl.pods">
 		<title>Pod 管理</title>
@@ -891,7 +915,9 @@ kubectl scale deployment nginx --replicas=10
 		<screen>
 		<![CDATA[
 kubectl logs <pod-name>
-kubectl logs --previous <pod-name>		
+kubectl logs --previous <pod-name>
+kubectl logs -l app=your-app-name | grep "xxx"
+kubectl logs --selector role=cool-app | grep "xxx"
 		]]>
 		</screen>
 	</section>
@@ -1609,6 +1635,170 @@ kubectl cp netkiller/job-executor-77fc6b4db-5dzxz:logs/info.2022-07-29.log Downl
 kubectl cp Downloads/myfile netkiller/job-executor-77fc6b4db-5dzxz:/tmp/myfile -c job-executor		
 		]]>
 		</screen>
+	</section>
+	<section id="kubectl.describe">
+		<title>describe</title>
+		<section>
+			<title>storageclasses.storage.k8s.io</title>
+			<screen>
+			<![CDATA[
+[root@master ~]# kubectl describe storageclasses.storage.k8s.io
+Name:                  longhorn-storage
+IsDefaultClass:        No
+Annotations:           <none>
+Provisioner:           driver.longhorn.io
+Parameters:            diskSelector=hdd,numberOfReplicas=2,staleReplicaTimeout=2880
+AllowVolumeExpansion:  True
+MountOptions:          <none>
+ReclaimPolicy:         Delete
+VolumeBindingMode:     Immediate
+Events:                <none>
+
+
+Name:            longhorn
+IsDefaultClass:  No
+Annotations:     longhorn.io/last-applied-configmap=kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: longhorn
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+reclaimPolicy: "Delete"
+volumeBindingMode: Immediate
+parameters:
+  numberOfReplicas: "3"
+  staleReplicaTimeout: "30"
+  fromBackup: ""
+  fsType: "ext4"
+  dataLocality: "disabled"
+,storageclass.beta.kubernetes.io/is-default-class=false,storageclass.kubernetes.io/is-default-class=false
+Provisioner:           driver.longhorn.io
+Parameters:            dataLocality=disabled,fromBackup=,fsType=ext4,numberOfReplicas=3,staleReplicaTimeout=30
+AllowVolumeExpansion:  True
+MountOptions:          <none>
+ReclaimPolicy:         Delete
+VolumeBindingMode:     Immediate
+Events:                <none>
+
+
+Name:                  local-path
+IsDefaultClass:        Yes
+Annotations:           objectset.rio.cattle.io/applied=H4sIAAAAAAAA/4yRT+vUMBCGv4rMua1bu1tKwIOu7EUEQdDzNJlux6aZkkwry7LfXbIqrIffn2PyZN7hfXIFXPg7xcQSwEBSiXimaupSxfJ2q6GAiYMDA9/+oKPHlKCAmRQdKoK5AoYgisoSUj5K/5OsJtIqslQWVT3lNM4xUDzJ5VegWJ63CQxMTXogW128+czBvf/gnIQXIwLOBAa8WPTl30qvGkoL2jw5rT2V6ZKUZij+SbG5eZVRDKR0F8SpdDTg6rW8YzCgcSW4FeCxJ/+sjxHTCAbqrhmag20Pw9DbZtfu210z7JuhPnQ719m2w3cOe7fPof81W1DHfLlE2Th/IEUwEDHYkWJe8PCsgJgL8PxVPNsLGPhEnjRr2cSvM33k4Dicv4jLC34g60niiWPSo4S0zhTh9jsAAP//ytgh5S0CAAA,objectset.rio.cattle.io/id=,objectset.rio.cattle.io/owner-gvk=k3s.cattle.io/v1, Kind=Addon,objectset.rio.cattle.io/owner-name=local-storage,objectset.rio.cattle.io/owner-namespace=kube-system,storageclass.beta.kubernetes.io/is-default-class=true,storageclass.kubernetes.io/is-default-class=true
+Provisioner:           rancher.io/local-path
+Parameters:            <none>
+AllowVolumeExpansion:  <unset>
+MountOptions:          <none>
+ReclaimPolicy:         Delete
+VolumeBindingMode:     WaitForFirstConsumer
+Events:                <none>
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>pod</title>
+			<screen>
+			<![CDATA[
+[root@master ~]# kubectl describe pvc
+Name:          elasticsearch-elasticsearch-data-0
+Namespace:     default
+StorageClass:  local-path
+Status:        Bound
+Volume:        pvc-a2ebce5a-9ae1-46e9-ae9f-8840027bf5d8
+Labels:        app=elasticsearch
+               role=data
+Annotations:   pv.kubernetes.io/bind-completed: yes
+               pv.kubernetes.io/bound-by-controller: yes
+               volume.beta.kubernetes.io/storage-provisioner: rancher.io/local-path
+               volume.kubernetes.io/selected-node: agent-1
+               volume.kubernetes.io/storage-provisioner: rancher.io/local-path
+Finalizers:    [kubernetes.io/pvc-protection]
+Capacity:      1Gi
+Access Modes:  RWO
+VolumeMode:    Filesystem
+Used By:       elasticsearch-data-0
+Events:        <none>
+
+
+Name:          elasticsearch-elasticsearch-data-1
+Namespace:     default
+StorageClass:  local-path
+Status:        Bound
+Volume:        pvc-f0d9d5df-9704-44a7-93ff-8a4f431af226
+Labels:        app=elasticsearch
+               role=data
+Annotations:   pv.kubernetes.io/bind-completed: yes
+               pv.kubernetes.io/bound-by-controller: yes
+               volume.beta.kubernetes.io/storage-provisioner: rancher.io/local-path
+               volume.kubernetes.io/selected-node: master
+               volume.kubernetes.io/storage-provisioner: rancher.io/local-path
+Finalizers:    [kubernetes.io/pvc-protection]
+Capacity:      1Gi
+Access Modes:  RWO
+VolumeMode:    Filesystem
+Used By:       elasticsearch-data-1
+Events:        <none>
+
+
+Name:          elasticsearch-elasticsearch-data-2
+Namespace:     default
+StorageClass:  local-path
+Status:        Bound
+Volume:        pvc-722cce94-b2c5-457a-8e01-9a2a52b12128
+Labels:        app=elasticsearch
+               role=data
+Annotations:   pv.kubernetes.io/bind-completed: yes
+               pv.kubernetes.io/bound-by-controller: yes
+               volume.beta.kubernetes.io/storage-provisioner: rancher.io/local-path
+               volume.kubernetes.io/selected-node: agent-1
+               volume.kubernetes.io/storage-provisioner: rancher.io/local-path
+Finalizers:    [kubernetes.io/pvc-protection]
+Capacity:      1Gi
+Access Modes:  RWO
+VolumeMode:    Filesystem
+Used By:       elasticsearch-data-2
+Events:        <none>
+
+
+Name:          longhorn-volv-pvc
+Namespace:     default
+StorageClass:  longhorn
+Status:        Bound
+Volume:        pvc-5dc3ae33-9f86-4650-82ba-a7b681963adc
+Labels:        <none>
+Annotations:   pv.kubernetes.io/bind-completed: yes
+               pv.kubernetes.io/bound-by-controller: yes
+               volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
+               volume.kubernetes.io/storage-provisioner: driver.longhorn.io
+Finalizers:    [kubernetes.io/pvc-protection]
+Capacity:      2Gi
+Access Modes:  RWO
+VolumeMode:    Filesystem
+Used By:       volume-test
+Events:        <none>
+
+
+Name:          redis
+Namespace:     default
+StorageClass:  local-path
+Status:        Pending
+Volume:        
+Labels:        <none>
+Annotations:   <none>
+Finalizers:    [kubernetes.io/pvc-protection]
+Capacity:      
+Access Modes:  
+VolumeMode:    Filesystem
+Used By:       redis-0
+Events:
+  Type    Reason                Age                   From                         Message
+  ----    ------                ----                  ----                         -------
+  Normal  WaitForFirstConsumer  29s (x481 over 120m)  persistentvolume-controller  waiting for first consumer to be created before binding
+[root@master ~]# 
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="kubectl.example">
 		<title>kubectl example</title>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+	<title>Longhorn</title>
+	<para>https://longhorn.io/docs/</para>
+	<section>
+		<title>安装 Longhorn </title>
+		
+		<para></para>
+		<screen>
+		<![CDATA[
+[root@master ~]# dnf install -y jq
+[root@master ~]# dnf install -y iscsi-initiator-utils
+		
+kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v1.3.1/deploy/longhorn.yaml		
+		]]>
+		</screen>
+		<para>检查环境</para>
+		<screen>
+		<![CDATA[
+[root@master ~]# curl -sSfL https://raw.githubusercontent.com/longhorn/longhorn/v1.3.1/scripts/environment_check.sh | bash
+[INFO]  Required dependencies are installed.
+[INFO]  Waiting for longhorn-environment-check pods to become ready (0/3)...
+[INFO]  All longhorn-environment-check pods are ready (3/3).
+[ERROR] nfs-utils is not found in agent-2.
+[ERROR] nfs-utils is not found in agent-1.
+[ERROR] nfs-utils is not found in master.
+[ERROR] Please install missing packages.
+[INFO]  Cleaning up longhorn-environment-check pods...
+[INFO]  Cleanup completed.	
+		]]>
+		</screen>
+		<para>由于我不需要 NFS 所以没有安装 nfs-utils</para>
+	</section>
+	<section>
+		<title>选择磁盘类型</title>
+		<para>首先要给磁盘打上标签，才能使用这个功能</para>
+		<screen>
+		<![CDATA[
+[root@master ~]# lsblk 
+NAME        MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
+sda           8:0    0 931.5G  0 disk 
+`-sda1        8:1    0 931.5G  0 part /opt
+nvme0n1     259:0    0 238.5G  0 disk 
+|-nvme0n1p1 259:1    0   600M  0 part /boot/efi
+|-nvme0n1p2 259:2    0     1G  0 part /boot
+|-nvme0n1p3 259:3    0    64G  0 part [SWAP]
+`-nvme0n1p4 259:4    0 172.9G  0 part /		
+
+[root@master ~]# ls /opt/longhorn/
+longhorn-disk.cfg  replicas
+		]]>
+		</screen>
+		<para>/opt/longhorn/ 被打了 HDD 标签</para>
+		
+		<screen>
+		<![CDATA[
+allowVolumeExpansion: true
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  annotations:
+    field.cattle.io/description: 硬盘存储
+  name: longhorn-storage
+parameters:
+  diskSelector: hdd
+  numberOfReplicas: "3"
+  staleReplicaTimeout: "2880"
+provisioner: driver.longhorn.io
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+		]]>
+		</screen>
+		<para>选择多个标签 diskSelector: "ssd,fast"</para>
+	</section>
+	<section>
+		<title>节点选择</title>
+		<screen>
+		<![CDATA[
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: longhorn
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+parameters:
+  numberOfReplicas: "2"
+  staleReplicaTimeout: "2880"
+  fromBackup: ""
+#  diskSelector: "ssd,fast"
+  nodeSelector: "storage,fast"
+#  recurringJobs: '[{"name":"snap", "task":"snapshot", "cron":"*/1 * * * *", "retain":1},
+#                   {"name":"backup", "task":"backup", "cron":"*/2 * * * *", "retain":1,
+#                    "labels": {"interval":"2m"}}]'		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>FAQ</title>
+		<section>
+			<title>FailedAttachVolume</title>
+			<screen>
+			<![CDATA[
+Type 	Reason 	Updated 	Message 
+Warning	FailedAttachVolume	8 hours ago	AttachVolume.Attach failed for volume "pvc-03796772-abeb-4042-8e5e-63a9b21da0f7" : rpc error: code = DeadlineExceeded desc = volume pvc-03796772-abeb-4042-8e5e-63a9b21da0f7 failed to attach to node master			
+			]]>
+			</screen>
+		</section>
+	</section>
+</section>

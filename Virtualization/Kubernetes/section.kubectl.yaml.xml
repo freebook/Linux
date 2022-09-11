@@ -49,7 +49,7 @@ spec:
     args: [/bin/sh, -c, 'i=0; while true; do echo "$i: $(date)"; i=$((i+1)); sleep 1; done']		
 		]]>
 		</screen>
-		<para></para>
+		<para>创建 pod</para>
 		<screen>
 		<![CDATA[
 iMac:kubernetes neo$ kubectl create -f pod.yaml 
@@ -68,7 +68,7 @@ iMac:kubernetes neo$ kubectl logs counter
 9: Sun Oct  4 12:32:53 UTC 2020
 		]]>
 		</screen>
-		<section>
+		<section id="pod.spec.containers.imagePullPolicy">
 			<title>容器编排</title>
 			<section id="imagePullPolicy ">
 				<title>镜像拉取策略</title>
@@ -77,7 +77,7 @@ iMac:kubernetes neo$ kubectl logs counter
 				<para>imagePullPolicy: Never 只使用本地镜像，从不拉取</para>
 			</section>
 		</section>
-		<section>
+		<section id="pod.spec.hostAliases">
 			<title>指定主机名</title>
 			<screen>
 			<![CDATA[
@@ -106,7 +106,7 @@ spec:
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="pod.spec.containers.env">
 			<title>环境变量</title>
 			<screen>
 			<![CDATA[
@@ -201,7 +201,7 @@ spec:
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="pod.spec.containers.readinessProbe">
 			<title>健康状态检查</title>
 			<para>就绪探针</para>
 			<screen>
@@ -217,7 +217,7 @@ spec:
 			</screen>
 			<para></para>
 		</section>
-		<section id="securityContext">
+		<section id="pod.spec.securityContext">
 			<title>securityContext</title>
 			<section>
 				<title>sysctls</title>
@@ -306,6 +306,161 @@ spec:
 			]]>
 				</screen>
 			</section>
+		</section>
+		<section>
+			<title>nodeName 选择节点</title>
+			<para>首先查看节点名称</para>
+			<screen>
+			<![CDATA[
+[root@master ~]# kubectl get node
+NAME      STATUS   ROLES                  AGE     VERSION
+agent-1   Ready    <none>                 2d13h   v1.24.4+k3s1
+master    Ready    control-plane,master   2d13h   v1.24.4+k3s1
+agent-2   Ready    <none>                 13h     v1.24.4+k3s1			
+			]]>
+			</screen>
+			<para>使用 nodeName: master 选择节点</para>
+			<screen>
+			<![CDATA[
+metadata:
+  name: redis
+  labels:
+    app: redis
+spec:
+  replicas: 1
+  serviceName: redis
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:latest
+          ports:
+            - containerPort: 6379
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: config
+              mountPath: /usr/local/etc/redis.conf
+              subPath: redis.conf
+          livenessProbe:
+            tcpSocket:
+              port: 6379
+            initialDelaySeconds: 60
+            failureThreshold: 3
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          readinessProbe:
+            tcpSocket:
+              port: 6379
+            initialDelaySeconds: 5
+            failureThreshold: 3
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: redis
+        - name: config
+          configMap:
+            name: redis
+      nodeName: master
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: longhorn
+        resources:
+          requests:
+            storage: 2Gi
+apiVersion: apps/v1
+kind: StatefulSet			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>nodeSelector 选择节点</title>
+			<para>首先给节点打标签，例如 disk-type=ssd</para>
+			<screen>
+			<![CDATA[
+[root@master ~]# kubectl label nodes agent-1 disk-type=ssd
+node/agent-1 labeled			
+			]]>
+			</screen>
+			<para>查看标签</para>
+			<screen>
+			<![CDATA[
+[root@master ~]# kubectl get node --show-labels
+NAME         STATUS   ROLES    AGE   VERSION   LABELS
+master   Ready    master   42d   v1.17.4   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/arch=amd64,kubernetes.io/hostname=master,kubernetes.io/os=linux,node-role.kubernetes.io/master=
+agent-1   Ready    <none>   42d   v1.17.4   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,disk-type=ssd,kubernetes.io/arch=amd64,kubernetes.io/hostname=agent-1,kubernetes.io/os=linux
+agent-2   Ready    <none>   42d   v1.17.4   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/arch=amd64,kubernetes.io/hostname=agent-2,kubernetes.io/os=linux			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: busybox
+  labels:
+    app: busybox
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: busybox
+  template:
+    metadata:
+      labels:
+        app: busybox
+    spec:
+      containers:
+      - name: busybox
+        image: busybox
+        imagePullPolicy: IfNotPresent
+        ports:
+          - containerPort: 80
+      # 指定标签节点
+      nodeSelector:
+        disk-type: ssd			
+			]]>
+			</screen>
+			<para>删除标签</para>
+			<screen>
+			<![CDATA[
+[root@master ~]# kubectl label nodes agent-1 disk-type-
+node/agent-1 unlabeled		
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>nodeAffinity 选择节点</title>
+			<screen>
+			<![CDATA[
+nodeAffinity可对应的两种策略：
+preferredDuringScheduling(IgnoredDuringExecution / RequiredDuringExecution) 软策略
+requiredDuringScheduling(IgnoredDuringExecution / RequiredDuringExecution) 硬策略
+
+operator 表达式
+In: label的值在某个列表中
+NotIn：label的值不在某个列表中
+Exists：某个label存在
+DoesNotExist：某个label不存在
+Gt：label的值大于某个值（字符串比较）
+Lt：label的值小于某个值（字符串比较）
+			]]>
+			</screen>
 		</section>
 		<section>
 			<title>Taint（污点）和 Toleration（容忍）</title>
@@ -818,6 +973,22 @@ spec:
 	</section>
 	<section id="Volume">
 		<title>Volume</title>
+		<screen>
+		<![CDATA[
+PersistentVolume 的访问模式（accessModes）有三种：
+
+ReadWriteOnce（RWO）：是最基本的方式，可读可写，但只支持被单个节点挂载。
+ReadOnlyMany（ROX）：可以以只读的方式被多个节点挂载。
+ReadWriteMany（RWX）：这种存储可以以读写的方式被多个节点共享。不是每一种存储都支持这三种方式，像共享方式，目前支持的还比较少，比较常用的是 NFS。在 PVC 绑定 PV 时通常根据两个条件来绑定，一个是存储的大小，另一个就是访问模式。
+
+
+PersistentVolume 的回收策略（persistentVolumeReclaimPolicy，即 PVC 释放卷的时候 PV 该如何操作）也有三种
+
+Retain，不清理, 保留 Volume（需要手动清理）
+Recycle，删除数据，即 rm -rf /thevolume/*（只有 NFS 和 HostPath 支持）
+Delete，删除存储资源，比如删除 AWS EBS 卷（只有 AWS EBS, GCE PD, Azure Disk 和 Cinder 支持）		
+		]]>
+		</screen>
 		<section>
 			<title>local</title>
 			<screen>

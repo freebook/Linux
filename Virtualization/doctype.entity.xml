@@ -46,8 +46,10 @@
 <!ENTITY section.rancher.cli.xml		SYSTEM "Rancher/section.rancher.cli.xml">
 <!ENTITY section.rancher.k3s.xml		SYSTEM "Rancher/section.rancher.k3s.xml">
 <!ENTITY section.rancher.example.xml	SYSTEM "Rancher/section.rancher.example.xml">
+<!ENTITY section.rancher.longhorn.xml	SYSTEM "Rancher/section.rancher.longhorn.xml">
 
 <!ENTITY chapter.container.xml					SYSTEM "chapter.container.xml">
 <!ENTITY section.container.portainer.xml		SYSTEM "section.container.portainer.xml">
 <!ENTITY section.container.helm.xml	  			SYSTEM "section.container.helm.xml">
 <!ENTITY section.container.podman.xml  			SYSTEM "section.container.podman.xml">
+<!ENTITY section.container.netkiller.xml		SYSTEM "section.container.netkiller.xml">

@@ -25,4 +25,40 @@ kubectl cp netkiller/job-executor-77fc6b4db-5dzxz:logs/info.2022-07-29.log Downl
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>waiting for first consumer to be created before binding</title>
+		<para></para>
+		<screen>
+		<![CDATA[
+kubectl describe  sc
+Name:            local-storage
+IsDefaultClass:  No
+Annotations:     kubectl.kubernetes.io/last-applied-configuration={"apiVersion":"storage.k8s.io/v1","kind":"StorageClass","metadata":{"annotations":{},"name":"local-storage"},"provisioner":"kubernetes.io/no-provisioner","volumeBindingMode":"WaitForFirstConsumer"}
+
+Provisioner:           kubernetes.io/no-provisioner
+Parameters:            <none>
+AllowVolumeExpansion:  <unset>
+MountOptions:          <none>
+ReclaimPolicy:         Delete
+VolumeBindingMode:     WaitForFirstConsumer
+Events:                <none>
+		]]>
+		</screen>
+		<para>添加 tolerations</para>
+		<screen>
+		<![CDATA[
+tolerations:
+- effect: NoSchedule
+  key: node-role.kubernetes.io/master
+You may even specify that some service runs only on master node:
+
+nodeSelector:
+  node-role.kubernetes.io/master: ""
+  
+或
+  		
+kubectl taint nodes --all node-role.kubernetes.io/master-		
+		]]>
+		</screen>
+	</section>
 </section>

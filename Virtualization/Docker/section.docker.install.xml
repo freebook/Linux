@@ -41,7 +41,7 @@ uid=986(docker) gid=986(docker) groups=986(docker),10(wheel)
 			<![CDATA[
 cat > /etc/sudoers.d/docker <<-EOF
 docker    ALL=(ALL)    NOPASSWD: ALL			
-EOF			
+EOF
 			]]>
 			</screen>
 			<para>检查 sudo 是否工作正常</para>

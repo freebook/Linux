@@ -381,12 +381,75 @@ Events:              <none>
 			</screen>
 		</section>
 	</section>
-	<section id="k3s.server">
-		<title>安装 K3s</title>
+	<section id="k3s.docker">
+		<title>安装 K3s（Docker 模式）</title>
+		<section>
+			<title>Server</title>
+			<para>设置主机名</para>
+			<screen>
+			<![CDATA[
+hostnamectl set-hostname master
+			]]>
+			</screen>
+			<para>Docker 方式安装</para>
+			<screen>
+			<![CDATA[
+curl -sfL https://rancher-mirror.oss-cn-beijing.aliyuncs.com/k3s/k3s-install.sh | INSTALL_K3S_MIRROR=cn sh -s - --docker				
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Agent</title>
+			<para>设置主机名</para>
+			<screen>
+			<![CDATA[
+hostnamectl set-hostname agent-1			
+			]]>
+			</screen>
+			<para>前往 master 查看 Token</para>
+			<screen>
+			<![CDATA[
+[root@master ~]# cat /var/lib/rancher/k3s/server/node-token
+K10b614928142836a5262a802c0d3056f0047f057c895373651b723697a261b128b::server:1d436565a84f8e4bdd434b17752a2071			
+			]]>
+			</screen>
+			<para>在 Agent 节点服务器执行下面命令，加入 master 集群（Docker 方式）</para>
+			<screen>
+			<![CDATA[
+K3S_TOKEN="K10b614928142836a5262a802c0d3056f0047f057c895373651b723697a261b128b::server:1d436565a84f8e4bdd434b17752a2071"
+K3S_URL="https://172.18.200.5:6443"
+curl -sfL https://rancher-mirror.oss-cn-beijing.aliyuncs.com/k3s/k3s-install.sh | INSTALL_K3S_MIRROR=cn K3S_URL=${K3S_URL} K3S_TOKEN=${K3S_TOKEN} sh -s - --docker
+			]]>
+			</screen>
+			<para>前往 master 查看节点</para>
+			<screen>
+			<![CDATA[
+[root@master ~]# kubectl get node -o wide
+NAME      STATUS     ROLES                  AGE   VERSION        INTERNAL-IP     EXTERNAL-IP   OS-IMAGE                       KERNEL-VERSION                CONTAINER-RUNTIME
+agent-1   Ready      <none>                 2d    v1.24.4+k3s1   172.18.200.51   <none>        AlmaLinux 9.0 (Emerald Puma)   5.14.0-70.22.1.el9_0.x86_64   docker://20.10.17
+master    Ready      control-plane,master   2d    v1.24.4+k3s1   172.18.200.5    <none>        AlmaLinux 9.0 (Emerald Puma)   5.14.0-70.22.1.el9_0.x86_64   docker://20.10.17
+agent-2   NotReady   <none>                 6s    v1.24.4+k3s1   172.18.200.52   <none>        AlmaLinux 9.0 (Emerald Puma)   5.14.0-70.13.1.el9_0.x86_64   docker://20.10.18			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>安装 kube-explorer</title>
+			<para>https://github.com/cnrancher/kube-explorer</para>
+			<screen>
+			<![CDATA[
+docker rm -f kube-explorer
+docker run -itd --name=kube-explorer --restart=unless-stopped --net=host -v /etc/rancher/k3s/k3s.yaml:/etc/rancher/k3s/k3s.yaml:ro -e KUBECONFIG=/etc/rancher/k3s/k3s.yaml cnrancher/kube-explorer:latest
+			]]>
+			</screen>
+			<para>https://127.0.0.1:9443/dashboard/</para>
+		</section>
+	</section>
+	<section id="k3s.vm">
+		<title>安装 K3s（VM 模式）</title>
 		<para>K3S 的安装方式有多种，官方提供的 k3s-install.sh，还有第三方的 k3d 和 k3sup</para>
 		<section>
 			<title>Server 服务安装</title>
-			<para></para>
+			<para>设置主机名</para>
 			<screen>
 			<![CDATA[
 hostnamectl set-hostname master
@@ -400,15 +463,9 @@ curl -sfL https://get.k3s.io | sh -
 			</screen>
 			<para>国内镜像</para>
 			<screen>
-		<![CDATA[
+			<![CDATA[
 curl -sfL http://rancher-mirror.cnrancher.com/k3s/k3s-install.sh | INSTALL_K3S_MIRROR=cn sh -
 systemctl enable k3s
-		]]>
-			</screen>
-			<para>Docker 方式安装</para>
-			<screen>
-			<![CDATA[
-curl -sfL https://rancher-mirror.oss-cn-beijing.aliyuncs.com/k3s/k3s-install.sh | INSTALL_K3S_MIRROR=cn sh -s - --docker				
 			]]>
 			</screen>
 			<para>查看节点启动状态</para>
@@ -421,14 +478,14 @@ localhost.localdomain   Ready    control-plane,master   28m    v1.24.4+k3s1
 			</screen>
 			<para>查看节点 Pod 状态</para>
 			<screen>
-		<![CDATA[
+			<![CDATA[
 kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml get pods --all-namespaces
-		]]>
+			]]>
 			</screen>
 		</section>
 		<section>
 			<title>Agent 代理安装</title>
-			<para></para>
+			<para>设置主机名</para>
 			<screen>
 			<![CDATA[
 hostnamectl set-hostname node1			
@@ -454,6 +511,7 @@ curl -sfL https://rancher-mirror.oss-cn-beijing.aliyuncs.com/k3s/k3s-install.sh 
 systemctl enable k3s-agent
 			]]>
 			</screen>
+
 			<para>回到 Master 查看节点</para>
 			<screen>
 			<![CDATA[
@@ -1162,7 +1220,7 @@ EOF
 
 		</section>
 	</section>
-	
+
 	<section id="k3s.faq">
 		<title>FAQ</title>
 		<section>

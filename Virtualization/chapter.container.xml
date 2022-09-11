@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="container"><!-- <?dbhtml dir="gui" ?> -->
 	<title>容器管理</title>
+	&section.container.netkiller.xml;
 	&section.container.helm.xml;
 	&section.container.portainer.xml;
 	&section.container.podman.xml;

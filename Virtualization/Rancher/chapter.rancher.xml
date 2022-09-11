@@ -136,6 +136,7 @@ rancher-compose --url https://rancher.netkiller.cn/v3 --access-key token-pk9n2 -
 	&section.rancher.cli.xml;
 	&section.rancher.k3s.xml;
 	&section.rancher.example.xml;
+	&section.rancher.longhorn.xml;
 	<section id="rancher.faq">
 		<title>FAQ</title>
 		<section>
