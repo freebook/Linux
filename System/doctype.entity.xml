@@ -16,7 +16,7 @@
 	<!ENTITY section.infomation.device.xml 	SYSTEM "section.infomation.device.xml">
 	
 	<!ENTITY chapter.console.xml			SYSTEM "chapter.console.xml">
-	<!ENTITY chapter.harddisk.xml	 		SYSTEM "chapter.harddisk.xml">
+	<!ENTITY section.disk.hdd.xml	 		SYSTEM "section.disk.hdd.xml">
 	<!ENTITY chapter.filesystem.xml			SYSTEM "chapter.filesystem.xml">
 	<!ENTITY chapter.service.xml	 		SYSTEM "chapter.service.xml">
 	<!ENTITY chapter.service.ubuntu.xml 	SYSTEM "chapter.service.ubuntu.xml">

@@ -7,7 +7,7 @@
 	&chapter.package.xml;
 	&chapter.locale.xml;
 	&chapter.console.xml;
-	&chapter.harddisk.xml;
+	&section.disk.hdd.xml;
 	&chapter.filesystem.xml;
 	&chapter.network.xml;
 	&chapter.service.xml;

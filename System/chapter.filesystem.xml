@@ -105,6 +105,30 @@ mount -o remount /data
 mount -o noatime -o nodiratime -o remount /data
 		]]></screen>
 		<section>
+			<title>绑定目录</title>
+			<para>/etc/fstab 中添加</para>
+			<screen>
+			<![CDATA[
+/opt/storage /var/lib/rancher/k3s/storage none defaults,bind 0 0			
+			]]>
+			</screen>
+			<para>使用 lsblk 查看挂载情况</para>
+			<screen>
+			<![CDATA[
+[root@master ~]# lsblk -a
+NAME        MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
+sda           8:0    0 931.5G  0 disk 
+`-sda1        8:1    0 931.5G  0 part /var/lib/rancher/k3s/storage
+                                      /opt
+nvme0n1     259:0    0 238.5G  0 disk 
+|-nvme0n1p1 259:1    0   600M  0 part /boot/efi
+|-nvme0n1p2 259:2    0     1G  0 part /boot
+|-nvme0n1p3 259:3    0    64G  0 part [SWAP]
+`-nvme0n1p4 259:4    0 172.9G  0 part /			
+			]]>
+			</screen>
+		</section>
+		<section>
 			<title>/etc/fstab 例子</title>
 			<para>/etc/fstab btrfs 实例</para>
 			<screen>
