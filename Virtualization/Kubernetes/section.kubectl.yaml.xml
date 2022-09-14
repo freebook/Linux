@@ -525,9 +525,35 @@ my-service   <none>      2m20s
 		</section>
 		<section>
 			<title>查看服务</title>
+			<screen>
+			<![CDATA[
+> kubectl get service 
+NAME                 TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
+kubernetes           ClusterIP      10.43.0.1       <none>        443/TCP                      4d13h
+nacos                ClusterIP      10.43.175.40    <none>        8848/TCP,9848/TCP,9555/TCP   4d13h
+redis                NodePort       10.43.129.224   <none>        6379:31436/TCP               42h
+kube-explorer        ClusterIP      10.43.208.84    <none>        80/TCP                       36h
+elasticsearch        ClusterIP      10.43.241.136   <none>        9200/TCP,9300/TCP            13h
+elasticsearch-data   ClusterIP      10.43.39.228    <none>        9300/TCP                     13h
+kibana               ClusterIP      10.43.193.15    <none>        80/TCP                       13h
+mysql                ExternalName   <none>          master        3306/TCP                     6m24s
+mongo                ExternalName   <none>          master        27017/TCP                    6m24s			
 
+> kubectl get service -o wide
+NAME                 TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE     SELECTOR
+kubernetes           ClusterIP      10.43.0.1       <none>        443/TCP                      4d13h   <none>
+nacos                ClusterIP      10.43.175.40    <none>        8848/TCP,9848/TCP,9555/TCP   4d13h   app=nacos
+redis                NodePort       10.43.129.224   <none>        6379:31436/TCP               42h     app=redis
+kube-explorer        ClusterIP      10.43.208.84    <none>        80/TCP                       36h     app=kube-explorer
+elasticsearch        ClusterIP      10.43.241.136   <none>        9200/TCP,9300/TCP            13h     app=elasticsearch,role=master
+elasticsearch-data   ClusterIP      10.43.39.228    <none>        9300/TCP                     13h     app=elasticsearch,role=data
+kibana               ClusterIP      10.43.193.15    <none>        80/TCP                       13h     app=kibana
+mysql                ExternalName   <none>          master        3306/TCP                     6m45s   <none>
+mongo                ExternalName   <none>          master        27017/TCP                    6m45s   <none>
+			]]>
+			</screen>
 		</section>
-		<section>
+		<section id="service.spec.externalIPs">
 			<title>设置外部IP</title>
 			<para>报漏 80.11.12.10:80 地址</para>
 			<screen>
@@ -549,7 +575,7 @@ spec:
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="service.spec.ExternalName">
 			<title>绑定外部域名</title>
 			<screen>
 			<![CDATA[
@@ -563,9 +589,42 @@ spec:
   externalName: my.database.example.com			
 			]]>
 			</screen>
+			<para>应用案例，在master节点宿主主机上安装了mysql和mongo地址，pod链接他们可以使用宿主IP链接，或者写 master 主机名。</para>
+			<para>我认为更好的方法使用使用 Service 做一层映射，然后使用统一容器域名访问 mysql.default.svc.cluster.local，mongo.default.svc.cluster.local</para>
+			<screen>
+			<![CDATA[
+metadata:
+  name: mysql
+  namespace: default
+spec:
+  ports:
+    - name: mysql
+      protocol: TCP
+      port: 3306
+      targetPort: 3306
+  type: ExternalName
+  externalName: master
+apiVersion: v1
+kind: Service
+---
+metadata:
+  name: mongo
+  namespace: default
+spec:
+  ports:
+    - name: mongo
+      protocol: TCP
+      port: 27017
+      targetPort: 27017
+  type: ExternalName
+  externalName: master
+apiVersion: v1
+kind: Service			
+			]]>
+			</screen>
 		</section>
 		<section>
-			<title></title>
+			<title>selector</title>
 			<screen>
 			<![CDATA[
 apiVersion: v1

@@ -1583,5 +1583,371 @@ deploy-job:
 		]]>
 			</screen>
 		</section>
+		<section>
+			<title>include 高级用法</title>
+			<para>.gitlab-ci.yml</para>
+			<screen>
+			<![CDATA[
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  # untracked: true
+  paths:
+    - dist
+
+stages:
+  - build
+  # - test
+  - deploy
+  # - docker
+
+build-job:
+  stage: build
+  tags:
+    - feature
+  only:
+    - split
+  except:
+    - development
+  script:
+    # - mvn -T 1C -Dmaven.test.skip=true clean package
+    - mvn -Dmaven.test.skip=true clean package
+
+include:
+  - '.gitlab-ci-docker.yml'
+  - local: '.gitlab-ci-development.yml'
+    rules:
+      - if: '$CI_COMMIT_BRANCH == "development"'
+  - local: '.gitlab-ci-staging.yml'
+    rules:
+      - if: '$CI_COMMIT_BRANCH == "staging"'
+			
+			]]>
+			</screen>
+			<para>.gitlab-ci-development.yml</para>
+			<screen>
+			<![CDATA[
+build development:
+  stage: build
+  # tags:
+    # - cloud
+  only:
+    - development
+  except:
+    - feature
+  before_script:
+    - rm -rf dist && mkdir -p dist
+  script:
+    - mvn -T 1C -Dmaven.test.skip=true clean package
+    # - mvnd clean package
+  after_script:
+    - find . \( ! -path "*/common/*" -a ! -path "*/lib/*" -a ! -path "./dist/*" -a ! -path "./api/*" \) -type f -name "*.jar" -exec \cp -af {} dist \;
+    - find dist/ -type f -name "*.jar" -exec md5sum {} \;
+  # when: manual
+
+all-in-one:
+  stage: deploy
+  # tags:
+    # - cloud
+  only:
+    - development
+  script:
+    # - \cp -af auth/target/*.jar /opt/netkiller.cn/cloud.netkiller.cn
+    # - \cp -af gateway/target/*.jar /opt/netkiller.cn/cloud.netkiller.cn
+    # - \cp -af modules/*/target/*.jar /opt/netkiller.cn/cloud.netkiller.cn
+    # - \cp -af visual/*/target/*.jar /opt/netkiller.cn/cloud.netkiller.cn
+    - \cp -af dist/*.jar /opt/netkiller.cn/cloud.netkiller.cn
+  after_script:
+    - python3 /opt/netkiller.cn/ops.netkiller.cn/docker.py -e experiment up auth incar ms system job activiti chain gateway
+    - python3 /opt/netkiller.cn/ops.netkiller.cn/docker.py -e experiment restart up auth incar ms system job activiti chain gateway
+  when: manual  
+
+
+gateway:
+  extends: .deploy-dev
+  # only:
+    # variables: [ $flag == "true" ]
+  variables:
+    MODULE: gateway
+  environment:
+    url: https://${MODULE}.netkiller.cn
+  script:
+    - \cp -af dist/${MODULE}.jar /opt/netkiller.cn/cloud.netkiller.cn
+  
+auth:
+  extends: .deploy-dev
+  variables:
+    MODULE: auth
+  script:
+    - \cp -af dist/${MODULE}.jar /opt/netkiller.cn/cloud.netkiller.cn
+
+incar:
+  extends: .deploy-dev
+  variables:
+    MODULE: incar
+  script:
+    - \cp -af modules/incar/src/main/resources/CFCA /opt/netkiller.cn/cloud.netkiller.cn/
+    - \cp -af dist/incar.jar /opt/netkiller.cn/cloud.netkiller.cn
+
+ms:
+  extends: .deploy-dev
+  variables:
+    MODULE: ms
+  script:
+    - \cp -af dist/ms.jar /opt/netkiller.cn/cloud.netkiller.cn
+
+system:
+  extends: .deploy-dev
+  variables:
+    MODULE: system
+  script:
+    - \cp -af dist/system.jar /opt/netkiller.cn/cloud.netkiller.cn
+
+job:
+  extends: .deploy-dev
+  variables:
+    MODULE: job
+  script:
+    - \cp -af dist/job.jar /opt/netkiller.cn/cloud.netkiller.cn
+
+activiti:
+  extends: .deploy-dev
+  variables:
+    MODULE: activiti
+  script:
+    - \cp -af dist/activiti.jar /opt/netkiller.cn/cloud.netkiller.cn
+
+chain:
+  extends: .deploy-dev
+  variables:
+    MODULE: chain
+  script:
+    - \cp -af dist/chain.jar /opt/netkiller.cn/cloud.netkiller.cn
+
+msg:
+  extends: .deploy-dev
+  variables:
+    MODULE: msg
+  script:
+    - \cp -af dist/msg.jar /opt/netkiller.cn/cloud.netkiller.cn
+
+xxl-job-admin:
+  extends: .deploy-dev
+  variables:
+    MODULE: xxl-job-admin
+  script:
+    - \cp -af dist/xxl-job-admin.jar /opt/netkiller.cn/cloud.netkiller.cn
+
+ev:
+  extends: .deploy-dev
+  variables:
+    MODULE: ev
+  script:
+    - \cp -af dist/ev.jar /opt/netkiller.cn/cloud.netkiller.cn
+
+sfapi:
+  extends: .deploy-dev
+  variables:
+    MODULE: sfapi
+  script:
+    - \cp -af dist/sfapi.jar /opt/netkiller.cn/cloud.netkiller.cn
+
+.deploy-dev:
+  stage: deploy
+  # tags:
+  # - cloud 
+  only:
+  - development
+  environment:
+    name: development
+  when: manual
+  # before_script:
+    # - mvn -T 1C -Dmaven.test.skip=true clean package
+  after_script:
+    - python3 /opt/netkiller.cn/ops.netkiller.cn/docker.py -e experiment up ${MODULE}
+    - python3 /opt/netkiller.cn/ops.netkiller.cn/docker.py -e experiment restart ${MODULE} 
+    - python3 /opt/netkiller.cn/ops.netkiller.cn/docker.py -e experiment ps ${MODULE}
+
+			]]>
+			</screen>
+			<para>.gitlab-ci-staging.yml</para>
+			<screen>
+			<![CDATA[
+staging build:
+  stage: build
+  only:
+    - staging
+  except:
+    - feature
+  before_script:
+    - rm visual/report-platform/src/main/resources/bootstrap.yml
+    - rm visual/report-platform/src/main/resources/bootstrap-stage.yml
+    # - mv visual/report-platform/src/main/resources/bootstrap-stage.yml visual/report-platform/src/main/resources/bootstrap.yml
+    - ls visual/report-platform/src/main/resources/
+  script:
+    - mvn -T 1C -Dmaven.test.skip=true clean package
+
+staging:
+  stage: deploy
+  only:
+    - staging
+  script:
+    - \cp -f auth/target/*.jar /opt/netkiller.cn/cloud.netkiller.cn
+    - \cp -f gateway/target/*.jar /opt/netkiller.cn/cloud.netkiller.cn
+    - \cp -f modules/*/target/*.jar /opt/netkiller.cn/cloud.netkiller.cn
+    - \cp -f visual/*/target/*.jar /opt/netkiller.cn/cloud.netkiller.cn
+  after_script:
+    - python3 /opt/netkiller.cn/ops.netkiller.cn/docker.py -e stage up
+    - python3 /opt/netkiller.cn/ops.netkiller.cn/docker.py -e stage restart
+  when: manual
+
+report:
+  extends: .deploy-template
+  variables:
+    MODULE: report
+  environment:
+    url: https://report.netkiller.cn
+  script:
+    - wechat -t 3 report.netkiller.cn $CI_COMMIT_AUTHOR Stage 环境「正在部署」
+    - rsync -auzv visual/report-platform/target/*.jar docker@$HOST:/opt/netkiller.cn/cloud.netkiller.cn/
+
+gateway:
+  extends: .deploy-template
+  # only:
+    # variables: [ $flag == "true" ]
+  variables:
+    MODULE: gateway
+  environment:
+    url: https://${MODULE}.netkiller.cn
+  script:
+    - \cp -f ${MODULE}/target/*.jar /opt/netkiller.cn/cloud.netkiller.cn
+  
+auth:
+  extends: .deploy-template
+  variables:
+    MODULE: auth
+  script:
+    - \cp -f ${MODULE}/target/*.jar /opt/netkiller.cn/cloud.netkiller.cn
+
+incar:
+  extends: .deploy-template
+  variables:
+    MODULE: incar
+  script:
+    - \cp -f modules/incar/target/*.jar /opt/netkiller.cn/cloud.netkiller.cn
+
+ms:
+  extends: .deploy-template
+  variables:
+    MODULE: ms
+  script:
+    - \cp -f modules/ms/target/*.jar /opt/netkiller.cn/cloud.netkiller.cn
+
+system:
+  extends: .deploy-template
+  variables:
+    MODULE: system
+  script:
+    - \cp -f modules/system/target/*.jar /opt/netkiller.cn/cloud.netkiller.cn
+
+job:
+  extends: .deploy-template
+  variables:
+    MODULE: job
+  script:
+    - \cp -f modules/job/target/*.jar /opt/netkiller.cn/cloud.netkiller.cn
+
+
+.deploy-template:
+  stage: deploy
+  variables:
+    HOST: uat.netkiller.cn
+  # tags:
+  # - cloud 
+  only:
+  - staging
+  environment:
+    name: staging
+  when: manual
+  before_script:
+    - ssh docker@$HOST "sqldump stage -z"
+    - wechat -t 3 ${MODULE}.netkiller.cn $CI_COMMIT_AUTHOR Stage 环境「备份数据库」
+    # - ssh docker@$HOST "mdump stage -z"
+    # - ssh docker@$HOST "cp /opt/netkiller.cn/api.netkiller.cn/admin.jar /opt/backup/admin.$(date +%Y-%m-%d.%H:%M:%S).jar"
+    # - rm -rf *.json.gz
+    # - redis-dump -h 192.168.30.10 -d '0' | gzip > redis.db0.$(date +%Y-%m-%d.%H:%M:%S).json.gz
+    # - ssh docker@$HOST "sudo docker-compose -f /opt/netkiller.cn/ops.netkiller.cn/docker-compose.yaml exec -it redis redis-cli -n 0 flushdb"
+  after_script:
+    # - md5sum admin/target/*.jar
+    - ssh docker@$HOST "md5sum /opt/netkiller.cn/cloud.netkiller.cn/*.jar"
+    - ssh docker@$HOST "python3 /opt/netkiller.cn/ops.netkiller.cn/docker.py -e stage up ${MODULE}"
+    - ssh docker@$HOST "python3 /opt/netkiller.cn/ops.netkiller.cn/docker.py -e stage restart ${MODULE}"
+    - ssh docker@$HOST "python3 /opt/netkiller.cn/ops.netkiller.cn/docker.py -e stage ps"
+    - wechat -t 3 ${MODULE}.netkiller.cn $CI_COMMIT_AUTHOR Stage 环境「完成部署」
+
+			]]>
+			</screen>
+			<para>.gitlab-ci-feature.yml</para>
+			<screen>
+			<![CDATA[
+build-feature-job:
+  stage: build
+  tags:
+    - feature
+  only:
+    - feature
+  except:
+    - feature
+  script:
+    - mvn -T 1C -Dmaven.test.skip=true clean package
+  # when: manual
+
+# unit-test-job:
+#   stage: test
+#   script:
+#     - echo "Running unit tests... This will take about 60 seconds."
+#     - echo "Code coverage is 90%"
+
+# lint-test-job:
+#   stage: test
+#   script:
+#     - echo "Linting code... This will take about 10 seconds."
+#     - echo "No lint issues found."
+
+deploy-feature-job:
+  stage: build
+  tags:
+    - cloud
+  # variables:
+    # HOST: 192.168.30.7
+  environment:
+    name: feature
+    url: https://api.netkiller.cn
+  only: 
+    # - /^feature\/.*/
+    - feature
+  before_script:
+    - mvn -T 1C -Dmaven.test.skip=true clean package
+  after_script:
+    # - python3 /opt/netkiller.cn/ops.netkiller.cn/docker.py -e experiment up
+    - python3 /opt/netkiller.cn/ops.netkiller.cn/docker.py -e experiment restart
+    - wechat -t 1 cloud.netkiller.cn $CI_COMMIT_AUTHOR 在 $CI_COMMIT_BRANCH 部署完毕
+    # - voice 环境部署完成
+  script:
+    - \cp -f auth/target/*.jar /opt/netkiller.cn/cloud.netkiller.cn
+    - \cp -f gateway/target/*.jar /opt/netkiller.cn/cloud.netkiller.cn
+    - \cp -f modules/*/target/*.jar /opt/netkiller.cn/cloud.netkiller.cn
+    - \cp -f visual/*/target/*.jar /opt/netkiller.cn/cloud.netkiller.cn
+    # - cp -r admin/src/main/resources/CFCA /opt/netkiller.cn/api.netkiller.cn/
+  # when: manual
+
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+			
+			]]>
+			</screen>
+		</section>
 	</section>
 </section>
