@@ -922,7 +922,7 @@ vi /etc/smartd.conf
 			<title>netstat</title>
 			<para>netstat 监控TCP状态</para>
 			<screen><![CDATA[
-#netstat -n | awk ‘/^tcp/ {++S[$NF]} END {for(a in S) print a, S[a]}’
+netstat -n | awk '/^tcp/ {++S[$NF]} END {for(a in S) print a, S[a]}'
 		]]></screen>
 			<screen><![CDATA[
 状态：		描述

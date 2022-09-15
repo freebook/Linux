@@ -61,4 +61,57 @@ kubectl taint nodes --all node-role.kubernetes.io/master-
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>ingress path 映射不生效</title>
+		<para>test1.netkiller.cn 正常，test2.netkiller.cn 无法访问</para>
+		<screen>
+		<![CDATA[
+kind: Ingress
+apiVersion: networking.k8s.io/v1		
+metadata:
+  name: bottleneck
+  labels:
+    app: bottleneck
+  namespace: default
+spec:
+  rules:
+    - host: test1.netkiller.cn
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: bottleneck
+                port:
+                  number: 80
+    - host: test2.netkiller.cn
+      http:
+        paths:
+          - pathType: Prefix
+            path: /bottleneck
+            backend:
+              service:
+                name: bottleneck
+                port:
+                  number: 80
+		]]>
+		</screen>
+		<para>ingress 映射原理</para>
+		<screen>
+		<![CDATA[
+test1.netkiller.cn = http://bottleneck.default.svc.cluster.local/
+test2.netkiller.cn = http://bottleneck.default.svc.cluster.local/bottleneck
+		]]>
+		</screen>
+		<para>如果让 test2.netkiller.cn 生效，以 springboot 框架为例，应该这样设置</para>
+		<screen>
+		<![CDATA[
+server:
+  servlet:
+    context-path: /bottleneck
+  port:  8080
+		]]>
+		</screen>
+	</section>
 </section>

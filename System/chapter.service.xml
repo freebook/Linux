@@ -1,6 +1,107 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="service" ?>
 	<title>服务管理</title>
+	<section id="what">
+		<title>什么是 systemd</title>
+		<para>systemd是Linux电脑操作系统之下的一套中央化系统及设置管理程序（init软件），包括有守护进程、程序库跟应用软件，由Lennart
+			Poettering带头开发。
+			其开发目标是提供更优秀的框架以表示系统服务间的依赖关系，并依此实现系统初始化时服务的并行启动，同时达到降低Shell的系统开销的效果，最终代替现在常用的System
+			V与BSD风格init程序。</para>
+	</section>
+	<section id="why">
+		<title>why-为什么做</title>
+		<para>与多数发行版使用的System V风格init相比，systemd采用了以下新技术：</para>
+		<orderedlist>
+			<listitem>
+				<para>采用Socket激活式与D-Bus激活式服务，以提高相互依赖的各服务的并行运行性能；</para>
+			</listitem>
+			<listitem>
+				<para>用cgroups代替进程ID来追踪进程，以此即使是两次fork之后生成的守护进程也不会脱离systemd的控制。</para>
+			</listitem>
+			<!-- <listitem>
+				<para></para>
+			</listitem> -->
+		</orderedlist>
+	</section>
+	<section id="when">
+		<title>systemd 是何时被采用的</title>
+		<para>CentOS 7 开始系统默认使用 systemd，对于用户来说就是service被systemctl替代了。</para>
+	</section>
+	<section id="where">
+		<title>那些系统使用 systemd</title>
+		<para>基本上从 Redhat 派生出的Linux操作系统基本都切换到了 systemd，Ubuntu也采用了systemd</para>
+	</section>
+	<section id="who">
+		<title>system 是谁开发的</title>
+		<para>由Lennart 	Poettering带头开发</para>
+	</section>
+	<section id="how">
+		<title>怎样编写systemd脚本</title>
+		<para>下面是一个启动tomcat的systemd脚本，以此脚本为例我带大家进入 systemd 的世界。</para>
+		<example>
+			<title>/usr/lib/systemd/system/tomcat.service</title>
+			<screen>
+			<![CDATA[
+####################################################
+# Homepage: http://netkiller.github.io
+# Author: netkiller<netkiller@msn.com>
+# Script: https://github.com/oscm/shell
+# Date: 2015-11-03
+####################################################
+
+[Unit]
+Description=Apache Tomcat Web Application Container
+After=network.target
+After=syslog.target
+
+[Service]
+Type=forking
+
+User=www
+Group=www
+
+#EnvironmentFile=/etc/sysconfig/tomcat
+ExecStartPre="rm -rf /srv/apache-tomcat/logs/*"
+ExecStart=/srv/apache-tomcat/bin/startup.sh
+#ExecStartPost=
+
+ExecStop=/srv/apache-tomcat/bin/shutdown.sh
+
+[Install]
+WantedBy=multi-user.target
+			]]>
+			</screen>
+			<para>脚本安装到 /usr/lib/systemd/system/tomcat.service 下面</para>
+			<screen>
+systemctl enable tomcat
+systemctl start tomcat
+systemctl stop tomcat
+systemctl disable tomcat
+			</screen>
+			<para>启用脚本的时候会创建一个符号链接</para>
+			<screen>
+[neo@netkiller ~]# ll /etc/systemd/system/multi-user.target.wants/tomcat.service 
+lrwxrwxrwx 1 root root 38 Nov  3 04:06 /etc/systemd/system/multi-user.target.wants/tomcat.service -> /usr/lib/systemd/system/tomcat.service
+			</screen>
+		</example>
+		<section>
+			<title>Unit</title>
+			<para>Description 写一段文字描述该脚本</para>
+			<para>After 等待网络就绪后运行</para>
+		</section>
+		<section>
+			<title>Service</title>
+			<para>Type 启动类型</para>
+			<para>User, Group 运行 ExecStart 脚本的用户，相当于 su - user -c ExecStart</para>
+			<para>Environment 环境变量，EnvironmentFile 环境变量文件</para>
+			<para>ExecStartPre 开始之前运行的脚本，ExecStart 启动脚本， ExecStartPost 启动之后运行的脚本</para>
+			<para>ExecStop 停止脚本</para>
+		</section>
+		<section>
+			<title>Install</title>
+			<para>WantedBy=multi-user.target 安装到多用户模式</para>
+		</section>
+	</section>
 	<section id="systemd.service">
 		<title>systemd, init - systemd system and service manager</title>
 		<screen>
