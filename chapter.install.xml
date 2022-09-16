@@ -67,7 +67,8 @@ echo "fastestmirror=true" >> /etc/dnf/dnf.conf
 dnf makecache 
 		]]>
 			</screen>
-			<para>Extra Packages for Enterprise Linux repository configuration</para>
+			<para>Extra Packages for Enterprise Linux repository configuration
+			</para>
 			<screen>
 			<![CDATA[
 dnf -y upgrade
@@ -82,7 +83,8 @@ telnet wget rsync vim-enhanced \
 net-tools bind-utils			
 			]]>
 			</screen>
-			<para>设置终端字符集（这样对 macOS 更友好），还可以解决 Failed to set locale, defaulting to C.UTF-8 问题</para>
+			<para>设置终端字符集（这样对 macOS 更友好），还可以解决 Failed to set locale, defaulting
+				to C.UTF-8 问题</para>
 			<screen>
 			<![CDATA[
 dnf install -y langpacks-en glibc-langpack-en
@@ -179,7 +181,8 @@ EOF
 			]]>
 			</screen>
 			<para>禁止 root 登陆，开启 sudo</para>
-			<para>禁用普通用户，我们需要一个普通用户登陆，然后使用 sudo 暂时获得 root 权限，我不打算新建一个用户，发现系统里面内置了 operator 这个操作员用户符合我的需求。</para>
+			<para>禁用普通用户，我们需要一个普通用户登陆，然后使用 sudo 暂时获得 root 权限，我不打算新建一个用户，发现系统里面内置了
+				operator 这个操作员用户符合我的需求。</para>
 			<screen>
 			<![CDATA[
 usermod -s /bin/bash -aG wheel operator
@@ -190,7 +193,9 @@ echo operator:${PASSWORD} | chpasswd
 echo "operator password: ${PASSWORD}"			
 			]]>
 			</screen>
-			<para>将 /usr/local/sbin:/usr/local/bin 路径加入到 Defaults secure_path = /sbin:/bin:/usr/sbin:/usr/bin，否则sudo找不到 /usr/local/sbin:/usr/local/bin 中的可执行文件。</para>
+			<para>将 /usr/local/sbin:/usr/local/bin 路径加入到 Defaults secure_path =
+				/sbin:/bin:/usr/sbin:/usr/bin，否则sudo找不到
+				/usr/local/sbin:/usr/local/bin 中的可执行文件。</para>
 			<screen>
 			<![CDATA[
 sed -i "s/#PermitRootLogin yes/PermitRootLogin no/" /etc/ssh/sshd_config
@@ -205,388 +210,7 @@ visudo -c
 			</screen>
 		</section>
 
-		<section>
-			<title>阿里云</title>
-			<section>
-				<title>阿里云 Rocky Linux 镜像初始化</title>
-				<para>首次安装后初始化系统</para>
-				<screen>
-		<![CDATA[ 
-cp /etc/dnf/dnf.conf{,.original} 
-echo "fastestmirror=true" >> /etc/dnf/dnf.conf
-dnf makecache 
-		]]>
-				</screen>
-				<para>Extra Packages for Enterprise Linux repository configuration</para>
-				<screen>
-			<![CDATA[
-dnf -y upgrade
-dnf -y install epel-release
-			]]>
-				</screen>
-				<para>管理员常用工具</para>
-				<screen>
-			<![CDATA[
-dnf install -y bzip2 tree psmisc \
-telnet wget rsync vim-enhanced \
-net-tools bind-utils			
-			]]>
-				</screen>
-				<para>设置终端字符集（这样对 macOS 更友好），还可以解决 Failed to set locale, defaulting to C.UTF-8 问题</para>
-				<screen>
-			<![CDATA[
-dnf install -y langpacks-en glibc-langpack-en
-localectl set-locale LANG=en_US.UTF-8
 
-cat >> /etc/environment <<EOF
-LC_ALL=en_US.UTF-8
-LANG=en_US.UTF-8
-LC_CTYPE=UTF-8
-EOF
-			]]>
-				</screen>
-				<!-- dnf install langpacks-en glibc-all-langpacks -y -->
-				<para>设置历史记录格式，可以看到命令的执行时间</para>
-				<screen>
-			<![CDATA[			
-cat >> /etc/profile.d/history.sh <<EOF
-# Administrator specific aliases and functions for system security
-export HISTSIZE=10000
-export HISTFILESIZE=10000
-export HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S "
-export TIME_STYLE=long-iso
-EOF
-
-source /etc/profile.d/history.sh
-			]]>
-				</screen>
-				<para>sysctl 优化</para>
-				<screen>
-			<![CDATA[
-cat >> /etc/sysctl.conf <<EOF
-
-# add by netkiller
-net.ipv4.ip_local_port_range = 10000 65500
-net.core.somaxconn = 1024
-
-# TCP BBR
-net.core.default_qdisc=fq
-net.ipv4.tcp_congestion_control=bbr
-EOF
-
-sysctl -p			
-			]]>
-				</screen>
-				<para>确认 ulimit 已经优化</para>
-				<screen>
-			<![CDATA[
-# grep "^*" /etc/security/limits.conf
-* soft nofile 65535
-* hard nofile 65535	
-			]]>
-				</screen>
-				<para>设置时区</para>
-				<screen>
-			<![CDATA[
-timedatectl set-timezone Asia/Shanghai			
-			]]>
-				</screen>
-				<para>确认时间同步服务器 chronyd 工作正常</para>
-				<screen>
-			<![CDATA[
-systemctl status chronyd
-			]]>
-				</screen>
-				<para>zmodem 用来上传和下载文件（注意 macOS 的 Terminal.app 不支持）</para>
-				<screen>
-			<![CDATA[
-dnf install -y lrzsz			
-			]]>
-				</screen>
-				<para>优化 SSH</para>
-				<screen>
-			<![CDATA[
-cp /etc/ssh/sshd_config{,.original}
-
-vim /etc/ssh/sshd_config <<EOF > /dev/null 2>&1
-:43,43s/PermitRootLogin yes/PermitRootLogin no/
-:84,84s/GSSAPIAuthentication yes/GSSAPIAuthentication no/
-:99,99s/#AllowTcpForwarding yes/AllowTcpForwarding no/
-:106,106/X11Forwarding yes/X11Forwarding no/
-:116,116s/#TCPKeepAlive yes/TCPKeepAlive yes/
-:121,121s/#UseDNS no/UseDNS no/
-:wq
-EOF
-			]]>
-				</screen>
-				<para>禁止 root 登陆，开启 sudo</para>
-				<para>禁用普通用户，我们需要一个普通用户登陆，然后使用 sudo 暂时获得 root 权限，我不打算新建一个用户，发现系统里面内置了 operator 这个操作员用户符合我的需求。</para>
-				<screen>
-			<![CDATA[
-usermod -s /bin/bash -aG wheel operator
-
-PASSWORD=$(cat /dev/urandom | tr -dc [:alnum:] | head -c 32)
-
-echo operator:${PASSWORD} | chpasswd
-echo "operator password: ${PASSWORD}"			
-			]]>
-				</screen>
-				<para>将 /usr/local/sbin:/usr/local/bin 路径加入到 Defaults secure_path = /sbin:/bin:/usr/sbin:/usr/bin，否则sudo找不到 /usr/local/sbin:/usr/local/bin 中的可执行文件。</para>
-				<screen>
-			<![CDATA[
-sed -i "s/#PermitRootLogin yes/PermitRootLogin no/" /etc/ssh/sshd_config
-systemctl restart sshd
-			
-cp /etc/sudoers{,.original}
-
-sed -i '88s#$#:/usr/local/sbin:/usr/local/bin#' /etc/sudoers
-
-visudo -c
-			]]>
-				</screen>
-			</section>
-			<section>
-				<title>Python 环境</title>
-				<screen>
-		<![CDATA[
-dnf remove -y python36
-dnf install -y python39		
-		]]>
-				</screen>
-			</section>
-			<section>
-				<title>阿里云平台 Rocky Linux 系统 BUG</title>
-				<para>系统更新链接不上</para>
-				<screen>
-		<![CDATA[
-[root@cloud ~]# dnf upgrade -y
-Last metadata expiration check: 0:15:31 ago on Mon 28 Mar 2022 03:49:10 PM CST.
-Dependencies resolved.
-====================================================================================================
- Package                         Architecture Version                  Repository              Size
-====================================================================================================
-Upgrading:
- containerd.io                   x86_64       1.5.11-3.1.el8           docker-ce-stable        29 M
- docker-ce                       x86_64       3:20.10.14-3.el8         docker-ce-stable        22 M
- docker-ce-cli                   x86_64       1:20.10.14-3.el8         docker-ce-stable        30 M
- docker-ce-rootless-extras       x86_64       20.10.14-3.el8           docker-ce-stable       4.6 M
- epel-release                    noarch       8-15.el8                 epel                    23 k
- tzdata                          noarch       2022a-1.el8              baseos                 473 k
- tzdata-java                     noarch       2022a-1.el8              appstream              190 k
-
-Transaction Summary
-====================================================================================================
-Upgrade  7 Packages
-
-Total download size: 86 M
-Downloading Packages:
-[MIRROR] tzdata-2022a-1.el8.noarch.rpm: Status code: 404 for https://www.netkiller.cn/rockylinux/8/BaseOS/x86_64/os/Packages/t/tzdata-2022a-1.el8.noarch.rpm (IP: 139.196.170.132)
-[MIRROR] tzdata-java-2022a-1.el8.noarch.rpm: Status code: 404 for https://www.netkiller.cn/rockylinux/8/AppStream/x86_64/os/Packages/t/tzdata-java-2022a-1.el8.noarch.rpm (IP: 139.196.170.132)
-[MIRROR] tzdata-2022a-1.el8.noarch.rpm: Status code: 404 for https://www.netkiller.cn/rockylinux/8/BaseOS/x86_64/os/Packages/t/tzdata-2022a-1.el8.noarch.rpm (IP: 139.196.170.132)
-[MIRROR] tzdata-java-2022a-1.el8.noarch.rpm: Status code: 404 for https://www.netkiller.cn/rockylinux/8/AppStream/x86_64/os/Packages/t/tzdata-java-2022a-1.el8.noarch.rpm (IP: 139.196.170.132)
-[MIRROR] tzdata-2022a-1.el8.noarch.rpm: Status code: 404 for https://www.netkiller.cn/rockylinux/8/BaseOS/x86_64/os/Packages/t/tzdata-2022a-1.el8.noarch.rpm (IP: 139.196.170.132)
-[MIRROR] tzdata-java-2022a-1.el8.noarch.rpm: Status code: 404 for https://www.netkiller.cn/rockylinux/8/AppStream/x86_64/os/Packages/t/tzdata-java-2022a-1.el8.noarch.rpm (IP: 139.196.170.132)
-[MIRROR] tzdata-2022a-1.el8.noarch.rpm: Status code: 404 for https://www.netkiller.cn/rockylinux/8/BaseOS/x86_64/os/Packages/t/tzdata-2022a-1.el8.noarch.rpm (IP: 139.196.170.132)
-[FAILED] tzdata-2022a-1.el8.noarch.rpm: No more mirrors to try - All mirrors were already tried without success
-(2-3/7): tzdata-java-2022a-1.e  0% [                              ] 943 kB/s | 792 kB     01:32 ETA
-The downloaded packages were saved in cache until the next successful transaction.
-You can remove cached packages by executing 'dnf clean packages'.
-Error: Error downloading packages:
-  Cannot download Packages/t/tzdata-2022a-1.el8.noarch.rpm: All mirrors were tried		
-		]]>
-				</screen>
-				<para>查找原因后发现, mirrorlist 被禁用了。</para>
-				<screen>
-		<![CDATA[
-[root@cloud ~]# cat /etc/yum.repos.d/Rocky-BaseOS.repo 
-# Rocky-BaseOS.repo
-#
-# The mirrorlist system uses the connecting IP address of the client and the
-# update status of each mirror to pick current mirrors that are geographically
-# close to the client.  You should use this for Rocky updates unless you are
-# manually picking other mirrors.
-#
-# If the mirrorlist does not work for you, you can try the commented out
-# baseurl line instead.
-
-[baseos]
-name=Rocky Linux $releasever - BaseOS
-#mirrorlist=https://mirrors.rockylinux.org/mirrorlist?arch=$basearch&repo=BaseOS-$releasever
-baseurl=http://mirrors.cloud.aliyuncs.com/rockylinux/$releasever/BaseOS/$basearch/os/
-gpgcheck=1
-enabled=1
-countme=1
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-rockyofficial		
-		]]>
-				</screen>
-				<para>将 /etc/yum.repos.d/Rocky-BaseOS.repo 和 /etc/yum.repos.d/Rocky-AppStream.repo 中的 mirrorlist 注释去掉，配置如下。</para>
-				<screen>
-		<![CDATA[
-[root@cloud ~]# cat /etc/yum.repos.d/Rocky-AppStream.repo 
-# Rocky-AppStream.repo
-#
-# The mirrorlist system uses the connecting IP address of the client and the
-# update status of each mirror to pick current mirrors that are geographically
-# close to the client.  You should use this for Rocky updates unless you are
-# manually picking other mirrors.
-#
-# If the mirrorlist does not work for you, you can try the commented out
-# baseurl line instead.
-
-[appstream]
-name=Rocky Linux $releasever - AppStream
-mirrorlist=https://mirrors.rockylinux.org/mirrorlist?arch=$basearch&repo=AppStream-$releasever
-baseurl=http://mirrors.cloud.aliyuncs.com/rockylinux/$releasever/AppStream/$basearch/os/
-gpgcheck=1
-enabled=1
-countme=1
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-rockyofficial		
-		]]>
-				</screen>
-				<para>再次运行 dnf upgrade -y 顺利通过</para>
-			</section>
-			<section>
-				<title>开启交换分区</title>
-				<para>开启交换分区</para>
-				<screen>
-			<![CDATA[
-dd if=/dev/zero of=/opt/memory.swap bs=1024M count=8
-mkswap /opt/memory.swap
-swapon /opt/memory.swap			
-			]]>
-				</screen>
-				<para>挂载交换分区</para>
-				<screen>
-			<![CDATA[
-挂在 swap 打开 /etc/fstab 文件编辑追加以下内容
-
-/opt/memory.swap		swap		swap		default 0 0
-
-编辑 /etc/sysctl.conf 修改 swap 利用率
-
-vm.swappiness=80		
-			]]>
-				</screen>
-				<para>查看交换分区</para>
-				<screen>
-			<![CDATA[
-# 查看交换分区文件
-[root@cloud ~]# swapon -s
-Filename				Type		Size	Used	Priority
-/opt/memory.swap  
-
-# 查看使用率			
-[root@cloud ~]# cat /proc/sys/vm/swappiness
-0			
-			]]>
-				</screen>
-				<para>设置使用率</para>
-				<screen>
-			<![CDATA[
-[root@cloud ~]# sysctl vm.swappiness=80
-vm.swappiness = 80
-[root@cloud ~]# cat /proc/sys/vm/swappiness
-80			
-			]]>
-				</screen>
-				<example>
-					<title>开启交换分区</title>
-					<screen>
-				<![CDATA[
-[root@cloud ~]# dd if=/dev/zero of=/opt/memory.swap bs=1024M count=8
-8+0 records in
-8+0 records out
-8589934592 bytes (8.6 GB, 8.0 GiB) copied, 56.7535 s, 151 MB/s
-
-[root@cloud ~]# chmod 600 /opt/memory.swap 
-
-[root@cloud ~]# mkswap /opt/memory.swap
-mkswap: /opt/memory.swap: warning: wiping old swap signature.
-Setting up swapspace version 1, size = 8 GiB (8589930496 bytes)
-no label, UUID=07fda341-e558-4a99-9f63-394ca2b34d5a
-
-[root@cloud ~]# swapon /opt/memory.swap
-
-[root@cloud ~]# swapon -s
-Filename				Type		Size	Used	Priority
-/opt/memory.swap                       	file    	8388604	12	-2
-
-[root@cloud ~]# free -g
-              total        used        free      shared  buff/cache   available
-Mem:             30          21           1           0           7           8
-Swap:             7           0           7				
-
-[root@cloud ~]# cat /proc/sys/vm/swappiness
-0
-				]]>
-					</screen>
-				</example>
-			</section>
-			<section>
-				<title>启用 rc.local</title>
-				<para>/etc/rc.local 是一个开机启动脚本</para>
-				<screen>
-		<![CDATA[
-[root@testing ~]# cat /etc/rc.local
-#!/bin/bash
-# THIS FILE IS ADDED FOR COMPATIBILITY PURPOSES
-#
-# It is highly advisable to create own systemd services or udev rules
-# to run scripts during boot instead of using this file.
-#
-# In contrast to previous versions due to parallel execution during boot
-# this script will NOT be run after all other services.
-#
-# Please note that you must run 'chmod +x /etc/rc.d/rc.local' to ensure
-# that this script will be executed during boot.
-
-touch /var/lock/subsys/local		
-		]]>
-				</screen>
-				<para>如果你想使用 rc.local 需要做如下配置</para>
-				<para>rc-local.service 需要做如下配置</para>
-				<screen>
-			<![CDATA[
-cat >> /lib/systemd/system/rc-local.service <<EOF
-
-[Install]
-WantedBy=multi-user.target
-EOF
-			]]>
-				</screen>
-				<para>配置执行权限</para>
-				<screen>
-		<![CDATA[
-[root@cloud ~]# ll /etc/rc.d/rc.local
--rw-r--r--. 1 root root 474 2022-03-15 23:59 /etc/rc.d/rc.local
-
-[root@cloud ~]# chmod +x /etc/rc.d/rc.local 
-
-[root@cloud ~]# ll /etc/rc.d/rc.local
--rwxr-xr-x. 1 root root 474 2022-03-15 23:59 /etc/rc.d/rc.local		
-		]]>
-				</screen>
-				<para>启动 rc-local</para>
-				<screen>
-		<![CDATA[
-[root@testing ~]# systemctl enable rc-local
-Created symlink /etc/systemd/system/multi-user.target.wants/rc-local.service → /usr/lib/systemd/system/rc-local.service.
-
-[root@testing ~]# systemctl start rc-local	
-
-[root@testing ~]# systemctl status rc-local
-● rc-local.service - /etc/rc.d/rc.local Compatibility
-   Loaded: loaded (/usr/lib/systemd/system/rc-local.service; enabled; vendor preset: disabled)
-   Active: active (exited) since Mon 2021-08-16 12:57:16 CST; 2s ago
-     Docs: man:systemd-rc-local-generator(8)
-  Process: 532000 ExecStart=/etc/rc.d/rc.local start (code=exited, status=0/SUCCESS)
-
-Aug 16 12:57:16 testing systemd[1]: Starting /etc/rc.d/rc.local Compatibility...
-Aug 16 12:57:16 testing systemd[1]: Started /etc/rc.d/rc.local Compatibility.	
-		]]>
-				</screen>
-			</section>
-		</section>
 	</section>
 	<section id="AlmaLinux">
 		<title>AlmaLinux</title>
@@ -666,64 +290,7 @@ systemctl stop firewalld
 			]]>
 			</screen>
 		</section>
-		<section>
-			<title>阿里云 AlmaLinux 9.0 镜像初始化</title>
-			<para>阿里云ECS购买之后建议对 AlmaLinux 做标准初始化配置</para>
-			<screen>
-		<![CDATA[
-dnf -y upgrade
-dnf -y install epel-release
-		]]>
-			</screen>
-			<para>系统默认语言是中文</para>
-			<screen>
-		<![CDATA[
-[root@almilinux ~]# echo $LANG
-zh_CN.UTF-8		
-		]]>
-			</screen>
-			<para>将其改为英文</para>
-			<screen>
-		<![CDATA[
-cat >> /etc/environment <<EOF
-LC_ALL=en_US.UTF-8
-LANG=en_US.UTF-8
-LC_CTYPE=UTF-8
-EOF		
-		]]>
-			</screen>
-			<para>设置历史记录格式，可以看到命令的执行时间</para>
-			<screen>
-			<![CDATA[			
-cat >> /etc/profile.d/history.sh <<EOF
-# Administrator specific aliases and functions for system security
-export HISTSIZE=10000
-export HISTFILESIZE=10000
-export HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S "
-export TIME_STYLE=long-iso
-EOF
 
-source /etc/profile.d/history.sh
-			]]>
-			</screen>
-			<para>sysctl 优化</para>
-			<screen>
-			<![CDATA[
-cat >> /etc/sysctl.conf <<EOF
-
-# add by netkiller
-net.ipv4.ip_local_port_range = 1025 65500
-net.core.somaxconn = 1024
-
-# TCP BBR
-net.core.default_qdisc=fq
-net.ipv4.tcp_congestion_control=bbr
-EOF
-
-sysctl -p			
-			]]>
-			</screen>
-		</section>
 	</section>
 </section>
 <section id="install.ubuntu">
@@ -904,7 +471,8 @@ NTP synchronized: yes
  RTC in local TZ: no			
 			]]>
 		</screen>
-		<para>确认 Network time on: yes 和 NTP synchronized: yes 开启，然后启动时间同步 systemd-timesyncd.service。</para>
+		<para>确认 Network time on: yes 和 NTP synchronized: yes 开启，然后启动时间同步
+			systemd-timesyncd.service。</para>
 		<screen>
 			<![CDATA[
 root@netkiller:~# systemctl start systemd-timesyncd.service
@@ -921,7 +489,8 @@ Condition: start condition failed at Tue 2021-08-17 10:29:36 CST; 14min ago
 Aug 17 10:29:36 netkiller systemd[1]: Stopped Network Time Synchronization.			
 			]]>
 		</screen>
-		<para>如果 systemd-timesyncd.service 启动失败，可能是系统已经有其他时间同步服务在运行。查看方法</para>
+		<para>如果 systemd-timesyncd.service 启动失败，可能是系统已经有其他时间同步服务在运行。查看方法
+		</para>
 		<screen>
 			<![CDATA[
 root@netkiller:~# cat /lib/systemd/system/systemd-timesyncd.service.d/disable-with-time-daemon.conf 
@@ -955,7 +524,8 @@ Aug 16 19:05:31 netkiller systemd[1]: Started LSB: Controls chronyd NTP time dae
 Aug 16 19:05:39 netkiller chronyd[1222]: Selected source 100.100.61.88			
 			]]>
 		</screen>
-		<para>确保 chronyd 处于工作状态，systemd-timesyncd.service 与 chronyd 选择其中一个即可。所以我们不用在关心 systemd-timesyncd.service</para>
+		<para>确保 chronyd 处于工作状态，systemd-timesyncd.service 与 chronyd
+			选择其中一个即可。所以我们不用在关心 systemd-timesyncd.service</para>
 	</section>
 	<section>
 		<title>启动 rc.local</title>
@@ -1063,7 +633,8 @@ Firewall stopped and disabled on system startup
 	</itemizedlist>
 	<section>
 		<title>U 盘安装 CentOS Stream</title>
-		<para>下载 ISO 文件你会发现只有boot和dvd1，boot 是网络安装，而DVD1差不多8G，估计你的手上没有 DVD9光盘，普通DVD光盘是D5只有4.7G，那么怎么安装呢，使用U盘。</para>
+		<para>下载 ISO 文件你会发现只有boot和dvd1，boot 是网络安装，而DVD1差不多8G，估计你的手上没有
+			DVD9光盘，普通DVD光盘是D5只有4.7G，那么怎么安装呢，使用U盘。</para>
 		<para>将ISO文件烧录到U盘中，方法如下。</para>
 		<screen>
 		<![CDATA[
@@ -1113,7 +684,8 @@ neo@MacBook-Pro-Neo ~ % diskutil list
    0:                                                   *30.8 GB    disk2		
 		]]>
 		</screen>
-		<para>制作U盘启动盘，注意！将 /dev/disk2 改成 /dev/rdisk2 写入速度会提速，rdisk 是 rawdisk。</para>
+		<para>制作U盘启动盘，注意！将 /dev/disk2 改成 /dev/rdisk2 写入速度会提速，rdisk 是 rawdisk。
+		</para>
 		<screen>
 		<![CDATA[
 neo@MacBook-Pro-Neo ~ % sudo dd if=CentOS-Stream-8-x86_64-20210706-dvd1.iso of=/dev/rdisk2 bs=100m
@@ -1149,7 +721,8 @@ Password:
 					</row>
 					<row>
 						<entry>交换分区（swap）</entry>
-						<entry>如何开发测试环境不需要分，生产服务器是情况而定，因为现在的服务器内存越来越大，极少出现不够用的情况，16G 内存交换分区可以给 memory * 2，32G 分 32G空间，超过32G 基本不需要分交换分区了。</entry>
+						<entry>如何开发测试环境不需要分，生产服务器是情况而定，因为现在的服务器内存越来越大，极少出现不够用的情况，16G
+							内存交换分区可以给 memory * 2，32G 分 32G空间，超过32G 基本不需要分交换分区了。</entry>
 					</row>
 				</tbody>
 			</tgroup>
@@ -1200,7 +773,8 @@ echo "fastestmirror=True" >> /etc/dnf/dnf.conf
 dnf makecache
 		]]>
 		</screen>
-		<para>Extra Packages for Enterprise Linux repository configuration</para>
+		<para>Extra Packages for Enterprise Linux repository configuration
+		</para>
 		<screen>
 			<![CDATA[
 dnf -y upgrade
@@ -1215,7 +789,8 @@ telnet wget rsync vim-enhanced \
 net-tools bind-utils			
 			]]>
 		</screen>
-		<para>设置终端字符集（这样对 macOS 更友好），还可以解决 Failed to set locale, defaulting to C.UTF-8 问题</para>
+		<para>设置终端字符集（这样对 macOS 更友好），还可以解决 Failed to set locale, defaulting to
+			C.UTF-8 问题</para>
 		<screen>
 			<![CDATA[
 dnf install -y langpacks-en glibc-langpack-en
@@ -1342,7 +917,8 @@ EOF
 			]]>
 		</screen>
 		<para>禁止 root 登陆，开启 sudo</para>
-		<para>禁用普通用户，我们需要一个普通用户登陆，然后使用 sudo 暂时获得 root 权限，我不打算新建一个用户，发现系统里面内置了 operator 这个操作员用户符合我的需求。</para>
+		<para>禁用普通用户，我们需要一个普通用户登陆，然后使用 sudo 暂时获得 root 权限，我不打算新建一个用户，发现系统里面内置了
+			operator 这个操作员用户符合我的需求。</para>
 		<screen>
 			<![CDATA[
 usermod -s /bin/bash -aG wheel operator
@@ -1353,7 +929,9 @@ echo operator:${PASSWORD} | chpasswd
 echo "operator password: ${PASSWORD}"			
 			]]>
 		</screen>
-		<para>将 /usr/local/sbin:/usr/local/bin 路径加入到 Defaults secure_path = /sbin:/bin:/usr/sbin:/usr/bin，否则sudo找不到 /usr/local/sbin:/usr/local/bin 中的可执行文件。</para>
+		<para>将 /usr/local/sbin:/usr/local/bin 路径加入到 Defaults secure_path =
+			/sbin:/bin:/usr/sbin:/usr/bin，否则sudo找不到
+			/usr/local/sbin:/usr/local/bin 中的可执行文件。</para>
 		<screen>
 			<![CDATA[
 sed -i "s/#PermitRootLogin yes/PermitRootLogin no/" /etc/ssh/sshd_config
@@ -1389,7 +967,8 @@ touch /var/lock/subsys/local
 		]]>
 		</screen>
 		<tip>
-			<para>很多系统已经弃用了该运行方案，因为很多更好的替代方案，例如 node 实现的 pm2 和 Python 实现的 supervisor，以及 Linux 系统自带的 Systemd。</para>
+			<para>很多系统已经弃用了该运行方案，因为很多更好的替代方案，例如 node 实现的 pm2 和 Python 实现的
+				supervisor，以及 Linux 系统自带的 Systemd。</para>
 		</tip>
 		<para>CentOS 8 Stream 如果你想使用 rc.local 需要做如下配置</para>
 		<screen>
@@ -1425,7 +1004,8 @@ Aug 16 12:57:16 testing systemd[1]: Started /etc/rc.d/rc.local Compatibility.
 	</section>
 	<section>
 		<title>卸载防火墙</title>
-		<para>firewalld 不是适合 IDC 使用，IDC 通常只需要 INPUT 规则，其次是 OUTPUT 规则，所以我们换回 iptables 或者 nftable</para>
+		<para>firewalld 不是适合 IDC 使用，IDC 通常只需要 INPUT 规则，其次是 OUTPUT 规则，所以我们换回
+			iptables 或者 nftable</para>
 		<screen>
 			<![CDATA[
 systemctl stop firewalld
@@ -1620,7 +1200,8 @@ NTP synchronized: yes
  RTC in local TZ: no			
 			]]>
 		</screen>
-		<para>确认 Network time on: yes 和 NTP synchronized: yes 开启，然后启动时间同步 systemd-timesyncd.service。</para>
+		<para>确认 Network time on: yes 和 NTP synchronized: yes 开启，然后启动时间同步
+			systemd-timesyncd.service。</para>
 		<screen>
 			<![CDATA[
 root@netkiller:~# systemctl start systemd-timesyncd.service
@@ -1637,7 +1218,8 @@ Condition: start condition failed at Tue 2021-08-17 10:29:36 CST; 14min ago
 Aug 17 10:29:36 netkiller systemd[1]: Stopped Network Time Synchronization.			
 			]]>
 		</screen>
-		<para>如果 systemd-timesyncd.service 启动失败，可能是系统已经有其他时间同步服务在运行。查看方法</para>
+		<para>如果 systemd-timesyncd.service 启动失败，可能是系统已经有其他时间同步服务在运行。查看方法
+		</para>
 		<screen>
 			<![CDATA[
 root@netkiller:~# cat /lib/systemd/system/systemd-timesyncd.service.d/disable-with-time-daemon.conf 
@@ -1671,7 +1253,8 @@ Aug 16 19:05:31 netkiller systemd[1]: Started LSB: Controls chronyd NTP time dae
 Aug 16 19:05:39 netkiller chronyd[1222]: Selected source 100.100.61.88			
 			]]>
 		</screen>
-		<para>确保 chronyd 处于工作状态，systemd-timesyncd.service 与 chronyd 选择其中一个即可。所以我们不用在关心 systemd-timesyncd.service</para>
+		<para>确保 chronyd 处于工作状态，systemd-timesyncd.service 与 chronyd
+			选择其中一个即可。所以我们不用在关心 systemd-timesyncd.service</para>
 	</section>
 	<section>
 		<title>启动 rc.local</title>
@@ -1781,8 +1364,14 @@ sudo sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
 		Small. Simple. Secure.
 		<ulink url="https://www.alpinelinux.org">https://www.alpinelinux.org</ulink>
 	</para>
-	<para>Alpine Linux is a security-oriented, lightweight Linux distribution based on musl libc and busybox.</para>
-	<!-- <section> <title>HDD Partition</title> <para>partition</para> <table> <title>Linux partition</title> <tgroup cols="2"> <thead> <row> <entry>volume</entry> <entry>size</entry> </row> </thead> <tbody> <row> <entry>/boot</entry> <entry>500M</entry> </row> <row> <entry>/</entry> <entry>50G</entry> </row> <row> <entry>/opt</entry> <entry>remainder</entry> </row> <row> <entry>swap</entry> <entry>memory * 2</entry> </row> </tbody> </tgroup> </table> </section> -->
+	<para>Alpine Linux is a security-oriented, lightweight Linux
+		distribution based on musl libc and busybox.</para>
+	<!-- <section> <title>HDD Partition</title> <para>partition</para> <table> 
+		<title>Linux partition</title> <tgroup cols="2"> <thead> <row> <entry>volume</entry> 
+		<entry>size</entry> </row> </thead> <tbody> <row> <entry>/boot</entry> <entry>500M</entry> 
+		</row> <row> <entry>/</entry> <entry>50G</entry> </row> <row> <entry>/opt</entry> 
+		<entry>remainder</entry> </row> <row> <entry>swap</entry> <entry>memory * 
+		2</entry> </row> </tbody> </tgroup> </table> </section> -->
 </section>
 
 

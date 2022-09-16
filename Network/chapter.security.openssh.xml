@@ -527,6 +527,23 @@ root@192.168.2.18's password:
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>调试模式，显示连接过程</title>
+			<screen>
+			<![CDATA[
+iMac:ensd neo$ ssh admin@172.18.100.253 -v
+OpenSSH_8.6p1, LibreSSL 3.3.6
+debug1: Reading configuration data /etc/ssh/ssh_config
+debug1: /etc/ssh/ssh_config line 21: include /etc/ssh/ssh_config.d/* matched no files
+debug1: /etc/ssh/ssh_config line 54: Applying options for *
+debug1: Authenticator provider $SSH_SK_PROVIDER did not resolve; disabling
+debug1: Connecting to 172.18.100.253 [172.18.100.253] port 22.
+debug1: connect to address 172.18.100.253 port 22: Operation timed out
+ssh: connect to host 172.18.100.253 port 22: Operation timed out			
+			]]>
+			</screen>
+		</section>
+		
 	</section>
 	<section id="ssh.tunnel">
 		<title>OpenSSH Tunnel</title>
