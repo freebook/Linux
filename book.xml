@@ -89,9 +89,6 @@
 	<!ENTITY % sbc.doctype.entity.xml 				SYSTEM "SBC/doctype.entity.xml">
 	%sbc.doctype.entity.xml;
 	
-	<!ENTITY % cloud.doctype.entity.xml				SYSTEM "Cloud/doctype.entity.xml">
-	%cloud.doctype.entity.xml;
-	
 	<!ENTITY part.im 								SYSTEM "part.im.xml">
 	<!ENTITY chapter.gps 							SYSTEM "chapter.gps.xml">
 	<!ENTITY chapter.ibm.websphere.xml		 		SYSTEM "Middleware/chapter.ibm.websphere.xml">
@@ -200,7 +197,6 @@
 	&chapter.ibm.websphere.xml;
 	<!-- =========================================================================== -->
 	&part.sbc.xml;
-	&chapter.cloud.xml;
 	&chapter.faq.xml;
 	<!-- =========================================================================== -->
 	&book.appendix.xml;
