@@ -1,56 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="tutos">
-	<title>TUTOS</title>
-	<para>TUTOS is a tool to manage the organizational needs of small groups, teams, departments ...</para>
-	<para><ulink url="http://www.tutos.org/">http://www.tutos.org/</ulink></para>
+<chapter>
+	<title>项目管理工具</title>
+	<section>
+		<title>禅道</title>
+		<para>创建数据目录</para>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# mkdir -p /opt/zentao/{pms,data}	
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# docker run --name zentao -p 80:80 --network=zentaonet --ip 172.172.172.172 --mac-address 02:42:ac:11:00:00 -v /opt/zentao/pms:/www/zentaopms -v /opt/zentao/data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=passw0rd -d easysoft/zentao:latest
 
-	<procedure>
+[root@netkiller ~]# docker run --name zentao -p 80:80 -v /opt/zentao/pms:/www/zentaopms -v /opt/zentao/data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=passw0rd -d easysoft/zentao:latest
+		]]>
+		</screen>
+	</section>
+	<section id="tutos">
 		<title>TUTOS</title>
-		<step>
-			<para>extract</para>
-			<screen>
-tar jxvf TUTOS-php-1.3.20070317.tar.bz2
-sudo mv tutos /www/htdocs/
-			</screen>
-		</step>
-		<step>
-			<para>database</para>
-			<screen>
-netkiller@shenzhen:/www/htdocs/tutos$ mysqladmin -uroot -p create tutos
-netkiller@shenzhen:/www/htdocs/tutos$ mysql -uroot -p
-Enter password:
-Welcome to the MySQL monitor.  Commands end with ; or \g.
-Your MySQL connection id is 846
-Server version: 5.0.45 Source distribution
+		<para>TUTOS is a tool to manage the organizational needs of small groups, teams, departments ...</para>
+		<para>
+			<ulink url="http://www.tutos.org/">http://www.tutos.org/</ulink>
+		</para>
 
-Type 'help;' or '\h' for help. Type '\c' to clear the buffer.
+		<procedure>
+			<title>TUTOS</title>
+			<step>
+				<para>extract</para>
+				<screen>
+					tar jxvf TUTOS-php-1.3.20070317.tar.bz2
+					sudo mv tutos /www/htdocs/
+				</screen>
+			</step>
+			<step>
+				<para>database</para>
+				<screen>
+					netkiller@shenzhen:/www/htdocs/tutos$ mysqladmin -uroot -p create tutos
+					netkiller@shenzhen:/www/htdocs/tutos$ mysql -uroot -p
+					Enter password:
+					Welcome to the MySQL monitor. Commands end with ; or \g.
+					Your MySQL connection id is 846
+					Server version: 5.0.45 Source distribution
 
-mysql> grant all on tutos.* to tutos@% identified by "chen";
-Query OK, 0 rows affected (0.05 sec)
+					Type 'help;' or '\h' for help. Type '\c' to clear the buffer.
 
-mysql> grant all on tutos.* to tutos@localhost identified by "chen";
-Query OK, 0 rows affected (0.00 sec)
+					mysql> grant all on tutos.* to tutos@% identified by "chen";
+					Query OK, 0 rows affected (0.05 sec)
 
-mysql> FLUSH PRIVILEGES;
-Query OK, 0 rows affected (0.00 sec)
+					mysql> grant all on tutos.* to tutos@localhost identified by "chen";
+					Query
+					OK, 0 rows affected (0.00 sec)
 
-mysql> quit
-Bye
+					mysql> FLUSH PRIVILEGES;
+					Query OK, 0 rows affected (0.00 sec)
 
-netkiller@shenzhen:/www/htdocs/tutos$ mysqladmin -uroot -p reload
-			</screen>
-		</step>
-		<step>
-			<para>config</para>
-			<screen>
-mkdir /www/htdocs/tutos/repository
-			</screen>
-			<para>http://192.168.1.7/tutos/php/admin/scheme.php</para>
-			<para>or</para>
-			<screen>
-cp config_default.pinc  config.php
-			</screen>
-			<literallayout>
+					mysql> quit
+					Bye
+
+					netkiller@shenzhen:/www/htdocs/tutos$ mysqladmin -uroot -p reload
+				</screen>
+			</step>
+			<step>
+				<para>config</para>
+				<screen>
+					mkdir /www/htdocs/tutos/repository
+				</screen>
+				<para>http://192.168.1.7/tutos/php/admin/scheme.php</para>
+				<para>or</para>
+				<screen>
+					cp config_default.pinc config.php
+				</screen>
+				<literallayout>
 			<![CDATA[
 <?php
 # remove this line when finsihed with config
@@ -93,13 +115,14 @@ $tutos[jpgraph] = "/www/htdocs/tutos/php/admin/jpgraph";
 # EOF
 ?>
 			]]>
-			</literallayout>
-			<para>sudo apt-get install perl libnet-ssleay-perl openssl libauthen-pam-perl libpam-runtime libio-pty-perl libmd5-perl</para>
-		</step>
-		<step>
-			<para>login</para>
-			<para>http://192.168.1.7/tutos/php/mytutos.php</para>
-			<para>User: superuser Password: tutos </para>
-		</step>
-	</procedure>
+				</literallayout>
+				<para>sudo apt-get install perl libnet-ssleay-perl openssl libauthen-pam-perl libpam-runtime libio-pty-perl libmd5-perl</para>
+			</step>
+			<step>
+				<para>login</para>
+				<para>http://192.168.1.7/tutos/php/mytutos.php</para>
+				<para>User: superuser Password: tutos </para>
+			</step>
+		</procedure>
+	</section>
 </chapter>

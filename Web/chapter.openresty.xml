@@ -80,10 +80,10 @@ ln -s /srv/openresty-1.21.4.1 /srv/openresty
 		]]>
 		</screen>
 	</section>
-	<section>
-		<title>获取参数</title>
+	<section id="openresty.args">
+		<title>参数处理</title>
 		<section>
-			<title>GET/POST 参数</title>
+			<title>获取 GET/POST 参数</title>
 			<programlisting>
 			<![CDATA[
 	location /param {
@@ -148,6 +148,32 @@ body: name=neo
 body: {"status":true}		
 		]]>
 			</screen>
+		</section>
+		<section>
+			<title>删除不需要的 GET 参数</title>
+			<para>需求如下，我们需要删除两个参数 password 跟 accesskey </para>
+			<screen>
+			<![CDATA[
+location = /test {
+	rewrite_by_lua '
+		local args = ngx.req.get_uri_args()
+		args.password= nil
+		args.accesskey = nil
+		ngx.req.set_uri_args(args)
+	';
+
+	echo $args;
+}			
+			]]>
+			</screen>
+			<para>测试效果</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# curl 'http://localhost/test?username=netkiller&password=123456&accesskey=112233&name=Neo&city=Shenzhen'a
+username=netkiller&name=Neo&city=Shenzhena			
+			]]>
+			</screen>
+			<para>我们可以看到两个参数已经被干掉。</para>
 		</section>
 	</section>
 	<section>
