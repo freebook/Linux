@@ -375,7 +375,7 @@ java.home=/usr/lib/jvm/java
 [root@netkiller ~]# npm config set registry https://registry.npm.taobao.org
 [root@netkiller ~]# npm config get registry
 https://registry.npm.taobao.org/
-[root@netkiller ~]# npm install -g cnpm		
+[root@netkiller ~]# npm install -g cnpm
 			]]>
 			</screen>
 			<para>yarn</para>
@@ -384,6 +384,12 @@ https://registry.npm.taobao.org/
 [root@netkiller ~]# curl -sL https://dl.yarnpkg.com/rpm/yarn.repo -o /etc/yum.repos.d/yarn.repo
 [root@netkiller ~]# dnf install -y yarn
 		]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+yarn config set registry https://registry.npm.taobao.org			
+			]]>
 			</screen>
 			<para>pm2 进程管理</para>
 			<screen>

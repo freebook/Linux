@@ -271,7 +271,7 @@ $ sudo docker run ubuntu:14.04 /bin/echo 'Hello world'
 Hello world			
 			]]>
 			</screen>
-			<section>
+			<section id="docker.run.it">
 				<title>-it</title>
 				<screen>
 				<![CDATA[
@@ -279,7 +279,7 @@ neo@Netkiller-iMac ~> docker run -it nginx:latest /bin/sh
 				]]>
 				</screen>
 			</section>
-			<section>
+			<section id="docker.run.restart">
 				<title>--restart 参数</title>
 				<para>该参数用于指定自动重启docker容器策略，包含3个选项：no，on-failure[:times]，always，unless-stopped</para>
 				<screen>
