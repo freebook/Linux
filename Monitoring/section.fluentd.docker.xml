@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section>
-	<title>收集 Docker 日志</title>
+	<title>Fluentd 收集 Docker 日志</title>
 	<section>
-		<title></title>
+		<title>fluentd.conf</title>
 		<screen>
 		<![CDATA[
 <source>
@@ -94,5 +94,19 @@ services:
 	]]>
 		</screen>
 	</section>
-
+</section>
+<section id="docker.fluent-bit">
+	<title>Docker 安装 fluent-bit</title>
+	<para>运行 fluent-bit</para>
+	<screen>
+	<![CDATA[
+docker run -ti cr.fluentbit.io/fluent/fluent-bit	
+	]]>
+	</screen>
+	<para>采集 cpu 数据</para>
+	<screen>
+	<![CDATA[
+docker run -ti cr.fluentbit.io/fluent/fluent-bit -i cpu -o stdout -f 1
+	]]>
+	</screen>
 </section>
