@@ -307,7 +307,7 @@ spec:
 				</screen>
 			</section>
 		</section>
-		<section>
+		<section id="pod.nodeName">
 			<title>nodeName 选择节点</title>
 			<para>首先查看节点名称</para>
 			<screen>
@@ -387,7 +387,7 @@ kind: StatefulSet
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="pod.nodeSelector">
 			<title>nodeSelector 选择节点</title>
 			<para>首先给节点打标签，例如 disk-type=ssd</para>
 			<screen>
@@ -444,7 +444,7 @@ node/agent-1 unlabeled
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="pod.nodeAffinity">
 			<title>nodeAffinity 选择节点</title>
 			<screen>
 			<![CDATA[
@@ -462,7 +462,7 @@ Lt：label的值小于某个值（字符串比较）
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="pod.taint">
 			<title>Taint（污点）和 Toleration（容忍）</title>
 			<screen>
 			<![CDATA[
@@ -470,7 +470,30 @@ Lt：label的值小于某个值（字符串比较）
 			]]>
 			</screen>
 		</section>
-
+		<section id="pod.strategy">
+			<title>strategy</title>
+			<para>滚动升级策略:</para>
+			<para>超过期望的Pod数量:1</para>
+			<para>不可用Pod最大数量:0</para>
+			<screen>
+			<![CDATA[
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+  strategy:
+      type: RollingUpdate
+      rollingUpdate: {
+        maxUnavailable: 25%
+        maxSurge: 25%
+			]]>
+			</screen>
+		</section>
 	</section>
 
 	<section id="Service">
