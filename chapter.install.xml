@@ -268,8 +268,8 @@ sysctl -p
 			<![CDATA[
 cat > /etc/security/limits.d/20-nofile.conf <<EOF
 
-* soft nofile 65535
-* hard nofile 65535
+* soft nofile 655350
+* hard nofile 655350
 
 EOF
 			]]>
@@ -290,7 +290,15 @@ systemctl stop firewalld
 			]]>
 			</screen>
 		</section>
-
+		<section>
+			<table>时间同步</table>
+			<screen>
+			<![CDATA[
+dnf install -y chrony
+systemctl start chronyd
+			]]>
+			</screen>
+		</section>
 	</section>
 </section>
 <section id="install.ubuntu">
