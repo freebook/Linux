@@ -13,9 +13,11 @@ modprobe ip_tables
 		</screen>
 		<screen>
 		<![CDATA[
-/etc/modules-load.d/k3s.conf		
+cat > /etc/modules-load.d/k3s.conf <<-EOF
+ip_tables
 ip_conntrack
 br_netfilter
+EOF
 		]]>
 		</screen>
 		<para>设置主机名</para>

@@ -220,6 +220,10 @@ visudo -c
 			<![CDATA[
 dnf -y upgrade
 dnf -y install epel-release
+
+dnf install -y bzip2 tree psmisc \
+telnet wget rsync vim-enhanced \
+net-tools bind-utils
 			]]>
 			</screen>
 			<para>将其改为英文</para>
