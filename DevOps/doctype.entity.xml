@@ -39,4 +39,13 @@
 <!ENTITY chapter.nexus.xml					SYSTEM "chapter.nexus.xml">
 <!ENTITY chapter.dagger.xml					SYSTEM "chapter.dagger.xml">
 
+<!ENTITY chapter.deploy.xml				SYSTEM "chapter.deploy.xml">
+<!ENTITY section.deploy.ansible.xml				SYSTEM "section.deploy.ansible.xml">
+<!ENTITY section.deploy.puppet.xml					SYSTEM "section.deploy.puppet.xml">
+<!ENTITY section.deploy.rexify.xml					SYSTEM "section.deploy.rexify.xml">
+<!ENTITY section.deploy.saltstack.xml				SYSTEM "section.deploy.saltstack.xml">
+<!ENTITY section.deploy.chef.xml					SYSTEM "section.deploy.chef.xml">
+<!ENTITY section.deploy.webmin.xml					SYSTEM "section.deploy.webmin.xml">
+<!ENTITY section.deploy.ajenti.xml					SYSTEM "section.deploy.ajenti.xml">
+
 <!ENTITY chapter.miscellaneous.xml 			SYSTEM "chapter.miscellaneous.xml">

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<part id="index"><?dbhtml dir="management" ?>
+<part id="index"><?dbhtml dir="deploy" ?>
 	<title>Configuration Management(配置管理)</title>
 	<subtitle>运维自动化</subtitle>
 	<table>
@@ -47,10 +47,10 @@
 	   </tgroup>
 	</table>
 
-	&chapter.ansible.xml;
-	&chapter.puppet.xml;
-	&chapter.saltstack.xml;
-	&chapter.chef.xml;
+	&section.deploy.ansible.xml;
+	&section.deploy.puppet.xml;
+	&section.deploy.saltstack.xml;
+	&section.deploy.chef.xml;
 
 	<chapter id="cobbler">
 		<title>Cobbler</title>
@@ -65,13 +65,13 @@
 		<para>https://fedorahosted.org/func/</para>
 	</chapter>
 
-	&chapter.rexify.xml;
+	&section.deploy.rexify.xml;
 
 <chapter id="wsa">
 	<title>基于Web的系统管理软件</title>
 	<subtitle>web-based interface for system administration</subtitle>
-	&chapter.webmin.xml;
-	&chapter.ajenti.xml;
+	&section.deploy.webmin.xml;
+	&section.deploy.ajenti.xml;
 </chapter>
 
 

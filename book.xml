@@ -56,9 +56,6 @@
 	<!ENTITY % cluster.doctype.entity.xml			SYSTEM "Cluster/doctype.entity.xml">
 	%cluster.doctype.entity.xml;
 
-	<!ENTITY % management.doctype.entity.xml		SYSTEM "Management/doctype.entity.xml">
-	%management.doctype.entity.xml;
-
 	<!ENTITY % x.doctype.entity.xml 				SYSTEM "X/doctype.entity.xml">
 	%x.doctype.entity.xml;
 
@@ -73,9 +70,9 @@
 	%multimedia.doctype.entity.xml;
 	<!ENTITY part.multimedia.xml 					SYSTEM "part.multimedia.xml">
 	
-	<!ENTITY % virtualization.doctype.entity.xml	SYSTEM "Virtualization/doctype.entity.xml">
-	%virtualization.doctype.entity.xml;	
-	<!ENTITY part.virtualization.xml				SYSTEM "part.virtualization.xml">
+	<!ENTITY % container.doctype.entity.xml			SYSTEM "Container/doctype.entity.xml">
+	%container.doctype.entity.xml;	
+	<!ENTITY part.container.xml						SYSTEM "part.container.xml">
 	
 	<!ENTITY % devops.doctype.entity.xml 			SYSTEM "DevOps/doctype.entity.xml">
 	%devops.doctype.entity.xml;
@@ -183,11 +180,9 @@
 	&part.security.xml;
 	<!-- =========================================================================== -->
 	<!-- &chapter.gps; -->
-	&chapter.management.xml;
-	&part.virtualization.xml;
+	&part.container.xml;
 	<!-- =========================================================================== -->
 	&part.devops.xml;
-	&part.version.xml;
 	<!-- =========================================================================== -->	
 	&part.graphics.xml;
 	&part.multimedia.xml;

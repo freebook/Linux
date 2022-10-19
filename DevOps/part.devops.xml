@@ -3,7 +3,7 @@
 <part id="project">
 	<title>项目管理工具</title>
 	<subtitle>project management tool</subtitle>
-
 	&chapter.devops.xml;
-
 </part>
+	&part.version.xml;
+	&chapter.deploy.xml;
