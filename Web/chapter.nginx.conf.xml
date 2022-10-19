@@ -186,7 +186,19 @@ location / {
 			<para>ssi_types 默认是ssi_types text/html，如果需要shtml支持，则需要设置：ssi_types text/shtml</para>
 			<para>ssi_value_length 默认值是 256，用于定义SSI参数的长度。</para>
 		</section>
-
+		<section id="http.resolver">
+			<title>DNS 解析</title>
+			<para>从指定的 DNS 解析域名</para>
+			<screen>
+			<![CDATA[
+resolver 202.102.134.68 114.114.114.114 valid=5 ipv6=off;
+set $proxy "http://api.netkiller.cn:8080";
+location /v1/api { 
+    proxy_pass $proxy;
+}			
+			]]>
+			</screen>
+		</section>
 	</section>
 	
 	&chapter.nginx.var.xml;

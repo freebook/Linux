@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter>
+	<title>Grafana + Loki + Promtail</title>
+	<section>
+		<title>Docker Compose</title>
+		<screen>
+		<![CDATA[
+wget https://raw.githubusercontent.com/grafana/loki/v2.6.1/production/docker-compose.yaml -O docker-compose.yaml
+docker-compose -f docker-compose.yaml up		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>Helm</title>
+		<screen>
+		<![CDATA[
+helm repo add grafana https://grafana.github.io/helm-charts
+helm repo update
+
+helm upgrade --install loki grafana/loki-distributed
+helm install loki-grafana grafana/grafana
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+[root@master ~]# kubectl get secret --namespace default loki-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+kItEFxiDaqzOKG9zzYwANQjIzxa3guN5aro2Xt9g
+
+export POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=grafana,app.kubernetes.io/instance=loki-grafana" -o jsonpath="{.items[0].metadata.name}")
+kubectl --namespace default port-forward $POD_NAME 3000
+
+		]]>
+		</screen>
+		<para>http://loki-loki-distributed-gateway.default.svc.cluster.local/</para>
+		<para>暴漏 grafana</para>
+		<screen>
+		<![CDATA[
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: loki-grafana
+  namespace: default
+spec:
+  defaultBackend:
+    service:
+      name: loki-grafana
+      port:
+        number: 80
+  rules:
+  - host: grafana.netkiller.cn
+    http:
+      paths:
+      - backend:
+          service:
+            name: loki-grafana
+            port:
+              number: 80
+        path: /
+        pathType: Prefix		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>promtail</title>
+		<screen>
+		<![CDATA[
+helm upgrade --install promtail grafana/promtail --set "loki.serviceName=loki"		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+[root@master ~]# helm upgrade --install promtail grafana/promtail --set "loki.serviceName=loki"
+Release "promtail" does not exist. Installing it now.
+
+
+NAME: promtail
+LAST DEPLOYED: Tue Oct 18 21:13:12 2022
+NAMESPACE: default
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+***********************************************************************
+ Welcome to Grafana Promtail
+ Chart version: 6.5.1
+ Promtail version: 2.6.1
+***********************************************************************
+
+Verify the application is working by running these commands:
+* kubectl --namespace default port-forward daemonset/promtail 3101
+* curl http://127.0.0.1:3101/metrics
+		
+		]]>
+		</screen>
+	</section>
+</chapter>
