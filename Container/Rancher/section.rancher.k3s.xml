@@ -1222,7 +1222,72 @@ EOF
 
 		</section>
 	</section>
+	<section id="k3s.tls">
+		<title>TLS 证书</title>
+		<screen>
+		<![CDATA[
+[root@master ~]# ll /var/lib/rancher/k3s/server/tls
+total 116
+-rw-r--r-- 1 root root 1173 2022-09-08 13:48 client-admin.crt
+-rw------- 1 root root  227 2022-09-08 13:48 client-admin.key
+-rw-r--r-- 1 root root 1178 2022-09-08 13:48 client-auth-proxy.crt
+-rw------- 1 root root  227 2022-09-08 13:48 client-auth-proxy.key
+-rw-r--r-- 1 root root  570 2022-09-08 13:48 client-ca.crt
+-rw------- 1 root root  227 2022-09-08 13:48 client-ca.key
+-rw-r--r-- 1 root root 1165 2022-09-08 13:48 client-controller.crt
+-rw------- 1 root root  227 2022-09-08 13:48 client-controller.key
+-rw-r--r-- 1 root root 1161 2022-09-08 13:48 client-k3s-cloud-controller.crt
+-rw------- 1 root root  227 2022-09-08 13:48 client-k3s-cloud-controller.key
+-rw-r--r-- 1 root root 1153 2022-09-08 13:48 client-k3s-controller.crt
+-rw------- 1 root root  227 2022-09-08 13:48 client-k3s-controller.key
+-rw-r--r-- 1 root root 1181 2022-09-08 13:48 client-kube-apiserver.crt
+-rw------- 1 root root  227 2022-09-08 13:48 client-kube-apiserver.key
+-rw-r--r-- 1 root root 1149 2022-09-08 13:48 client-kube-proxy.crt
+-rw------- 1 root root  227 2022-09-08 13:48 client-kube-proxy.key
+-rw------- 1 root root  227 2022-09-08 13:48 client-kubelet.key
+-rw-r--r-- 1 root root 1153 2022-09-08 13:48 client-scheduler.crt
+-rw------- 1 root root  227 2022-09-08 13:48 client-scheduler.key
+-rw-r--r-- 1 root root 3789 2022-09-08 13:48 dynamic-cert.json
+drwxr-xr-x 2 root root 4096 2022-09-08 13:48 etcd
+-rw-r--r-- 1 root root  591 2022-09-08 13:48 request-header-ca.crt
+-rw------- 1 root root  227 2022-09-08 13:48 request-header-ca.key
+-rw-r--r-- 1 root root  570 2022-09-08 13:48 server-ca.crt
+-rw------- 1 root root  227 2022-09-08 13:48 server-ca.key
+-rw------- 1 root root 1675 2022-09-08 13:48 service.key
+-rw-r--r-- 1 root root 1368 2022-09-08 13:48 serving-kube-apiserver.crt
+-rw------- 1 root root  227 2022-09-08 13:48 serving-kube-apiserver.key
+-rw------- 1 root root  227 2022-09-08 13:48 serving-kubelet.key
+drwx------ 2 root root   84 2022-09-08 13:48 temporary-certs		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>创建 Token</title>
+		<screen>
+		<![CDATA[
+[root@master ~]#kubectl create serviceaccount secrets
+serviceaccount/gitlab created
 
+[root@master ~]# kubectl create token secrets
+eyJhbGciOiJSUzI1NiIsImtpZCI6IktCOHRvYlZOLXFPRmEyb1JWdlQxSzBvN0tvZF9HNFBGRnlraDR5UU1jakkifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiLCJrM3MiXSwiZXhwIjoxNjY2MTcyOTc4LCJpYXQiOjE2NjYxNjkzNzgsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJkZWZhdWx0Iiwic2VydmljZWFjY291bnQiOnsibmFtZSI6ImdpdGxhYiIsInVpZCI6IjAzNTdkOWIwLWY2YWEtNGFlMy05MDc0LWM2YzM5Y2Q1YTdiNiJ9fSwibmJmIjoxNjY2MTY5Mzc4LCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6ZGVmYXVsdDpnaXRsYWIifQ.oDWjQmVH7BOqHUp4AgjxNncfJ0Nz9oY_jS9DU5E-geKmX5GnchC96-t0ZsdtgPiWXFbieb0aUH1wZXCrkFAuGeM-XNDEvfhbK4UL9GiDl98KaYMjTSwXipp4bIZeSctL-Zpc0nSKwaWdWNwxmmlC30HwMwjQPdwBgCDM8SEr9aepUuJD9rHdclKWv8NcXlLq4t5c9sV3qEQRKbGOTnSeY3RokoAY-tYD7FT3jzFktbkTk4SHZAKYUeILlc2eaE0cOm9N4yhl8IYZvEcrBGZV_-Nl0XzGu5XpDrVVXlk2k2RdYQHj3Iw5l4sSFfnRVg1Q-1B45y7FJDEbXa-tCXeRKA
+
+[root@master ~]# token=eyJhbGciOiJSUzI1NiIsImtpZCI6IktCOHRvYlZOLXFPRmEyb1JWdlQxSzBvN0tvZF9HNFBGRnlraDR5UU1jakkifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiLCJrM3MiXSwiZXhwIjoxNjY2MTcyOTc4LCJpYXQiOjE2NjYxNjkzNzgsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJkZWZhdWx0Iiwic2VydmljZWFjY291bnQiOnsibmFtZSI6ImdpdGxhYiIsInVpZCI6IjAzNTdkOWIwLWY2YWEtNGFlMy05MDc0LWM2YzM5Y2Q1YTdiNiJ9fSwibmJmIjoxNjY2MTY5Mzc4LCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6ZGVmYXVsdDpnaXRsYWIifQ.oDWjQmVH7BOqHUp4AgjxNncfJ0Nz9oY_jS9DU5E-geKmX5GnchC96-t0ZsdtgPiWXFbieb0aUH1wZXCrkFAuGeM-XNDEvfhbK4UL9GiDl98KaYMjTSwXipp4bIZeSctL-Zpc0nSKwaWdWNwxmmlC30HwMwjQPdwBgCDM8SEr9aepUuJD9rHdclKWv8NcXlLq4t5c9sV3qEQRKbGOTnSeY3RokoAY-tYD7FT3jzFktbkTk4SHZAKYUeILlc2eaE0cOm9N4yhl8IYZvEcrBGZV_-Nl0XzGu5XpDrVVXlk2k2RdYQHj3Iw5l4sSFfnRVg1Q-1B45y7FJDEbXa-tCXeRKA
+[root@master ~]# curl -k https://127.0.0.1:6443/api --header "Authorization: bearer $token"
+{
+  "kind": "APIVersions",
+  "versions": [
+    "v1"
+  ],
+  "serverAddressByClientCIDRs": [
+    {
+      "clientCIDR": "0.0.0.0/0",
+      "serverAddress": "172.18.200.5:6443"
+    }
+  ]
+}		
+		]]>
+		</screen>
+	</section>
 	<section id="k3s.faq">
 		<title>FAQ</title>
 		<section>

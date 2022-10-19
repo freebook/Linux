@@ -276,9 +276,9 @@ mysql>
 			</screen>
 			<section>
 				<title>安装最新版 maven</title>
-			
-			<para>如果需要安装最新版本 maven 使用下面脚本。</para>
-			<screen>
+
+				<para>如果需要安装最新版本 maven 使用下面脚本。</para>
+				<screen>
 			<![CDATA[
 #!/bin/bash
 
@@ -291,8 +291,8 @@ ln -s /srv/apache-maven-3.8.2 /srv/apache-maven
 
 alternatives --install /usr/local/bin/mvn apache-maven-3.8.2 /srv/apache-maven-3.8.2/bin/mvn 0	
 			]]>
-			</screen>
-			<screen>
+				</screen>
+				<screen>
 			<![CDATA[
 [root@localhost src]# mvn -v
 Apache Maven 3.8.2 (ea98e05a04480131370aa0c110b8c54cf726c06f)
@@ -301,9 +301,9 @@ Java version: 17-ea, vendor: Red Hat, Inc., runtime: /usr/lib/jvm/java-17-openjd
 Default locale: en_US, platform encoding: ANSI_X3.4-1968
 OS name: "linux", version: "4.18.0-338.el8.x86_64", arch: "amd64", family: "unix"			
 			]]>
-			</screen>
-			<para>apache-maven-3.8.2 配置</para>
-			<screen>
+				</screen>
+				<para>apache-maven-3.8.2 配置</para>
+				<screen>
 			<![CDATA[
 [root@localhost ~]# vim /srv/apache-maven/conf/settings.xml
   <mirrors>
@@ -328,15 +328,15 @@ OS name: "linux", version: "4.18.0-338.el8.x86_64", arch: "amd64", family: "unix
     </mirror>
   </mirrors>			
 			]]>
-			</screen>
-			<para>apache-maven-3.8.2 默认会阻止其他镜像，需要会去掉 maven-default-http-blocker 配置</para>
-			<para>切换到 gitlab-runner 用户，随便运行一下 mvn 命令，这样就会产生 ～/.m2 文件夹</para>
-			<screen>
+				</screen>
+				<para>apache-maven-3.8.2 默认会阻止其他镜像，需要会去掉 maven-default-http-blocker 配置</para>
+				<para>切换到 gitlab-runner 用户，随便运行一下 mvn 命令，这样就会产生 ～/.m2 文件夹</para>
+				<screen>
 			<![CDATA[
 [root@gitlab ~]# su - gitlab-runner		
 [gitlab-runner@gitlab ~]$ mvn -v
 			]]>
-			</screen>
+				</screen>
 			</section>
 			<section id="mvnd">
 				<title>mvnd</title>
@@ -420,7 +420,7 @@ yarn config set registry https://registry.npm.taobao.org
 			<title>远程执行 sudo 提示密码</title>
 			<screen>
 			<![CDATA[
-[gitlab-runner@gitlab api.sfzito.com]$ ssh www@192.168.40.10 "sudo ls"
+[gitlab-runner@gitlab api.netkiller.cn]$ ssh www@192.168.40.10 "sudo ls"
 Warning: Permanently added '192.168.40.10' (ECDSA) to the list of known hosts.
 sudo: a terminal is required to read the password; either use the -S option to read from standard input or configure an askpass helper
 			]]>
@@ -809,6 +809,451 @@ test-job:
     - wechat -t 1 代码覆盖率报告 http://report.netkiller.cn/jacoco/index.html		
 		]]>
 		</screen>
+	</section>
+	<section id="gitlab.runner.kubernetes">
+		<title>Kubernetes executor</title>
+		<screen>
+		<![CDATA[
+[root@agent-5 ~]# gitlab-runner register
+Runtime platform                                    arch=amd64 os=linux pid=1259091 revision=43b2dc3d version=15.4.0
+Running in system-mode.                            
+                                                   
+Enter the GitLab instance URL (for example, https://gitlab.com/):
+https://gitlab.netkiller.cn/
+Enter the registration token:
+GR1348941WLrZvRebkiCocQgdGFwC
+Enter a description for the runner:
+[agent-5]: Kubernetes executor
+Enter tags for the runner (comma-separated):
+kubernetes
+Enter optional maintenance note for the runner:
+
+Registering runner... succeeded                     runner=GR1348941WLrZvReb
+Enter an executor: docker-ssh, shell, docker+machine, docker-ssh+machine, kubernetes, custom, docker, parallels, ssh, virtualbox:
+kubernetes
+Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded!
+ 
+Configuration (with the authentication token) was saved in "/etc/gitlab-runner/config.toml" 		
+		]]>
+		</screen>
+		<para>/etc/gitlab-runner/config.toml</para>
+		<screen>
+		<![CDATA[
+[root@agent-5 ~]# cat /etc/gitlab-runner/config.toml
+concurrent = 1
+check_interval = 0
+
+[session_server]
+  session_timeout = 1800
+
+[[runners]]
+  name = "Kubernetes executor"
+  url = "https://gitlab.netkiller.cn/"
+  id = 3
+  token = "5J6amB15rYWie_zGscFC"
+  token_obtained_at = 2022-10-19T07:16:07Z
+  token_expires_at = 0001-01-01T00:00:00Z
+  executor = "kubernetes"
+  [runners.custom_build_dir]
+  [runners.cache]
+    [runners.cache.s3]
+    [runners.cache.gcs]
+    [runners.cache.azure]
+  [runners.kubernetes]
+    host = ""
+    bearer_token_overwrite_allowed = false
+    image = ""
+    namespace = ""
+    namespace_overwrite_allowed = ""
+    pod_labels_overwrite_allowed = ""
+    service_account_overwrite_allowed = ""
+    pod_annotations_overwrite_allowed = ""
+    [runners.kubernetes.affinity]
+    [runners.kubernetes.pod_security_context]
+    [runners.kubernetes.init_permissions_container_security_context]
+      [runners.kubernetes.init_permissions_container_security_context.capabilities]
+    [runners.kubernetes.build_container_security_context]
+      [runners.kubernetes.build_container_security_context.capabilities]
+    [runners.kubernetes.helper_container_security_context]
+      [runners.kubernetes.helper_container_security_context.capabilities]
+    [runners.kubernetes.service_container_security_context]
+      [runners.kubernetes.service_container_security_context.capabilities]
+    [runners.kubernetes.volumes]
+    [runners.kubernetes.dns_config]
+    [runners.kubernetes.container_lifecycle]
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+mkdir /etc/ssl/kubernetes
+[root@master ~]# scp /var/lib/rancher/k3s/server/tls/server-ca.crt root@agent-5:/etc/ssl/kubernetes/ca.crt		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+[root@master ~]# kubectl create serviceaccount secrets
+serviceaccount/secrets created
+
+[root@master ~]# kubectl create token secrets
+		
+[root@master ~]# cat role.yaml 
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: secrets
+  namespace: default
+rules:
+  - apiGroups: ["*"]
+    resources: ["pods"]
+    verbs: ["list", "get", "watch", "create", "delete"]
+  - apiGroups: ["*"]
+    resources: ["pods/exec"]
+    verbs: ["create"]
+  - apiGroups: ["*"]
+    resources: ["pods/log"]
+    verbs: ["get"]
+  - apiGroups: ["*"]
+    resources: ["pods/attach"]
+    verbs: ["list", "get", "create", "delete", "update"]
+  - apiGroups: ["*"]
+    resources: ["secrets"]
+    verbs: ["list", "get", "create", "delete", "update"]      
+  - apiGroups: ["*"]
+    resources: ["configmaps"]
+    verbs: ["list", "get", "create", "delete", "update"]
+    
+[root@master ~]# kubectl create rolebinding gitlab-runner-binding --role=secrets --serviceaccount=default:secrets    
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+[[runners]]
+  name = "Kubernetes executor"
+  url = "https://gitlab.netkiller.cn/"
+  id = 3
+  token = "5J6amB15rYWie_zGscFC"
+  token_obtained_at = 2022-10-19T07:16:07Z
+  token_expires_at = 0001-01-01T00:00:00Z
+  executor = "kubernetes"
+  [runners.custom_build_dir]
+  [runners.cache]
+    [runners.cache.s3]
+    [runners.cache.gcs]
+    [runners.cache.azure]
+  [runners.kubernetes]
+    host = "https://k8s.netkiller.cn:6443"
+    ca_file = "/etc/ssl/kubernetes/ca.crt"
+    tls_verify = true
+    bearer_token_overwrite_allowed = true
+    image = ""
+    namespace = ""
+    namespace_overwrite_allowed = ""
+    pod_labels_overwrite_allowed = ""
+    service_account_overwrite_allowed = ""
+    pod_annotations_overwrite_allowed = ""
+    [runners.kubernetes.affinity]
+    [runners.kubernetes.pod_security_context]
+    [runners.kubernetes.init_permissions_container_security_context]
+      [runners.kubernetes.init_permissions_container_security_context.capabilities]
+    [runners.kubernetes.build_container_security_context]
+      [runners.kubernetes.build_container_security_context.capabilities]
+    [runners.kubernetes.helper_container_security_context]
+      [runners.kubernetes.helper_container_security_context.capabilities]
+    [runners.kubernetes.service_container_security_context]
+      [runners.kubernetes.service_container_security_context.capabilities]
+    [runners.kubernetes.volumes]
+    [runners.kubernetes.dns_config]
+    [runners.kubernetes.container_lifecycle]
+		
+		]]>
+		</screen>
+		<para>.gitlab-ci.yml</para>
+		<screen>
+		<![CDATA[
+cache:
+#   untracked: true
+  paths:
+    - target/
+
+#variables:
+#  KUBERNETES_SERVICE_ACCOUNT: secrets
+#  KUBERNETES_BEARER_TOKEN: eyJhbGciOiJSUzI1NiIsImtpZCI6IktCOHRvYlZOLXFPRmEyb1JWdlQxSzBvN0tvZF9HNFBGRnlraDR5UU1jakkifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiLCJrM3MiXSwiZXhwIjoxNjY2MTc0Mzk1LCJpYXQiOjE2NjYxNzA3OTUsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJkZWZhdWx0Iiwic2VydmljZWFjY291bnQiOnsibmFtZSI6InNlY3JldHMiLCJ1aWQiOiIxMTM5NjVlMy1iZGVkLTQ5NGEtOGMyNS0zYjU3OTFmMTIzZjEifX0sIm5iZiI6MTY2NjE3MDc5NSwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50OmRlZmF1bHQ6c2VjcmV0cyJ9.KvTpp7vplWIBWZFKYK-zPFk0NJhoiMHHiE-0Bj3qmFvHaxF2D3A8YrsEfQxSIJ1p8J5IZSPYiAX_BqoNi4-fziFsJIIbza0bcPj-RWLoBY2Nz0gyzw93r2to71WS90OSxryWRMMmqr8rCFO0ewtdOPzC8-PQ1uSIblJ3gM2EbN7b9VfHJssrog7UMWcT0GuiNM27AzwxYmEvkioeTmQaCzLNUGpyFnu1wg0e7mHzHMxPwSwMiOUFEE7SKKFpyZT8ZLc8ZgEfZKMXK2FwCTpoktBr_h7u-2zpNK4x9Dwl2aqkMBNZL-QVNpaXXnA0K20PAVjK5-x7IkiELFFq_CSezg
+
+stages:
+  - build
+  # - deploy
+
+build-job:
+  stage: build
+  image: maven:latest
+  tags:
+    # - docker
+    - kubernetes
+  # before_script:
+  # after_script:
+  script:
+    - mvn -T 1C -Dmaven.test.skip=true package
+  artifacts:
+    name: "$CI_PROJECT_NAME"
+    paths:
+      - target/*.jar
+		]]>
+		</screen>
+		<section>
+			<title>命名空间</title>
+			<para></para>
+			<screen>
+		<![CDATA[
+[root@master ~]# kubectl create namespace gitlab
+namespace/gitlab-runner created
+		
+[root@master ~]# kubectl create serviceaccount gitlab-runner -n gitlab
+serviceaccount/secrets created
+
+[root@master ~]# kubectl create token gitlab-runner -n gitlab
+		
+[root@master ~]# cat role.yaml 
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: gitlab-runner
+  namespace: gitlab
+rules:
+  - apiGroups: ["*"]
+    resources: ["pods"]
+    verbs: ["list", "get", "watch", "create", "delete"]
+  - apiGroups: ["*"]
+    resources: ["pods/exec"]
+    verbs: ["create"]
+  - apiGroups: ["*"]
+    resources: ["pods/log"]
+    verbs: ["get"]
+  - apiGroups: ["*"]
+    resources: ["pods/attach"]
+    verbs: ["list", "get", "create", "delete", "update"]
+  - apiGroups: ["*"]
+    resources: ["secrets"]
+    verbs: ["list", "get", "create", "delete", "update"]      
+  - apiGroups: ["*"]
+    resources: ["configmaps"]
+    verbs: ["list", "get", "create", "delete", "update"] 	
+
+[root@master ~]# kubectl apply -f role.yaml 
+role.rbac.authorization.k8s.io/gitlab created
+
+[root@master ~]# kubectl create rolebinding gitlab-runner --namespace=gitlab --role=gitlab-runner --serviceaccount=gitlab:gitlab-runner
+
+		]]>
+			</screen>
+		</section>
+		<section>
+			<title>挂载卷</title>
+			<para>创建 PVC</para>
+			<screen>
+			<![CDATA[
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations:
+    pv.kubernetes.io/bind-completed: "yes"
+    pv.kubernetes.io/bound-by-controller: "yes"
+    volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
+    volume.kubernetes.io/storage-provisioner: driver.longhorn.io
+  creationTimestamp: "2022-10-19T12:46:33Z"
+  finalizers:
+  - kubernetes.io/pvc-protection
+  managedFields:
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:spec:
+        f:accessModes: {}
+        f:resources:
+          f:requests:
+            .: {}
+            f:storage: {}
+        f:storageClassName: {}
+        f:volumeMode: {}
+    manager: kube-explorer
+    operation: Update
+    time: "2022-10-19T12:46:33Z"
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          .: {}
+          f:pv.kubernetes.io/bind-completed: {}
+          f:pv.kubernetes.io/bound-by-controller: {}
+          f:volume.beta.kubernetes.io/storage-provisioner: {}
+          f:volume.kubernetes.io/storage-provisioner: {}
+      f:spec:
+        f:volumeName: {}
+    manager: k3s
+    operation: Update
+    time: "2022-10-19T12:46:35Z"
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:status:
+        f:accessModes: {}
+        f:capacity:
+          .: {}
+          f:storage: {}
+        f:phase: {}
+    manager: k3s
+    operation: Update
+    subresource: status
+    time: "2022-10-19T12:46:35Z"
+  name: maven
+  namespace: gitlab
+  resourceVersion: "4846862"
+  uid: ab0dc609-ff07-438e-b537-7e6182cec008
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: longhorn
+  volumeMode: Filesystem
+  volumeName: pvc-ab0dc609-ff07-438e-b537-7e6182cec008
+status:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 10Gi
+  phase: Bound
+  
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations:
+    pv.kubernetes.io/bind-completed: "yes"
+    pv.kubernetes.io/bound-by-controller: "yes"
+    volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
+    volume.kubernetes.io/storage-provisioner: driver.longhorn.io
+  creationTimestamp: "2022-10-19T12:48:39Z"
+  finalizers:
+  - kubernetes.io/pvc-protection
+  managedFields:
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:spec:
+        f:accessModes: {}
+        f:resources:
+          f:requests:
+            .: {}
+            f:storage: {}
+        f:storageClassName: {}
+        f:volumeMode: {}
+    manager: kube-explorer
+    operation: Update
+    time: "2022-10-19T12:48:39Z"
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          .: {}
+          f:pv.kubernetes.io/bind-completed: {}
+          f:pv.kubernetes.io/bound-by-controller: {}
+          f:volume.beta.kubernetes.io/storage-provisioner: {}
+          f:volume.kubernetes.io/storage-provisioner: {}
+      f:spec:
+        f:volumeName: {}
+    manager: k3s
+    operation: Update
+    time: "2022-10-19T12:48:42Z"
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:status:
+        f:accessModes: {}
+        f:capacity:
+          .: {}
+          f:storage: {}
+        f:phase: {}
+    manager: k3s
+    operation: Update
+    subresource: status
+    time: "2022-10-19T12:48:42Z"
+  name: builds
+  namespace: gitlab
+  resourceVersion: "4847301"
+  uid: 09f9a7b0-558a-4142-b9b3-e1318aff223a
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: longhorn-storage
+  volumeMode: Filesystem
+  volumeName: pvc-09f9a7b0-558a-4142-b9b3-e1318aff223a  			
+			]]>
+			</screen>
+			<para>配置 Gitlab Runner</para>
+			<screen>
+			<![CDATA[
+[[runners]]
+  name = "Kubernetes executor"
+  url = "https://gitlab.netkiller.cn/"
+  id = 3
+  token = "5J6amB15rYWie_zGscFC"
+  token_obtained_at = 2022-10-19T07:16:07Z
+  token_expires_at = 0001-01-01T00:00:00Z
+  executor = "kubernetes"
+  [runners.custom_build_dir]
+  [runners.cache]
+    [runners.cache.s3]
+    [runners.cache.gcs]
+    [runners.cache.azure]
+  [runners.kubernetes]
+    host = "https://172.18.200.5:6443"
+    #cert_file = "/etc/ssl/kubernetes/api.crt"
+    #key_file = "/etc/ssl/kubernetes/api.key"
+    ca_file = "/etc/ssl/kubernetes/ca.crt"
+    tls_verify = true
+    bearer_token = "eyJhbGciOiJSUzI1NiIsImtpZCI6IktCOHRvYlZOLXFPRmEyb1JWdlQxSzBvN0tvZF9HNFBGRnlraDR5UU1jakkifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiLCJrM3MiXSwiZXhwIjoxNjY2MTg1NDc5LCJpYXQiOjE2NjYxODE4NzksImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJnaXRsYWIiLCJzZXJ2aWNlYWNjb3VudCI6eyJuYW1lIjoiZ2l0bGFiLXJ1bm5lciIsInVpZCI6IjdjYjhmNjM3LTc5YjQtNDc5Yi1hZjAzLTRhOGQ2ZDliM2YzOSJ9fSwibmJmIjoxNjY2MTgxODc5LCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6Z2l0bGFiOmdpdGxhYi1ydW5uZXIifQ.ExhowiFt9k-vFwaxohs_KGF_JmzPIMnUyoOzENN9g250taWu3jwtRasixIckYhO5JavpzZRU1XTdhRmbEQ9hehlY5q6kXtGCZ4AImh-q8gj7lglBLdWvZLMcmaqu3o4pIjb7Cw0qP25y-F79IeDtUPZeLU2b_ocTIM5GPd5g6MxilTzw84GJ_hVevWVtdpTrRg48b64S6crAWpkUgMSVwyqwyjsTkGuEcn_V32fzO9ro7EjumuWxVmOp5TA0mOXl4L8W1C6ZYVT_qGKsMJJ_AS3uZkKqcxT6FmSS0Ta4vjgQsVN1l6OjQNmrIWFBjRzNCiXPhlk5JzR0ZID2J20UQQ"
+    bearer_token_overwrite_allowed = true
+    privileged = true
+    image = ""
+    namespace = "gitlab"
+    namespace_overwrite_allowed = ""
+    pod_labels_overwrite_allowed = ""
+    service_account = "gitlab-runner"
+    service_account_overwrite_allowed = ""
+    pod_annotations_overwrite_allowed = ""
+    [runners.kubernetes.affinity]
+    [runners.kubernetes.pod_security_context]
+    [runners.kubernetes.init_permissions_container_security_context]
+      [runners.kubernetes.init_permissions_container_security_context.capabilities]
+    [runners.kubernetes.build_container_security_context]
+      [runners.kubernetes.build_container_security_context.capabilities]
+    [runners.kubernetes.helper_container_security_context]
+      [runners.kubernetes.helper_container_security_context.capabilities]
+    [runners.kubernetes.service_container_security_context]
+      [runners.kubernetes.service_container_security_context.capabilities]
+    [runners.kubernetes.volumes]
+    [[runners.kubernetes.volumes.host_path]]
+      name = "cache"
+      mount_path = "/cache"
+      host_path = "/tmp/cache"
+    [[runners.kubernetes.volumes.pvc]]
+      name = "maven"
+      mount_path = "/root/.m2"
+    [[runners.kubernetes.volumes.pvc]]
+      name = "builds"
+      mount_path = "/builds"
+    [runners.kubernetes.dns_config]
+    [runners.kubernetes.container_lifecycle]
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section>
 		<title>数据库结构监控</title>
