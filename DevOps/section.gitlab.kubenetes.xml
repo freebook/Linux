@@ -401,11 +401,44 @@ Certificate:
 		<section>
 			<title>GitLab Kubernetes Agent</title>
 			<subtitle>通过 Gitlab 代理连接到 Kubernetes</subtitle>
-			<screen>
-		<![CDATA[
-		
-		]]>
-			</screen>
+
 		</section>
+	</section>
+	<section>
+		<title>添加已存在的集群</title>
+		<screen>
+		<![CDATA[
+[root@master ~]# cat gitlab-admin-service-account.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: gitlab-admin
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: gitlab-admin
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: gitlab-admin
+    namespace: kube-system		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+[root@master ~]# kubectl apply -f gitlab-admin-service-account.yaml
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+[root@master ~]# kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep gitlab-admin | awk '{print $1}') | grep 'token:'
+token:      eyJhbGciOiJSUzI1NiIsImtpZCI6IktCOHRvYlZOLXFPRmEyb1JWdlQxSzBvN0tvZF9HNFBGRnlraDR5UU1jakkifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLXN5c3RlbSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJwb2QtaW1wZXJzb25hdGlvbi1zaGVsbC03N3F6dy10b2tlbiIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50Lm5hbWUiOiJwb2QtaW1wZXJzb25hdGlvbi1zaGVsbC03N3F6dyIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6IjViZmFkNWU2LTczZGEtNDIwYS1hMDM3LWYxMjc0Zjc5YzgxZCIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDprdWJlLXN5c3RlbTpwb2QtaW1wZXJzb25hdGlvbi1zaGVsbC03N3F6dyJ9.MnRha5K_V1_PtBU1FYukQRcoV59c3kzFXR0fJz5L_O7a0rnZQa0PbwiHHRJy5y-COcoOKaGsA3OL98gn702d369XNtBx30_FjWKULE4PSgWufquEi-hpQnzvEs50bE9MFVhLLpdAmKo9ntahFDKHJQTGnW8fMVeO2ZV77mu9ZLuxT8b4ARP83gQrHxzbk-H77SpLc6qwtJgKc1xTND8Qs17Rw_dQWK-QFwD03CySoTnfoBxJfq5OU_s51lACBnpPMe6cKoWRlnfp-zsZwKLnnTLlMGWBlI5sA1RW1MI0HTvVe3Rw9fBkhsGnMUzlOdBREQlcEc3egJScnieJdhv1tw
+		]]>
+		</screen>
 	</section>
 </section>
