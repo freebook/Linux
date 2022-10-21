@@ -262,6 +262,9 @@ net.core.somaxconn = 1024
 # TCP BBR
 net.core.default_qdisc=fq
 net.ipv4.tcp_congestion_control=bbr
+
+fs.inotify.max_user_instances=65535
+fs.inotify.max_user_watches=5088930
 EOF
 
 sysctl -p			
@@ -293,15 +296,17 @@ systemctl disable firewalld
 systemctl stop firewalld
 			]]>
 			</screen>
-		</section>
-		<section>
-			<table>时间同步</table>
+			<para>时间同步</para>
 			<screen>
 			<![CDATA[
 dnf install -y chrony
 systemctl start chronyd
 			]]>
 			</screen>
+		</section>
+		<section>
+			<table>阿里云 AlmaLinux 镜像初始化</table>
+			
 		</section>
 	</section>
 </section>
