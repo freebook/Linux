@@ -1078,6 +1078,17 @@ EOF
 kubectl get secret gitlab-runner-token -o jsonpath='{.data.token}' -n gitlab | base64 -d
 			]]>
 			</screen>
+			<para>账号和Token创建完毕之后，使用下面命令检查</para>
+			<screen>
+			<![CDATA[
+kubectl get namespace gitlab
+kubectl get serviceaccounts gitlab-runner -n gitlab
+kubectl get role gitlab-runner -n gitlab
+kubectl get rolebinding gitlab-runner -n gitlab
+kubectl get secrets gitlab-runner-token -n gitlab
+kubectl get secret gitlab-runner-token -o jsonpath='{.data.token}' -n gitlab | base64 -d			
+			]]>
+			</screen>
 		</section>
 		<section>
 			<title>挂载卷</title>
