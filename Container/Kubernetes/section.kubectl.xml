@@ -110,7 +110,7 @@ $ kubectl config use-context
 			</screen>
 		</section>
 	</section>
-	<section>
+	<section id="kubectl.run">
 		<title>如何从 docker 过渡到 kubectl 命令</title>
 		<para>docker run 命令</para>
 		<screen>
@@ -1019,7 +1019,16 @@ $ kubectl port-forward svc/demo 8080:8080
 	<section id="kubectl.secret">
 		<title>secret 密钥管理</title>
 		<section>
-			<title></title>
+			<title>获取 Token</title>
+			<screen>
+			<![CDATA[
+[gitlab-runner@agent-5 ~]$ kubectl get secrets -n gitlab -o jsonpath="{.items[?(@.metadata.annotations['kubernetes\.io/service-account\.name']=='gitlab-runner')].data.token}" | base64 -d
+eyJhbGciOiJSUzI1NiIsImtpZCI6IktCOHRvYlZOLXFPRmEyb1JWdlQxSzBvN0tvZF9HNFBGRnlraDR5UU1jakkifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJnaXRsYWIiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlY3JldC5uYW1lIjoiZ2l0bGFiLXJ1bm5lci10b2tlbiIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50Lm5hbWUiOiJnaXRsYWItcnVubmVyIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiN2NiOGY2MzctNzliNC00NzliLWFmMDMtNGE4ZDZkOWIzZjM5Iiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50OmdpdGxhYjpnaXRsYWItcnVubmVyIn0.pU4-8D4szeL8iud1SvesdN7nV7L3GLaNsa2UbsxkGQ4SDGN85zKTXJl6MtqDsuJB9HBUlOTMnyEa0gCbgHOJlR3fd2HcegitrRLeybvUuotniiLpCPO7vAO-oS5Fej7oUFBXqZJYIx-xMbFoyt3rnGs273c_yE8avI8EGdEPNhOWRgF_GZBYstvwiEjO2IUDWbutzCTtGloPvJ5Ur0s7drLJkCQvT2nod5tSSnY5R0lpNyD2FodkFR28KU1EgFoHUnH_ERtUAS5qObIETWSwm5SmCnd2Ogjh70DDxmIHSU-saFU0zSqPpZ1oX9hgO9YMkcJXPHOEnqIVEagZ5CSf2w			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>创建 Secret</title>
 			<screen>
 			<![CDATA[
 $ cat <<EOF | kubectl create -f -
@@ -1799,6 +1808,14 @@ Events:
 			]]>
 			</screen>
 		</section>
+	</section>
+	<section id="kubectl.clusterrolebinding">
+		<title>clusterrolebinding</title>
+		<screen>
+		<![CDATA[
+kubectl create clusterrolebinding cluster-admin-binding --clusterrole cluster-admin --user [USER ACCOUNT]		
+		]]>
+		</screen>
 	</section>
 	<section id="kubectl.example">
 		<title>kubectl example</title>

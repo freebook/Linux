@@ -743,6 +743,17 @@ artifacts:
   untracked: true		
 		]]>
 		</screen>
+		<section>
+			<title>禁止 job 下载构建物</title>
+			<screen>
+			<![CDATA[
+job:
+  stage: build
+  script: make build
+  dependencies: []			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="gitlab-ci.yml.allow_failure">
 		<title>允许失败</title>

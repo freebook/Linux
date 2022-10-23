@@ -76,4 +76,9 @@ ERROR: Job failed: exit status 1
 		<para>点击 Expand 展开配置项</para>
 		<para>Maximum artifacts size (MB): 修改构建无最大尺寸</para>
 	</section>
+	<section>
+		<title>ERROR: Job failed (system failure): prepare environment: waiting for pod running: timed out waiting for pod to start. Check https://docs.gitlab.com/runner/shells/index.html#shell-profile-loading for more information</title>
+		<para>Kubernetes 执行器提出该错误，分析原因是 pull 镜像超时。</para>
+		<para>解决方法，设置 poll_timeout = 3600</para>
+	</section>
 </section>

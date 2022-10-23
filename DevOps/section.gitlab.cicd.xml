@@ -883,11 +883,27 @@ check_interval = 0
     [runners.kubernetes.container_lifecycle]
 		]]>
 		</screen>
-		<para></para>
+		<para>将CA证书复制给 gitlab-runner</para>
 		<screen>
 		<![CDATA[
 mkdir /etc/ssl/kubernetes
 [root@master ~]# scp /var/lib/rancher/k3s/server/tls/server-ca.crt root@agent-5:/etc/ssl/kubernetes/ca.crt		
+		]]>
+		</screen>
+		<para>或者用下面命令查看 CA 证书，然后保存到 /etc/ssl/kubernetes/ca.crt 文件</para>
+		<screen>
+		<![CDATA[
+[gitlab-runner@agent-5 ~]$ kubectl config view --raw --minify --flatten -o jsonpath='{.clusters[].cluster.certificate-authority-data}' | base64 -d
+-----BEGIN CERTIFICATE-----
+MIIBeDCCAR2gAwIBAgIBADAKBggqhkjOPQQDAjAjMSEwHwYDVQQDDBhrM3Mtc2Vy
+dmVyLWNhQDE2NjI2MTYwOTMwHhcNMjIwOTA4MDU0ODEzWhcNMzIwOTA1MDU0ODEz
+WjAjMSEwHwYDVQQDDBhrM3Mtc2VydmVyLWNhQDE2NjI2MTYwOTMwWTATBgcqhkjO
+PQIBBggqhkjOPQMBBwNCAARGT8u7K3jFNKGid7qMWSYUMuv+kYQzvk5RQHFyEXA6
+zNnGd0PBpDvsKpZGjkIwJnla0v98nFzsK6hp9eEDIVw3o0IwQDAOBgNVHQ8BAf8E
+BAMCAqQwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQU7IRDLJoNv7bF8wkkJ4yQ
+FA6gTBowCgYIKoZIzj0EAwIDSQAwRgIhAKMiz13pxq+IIXZfZT5R+Lh+pDoX2H1u
+AskoLxoAutCPAiEA4ubxiK1DqjatxGb1/ovMLd4pfcPeAvg1AIokwhFhueU=
+-----END CERTIFICATE-----		
 		]]>
 		</screen>
 		<para></para>
@@ -1044,9 +1060,9 @@ rules:
 role.rbac.authorization.k8s.io/gitlab created
 
 [root@master ~]# kubectl create rolebinding gitlab-runner --namespace=gitlab --role=gitlab-runner --serviceaccount=gitlab:gitlab-runner
-
 		]]>
 			</screen>
+
 			<screen>
 			<![CDATA[
 kubectl create -n gitlab -f - <<EOF                                                 

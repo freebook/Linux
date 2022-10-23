@@ -255,5 +255,4 @@ docker run -it --entrypoint sh <images>
 		]]>
 		</screen>
 	</section>
-	&section.docker.dockerfile.xml;
 </section>

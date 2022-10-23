@@ -1564,5 +1564,43 @@ round-trip min/avg/max = 0.047/0.049/0.052 ms
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>Failed to allocate directory watch: Too many open files</title>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# ulimit -a
+real-time non-blocking time  (microseconds, -R) unlimited
+core file size              (blocks, -c) 0
+data seg size               (kbytes, -d) unlimited
+scheduling priority                 (-e) 0
+file size                   (blocks, -f) unlimited
+pending signals                     (-i) 254690
+max locked memory           (kbytes, -l) 64
+max memory size             (kbytes, -m) unlimited
+open files                          (-n) 6553500
+pipe size                (512 bytes, -p) 8
+POSIX message queues         (bytes, -q) 819200
+real-time priority                  (-r) 0
+stack size                  (kbytes, -s) 8192
+cpu time                   (seconds, -t) unlimited
+max user processes                  (-u) 254690
+virtual memory              (kbytes, -v) unlimited
+file locks                          (-x) unlimited			
+			]]>
+			</screen>
+			<screen>
+	<![CDATA[
+[root@netkiller ~]# sysctl fs.inotify.max_user_instances fs.inotify.max_user_watches
+fs.inotify.max_user_instances = 128
+fs.inotify.max_user_watches = 508881
+
+[root@netkiller ~]# sysctl -w fs.inotify.max_user_watches=5088800
+fs.inotify.max_user_watches = 5088800
+
+[root@netkiller ~]# sysctl -w fs.inotify.max_user_instances=4096
+fs.inotify.max_user_instances = 4096
+	]]>
+			</screen>
+		</section>
 	</section>
 </section>

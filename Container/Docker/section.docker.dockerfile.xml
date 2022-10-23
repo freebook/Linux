@@ -56,7 +56,7 @@ CMD ["nginx", "-g", "daemon off;"]
 			<title>创建镜像</title>
 			<screen>
 		<![CDATA[
-		# docker build -t "centos:nginx" .
+# docker build -t "centos:nginx" .
 Sending build context to Docker daemon 3.072 kB
 Step 1/14 : FROM centos:latest
  ---> 3bee3060bfc8

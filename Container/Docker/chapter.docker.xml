@@ -7,12 +7,12 @@
 	&section.docker.install.xml;
 	&section.docker.config.xml;
 	&section.docker.cli.xml;
-	
 	&section.docker.image.xml;
 	&section.docker.container.xml;
 	&section.docker.volume.xml;
 	&section.docker.network.xml;
 	&section.docker.logs.xml;
+	&section.docker.dockerfile.xml;
 	&section.docker.registry.xml;
 	&section.docker.swarms.xml;
 	&section.docker-compose.xml;
