@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="index"><?dbhtml dir="fluentd" ?>
+	<title>fluentd</title>
+	<para>OS Linux/FreeBSD</para>
+	<para>Web Apache/Lighttpd/Nginx</para>
+	<para>DB MySQL/PostgreSQL</para>
+	&section.fluentd.docker.xml;
+	<section>
+		<title>fluent-bit</title>
+		<section>
+			<title>安装 fluent-bit</title>
+			<screen>
+			<![CDATA[
+cat > /etc/yum.repos.d/fluent-bit.repo <<-'EOF'
+[fluent-bit]
+name = Fluent Bit
+baseurl = https://packages.fluentbit.io/centos/$releasever/$basearch/
+gpgcheck=1
+gpgkey=https://packages.fluentbit.io/fluentbit.key
+repo_gpgcheck=1
+enabled=1
+EOF
+			]]>
+			</screen>
+			<screen>
+		<![CDATA[
+[root@netkiller ~]# dnf search fluent-bit
+Last metadata expiration check: 3:25:14 ago on Thu 27 Oct 2022 10:44:59 AM CST.
+====================================================================================================== Name Exactly Matched: fluent-bit ======================================================================================================
+fluent-bit.x86_64 : Fast data collector for Linux
+
+[root@netkiller ~]# dnf install -y fluent-bit
+		]]>
+			</screen>
+			<screen>
+		<![CDATA[
+[root@netkiller ~]# rpm -ql fluent-bit
+/etc/fluent-bit
+/etc/fluent-bit/fluent-bit.conf
+/etc/fluent-bit/parsers.conf
+/etc/fluent-bit/plugins.conf
+/usr/bin/fluent-bit
+/usr/lib/.build-id
+/usr/lib/.build-id/28
+/usr/lib/.build-id/28/cfd98997f846eecd5117bdbd0be440e3c75a58
+/usr/lib/systemd/system/fluent-bit.service
+/usr/share/doc/fluent-bit
+/usr/share/doc/fluent-bit/CODE_OF_CONDUCT.md
+/usr/share/doc/fluent-bit/CONTRIBUTING.md
+/usr/share/doc/fluent-bit/GOLANG_OUTPUT_PLUGIN.md
+/usr/share/doc/fluent-bit/GOVERNANCE.md
+/usr/share/doc/fluent-bit/MAINTAINERS.md
+/usr/share/doc/fluent-bit/README.md
+/usr/share/licenses/fluent-bit
+/usr/share/licenses/fluent-bit/LICENSE		
+		]]>
+			</screen>
+		</section>
+		<section>
+			<title>配置 fluent-bit</title>
+			<screen>
+			<![CDATA[
+cp /etc/fluent-bit/fluent-bit.conf{,.original}
+cp /etc/fluent-bit/parsers.conf{,.original}
+cp /etc/fluent-bit/plugins.conf{,.original}
+			]]>
+			</screen>
+			<section>
+				<title>TCP 配置实例</title>
+				<para></para>
+				<screen>
+				<![CDATA[
+[root@netkiller ~]# cat /etc/fluent-bit/fluent-bit.conf | grep -v '#' | grep -v '^$'
+[SERVICE]
+    flush        1
+    daemon       Off
+    log_level    info
+    parsers_file parsers.conf
+    plugins_file plugins.conf
+    http_server  Off
+    http_listen  0.0.0.0
+    http_port    2020
+    storage.metrics on
+[INPUT]
+    Name        tcp
+    Listen      0.0.0.0
+    Port        5170
+    Chunk_Size  32
+    Buffer_Size 64
+    Format      json
+[OUTPUT]
+    Name file
+    Match *
+    Path /opt/log
+    Mkdir true			
+				]]>
+				</screen>
+				<para>启动 fluent-bit</para>
+				<screen>
+				<![CDATA[
+[root@netkiller ~]# /opt/fluent-bit/bin/fluent-bit -c /etc/fluent-bit/fluent-bit.conf				
+				]]>
+				</screen>
+				<para>产生一条日志</para>
+				<screen>
+				<![CDATA[
+[root@netkiller log]# echo '{"key 1": 123456789, "key 2": "abcdefg"}' | nc 127.0.0.1 5170				
+				]]>
+				</screen>
+				<para>观察日志</para>
+				<screen>
+				<![CDATA[
+[root@netkiller log]# tail /opt/log/tcp.0 
+tcp.0: [1666855978.575643295, {"key 1":123456789,"key 2":"abcdefg"}]
+				]]>
+				</screen>
+			</section>
+		</section>
+	</section>
+	<section id="fluentd.faq">
+		<title>temporarily failed to flush the buffer</title>
+		<para></para>
+		<screen>
+		<![CDATA[
+2020-10-19 03:22:24 +0000 [warn]: temporarily failed to flush the buffer. next_retry=2020-10-19 03:22:26 +0000 error_class="Elasticsearch::Transport::Transport::Errors::NotAcceptable" error="[406] {\"error\":\"Content-Type header [] is not supported\",\"status\":406}" plugin_id="object:2b246e6b2084"
+2020-10-19 03:22:24 +0000 [warn]: suppressed same stacktrace		
+		]]>
+		</screen>
+	</section>
+</section>

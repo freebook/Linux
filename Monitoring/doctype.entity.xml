@@ -28,11 +28,11 @@
 <!ENTITY chapter.log.xml		 		SYSTEM "chapter.log.xml">
 <!ENTITY chapter.log.web.xml			SYSTEM "chapter.log.web.xml">
 <!ENTITY chapter.log.flume.xml			SYSTEM "chapter.log.flume.xml">
-<!ENTITY chapter.log.elk.xml			SYSTEM "chapter.log.elk.xml">
-<!ENTITY chapter.log.loki.xml			SYSTEM "chapter.log.loki.xml">
+<!ENTITY section.log.elk.xml			SYSTEM "section.log.elk.xml">
+<!ENTITY section.log.loki.xml			SYSTEM "section.log.loki.xml">
 <!ENTITY chapter.zipkin.xml			 	SYSTEM "chapter.zipkin.xml">
 
-<!ENTITY chapter.fluentd.xml		 	SYSTEM "chapter.fluentd.xml">
+<!ENTITY section.log.fluentd.xml		SYSTEM "section.log.fluentd.xml">
 <!ENTITY section.fluentd.docker.xml	 	SYSTEM "section.fluentd.docker.xml">
 
 <!ENTITY chapter.prometheus.xml		 			SYSTEM "chapter.prometheus.xml">

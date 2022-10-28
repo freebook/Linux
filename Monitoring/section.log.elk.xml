@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="index"><?dbhtml dir="elk" ?>
+<section id="index"><?dbhtml dir="elk" ?>
 	<title>ElasticSearch + Logstash + Kibana</title>
 	<chapterinfo>
 		<keywordset>
@@ -24,6 +24,43 @@
 			<screen>
 			<![CDATA[
 curl -s https://raw.githubusercontent.com/netkiller/shell/master/search/elastic/elastic-8.x.sh | bash
+			]]>
+			</screen>
+			<para>手工安装</para>
+			<screen>
+			<![CDATA[
+rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
+
+cat >> /etc/yum.repos.d/logstash.repo <<EOF
+[logstash-8.x]
+name=Elastic repository for 8.x packages
+baseurl=https://artifacts.elastic.co/packages/8.x/yum
+gpgcheck=1
+gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch
+enabled=1
+autorefresh=1
+type=rpm-md
+EOF
+
+dnf install -y logstash
+
+cp /etc/logstash/logstash.yml{,.original}
+chown logstash:logstash -R /etc/logstash
+
+systemctl daemon-reload
+systemctl enable logstash.service
+systemctl start logstash.service			
+			]]>
+			</screen>
+			<para>修改启动用户，否则启动会失败</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# vim /etc/logstash/conf.d/file.conf
+User=logstash
+Group=logstash
+修改
+User=root
+Group=root
 			]]>
 			</screen>
 		</section>
@@ -222,6 +259,33 @@ output {
 
 	<section id="logstash">
 		<title>logstash 配置项</title>
+		<section>
+			<title>多 pipeline 配置</title>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# cat /etc/logstash/pipelines.yml
+# This file is where you define your pipelines. You can define multiple.
+# For more information on multiple pipelines, see the documentation:
+#   https://www.elastic.co/guide/en/logstash/current/multiple-pipelines.html
+
+- pipeline.id: main
+  path.config: "/etc/logstash/conf.d/*.conf"			
+			]]>
+			</screen>
+			<para>配置 pipelines.yml 文件</para>
+			<screen>
+			<![CDATA[
+- pipeline.id: main
+  path.config: "/etc/logstash/conf.d/*.conf"
+- pipeline.id: finance
+  path.config: "/etc/logstash/conf.finance/*.conf"
+- pipeline.id: market
+  path.config: "/etc/logstash/conf.market/*.conf"
+- pipeline.id: customer
+  path.config: "/etc/logstash/conf.customer/*.conf"  
+			]]>
+			</screen>
+		</section>
 		<section id="input">
 			<title>input</title>
 			<section id="stdin">
@@ -475,9 +539,20 @@ filter {
     match => [ "mtime", "yyyy-MM-dd HH:mm:ss" ]
     locale => "cn"
   } 
-}				
+}
 				]]>
 				</programlisting>
+				<screen>
+				<![CDATA[
+date {
+    locale => "zh-CN"
+    #match => ["@timestamp", "yyyy-MM-dd HH:mm:ss"]
+	match => ["@timestamp", "ISO8601"]
+    timezone => "Asia/Shanghai"
+	target => ["@timestamp"]
+}				
+				]]>
+				</screen>
 			</section>
 			<section id="filter.patterns">
 				<title>patterns</title>
@@ -671,13 +746,16 @@ output {
 			<section>
 				<title>stdout</title>
 				<screen>
-					output {
-					stdout { codec => rubydebug }
-					}
+				<![CDATA[
+output {
+	stdout { codec => rubydebug }
+}				
+				]]>
 				</screen>
 			</section>
 			<section id="file">
 				<title>file 写入文件</title>
+				<para>/etc/logstash/conf.d/file.conf</para>
 				<screen>
 				<![CDATA[
 output {
@@ -686,7 +764,7 @@ output {
         message_format => "%{message}"
         gzip => true
     }
-}				
+}
 				]]>
 				</screen>
 			</section>
@@ -759,7 +837,6 @@ output {
 				]]>
 				</screen>
 			</section>
-
 		</section>
 	</section>
 	<section id="logstash.example">
@@ -788,7 +865,6 @@ output {
     index => "logstash-api"
   }
 }
-				
 				]]>
 				</screen>
 				<para>src/main/resources/logback.xml</para>
@@ -824,6 +900,80 @@ neo@MacBook-Pro ~/deployment % cat api.netkiller.cn/src/main/resources/logback.x
 				]]>
 				</screen>
 			</example>
+			<para></para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# cat /etc/logstash/conf.d/file.conf
+input {
+  tcp {
+    port => 4567 
+    codec => json_lines
+  }
+}
+
+filter {
+    #ruby {
+    #      code => "event.set('@timestamp', LogStash::Timestamp.at(event.get('@timestamp').time.localtime + 8*60*60))"
+    #}
+    ruby {
+		code => "event.set('datetime', event.get('@timestamp').time.localtime.strftime('%Y-%m-%d %H:%M:%S'))"
+    }
+}
+
+output {
+
+    file {
+        path => "/opt/log/%{app}.%{+yyyy}-%{+MM}-%{+dd}.log.gz"
+		codec => line { format => "[%{datetime}] %{level} %{message}"}
+		#codec => json_lines
+        gzip => true
+    }
+
+}
+			]]>
+			</screen>
+			<para>每个 tags 一个文件</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# cat /etc/logstash/conf.d/file.conf 
+input {
+  tcp {
+    port => 4567 
+    codec => json_lines
+  }
+}
+
+filter {
+    ruby {
+	code => "event.set('datetime', event.get('@timestamp').time.localtime.strftime('%Y-%m-%d %H:%M:%S'))"
+    }
+}
+
+output {
+
+	if "finance" in [tags] { 
+	    file {
+	        path => "/opt/log/%{app}.finance.%{+yyyy}-%{+MM}-%{+dd}.log"
+			codec => line { format => "[%{datetime}] %{level} %{message} %{tags}"}
+		}
+	 
+	 } else if "market" in [tags] {
+	
+	    file {
+			path => "/opt/log/%{app}.market.%{+yyyy}-%{+MM}-%{+dd}.log"
+			codec => line { format => "[%{datetime}] %{level} %{message} %{tags}"}
+		}
+	} else {
+	
+	    file {
+			path => "/opt/log/%{app}.unknow.%{+yyyy}-%{+MM}-%{+dd}.log"
+			codec => line { format => "[%{datetime}] %{level} %{message} %{tags}"}
+		}
+    }
+
+}			
+			]]>
+			</screen>
 		</section>
 		<section>
 			<title>索引切割实例</title>
@@ -890,7 +1040,6 @@ output {
 		<appender-ref ref="LOGSTASH" />
 	</root>
 </configuration>
-				
 				]]>
 				</screen>
 			</example>
@@ -909,7 +1058,6 @@ input {
                 tags => ["optical", "gather"]
     }
 }
-
 
 filter {
         if [type] == "csv" { #多个配置文件同时执行的区分
@@ -1031,8 +1179,8 @@ echo "Hello worldss -lnt | grep 9000!" | nc localhost 9000
 				]]>
 				</screen>
 			</section>
-			
-			
+
+
 		</section>
 	</section>
 	<section id="faq">
@@ -1108,4 +1256,4 @@ output {
 			<para>5.x type类型如果是date，那么系统默认使用 ISO8601 格式。 6.x 修复了这个问题。"ctime": "2017-12-18 11:21:57"</para>
 		</section>
 	</section>
-</chapter>
+</section>

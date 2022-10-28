@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="index"><?dbhtml dir="logs" ?>
-	<title>Logs 分析</title>
+<chapter id="log">
+	<title>日志收集和分析</title>
 	<chapterinfo>
 		<keywordset>
 			<keyword>rinetd.log</keyword>
@@ -10,7 +10,9 @@
 		</keywordset>
 	</chapterinfo>
 	<para></para>
-
+	&section.log.elk.xml;
+	&section.log.loki.xml;
+	&section.log.fluentd.xml;
 <section id="system.log">
 	<title>log</title>
 	<section id="logwatch">

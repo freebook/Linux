@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter>
+<section id="index"><?dbhtml dir="loki" ?>
 	<title>Grafana + Loki + Promtail</title>
 	<section>
 		<title>Docker Compose</title>
@@ -95,4 +95,4 @@ Verify the application is working by running these commands:
 		]]>
 		</screen>
 	</section>
-</chapter>
+</section>
