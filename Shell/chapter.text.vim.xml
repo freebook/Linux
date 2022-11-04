@@ -208,7 +208,7 @@ done
 		]]>
 		</screen>
 	</section>
-	<section id="line()">
+	<section id="vim.fileformat">
 		<title>set fileformat</title>
 		<para>加入行号</para>
 		<screen>
@@ -219,6 +219,41 @@ vim    set fileformat
 		]]>
 		</screen>
 	</section>
-
+	<section>
+		<title>空格与TAB转换</title>
+		<para>ts 是tabstop的缩写，设TAB宽度为4个空格。</para>
+		<para>softtabstop 表示在编辑模式的时候按退格键的时候退回缩进的长度，当使用 expandtab 时特别有用。</para>
+		<para>shiftwidth 表示每一级缩进的长度，一般设置成跟 softtabstop 一样。</para>
+		<para>expandtab表示缩进用空格来表示，noexpandtab 则是用制表符表示一个缩进。</para>
+		<para>autoindent自动缩进</para>
+		
+		<para>空格|tab 长度设置</para>
+		<screen>
+		<![CDATA[
+set ts=4
+set softtabstop=4
+set shiftwidth=4
+set expandtab
+set autoindent
+		]]>
+		</screen>
+		<para>上面配置可以添加到 vim 配置文件中：/etc/virc 和 /etc/vimrc</para>
+		<para>TAB替换为空格</para>
+		<screen>
+		<![CDATA[
+:set ts=4
+:set expandtab
+:%retab!		
+		]]>
+		</screen>
+		<para>空格替换为TAB</para>
+		<screen>
+		<![CDATA[
+:set ts=4
+:set noexpandtab
+:%retab!
+		]]>
+		</screen>
+	</section>
 
 </section>

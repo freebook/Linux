@@ -535,16 +535,81 @@ A
 		</screen>
 	</section>
 	<section>
-		<title></title>
+		<title>Redis</title>
+		<para>nginx 配置</para>
 		<screen>
 		<![CDATA[
-		
+location /redis {
+	default_type 'text/html';  
+    lua_code_cache on;  
+    content_by_lua_file lua/redis.lua;
+}		
 		]]>
 		</screen>
-		<para></para>
+		<para>lua/redis.lua 程序</para>
 		<programlisting>
 		<![CDATA[
-		
+[root@netkiller nginx]# cat lua/redis.lua 
+local host = "127.0.0.1"  
+local port = 6379  
+-- local password = "passw0rd"
+local password = ""
+local redis = require("resty.redis")  
+local conn = redis:new()  
+
+conn:set_timeout(5000)  
+ 
+local ok, err = conn:connect(host, port)
+
+if not ok then
+	ngx.say("connect to redis error : ", err)
+	return 
+elseif password and password ~= "" then
+	ok, err = conn:auth(password)
+	if not ok then
+		ngx.say("failed to authenticate: ", err)
+		return 
+	end
+end
+ 
+ok, err = conn:set("msg", "hello world")
+if not ok then
+	ngx.say("set msg error : ", err)
+end
+
+local value, err = conn:get("msg")
+if not value then
+	ngx.say("get msg error : ", err)
+end
+if value == ngx.null then  
+	value = ''  
+end
+
+ngx.say("msg : ", value)  
+
+local ok, err = conn:close()
+if not ok then
+	ngx.say("close redis error:", err)
+end
+		]]>
+		</programlisting>
+		<para>list</para>
+		<programlisting>
+		<![CDATA[
+local lists, err = red:lrange("nokey", 0, -1)
+ngx.say(lists)		
+		]]>
+		</programlisting>
+		<para>set</para>
+		<programlisting>
+		<![CDATA[
+red:sadd("city","Shenzhen","Shanghai","Beijing")
+local citys, err = red:smembers("city")
+ngx.say(citys)
+
+for i, item in ipairs(citys) do
+    ngx.say(item)
+end
 		]]>
 		</programlisting>
 	</section>

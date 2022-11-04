@@ -53,7 +53,7 @@ $ cat ~/.gitconfig
 	<!-- http://tkg.im.ncue.edu.tw/?p=755 -->
 	<section id="repositories">
 		<title>Repositories 仓库管理</title>
-		<section>
+		<section id="git.init">
 			<title>initial setup</title>
 			<para></para>
 			<screen><![CDATA[
@@ -86,7 +86,7 @@ To disable the rename detection limit (which is set "pretty low" according to Li
 $ git config --global   diff.renamelimit "0"
 		]]></screen>
 		</section>
-		<section>
+		<section id="git.clone">
 			<title>克隆代码</title>
 			<para>克隆到指定目录</para>
 			<screen>
@@ -101,8 +101,53 @@ $ git config --global   diff.renamelimit "0"
  git clone --branch <branchname> <remote-repo-url>		
 			]]>
 			</screen>
+			<screen>
+		<![CDATA[
+$ git clone git://github.com/git/hello-world.git
+$ cd hello-world
+$ (edit files)
+$ git add (files)
+$ git commit -m 'Explain what I changed'
+
+		]]>
+			</screen>
+			<section id="git.restore">
+				<title>恢复文件</title>
+				<screen>
+				<![CDATA[
+[root@grey lua]# git status
+On branch grey
+Your branch is up to date with 'origin/grey'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   grey.lua
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	cache.lua
+	flush.lua
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+[root@grey lua]# git restore grey.lua
+[root@grey lua]# git status
+On branch grey
+Your branch is up to date with 'origin/grey'.
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	cache.lua
+	flush.lua
+
+nothing added to commit but untracked files present (use "git add" to track)
+				
+				]]>
+				</screen>
+			</section>
 		</section>
-		<section id="git-checkout">
+		<section id="git.checkout">
 			<title>切换分支</title>
 			<subtitle>git-checkout - Checkout and switch to a branch</subtitle>
 			<section>
@@ -158,7 +203,16 @@ done
 			</section>
 		</section>
 
-		<section id="commit">
+		<section id="git.add">
+			<title>git-add - Add file contents to the index</title>
+			<screen>
+		<![CDATA[
+$ echo 'hello world!!!'> newfile
+$ git-add newfile
+		]]>
+			</screen>
+		</section>
+		<section id="git.commit">
 			<title>Creating and Commiting</title>
 			<screen><![CDATA[
 $ cd (project-directory)
@@ -167,9 +221,18 @@ $ (add some files)
 $ git add .
 $ git commit -m 'Initial commit'
 		]]></screen>
+			<section id="git-commit">
+				<title>git-commit - Record changes to the repository</title>
+				<screen><![CDATA[
+$ git-commit -m 'add a new file' newfile
+Created initial commit f6fda79: add a new file
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+ create mode 100644 newfile
+		]]></screen>
+			</section>
 		</section>
 
-		<section id="status">
+		<section id="git.status">
 			<title>Status</title>
 			<screen>
 		<![CDATA[
@@ -204,8 +267,24 @@ no changes added to commit (use "git add" and/or "git commit -a")
 		]]>
 			</screen>
 
+			<section id="git-status">
+				<title>git-status - Show the working tree status</title>
+				<screen>
+		<![CDATA[
+$ git-status newfile
+# On branch master
+#
+# Initial commit
+#
+# Changes to be committed:
+#   (use "git rm --cached <file>..." to unstage)
+#
+#       new file: newfile
+#		]]>
+				</screen>
+			</section>
 		</section>
-		<section id="diff">
+		<section id="git.diff">
 			<title>Diff</title>
 			<screen>
 		<![CDATA[
@@ -229,19 +308,8 @@ git diff --name-only
 			]]></screen>
 			</section>
 		</section>
-		<section id="clone">
-			<title>Cloning</title>
-			<screen>
-		<![CDATA[
-$ git clone git://github.com/git/hello-world.git
-$ cd hello-world
-$ (edit files)
-$ git add (files)
-$ git commit -m 'Explain what I changed'
-		]]>
-			</screen>
-		</section>
-		<section id="push">
+		
+		<section id="git.push">
 			<title>Push</title>
 			<screen>
 		<![CDATA[
@@ -262,7 +330,7 @@ To git://10.10.0.5/example.git
 		]]>
 			</screen>
 		</section>
-		<section id="pull">
+		<section id="git.pull">
 			<title>Pull</title>
 			<screen><![CDATA[
 $ git pull
@@ -278,7 +346,7 @@ Fast-forward
  1 files changed, 1 insertions(+), 0 deletions(-)
 		]]></screen>
 		</section>
-		<section id="fetch">
+		<section id="git.fetch">
 			<title>fetch</title>
 			<screen><![CDATA[
 $ git fetch
@@ -290,7 +358,7 @@ From git://10.10.0.5/example
    b088cc3..7e8c17d  master     -> origin/master
 		]]></screen>
 		</section>
-		<section id="patch">
+		<section id="git.patch">
 			<title>Creating a Patch</title>
 			<screen>
 		<![CDATA[
@@ -303,7 +371,7 @@ $ git format-patch origin/master
 		]]>
 			</screen>
 		</section>
-		<section id="reset">
+		<section id="git.reset">
 			<title>reset</title>
 			<para>重置到上一个版本</para>
 			<screen><![CDATA[
@@ -324,7 +392,7 @@ $ git reset filename
 		</section>
 	</section>
 
-	<section id="git-branch">
+	<section id="git.branch">
 		<title>分支管理</title>
 		<subtitle>Manipulating branches</subtitle>
 		<para>git-branch - List, create, or delete branches</para>
@@ -869,40 +937,7 @@ d670460b4b4aece5915caf5c68d12f560a9fe3e4
 		]]>
 			</screen>
 		</section>
-		<section id="git-add">
-			<title>git-add - Add file contents to the index</title>
-			<screen>
-		<![CDATA[
-$ echo 'hello world!!!'> newfile
-$ git-add newfile
-		]]>
-			</screen>
-		</section>
-		<section id="git-status">
-			<title>git-status - Show the working tree status</title>
-			<screen>
-		<![CDATA[
-$ git-status newfile
-# On branch master
-#
-# Initial commit
-#
-# Changes to be committed:
-#   (use "git rm --cached <file>..." to unstage)
-#
-#       new file: newfile
-#		]]>
-			</screen>
-		</section>
-		<section id="git-commit">
-			<title>git-commit - Record changes to the repository</title>
-			<screen><![CDATA[
-$ git-commit -m 'add a new file' newfile
-Created initial commit f6fda79: add a new file
- 1 files changed, 1 insertions(+), 0 deletions(-)
- create mode 100644 newfile
-		]]></screen>
-		</section>
+
 		<section id="git.config">
 			<title>git config</title>
 			<screen><![CDATA[
