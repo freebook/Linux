@@ -777,6 +777,35 @@ docker inspect --format '{{ .Config.Hostname }}:{{range .NetworkSettings.Network
 				]]>
 				</screen>
 			</section>
+			<section>
+				<title>查看 Mount 目录</title>
+				<screen>
+				<![CDATA[
+[root@netkiller ~]# docker inspect gitlab | grep Mounts -A 20
+        "Mounts": [
+            {
+                "Source": "/srv/gitlab/config",
+                "Destination": "/etc/gitlab",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+            },
+            {
+                "Source": "/srv/gitlab/logs",
+                "Destination": "/var/log/gitlab",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+            },
+            {
+                "Source": "/srv/gitlab/data",
+                "Destination": "/var/opt/gitlab",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+				]]>
+				</screen>
+			</section>
 		</section>
 		<section id="docker.images">
 			<title>镜像管理</title>

@@ -81,4 +81,19 @@ ERROR: Job failed: exit status 1
 		<para>Kubernetes 执行器提出该错误，分析原因是 pull 镜像超时。</para>
 		<para>解决方法，设置 poll_timeout = 3600</para>
 	</section>
+	<section>
+		<title>磁盘 100% 怎样清理</title>
+		<para>删除过期的构建物</para>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# rm -rf /opt/gitlab/data/gitlab-rails/shared/artifacts/*/*/*/2021_*
+		]]>
+		</screen>
+		<para>清理日志</para>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# find /opt/gitlab/logs -name "*.gz" -exec rm -rf {} \;
+		]]>
+		</screen>
+	</section>
 </section>
