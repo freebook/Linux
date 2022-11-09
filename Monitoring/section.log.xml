@@ -1,0 +1,1056 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.log.web.xml 638 2013-07-16 05:52:03Z netkiller $ -->
+<section id="system">
+	<title>系统日志</title>
+	<section id="logwatch">
+		<title>logwatch</title>
+		<subtitle>logwatch - log analyser with nice output written in Perl</subtitle>
+		<para>
+			<ulink url="http://www.logwatch.org/">http://www.logwatch.org/</ulink>
+		</para>
+
+		<procedure>
+			<title>logwatch 安装步骤:</title>
+			<step>
+				<para>Install</para>
+				<para>Ubuntu 7.10</para>
+				<screen><![CDATA[
+netkiller@shenzhen:/etc/webmin$ apt-cache search logwatch
+fwlogwatch - Firewall log analyzer
+logwatch - log analyser with nice output written in Perl
+				]]></screen>
+				<para>apt-get install</para>
+				<screen><![CDATA[
+# apt-get install logwatch
+				]]></screen>
+				<para>the logwatch has been installed, it should create a file in '/etc/cron.daily/00logwatch'.</para>
+			</step>
+			<step>
+				<para>config</para>
+				<screen><![CDATA[
+$ sudo cp /usr/share/logwatch/default.conf/logwatch.conf  /etc/logwatch/conf/logwatch.conf
+$ sudo mkdir /var/cache/logwatch
+$ sudo vim /etc/logwatch/conf/logwatch.conf
+				]]></screen>
+				<para>mail to</para>
+				<screen><![CDATA[
+# Default person to mail reports to.  Can be a local account or a
+# complete email address.
+MailTo = root, openunix@163.com, other@example.com
+				]]></screen>
+				<para>To change detail level for the report</para>
+				<screen><![CDATA[
+# The default detail level for the report.
+# This can either be Low, Med, High or a number.
+# Low = 0
+# Med = 5
+# High = 10
+Detail = High
+				]]></screen>
+				<para>Crontab</para>
+				<screen><![CDATA[
+netkiller@shenzhen:~$ cat /etc/cron.daily/00logwatch
+#!/bin/bash
+
+#Check if removed-but-not-purged
+test -x /usr/share/logwatch/scripts/logwatch.pl || exit 0
+
+#execute
+/usr/sbin/logwatch
+				]]></screen>
+			</step>
+			<step>
+				<para>The logwatch is command, you can run it.</para>
+				<literallayout>
+				<![CDATA[ logwatch --print ]]>
+				</literallayout>
+
+				<para>单独查看某个服务，比如 SSH 登录信息</para>
+				<para>logwatch --service sshd --print</para>
+			</step>
+		</procedure>
+	</section>
+	<section>
+		<title>logcheck : Analyzes log files and sends noticeable events as email</title>
+		<screen><![CDATA[
+# yum search logcheck | grep logcheck
+Repodata is over 2 weeks old. Install yum-cron? Or run: yum makecache fast
+============================ N/S matched: logcheck =============================
+logcheck.noarch : Analyzes log files and sends noticeable events as email
+		]]></screen>
+		<para>安装 logcheck</para>
+		<screen><![CDATA[
+# yum install -y logcheck
+		]]></screen>
+		<para>查看 logchek 包所含文件</para>
+		<screen><![CDATA[
+[root@173 ~]# rpm -ql logcheck
+/etc/cron.d/logcheck
+/etc/logcheck
+/etc/logcheck/cracking.d
+/etc/logcheck/cracking.d/kernel
+/etc/logcheck/cracking.d/rlogind
+/etc/logcheck/cracking.d/rsh
+/etc/logcheck/cracking.d/smartd
+/etc/logcheck/cracking.d/tftpd
+/etc/logcheck/cracking.d/uucico
+/etc/logcheck/ignore.d.paranoid
+/etc/logcheck/ignore.d.paranoid/bind
+/etc/logcheck/ignore.d.paranoid/cron
+/etc/logcheck/ignore.d.paranoid/incron
+/etc/logcheck/ignore.d.paranoid/logcheck
+/etc/logcheck/ignore.d.paranoid/postfix
+/etc/logcheck/ignore.d.paranoid/ppp
+/etc/logcheck/ignore.d.paranoid/pureftp
+/etc/logcheck/ignore.d.paranoid/qpopper
+/etc/logcheck/ignore.d.paranoid/squid
+/etc/logcheck/ignore.d.paranoid/ssh
+/etc/logcheck/ignore.d.paranoid/stunnel
+/etc/logcheck/ignore.d.paranoid/sysklogd
+/etc/logcheck/ignore.d.paranoid/telnetd
+/etc/logcheck/ignore.d.paranoid/tripwire
+/etc/logcheck/ignore.d.paranoid/usb
+/etc/logcheck/ignore.d.server
+/etc/logcheck/ignore.d.server/NetworkManager
+/etc/logcheck/ignore.d.server/acpid
+/etc/logcheck/ignore.d.server/amandad
+/etc/logcheck/ignore.d.server/amavisd-new
+/etc/logcheck/ignore.d.server/anacron
+/etc/logcheck/ignore.d.server/anon-proxy
+/etc/logcheck/ignore.d.server/apache
+/etc/logcheck/ignore.d.server/apcupsd
+/etc/logcheck/ignore.d.server/arpwatch
+/etc/logcheck/ignore.d.server/asterisk
+/etc/logcheck/ignore.d.server/automount
+/etc/logcheck/ignore.d.server/bind
+/etc/logcheck/ignore.d.server/bluez-utils
+/etc/logcheck/ignore.d.server/courier
+/etc/logcheck/ignore.d.server/cpqarrayd
+/etc/logcheck/ignore.d.server/cpufreqd
+/etc/logcheck/ignore.d.server/cron
+/etc/logcheck/ignore.d.server/cron-apt
+/etc/logcheck/ignore.d.server/cups-lpd
+/etc/logcheck/ignore.d.server/cvs-pserver
+/etc/logcheck/ignore.d.server/cvsd
+/etc/logcheck/ignore.d.server/cyrus
+/etc/logcheck/ignore.d.server/dbus
+/etc/logcheck/ignore.d.server/dcc
+/etc/logcheck/ignore.d.server/ddclient
+/etc/logcheck/ignore.d.server/dhclient
+/etc/logcheck/ignore.d.server/dhcp
+/etc/logcheck/ignore.d.server/dictd
+/etc/logcheck/ignore.d.server/dkfilter
+/etc/logcheck/ignore.d.server/dkim-filter
+/etc/logcheck/ignore.d.server/dnsmasq
+/etc/logcheck/ignore.d.server/dovecot
+/etc/logcheck/ignore.d.server/dropbear
+/etc/logcheck/ignore.d.server/dspam
+/etc/logcheck/ignore.d.server/epmd
+/etc/logcheck/ignore.d.server/exim4
+/etc/logcheck/ignore.d.server/fcron
+/etc/logcheck/ignore.d.server/ftpd
+/etc/logcheck/ignore.d.server/git-daemon
+/etc/logcheck/ignore.d.server/gnu-imap4d
+/etc/logcheck/ignore.d.server/gps
+/etc/logcheck/ignore.d.server/grinch
+/etc/logcheck/ignore.d.server/horde3
+/etc/logcheck/ignore.d.server/hplip
+/etc/logcheck/ignore.d.server/hylafax
+/etc/logcheck/ignore.d.server/ikiwiki
+/etc/logcheck/ignore.d.server/imap
+/etc/logcheck/ignore.d.server/imapproxy
+/etc/logcheck/ignore.d.server/imp
+/etc/logcheck/ignore.d.server/imp4
+/etc/logcheck/ignore.d.server/innd
+/etc/logcheck/ignore.d.server/ipppd
+/etc/logcheck/ignore.d.server/isdnlog
+/etc/logcheck/ignore.d.server/isdnutils
+/etc/logcheck/ignore.d.server/jabberd
+/etc/logcheck/ignore.d.server/kernel
+/etc/logcheck/ignore.d.server/klogind
+/etc/logcheck/ignore.d.server/krb5-kdc
+/etc/logcheck/ignore.d.server/libpam-krb5
+/etc/logcheck/ignore.d.server/libpam-mount
+/etc/logcheck/ignore.d.server/logcheck
+/etc/logcheck/ignore.d.server/login
+/etc/logcheck/ignore.d.server/maradns
+/etc/logcheck/ignore.d.server/mldonkey-server
+/etc/logcheck/ignore.d.server/mon
+/etc/logcheck/ignore.d.server/mountd
+/etc/logcheck/ignore.d.server/nagios
+/etc/logcheck/ignore.d.server/netconsole
+/etc/logcheck/ignore.d.server/nfs
+/etc/logcheck/ignore.d.server/nntpcache
+/etc/logcheck/ignore.d.server/nscd
+/etc/logcheck/ignore.d.server/nslcd
+/etc/logcheck/ignore.d.server/openvpn
+/etc/logcheck/ignore.d.server/otrs
+/etc/logcheck/ignore.d.server/passwd
+/etc/logcheck/ignore.d.server/pdns
+/etc/logcheck/ignore.d.server/perdition
+/etc/logcheck/ignore.d.server/policyd
+/etc/logcheck/ignore.d.server/popa3d
+/etc/logcheck/ignore.d.server/postfix
+/etc/logcheck/ignore.d.server/postfix-policyd
+/etc/logcheck/ignore.d.server/ppp
+/etc/logcheck/ignore.d.server/pptpd
+/etc/logcheck/ignore.d.server/procmail
+/etc/logcheck/ignore.d.server/proftpd
+/etc/logcheck/ignore.d.server/puppetd
+/etc/logcheck/ignore.d.server/pure-ftpd
+/etc/logcheck/ignore.d.server/pureftp
+/etc/logcheck/ignore.d.server/qpopper
+/etc/logcheck/ignore.d.server/rbldnsd
+/etc/logcheck/ignore.d.server/rpc_statd
+/etc/logcheck/ignore.d.server/rsnapshot
+/etc/logcheck/ignore.d.server/rsync
+/etc/logcheck/ignore.d.server/sa-exim
+/etc/logcheck/ignore.d.server/samba
+/etc/logcheck/ignore.d.server/saned
+/etc/logcheck/ignore.d.server/sasl2-bin
+/etc/logcheck/ignore.d.server/saslauthd
+/etc/logcheck/ignore.d.server/schroot
+/etc/logcheck/ignore.d.server/scponly
+/etc/logcheck/ignore.d.server/slapd
+/etc/logcheck/ignore.d.server/smartd
+/etc/logcheck/ignore.d.server/smbd_audit
+/etc/logcheck/ignore.d.server/smokeping
+/etc/logcheck/ignore.d.server/snmpd
+/etc/logcheck/ignore.d.server/snort
+/etc/logcheck/ignore.d.server/spamc
+/etc/logcheck/ignore.d.server/spamd
+/etc/logcheck/ignore.d.server/squid
+/etc/logcheck/ignore.d.server/ssh
+/etc/logcheck/ignore.d.server/stunnel
+/etc/logcheck/ignore.d.server/su
+/etc/logcheck/ignore.d.server/sudo
+/etc/logcheck/ignore.d.server/sympa
+/etc/logcheck/ignore.d.server/syslogd
+/etc/logcheck/ignore.d.server/systemd
+/etc/logcheck/ignore.d.server/teapop
+/etc/logcheck/ignore.d.server/telnetd
+/etc/logcheck/ignore.d.server/tftpd
+/etc/logcheck/ignore.d.server/thy
+/etc/logcheck/ignore.d.server/ucd-snmp
+/etc/logcheck/ignore.d.server/upsd
+/etc/logcheck/ignore.d.server/uptimed
+/etc/logcheck/ignore.d.server/userv
+/etc/logcheck/ignore.d.server/vsftpd
+/etc/logcheck/ignore.d.server/watchdog
+/etc/logcheck/ignore.d.server/wu-ftpd
+/etc/logcheck/ignore.d.server/xinetd
+/etc/logcheck/ignore.d.workstation
+/etc/logcheck/ignore.d.workstation/automount
+/etc/logcheck/ignore.d.workstation/bind
+/etc/logcheck/ignore.d.workstation/bluetooth-alsa
+/etc/logcheck/ignore.d.workstation/bluez-utils
+/etc/logcheck/ignore.d.workstation/bonobo
+/etc/logcheck/ignore.d.workstation/dhcpcd
+/etc/logcheck/ignore.d.workstation/francine
+/etc/logcheck/ignore.d.workstation/gconf
+/etc/logcheck/ignore.d.workstation/gdm
+/etc/logcheck/ignore.d.workstation/hald
+/etc/logcheck/ignore.d.workstation/hcid
+/etc/logcheck/ignore.d.workstation/ifplugd
+/etc/logcheck/ignore.d.workstation/ippl
+/etc/logcheck/ignore.d.workstation/kdm
+/etc/logcheck/ignore.d.workstation/kernel
+/etc/logcheck/ignore.d.workstation/laptop-mode-tools
+/etc/logcheck/ignore.d.workstation/libmtp-runtime
+/etc/logcheck/ignore.d.workstation/libpam-gnome-keyring
+/etc/logcheck/ignore.d.workstation/logcheck
+/etc/logcheck/ignore.d.workstation/login
+/etc/logcheck/ignore.d.workstation/net-acct
+/etc/logcheck/ignore.d.workstation/nntpcache
+/etc/logcheck/ignore.d.workstation/polypaudio
+/etc/logcheck/ignore.d.workstation/postfix
+/etc/logcheck/ignore.d.workstation/ppp
+/etc/logcheck/ignore.d.workstation/proftpd
+/etc/logcheck/ignore.d.workstation/pump
+/etc/logcheck/ignore.d.workstation/sendfile
+/etc/logcheck/ignore.d.workstation/slim
+/etc/logcheck/ignore.d.workstation/squid
+/etc/logcheck/ignore.d.workstation/udev
+/etc/logcheck/ignore.d.workstation/wdm
+/etc/logcheck/ignore.d.workstation/winbind
+/etc/logcheck/ignore.d.workstation/wpasupplicant
+/etc/logcheck/ignore.d.workstation/xdm
+/etc/logcheck/ignore.d.workstation/xlockmore
+/etc/logcheck/logcheck.conf
+/etc/logcheck/logcheck.logfiles
+/etc/logcheck/violations.d
+/etc/logcheck/violations.d/kernel
+/etc/logcheck/violations.d/smartd
+/etc/logcheck/violations.d/su
+/etc/logcheck/violations.d/sudo
+/etc/logcheck/violations.ignore.d
+/etc/logcheck/violations.ignore.d/logcheck-su
+/etc/logcheck/violations.ignore.d/logcheck-sudo
+/etc/tmpfiles.d/logcheck.conf
+/usr/bin/logcheck-test
+/usr/sbin/logcheck
+/usr/sbin/logtail
+/usr/sbin/logtail2
+/usr/share/doc/logcheck-1.3.15
+/usr/share/doc/logcheck-1.3.15/LICENSE
+/usr/share/doc/logcheck-1.3.15/README-psionic
+/usr/share/doc/logcheck-1.3.15/README.Maintainer
+/usr/share/doc/logcheck-1.3.15/README.how.to.interpret
+/usr/share/doc/logcheck-1.3.15/README.keywords
+/usr/share/doc/logcheck-1.3.15/README.logcheck
+/usr/share/doc/logcheck-1.3.15/README.logcheck-database
+/usr/share/doc/logcheck-1.3.15/README.logtail
+/usr/share/doc/logcheck-1.3.15/logcheck-test.1
+/usr/share/doc/logcheck-1.3.15/logcheck.sgml
+/usr/share/doc/logcheck-1.3.15/logtail.8
+/usr/share/doc/logcheck-1.3.15/logtail2.8
+/usr/share/doc/logcheck-1.3.15/tools
+/usr/share/doc/logcheck-1.3.15/tools/log-summary-ssh
+/usr/share/logtail
+/usr/share/logtail/detectrotate
+/usr/share/logtail/detectrotate/10-savelog.dtr
+/usr/share/logtail/detectrotate/20-logrotate.dtr
+/usr/share/logtail/detectrotate/30-logrotate-dateext.dtr
+/usr/share/man/man1/logcheck-test.1.gz
+/usr/share/man/man8/logcheck.8.gz
+/usr/share/man/man8/logtail.8.gz
+/usr/share/man/man8/logtail2.8.gz
+/var/lib/logcheck
+/var/lock/logcheck			
+		]]></screen>
+
+	</section>
+	<section id="nulog">
+		<title>nulog</title>
+		<para></para>
+		<example>
+			<title>config.php</title>
+			<programlisting>
+			<![CDATA[
+
+			]]>
+			</programlisting>
+		</example>
+	</section>
+
+	<section id="web">
+		<title>Web</title>
+
+		<section id="log.apache">
+			<title>Apache Log</title>
+			<screen><![CDATA[
+1、查看当天有多少个IP访问：
+awk '{print $1}' log_file|sort|uniq|wc -l
+
+2、查看某一个页面被访问的次数：
+grep "/index.php" log_file | wc -l
+
+3、查看每一个IP访问了多少个页面：
+awk '{++S[$1]} END {for (a in S) print a,S[a]}' log_file
+
+4、将每个IP访问的页面数进行从小到大排序：
+awk '{++S[$1]} END {for (a in S) print S[a],a}' log_file | sort -n
+
+5、查看某一个IP访问了哪些页面：
+grep ^111.111.111.111 log_file| awk '{print $1,$7}'
+
+6、去掉搜索引擎统计当天的页面：
+awk '{print $12,$1}' log_file | grep ^\"Mozilla | awk '{print $2}' |sort | uniq | wc -l
+
+7、查看2009年6月21日14时这一个小时内有多少IP访问:
+awk '{print $4,$1}' log_file | grep 21/Jun/2009:14 | awk '{print $2}'| sort | uniq | wc -l
+		]]></screen>
+			<section>
+				<title>刪除日志</title>
+				<para>刪除一个月前的日志</para>
+				<screen><![CDATA[
+rm -f /www/logs/access.log.$(date -d '-1 month' +'%Y-%m')*
+			]]></screen>
+			</section>
+			<section>
+				<title>统计爬虫</title>
+				<screen><![CDATA[
+grep -E 'Googlebot|Baiduspider'  /www/logs/www.example.com/access.2011-02-23.log | awk '{ print $1 }' | sort | uniq
+			]]></screen>
+			</section>
+			<section>
+				<title>统计浏览器</title>
+				<screen><![CDATA[
+cat /www/logs/example.com/access.2010-09-20.log | grep -v -E 'MSIE|Firefox|Chrome|Opera|Safari|Gecko|Maxthon' | sort | uniq -c | sort -r -n | head -n 100
+			]]></screen>
+			</section>
+			<section>
+				<title>IP 统计</title>
+				<screen><![CDATA[
+# grep '22/May/2012' /tmp/myid.access.log | awk '{print $1}' | awk -F'.' '{print $1"."$2"."$3"."$4}' | sort | uniq -c | sort -r -n | head -n 10
+   2206 219.136.134.13
+   1497 182.34.15.248
+   1431 211.140.143.100
+   1431 119.145.149.106
+   1427 61.183.15.179
+   1427 218.6.8.189
+   1422 124.232.150.171
+   1421 106.187.47.224
+   1420 61.160.220.252
+   1418 114.80.201.18
+			]]></screen>
+				<para>统计网段</para>
+				<screen><![CDATA[
+# cat /www/logs/www/access.2010-09-20.log | awk '{print $1}' | awk -F'.' '{print $1"."$2"."$3".0"}' | sort | uniq -c | sort -r -n | head -n 200
+			]]></screen>
+				<para>压缩文件处理</para>
+				<screen><![CDATA[
+zcat www.example.com.access.log-20130627.gz | grep '/xml/data.json' | awk '{print $1}' | awk -F'.' '{print $1"."$2"."$3"."$4}' | sort | uniq -c | sort -r -n | head -n 20
+			]]></screen>
+			</section>
+			<section>
+				<title>统计域名</title>
+				<screen><![CDATA[
+# cat  /www/logs/access.2011-07-27.log |awk '{print $2}'|sort|uniq -c|sort -rn|more
+			]]></screen>
+			</section>
+			<section>
+				<title>HTTP Status</title>
+				<screen><![CDATA[
+# cat  /www/logs/access.2011-07-27.log |awk '{print $9}'|sort|uniq -c|sort -rn|more
+5056585 304
+1125579 200
+   7602 400
+      5 301
+			]]></screen>
+			</section>
+			<section>
+				<title>URL 统计</title>
+				<screen><![CDATA[
+cat  /www/logs/access.2011-07-27.log |awk '{print $7}'|sort|uniq -c|sort -rn|more
+			]]></screen>
+			</section>
+			<section>
+				<title>文件流量统计</title>
+				<screen><![CDATA[
+cat /www/logs/access.2011-08-03.log |awk '{sum[$7]+=$10}END{for(i in sum){print sum[i],i}}'|sort -rn|more
+
+grep ' 200 ' /www/logs/access.2011-08-03.log |awk '{sum[$7]+=$10}END{for(i in sum){print sum[i],i}}'|sort -rn|more
+
+			]]></screen>
+			</section>
+			<section>
+				<title>URL访问量统计</title>
+				<screen>
+			<![CDATA[
+# cat www.access.log | awk '{print $7}' | egrep '\?|&' | sort | uniq -c | sort -rn | more
+			]]>
+				</screen>
+			</section>
+			<section>
+				<title>脚本运行速度</title>
+				<para>查出运行速度最慢的脚本</para>
+				<screen><![CDATA[
+grep -v 0$ access.2010-11-05.log | awk -F '\" ' '{print $4" " $1}' web.log | awk '{print $1" "$8}' | sort -n -k 1 -r | uniq > /tmp/slow_url.txt
+			]]></screen>
+			</section>
+			<section>
+				<title>IP, URL 抽取</title>
+				<screen><![CDATA[
+# tail -f /www/logs/www.365wine.com/access.2012-01-04.log | grep '/test.html' | awk '{print $1" "$7}'
+			]]></screen>
+			</section>
+		</section>
+		<section id="awstats">
+			<title>awstats</title>
+			<para>
+				<ulink url="http://sourceforge.net/projects/awstats/">http://sourceforge.net/projects/awstats/</ulink>
+			</para>
+
+			<orderedlist numeration="arabic">
+				<listitem>
+					<para>install</para>
+					<screen><![CDATA[
+ sudo apt-get install awstats
+				]]></screen>
+				</listitem>
+				<listitem>
+					<para>configure</para>
+					<para>sudo vim /etc/awstats/awstats.conf or awstats.conf.local</para>
+					<screen><![CDATA[
+$ sudo vim /etc/awstats/awstats.conf.local
+
+LogFile="/home/netkiller/logs/access_log"
+SiteDomain="netkiller.8800.org"
+				]]></screen>
+					<para> or </para>
+					<screen><![CDATA[
+# cd /usr/share/doc/awstats/examples/
+#/usr/share/doc/awstats/examples$ perl awstats_configure.pl
+				]]></screen>
+				</listitem>
+				<listitem>
+					<para>apache</para>
+					<screen><![CDATA[
+sudo cp /usr/share/doc/awstats/examples/apache.conf /etc/apache2/conf.d/awstats.conf
+				]]></screen>
+					<!-- Alias /awstatsclasses "/usr/share/awstats/lib/" Alias /awstats-icon/ "/usr/share/awstats/icon/" Alias /awstatscss "/usr/share/doc/awstats/examples/css" ScriptAlias /awstats/ /usr/lib/cgi-bin/ Options ExecCGI -MultiViews +SymLinksIfOwnerMatch -->
+				</listitem>
+				<listitem>
+					<para>how do I test awstats.</para>
+					<para>http://netkiller.8800.org/awstats/awstats.pl</para>
+				</listitem>
+
+				<listitem>
+					<para>Generating the First Stats</para>
+					<screen><![CDATA[
+sudo -u www-data /usr/bin/perl /usr/lib/cgi-bin/awstats.pl -update -config=netkiller.8800.org
+				]]></screen>
+				</listitem>
+				<listitem>
+					<para>Automatising the stats generation using Cron</para>
+					<para>If we check the file installed by awstats and search for the word cron using the following command line:</para>
+					<screen><![CDATA[
+$ dpkg -L awstats | grep cron
+/etc/cron.d
+/etc/cron.d/awstats
+				]]></screen>
+
+					<para>sudo vim /etc/cron.d/awstats</para>
+					<screen>
+				<![CDATA[
+0,10,20,30,40,50 * * * * www-data [ -x /usr/lib/cgi-bin/awstats.pl -a -f /etc/awstats/awstats.conf -a -r /home/netkiller/logs/access.log ] && /usr/lib/cgi-bin/awstats.pl -config=netkiller.8800.org -update >/dev/null
+				]]>
+					</screen>
+
+				</listitem>
+				<listitem>
+					<para>web 测试</para>
+					<para>http://netkiller.8800.org/awstats/awstats.pl</para>
+					<para>http://netkiller.8800.org/awstats/awstats.pl?config=other.8800.org</para>
+				</listitem>
+
+			</orderedlist>
+			<section>
+				<title>语言</title>
+				<screen><![CDATA[
+awstats.pl -update -config=sitename -lang=cn
+			]]></screen>
+			</section>
+			<section>
+				<title>输出HTML文档</title>
+				<screen><![CDATA[
+perl awstats.pl -config=www.example.com -output -staticlinks -lang=cn > awstats.example.html
+			]]></screen>
+			</section>
+			<section>
+				<title>多站点配置</title>
+				<screen><![CDATA[
+$ sudo gunzip /usr/share/doc/awstats/examples/awstats.model.conf.gz
+
+$ sudo cp /usr/share/doc/awstats/examples/awstats.model.conf /etc/awstats/awstats.www.example.com.conf
+$ sudo cp /usr/share/doc/awstats/examples/awstats.model.conf /etc/awstats/awstats.www.other.com.conf
+
+
+			]]></screen>
+				<screen><![CDATA[
+neo@monitor:/etc/awstats$ vim awstats.www.example.com.conf
+LogFile = /opt/logs/21/access.log
+SiteDomain="www.example.com"
+
+neo@monitor:/etc/awstats$ vim awstats.www.other.com.conf
+LogFile = /opt/logs/22/access.log
+SiteDomain="www.other.com"
+			]]></screen>
+
+				<screen><![CDATA[
+$ sudo -u www-data /usr/bin/perl /usr/lib/cgi-bin/awstats.pl -update -config=www.example.com
+$ sudo -u www-data /usr/bin/perl /usr/lib/cgi-bin/awstats.pl -update -config=www.other.com
+			]]></screen>
+				<screen><![CDATA[
+http://localhost/cgi-bin/awstats.pl?config=www.example.com
+http://localhost/cgi-bin/awstats.pl?config=www.other.com
+			]]></screen>
+				<para>批量生成</para>
+				<screen><![CDATA[
+awstats_updateall.pl now -awstatsprog=/usr/lib/cgi-bin/awstats.pl -configdir=/etc/awstats/
+			]]></screen>
+			</section>
+			<section>
+				<title>合并日志</title>
+				<command>/usr/share/doc/awstats/examples/logresolvemerge.pl</command>
+				<screen><![CDATA[
+$ vim awstats.www.example.com.conf
+LogFile="/usr/share/doc/awstats/examples/logresolvemerge.pl /var/log/*/access_log.* |"
+LogFile="/usr/share/doc/awstats/examples/logresolvemerge.pl /mnt/*/logs/www/access.%YYYY-24-%MM-24-%DD-24.log |"
+			]]></screen>
+				<screen><![CDATA[
+sudo -u www-data /usr/bin/perl /usr/lib/cgi-bin/awstats.pl -update -config=www.examples.com
+			]]></screen>
+				<para>http://localhost/cgi-bin/awstats.pl?config=www.example.com</para>
+				<screen><![CDATA[
+$ grep -v "^#" awstats.www.example.com.conf | sed /^$/d
+LogFile="/usr/share/doc/awstats/examples/logresolvemerge.pl /mnt/*/logs/www/access.%YYYY-24-%MM-24-%DD-24.log |"
+LogType=W
+LogFormat=1
+LogSeparator=" "
+SiteDomain="www.example.com"
+HostAliases="localhost 127.0.0.1 REGEX[myserver\.com$]"
+DNSLookup=2
+DirData="."
+DirCgi="/cgi-bin"
+DirIcons="/icon"
+AllowToUpdateStatsFromBrowser=0
+AllowFullYearView=2
+EnableLockForUpdate=0
+DNSStaticCacheFile="dnscache.txt"
+DNSLastUpdateCacheFile="dnscachelastupdate.txt"
+SkipDNSLookupFor=""
+AllowAccessFromWebToAuthenticatedUsersOnly=0
+AllowAccessFromWebToFollowingAuthenticatedUsers=""
+AllowAccessFromWebToFollowingIPAddresses=""
+CreateDirDataIfNotExists=0
+BuildHistoryFormat=text
+BuildReportFormat=html
+SaveDatabaseFilesWithPermissionsForEveryone=0
+PurgeLogFile=0
+ArchiveLogRecords=0
+KeepBackupOfHistoricFiles=0
+DefaultFile="index.html"
+SkipHosts=""
+SkipUserAgents=""
+SkipFiles=""
+SkipReferrersBlackList=""
+OnlyHosts=""
+OnlyUserAgents=""
+OnlyUsers=""
+OnlyFiles=""
+NotPageList="css js class gif jpg jpeg png bmp ico rss xml swf"
+ValidHTTPCodes="200 304"
+ValidSMTPCodes="1 250"
+AuthenticatedUsersNotCaseSensitive=0
+URLNotCaseSensitive=0
+URLWithAnchor=0
+URLQuerySeparators="?;"
+URLWithQuery=0
+URLWithQueryWithOnlyFollowingParameters=""
+URLWithQueryWithoutFollowingParameters=""
+URLReferrerWithQuery=0
+WarningMessages=1
+ErrorMessages=""
+DebugMessages=0
+NbOfLinesForCorruptedLog=50
+WrapperScript=""
+DecodeUA=0
+MiscTrackerUrl="/js/awstats_misc_tracker.js"
+LevelForBrowsersDetection=2         # 0 disables Browsers detection.
+                                    # 2 reduces AWStats speed by 2%
+                                    # allphones reduces AWStats speed by 5%
+LevelForOSDetection=2               # 0 disables OS detection.
+                                    # 2 reduces AWStats speed by 3%
+LevelForRefererAnalyze=2            # 0 disables Origin detection.
+                                    # 2 reduces AWStats speed by 14%
+LevelForRobotsDetection=2           # 0 disables Robots detection.
+                                    # 2 reduces AWStats speed by 2.5%
+LevelForSearchEnginesDetection=2    # 0 disables Search engines detection.
+                                    # 2 reduces AWStats speed by 9%
+LevelForKeywordsDetection=2         # 0 disables Keyphrases/Keywords detection.
+                                    # 2 reduces AWStats speed by 1%
+LevelForFileTypesDetection=2        # 0 disables File types detection.
+                                    # 2 reduces AWStats speed by 1%
+LevelForWormsDetection=0            # 0 disables Worms detection.
+                                    # 2 reduces AWStats speed by 15%
+UseFramesWhenCGI=1
+DetailedReportsOnNewWindows=1
+Expires=0
+MaxRowsInHTMLOutput=1000
+Lang="auto"
+DirLang="./lang"
+ShowMenu=1
+ShowSummary=UVPHB
+ShowMonthStats=UVPHB
+ShowDaysOfMonthStats=VPHB
+ShowDaysOfWeekStats=PHB
+ShowHoursStats=PHB
+ShowDomainsStats=PHB
+ShowHostsStats=PHBL
+ShowAuthenticatedUsers=0
+ShowRobotsStats=HBL
+ShowWormsStats=0
+ShowEMailSenders=0
+ShowEMailReceivers=0
+ShowSessionsStats=1
+ShowPagesStats=PBEX
+ShowFileTypesStats=HB
+ShowFileSizesStats=0
+ShowOSStats=1
+ShowBrowsersStats=1
+ShowScreenSizeStats=0
+ShowOriginStats=PH
+ShowKeyphrasesStats=1
+ShowKeywordsStats=1
+ShowMiscStats=a
+ShowHTTPErrorsStats=1
+ShowSMTPErrorsStats=0
+ShowClusterStats=0
+AddDataArrayMonthStats=1
+AddDataArrayShowDaysOfMonthStats=1
+AddDataArrayShowDaysOfWeekStats=1
+AddDataArrayShowHoursStats=1
+IncludeInternalLinksInOriginSection=0
+MaxNbOfDomain = 10
+MinHitDomain  = 1
+MaxNbOfHostsShown = 10
+MinHitHost    = 1
+MaxNbOfLoginShown = 10
+MinHitLogin   = 1
+MaxNbOfRobotShown = 10
+MinHitRobot   = 1
+MaxNbOfPageShown = 10
+MinHitFile    = 1
+MaxNbOfOsShown = 10
+MinHitOs      = 1
+MaxNbOfBrowsersShown = 10
+MinHitBrowser = 1
+MaxNbOfScreenSizesShown = 5
+MinHitScreenSize = 1
+MaxNbOfWindowSizesShown = 5
+MinHitWindowSize = 1
+MaxNbOfRefererShown = 10
+MinHitRefer   = 1
+MaxNbOfKeyphrasesShown = 10
+MinHitKeyphrase = 1
+MaxNbOfKeywordsShown = 10
+MinHitKeyword = 1
+MaxNbOfEMailsShown = 20
+MinHitEMail   = 1
+FirstDayOfWeek=1
+ShowFlagLinks=""
+ShowLinksOnUrl=1
+UseHTTPSLinkForUrl=""
+MaxLengthOfShownURL=64
+HTMLHeadSection=""
+HTMLEndSection=""
+Logo="awstats_logo6.png"
+LogoLink="http://awstats.sourceforge.net"
+BarWidth   = 260
+BarHeight  = 90
+StyleSheet=""
+color_Background="FFFFFF"               # Background color for main page (Default = "FFFFFF")
+color_TableBGTitle="CCCCDD"             # Background color for table title (Default = "CCCCDD")
+color_TableTitle="000000"               # Table title font color (Default = "000000")
+color_TableBG="CCCCDD"                  # Background color for table (Default = "CCCCDD")
+color_TableRowTitle="FFFFFF"    # Table row title font color (Default = "FFFFFF")
+color_TableBGRowTitle="ECECEC"  # Background color for row title (Default = "ECECEC")
+color_TableBorder="ECECEC"              # Table border color (Default = "ECECEC")
+color_text="000000"                             # Color of text (Default = "000000")
+color_textpercent="606060"              # Color of text for percent values (Default = "606060")
+color_titletext="000000"                # Color of text title within colored Title Rows (Default = "000000")
+color_weekend="EAEAEA"                  # Color for week-end days (Default = "EAEAEA")
+color_link="0011BB"                             # Color of HTML links (Default = "0011BB")
+color_hover="605040"                    # Color of HTML on-mouseover links (Default = "605040")
+color_u="FFAA66"                                # Background color for number of unique visitors (Default = "FFAA66")
+color_v="F4F090"                                # Background color for number of visites (Default = "F4F090")
+color_p="4477DD"                                # Background color for number of pages (Default = "4477DD")
+color_h="66DDEE"                                # Background color for number of hits (Default = "66DDEE")
+color_k="2EA495"                                # Background color for number of bytes (Default = "2EA495")
+color_s="8888DD"                                # Background color for number of search (Default = "8888DD")
+color_e="CEC2E8"                                # Background color for number of entry pages (Default = "CEC2E8")
+color_x="C1B2E2"                                # Background color for number of exit pages (Default = "C1B2E2")
+ExtraTrackedRowsLimit=500
+			]]></screen>
+			</section>
+			<section>
+				<title>Flush history file on disk (unique url reach flush limit of 5000) 优化</title>
+				<screen><![CDATA[
+$LIMITFLUSH=50000
+			]]></screen>
+			</section>
+			<section>
+				<title>JAWStats</title>
+				<para>
+					<ulink url="http://www.jawstats.com/">http://www.jawstats.com/</ulink>
+				</para>
+			</section>
+		</section>
+
+		<section id="webalizer">
+			<title>webalizer</title>
+			<para> What is Webalizer?</para>
+			<para> The Webalizer is a fast, free web server log file analysis program. It produces highly detailed, easily configurable usage reports in HTML format, for viewing with a standard web browser</para>
+
+			<orderedlist numeration="arabic">
+				<listitem>
+					<para>install webalizer</para>
+					<screen><![CDATA[
+sudo apt-get install webalizer
+				]]></screen>
+				</listitem>
+				<listitem>
+					<para>config</para>
+					<screen><![CDATA[
+vim /etc/webalizer/webalizer.conf
+
+LogFile /home/netkiller/logs/access.log
+OutputDir /home/netkiller/public_html/webalizer
+				]]></screen>
+					<para>rotate log</para>
+					<screen><![CDATA[
+Incremental yes
+				]]></screen>
+				</listitem>
+				<listitem>
+					<para>crontab</para>
+					<para>/etc/cron.daily/webalizer</para>
+					<screen>
+<![CDATA[
+netkiller@shenzhen:~$ cat /etc/cron.daily/webalizer
+#!/bin/sh
+# /etc/cron.daily/webalizer: Webalizer daily maintenance script
+# This script was originally written by
+# Remco van de Meent <remco@debian.org>
+# and now, all rewrited by Jose Carlos Medeiros <jose@psabs.com.br>
+
+# This script just run webalizer agains all .conf files in /etc/webalizer directory
+
+WEBALIZER=/usr/bin/webalizer
+WEBALIZER_CONFDIR=/etc/webalizer
+
+[ -x ${WEBALIZER} ] || exit 0;
+[ -d ${WEBALIZER_CONFDIR} ] || exit 0;
+
+for i in ${WEBALIZER_CONFDIR}/*.conf; do
+  # run agains a rotated or normal logfile
+  LOGFILE=`awk '$1 ~ /^LogFile$/ {print $2}' $i`;
+
+  # empty ?
+  [ -s "${LOGFILE}" ] || continue;
+  # readable ?
+  [ -r "${LOGFILE}" ] || continue;
+
+  # there was a output ?
+  OUTDIR=`awk '$1 ~ /^OutputDir$/ {print $2}' $i`;
+  #  exists something ?
+  [ "${OUTDIR}" != "" ] || continue;
+  # its a directory ?
+  [ -d ${OUTDIR} ] || continue;
+  # its writable ?
+  [ -w ${OUTDIR} ] || continue;
+
+  # Run Really quietly, exit with status code if !0
+  ${WEBALIZER} -c ${i} -Q || continue;
+  RET=$?;
+
+  # Non rotated log file
+  NLOGFILE=`awk '$1 ~ /^LogFile$/ {gsub(/\.[0-9]+(\.gz)?/,""); print $2}' $i`;
+
+  # check current log, if last log is a rotated logfile
+  if [ "${LOGFILE}" != "${NLOGFILE}" ]; then
+    # empty ?
+    [ -s "${NLOGFILE}" ] || continue;
+    # readable ?
+    [ -r "${NLOGFILE}" ] || continue;
+
+    ${WEBALIZER} -c ${i} -Q ${NLOGFILE};
+    RET=$?;
+  fi;
+done;
+
+# exit with webalizer's exit code
+exit $RET;
+]]>
+					</screen>
+				</listitem>
+				<listitem>
+					<para>initialization</para>
+					<screen><![CDATA[
+sudo /usr/bin/webalizer
+				]]></screen>
+				</listitem>
+				<listitem>
+					<para>http://netkiller.8800.org/webalizer/</para>
+				</listitem>
+			</orderedlist>
+			<screen><![CDATA[
+最后附上Webalizer的参数表：
+可以执行webalizer –h得到所有命令行参数：
+Usage: webalizer [options] [log file]
+-h = 打印帮助信息
+-v -V = 打印版本信息
+-d = 打印附加调试信息
+-F type = 日志格式类型. type= (clf | ftp | squid)
+-i = 忽略历史文件
+-p = 保留状态 (递增模式)
+-q = 忽略消息信息
+-Q = 忽略所有信息
+-Y = 忽略国家图形
+-G = 忽略小时统计图形
+-H = 忽略小时统计信息
+-L = 忽略彩色图例
+-l num = 在图形中使用数字背景线
+-m num = 访问超时 (seconds)
+-T = 打印时间信息
+-c file = 指定配置文件
+-n name = 使用的主机名
+-o dir = 结果输出目录
+-t name = 指定报告题目上的主机名
+-a name = 隐藏用户代理名称
+-r name = 隐藏访问链接
+-s name = 隐藏客户
+-u name = 隐藏URL
+-x name = 使用文件扩展名
+-P name = 页面类型扩展名
+-I name = index别名
+-A num = 显示前几名客户类型
+-C num = 显示前几名国家
+-R num = 显示前几名链接
+-S num = 显示前几名客户
+-U num = 显示前几名URLs
+-e num = 显示前几名访问页面
+-E num = 显示前几名不存在的页面
+-X = 隐藏个别用户
+-D name = 使用dns缓存文件
+-N num = DNS 进程数 (0=禁用dns)
+		]]></screen>
+			<section>
+				<title>手工生成</title>
+				<screen><![CDATA[
+$ sudo webalizer -c /etc/webalizer/webalizer.conf -o /var/www/webalizer/web2 /opt/logs/web2/www/access_log
+			]]></screen>
+				<para>分析多个文件</para>
+				<screen><![CDATA[
+# find ./ -exec sudo webalizer -p -c /etc/webalizer/webalizer.conf -o /var/www/webalizer/my /mnt/logs/www/{} \;
+			]]></screen>
+			</section>
+			<section>
+				<title>批量处理历史数据</title>
+				<para>下面脚本可以批量处理历史日志,等这个脚本运行完后在crontab中加入另一个脚本。</para>
+				<screen><![CDATA[
+for f in /mnt/logs/cdn/*.gz ; do webalizer -c /etc/webalizer/webalizer.conf -o /var/www/webalizer/cdn/ $f ; done
+			]]></screen>
+				<para>crontab</para>
+				<screen><![CDATA[
+webalizer -c /etc/webalizer/webalizer.conf -o /var/www/webalizer/cdn/ /mnt/logs/cdn/$(date -d '-1 day' +'%Y-%m-%d').log.gz
+			]]></screen>
+				<para>多域名批量处理</para>
+				<screen><![CDATA[
+for d in /mnt/cdn/* ; do
+    htmldir=/var/www/webalizer/$(basename $d)
+    mkdir -p $htmldir
+    for f in $d/*.log.gz ; do webalizer -c /etc/webalizer/webalizer.conf -o $htmldir $f ; done
+done
+			]]></screen>
+				<para>crontab</para>
+				<screen><![CDATA[
+#!/bin/bash
+for d in /mnt/cdn/*;
+do
+    htmldir=/var/www/webalizer/$(basename $d)
+    mkdir -p $htmldir
+    webalizer -c /etc/webalizer/webalizer.conf -o $htmldir $d/$(date -d '-1 day' +'%Y_%m_%d').log.gz
+done
+			]]></screen>
+			</section>
+			<section>
+				<title>crontab</title>
+				<screen><![CDATA[
+sudo webalizer  -F clf -p -t www.example.com -Q -c /etc/webalizer/webalizer.conf -o /var/www/webalizer/example /mnt/logs/www/access.$(date -d '-1 day' +'%Y-%m-%d').log
+			]]></screen>
+			</section>
+		</section>
+		<section id="sarg">
+			<title>Sarg - Squid Analysis Report Generator</title>
+			<ulink url="http://sarg.sourceforge.net/" />
+			<para></para>
+			<screen><![CDATA[
+
+		]]></screen>
+		</section>
+		<section id="goaccess">
+			<title>goaccess - Fast web log analyzer and interactive viewer.</title>
+			<para>http://goaccess.prosoftcorp.com/</para>
+
+			<para>CentOS</para>
+			<screen><![CDATA[
+yum install goaccess
+		]]></screen>
+			<para>Ubuntu</para>
+			<screen><![CDATA[
+$ sudo apt-get install goaccess
+		]]></screen>
+			<para>使用方法</para>
+			<screen><![CDATA[
+# goaccess -f access.log
+		]]></screen>
+		</section>
+	</section>
+
+	<section id="tomcat">
+		<title>Tomcat</title>
+		<para>Tomcat 日志监控主要是分析 catalina.out 文件</para>
+		<section>
+			<title>截取 0-3 点区间的日志</title>
+			<screen><![CDATA[
+egrep '^2011-08-02 0[0-3].*' sale-debug.log
+		]]></screen>
+		</section>
+		<section>
+			<title>监控Redis</title>
+			<screen><![CDATA[
+redis.clients.jedis.exceptions.JedisConnectionException: java.net.SocketTimeoutException: Read timed out			
+		]]></screen>
+		</section>
+	</section>
+
+	<section id="mail">
+		<title>Mail</title>
+		<section id="pflogsumm">
+			<title>pflogsumm.pl - Produce Postfix MTA logfile summary</title>
+			<screen><![CDATA[
+# yum install -y postfix-perl-scripts		
+		]]></screen>
+			<screen><![CDATA[
+pflogsumm `ls -rt /var/log/maillog*`
+pflogsumm -d today /var/log/maillog
+pflogsumm -d yesterday /var/log/maillog
+		]]></screen>
+			<para>发送统计报表到邮箱</para>
+			<screen>
+		<![CDATA[
+0 5 * * * pflogsumm -d yesterday /var/log/maillog 2>&1 | mail -s "Mail Report" postmaster@netkiller.cn
+		]]>
+			</screen>
+		</section>
+	</section>
+	<section id="secure">
+		<title>OpenSSH 日志 /var/log/secure</title>
+		<para>查询出恶意穷举密码的IP地址</para>
+		<screen><![CDATA[
+# cat /var/log/rinetd.log | awk '{print $2}' | awk -F'.' '{print $1"."$2"."$3"."$4}' | sort | uniq -c | sort -r -n | head -n 50
+		]]></screen>
+		<para>查看曾经登陆成功的IP地址</para>
+		<screen><![CDATA[
+grep Accepted /var/log/secure | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b" | sort | uniq		
+		]]></screen>
+		<section>
+			<title>查看登陆用户</title>
+			<para>密码登陆用户</para>
+			<screen><![CDATA[
+# grep "Accepted password" /var/log/secure
+
+Feb 15 15:29:31 iZ623qr3xctZ sshd[25181]: Accepted password for root from 157.90.182.21 port 29836 ssh2
+Feb 15 16:24:18 iZ623qr3xctZ sshd[22150]: Accepted password for root from 211.90.123.18 port 27553 ssh2	
+			]]></screen>
+			<para>证书登陆用户</para>
+			<screen><![CDATA[
+# grep "Accepted publickey" /var/log/secure
+
+Feb 15 15:51:25 iZ623qr3xctZ sshd[17334]: Accepted publickey for root from 147.90.40.39 port 42252 ssh2: RSA ea:a9:94:d8:03:a7:39:22:05:bb:cc:f5:d8:b2:92:18
+Feb 15 16:21:41 iZ623qr3xctZ sshd[19469]: Accepted publickey for root from 147.90.40.39 port 42296 ssh2: RSA ea:a9:94:d8:03:a7:39:22:05:bb:cc:f5:d8:b2:92:18
+			]]></screen>
+		</section>
+
+	</section>
+	<section id="rinetd.log">
+		<title>rinetd.log</title>
+		<para>top 50 IP Address</para>
+		<screen><![CDATA[
+# cat /var/log/rinetd.log | awk '{print $2}' | awk -F'.' '{print $1"."$2"."$3"."$4}' | sort | uniq -c | sort -r -n | head -n 50
+		]]></screen>
+	</section>
+</section>
