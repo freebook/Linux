@@ -2,8 +2,8 @@
 	&chapter.prometheus.xml;
 	&chapter.zabbix.xml;
 	&chapter.log.xml;
-	&chapter.system.utility.xml;
+	&chapter.zipkin.xml;
 	&section.monitor.dashboard.xml;
 	&chapter.bandwidth.xml;
 	&chapter.network.opentsdb.xml;
-	&chapter.zipkin.xml;
+	
