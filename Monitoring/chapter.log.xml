@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="index"><?dbhtml dir="logging" ?>
+<chapter id="logging">
 	<title>日志收集和分析</title>
 	<chapterinfo>
 		<keywordset>
@@ -15,7 +15,6 @@
 	&section.log.loki.xml;
 	&section.log.fluentd.xml;
 	&section.log.flume.xml;
-	
 	<section id="php-syslog-ng">
 		<title>php-syslog-ng</title>
 		<para></para>

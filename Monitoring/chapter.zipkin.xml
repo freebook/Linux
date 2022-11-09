@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="SkyWalking">
-	<title>Apache SkyWalking</title>
-</section>
-<chapter id="Zipkin">
-	<title>Zipkin 分布式链路追踪</title>
+<chapter id="分布式链路追踪">
+	<title>分布式链路追踪</title>
+	<section id="SkyWalking">
+		<title>Apache SkyWalking</title>
+	</section>
+	<section>
+		<title>Zipkin</title>
+	</section>
 </chapter>
