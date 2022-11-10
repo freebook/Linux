@@ -219,7 +219,7 @@ vim    set fileformat
 		]]>
 		</screen>
 	</section>
-	<section>
+	<section id="vim.tab.space">
 		<title>空格与TAB转换</title>
 		<para>ts 是tabstop的缩写，设TAB宽度为4个空格。</para>
 		<para>softtabstop 表示在编辑模式的时候按退格键的时候退回缩进的长度，当使用 expandtab 时特别有用。</para>

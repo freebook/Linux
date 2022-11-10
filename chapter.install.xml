@@ -1,12 +1,12 @@
-<section>
-	<title>CentOS 替代方案</title>
+
+
+<section id="RockyLinuxInstall">
+	<title>Rocky Linux</title>
 	<para>CentOS 8 的后续版本，CentOS 替代方案</para>
-	<section id="RockyLinuxInstall">
-		<title>Rocky Linux</title>
-		<section>
-			<title>制作 U 盘</title>
-			<para>查看 U 盘设备</para>
-			<screen>
+	<section>
+		<title>制作 U 盘</title>
+		<para>查看 U 盘设备</para>
+		<screen>
 	<![CDATA[
 Neo-iMac:~ neo$ diskutil list
 /dev/disk0 (internal, physical):
@@ -37,9 +37,9 @@ Neo-iMac:~ neo$ diskutil list
    #:                       TYPE NAME                    SIZE       IDENTIFIER
    0:                                                   *30.8 GB    disk3	
 	]]>
-			</screen>
-			<para>/dev/disk3 是 U 盘，使用下面命令将ISO镜像制作成启动盘</para>
-			<screen>
+		</screen>
+		<para>/dev/disk3 是 U 盘，使用下面命令将ISO镜像制作成启动盘</para>
+		<screen>
 		<![CDATA[
 Neo-iMac:Data neo$ ls
 Rocky-8.5-x86_64-minimal.iso
@@ -47,45 +47,46 @@ Rocky-8.5-x86_64-minimal.iso
 Neo-iMac:Data neo$ sudo dd if=Rocky-8.5-x86_64-minimal.iso of=/dev/rdisk3 bs=100m
 Password:
 		]]>
-			</screen>
-			<para>过程比较缓慢，请耐心等待</para>
-			<screen>
+		</screen>
+		<para>过程比较缓慢，请耐心等待</para>
+		<screen>
 		<![CDATA[
 sudo dd if=Rocky-9.0-x86_64-minimal.iso of=/dev/rdisk4 bs=100m		
 		]]>
-			</screen>
-			<para>Rocky Linux 安装过程与 CentOS 8 没有太大差异。</para>
-		</section>
-		<section>
-			<title>Rocky-9.0-x86_64-minimal.iso 镜像初始化</title>
-			<para></para>
-			<para>首次安装后初始化系统</para>
-			<screen>
+		</screen>
+		<para>Rocky Linux 安装过程与 CentOS 8 没有太大差异。</para>
+	</section>
+	<section>
+		<title>Rocky-9.0-x86_64-minimal.iso 镜像初始化</title>
+		<para></para>
+		<para>首次安装后初始化系统</para>
+		<screen>
 		<![CDATA[ 
 cp /etc/dnf/dnf.conf{,.original} 
 echo "fastestmirror=true" >> /etc/dnf/dnf.conf
 dnf makecache 
 		]]>
-			</screen>
-			<para>Extra Packages for Enterprise Linux repository configuration
-			</para>
-			<screen>
+		</screen>
+		<para>Extra Packages for Enterprise Linux repository configuration
+		</para>
+		<screen>
 			<![CDATA[
 dnf -y upgrade
 dnf -y install epel-release
 			]]>
-			</screen>
-			<para>管理员常用工具</para>
-			<screen>
+		</screen>
+		<para>管理员常用工具</para>
+		<screen>
 			<![CDATA[
 dnf install -y bzip2 tree psmisc \
 telnet wget rsync vim-enhanced \
 net-tools bind-utils			
 			]]>
-			</screen>
-			<para>设置终端字符集（这样对 macOS 更友好），还可以解决 Failed to set locale, defaulting
-				to C.UTF-8 问题</para>
-			<screen>
+		</screen>
+		<para>设置终端字符集（这样对 macOS 更友好），还可以解决 Failed to set locale, defaulting
+			to C.UTF-8 问题
+		</para>
+		<screen>
 			<![CDATA[
 dnf install -y langpacks-en glibc-langpack-en
 localectl set-locale LANG=en_US.UTF-8
@@ -96,10 +97,10 @@ LANG=en_US.UTF-8
 LC_CTYPE=UTF-8
 EOF
 			]]>
-			</screen>
-			<!-- dnf install langpacks-en glibc-all-langpacks -y -->
-			<para>设置历史记录格式，可以看到命令的执行时间</para>
-			<screen>
+		</screen>
+		<!-- dnf install langpacks-en glibc-all-langpacks -y -->
+		<para>设置历史记录格式，可以看到命令的执行时间</para>
+		<screen>
 			<![CDATA[			
 cat >> /etc/profile.d/history.sh <<EOF
 # Administrator specific aliases and functions for system security
@@ -111,9 +112,9 @@ EOF
 
 source /etc/profile.d/history.sh
 			]]>
-			</screen>
-			<para>sysctl 优化</para>
-			<screen>
+		</screen>
+		<para>sysctl 优化</para>
+		<screen>
 			<![CDATA[
 cat >> /etc/sysctl.conf <<EOF
 
@@ -128,9 +129,9 @@ EOF
 
 sysctl -p			
 			]]>
-			</screen>
-			<para>确认 ulimit 已经优化</para>
-			<screen>
+		</screen>
+		<para>确认 ulimit 已经优化</para>
+		<screen>
 			<![CDATA[
 cat > /etc/security/limits.d/20-nofile.conf <<EOF
 
@@ -143,29 +144,29 @@ docker hard nofile 65535
 EOF
 	
 			]]>
-			</screen>
-			<para>设置时区</para>
-			<screen>
+		</screen>
+		<para>设置时区</para>
+		<screen>
 			<![CDATA[
 timedatectl set-timezone Asia/Shanghai			
 			]]>
-			</screen>
-			<para>安装时间同步服务 chronyd 并确认工作正常</para>
-			<screen>
+		</screen>
+		<para>安装时间同步服务 chronyd 并确认工作正常</para>
+		<screen>
 			<![CDATA[
 dnf install -y chrony
 systemctl enable chronyd
 systemctl start chronyd	
 			]]>
-			</screen>
-			<para>zmodem 用来上传和下载文件（注意 macOS 的 Terminal.app 不支持）</para>
-			<screen>
+		</screen>
+		<para>zmodem 用来上传和下载文件（注意 macOS 的 Terminal.app 不支持）</para>
+		<screen>
 			<![CDATA[
 dnf install -y lrzsz			
 			]]>
-			</screen>
-			<para>优化 SSH</para>
-			<screen>
+		</screen>
+		<para>优化 SSH</para>
+		<screen>
 			<![CDATA[
 cp /etc/ssh/sshd_config{,.original}
 
@@ -179,11 +180,12 @@ vim /etc/ssh/sshd_config <<EOF > /dev/null 2>&1
 :wq
 EOF
 			]]>
-			</screen>
-			<para>禁止 root 登陆，开启 sudo</para>
-			<para>禁用普通用户，我们需要一个普通用户登陆，然后使用 sudo 暂时获得 root 权限，我不打算新建一个用户，发现系统里面内置了
-				operator 这个操作员用户符合我的需求。</para>
-			<screen>
+		</screen>
+		<para>禁止 root 登陆，开启 sudo</para>
+		<para>禁用普通用户，我们需要一个普通用户登陆，然后使用 sudo 暂时获得 root 权限，我不打算新建一个用户，发现系统里面内置了
+			operator 这个操作员用户符合我的需求。
+		</para>
+		<screen>
 			<![CDATA[
 usermod -s /bin/bash -aG wheel operator
 
@@ -192,11 +194,12 @@ PASSWORD=$(cat /dev/urandom | tr -dc [:alnum:] | head -c 32)
 echo operator:${PASSWORD} | chpasswd
 echo "operator password: ${PASSWORD}"			
 			]]>
-			</screen>
-			<para>将 /usr/local/sbin:/usr/local/bin 路径加入到 Defaults secure_path =
-				/sbin:/bin:/usr/sbin:/usr/bin，否则sudo找不到
-				/usr/local/sbin:/usr/local/bin 中的可执行文件。</para>
-			<screen>
+		</screen>
+		<para>将 /usr/local/sbin:/usr/local/bin 路径加入到 Defaults secure_path =
+			/sbin:/bin:/usr/sbin:/usr/bin，否则sudo找不到
+			/usr/local/sbin:/usr/local/bin 中的可执行文件。
+		</para>
+		<screen>
 			<![CDATA[
 sed -i "s/#PermitRootLogin yes/PermitRootLogin no/" /etc/ssh/sshd_config
 systemctl restart sshd
@@ -207,16 +210,14 @@ sed -i '88s#$#:/usr/local/sbin:/usr/local/bin#' /etc/sudoers
 
 visudo -c
 			]]>
-			</screen>
-		</section>
-
-
+		</screen>
 	</section>
-	<section id="AlmaLinux">
-		<title>AlmaLinux</title>
-		<section>
-			<title>AlmaLinux 9.0 镜像安装初始化</title>
-			<screen>
+</section>
+<section id="AlmaLinux">
+	<title>AlmaLinux</title>
+	<section>
+		<title>AlmaLinux 9.0 镜像安装初始化</title>
+		<screen>
 			<![CDATA[
 dnf -y upgrade
 dnf -y install epel-release
@@ -225,9 +226,9 @@ dnf install -y bzip2 tree psmisc \
 telnet wget rsync vim-enhanced \
 net-tools bind-utils
 			]]>
-			</screen>
-			<para>将其改为英文</para>
-			<screen>
+		</screen>
+		<para>将其改为英文</para>
+		<screen>
 		<![CDATA[
 cat >> /etc/environment <<EOF
 LC_ALL=en_US.UTF-8
@@ -235,9 +236,9 @@ LANG=en_US.UTF-8
 LC_CTYPE=UTF-8
 EOF
 		]]>
-			</screen>
-			<para>设置历史记录格式，可以看到命令的执行时间</para>
-			<screen>
+		</screen>
+		<para>设置历史记录格式，可以看到命令的执行时间</para>
+		<screen>
 			<![CDATA[			
 cat >> /etc/profile.d/history.sh <<EOF
 # Administrator specific aliases and functions for system security
@@ -249,9 +250,9 @@ EOF
 
 source /etc/profile.d/history.sh
 			]]>
-			</screen>
-			<para>sysctl 优化</para>
-			<screen>
+		</screen>
+		<para>sysctl 优化</para>
+		<screen>
 			<![CDATA[
 cat >> /etc/sysctl.conf <<EOF
 
@@ -269,9 +270,9 @@ EOF
 
 sysctl -p			
 			]]>
-			</screen>
-			<para>ulimit 优化</para>
-			<screen>
+		</screen>
+		<para>ulimit 优化</para>
+		<screen>
 			<![CDATA[
 cat > /etc/security/limits.d/20-nofile.conf <<EOF
 
@@ -280,34 +281,83 @@ cat > /etc/security/limits.d/20-nofile.conf <<EOF
 
 EOF
 			]]>
-			</screen>
-			<screen>
+		</screen>
+		<screen>
 			<![CDATA[
 cp /etc/selinux/config{,.original}
 sed -i "s/SELINUX=enforcing/SELINUX=disabled/" /etc/selinux/config
 
 setenforce Permissive
 			]]>
-			</screen>
-			<para>关闭防火墙</para>
-			<screen>
+		</screen>
+		<para>关闭防火墙</para>
+		<screen>
 			<![CDATA[
 systemctl disable firewalld
 systemctl stop firewalld
 			]]>
-			</screen>
-			<para>时间同步</para>
-			<screen>
+		</screen>
+		<para>时间同步</para>
+		<screen>
 			<![CDATA[
 dnf install -y chrony
 systemctl start chronyd
 			]]>
+		</screen>
+	</section>
+	<section>
+		<title>Minimal 版本安装 XWindows</title>
+		<para>迷你版安装桌面</para>
+		<screen>
+		<![CDATA[
+dnf update -y
+
+dnf grouplist
+dnf groupinstall -y "Server with GUI"
+		]]>
+		</screen>
+		<section>
+			<title>KVM 虚拟机</title>
+			<para>安装虚拟机</para>
+			<screen>
+			<![CDATA[
+dnf groupinstall -y "Virtualization Host"
+dnf install -y virt-manager
+
+[root@localhost ~]# systemctl enable libvirtd
+[root@localhost ~]# systemctl start libvirtd
+
+[root@localhost ~]# dnf install -y bridge-utils
+[root@localhost ~]# brctl addbr br0
+[root@localhost ~]# brctl addif br0 enp3s0
+[root@localhost ~]# brctl stp br0 on
+[root@localhost ~]# brctl show
+			]]>
+			</screen>
+			<para>使用 nmtui 给 br0 设置 IP 地址、子网掩码和DNS</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# nmtui
+			]]>
 			</screen>
 		</section>
-		<section>
-			<table>阿里云 AlmaLinux 镜像初始化</table>
-			
-		</section>
+	</section>
+</section>
+<section id="linux.init">
+	<title>Linux 通用初始化设置</title>
+	<section>
+		<title>vim 初始化</title>
+		<screen>
+		<![CDATA[
+cat >> ~/.vimrc <<EOF
+set ts=4
+set softtabstop=4
+set shiftwidth=4
+set expandtab
+set autoindent
+EOF
+		]]>
+		</screen>
 	</section>
 </section>
 <section id="install.ubuntu">
@@ -489,7 +539,8 @@ NTP synchronized: yes
 			]]>
 		</screen>
 		<para>确认 Network time on: yes 和 NTP synchronized: yes 开启，然后启动时间同步
-			systemd-timesyncd.service。</para>
+			systemd-timesyncd.service。
+		</para>
 		<screen>
 			<![CDATA[
 root@netkiller:~# systemctl start systemd-timesyncd.service
@@ -542,7 +593,8 @@ Aug 16 19:05:39 netkiller chronyd[1222]: Selected source 100.100.61.88
 			]]>
 		</screen>
 		<para>确保 chronyd 处于工作状态，systemd-timesyncd.service 与 chronyd
-			选择其中一个即可。所以我们不用在关心 systemd-timesyncd.service</para>
+			选择其中一个即可。所以我们不用在关心 systemd-timesyncd.service
+		</para>
 	</section>
 	<section>
 		<title>启动 rc.local</title>
@@ -651,7 +703,8 @@ Firewall stopped and disabled on system startup
 	<section>
 		<title>U 盘安装 CentOS Stream</title>
 		<para>下载 ISO 文件你会发现只有boot和dvd1，boot 是网络安装，而DVD1差不多8G，估计你的手上没有
-			DVD9光盘，普通DVD光盘是D5只有4.7G，那么怎么安装呢，使用U盘。</para>
+			DVD9光盘，普通DVD光盘是D5只有4.7G，那么怎么安装呢，使用U盘。
+		</para>
 		<para>将ISO文件烧录到U盘中，方法如下。</para>
 		<screen>
 		<![CDATA[
@@ -739,7 +792,8 @@ Password:
 					<row>
 						<entry>交换分区（swap）</entry>
 						<entry>如何开发测试环境不需要分，生产服务器是情况而定，因为现在的服务器内存越来越大，极少出现不够用的情况，16G
-							内存交换分区可以给 memory * 2，32G 分 32G空间，超过32G 基本不需要分交换分区了。</entry>
+							内存交换分区可以给 memory * 2，32G 分 32G空间，超过32G 基本不需要分交换分区了。
+						</entry>
 					</row>
 				</tbody>
 			</tgroup>
@@ -807,7 +861,8 @@ net-tools bind-utils
 			]]>
 		</screen>
 		<para>设置终端字符集（这样对 macOS 更友好），还可以解决 Failed to set locale, defaulting to
-			C.UTF-8 问题</para>
+			C.UTF-8 问题
+		</para>
 		<screen>
 			<![CDATA[
 dnf install -y langpacks-en glibc-langpack-en
@@ -935,7 +990,8 @@ EOF
 		</screen>
 		<para>禁止 root 登陆，开启 sudo</para>
 		<para>禁用普通用户，我们需要一个普通用户登陆，然后使用 sudo 暂时获得 root 权限，我不打算新建一个用户，发现系统里面内置了
-			operator 这个操作员用户符合我的需求。</para>
+			operator 这个操作员用户符合我的需求。
+		</para>
 		<screen>
 			<![CDATA[
 usermod -s /bin/bash -aG wheel operator
@@ -948,7 +1004,8 @@ echo "operator password: ${PASSWORD}"
 		</screen>
 		<para>将 /usr/local/sbin:/usr/local/bin 路径加入到 Defaults secure_path =
 			/sbin:/bin:/usr/sbin:/usr/bin，否则sudo找不到
-			/usr/local/sbin:/usr/local/bin 中的可执行文件。</para>
+			/usr/local/sbin:/usr/local/bin 中的可执行文件。
+		</para>
 		<screen>
 			<![CDATA[
 sed -i "s/#PermitRootLogin yes/PermitRootLogin no/" /etc/ssh/sshd_config
@@ -985,7 +1042,8 @@ touch /var/lock/subsys/local
 		</screen>
 		<tip>
 			<para>很多系统已经弃用了该运行方案，因为很多更好的替代方案，例如 node 实现的 pm2 和 Python 实现的
-				supervisor，以及 Linux 系统自带的 Systemd。</para>
+				supervisor，以及 Linux 系统自带的 Systemd。
+			</para>
 		</tip>
 		<para>CentOS 8 Stream 如果你想使用 rc.local 需要做如下配置</para>
 		<screen>
@@ -1022,7 +1080,8 @@ Aug 16 12:57:16 testing systemd[1]: Started /etc/rc.d/rc.local Compatibility.
 	<section>
 		<title>卸载防火墙</title>
 		<para>firewalld 不是适合 IDC 使用，IDC 通常只需要 INPUT 规则，其次是 OUTPUT 规则，所以我们换回
-			iptables 或者 nftable</para>
+			iptables 或者 nftable
+		</para>
 		<screen>
 			<![CDATA[
 systemctl stop firewalld
@@ -1218,7 +1277,8 @@ NTP synchronized: yes
 			]]>
 		</screen>
 		<para>确认 Network time on: yes 和 NTP synchronized: yes 开启，然后启动时间同步
-			systemd-timesyncd.service。</para>
+			systemd-timesyncd.service。
+		</para>
 		<screen>
 			<![CDATA[
 root@netkiller:~# systemctl start systemd-timesyncd.service
@@ -1271,7 +1331,8 @@ Aug 16 19:05:39 netkiller chronyd[1222]: Selected source 100.100.61.88
 			]]>
 		</screen>
 		<para>确保 chronyd 处于工作状态，systemd-timesyncd.service 与 chronyd
-			选择其中一个即可。所以我们不用在关心 systemd-timesyncd.service</para>
+			选择其中一个即可。所以我们不用在关心 systemd-timesyncd.service
+		</para>
 	</section>
 	<section>
 		<title>启动 rc.local</title>
@@ -1382,13 +1443,9 @@ sudo sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
 		<ulink url="https://www.alpinelinux.org">https://www.alpinelinux.org</ulink>
 	</para>
 	<para>Alpine Linux is a security-oriented, lightweight Linux
-		distribution based on musl libc and busybox.</para>
-	<!-- <section> <title>HDD Partition</title> <para>partition</para> <table> 
-		<title>Linux partition</title> <tgroup cols="2"> <thead> <row> <entry>volume</entry> 
-		<entry>size</entry> </row> </thead> <tbody> <row> <entry>/boot</entry> <entry>500M</entry> 
-		</row> <row> <entry>/</entry> <entry>50G</entry> </row> <row> <entry>/opt</entry> 
-		<entry>remainder</entry> </row> <row> <entry>swap</entry> <entry>memory * 
-		2</entry> </row> </tbody> </tgroup> </table> </section> -->
+		distribution based on musl libc and busybox.
+	</para>
+	<!-- <section> <title>HDD Partition</title> <para>partition</para> <table> <title>Linux partition</title> <tgroup cols="2"> <thead> <row> <entry>volume</entry> <entry>size</entry> </row> </thead> <tbody> <row> <entry>/boot</entry> <entry>500M</entry> </row> <row> <entry>/</entry> <entry>50G</entry> </row> <row> <entry>/opt</entry> <entry>remainder</entry> </row> <row> <entry>swap</entry> <entry>memory * 2</entry> </row> </tbody> </tgroup> </table> </section> -->
 </section>
 
 
