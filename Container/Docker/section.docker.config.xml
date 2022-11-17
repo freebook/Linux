@@ -289,6 +289,7 @@ $ docker --registry-mirror=https://registry.docker-cn.com daemon
 	</section>
 	<section>
 		<title>DNS</title>
+		<para>/etc/docker/daemon.json</para>
 		<screen>
 		<![CDATA[
 {

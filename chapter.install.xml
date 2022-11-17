@@ -216,6 +216,15 @@ visudo -c
 <section id="AlmaLinux">
 	<title>AlmaLinux</title>
 	<section>
+		<title>制作 U 盘启动盘</title>
+		<para>桌面版 AlmaLinux-9-latest-x86_64-dvd.iso</para>
+		<screen>
+		<![CDATA[
+iMac:Downloads neo$ sudo dd if=AlmaLinux-9-latest-x86_64-dvd.iso of=/dev/rdisk2 bs=100m
+		]]>
+		</screen>
+	</section>
+	<section>
 		<title>AlmaLinux 9.0 镜像安装初始化</title>
 		<screen>
 			<![CDATA[

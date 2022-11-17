@@ -49,13 +49,13 @@ chown logstash:logstash -R /etc/logstash
 
 systemctl daemon-reload
 systemctl enable logstash.service
-systemctl start logstash.service			
+systemctl start logstash.service
 			]]>
 			</screen>
 			<para>修改启动用户，否则启动会失败</para>
 			<screen>
 			<![CDATA[
-[root@netkiller ~]# vim /etc/logstash/conf.d/file.conf
+[root@netkiller ~]# vim /usr/lib/systemd/system/logstash.service
 User=logstash
 Group=logstash
 修改
@@ -765,6 +765,50 @@ output {
         gzip => true
     }
 }
+				]]>
+				</screen>
+				<para>每个 tags 标签生成一个日志文件</para>
+				<screen>
+				<![CDATA[
+input {
+  tcp {
+	port => 4567 
+	codec => json_lines
+  }
+}
+
+filter {
+	ruby {
+	    code => "event.set('datetime', event.get('@timestamp').time.localtime.strftime('%Y-%m-%d %H:%M:%S'))"
+	}
+}
+
+output {
+
+	if "finance" in [tags] { 
+		file {
+			path => "/opt/log/%{app}.finance.%{+yyyy}-%{+MM}-%{+dd}.log"
+			codec => line { format => "[%{datetime}] %{level} %{message}"}
+		}
+	 } else if "market" in [tags] {
+		file {
+			path => "/opt/log/%{app}.market.%{+yyyy}-%{+MM}-%{+dd}.log"
+			codec => line { format => "[%{datetime}] %{level} %{message}"}
+		}
+	} else {
+		file {
+			path => "/opt/log/%{app}.unknow.%{+yyyy}-%{+MM}-%{+dd}.log"
+			codec => line { format => "[%{datetime}] %{level} %{message}"}
+		}
+	
+	}
+    file {
+        path => "/opt/log/%{app}.%{+yyyy}-%{+MM}-%{+dd}.log.gz"
+		codec => json_lines
+        gzip => true
+    }
+
+}				
 				]]>
 				</screen>
 			</section>

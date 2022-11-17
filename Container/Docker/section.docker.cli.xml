@@ -271,6 +271,18 @@ $ sudo docker run ubuntu:14.04 /bin/echo 'Hello world'
 Hello world			
 			]]>
 			</screen>
+			<section>
+				<title>查看 docker run 参数</title>
+				<screen>
+				<![CDATA[
+pip3 install runlike
+				]]>
+				</screen>
+				<![CDATA[
+格式：runlike -p <容器名>|<容器ID>
+				]]>
+				</screen>
+			</section>
 			<section id="docker.run.it">
 				<title>-it</title>
 				<screen>
@@ -327,6 +339,22 @@ mount: permission denied
 				<![CDATA[
 docker run -e VAR1=value1 --env VAR2=value2 ubuntu
 docker run --env VAR1=value1 --env VAR2=value2 ubuntu				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>DNS</title>
+				<screen>
+				<![CDATA[
+docker run --dns 8.8.8.8 busybox:latest
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>add-host</title>
+				<screen>
+				<![CDATA[
+docker run --add-host=test.netkiller.cn:172.16.0.73 busybox:latest
 				]]>
 				</screen>
 			</section>
