@@ -10,24 +10,20 @@
 		官方网站
 		<ulink url="https://www.elastic.co" />
 	</para>
-	<para>环境准备:</para>
-	<para>操作系统： CentOS 7</para>
-	<para>Java 1.8</para>
-	<para>Redis</para>
-	<para>ElasticSearch + Logstash + Kibana 均使用 5.2 版本</para>
-	<para>以下安装均使用 Netkiller OSCM 脚本一键安装</para>
-
 	<section id="setup">
 		<title>安装</title>
 		<section id="8.x">
 			<title>8.x</title>
-			<screen>
+			<section>
+				<title>dnf 安定</title>
+
+				<screen>
 			<![CDATA[
 curl -s https://raw.githubusercontent.com/netkiller/shell/master/search/elastic/elastic-8.x.sh | bash
 			]]>
-			</screen>
-			<para>手工安装</para>
-			<screen>
+				</screen>
+				<para>手工安装</para>
+				<screen>
 			<![CDATA[
 rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
 
@@ -51,9 +47,9 @@ systemctl daemon-reload
 systemctl enable logstash.service
 systemctl start logstash.service
 			]]>
-			</screen>
-			<para>修改启动用户，否则启动会失败</para>
-			<screen>
+				</screen>
+				<para>修改启动用户，否则启动会失败</para>
+				<screen>
 			<![CDATA[
 [root@netkiller ~]# vim /usr/lib/systemd/system/logstash.service
 User=logstash
@@ -62,7 +58,16 @@ Group=logstash
 User=root
 Group=root
 			]]>
-			</screen>
+				</screen>
+			</section>
+			<section>
+				<title>Docker 安装</title>
+				<screen>
+				<![CDATA[
+docker run --rm -it -v ~/pipeline/:/usr/share/logstash/pipeline/ docker.elastic.co/logstash/logstash:8.5.1				
+				]]>
+				</screen>
+			</section>
 		</section>
 		<section id="6.x">
 			<title>6.x</title>
@@ -74,6 +79,12 @@ curl -s https://raw.githubusercontent.com/netkiller/shell/master/search/elastic/
 		</section>
 		<section id="5.x">
 			<title>ElasticSearch + Logstash + Kibana 安装</title>
+			<para>环境准备:</para>
+			<para>操作系统： CentOS 7</para>
+			<para>Java 1.8</para>
+			<para>Redis</para>
+			<para>ElasticSearch + Logstash + Kibana 均使用 5.2 版本</para>
+			<para>以下安装均使用 Netkiller OSCM 脚本一键安装</para>
 			<section>
 				<title>ElasticSearch 安装</title>
 				<para>粘贴下面命令到Linux控制台即可一键安装</para>
