@@ -430,12 +430,40 @@ CONTAINER ID                                                       IMAGE        
 				]]>
 				</screen>
 			</section>
+			<section>
+				<title>格式化输出</title>
+				<para>格式化选项(--format)</para>
+				<screen>
+				<![CDATA[
+.ID 容器ID
+.Image 镜像ID
+.Command Quoted command
+.CreatedAt 创建容器的时间点.
+.RunningFor 从容器创建到现在过去的时间.
+.Ports 暴露的端口.
+.Status 容器状态.
+.Size 容器占用硬盘大小.
+.Names 容器名称.
+.Labels 容器所有的标签.
+.Label 指定label的值 例如'{{.Label “com.docker.swarm.cpu”}}’
+.Mounts 挂载到这个容器的数据卷名称			
+				]]>
+				</screen>
+				<screen>
+				<![CDATA[
+$ docker ps --format "{{.Names}}={{.ID}}"
+portal=04b421501ab7
+price=098f85c3c916
+admin=8617cb486566
+				]]>
+				</screen>
+			</section>
 		</section>
 		<section id="docker.kill">
 			<title>kill 信号</title>
 			<screen>
 			<![CDATA[
-docker kill -s HUP <CONTAINER ID>			
+docker kill -s HUP <CONTAINER ID>
 			]]>
 			</screen>
 		</section>
