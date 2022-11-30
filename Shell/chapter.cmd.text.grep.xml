@@ -36,7 +36,7 @@ $ cat file | grep '.'
 			<screen>
 			<![CDATA[
 [root@localhost ~]# grep -n 'ftp' /etc/passwd
-12:ftp:x:14:50:FTP User:/var/ftp:/sbin/nologin			
+12:ftp:x:14:50:FTP User:/var/ftp:/sbin/nologin
 			]]>
 			</screen>
 		</section>
@@ -287,6 +287,14 @@ egrep "2010:(13|14|15|16)"  access.2010-11-18.log > apache.log
 			<screen><![CDATA[
 ps ax |grep -E "mysqld|httpd|resin"
 			]]></screen>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~> cat /etc/passwd | egrep -e "root|daemon"
+root:*:0:0:System Administrator:/var/root:/bin/sh
+daemon:*:1:1:System Services:/var/root:/usr/bin/false
+_cvmsroot:*:212:212:CVMS Root:/var/empty:/usr/bin/false			
+			]]>
+			</screen>
 		</section>
 		<section>
 			<title>[]与{}</title>
