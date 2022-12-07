@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="">
-	<title></title>
+<chapter id="macOS">
+	<title>MacOS</title>
 	<section>
 		<title>查看 Mac 版本</title>
 		<screen>
@@ -33,5 +33,16 @@ Netkiller-iMac:~ neo$ csrutil disable
 		]]>
 		</screen>
 		
+	</section>
+	<section>
+		<title>安装 brew</title>
+		<para>安装 brew 出现无法访问 github 的问题。</para>
+		<screen>
+		<![CDATA[
+export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
+export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git"
+export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles"		
+		]]>
+		</screen>
 	</section>
 </chapter>

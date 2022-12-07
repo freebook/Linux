@@ -80,6 +80,20 @@ ln -s /srv/openresty-1.21.4.1 /srv/openresty
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>echo 输出</title>
+		<screen>
+		<![CDATA[
+location /a {
+	echo "A";
+}        
+
+location /b {
+        echo "B";
+}		
+		]]>
+		</screen>
+	</section>
 	<section id="openresty.args">
 		<title>参数处理</title>
 		<section>
