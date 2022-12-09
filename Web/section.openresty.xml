@@ -1,0 +1,418 @@
+<section>
+    <title>Openresty 开发</title>
+    <section>
+        <title>Hello world!!!</title>
+        <screen>
+            <![CDATA[
+[root@netkiller openresty]# vim /srv/openresty/nginx/conf/nginx.conf
+
+    server {
+        listen 8080;
+        location / {
+            default_type text/html;
+            content_by_lua_block {
+                ngx.say("<p>Hello world!!!</p>")
+            }
+        }
+    }		
+		]]>
+        </screen>
+        <para>重载配置文件</para>
+        <screen>
+            <![CDATA[
+[root@netkiller openresty]# bin/openresty -s reload		
+		]]>
+        </screen>
+        <para>测试效果</para>
+        <screen>
+            <![CDATA[
+[root@netkiller openresty]# curl http://www.netkiller.cn
+<p>Hello world!!!</p>		
+		]]>
+        </screen>
+    </section>
+    <section>
+        <title>日期和时间</title>
+        <para>当前时间</para>
+        <screen>
+            <![CDATA[
+[root@netkiller lua]# cat time.lua 
+print(os.time())
+
+[root@netkiller lua]# lua time.lua 
+1670496310
+        ]]>
+        </screen>
+        <para>日期</para>
+        <screen>
+            <![CDATA[ 
+[root@netkiller lua]# cat date.lua 
+local d1 = os.date("%Y-%m-%d %H:%M:%S")
+print(d1)
+
+[root@netkiller lua]# lua date.lua 
+2022-12-08 19:07:45        
+        ]]>
+        </screen>
+        <screen>
+            <![CDATA[ 
+[root@netkiller lua]# cat date.lua 
+local d1 = os.date("%Y-%m-%d %H:%M:%S")
+print(d1)
+
+local d2 = os.date("%Y-%m-%d %H:%M:%S", os.time())
+print(d2)
+[root@netkiller lua]# lua date.lua 
+2022-12-08 19:12:11
+2022-12-08 19:12:11        
+        ]]>
+        </screen>
+    </section>
+    <section>
+        <title>数据结构</title>
+        <section>
+            <title>list 列表</title>
+            <screen>
+                <![CDATA[ 
+[root@netkiller lua]# cat list.lua
+local fruits = { "apple", "orange", "pear", "banana" }
+for _, fruit in pairs(fruits) do
+    if fruit == "pear" then
+        print("We Found it!")
+    else
+        print("Oh no, keep traversing!")
+    end
+end
+
+[root@netkiller lua]# lua list.lua
+Oh no, keep traversing!
+Oh no, keep traversing!
+We Found it!
+Oh no, keep traversing!        
+        ]]>
+            </screen>
+        </section>
+    </section>
+    <section>
+        <title>echo 输出</title>
+        <screen>
+            <![CDATA[
+location /a {
+	echo "A";
+}        
+
+location /b {
+        echo "B";
+}		
+		]]>
+        </screen>
+    </section>
+    <section id="openresty.args">
+        <title>参数处理</title>
+        <section>
+            <title>获取 GET/POST 参数</title>
+            <programlisting>
+                <![CDATA[
+	location /param {
+       content_by_lua_block {
+           local arg = ngx.req.get_uri_args()
+           for k,v in pairs(arg) do
+               ngx.say("[GET ] key:", k, " value:", v)
+           end
+
+           ngx.req.read_body()
+           local arg = ngx.req.get_post_args()
+           for k,v in pairs(arg) do
+               ngx.say("[POST] key:", k, " value:", v)
+           end
+       }
+   }			
+			]]>
+            </programlisting>
+            <screen>
+                <![CDATA[
+[root@netkiller nginx]# curl 'http://www.netkiller.cn/param?id=111&name=neo&nickname=netkiller'
+[GET ] key:nickname value:netkiller
+[GET ] key:name value:neo
+[GET ] key:id value:111
+			]]>
+            </screen>
+            <para></para>
+            <screen>
+                <![CDATA[
+[root@netkiller nginx]# curl http://www.netkiller.cn/param -d 'name=Neo&nickname=netkiller'
+[POST] key:nickname value:netkiller
+[POST] key:name value:Neo			
+			]]>
+            </screen>
+        </section>
+
+        <section>
+            <title>获取 body 数据</title>
+            <programlisting>
+                <![CDATA[
+		lua_need_request_body on;
+        location /body {
+            content_by_lua_block {
+                local data = ngx.req.get_body_data()
+                ngx.say("body: ", data)
+            }
+        }		
+		]]>
+            </programlisting>
+            <para></para>
+            <screen>
+                <![CDATA[
+[root@netkiller openresty]# bin/openresty -s reload
+
+[root@netkiller openresty]# curl http://www.netkiller.cn/body -d Hello
+body: Hello
+
+[root@netkiller openresty]# curl http://www.netkiller.cn/body -d name=neo
+body: name=neo
+
+[root@netkiller openresty]# curl http://www.netkiller.cn/body -d "{\"status\":true}"
+body: {"status":true}		
+		]]>
+            </screen>
+        </section>
+        <section>
+            <title>删除不需要的 GET 参数</title>
+            <para>需求如下，我们需要删除两个参数 password 跟 accesskey </para>
+            <screen>
+                <![CDATA[
+location = /test {
+	rewrite_by_lua '
+		local args = ngx.req.get_uri_args()
+		args.password= nil
+		args.accesskey = nil
+		ngx.req.set_uri_args(args)
+	';
+
+	echo $args;
+}			
+			]]>
+            </screen>
+            <para>测试效果</para>
+            <screen>
+                <![CDATA[
+[root@netkiller ~]# curl 'http://localhost/test?username=netkiller&password=123456&accesskey=112233&name=Neo&city=Shenzhen'a
+username=netkiller&name=Neo&city=Shenzhena			
+			]]>
+            </screen>
+            <para>我们可以看到两个参数已经被干掉。</para>
+        </section>
+    </section>
+    <section>
+        <title>Nginx 变量</title>
+        <section>
+            <title>访问变量</title>
+            <para>ngx.var.[variable]</para>
+            <screen>
+                <![CDATA[
+        location /test {
+            set $name 'chen';
+
+            content_by_lua_block {
+                ngx.say("Name: ",ngx.var.name)
+            }
+        }
+			]]>
+            </screen>
+        </section>
+        <section>
+            <title>set_by_lua 拼接字符串变量</title>
+            <screen>
+                <![CDATA[
+localtion ^~ /static/ { 
+
+   set_by_lua $domain 'return "https://"..os.getenv("ENV")..".netkiller.cn"'; 
+   proxy_pass $domain/resource$request_uri;
+
+}
+			]]>
+            </screen>
+        </section>
+        <section>
+            <title>从 lua 文件设置变量</title>
+            <para>set_by_lua_file</para>
+            <screen>
+                <![CDATA[
+        location /proxy {
+            set_by_lua_file $name lua/test.lua;
+
+            content_by_lua_block {
+                ngx.say("Name: ", ngx.var.name)
+            }
+        }			
+			]]>
+            </screen>
+            <programlisting>
+                <![CDATA[
+[root@netkiller openresty]# cat nginx/lua/test.lua 
+#!/usr/bin/env lua
+
+return "Netkiller";			
+			]]>
+            </programlisting>
+        </section>
+    </section>
+    <section>
+        <title>Json</title>
+        <section>
+            <title>解码 json</title>
+            <screen>
+                <![CDATA[
+location /json {
+	content_by_lua_block {
+		local cjson = require("cjson");
+        local json_text = '{"foo":"bar"}'
+        local data = cjson.decode(json_text)
+        ngx.say("foo: ", data["foo"])
+	}
+
+}			
+			]]>
+            </screen>
+            <para>剥离一层数组，注意第一个元素下标是1，不是0</para>
+            <programlisting>
+                <![CDATA[
+local cjson = require("cjson");
+local json_text = '[{"foo":"bar"}]'
+local data = cjson.decode(json_text)
+ngx.say("foo: ", data[1]["foo"])			
+			]]>
+            </programlisting>
+        </section>
+
+    </section>
+    <section>
+        <title>Redis</title>
+        <programlisting>
+            <![CDATA[
+local redisClient = require("resty.redis");
+local redis = redisClient:new();
+local ip = "127.0.0.1";
+local port = 6379;
+local ok,err = redis:connect(ip,port);		
+if not ok then
+    log.local_println("redis","Cannot connect, host: " .. ip .. ", port: " .. port)
+    return nil, err
+end;
+
+local ok,err = redis:get("key");
+if not ok then
+   ngx.say("get key err",err);
+   return;
+else
+	ngx.say(ok);
+end;
+		]]>
+        </programlisting>
+        <screen>
+            <![CDATA[
+location /redis {
+	content_by_lua_block {
+		local redisClient = require("resty.redis");
+		local redis = redisClient:new();
+		local ip = "127.0.0.1";
+		local port = 6379;
+		local ok,err = redis:connect(ip,port);
+		if not ok then
+		    log.local_println("redis","Cannot connect, host: " .. ip .. ", port: " .. port)
+		    return nil, err
+		end;
+		
+		local ok,err = redis:get("key");
+		if not ok then
+		   ngx.say("get key err",err);
+		   return;
+		else
+		        ngx.say(ok);
+		end;
+	}
+}
+		
+		]]>
+        </screen>
+        <para>测试</para>
+        <screen>
+            <![CDATA[
+[root@netkiller openresty]# redis-cli 
+127.0.0.1:6379> set key Helloworld!!!
+OK
+127.0.0.1:6379> exit
+
+[root@netkiller openresty]# curl http://www.netkiller.cn/redis
+Helloworld!!!		
+		]]>
+        </screen>
+    </section>
+    <section>
+        <title>Nginx 缓存</title>
+        <programlisting>
+            <![CDATA[
+lua_shared_dict my_cache 128m;
+server {
+	listen 8080;
+	location /cache {
+	
+		content_by_lua_block {
+			local cache = ngx.shared.my_cache
+			local key = 'nickname'
+			local value ='netkiller'
+			local exptime  = 0
+
+			local result = cache:get(key)
+			if not result then
+			        local succ, err, forcible = cache:set(key, value, exptime)
+			        ngx.say("set", succ)
+			else
+			        ngx.say("Value: ".. result)
+			end;
+		}
+	}		
+}
+		]]>
+        </programlisting>
+    </section>
+    <section>
+        <title>logs</title>
+        <para>在 server 下面增加 error_log 配置，这里只记录 notice</para>
+        <screen>
+            <![CDATA[
+server {
+    listen 8080;
+	error_log logs/lua.log notice;		
+		]]>
+        </screen>
+        <para>打印日志</para>
+        <programlisting>
+            <![CDATA[
+ngx.log(ngx.NOTICE, "det: ", json_string)		
+		]]>
+        </programlisting>
+        <para>日志输出</para>
+        <screen>
+            <![CDATA[
+2022/08/04 13:58:52 [notice] 830752#0: *247 [lua] content_by_lua(nginx.conf:159):18: get: {"key":"platfrom","status":false,"value":""}, client: 127.0.0.1, server: , request: "GET /grey/get?key=platfrom HTTP/1.1", host: "localhost:8080"
+2022/08/04 13:58:55 [notice] 830752#0: *248 [lua] content_by_lua(nginx.conf:185):22: set: {"exptime":0,"key":"platfrom","status":true,"value":"111"}, client: 127.0.0.1, server: , request: "GET /grey/set?key=platfrom&value=111 HTTP/1.1", host: "localhost:8080"
+2022/08/04 13:58:59 [notice] 830752#0: *249 [lua] content_by_lua(nginx.conf:203):13: det: {"status":true,"key":"platfrom"}, client: 127.0.0.1, server: , request: "GET /grey/del?key=platfrom HTTP/1.1", host: "localhost:8080"		
+		]]>
+        </screen>
+        <screen>
+            <![CDATA[
+日志级别： 
+ngx.STDERR 标准输出 
+ngx.EMERG 紧急报错 
+ngx.ALERT 报警 
+ngx.CRIT 严重，系统故障， 触发运维告警系统 
+ngx.ERR 错误，业务不可恢复性错误 
+ngx.WARN 提醒， 业务中可忽略错误 
+ngx.NOTICE 提醒， 业务中比较重要信息 
+ngx.INFO 信息， 业务琐碎日志信息， 包含不同情况判断等 
+ngx.DEBUG 调试		
+		]]>
+        </screen>
+    </section>
+</section>

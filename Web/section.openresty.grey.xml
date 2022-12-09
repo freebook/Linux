@@ -1,0 +1,224 @@
+<section>
+    <title>实现灰度发布</title>
+    <para>grey.lua 规则文件</para>
+    <programlisting>
+        <![CDATA[
+[root@netkiller nginx]# cat /srv/openresty/nginx/lua/grey.lua 
+local cache = ngx.shared.my_cache
+local args = ngx.req.get_uri_args()
+local key = args['key']
+local result = cache:get(key)
+local proxy_pass_url = ''
+if not result then
+    proxy_pass_url = '127.0.0.1/a'
+else
+    proxy_pass_url = '127.0.0.1/b'
+end
+ngx.log(ngx.NOTICE, "url: ", proxy_pass_url)
+return proxy_pass_url		
+    ]]>
+    </programlisting>
+    <para>nginx.conf 配置</para>
+    <screen>
+        <![CDATA[
+lua_shared_dict my_cache 128m;	
+
+server {
+listen 8080;
+
+error_log logs/lua.log; 
+
+location / {
+    default_type text/html;
+    content_by_lua_block {
+        ngx.say("<p>hello, world</p>")
+    }
+}
+    
+
+location /cache/get {
+    content_by_lua_block {
+        local cache = ngx.shared.my_cache
+        local args = ngx.req.get_uri_args()
+        local value = cache:get(args['key'])		
+
+        json = require("cjson")
+                data = {}
+        if not value then
+            data["status"] = false
+            data['value'] = ''
+        else
+            data["status"] = true
+            data['value'] = value
+        end
+                data["key"] = args['key']
+        json_string = json.encode(data)
+                ngx.say(json_string)
+        ngx.log(ngx.INFO, "get: ", json_string)
+    }
+}
+
+location /cache/set {
+    content_by_lua_block {
+        local cache = ngx.shared.my_cache
+        local args = ngx.req.get_uri_args()
+        local exptime = tonumber(args['ttl'])
+        local key = args['key']
+        local value = args['value']
+        if not exptime then
+                   exptime = 0
+            end
+        local status, err, forcible = cache:set(key, value, exptime)
+        
+        ngx.header['Content-Type'] = 'application/json; charset=utf-8'
+        
+        json = require("cjson")
+        data = {}
+        data["status"] = status 
+        data["key"] = key
+        data['value'] = value
+        data["exptime"] = exptime
+        json_string = json.encode(data)
+        ngx.say(json_string)
+        ngx.log(ngx.INFO, "set: ", json_string)
+    }
+}
+
+location /cache/del {
+    content_by_lua_block {
+        local cache = ngx.shared.my_cache
+        local args = ngx.req.get_uri_args()
+        local status, err, forcible = cache:delete(args['key'])
+        ngx.header['Content-Type'] = 'application/json; charset=utf-8'
+
+        json = require("cjson")
+        data = {}
+        data["status"] = status
+        data["key"] = args['key']
+        json_string = json.encode(data)
+        ngx.say(json_string)
+        ngx.log(ngx.INFO, "det: ", json_string)
+
+    }
+}
+
+location /test {
+    set_by_lua_file $proxy_pass_url lua/grey.lua;
+    proxy_pass http://$proxy_pass_url;
+    #echo $proxy_pass_url;
+}
+}		
+    ]]>
+    </screen>
+    <para></para>
+    <screen>
+        <![CDATA[
+默认访问 A 环境
+
+[root@netkiller nginx]# curl http://localhost:8080/cache/test
+A
+
+neo 默认也是 A 环境
+[root@netkiller nginx]# curl http://localhost:8080/cache/test?key=neo
+A
+
+将 neo 分配到 B 环境
+[root@netkiller nginx]# curl 'http://localhost:8080/cache/set?key=neo&value=true'
+{"exptime":0,"value":"true","key":"neo","status":true}
+
+默认仍是 A
+[root@netkiller nginx]# curl http://localhost:8080/cache/test
+A
+
+现在 neo 默认是 B
+[root@netkiller nginx]# curl http://localhost:8080/cache/test?key=neo 
+B
+
+将 neo 从灰度名单中移除
+[root@netkiller nginx]# curl http://localhost:8080/cache/del?key=neo
+{"key":"neo","status":true}
+
+现在 neo 被重新分配回 A
+[root@netkiller nginx]# curl http://localhost:8080/cache/test?key=neo
+A
+    ]]>
+    </screen>
+</section><section>
+    <title>Redis</title>
+    <para>nginx 配置</para>
+    <screen>
+        <![CDATA[
+location /redis {
+default_type 'text/html';  
+lua_code_cache on;  
+content_by_lua_file lua/redis.lua;
+}		
+    ]]>
+    </screen>
+    <para>lua/redis.lua 程序</para>
+    <programlisting>
+        <![CDATA[
+[root@netkiller nginx]# cat lua/redis.lua 
+local host = "127.0.0.1"  
+local port = 6379  
+-- local password = "passw0rd"
+local password = ""
+local redis = require("resty.redis")  
+local conn = redis:new()  
+
+conn:set_timeout(5000)  
+
+local ok, err = conn:connect(host, port)
+
+if not ok then
+ngx.say("connect to redis error : ", err)
+return 
+elseif password and password ~= "" then
+ok, err = conn:auth(password)
+if not ok then
+    ngx.say("failed to authenticate: ", err)
+    return 
+end
+end
+
+ok, err = conn:set("msg", "hello world")
+if not ok then
+ngx.say("set msg error : ", err)
+end
+
+local value, err = conn:get("msg")
+if not value then
+ngx.say("get msg error : ", err)
+end
+if value == ngx.null then  
+value = ''  
+end
+
+ngx.say("msg : ", value)  
+
+local ok, err = conn:close()
+if not ok then
+ngx.say("close redis error:", err)
+end
+    ]]>
+    </programlisting>
+    <para>list</para>
+    <programlisting>
+        <![CDATA[
+local lists, err = red:lrange("nokey", 0, -1)
+ngx.say(lists)		
+    ]]>
+    </programlisting>
+    <para>set</para>
+    <programlisting>
+        <![CDATA[
+red:sadd("city","Shenzhen","Shanghai","Beijing")
+local citys, err = red:smembers("city")
+ngx.say(citys)
+
+for i, item in ipairs(citys) do
+ngx.say(item)
+end
+    ]]>
+    </programlisting>
+</section>

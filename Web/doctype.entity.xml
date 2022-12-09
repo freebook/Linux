@@ -35,3 +35,5 @@
 <!ENTITY chapter.http2.xml			SYSTEM "chapter.http2.xml">
 <!ENTITY chapter.caddy.xml			SYSTEM "chapter.caddy.xml">
 <!ENTITY chapter.openresty.xml		SYSTEM "chapter.openresty.xml">
+<!ENTITY section.openresty.xml		SYSTEM "section.openresty.xml">
+<!ENTITY section.openresty.grey.xml		SYSTEM "section.openresty.grey.xml">
