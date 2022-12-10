@@ -53,5 +53,5 @@
 <!ENTITY section.container.helm.xml	  			SYSTEM "section.container.helm.xml">
 <!ENTITY section.container.netkiller.xml		SYSTEM "section.container.netkiller.xml">
 
-<!ENTITY chapter.podman.xml  			SYSTEM "chapter.podman.xml">
-<!ENTITY section.podman.install.xml  			SYSTEM "section.podman.install.xml">
+<!ENTITY chapter.podman.xml  					SYSTEM "Podman/chapter.podman.xml">
+<!ENTITY section.podman.install.xml  			SYSTEM "Podman/section.podman.install.xml">
