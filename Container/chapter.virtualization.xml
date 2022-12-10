@@ -2,5 +2,6 @@
 	&chapter.docker.xml;
 	&chapter.kubernetes.xml;
 	&chapter.rancher.xml;
+	&chapter.podman.xml;
 	&chapter.container.xml;
 	&chapter.vm.xml;

@@ -4,7 +4,6 @@
 	&section.container.netkiller.xml;
 	&section.container.helm.xml;
 	&section.container.portainer.xml;
-	&section.container.podman.xml;
 	<section>
 		<title>k9s</title>
 	</section>
