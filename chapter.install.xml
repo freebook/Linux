@@ -121,6 +121,7 @@ cat >> /etc/sysctl.conf <<EOF
 # add by netkiller
 net.ipv4.ip_local_port_range = 10000 65500
 net.core.somaxconn = 1024
+vm.max_map_count = 262144
 
 # TCP BBR
 net.core.default_qdisc=fq
