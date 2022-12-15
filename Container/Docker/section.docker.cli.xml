@@ -935,6 +935,14 @@ Deleted: sha256:4e741a99e2f707b6957be436d384d087200ebd11c8673b2c0c1e8baef304fbfb
 		]]>
 				</screen>
 			</section>
+			<section>
+				<title>批量删除镜像</title>
+				<screen>
+				<![CDATA[
+
+				]]>
+				</screen>
+			</section>
 		</section>
 		<section id="docker.logs">
 			<title>logs</title>
