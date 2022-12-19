@@ -149,7 +149,7 @@ kubernetes.main()
 			<![CDATA[
 sonarqube-check:
 	stage: test
-	image: registry.ejiayou.com/share/maven:3.8.6-openjdk-11
+	image: registry.netkiller.cn/share/maven:3.8.6-openjdk-11
 	variables:
 		# SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
 		GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
@@ -171,6 +171,7 @@ sonarqube-check:
 		  
 			]]>
 			</screen>
+			<para>还有一点需要注意，必须使用 openjdk-11，SonarQube 不支持 Java 1.8</para>
 		</section>
 		<section>
 			<title>Docker</title>
