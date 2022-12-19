@@ -441,6 +441,27 @@ EOF
 			</screen>
 		</section>
 	</section>
+  <section>
+    <title>制作 Maven 镜像</title>
+    <para>自建 Maven 仓库，需要配置 settings.xml，这时就需要制作一个 Maven 镜像，同事有 COPY 命令把 settings.xml 文件复制到 /usr/share/maven/conf/settings.xml 目录</para>
+    <screen>
+    <![CDATA[
+[root@netkiller jdk11]# ls
+Dockerfile  build.sh  settings.xml
+
+[root@netkiller jdk11]# cat Dockerfile
+FROM maven:3.8.6-openjdk-11
+
+COPY settings.xml /root/.m2/settings.xml
+COPY settings.xml /usr/share/maven/conf/settings.xml
+
+[root@netkiller jdk11]# cat build.sh
+docker build -t "registry.netkiller.cn/share/maven:3.8.6-openjdk-11" .
+docker push registry.netkiller.cn/share/maven:3.8.6-openjdk-11    
+    ]]>
+    </screen>
+    <para></para>
+  </section>
 	<section id="gitlab.runner.tags">
 		<title>tags 的使用方法</title>
 		<para>tags 是给 Gitlab Runner 打个标签，我的用法是多次注册，例如 shell 执行器的标签是 shell, Docker 执行器的标签是 docker，这样便可以在.gitlab-ci.yml文件中来选择使用那个执行器来触发操作。</para>
