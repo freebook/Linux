@@ -7,6 +7,172 @@
 	<section>
 		<title>安装</title>
 		<section>
+			<title>Kubernetes 安装 SonarQube</title>
+			<screen>
+			<![CDATA[
+import sys, os
+
+sys.path.insert(0, '/Users/neo/workspace/GitHub/devops')
+from netkiller.kubernetes import *
+
+namespace = 'default'
+
+service = Service()
+service.metadata().name('sonarqube')
+service.metadata().namespace(namespace)
+service.spec().selector({'app': 'sonarqube'})
+service.spec().type('NodePort')
+service.spec().ports([{
+	'name': 'sonarqube',
+	'protocol': 'TCP',
+	'port': 80,
+	'targetPort': 9000
+}])
+
+statefulSet = StatefulSet()
+statefulSet.metadata().namespace(namespace)
+statefulSet.metadata().name('sonarqube').labels({'app': 'sonarqube'})
+statefulSet.spec().replicas(1)
+statefulSet.spec().serviceName('sonarqube')
+statefulSet.spec().selector({'matchLabels': {'app': 'sonarqube'}})
+statefulSet.spec().template().metadata().labels({'app': 'sonarqube'})
+
+statefulSet.spec().template().spec().containers(
+).name('postgresql').image('postgres:latest').ports([{
+	'containerPort': 5432
+}]).env([
+		{'name': 'TZ', 'value': 'Asia/Shanghai'},
+		{'name': 'LANG', 'value': 'en_US.UTF-8'},
+		{'name': 'POSTGRES_USER', 'value': 'sonar'},
+		{'name': 'POSTGRES_PASSWORD', 'value': 'sonar'}
+]).volumeMounts([
+	{
+		'name': 'postgresql',
+		'mountPath': '/var/lib/postgresql'
+	},
+	{
+		'name': 'postgresql',
+		'mountPath': '/var/lib/postgresql/data',
+		'subPath' : 'data'
+	},
+])
+
+statefulSet.spec().template().spec().containers(
+).name('sonarqube').image('sonarqube:community').ports([{
+	'containerPort': 9000
+}]).env([
+		{'name': 'TZ', 'value': 'Asia/Shanghai'},
+		{'name': 'LANG', 'value': 'en_US.UTF-8'},
+		{'name': 'SONAR_JDBC_URL', 'value': 'jdbc:postgresql://localhost:5432/sonar'},
+		{'name': 'SONAR_JDBC_USERNAME', 'value': 'sonar'},
+		{'name': 'SONAR_JDBC_PASSWORD', 'value': 'sonar'}
+]).resources().livenessProbe().readinessProbe().volumeMounts([
+	{
+		'name': 'sonarqube',
+		'mountPath': '/opt/sonarqube/data',
+		'subPath' : 'data'
+	},
+	{
+		'name': 'sonarqube',
+		'mountPath': '/opt/sonarqube/extensions',
+		'subPath' : 'extensions'
+	},
+]).securityContext({'privileged': True})
+
+statefulSet.spec().template().spec().volumes([
+	{
+	'name': 'sonarqube',
+	'persistentVolumeClaim': {
+		'claimName': 'sonarqube'
+	}
+},
+	{
+	'name': 'postgresql',
+	'persistentVolumeClaim': {
+		'claimName': 'postgresql'
+	}
+}
+])
+statefulSet.spec().volumeClaimTemplates([{
+	'metadata':{'name': 'sonarqube'},
+	'spec':{
+		'accessModes': [ "ReadWriteOnce" ],
+		'storageClassName': "local-path",
+		'resources':{'requests':{'storage': '2Gi'}}
+	}
+},{
+	'metadata':{'name': 'postgresql'},
+	'spec':{
+		'accessModes': [ "ReadWriteOnce" ],
+		'storageClassName': "local-path",
+		'resources':{'requests':{'storage': '2Gi'}}
+	}
+}
+])
+
+
+ingress = Ingress()
+ingress.apiVersion('networking.k8s.io/v1')
+ingress.metadata().name('sonarqube')
+ingress.metadata().namespace(namespace)
+ingress.spec().rules([
+{
+	'host': 'sonarqube.netkiller.cn',
+	'http':{
+		'paths': [{
+			'pathType': Define.Ingress.pathType.Prefix,
+			'path': '/', 
+			'backend':{
+				'service':{
+					'name':'sonarqube', 
+					'port':{'number': 80}
+				}
+			}}]}
+}
+])
+
+compose = Compose('development')
+compose.add(service)
+compose.add(statefulSet)
+compose.add(ingress)
+
+kubeconfig = '/Users/neo/workspace/kubernetes/office.yaml'
+# kubeconfig = os.path.expanduser('~/workspace/ops/k3s.yaml')
+
+kubernetes = Kubernetes(kubeconfig)
+kubernetes.compose(compose)
+kubernetes.main()			
+			]]>
+			</screen>
+			<para>连接 sonarqube，注意在容器内部访问 sonarqube 的地址是 sonar.host.url=http://sonarqube.default.svc.cluster.local，如果是外部连接才需要走 ingress sonar.host.url=http://sonarqube.netkiller.cn，还要注意一点 kubernetes service 端口是80 不是 9000</para>
+			<screen>
+			<![CDATA[
+sonarqube-check:
+	stage: test
+	image: registry.ejiayou.com/share/maven:3.8.6-openjdk-11
+	variables:
+		# SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
+		GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+	cache:
+		key: "${CI_JOB_NAME}"
+		paths:
+		- .sonar/cache
+	# before_script:
+		# - cat ${MODULE}/pom.xml
+	script:
+		- mvn -T 1C clean verify sonar:sonar -Dsonar.projectKey=end-fscs -Dsonar.host.url=http://sonarqube.default.svc.cluster.local -Dsonar.login=sqp_d1edb4be69ecc1b3b0ef66f06c4e395822a16a58  
+	only:
+		- office
+		- dev
+		- test
+	tags:
+		- kubernetes
+	allow_failure: true
+		  
+			]]>
+			</screen>
+		</section>
+		<section>
 			<title>Docker</title>
 			<screen>
 			<![CDATA[
