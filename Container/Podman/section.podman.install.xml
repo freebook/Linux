@@ -3,10 +3,20 @@
 	<title>安装 Podman</title>
 	<section>
 		<title>RockyLinux 安装 Podman</title>
-		<para>某些 Redhat 家族的 Linux 是自带 Podman，例如 Almalinux 9.0，RockyLinux没有自带 podman 需要自己安装，是方法执行下面的命令</para>
+		<para>某些 Redhat 家族的 Linux 是自带 Podman，例如 Almalinux 9.0，RockyLinux没有自带 podman
+			需要自己安装，是方法执行下面的命令</para>
 		<screen>
 			<![CDATA[
 [root@netkiller ~]# dnf install -y podman
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>Almalinux 9.0</title>
+		<para>Almalinux 9.0 自带 podman</para>
+		<screen>
+		<![CDATA[ 
+systemctl enable podman		
 		]]>
 		</screen>
 	</section>
@@ -68,4 +78,69 @@ Machine "podman-machine-default" started successfully
             ]]>
 		</screen>
 	</section>
+	<section>
+		<title>配置 Podman</title>
+		<para>/etc/containers/registries.conf</para>
+	</section>
+	<section>
+		<title>镜像管理</title>
+		<section>
+			<title>获取镜像</title>
+			<screen>
+			<![CDATA[ 
+[root@localhost ~]# podman pull busybox
+Resolved "busybox" as an alias (/etc/containers/registries.conf.d/000-shortnames.conf)
+Trying to pull docker.io/library/busybox:latest...
+Getting image source signatures
+Copying blob 45a0cdc5c8d3 done  
+Copying config 334e4a014c done  
+Writing manifest to image destination
+Storing signatures
+334e4a014c81bd4050daa78c7dfd2ae87855e9052721c164ea9d9d9a416ebdd3		
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>查看镜像</title>
+			<screen>
+			<![CDATA[ 
+[root@localhost ~]# podman image ls
+REPOSITORY                 TAG         IMAGE ID      CREATED      SIZE
+docker.io/library/busybox  latest      334e4a014c81  13 days ago  5.09 MB		
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>Registry</title>
+		<screen>
+		<![CDATA[ 
+mkdir -p /var/lib/registry
+podman run --privileged -d --name registry -p 5000:5000 -v /var/lib/registry:/var/lib/registry --restart=always registry:2		
+		]]>
+		</screen>
+		<para>修改 /etc/containers/registries.conf 配置文件</para>
+		<screen>
+		<![CDATA[ 
+registries = []
+改为
+registries = ['localhost:5000']		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title></title>
+		<screen>
+		<![CDATA[ 
+$ podman pull maven
+$ podman run -v ~/.m2:/root/.m2 \
+-v /root/bottleneck:/root/bottleneck \
+-w /root/bottleneck \
+maven:latest \
+mvn package
+
+		]]>
+		</screen>
+	</section>
+	
 </section>
