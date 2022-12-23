@@ -692,6 +692,7 @@ spec:
 		</section>
 		<section>
 			<title>LoadBalancer</title>
+      <para>一般 HTTP 服务通过 ingress 对外报漏服务，TCP 的 Socket 服务可以使用 LoadBalancer 进行报漏</para>
 			<screen>
 			<![CDATA[
 apiVersion: v1
@@ -713,6 +714,22 @@ status:
     - ip: 192.0.2.127			
 			]]>
 			</screen>
+      <para></para>
+      <screen>
+      <![CDATA[ 
+apiVersion: v1
+kind: Service
+metadata:
+  name: example-service
+spec:
+  selector:
+    app: example
+  ports:
+    - port: 8765
+      targetPort: 9376
+  type: LoadBalancer      
+      ]]>
+      </screen>
 		</section>
 		<section>
 			<title>Example</title>

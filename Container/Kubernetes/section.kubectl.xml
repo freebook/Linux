@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="kubectl">
-	<title>kubectl - controls the Kubernetes cluster manager. </title>
+	<title>Kubernetes 集群管理</title>
+	<subtitle>kubectl - controls the Kubernetes cluster manager. </subtitle>
 	<para>kubectl是Kubernetes的命令行管理工具</para>
 	<screen>
 	<![CDATA[
@@ -838,6 +839,7 @@ $ kubectl create service loadbalancer NAME [--tcp=port:targetPort] [--dry-run]
 kubectl create service loadbalancer my-lb --tcp=5678:8080
 			]]>
 			</screen>
+			
 		</section>
 		<section>
 			<title>nodeport</title>
