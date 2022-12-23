@@ -381,9 +381,11 @@ node/agent-1 unlabeled
 		<para>Pod 状态说明</para>
 		<itemizedlist>
 			<title>Pod 状态：</title>
-			<listitem>Pending：Pod已经被创建，但还没有完成调度，或者说有一个或多个镜像正处于从远程仓库下载的过程。处在这个阶段的Pod可能正在写数据到etcd中、调度、pull镜像或启动容器。
+			<listitem>
+				Pending：Pod已经被创建，但还没有完成调度，或者说有一个或多个镜像正处于从远程仓库下载的过程。处在这个阶段的Pod可能正在写数据到etcd中、调度、pull镜像或启动容器。
 			</listitem>
-			<listitem>Pending：Pod已经被创建，但还没有完成调度，或者说有一个或多个镜像正处于从远程仓库下载的过程。处在这个阶段的Pod可能正在写数据到etcd中、调度、pull镜像或启动容器。
+			<listitem>
+				Pending：Pod已经被创建，但还没有完成调度，或者说有一个或多个镜像正处于从远程仓库下载的过程。处在这个阶段的Pod可能正在写数据到etcd中、调度、pull镜像或启动容器。
 			</listitem>
 			<listitem>Running：该Pod已经绑定到了一个节点上，Pod中所有的容器都已被创建。至少有一个容器正在运行，或者正处于启动或重启状态。
 			</listitem>
@@ -751,6 +753,56 @@ my-service   ClusterIP   10.106.157.143   <none>        80/TCP,443/TCP   9m43s
 			</screen>
 		</section>
 		<section>
+			<title>创建服务</title>
+			<para>创建 service.yaml 文件</para>
+			<screen>
+			<![CDATA[
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+spec:
+  selector:
+    app: MyApp
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 80
+  - name: https
+    protocol: TCP
+    port: 443
+    targetPort: 443
+			]]>
+			</screen>
+			<para></para>
+
+			<screen>
+			<![CDATA[
+iMac:kubernetes neo$ kubectl create -f service.yaml 
+service/my-service created			
+			]]>
+			</screen>
+			<para>查看服务</para>
+			<screen>
+			<![CDATA[
+iMac:kubernetes neo$ kubectl get service
+NAME         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+kubernetes   ClusterIP   10.96.0.1        <none>        443/TCP          113m
+my-service   ClusterIP   10.106.157.143   <none>        80/TCP,443/TCP   64s			
+			]]>
+			</screen>
+			<para>查看 service 后端代理的 pod 的 ip，这里没有挂载 pod 所以显示 none</para>
+			<screen>
+			<![CDATA[
+iMac:kubernetes neo$ kubectl get endpoints my-service
+NAME         ENDPOINTS   AGE
+my-service   <none>      2m20s			
+			]]>
+			</screen>
+		</section>
+
+		<section>
 			<title>查看服务详细信息</title>
 			<screen>
 			<![CDATA[
@@ -771,6 +823,37 @@ External Traffic Policy:  Cluster
 Events:                   <none>			
 			]]>
 			</screen>
+			<section>
+				<title>查看服务</title>
+				<screen>
+				<![CDATA[
+	> kubectl get service 
+	NAME                 TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
+	kubernetes           ClusterIP      10.43.0.1       <none>        443/TCP                      4d13h
+	nacos                ClusterIP      10.43.175.40    <none>        8848/TCP,9848/TCP,9555/TCP   4d13h
+	redis                NodePort       10.43.129.224   <none>        6379:31436/TCP               42h
+	kube-explorer        ClusterIP      10.43.208.84    <none>        80/TCP                       36h
+	elasticsearch        ClusterIP      10.43.241.136   <none>        9200/TCP,9300/TCP            13h
+	elasticsearch-data   ClusterIP      10.43.39.228    <none>        9300/TCP                     13h
+	kibana               ClusterIP      10.43.193.15    <none>        80/TCP                       13h
+	mysql                ExternalName   <none>          master        3306/TCP                     6m24s
+	mongo                ExternalName   <none>          master        27017/TCP                    6m24s			
+	
+	> kubectl get service -o wide
+	NAME                 TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE     SELECTOR
+	kubernetes           ClusterIP      10.43.0.1       <none>        443/TCP                      4d13h   <none>
+	nacos                ClusterIP      10.43.175.40    <none>        8848/TCP,9848/TCP,9555/TCP   4d13h   app=nacos
+	redis                NodePort       10.43.129.224   <none>        6379:31436/TCP               42h     app=redis
+	kube-explorer        ClusterIP      10.43.208.84    <none>        80/TCP                       36h     app=kube-explorer
+	elasticsearch        ClusterIP      10.43.241.136   <none>        9200/TCP,9300/TCP            13h     app=elasticsearch,role=master
+	elasticsearch-data   ClusterIP      10.43.39.228    <none>        9300/TCP                     13h     app=elasticsearch,role=data
+	kibana               ClusterIP      10.43.193.15    <none>        80/TCP                       13h     app=kibana
+	mysql                ExternalName   <none>          master        3306/TCP                     6m45s   <none>
+	mongo                ExternalName   <none>          master        27017/TCP                    6m45s   <none>
+				]]>
+				</screen>
+			</section>
+
 		</section>
 		<section>
 			<title>更新服务</title>
@@ -808,6 +891,49 @@ kubectl create service clusterip my-service --tcp=5678:8080
 kubectl create service clusterip my-service --clusterip="None"			
 			]]>
 			</screen>
+			<section>
+				<title>selector</title>
+				<screen>
+				<![CDATA[
+	apiVersion: v1
+	kind: Service
+	metadata:
+	  name: spring-cloud-config-server
+	  namespace: default
+	  labels:
+		app: springboot
+	spec:
+	  ports: web
+	  - port: 8888
+		targetPort: web
+	  clusterIP: 10.10.0.1
+	  selector:
+		app: spring-cloud-config-server
+				]]>
+				</screen>
+			</section>
+		</section>
+		<section id="service.spec.externalIPs">
+			<title>设置外部IP</title>
+			<para>报漏 80.11.12.10:80 地址</para>
+			<screen>
+			<![CDATA[
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+spec:
+  selector:
+	app: MyApp
+  ports:
+	- name: http
+	  protocol: TCP
+	  port: 80
+	  targetPort: 9376
+  externalIPs:
+	- 80.11.12.10			
+			]]>
+			</screen>
 		</section>
 		<section>
 			<title>externalname</title>
@@ -824,6 +950,55 @@ kubectl create service externalname my-externalname --external-name bar.com
 			]]>
 			</screen>
 
+			<section id="service.spec.ExternalName">
+				<title>绑定外部域名</title>
+				<screen>
+				<![CDATA[
+	apiVersion: v1
+	kind: Service
+	metadata:
+	  name: my-service
+	  namespace: prod
+	spec:
+	  type: ExternalName
+	  externalName: my.database.example.com			
+				]]>
+				</screen>
+				<para>应用案例，在master节点宿主主机上安装了mysql和mongo地址，pod链接他们可以使用宿主IP链接，或者写 master 主机名。</para>
+				<para>我认为更好的方法使用使用 Service 做一层映射，然后使用统一容器域名访问
+					mysql.default.svc.cluster.local，mongo.default.svc.cluster.local</para>
+				<screen>
+				<![CDATA[
+	metadata:
+	  name: mysql
+	  namespace: default
+	spec:
+	  ports:
+		- name: mysql
+		  protocol: TCP
+		  port: 3306
+		  targetPort: 3306
+	  type: ExternalName
+	  externalName: master
+	apiVersion: v1
+	kind: Service
+	---
+	metadata:
+	  name: mongo
+	  namespace: default
+	spec:
+	  ports:
+		- name: mongo
+		  protocol: TCP
+		  port: 27017
+		  targetPort: 27017
+	  type: ExternalName
+	  externalName: master
+	apiVersion: v1
+	kind: Service			
+				]]>
+				</screen>
+			</section>
 		</section>
 		<section>
 			<title>loadbalancer</title>
@@ -839,7 +1014,47 @@ $ kubectl create service loadbalancer NAME [--tcp=port:targetPort] [--dry-run]
 kubectl create service loadbalancer my-lb --tcp=5678:8080
 			]]>
 			</screen>
-			
+			<section>
+				<title>LoadBalancer YAML</title>
+				<para>一般 HTTP 服务通过 ingress 对外报漏服务，TCP 的 Socket 服务可以使用 LoadBalancer 进行报漏</para>
+				<screen>
+				<![CDATA[
+	apiVersion: v1
+	kind: Service
+	metadata:
+	  name: my-service
+	spec:
+	  selector:
+		app: MyApp
+	  ports:
+		- protocol: TCP
+		  port: 80
+		  targetPort: 9376
+	  clusterIP: 10.0.171.239
+	  type: LoadBalancer
+	status:
+	  loadBalancer:
+		ingress:
+		- ip: 192.0.2.127			
+				]]>
+				</screen>
+				<para></para>
+				<screen>
+		  <![CDATA[ 
+	apiVersion: v1
+	kind: Service
+	metadata:
+	  name: example-service
+	spec:
+	  selector:
+		app: example
+	  ports:
+		- port: 8765
+		  targetPort: 9376
+	  type: LoadBalancer      
+		  ]]>
+		  </screen>
+			</section>
 		</section>
 		<section>
 			<title>nodeport</title>
@@ -855,6 +1070,28 @@ $ kubectl create service nodeport NAME [--tcp=port:targetPort] [--dry-run]
 kubectl create service nodeport my-nodeport --tcp=5678:8080
 			]]>
 			</screen>
+			<section>
+				<title>NodePort YAML</title>
+				<screen>
+				<![CDATA[
+	apiVersion: v1
+	kind: Service
+	metadata:
+	  name: my-service
+	spec:
+	  type: NodePort
+	  selector:
+		app: MyApp
+	  ports:
+		  # By default and for convenience, the `targetPort` is set to the same value as the `port` field.
+		- port: 80
+		  targetPort: 80
+		  # Optional field
+		  # By default and for convenience, the Kubernetes control plane will allocate a port from a range (default: 30000-32767)
+		  nodePort: 30007			
+				]]>
+				</screen>
+			</section>
 		</section>
 		<section>
 			<title>serviceaccount</title>
@@ -869,6 +1106,63 @@ $ kubectl create serviceaccount NAME [--dry-run]
 			<![CDATA[
 kubectl create serviceaccount my-service-account
 			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Example</title>
+			<screen>
+		<![CDATA[
+apiVersion: v1
+kind: Service
+metadata:
+  name: registry
+  namespace: default
+  labels:
+    app: registry
+spec:
+  type: NodePort
+  selector:
+    app: registry
+  ports:
+  - name: registry
+    port: 5000
+    nodePort: 30050
+    protocol: TCP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: registry
+  namespace: default
+  labels:
+    app: registry
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: registry
+  template:
+    metadata:
+      labels:
+        app: registry
+    spec:
+      containers:
+      - name: registry
+        image: registry:latest
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+        env:
+        - name: REGISTRY_HTTP_ADDR
+          value: :5000
+        - name: REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY
+          value: /var/lib/registry
+        ports:
+        - containerPort: 5000
+          name: registry
+          protocol: TCP	
+		]]>
 			</screen>
 		</section>
 	</section>
