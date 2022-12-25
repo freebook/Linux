@@ -1,11 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section>
-    <title>podman 管理</title>
-    <section>
-        <title>镜像管理</title>
-        <section>
-            <title>获取镜像</title>
-            <screen>
+<section id="podman.manual">
+	<title>podman 管理</title>
+	<section id="podman.machine">
+		<title>虚拟机管理</title>
+		<screen>
+			<![CDATA[
+$ podman machine init	# 初始化
+$ podman machine start	# 启动 podman VM
+$ podman machine stop	# 停止VM
+$ podman machine list	# 罗列VM
+$ podman machine rm		# 删除VM
+$ podman machine ssh	# 通过SSH 进入VM，在终端进行操作
+			]]>
+		</screen>
+		<section>
+			<title>管理 Podman 系统</title>
+			<screen>
+			<![CDATA[
+$ podman system --help
+    
+neo@MacBook-Pro-Neo ~> podman system connection list
+Name                         URI                                                         Identity                                Default
+podman-machine-default       ssh://core@localhost:59590/run/user/501/podman/podman.sock  /Users/neo/.ssh/podman-machine-default  true
+podman-machine-default-root  ssh://root@localhost:59590/run/podman/podman.sock           /Users/neo/.ssh/podman-machine-default  false
+
+$ podman system df
+    TYPE           TOTAL       ACTIVE      SIZE        RECLAIMABLE
+    Images         29          0           8.931GB     8.931GB (100%)
+    Containers     0           0           0B          0B (0%)
+    Local Volumes  1           0           0B          0B (0%)
+    
+$ podman system info	
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>镜像管理</title>
+		<section>
+			<title>获取镜像</title>
+			<screen>
 			<![CDATA[ 
 [root@localhost ~]# podman pull busybox
 Resolved "busybox" as an alias (/etc/containers/registries.conf.d/000-shortnames.conf)
@@ -18,33 +52,33 @@ Storing signatures
 334e4a014c81bd4050daa78c7dfd2ae87855e9052721c164ea9d9d9a416ebdd3		
 			]]>
 			</screen>
-        </section>
-        <section>
-            <title>查看镜像</title>
-            <screen>
+		</section>
+		<section>
+			<title>查看镜像</title>
+			<screen>
 			<![CDATA[ 
 [root@localhost ~]# podman image ls
 REPOSITORY                 TAG         IMAGE ID      CREATED      SIZE
 docker.io/library/busybox  latest      334e4a014c81  13 days ago  5.09 MB		
 			]]>
 			</screen>
-        </section>
-    </section>
-    <section>
-        <title>Registry</title>
-        <screen>
+		</section>
+	</section>
+	<section>
+		<title>Registry</title>
+		<screen>
 		<![CDATA[ 
 mkdir -p /var/lib/registry
 podman run --privileged -d --name registry -p 5000:5000 -v /var/lib/registry:/var/lib/registry --restart=always registry:2		
 		]]>
 		</screen>
-        <para>修改 /etc/containers/registries.conf 配置文件</para>
-        <screen>
+		<para>修改 /etc/containers/registries.conf 配置文件</para>
+		<screen>
 		<![CDATA[ 
 registries = []
 改为
 registries = ['localhost:5000']		
 		]]>
 		</screen>
-    </section>
+	</section>
 </section>

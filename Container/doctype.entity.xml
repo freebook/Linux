@@ -9,6 +9,7 @@
 
 <!ENTITY chapter.docker.xml				SYSTEM "Docker/chapter.docker.xml">
 <!ENTITY section.docker.install.xml		SYSTEM "Docker/section.docker.install.xml">
+<!ENTITY section.docker.portainer.xml	SYSTEM "Docker/section.docker.portainer.xml">
 <!ENTITY section.docker.config.xml		SYSTEM "Docker/section.docker.config.xml">
 <!ENTITY section.docker.image.xml		SYSTEM "Docker/section.docker.image.xml">
 <!ENTITY section.docker.dockerfile.xml	SYSTEM "Docker/section.docker.dockerfile.xml">
@@ -40,6 +41,7 @@
 <!ENTITY section.kubeapps.xml			SYSTEM "Kubernetes/section.kubeapps.xml">
 <!ENTITY section.kubectl.yaml.xml		SYSTEM "Kubernetes/section.kubectl.yaml.xml">
 <!ENTITY section.istio.xml				SYSTEM "Kubernetes/section.istio.xml">
+<!ENTITY section.kubernetes.helm.xml	SYSTEM "Kubernetes/section.kubernetes.helm.xml">
 
 <!ENTITY chapter.rancher.xml			SYSTEM "Rancher/chapter.rancher.xml">
 <!ENTITY section.rancher.xml			SYSTEM "Rancher/section.rancher.xml">
@@ -48,10 +50,9 @@
 <!ENTITY section.rancher.example.xml	SYSTEM "Rancher/section.rancher.example.xml">
 <!ENTITY section.rancher.longhorn.xml	SYSTEM "Rancher/section.rancher.longhorn.xml">
 
-<!ENTITY chapter.container.xml					SYSTEM "chapter.container.xml">
-<!ENTITY section.container.portainer.xml		SYSTEM "section.container.portainer.xml">
-<!ENTITY section.container.helm.xml	  			SYSTEM "section.container.helm.xml">
-<!ENTITY section.container.netkiller.xml		SYSTEM "section.container.netkiller.xml">
+<!ENTITY chapter.container.xml				SYSTEM "chapter.container.xml">
+<!ENTITY section.container.kubernetes.xml	SYSTEM "section.container.kubernetes.xml">
+<!ENTITY section.container.docker.xml		SYSTEM "section.container.docker.xml">
 
 <!ENTITY chapter.podman.xml  					SYSTEM "Podman/chapter.podman.xml">
 <!ENTITY section.podman.install.xml  			SYSTEM "Podman/section.podman.install.xml">

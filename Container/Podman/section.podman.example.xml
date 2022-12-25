@@ -1,6 +1,14 @@
-
-<section>
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="podman.example">
     <title>按例</title>
+    <section>
+    	<title>podman run 用法</title>
+    	<screen>
+    	<![CDATA[
+podman run -v ~/.m2:/root/.m2 -v /root/bottleneck:/root/bottleneck -w /root/bottleneck maven:latest mvn package        	
+    	]]>
+    	</screen>
+    </section>
     <section>
         <title>mysql</title>
         <screen>

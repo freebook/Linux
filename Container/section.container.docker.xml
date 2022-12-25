@@ -1,0 +1,713 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="netkiller.docker">
+	<title>使用 python 优雅地编排 Docker 容器</title>
+	<para>用 Python 替代 docker compose 编排容器</para>
+	<para>docker compose 是 docker 的容器编排工具，它是基于 YAML 配置，YAML 是一种配置文件格式，支持传递环境变量，但是对于复杂的容器编排显得力不从心。</para>
+	<para>于是我便开发这个程序，可以像写程序一样编排 docker ，可以充分发挥程序猿的想象力。</para>
+	<screen>
+		<![CDATA[
+pip install netkiller-devops		
+		]]>
+	</screen>
+	<para>快速入门，首先我们参照这个 docker-compose.yaml 脚本，转换成 python 脚本。</para>
+	<screen>
+	<![CDATA[
+version: '3.9'	
+services:
+  nginx:
+    container_name: nginx
+    environment:
+    - TZ=Asia/Shanghai
+    extra_hosts:
+    - db.netkiller.cn:127.0.0.1
+    - cache.netkiller.cn:127.0.0.1
+    - api.netkiller.cn:127.0.0.1
+    hostname: www.netkiller.cn
+    image: nginx:latest
+    ports:
+    - 80:80
+    - 443:443
+    restart: always
+    volumes:
+    - /tmp:/tmp	
+	]]>
+	</screen>
+	<para>转换成 python 语言之后</para>
+	<programlisting>
+	<![CDATA[
+from netkiller.docker import *
+
+service =  Services('nginx')
+service.image('nginx:latest')
+service.container_name('nginx')
+service.restart('always')
+service.hostname('www.netkiller.cn')
+service.extra_hosts(['db.netkiller.cn:127.0.0.1','cache.netkiller.cn:127.0.0.1','api.netkiller.cn:127.0.0.1'])
+service.environment(['TZ=Asia/Shanghai'])
+service.ports(['80:80','443:443'])
+service.volumes(['/tmp:/tmp'])
+# service.debug()
+# print(service.dump())
+
+compose = Composes('development')
+compose.version('3.9')
+compose.services(service)
+# print (compose.debug())
+print(compose.dump())
+compose.save()	
+	]]>
+	</programlisting>
+	<para>怎么样，只是换了另一种写法，并没有难度。下面我们就系统学习，如何使用 python 编排 docker 容器</para>
+	<para>实际上程序最终还是会转化做 docker-compose 脚本执行。这种写法的有点是更灵活，你可以在程序中使用 if, while, 链接数据库，等等操作，可以做更复杂的容器编排。</para>
+	<section>
+		<title>安装依赖库</title>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-Neo ~ % pip install netkiller-devops 		
+		]]>
+		</screen>
+		<para>确认是否安装成功</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-Neo ~ % pip show netkiller-devops
+Name: netkiller-devops
+Version: 0.2.4
+Summary: DevOps of useful deployment and automation
+Home-page: https://github.com/oscm/devops
+Author: Neo Chen
+Author-email: netkiller@msn.com
+License: BSD
+Location: /usr/local/lib/python3.9/site-packages
+Requires: pyttsx3, requests, redis, pyyaml
+Required-by: 		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>创建一个 Services </title>
+		<programlisting>
+		<![CDATA[
+from netkiller.docker import *
+
+service =  Services('nginx')
+service.image('nginx:latest')
+service.container_name('nginx')
+service.restart('always')
+service.hostname('www.netkiller.cn')
+service.extra_hosts(['db.netkiller.cn:127.0.0.1','cache.netkiller.cn:127.0.0.1','api.netkiller.cn:127.0.0.1'])
+service.environment(['TZ=Asia/Shanghai'])
+service.ports(['80:80','443:443'])
+service.volumes(['/tmp:/tmp'])
+# service.debug()
+print(service.dump())		
+		]]>
+		</programlisting>
+		<para>运行结果</para>
+		<screen>
+		<![CDATA[
+nginx:
+  container_name: nginx
+  environment:
+  - TZ=Asia/Shanghai
+  extra_hosts:
+  - db.netkiller.cn:127.0.0.1
+  - cache.netkiller.cn:127.0.0.1
+  - api.netkiller.cn:127.0.0.1
+  hostname: www.netkiller.cn
+  image: nginx:latest
+  ports:
+  - 80:80
+  - 443:443
+  restart: always
+  volumes:
+  - /tmp:/tmp		
+		]]>
+		</screen>
+		<para>来一个复杂的演示</para>
+		<screen>
+		<![CDATA[
+for i in range(10) :
+    cluster =  Services('nginx-'+str(i))
+    cluster.image('nginx:latest').container_name('nginx-'+str(i)).restart('always').hostname('www'+str(i)+'.netkiller.cn')
+    cluster.ports(['8{port}:80'.format(port=i)])
+    print(cluster.dump())		
+		]]>
+		</screen>
+		<para>运行结果</para>
+		<screen>
+		<![CDATA[
+nginx-0:
+  container_name: nginx-0
+  hostname: www0.netkiller.cn
+  image: nginx:latest
+  ports:
+  - 80:80
+  restart: always
+
+nginx-1:
+  container_name: nginx-1
+  hostname: www1.netkiller.cn
+  image: nginx:latest
+  ports:
+  - 81:80
+  restart: always
+
+nginx-2:
+  container_name: nginx-2
+  hostname: www2.netkiller.cn
+  image: nginx:latest
+  ports:
+  - 82:80
+  restart: always
+
+nginx-3:
+  container_name: nginx-3
+  hostname: www3.netkiller.cn
+  image: nginx:latest
+  ports:
+  - 83:80
+  restart: always
+
+nginx-4:
+  container_name: nginx-4
+  hostname: www4.netkiller.cn
+  image: nginx:latest
+  ports:
+  - 84:80
+  restart: always
+
+nginx-5:
+  container_name: nginx-5
+  hostname: www5.netkiller.cn
+  image: nginx:latest
+  ports:
+  - 85:80
+  restart: always
+
+nginx-6:
+  container_name: nginx-6
+  hostname: www6.netkiller.cn
+  image: nginx:latest
+  ports:
+  - 86:80
+  restart: always
+
+nginx-7:
+  container_name: nginx-7
+  hostname: www7.netkiller.cn
+  image: nginx:latest
+  ports:
+  - 87:80
+  restart: always
+
+nginx-8:
+  container_name: nginx-8
+  hostname: www8.netkiller.cn
+  image: nginx:latest
+  ports:
+  - 88:80
+  restart: always
+
+nginx-9:
+  container_name: nginx-9
+  hostname: www9.netkiller.cn
+  image: nginx:latest
+  ports:
+  - 89:80
+  restart: always		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>创建 Composes</title>
+		<para>Services 对象创建服务，让服务工作还需要 Composes 对象。</para>
+		<programlisting>
+		<![CDATA[
+from netkiller.docker import *
+
+service =  Services('nginx')
+service.image('nginx:latest')
+service.container_name('nginx')
+service.restart('always')
+service.hostname('www.netkiller.cn')
+service.extra_hosts(['db.netkiller.cn:127.0.0.1','cache.netkiller.cn:127.0.0.1','api.netkiller.cn:127.0.0.1'])
+service.environment(['TZ=Asia/Shanghai'])
+service.ports(['80:80','443:443'])
+service.volumes(['/tmp:/tmp'])
+
+compose = Composes('development')
+compose.version('3.9')
+compose.services(service)
+# print (compose.debug())
+print(compose.dump())
+compose.save()
+# compose.save('/tmp/docker-compose.yaml')		
+		]]>
+		</programlisting>
+		<para>运行结果</para>
+		<screen>
+		<![CDATA[
+services:
+  nginx:
+    container_name: nginx
+    environment:
+    - TZ=Asia/Shanghai
+    extra_hosts:
+    - db.netkiller.cn:127.0.0.1
+    - cache.netkiller.cn:127.0.0.1
+    - api.netkiller.cn:127.0.0.1
+    hostname: www.netkiller.cn
+    image: nginx:latest
+    ports:
+    - 80:80
+    - 443:443
+    restart: always
+    volumes:
+    - /tmp:/tmp
+version: '3.9'		
+		]]>
+		</screen>
+		<para>这已经是一个完善的 docker-compose 脚本了。使用 save 可以保存为 yaml 文件，这是使用 docker-compose -f development.yaml up 就可以启动容器了。</para>
+		<para>Composes 对象同时也携带了完善的 docker-compose 命令和参数，用于自我管理容器。</para>
+		<para>compose.up() 创建容器</para>
+		<screen>
+		<![CDATA[
+compose = Composes('development')
+compose.version('3.9')
+compose.services(service)
+compose.up()
+		]]>
+		</screen>
+		<para>compose.start() 启动已存在的容器</para>
+		<screen>
+		<![CDATA[
+compose = Composes('development')
+compose.version('3.9')
+compose.services(service)
+compose.start()
+		]]>
+		</screen>
+		<para>compose.stop() 停止已存在的容器</para>
+		<screen>
+		<![CDATA[
+compose = Composes('development')
+compose.version('3.9')
+compose.services(service)
+compose.stop()
+		]]>
+		</screen>
+		<para>compose.restart() 重启已存在的容器</para>
+		<screen>
+		<![CDATA[
+compose = Composes('development')
+compose.version('3.9')
+compose.services(service)
+compose.restart()
+		]]>
+		</screen>
+		<para>compose.rm() 销毁已存在的容器</para>
+		<screen>
+		<![CDATA[
+compose = Composes('development')
+compose.version('3.9')
+compose.services(service)
+compose.rm()
+		]]>
+		</screen>
+		<para>compose.logs() 查看容器日志</para>
+		<screen>
+		<![CDATA[
+compose = Composes('development')
+compose.version('3.9')
+compose.services(service)
+compose.logs()
+		]]>
+		</screen>
+		<para>compose.ps() 查看容器运行状态</para>
+		<screen>
+		<![CDATA[
+compose = Composes('development')
+compose.version('3.9')
+compose.services(service)
+compose.ps()
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>容器管理</title>
+		<para>Docker 对象是让我们摆脱 docker-compose 这个命令，它将接管 docker-compose 这个命令，进行自我管理。</para>
+		<programlisting>
+		<![CDATA[
+#!/usr/bin/python3
+#-*- coding: utf-8 -*-
+##############################################
+# Home	: http://netkiller.github.io
+# Author: Neo <netkiller@msn.com>
+# Upgrade: 2021-09-05
+##############################################
+try:
+	import os,  sys
+	module = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+	sys.path.insert(0,module)
+	from netkiller.docker import *
+except ImportError as err:
+	print("%s" %(err))
+
+nginx =  Services('nginx')
+nginx.image('nginx:latest')
+nginx.container_name('nginx')
+nginx.restart('always')
+nginx.hostname('www.netkiller.cn')
+nginx.environment(['TA=Asia/Shanghai'])
+nginx.ports(['80:80'])
+
+compose = Composes('development')
+compose.version('3.9')
+compose.services(nginx)
+compose.workdir('/tmp/compose')
+
+if __name__ == '__main__':
+	try:
+		docker = Docker()
+		docker.environment(compose)
+		docker.main()
+	except KeyboardInterrupt:
+		print ("Crtl+C Pressed. Shutting down.")		
+		]]>
+		</programlisting>
+		<para>运行结果</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-Neo ~ % python3 docker.py
+Usage: docker.py [options] up|rm|start|stop|restart|logs|top|images|exec <service>
+
+Options:
+  -h, --help         show this help message and exit
+  --debug            debug mode
+  -d, --daemon       run as daemon
+  --logfile=LOGFILE  logs file.
+  -l, --list         following logging
+  -f, --follow       following logging
+  -c, --compose      show docker compose
+  -e, --export       export docker compose
+
+Homepage: http://www.netkiller.cn       Author: Neo <netkiller@msn.com>		
+		]]>
+		</screen>
+		<para>Docker 对象提供了与 docker-compose 对等的参数，用法也基本相通。例如</para>
+		<screen>
+		<![CDATA[
+python3 docker.py up = docker-compose up
+python3 docker.py up -d nginx = docker-compose up -d nginx
+python3 docker.py restart nginx = docker-compose restart nginx
+
+python3 docker.py ps = docker-compose ps
+python3 docker.py logs nginx = docker-compose logs nginx
+		]]>
+		</screen>
+		<para>使用 -c 可以查看 compose yaml 脚本，使用 -e 可以导出 docker compose yaml</para>
+	</section>
+	<section>
+		<title>演示例子</title>
+		<section>
+			<title>Redis 主从配置</title>
+			<example>
+				<title>Redis Master/Slave</title>
+				<screen>
+					<![CDATA[
+from netkiller.docker import *
+
+image = 'redis:latest'
+requirepass='11223344'
+
+compose = Composes('redis-master-slave')
+compose.version('3.9')
+
+master =  Services('master')
+master.image(image)
+master.container_name('master')
+master.restart('always')
+master.environment(['TZ=Asia/Shanghai'])
+master.ports('6379:6379')
+master.volumes(['/tmp/master:/data'])
+master.sysctls(['net.core.somaxconn=1024'])
+master.command([
+	'--requirepass '+requirepass,
+	'--appendonly yes'])
+# master.debug()
+# print(master.dump())
+compose.services(master)
+
+
+for i in range(5) :
+    slave =  Services('slave-'+str(i))
+    slave.image(image).container_name('slave-'+str(i)).restart('always')
+    slave.ports(['638{port}:6379'.format(port=i)]).environment(['TZ=Asia/Shanghai'])
+    slave.volumes(['/tmp/slave{n}:/data'.format(n=i)])
+    slave.sysctls(['net.core.somaxconn=1024']).command([
+        '--slaveof master 6379',
+        '--masterauth '+requirepass,
+        '--requirepass ' + requirepass,
+        '--appendonly yes'
+    ])
+
+    # print(cluster.dump())
+    compose.services(slave)
+
+# print (compose.debug())
+print(compose.dump())
+# compose.save()
+compose.up()					
+					]]>
+				</screen>
+			</example>
+		</section>
+	</section>
+
+	<section>
+		<title>使用 Python 编排 Dockerfile</title>
+		<para></para>
+		<programlisting>
+		<![CDATA[
+from netkiller.docker import *
+
+# 实例化 Dockerfile() 对象
+nginx = Dockerfile()
+
+# 基于什么镜像
+nginx.image('nginx:latest')
+
+# 配置挂载卷
+nginx.volume(['/etc/nginx','/var/log/nginx','/opt'])
+
+# 运行脚本
+nginx.run('apt update -y && apt install -y procps')
+
+# 暴漏端口
+nginx.expose(['80','443'])
+
+# 设置工作目录
+nginx.workdir('/opt')
+
+# 打印 Dockerfile
+nginx.show()		
+		]]>
+		</programlisting>
+		<para>运行结果</para>
+		<screen>
+		<![CDATA[
+FROM nginx:latest
+VOLUME ["/etc/nginx","/var/log/nginx","/opt"]
+RUN apt update -y && apt install -y procps
+EXPOSE 80 443
+WORKDIR /opt		
+		]]>
+		</screen>
+		<para>另一种写法</para>
+		<programlisting>
+		<![CDATA[
+from netkiller.docker import *
+
+nginx = Dockerfile() 
+nginx.image('nginx:latest').volume(['/etc/nginx','/var/log/nginx']).run('apt update -y && apt install -y procps').expose(['80','443']).workdir('/opt')
+nginx.render()
+nginx.save('/tmp/Dockerfile')
+		]]>
+		</programlisting>
+		<para>构建 Docker 镜像</para>
+		<programlisting>
+		<![CDATA[
+from netkiller.docker import *
+
+# 编排 Docker 镜像
+dockerfile = Dockerfile()
+dockerfile.image('openjdk:8').volume(['/srv']).run(
+    'apt update -y && apt install -y procps net-tools iputils-ping iproute2 telnet'
+).expose(['80', '443']).workdir('/srv')
+
+# 通过 Service 设置镜像名称是 netkiller:openjdk8
+image = Services('image')
+image.build(dockerfile)
+image.image('netkiller:openjdk8')
+
+# 构建镜像
+demo = Composes('demo')
+demo.version('3.9')
+demo.services(image)
+demo.build()		
+		]]>
+		</programlisting>
+		<para>完整演示</para>
+		<screen>
+		<![CDATA[
+#!/usr/bin/python3
+#-*- coding: utf-8 -*-
+##############################################
+# Home	: http://netkiller.github.io
+# Author: Neo <netkiller@msn.com>
+# Upgrade: 2021-11-17
+##############################################
+try:
+	import os,  sys
+	module = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+	print(module)
+	sys.path.insert(0,module)
+	from netkiller.docker import *
+except ImportError as err:
+	print("%s" %(err))
+
+dockerfile = Dockerfile() 
+# dockerfile.label({'org.opencontainers.image.authors':'netkiller'})
+dockerfile.image('openjdk:8-alpine')
+# dockerfile.image('openjdk:8')
+dockerfile.env({'ROCKETMQ_VERSION':'4.9.2','ROCKETMQ_HOME':'/srv/rocketmq', 'PATH':'${ROCKETMQ_HOME}/bin:$PATH'}) # 'JAVA_OPT':'"${JAVA_OPT} -server -Xms512m -Xmx2048m -Xmn128m"'
+dockerfile.arg({'user':'rocketmq', 'group':'nogroup'})
+dockerfile.run('wget https://dlcdn.apache.org/rocketmq/4.9.2/rocketmq-all-4.9.2-bin-release.zip && unzip rocketmq-all-4.9.2-bin-release.zip')
+dockerfile.run('mv rocketmq-4.9.2 /srv/rocketmq-4.9.2 && rm -rf rocketmq-all-4.9.2-bin-release.zip')
+dockerfile.run('ln -s /srv/rocketmq-${ROCKETMQ_VERSION} /srv/rocketmq')
+dockerfile.run('adduser -S -D ${user}')
+dockerfile.run(['chown ${user}:${group} -R /srv/rocketmq-${ROCKETMQ_VERSION}'])
+dockerfile.expose(['9876'])
+dockerfile.expose(['10909','10911','10912'])
+dockerfile.copy('docker-entrypoint.sh','/srv/docker-entrypoint.sh')
+dockerfile.run('chmod a+x /srv/docker-entrypoint.sh')
+dockerfile.entrypoint('["/srv/docker-entrypoint.sh"]') 
+dockerfile.workdir('${ROCKETMQ_HOME}')
+# dockerfile.render()
+# dockerfile.save('/tmp/Dockerfile')
+
+rocketmq = Services('rocketmq')
+rocketmq.build(dockerfile).image('registry.netkiller.cn/rocketmq/rocketmq:4.9.2').container_name('rocketmq')
+# rocketmq.entrypoint('/srv/rocketmq/bin/mqnamesrv')
+# rocketmq.ports('9876:9876').command('/srv/rocketmq/bin/mqnamesrv')
+
+dockerfile = Dockerfile() 
+dockerfile.image('registry.netkiller.cn/rocketmq/rocketmq:4.9.2')
+dockerfile.run('ln -s /srv/rocketmq-${ROCKETMQ_VERSION} /srv/mqnamesrv')
+dockerfile.cmd('/srv/mqnamesrv/bin/mqnamesrv')
+dockerfile.workdir('/srv/mqnamesrv')
+dockerfile.user('rocketmq:nogroup')
+dockerfile.volume([
+ 	'/home/rocketmq/logs/rocketmqlogs'
+])
+
+mqnamesrv = Services('mqnamesrv')
+mqnamesrv.build(dockerfile).image('registry.netkiller.cn/rocketmq/mqnamesrv:4.9.2').container_name('mqnamesrv').ports('9876:9876')
+mqnamesrv.command('mqnamesrv')
+
+dockerfile = Dockerfile() 
+dockerfile.image('registry.netkiller.cn/rocketmq/rocketmq:4.9.2')
+dockerfile.run('ln -s /srv/rocketmq-${ROCKETMQ_VERSION} /srv/mqbroker')
+dockerfile.cmd('/srv/rocketmq/bin/mqbroker')
+dockerfile.workdir('/srv/mqbroker')
+dockerfile.user('rocketmq:nogroup')
+dockerfile.volume([
+ 	'/home/rocketmq/logs/rocketmqlogs'
+])
+
+mqbroker = Services('mqbroker')
+mqbroker.build(dockerfile).image('registry.netkiller.cn/rocketmq/mqbroker:4.9.2').container_name('mqbroker').ports(['10909:10909','10911:10911','10912:10912'])
+mqbroker.command('mqbroker -n mqnamesrv:9876 -c /srv/rocketmq/conf/broker.conf')
+mqbroker.volumes(['/tmp/logs:/home/rocketmq/logs/rocketmqlogs'])
+
+composes = Composes('test')
+composes.version('3.9')
+composes.services(rocketmq)
+composes.services(mqnamesrv)
+composes.services(mqbroker)
+
+
+# cat >> /srv/docker-entrypoint.sh <<'EOF'
+# EOF
+
+entrypoint='''#!/bin/sh
+if [ "$1" = 'mqnamesrv' ]; then
+	exec /srv/rocketmq/bin/mqnamesrv
+fi
+exec "$@"
+'''
+
+if __name__ == '__main__':
+	try:
+		docker = Docker({'DOCKER_HOST':'ssh://root@192.168.30.11','NAMESRV_ADDR':'localhost:9876'}) 
+		docker.createfile('rocketmq/rocketmq/docker-entrypoint.sh',entrypoint)
+		docker.environment(composes)
+		docker.main()
+	except KeyboardInterrupt:
+		print ("Crtl+C Pressed. Shutting down.")
+		]]>
+		</screen>
+		<para>运行</para>
+		<screen>
+		<![CDATA[
+python3 demo.py -e test -b rocketmq
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title></title>
+		<programlisting>
+		<![CDATA[
+#!/usr/bin/python3
+#-*- coding: utf-8 -*-
+##############################################
+# Home	: http://netkiller.github.io
+# Author: Neo <netkiller@msn.com>
+# Upgrade: 2022-08-19
+##############################################
+try:
+	import os, sys
+	from netkiller.docker import *
+except ImportError as err:
+ 	print("%s" %(err))
+
+#extra_hosts = [
+#    'mongo.netkiller.cn:172.17.195.17', 'eos.netkiller.cn:172.17.15.17',
+#    'cfca.netkiller.cn:172.17.15.17'
+#]
+
+# 解决时区问题，只能制作新镜像，并且在镜像中增加 tzdata
+dockerfile = Dockerfile()
+dockerfile.image('openresty/openresty:alpine').run(
+    'apk add -U tzdata',
+    'cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime'
+)
+openresty = Services('openresty')
+openresty.build(dockerfile)
+openresty.image('openresty:alpine')
+openresty.container_name('openresty')
+openresty.restart('always')
+openresty.hostname('www.netkiller.cn')
+#openresty.extra_hosts(extra_hosts)
+# service.extra_hosts(['db.netkiller.cn:127.0.0.1','cache.netkiller.cn:127.0.0.1','api.netkiller.cn:127.0.0.1'])
+openresty.environment(['TZ=Asia/Shanghai'])
+openresty.ports(['80:80','443:443'])
+#openresty.depends_on('test')
+openresty.working_dir('/usr/local/openresty')
+openresty.volumes(
+	[
+        '/var/log/openresty:/usr/local/openresty/nginx/logs',
+	]
+)
+
+development = Composes('development')
+development.workdir('/var/tmp/development')
+development.version('3.9')
+development.services(openresty)
+
+
+if __name__ == '__main__':
+    try:
+        docker = Docker(
+        #        {'DOCKER_HOST': 'ssh://root@192.168.30.11'}
+        )
+        #docker.sysctl({'neo': '1'})
+        docker.environment(development)
+        docker.main()
+    except KeyboardInterrupt:
+        print("Crtl+C Pressed. Shutting down.")		
+		]]>
+		</programlisting>
+	</section>
+
+</section>

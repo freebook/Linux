@@ -1,4 +1,3 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!ENTITY chapter.test.management.xml 	SYSTEM "chapter.test.management.xml">
-<!ENTITY chapter.selenium.xml			SYSTEM "chapter.selenium.xml">
 <!ENTITY chapter.miscellaneous.xml 		SYSTEM "chapter.miscellaneous.xml">

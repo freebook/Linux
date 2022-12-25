@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="container"><!-- <?dbhtml dir="gui" ?> -->
-	<title>容器管理</title>
-	&section.container.netkiller.xml;
-	&section.container.helm.xml;
-	&section.container.portainer.xml;
+<chapter id="index"><?dbhtml dir="container" ?>
+	<title>netkiller 容器编排工具</title>
 	<section>
-		<title>k9s</title>
+		<title>安装 netkiller-devops</title>
+		<screen>
+		<![CDATA[
+pip3 install netkiller-devops
+		]]>
+		</screen>
 	</section>
+	&section.container.docker.xml;
+	&section.container.kubernetes.xml;
 </chapter>
