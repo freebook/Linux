@@ -2,6 +2,22 @@
 <section id="docker.faq">
 	<title>Docker FAQ</title>
 	<section>
+		<title>通过 IP 找容器</title>
+		<para>已知 IP 172.17.0.66 我们希望知道那个容器在使用该 IP 地址。</para>
+		<screen>
+		<![CDATA[ 
+$ docker network inspect 50ddb92f378e | grep -A2 -B4  '0\.66'
+            "b8f2b71e5715972c910f0876a89dbd9b7000d8fb77580206091e982b2119c47b": {
+                "Name": "nginx",
+                "EndpointID": "b7a3aea20619489def16f410c54ed5d857f8cd2062f2c66972f6341de8174ed8",
+                "MacAddress": "02:42:ac:11:00:42",
+                "IPv4Address": "172.17.0.66/16",
+                "IPv6Address": ""
+            },		
+		]]>
+		</screen>
+	</section>
+	<section>
 		<title>常用工具</title>
 		<para>查看出口IP地址</para>
 		<screen>
@@ -16,11 +32,8 @@ root@production:~# curl bot.whatismyipaddress.com
 		</screen>
 		<section>
 			<title>Debian/Ubuntu</title>
-			
-			
-			
 		</section>
-		
+
 	</section>
 	<section>
 		<title>检查 Docker 是否可用</title>
@@ -36,7 +49,9 @@ docker rmi $(docker images -q)
 	</section>
 	<section>
 		<title>Bitnami</title>
-		<para><ulink url="https://github.com/bitnami" /></para>
+		<para>
+			<ulink url="https://github.com/bitnami" />
+		</para>
 	</section>
-	
+
 </section>
