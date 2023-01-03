@@ -1267,6 +1267,28 @@ deploy-job:
 		</section>
 		<section>
 			<title>Kubernetes 运行 sonar-scanner</title>
+			<para>sonar-project.properties</para>
+			<screen>
+			<![CDATA[ 
+# must be unique in a given SonarQube instance
+sonar.projectKey=ejy-finance-admin
+sonar.host.url=http://sonarqube.default.svc.cluster.local
+sonar.login=sqp_84b8d5f75bdc9dd20bf9339fb6dd5d4cda5c152d
+# --- optional properties ---
+
+# defaults to project key
+sonar.projectName=ejy-finance-admin
+# defaults to 'not provided'
+sonar.projectVersion=1.0
+	
+# Path is relative to the sonar-project.properties file. Defaults to .
+sonar.sources=.
+	
+# Encoding of the source code. Default is default system encoding
+sonar.sourceEncoding=UTF-8			
+			]]>
+			</screen>
+			<para>.gitlab-ci.yml</para>
 			<screen>
 			<![CDATA[ 
 stages:
@@ -1318,7 +1340,6 @@ sonarqube-check:
       - .sonar/cache
   script:
     - sonar-scanner
-    # - sonar-scanner -Dsonar.projectKey=www.netkiller.cn -Dsonar.sources=. -Dsonar.host.url=http://sonarqube.default.svc.cluster.local -Dsonar.login=sqp_b450e389b765496c7df68dd422469ec7812af71e
   allow_failure: true
   only:
     - master
