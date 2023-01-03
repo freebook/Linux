@@ -310,7 +310,7 @@ docker run \
     -e SONAR_HOST_URL="http://${SONARQUBE_URL}" \
     -e SONAR_LOGIN="myAuthenticationToken" \
     -v "${YOUR_REPO}:/usr/src" \
-    sonarsource/sonar-scanner-cli			
+    sonarsource/sonar-scanner-cli
 			]]>
 				</screen>
 			</section>
@@ -1262,6 +1262,130 @@ deploy-job:
 			<![CDATA[
 <sonar.projectKey>your_projectKey</sonar.projectKey>
 <sonar.moduleKey>${artifactId}</sonar.moduleKey>			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Kubernetes 运行 sonar-scanner</title>
+			<screen>
+			<![CDATA[ 
+stages:
+  - build
+  - check
+  - docker
+  - deploy
+
+variables:
+  DOCKER_REGISTRY: registry.netkiller.cn
+  IMAGE: $DOCKER_REGISTRY/$CI_COMMIT_BRANCH/$CI_PROJECT_NAME:$CI_COMMIT_SHORT_SHA-$CI_PIPELINE_ID
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
+    - dist/
+
+build-job:
+  stage: build
+  image: node:14.17-alpine
+  before_script:
+    - npm install --registry=https://registry.npm.taobao.org
+  script:
+    - npm run build:${CI_COMMIT_REF_SLUG}
+  after_script:
+    - tar zcvf $CI_PROJECT_NAME.tgz dist
+    - ls -l $CI_PROJECT_NAME.tgz
+  only:
+    - office
+    - dev
+    - test
+  tags:
+    - kubernetes
+  artifacts:
+    name: "$CI_PROJECT_NAME"
+    paths:
+      - $CI_PROJECT_NAME.tgz
+
+sonarqube-check:
+  stage: check 
+  image: sonarsource/sonar-scanner-cli:latest
+  variables:
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
+    GIT_DEPTH: "0"
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .sonar/cache
+  script:
+    - sonar-scanner
+    # - sonar-scanner -Dsonar.projectKey=www.netkiller.cn -Dsonar.sources=. -Dsonar.host.url=http://sonarqube.default.svc.cluster.local -Dsonar.login=sqp_b450e389b765496c7df68dd422469ec7812af71e
+  allow_failure: true
+  only:
+    - master
+    - office
+  tags:
+    - kubernetes
+
+build-docker:
+  stage: docker
+  image: docker:latest
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login $DOCKER_REGISTRY --username $CI_REGISTRY_USER --password-stdin
+    - ls -l dist
+  after_script:
+    - docker images | grep $CI_PROJECT_NAME
+    - docker image rm $IMAGE
+  script: 
+    - docker build -t $IMAGE -f Dockerfile .
+    - docker push $IMAGE
+  only:
+    - office    
+    - dev
+    - test
+  tags:
+    - kubernetes
+
+deploy-job:
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none
+  dependencies: []
+  before_script:
+    - kubectl -n ${CI_COMMIT_BRANCH} get pod | grep $CI_PROJECT_NAME
+  script:
+    - kubectl set image deployment/${CI_PROJECT_NAME} ${CI_PROJECT_NAME}=${IMAGE} -n ${CI_COMMIT_BRANCH}
+  after_script:
+    - kubectl -n ${CI_COMMIT_BRANCH} get pod | grep $CI_PROJECT_NAME
+  only:
+    - dev
+    - test
+  tags:
+    - shell
+  environment:
+    name: $CI_COMMIT_BRANCH
+    url: $CI_COMMIT_BRANCH.netkiller.cn/$CI_PROJECT_NAME
+
+deploy-office:
+  stage: deploy
+  image: docker:latest
+  # cache: []
+  variables:
+    GIT_STRATEGY: none
+    PORT: 1850
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $DOCKER_REGISTRY
+  script:
+    - docker rm -f $CI_PROJECT_NAME
+    - docker run --restart always -d --name $CI_PROJECT_NAME -v /mnt/logs/$CI_PROJECT_NAME:/var/log/nginx -p $PORT:80 $IMAGE
+  after_script:
+    - docker ps -a | grep -w $CI_PROJECT_NAME
+  only:
+    - office
+  tags:
+    - office
+  environment:
+    name: office
+    url: www.netkiller.cn							
 			]]>
 			</screen>
 		</section>
