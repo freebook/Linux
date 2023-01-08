@@ -1275,5 +1275,33 @@ EOF
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>Unable to negotiate with 47.97.19.5 port 60022: no matching host key type found. Their offer: ssh-dss,ssh-rsa</title>
+			<para>解决方案一，增加参数 HostKeyAlgorithms 和 PubkeyAcceptedKeyTypes</para>
+			<screen>
+			<![CDATA[ 
+neo@MacBook-Pro-M2 ~ % ssh -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa root@ssh.netkiller.cn
+			]]>	
+			</screen>
+			<para>解决方案二，加入配置文件 ~/.ssh/config</para>
+			<screen>
+			<![CDATA[ 
+neo@MacBook-Pro-M2 ~ % cat ~/.ssh/config 
+Host *
+	Hostname	47.97.19.15
+	User 		root
+	IdentityFile	~/.ssh/id_rsa
+	# fixup for openssh 8.8
+	HostKeyAlgorithms +ssh-rsa
+	PubkeyAcceptedKeyTypes +ssh-rsa
+			]]>
+			</screen>
+			<para>正常登陆即可</para>
+			<screen>
+			<![CDATA[ 
+neo@MacBook-Pro-M2 ~ % ssh root@ssh.netkiller.cn
+			]]>
+			</screen>
+		</section>
 	</section>
 </chapter>
