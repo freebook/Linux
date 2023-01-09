@@ -1281,12 +1281,12 @@ EOF
 			<screen>
 			<![CDATA[ 
 neo@MacBook-Pro-M2 ~ % ssh -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa root@ssh.netkiller.cn
-			]]>	
+			]]>
 			</screen>
 			<para>解决方案二，加入配置文件 ~/.ssh/config</para>
 			<screen>
-			<![CDATA[ 
-neo@MacBook-Pro-M2 ~ % cat ~/.ssh/config 
+			<![CDATA[
+neo@MacBook-Pro-M2 ~ % cat ~/.ssh/config
 Host *
 	Hostname	47.97.19.15
 	User 		root
@@ -1300,6 +1300,19 @@ Host *
 			<screen>
 			<![CDATA[ 
 neo@MacBook-Pro-M2 ~ % ssh root@ssh.netkiller.cn
+			]]>
+			</screen>
+			<para>注意 Host * 会影响全局，所以建议设置</para>
+			<screen>
+			<![CDATA[ 
+neo@MacBook-Pro-M2 ensd-fscs % cat ~/.ssh/config
+Host ssh.netkiller.cn
+	Hostname	ssh.netkiller.cn
+	User 		netkiller
+	IdentityFile	~/.ssh/id_rsa
+	# fixup for openssh 8.8
+	HostKeyAlgorithms +ssh-rsa
+	PubkeyAcceptedKeyTypes +ssh-rsa
 			]]>
 			</screen>
 		</section>
