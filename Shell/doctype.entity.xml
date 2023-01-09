@@ -40,6 +40,6 @@
 	<!ENTITY chapter.klish.xml			 		SYSTEM "chapter.klish.xml">
 	<!ENTITY chapter.utility.expect.xml		 	SYSTEM "chapter.utility.expect.xml">
 	<!ENTITY chapter.tui.xml 					SYSTEM "chapter.tui.xml">
+	<!ENTITY section.shell.interesting.xml		SYSTEM "section.shell.interesting.xml">
 
 	<!ENTITY chapter.miscellaneous.xml	 		SYSTEM "chapter.miscellaneous.xml">
-
