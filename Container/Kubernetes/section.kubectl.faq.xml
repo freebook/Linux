@@ -114,4 +114,23 @@ server:
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>查看 pod 日志</title>
+		<screen>
+		<![CDATA[ 
+# 查看所有 pod 
+neo@MacBook-Pro-M2 ~ % kubectl get pods --all-namespaces
+
+# 查看指定 Pod
+neo@MacBook-Pro-M2 ~ % kubectl get pods --all-namespaces | grep node
+
+# 查看日志
+neo@MacBook-Pro-M2 ~ % kubectl logs -f --tail=100 -n default pod-69d699b66f-jp6hr 
+
+# 进入容器
+neo@MacBook-Pro-M2 ~ % kubectl exec -it  -n default pod-69d699b66f-jp6hr -- sh  
+/ # tail -f your.log
+		]]>
+		</screen>
+	</section>
 </section>
