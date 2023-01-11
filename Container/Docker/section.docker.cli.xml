@@ -359,6 +359,16 @@ docker run --add-host=test.netkiller.cn:172.16.0.73 busybox:latest
 				]]>
 				</screen>
 			</section>
+			<section>
+				<title>暴漏端口</title>
+				<screen>
+				<![CDATA[ 
+docker run -p 80:80 ubuntu bash
+docker run -p 127.0.0.1:80:80 ubuntu bash
+docker run -p 127.0.0.1:80:80/tcp ubuntu bash
+				]]>
+				</screen>
+			</section>
 		</section>
 		<section id="docker.start">
 			<title>start / stop / restart</title>
