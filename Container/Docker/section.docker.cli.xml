@@ -369,6 +369,17 @@ docker run -p 127.0.0.1:80:80/tcp ubuntu bash
 				]]>
 				</screen>
 			</section>
+			<section>
+				<title>内存资源分配</title>
+				<para>-m 或者--memory :分配内存</para>
+				<para>--memory-swap：分配临时内存</para>
+				<screen>
+				<![CDATA[ 
+docker run -it -m 200M --memory-swap=400M ubuntu
+				]]>
+				</screen>
+				<para>给ubuntu分配200兆内存和400M交换分区，一般memory-swap默认是内存两倍。</para>
+			</section>
 		</section>
 		<section id="docker.start">
 			<title>start / stop / restart</title>
