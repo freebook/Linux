@@ -203,6 +203,26 @@ nginx: digest: sha256:ad9bd1ae3a3e17dac70f32afc14baf90932949d3eaa8bebbe907726aca
 		<para>工作中我们常常发现官方镜像裁剪的面目全非，里面缺失很多常用工具，这种情况给我们工作带来诸多不便。</para>
 		<section>
 			<title>Debian/Ubuntu 镜像</title>
+			<para>切换镜像</para>
+			<ulink url="https://mirrors.tuna.tsinghua.edu.cn/help/debian/" />
+			<screen>
+			<![CDATA[ 
+cat > /etc/apt/sources.list <<-EOF
+
+deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye main contrib non-free
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye main contrib non-free
+deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-updates main contrib non-free
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-updates main contrib non-free
+
+deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-backports main contrib non-free
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-backports main contrib non-free
+
+deb https://mirrors.tuna.tsinghua.edu.cn/debian-security bullseye-security main contrib non-free
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian-security bullseye-security main contrib non-free
+
+EOF
+			]]>
+			</screen>
 			<para>ps,top 等系统工具</para>
 			<screen>
 			<![CDATA[
@@ -215,7 +235,7 @@ apt update -y && apt install -y procps
 apt install iputils-ping
 			]]>
 			</screen>
-			<para></para>
+			<para>telnet</para>
 			<screen>
 			<![CDATA[
 apt install -y telnet			
