@@ -129,6 +129,96 @@ nvme0n1     259:0    0 238.5G  0 disk
 			</screen>
 		</section>
 		<section>
+			<title>禁止执行</title>
+			<para>验证 noexec</para>
+			<screen>
+			<![CDATA[ 
+root@logging ~# cd /opt/log/
+root@logging /o/log# echo ls > dir.sh
+root@logging /o/log# chmod +x dir.sh
+root@logging /o/log# ./dir.sh
+fish: The file “./dir.sh” is not executable by this user
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>禁止更新访问时间</title>
+			<screen>
+			<![CDATA[ 
+root@logging ~# touch netkiller.txt
+root@logging ~# stat netkiller.txt
+	File: netkiller.txt
+	Size: 0         	Blocks: 0          IO Block: 4096   regular empty file
+Device: fd03h/64771d	Inode: 816         Links: 1
+Access: (0644/-rw-r--r--)  Uid: (    0/    root)   Gid: (    0/    root)
+Access: 2023-01-13 15:27:48.282376191 +0800
+Modify: 2023-01-13 15:27:48.282376191 +0800
+Change: 2023-01-13 15:27:48.282376191 +0800
+	Birth: 2023-01-13 15:27:48.282376191 +0800
+root@logging ~# cat netkiller.txt
+root@logging ~# stat netkiller.txt
+	File: netkiller.txt
+	Size: 0         	Blocks: 0          IO Block: 4096   regular empty file
+Device: fd03h/64771d	Inode: 816         Links: 1
+Access: (0644/-rw-r--r--)  Uid: (    0/    root)   Gid: (    0/    root)
+Access: 2023-01-13 15:28:00.979854433 +0800
+Modify: 2023-01-13 15:27:48.282376191 +0800
+Change: 2023-01-13 15:27:48.282376191 +0800
+	Birth: 2023-01-13 15:27:48.282376191 +0800		
+			]]>
+			</screen>
+			<para>加入 noatime,nodiratime </para>
+			<screen>
+			<![CDATA[ 
+root@logging ~# cat /etc/fstab
+
+#
+# /etc/fstab
+# Created by anaconda on Mon Nov 21 02:06:17 2022
+#
+# Accessible filesystems, by reference, are maintained under '/dev/disk/'.
+# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info.
+#
+# After editing this file, run 'systemctl daemon-reload' to update systemd
+# units generated from this file.
+#
+UUID=16ca8836-7ca9-454f-9a72-8efbae5edc51 /                       xfs     defaults        0 0
+UUID=D168-FFBD          /boot/efi               vfat    defaults,uid=0,gid=0,umask=077,shortname=winnt 0 2
+UUID=ec48f3c2-80c8-4ed1-be56-049a95c2b60e	/opt/log	xfs noatime,nodiratime,noexec 0 0		
+			]]>
+			</screen>
+			
+			<para>验证 noatime,nodiratime</para>
+			<screen>
+			<![CDATA[ 
+root@logging /o/log# echo Helloworld > neo.txt
+
+root@logging /o/log# stat neo.txt
+	File: neo.txt
+	Size: 11        	Blocks: 8          IO Block: 4096   regular file
+Device: fd11h/64785d	Inode: 141         Links: 1
+Access: (0644/-rw-r--r--)  Uid: (    0/    root)   Gid: (    0/    root)
+Access: 2023-01-13 15:37:47.375940824 +0800
+Modify: 2023-01-13 15:37:47.375940824 +0800
+Change: 2023-01-13 15:37:47.375940824 +0800
+Birth: 2023-01-13 15:37:47.375940824 +0800
+
+root@logging /o/log# cat neo.txt
+Helloworld
+
+root@logging /o/log# stat neo.txt
+	File: neo.txt
+	Size: 11        	Blocks: 8          IO Block: 4096   regular file
+Device: fd11h/64785d	Inode: 141         Links: 1
+Access: (0644/-rw-r--r--)  Uid: (    0/    root)   Gid: (    0/    root)
+Access: 2023-01-13 15:37:47.375940824 +0800
+Modify: 2023-01-13 15:37:47.375940824 +0800
+Change: 2023-01-13 15:37:47.375940824 +0800
+Birth: 2023-01-13 15:37:47.375940824 +0800		
+			]]>
+			</screen>
+		</section>
+		<section>
 			<title>/etc/fstab 例子</title>
 			<para>/etc/fstab btrfs 实例</para>
 			<screen>
@@ -149,6 +239,28 @@ UUID=d103e33f-7f9f-4911-918e-32eae42e229c /home           btrfs   defaults,subvo
 UUID=63d0b776-3bbd-490f-8284-f148b255185e /opt            btrfs   noatime,nodiratime,noexec 0       2
 # swap was on /dev/sda5 during installation
 UUID=ff8945bf-fa45-49e5-b3d2-bb833bc6dc9c none            swap    sw              0       0
+			]]>
+			</screen>
+			<para>背景如下：</para>
+			<para>我们的服务器通常有一个系统盘，用来安装操作系统，再挂在一个数据盘用来存储数据，这个数据盘有时是机械硬盘，为了提高IO性能，我们通常会禁止atime，为了提高安全性，我们还会禁止创建可执行文件。</para>
+			<para>noatime 禁止更新访问时间, nodiratime 禁止更新目录访问时间, noexec 禁止创建可执行文件</para>
+			<screen>
+			<![CDATA[ 
+root@logging ~# cat /etc/fstab
+
+#
+# /etc/fstab
+# Created by anaconda on Mon Nov 21 02:06:17 2022
+#
+# Accessible filesystems, by reference, are maintained under '/dev/disk/'.
+# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info.
+#
+# After editing this file, run 'systemctl daemon-reload' to update systemd
+# units generated from this file.
+#
+UUID=16ca8836-7ca9-454f-9a72-8efbae5edc51 /                       xfs     defaults        0 0
+UUID=D168-FFBD          /boot/efi               vfat    defaults,uid=0,gid=0,umask=077,shortname=winnt 0 2
+UUID=ec48f3c2-80c8-4ed1-be56-049a95c2b60e	/opt/log	xfs noatime,nodiratime,noexec 0 0		
 			]]>
 			</screen>
 		</section>
