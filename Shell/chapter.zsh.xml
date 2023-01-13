@@ -1,29 +1,35 @@
-<chapter id="index"><?dbhtml dir="zsh" ?>
-	<title>Z Shell</title>
-	<!--
-http://hi.baidu.com/storymedia/blog/item/598be3fd4998f549d6887d89.html
-http://www.ha97.com/book/OpenSource_Guide/ch30.html
-	 -->
-	<para><ulink url="http://www.zsh.org/">http://www.zsh.org/</ulink></para>
-	<section id="install">
-		<title>installing Z shell</title>
-		<screen>
-$ sudo apt install zsh
-		</screen>
-	</section>
-	<section id="ohmyz">
-		<title>Oh My ZSH!</title>
-		<para>http://ohmyz.sh/</para>
-		<para>Oh My ZSH 是z shell命令主题</para>
-		<screen>
-$ sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-		</screen>
-	</section>
-	<section id="zshrc">
-		<title>Starting file</title>
-		<section>
-			<title>~/.zshrc</title>
+<chapter id="index"><?dbhtml dir="other"?>
+	<title>小众 Shell</title> 
+	&section.shell.fish.xml; 
+	<section>
+		<title>Z Shell</title>
+		<para>
+			<ulink url="http://www.zsh.org/">http://www.zsh.org/</ulink>
+		</para>
+		<section id="install">
+			<title>installing Z shell</title>
 			<screen>
+		<![CDATA[ 
+$ sudo apt install zsh
+			]]>
+			</screen>
+		</section>
+		<section id="ohmyz">
+			<title>Oh My ZSH!</title>
+			<para>http://ohmyz.sh/</para>
+			<para>Oh My ZSH 是z shell命令主题</para>
+			<screen>
+			<![CDATA[ 
+$ sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+			]]>
+			</screen>
+		</section>
+		<section id="zshrc">
+			<title>Starting file</title>
+			<section>
+				<title>~/.zshrc</title>
+				<screen>
+				<![CDATA[ 
 neo@netkiller:~$ cat .zshrc
 # Created by newuser for 4.3.9
 PROMPT='%n@%M:%~$ '
@@ -49,27 +55,34 @@ alias l='ls -CF'
 bindkey '\e[1~' beginning-of-line
 bindkey '\e[4~' end-of-line
 bindkey "\e[3~" delete-char
-			</screen>
+				]]>
+				</screen>
+			</section>
 		</section>
-	
-	</section>
-	<section id="prompt">
-		<title>Prompting</title>
-		<screen>
+		<section id="prompt">
+			<title>Prompting</title>
+			<screen>
+			<![CDATA[ 
 $ PROMPT='%n@%M:%~$ '
 neo@netkiller:~$
+			]]>
 		</screen>
-		<screen>
+			<screen>
+			<![CDATA[ 
 autoload colors; colors
 export PS1="%B[%{$fg[red]%}%n%{$reset_color%}%b@%B%{$fg[cyan]%}%m%b%{$reset_color%}:%~%B]%b "
-		</screen>
-		<screen>
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[ 
 [neo@netkiller:~/.oh-my-zsh/themes] 		
+			]]>
 		</screen>
-	</section>
-	<section id="alias">
-		<title>Aliases</title>
-		<screen>
+		</section>
+		<section id="alias">
+			<title>Aliases</title>
+			<screen>
+			<![CDATA[ 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     eval "`dircolors -b`"
@@ -86,16 +99,19 @@ fi
 alias ll='ls -l'
 alias la='ls -A'
 alias l='ls -CF'
+			]]>
 		</screen>
-	</section>
-	<section id="history">
-		<title>History</title>
-		<para></para>
-		<screen>
+		</section>
+		<section id="history">
+			<title>History</title>
+			<para></para>
+			<screen>
+			<![CDATA[ 
 $ !$
-
-		</screen>
-		<screen>
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[ 
 $ history
    18  cd workspace/Document
    19  ls
@@ -104,29 +120,36 @@ $ history
 $ !20
 ls
 Docbook  makedoc  Tex
-		</screen>
-	</section>
-	
-	<section id="faq">
-		<title>FAQ</title>
-		<section>
-			<title>Home/End key</title>
-			<screen>
-bindkey '\e[1~' beginning-of-line
-bindkey '\e[4~' end-of-line
+			]]>
 			</screen>
 		</section>
+		<section id="faq">
+			<title>FAQ</title>
+			<section>
+				<title>Home/End key</title>
+				<screen>
+				<![CDATA[ 
+bindkey '\e[1~' beginning-of-line
+bindkey '\e[4~' end-of-line
+				]]>
+				</screen>
+			</section>
+		</section>
 	</section>
-</chapter>
-<chapter id="csh">
-	<title>Berkeley UNIX C shell (csh)</title>
-	<section>
+	<section id="csh">
+		<title>Berkeley UNIX C shell (csh)</title>
+		<section>
+		<![CDATA[ 
 $ sudo apt install csh
+		]]>
+		</section>
 	</section>
-</chapter>
-<chapter id="ksh">
-	<title>KornShell</title>
-	<section>
+	<section id="ksh">
+		<title>KornShell</title>
+		<section>
+		<![CDATA[ 
 $ sudo apt install ksh
+		]]>
+		</section>
 	</section>
 </chapter>

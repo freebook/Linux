@@ -2,7 +2,7 @@
 <!-- $Id: chapter.shell.xml 591 2013-05-20 10:15:16Z netkiller $ -->
 
 	&chapter.bash.xml;
-	&chapter.zsh.xml;	
+	&chapter.zsh.xml;
 	&chapter.command.xml;
 	&chapter.utility.xml;
 	&chapter.tui.xml;

@@ -1,0 +1,24 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<section id="shell.fish">
+    <title>fish shell</title>
+    <section>
+        <title>安装 fish shell</title>
+        <para>Linux 安装</para>
+        <screen>
+        <![CDATA[ 
+dnf install -y fish        
+        ]]>
+        </screen>
+    </section>
+    <section>
+        <title>配置 fish</title>
+        <section>
+            <title>主题管理</title>
+            <screen>
+            <![CDATA[ 
+fish_config theme show        
+            ]]>
+            </screen>
+        </section>
+    </section>
+</section>
