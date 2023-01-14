@@ -8,6 +8,7 @@
 	
 	<!ENTITY chapter.bash.example.xml	 		SYSTEM "chapter.bash.example.xml">
 	<!ENTITY chapter.zsh.xml	 				SYSTEM "chapter.zsh.xml">	
+	<!ENTITY section.shell.fish.xml				SYSTEM "section.shell.fish.xml">
 	
 
 	<!ENTITY chapter.command.xml				SYSTEM "chapter.command.xml">
