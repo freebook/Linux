@@ -1451,7 +1451,15 @@ $ git archive -o update2.zip HEAD $(git diff --name-only b111c253321fb4b9c585830
 			]]>
 			</screen>
 		</section>
-
+		<section>
+			<title>撤销当前修改，恢复到远程最后一次提交</title>
+			<screen>
+			<![CDATA[ 
+neo@MacBook-Pro-M2 ~/w/ensd-fscs (master|MERGING)> git reset --hard origin/master
+HEAD is now at d8952521 Merge branch 'revert-caebf6ee' into 'master'			
+			]]>
+			</screen>
+		</section>
 		<section>
 			<title>回撤提交</title>
 			<para>首先 reset 到指定的版本，根据实际情况选择 --mixed 还是 --hard</para>
