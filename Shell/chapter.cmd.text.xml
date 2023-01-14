@@ -188,7 +188,6 @@ CENTOS LINUX RELEASE 7.5.1804 (CORE)
 NETKILLER			
 			]]>
 			</screen>
-
 		</section>
 		<section>
 			<title>[CHAR*] 和 [CHAR*REPEAT]</title>
@@ -231,6 +230,12 @@ Mynicknameisnetkiller
 			
 [root@localhost ~]# md5sum /etc/issue | tr -d [0-9] 
 ffedfcfbdcaebdec  /etc/issue			
+			]]>
+			</screen>
+			<para>删除控制字符</para>
+			<screen>
+			<![CDATA[ 
+[root@netkiller ~]# cat file | tr -d [:cntrl:]
 			]]>
 			</screen>
 		</section>
