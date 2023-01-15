@@ -49,8 +49,6 @@ MS Name/IP address         Stratum Poll Reach LastRx Last sample
 
 	<section id="openntpd">
 		<title>OpenNTPD</title>
-
-
 		<para>
 			<ulink url="http://www.pool.ntp.org/"></ulink>
 		</para>

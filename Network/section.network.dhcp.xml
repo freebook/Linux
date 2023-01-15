@@ -1,4 +1,4 @@
-<chapter id="index"><?dbhtml dir="dhcp" ?>
+<section id="index"><?dbhtml dir="dhcp" ?>
 	<title>DHCP</title>
 	<section id="server">
 		<title>DHCP Server</title>
@@ -36,11 +36,15 @@ subnet 192.168.1.0 netmask 255.255.255.0 {
 		<title>dhclient</title>
 		<para>all interface</para>
 		<screen>
-$ sudo dhclient	
+		<![CDATA[ 
+$ sudo dhclient			
+		]]>
 		</screen>
 		<para>eth0</para>
 		<screen>
-$ sudo dhclient eth0	
+		<![CDATA[ 
+$ sudo dhclient eth0			
+		]]>
 		</screen>
 	</section>
 	<section id="windows">
@@ -53,4 +57,4 @@ $ sudo dhclient eth0
   		]]>
 		</screen>
 	</section>
-</chapter>
+</section>

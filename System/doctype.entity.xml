@@ -29,6 +29,6 @@
 	<!ENTITY chapter.kickstart.xml		SYSTEM "chapter.kickstart.xml">
 	<!ENTITY chapter.crontab.xml			SYSTEM "chapter.crontab.xml">
 	
-	<!ENTITY chapter.network.xml 			SYSTEM "chapter.network.xml">
+	<!ENTITY section.system.network.xml		SYSTEM "section.system.network.xml">
 	<!ENTITY section.network.router.xml		SYSTEM "section.network.router.xml">
 	<!ENTITY section.network.dns.xml		SYSTEM "section.network.dns.xml">

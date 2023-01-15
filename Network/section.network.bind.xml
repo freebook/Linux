@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.network.bind.xml 653 2013-07-29 10:12:42Z netkiller $ -->
-<chapter id="index"><?dbhtml dir="bind" ?>
+<section id="index"><?dbhtml dir="bind" ?>
 	<title>DNS/Bind</title>
 	<section id="install">
 		<title>安装 bind9 </title>
@@ -703,4 +703,4 @@ Authoritative answers can be found from:
 		<para>https://projects.jethrocarr.com/p/oss-namedmanager/</para>
 		<para>NamedManager 你可以理解为 Bind 的Web UI，类似域名服务商的Web管理界面m。</para>
 	</section>
-</chapter>
+</section>

@@ -9,7 +9,7 @@
 	&chapter.console.xml;
 	&section.disk.hdd.xml;
 	&chapter.filesystem.xml;
-	&chapter.network.xml;
+	&section.system.network.xml;
 	&chapter.service.xml;
 <!-- =========================================================================== -->
 	&chapter.process.xml;

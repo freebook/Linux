@@ -27,6 +27,9 @@
 			lynx http://netkiller.guthub.com
 		</screen>
 	</section>
+	&section.network.dhcp.xml;
+	&section.network.bind.xml;
+	&section.network.dnsmasq.xml;
 	&section.network.ddns.xml;
+	&section.network.ntpd.xml;
 </chapter>
-
