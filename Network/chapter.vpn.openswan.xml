@@ -4,16 +4,22 @@
 	<title>openswan - IPSEC utilities for Openswan</title>
 	<para>http://www.openswan.org/</para>
 	<screen>
+	<![CDATA[ 
 # yum install openswan
+	]]>
 	</screen>
 	<screen>
+	<![CDATA[ 
 vi /etc/sysctl.conf
 net.ipv4.ip_forward = 1
 net.ipv4.conf.default.rp_filter = 0
 net.ipv4.conf.all.accept_redirects = 0
 net.ipv4.conf.all.send_redirects = 0
+	]]>
 	</screen>
 	<screen>
+	<![CDATA[ 
 ipsec newhostkey --output /etc/ipsec.secert
+	]]>
 	</screen>
 </section>

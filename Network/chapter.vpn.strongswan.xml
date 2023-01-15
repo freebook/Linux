@@ -13,7 +13,7 @@ User -> Windows 10 Desktop -> Inside Greatwall -> VPN Server(Hongkong/Other) -> 
 	<section>
 		<title>安装 strongswan VPN 服务器</title>
 		<para>CentOS 7 环境</para>
-		<screen>
+		<screen><![CDATA[
 yum install -y strongswane
 
 yum install -y haveged
@@ -21,9 +21,9 @@ systemctl enable haveged
 systemctl start haveged
 
 cd /etc/strongswan
-		</screen>
+		]]></screen>
 		<para>创建自签名CA根证书</para>
-		<screen>
+		<screen><![CDATA[
 # 私钥证书
 strongswan pki --gen --type rsa --size 4096 --outform der > ipsec.d/private/CARootKey.der
 chmod 600 ipsec.d/private/CARootKey.der
@@ -31,9 +31,9 @@ chmod 600 ipsec.d/private/CARootKey.der
 # 公钥证书
 strongswan pki --self --ca --lifetime 3650 --in ipsec.d/private/CARootKey.der --type rsa --dn "C=NL, O=Example Company, CN=StrongSwan Root CA" --outform der > ipsec.d/cacerts/CARootCert.der
 strongswan  pki --print --in ipsec.d/cacerts/CARootCert.der
-		</screen>
+		]]></screen>
 		<para>颁发服务器证书</para>
-		<screen>
+		<screen><![CDATA[
 # 私钥证书
 strongswan pki --gen --type rsa --size 2048 --outform der > ipsec.d/private/ServerKey.der
 chmod 600 ipsec.d/private/ServerKey.der
@@ -41,9 +41,9 @@ chmod 600 ipsec.d/private/ServerKey.der
 # 公钥证书
 strongswan pki --pub --in ipsec.d/private/ServerKey.der --type rsa | strongswan pki --issue --lifetime 730 --cacert ipsec.d/cacerts/CARootCert.der --cakey ipsec.d/private/CARootKey.der --dn "C=NL, O=Example Company, CN=vpn.example.org" --san vpn.example.com --san vpn.example.net --san 147.90.44.87  --san @147.90.44.87 --flag serverAuth --flag ikeIntermediate --outform der > ipsec.d/certs/ServerCert.der
 strongswan pki --print --in ipsec.d/certs/ServerCert.der
-		</screen>
+		]]></screen>
 		<para>颁发客户端用户证书</para>
-		<screen>
+		<screen><![CDATA[
 # 私钥证书
 cd /etc/strongswan/
 strongswan pki --gen --type rsa --size 2048 --outform der > ipsec.d/private/ClientKey.der
@@ -63,11 +63,11 @@ openssl pkcs12 -export  -inkey ipsec.d/private/ClientKey.pem -in ipsec.d/certs/C
 		<para>p12中包含了CA证书，客户端私钥证书，客户端公钥证书。Client.p12 发送给最终用户即可</para>
 		<tip>
 		<para>如果你安装过 OpenVPN 那么会很好理解，上述的几个步骤等同于：</para>
-		<screen>	
+		<screen><![CDATA[	
 build-ca 				= CARootKey/CARootCert
 build-key-server server = ServerKey/ServerCert
 build-key client1		= Client.p12 
-		</screen>
+		]]></screen>
 		</tip>
 	</section>
 	<section>
@@ -86,7 +86,7 @@ sysctl -p /etc/sysctl.d/vpn.conf
 		]]>
 		</screen>
 		<para>开放500，4500两个端口，注意是UDP协议，允许esp,ah协议通过，最后IP伪装</para>
-		<screen>
+		<screen><![CDATA[
 # for ISAKMP (handling of security associations)
 iptables -A INPUT -p udp --dport 500 --j ACCEPT
 
@@ -100,7 +100,7 @@ iptables -A INPUT -p ah -j ACCEPT
 # for the routing of packets on the server
 iptables -I POSTROUTING -t nat -o eth1 -j MASQUERADE
 iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to-source xxx.xxx.xxx.xxx
-		</screen>
+		]]></screen>
 		<para>xxx.xxx.xxx.xxx 改为你的出口IP，也就是 eth1的IP地址。</para>
 		<para>启动 strongswan 服务</para>
 		
@@ -177,10 +177,10 @@ EOF
 		]]>
 		</screen>
 		<para>启动 strongswan</para>
-		<screen>
+		<screen><![CDATA[
 systemctl enable strongswan
 systemctl start strongswan
-		</screen>
+		]]></screen>
 		<para></para>
 	</section>
 
@@ -225,14 +225,14 @@ systemctl start strongswan
 		<title>FAQ</title>
 		<section>
 			<title>查看证书信息</title>
-			<screen>
+			<screen><![CDATA[
 strongswan  pki --print --in ipsec.d/cacerts/CARootCert.der
 strongswan pki --print --in ipsec.d/certs/ServerCert.der
-			</screen>
+			]]></screen>
 			<para>或使用openssl查看</para>
-			<screen>
+			<screen><![CDATA[
 openssl x509 -inform DER -in ipsec.d/certs/ServerCert.der -noout -text			
-			</screen>
+			]]></screen>
 		</section>
 	</section>
 </section>
