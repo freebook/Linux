@@ -19,7 +19,7 @@
 		&book.info.author.xml;
 
 		<copyright>
-			<year>2009-2019</year>
+			<year>2009-<?dbtimestamp format="Y"?></year>
 			<holder>Neo Chan</holder>
 		</copyright>
 		<releaseinfo>

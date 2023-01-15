@@ -27,7 +27,7 @@
 		&book.info.author.xml;
 
 		<copyright>
-			<year>2010-2021</year>
+			<year>2010-<?dbtimestamp format="Y"?></year>
 			<holder>Netkiller(Neo Chan). All rights reserved.</holder>
 		</copyright>
 
