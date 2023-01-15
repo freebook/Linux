@@ -2,16 +2,18 @@
 <!-- $Id: chapter.vpn.xml 652 2013-07-26 10:06:01Z netkiller $ -->
 <chapter id="index"><?dbhtml dir="vpn" ?>
 	<title>VPN (Virtual Private Network)</title>
-	&chapter.vpn.openvpn.xml;
-	&chapter.vpn.pptpd.xml;
-	&chapter.vpn.l2tp.xml;
-	&chapter.vpn.ipsec.xml;
+	&section.vpn.openvpn.xml;
+	&section.vpn.pptpd.xml;
+	&section.vpn.l2tp.xml;
+	&section.vpn.ipsec.xml;
 	<section id="n2n">
 		<title>N2N VPN</title>
 		<ulink url="http://www.ntop.org/products/n2n/" />
 		<screen>
+		<![CDATA[ 
 $ apt-cache search n2n
 n2n - Peer-to-Peer VPN network daemon
+		]]>
 		</screen>
 	</section>
 	<section id="hypersocket">
