@@ -1543,5 +1543,19 @@ docker-compose run vp0 bash
 			</screen>
 		</section>
 	</section>
-
+	<section id="docker.scan">
+		<title>Docker Scan</title>
+		<para>安装</para>
+		<screen>
+		<![CDATA[ 
+dnf install docker-scan-plugin		
+		]]>
+		</screen>
+		<para>扫描</para>
+		<screen>
+		<![CDATA[ 
+docker scan nginx
+		]]>
+		</screen>
+	</section>
 </section>
