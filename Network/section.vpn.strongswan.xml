@@ -68,7 +68,6 @@ build-ca 				= CARootKey/CARootCert
 build-key-server server = ServerKey/ServerCert
 build-key client1		= Client.p12 
 		]]></screen>
-		</tip>
 	</section>
 	<section>
 		<title>防火墙配置</title>

@@ -21,12 +21,12 @@
 <!ENTITY chapter.network.tc.xml 		SYSTEM "chapter.network.tc.xml">
 
 <!ENTITY chapter.vpn.xml 				SYSTEM "chapter.vpn.xml">
-<!ENTITY chapter.vpn.openvpn.xml		SYSTEM "chapter.vpn.openvpn.xml">
-<!ENTITY chapter.vpn.pptpd.xml 			SYSTEM "chapter.vpn.pptpd.xml">
-<!ENTITY chapter.vpn.l2tp.xml 			SYSTEM "chapter.vpn.l2tp.xml">
-<!ENTITY chapter.vpn.ipsec.xml			SYSTEM "chapter.vpn.ipsec.xml">
-<!ENTITY chapter.vpn.openswan.xml	 	SYSTEM "chapter.vpn.openswan.xml">
-<!ENTITY chapter.vpn.strongswan.xml	 	SYSTEM "chapter.vpn.strongswan.xml">
+<!ENTITY section.vpn.openvpn.xml		SYSTEM "section.vpn.openvpn.xml">
+<!ENTITY section.vpn.pptpd.xml 			SYSTEM "section.vpn.pptpd.xml">
+<!ENTITY section.vpn.l2tp.xml 			SYSTEM "section.vpn.l2tp.xml">
+<!ENTITY section.vpn.ipsec.xml			SYSTEM "section.vpn.ipsec.xml">
+<!ENTITY section.vpn.openswan.xml	 	SYSTEM "section.vpn.openswan.xml">
+<!ENTITY section.vpn.strongswan.xml	 	SYSTEM "section.vpn.strongswan.xml">
 
 <!ENTITY section.im.irc.xml				SYSTEM "section.im.irc.xml">
 <!ENTITY section.im.jabber.xml			SYSTEM "section.im.jabber.xml">
