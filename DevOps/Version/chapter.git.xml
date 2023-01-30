@@ -411,12 +411,21 @@ git branch -a
 		</section>
 		<section id="branch.create">
 			<title>创建分支</title>
-			<screen><![CDATA[
+			<screen>
+			<![CDATA[
 $ git branch development
 $ git branch
 * master
   development
-			]]></screen>
+			]]>
+			</screen>
+			<para>机遇分支创建分支</para>
+			<screen>
+			<![CDATA[
+$ git checkout -b feature develop
+$ git push --set-upstream origin feature
+			]]>
+			</screen>
 		</section>
 		<section id="branch.delete">
 			<title>删除分支</title>
