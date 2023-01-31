@@ -474,8 +474,6 @@ $ git-show-branch
 			]]></screen>
 		</section>
 	</section>
-
-
 	<section id="git.remote">
 		<title>远程仓库</title>
 		<para>添加远程仓库</para>
@@ -1381,6 +1379,22 @@ export GIT_SSL_NO_VERIFY=true
 			<screen>
 			<![CDATA[
 git config http.sslVerify "false"  			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>配置忽略合并文件</title>
+			<para>从一个分支向另一个分支合并，有时我们不想覆盖某个文件。</para>
+			<screen>
+			<![CDATA[ 
+neo@MacBook-Pro-M2 ~/netkiller (dev)> git config merge.ours.driver true
+			]]>
+			</screen>
+			<para>创建 .gitattributes 文件</para>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-M2 ~/netkiller (office)> cat .gitattributes
+src/main/resources/bootstrap.yml merge=ours
 			]]>
 			</screen>
 		</section>
