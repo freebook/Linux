@@ -201,6 +201,37 @@ done
 				]]>
 				</screen>
 			</section>
+			<section>
+				<title>使用 ours 与 theirs 解决冲突</title>
+				<para>发生冲突是文件内会出现</para>
+				<screen>
+				<![CDATA[ 
+<<<<<<<HEAD
+<ours contents>
+=======
+<theirs contents>
+>>>>>>>				
+				]]>
+				</screen>
+				<para>使用 --ours 或 --theirs 来选择保留那一方的文件，例如：</para>
+				<screen>
+				<![CDATA[ 
+git checkout --theirs <fileName>
+				]]>
+				</screen>
+				<para>冲突解决步骤</para>
+				<screen>
+				<![CDATA[ 
+$ git checkout --ours <fileName>
+$ git add <fileName>   //标记该冲突已解决
+$ git rebase --continue 
+$ git status
+$ git commit -a -m '冲突已经处理'
+$ git push	
+				]]>
+				</screen>
+				<para></para>
+			</section>
 		</section>
 
 		<section id="git.add">

@@ -416,8 +416,63 @@ variables:
   GIT_SUBMODULE_STRATEGY: recursive		
 		]]>
 			</screen>
-
 		</section>
+    <section>
+      <title>通过条件，设置变量</title>
+      <screen>
+      <![CDATA[ 
+job:
+variables:
+  DEPLOY_VARIABLE: "default-deploy"
+rules:
+  - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+    variables:                              # Override DEPLOY_VARIABLE defined
+      DEPLOY_VARIABLE: "deploy-production"  # at the job level.
+  - if: $CI_COMMIT_REF_NAME =~ /feature/
+    variables:
+      IS_A_FEATURE: "true"                  # Define a new variable.
+script:
+  - echo "Run script with $DEPLOY_VARIABLE as an argument"
+  - echo "Run another script if $IS_A_FEATURE exists"      
+      ]]>
+      </screen>
+      <para>例子</para>
+      <screen>
+      <![CDATA[ 
+build-job:
+  stage: build
+  image: registry.ejiayou.com/share/maven:3.8.6-openjdk-8
+  variables:
+    VERSION: -SNAPSHOT
+  rules:
+    - if: $CI_COMMIT_BRANCH == master
+      variables:
+        VERSION: ".RELEASE"
+    - if: $CI_COMMIT_BRANCH == grey
+      variables:
+        VERSION: ".RELEASE"
+  before_script:
+    - rm -rf /root/.m2/repository/com/other/*
+    - sed -i "s/\"dev\"/\"${CI_COMMIT_BRANCH}\"/" ${MODULE}/src/main/resources/log4j2.xml
+    - sed -i "s/2\.3\.7\.RELEASE/2\.7\.7/" ${MODULE}/pom.xml
+  script:
+    - mvn -U -T 1C clean package -Densd.version=$VERSION
+  after_script:
+    - md5sum ${MODULE}/target/*.jar
+  only:
+    - dev
+    - test
+    - grey
+    - master
+  tags:
+    - kubernetes
+  artifacts:
+    name: "$CI_PROJECT_NAME"
+    paths:
+      - ${MODULE}/target/*.jar
+      ]]>
+      </screen>
+    </section>
 	</section>
 	<section id="gitlab-ci.yml.script">
 		<title>script /before_script / after_script</title>
