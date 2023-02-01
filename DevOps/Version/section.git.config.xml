@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="git.config">
+	<title>git config</title>
+	<section id="git.config">
+		<title>git config</title>
+		<screen><![CDATA[
+$ git config --file config http.receivepack true
+	]]></screen>
+	</section>
+	<section>
+		<title>查看配置</title>
+		<screen>
+		<![CDATA[
+Neo-iMac:workspace neo$ git config --list 
+credential.helper=osxkeychain
+user.name=Neo Chen
+user.email=netkiller@msn.com
+user.signingkey=netkiller@msn.com
+gpg.program=gpg
+commit.gpgsign=true			
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>编辑配置</title>
+		<screen>
+		<![CDATA[
+git config --global --edit
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+git config --edit
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>替换配置项</title>
+		<screen>
+		<![CDATA[
+$  git config --global --replace-all user.email "输入你的邮箱"
+$  git config --global --replace-all user.name "输入你的用户名"			
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>配置默认分之</title>
+		<screen>
+		<![CDATA[
+git config --global init.defaultBranch <名称>			
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>GPG签名</title>
+		<screen>
+		<![CDATA[
+开启GPG签名：
+
+git config commit.gpgsign true
+
+关闭：
+
+git config commit.gpgsign false			
+		]]>
+		</screen>
+	</section>
+
+	<section id="core.sshCommand">
+		<title>core.sshCommand</title>
+		<para>git 默认使用 id_rsa，指定私钥方法是：</para>
+		<screen>
+		<![CDATA[
+git config core.sshCommand "ssh -i ~/.ssh/id_rsa_example -F /dev/null"
+git pull
+git push
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+GIT_SSH_COMMAND="ssh -i ~/.ssh/id_rsa_example -F /dev/null" git clone git@github.com:netkiller/netkiller.github.io.git		
+		]]>
+		</screen>
+	</section>
+	<section id="http.postBuffer">
+		<title>fatal: The remote end hung up unexpectedly</title>
+		<screen><![CDATA[
+error: RPC failed; result=22, HTTP code = 413 | 18.24 MiB/s
+fatal: The remote end hung up unexpectedly
+		]]></screen>
+		<screen><![CDATA[
+git config http.postBuffer 524288000
+		]]></screen>
+	</section>
+	<section id="http.sslVerify">
+		<title>忽略 SSL 检查</title>
+		<para>使用自颁发 ssl 证书时需要开启，否则无法 clone 和 push</para>
+		<screen>
+		<![CDATA[
+export GIT_SSL_NO_VERIFY=true			
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+git config http.sslVerify "false"  			
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>配置忽略合并文件</title>
+		<para>从一个分支向另一个分支合并，有时我们不想覆盖某个文件。</para>
+		<screen>
+		<![CDATA[ 
+neo@MacBook-Pro-M2 ~/netkiller (dev)> git config merge.ours.driver true
+		]]>
+		</screen>
+		<para>创建 .gitattributes 文件</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-M2 ~/netkiller (office)> cat .gitattributes
+src/main/resources/bootstrap.yml merge=ours
+		]]>
+		</screen>
+		<para>全局配置</para>
+		<screen>
+		<![CDATA[ 
+git config --global merge.ours.driver true
+		]]>
+		</screen>
+	</section>
+	<section id="gitignore">
+		<title>.gitignore</title>
+		<screen>
+find ./ -type d -empty | grep -v \.git | xargs -i touch {}/.gitignore
+		</screen>
+	</section>
+	<section id="gitattributes">
+		<title>.gitattributes</title>
+		<section>
+			<title>SVN Keywords</title>
+			<screen>
+			<![CDATA[
+Example:
+
+$ echo '*.txt ident' >> .gitattributes
+$ echo '$Id$' > test.txt
+$ git commit -a -m "test"
+
+$ rm test.txt
+$ git checkout -- test.txt
+$ cat test.txt			
+			]]>
+			</screen>
+			
+			<screen>
+			<![CDATA[]]>
+			</screen>
+			<screen>
+			<![CDATA[]]>
+			</screen>
+			<screen>
+			<![CDATA[]]>
+			</screen>
+		</section>
+		<section>
+			<title>设置文件换行符</title>
+			<para>开发者使用不同的操作系统，不同的开发工具，保存的文件换行符有三种，CR、LF、CRLF，也就是回车CR和换行的组合。</para>
+			<para>解决方案，在项目根目录下创建 .gitattributes 文件</para>
+			<screen>
+			<![CDATA[ 
+*.js    eol=lf
+*.jsx   eol=lf
+*.json  eol=lf
+			]]>
+			</screen>
+		</section>
+		<!-- <section>
+			<title>配置</title>
+		</section> 
+		<section id="git.command">
+		<title>command</title>
+		
+	</section>
+	-->
+	</section>
+</section>

@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: section.git.web.xml 474 2012-10-29 11:01:51Z netkiller $ -->
+<section id="faq">
+    <title>FAQ</title>
+    <section id="HEAD">
+        <title>导出最后一次修改过的文件</title>
+        <para>有时我们希望把刚刚修改的文件复制出来，同时维持原有的目录结构，这样可能交给运维直接覆盖服务器上的代码。我们可以使用下面的命令完成这样的操作，而不用一个一个文件的复制。</para>
+        <screen>
+        <![CDATA[
+git archive -o update.zip HEAD $(git diff --name-only HEAD^)
+        ]]>
+        </screen>
+    </section>
+    <section id="range">
+        <title>导出指定版本区间修改过的文件</title>
+        <para>首先使用git log查看日志，找到指定的 commit ID号。</para>
+        <screen>
+        <![CDATA[
+$ git log
+commit ee808bb4b3ed6b7c0e7b24eeec39d299b6054dd0
+Author: 168 <lineagelx@126.com>
+Date:   Thu Oct 22 13:12:11 2015 +0800
+
+统计代码
+
+commit 3e68ddef50eec39acea1b0e20fe68ff2217cf62b
+Author: netkiller <netkiller@msn.com>
+Date:   Fri Oct 16 14:39:10 2015 +0800
+
+页面修改
+
+commit b111c253321fb4b9c5858302a0707ba0adc3cd07
+Author: netkiller <netkiller@msn.com>
+Date:   Wed Oct 14 17:51:55 2015 +0800
+
+数据库连接
+
+commit 4a21667a576b2f18a7db8bdcddbd3ba305554ccb
+Author: netkiller <netkiller@msn.com>
+Date:   Wed Oct 14 17:27:15 2015 +0800
+
+init repo
+           ]]>
+        </screen>
+        <para>导入 b111c253321fb4b9c5858302a0707ba0adc3cd07 至 ee808bb4b3ed6b7c0e7b24eeec39d299b6054dd0 间修改过的文件。</para>
+        <screen>
+        <![CDATA[
+$ git archive -o update2.zip HEAD $(git diff --name-only b111c253321fb4b9c5858302a0707ba0adc3cd07)
+        ]]>
+        </screen>
+    </section>
+    <section>
+        <title>撤销当前修改，恢复到远程最后一次提交</title>
+        <screen>
+        <![CDATA[ 
+neo@MacBook-Pro-M2 ~/w/ensd-fscs (master|MERGING)> git reset --hard origin/master
+HEAD is now at d8952521 Merge branch 'revert-caebf6ee' into 'master'			
+        ]]>
+        </screen>
+    </section>
+    <section>
+        <title>回撤提交</title>
+        <para>首先 reset 到指定的版本，根据实际情况选择 --mixed 还是 --hard</para>
+        <screen>
+        <![CDATA[
+git reset --mixed 096392721f105686fc3cdafcb4159439a66b0e5b --
+or
+git reset --hard 33ba6503b4fa8eed35182262770e4eab646396cd --
+        ]]>
+        </screen>
+        <screen>
+        <![CDATA[
+git push origin --force --all
+or
+git push --force --progress "origin" master:master
+        ]]>
+        </screen>
+    </section>
+    <section>
+        <title>撤回单个文件提交</title>
+        <para>例如撤回 project/src/main/java/cn/netkiller/controller/DemoSceneController.java 到上一个版本</para>
+        <screen>
+        <![CDATA[
+➜  api.netkiller.cn git:(testing) git log project/src/main/java/cn/netkiller/controller/DemoSceneController.java
+
+commit b4609646ee60927fe4c1c563d07e78f63ab106ea (HEAD -> testing, origin/testing)
+Author: Neo Chen <netkiller@msn.com>
+Date:   Wed Nov 17 18:49:27 2021 +0800
+
+手工合并，临时提交
+
+commit bc96eb68ad73d5248c8135609191c51e258edf10
+Author: Tom <tom@qq.com>
+Date:   Thu Oct 21 16:29:20 2021 +0800
+
+获取激活场景
+
+commit d564ea25bd556324f1f576357563a8ee77b3bdd9
+Author: Tom <tom@qq.com>
+Date:   Thu Oct 21 15:15:26 2021 +0800
+
+获取激活场景
+
+commit d5a40165ad24a3a021fe58c6d78e0b7d97ab3cc5
+Author: Tom <tom@qq.com>
+Date:   Thu Oct 21 14:43:16 2021 +0800
+
+新增场景角色增加
+
+commit aa98662cb9e781e328ee3d5cec23af29c81050d9
+Author: Tom <tom@qq.com>
+Date:   Thu Oct 21 09:55:29 2021 +0800
+
+新增场景角色增加
+
+commit 140d22a8d4ea7fcc775d4372e8beb6d854831512
+Author: Jerry <jerry@qq.com>
+Date:   Sat Oct 16 15:27:30 2021 +0800
+
+场景接口修改
+
+commit 2ddbb1ff933de663305db2396d99030c938c267a
+Author: Tom <tom@qq.com>
+Date:   Fri Oct 15 10:55:30 2021 +0800			
+        ]]>
+        </screen>
+        <para>只显示最后五条记录</para>
+        <screen>
+        <![CDATA[
+➜  api.netkiller.cn git:(testing) git log -5 project/src/main/java/cn/netkiller/controller/DemoSceneController.java			
+        ]]>
+        </screen>
+        <para></para>
+        <screen>
+        <![CDATA[
+➜  api.netkiller.cn git:(testing) git reset bc96eb68ad73d5248c8135609191c51e258edf10 project/src/main/java/cn/netkiller/controller/DemoSceneController.java
+Unstaged changes after reset:
+M	project/src/main/java/cn/netkiller/controller/DemoSceneController.java			
+        ]]>
+        </screen>
+        <para></para>
+        <screen>
+        <![CDATA[
+➜  api.netkiller.cn git:(testing) ✗ git status
+On branch testing
+Your branch is up to date with 'origin/testing'.
+
+Changes to be committed:
+(use "git restore --staged <file>..." to unstage)
+modified:   project/src/main/java/cn/netkiller/controller/DemoSceneController.java
+
+Changes not staged for commit:
+(use "git add <file>..." to update what will be committed)
+(use "git restore <file>..." to discard changes in working directory)
+modified:   project/src/main/java/cn/netkiller/controller/DemoSceneController.java
+
+➜  api.netkiller.cn git:(testing) ✗ git add project/src/main/java/cn/netkiller/controller/DemoSceneController.java
+➜  api.netkiller.cn git:(testing) ✗ git commit -m '恢复到上一个版本'
+[testing 9959acd4] 恢复到上一个版本
+1 file changed, 6 insertions(+), 8 deletions(-)			
+        ]]>
+        </screen>
+    </section>
+    <section>
+        <title>每个项目一个证书</title>
+        <para>方法一</para>
+        <screen>
+        <![CDATA[
+[root@localhost ~]# cat .ssh/config 
+host git.netkiller.cn
+user git
+hostname git.netkiller.cn
+port 22
+identityfile ~/.ssh/netkiller
+
+host github.com
+HostName github.com
+IdentityFile ~/.ssh/id_rsa_github
+User git    
+        ]]>
+        </screen>
+        <para>方法二</para>
+        <screen>
+        <![CDATA[
+$ ssh-agent sh -c 'ssh-add ~/.ssh/id_rsa; git fetch user@host'			
+        ]]>
+        </screen>
+    </section>
+    <section>
+        <title>fatal: Not possible to fast-forward, aborting.</title>
+        <screen>
+        <![CDATA[
+$ git pull
+fatal: Not possible to fast-forward, aborting.			
+$ git rebase
+$ git push			
+        ]]>
+        </screen>
+    </section>
+    <section id="receive.denyCurrentBranch">
+        <title>receive.denyCurrentBranch</title>
+        <para>git push 操作提示 receive.denyCurrentBranch</para>
+        <screen>
+        <![CDATA[
+remote: error: refusing to update checked out branch: refs/heads/main
+remote: error: By default, updating the current branch in a non-bare repository
+remote: is denied, because it will make the index and work tree inconsistent
+remote: with what you pushed, and will require 'git reset --hard' to match
+remote: the work tree to HEAD.
+remote: 
+remote: You can set the 'receive.denyCurrentBranch' configuration variable
+remote: to 'ignore' or 'warn' in the remote repository to allow pushing into
+remote: its current branch; however, this is not recommended unless you
+remote: arranged to update its work tree to match what you pushed in some
+remote: other way.
+remote: 
+remote: To squelch this message and still keep the default behaviour, set
+remote: 'receive.denyCurrentBranch' configuration variable to 'refuse'.			
+        ]]>
+        </screen>
+        <para>起因，疫情期间远程办公，将办公室内的 gitlab 所有仓库都导出来，放在一个临时服务器上，服务器创建了一个临时账号 git，仓库放在 /home/git 目录下。</para>
+        <para>开发人员使用类似地址 git@git.netkiller.cn:netkiller.cn/api.netkiller.cn 克隆代码，但是 git push 的时候出现上面错误</para>
+        <para>解决方案</para>
+        <para>进入服务器 su - git，然后在项目目录下面运行</para>
+        <screen>
+        <![CDATA[
+git init --shared --bare
+git config receive.denyCurrentBranch ignore
+        ]]>
+        </screen>
+        <para>再次尝试 git push 问题解决。</para>
+    </section>
+    <section>
+        <title>更新所有项目以及分支</title>
+        <screen>
+        <![CDATA[
+for project in $(ls -1 | grep com); do
+
+cd $project && \
+for branch in $(git branch -r | grep -v HEAD) ; do
+# git checkout -b ${branch#*/} $branch;
+git checkout ${branch#*/};
+git pull;
+done;
+cd ..;
+done;
+
+rsync -auzv --delete * git@netkiller.cn:/opt/backup/code/			
+        ]]>
+        </screen>
+    </section>
+</section>

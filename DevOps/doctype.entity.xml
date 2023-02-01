@@ -3,9 +3,9 @@
 <!ENTITY chapter.version.cvs	 			SYSTEM "Version/chapter.version.cvs.xml">
 <!ENTITY chapter.version.svn 				SYSTEM "Version/chapter.version.svn.xml">
 <!ENTITY chapter.git.xml	 				SYSTEM "Version/chapter.git.xml">
-<!ENTITY chapter.git.dotfiles.xml 			SYSTEM "Version/chapter.git.dotfiles.xml">
-<!ENTITY chapter.git.gitolite.xml 			SYSTEM "Version/chapter.git.gitolite.xml">
-<!ENTITY chapter.git.web.xml	 			SYSTEM "Version/chapter.git.web.xml">
+<!ENTITY section.git.config.xml 			SYSTEM "Version/section.git.config.xml">
+<!ENTITY section.git.other.xml 			    SYSTEM "Version/section.git.other.xml">
+<!ENTITY section.git.faq.xml	 			SYSTEM "Version/section.git.faq.xml">
 <!ENTITY section.git.lfs.xml	 			SYSTEM "Version/section.git.lfs.xml">
 <!ENTITY section.git.submodule.xml 			SYSTEM "Version/section.git.submodule.xml">
 
