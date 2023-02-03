@@ -21,6 +21,7 @@
 	&section.gitlab.cicd.xml;
 	&section.gitlab.pipeline.xml;
 	&section.gitlab.registry.xml;
+	&section.gitlab.hooks.xml;
 	&section.gitlab.webhook.xml;
 	&section.gitlab.faq.xml;
 	

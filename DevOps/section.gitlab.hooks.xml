@@ -1,0 +1,58 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<section>
+    <title>Git server hooks</title>
+    <section>
+        <title>创建全局 Server hooks</title>
+        <para>https://docs.gitlab.com/ee/administration/server_hooks.html</para>
+        <para>配置 custom_hooks_dir</para>
+        <screen>
+    <![CDATA[ 
+vim /etc/gitlab/gitlab.rb 
+
+# 这个配置已经作废
+gitlab_shell['custom_hooks_dir'] = "/opt/gitlab/embedded/service/gitlab-shell/hooks"
+
+# 在 gitaly 下面加入配置
+gitaly['custom_hooks_dir'] = "/var/opt/gitlab/gitaly/custom_hooks"
+    ]]>
+    </screen>
+        <screen>
+    <![CDATA[ 
+mkdir -p /var/opt/gitlab/gitaly/custom_hooks
+vim /var/opt/gitlab/gitaly/custom_hooks/commit-msg    
+chmod +x /var/opt/gitlab/gitaly/custom_hooks/commit-msg
+    ]]>
+    </screen>
+        <para>多个配置可以创建一个 commit-msg.d 目录，然后把多个脚本放入该目录</para>
+        <screen>
+    <![CDATA[ 
+root@netkiller:/opt/gitlab# mkdir -p /var/opt/gitlab/gitaly/custom_hooks/commit-msg.d
+root@netkiller:/opt/gitlab# vim /var/opt/gitlab/gitaly/custom_hooks/commit-msg.d/commit-msg
+root@netkiller:/opt/gitlab# chmod +x /var/opt/gitlab/gitaly/custom_hooks/commit-msg.d/commit-msg
+root@netkiller:/opt/gitlab# gitlab-ctl reconfigure    
+    ]]>
+    </screen>
+    </section>
+    <section>
+        <title>给单个仓库配置 Server hooks</title>
+        <section>
+            <title>查看仓库目录</title>
+            <para>https://gitlab.netkiller.cn/admin/projects/chenjingfeng/backup</para>
+            <para>Gitaly storage name: default</para>
+            <para>Gitaly relative path:
+                @hashed/10/86/1086d35563c495c1cecbce12135cab3b945e01dd185ea2c1dc8ace5ad988977e.git</para>
+            <screen>
+            <![CDATA[ 
+root@9b03d2708db7:/var/opt/gitlab# cat /var/opt/gitlab/gitaly/config.toml | grep ^path
+path = '/var/opt/gitlab/git-data/repositories'
+
+root@9b03d2708db7:/var/opt/gitlab# cd /var/opt/gitlab/git-data/repositories
+root@9b03d2708db7:/var/opt/gitlab/git-data/repositories# cd \@hashed/10/86/1086d35563c495c1cecbce12135cab3b945e01dd185ea2c1dc8ace5ad988977e.git
+            ]]>
+            </screen>
+        </section>
+        <section>
+            <title>创建 hooks 脚本</title> mkdir -p custom_hooks vim custom_hooks/commit-msg chmod +x
+            custom_hooks/commit-msg </section>
+    </section>
+</section>

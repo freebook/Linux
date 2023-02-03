@@ -20,6 +20,7 @@
 <!ENTITY section.gitlab.pipeline.xml		SYSTEM "section.gitlab.pipeline.xml">
 <!ENTITY section.gitlab.gpg.xml				SYSTEM "section.gitlab.gpg.xml">
 <!ENTITY section.gitlab.registry.xml		SYSTEM "section.gitlab.registry.xml">
+<!ENTITY section.gitlab.hooks.xml			SYSTEM "section.gitlab.hooks.xml">
 <!ENTITY section.gitlab.webhook.xml			SYSTEM "section.gitlab.webhook.xml">
 <!ENTITY section.gitlab.faq.xml				SYSTEM "section.gitlab.faq.xml">
 
