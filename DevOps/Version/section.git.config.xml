@@ -153,7 +153,7 @@ $ git checkout -- test.txt
 $ cat test.txt			
 			]]>
 			</screen>
-			
+
 			<screen>
 			<![CDATA[]]>
 			</screen>
@@ -176,13 +176,34 @@ $ cat test.txt
 			]]>
 			</screen>
 		</section>
-		<!-- <section>
-			<title>配置</title>
-		</section> 
+		<!-- 
 		<section id="git.command">
 		<title>command</title>
 		
 	</section>
 	-->
+	</section>
+	<section>
+		<title>配置模版目录</title>
+		<para>配置模版之后，克隆项目会自动创建模版下的目录和文件</para>
+		<screen>
+		<![CDATA[ 
+mkdir -p ~/workspace/template/hooks				
+		]]>
+		</screen>
+		<para>配置模版目录</para>
+		<screen>
+		<![CDATA[ 
+git config --global init.templatedir ~/workspace/template/		
+		]]>
+		</screen>
+		<para>创建文件</para>
+		<screen>
+		<![CDATA[ 
+curl -s https://gitlab.ejiayou.com/chenjingfeng/zentao/-/raw/master/commit-msg -o ~/workspace/hooks/commit-msg
+chmod +x ~/workspace/hooks/commit-msg
+		]]>
+		</screen>
+		<para>现在执行 git clone 之后你会发现 .git/hooks 目录会产生一个 commit-msg 文件</para>
 	</section>
 </section>
