@@ -16,11 +16,10 @@
 			<title>8.x</title>
 			<section>
 				<title>dnf 安定</title>
-
 				<screen>
-			<![CDATA[
+				<![CDATA[
 curl -s https://raw.githubusercontent.com/netkiller/shell/master/search/elastic/elastic-8.x.sh | bash
-			]]>
+				]]>
 				</screen>
 				<para>手工安装</para>
 				<screen>
@@ -69,59 +68,124 @@ docker run --rm -it -v ~/pipeline/:/usr/share/logstash/pipeline/ docker.elastic.
 				</screen>
 			</section>
 		</section>
-		<section id="6.x">
-			<title>6.x</title>
+		<section>
+			<title>kubernetes 采集日志</title>
 			<screen>
-			<![CDATA[
-curl -s https://raw.githubusercontent.com/netkiller/shell/master/search/elastic/elastic-6.x.sh | bash
+			<![CDATA[ 
+apiVersion: v1
+data:
+	filebeat.yml: |-
+	filebeat.inputs:
+	- type: log
+		paths:
+		- /tmp/*
+		fields:
+		project: test
+		group: test
+		stage: test
+		format: json
+
+		multiline:
+		pattern: '^\[[^stacktrace]'
+		negate: true
+		match: after
+	processors:
+		- add_cloud_metadata:
+		- add_host_metadata:
+
+	output.logstash:
+		hosts: ["172.18.200.10:5044"]
+kind: ConfigMap
+  metadata:
+	name: filebeat
+	namespace: default			
 			]]>
 			</screen>
-		</section>
-		<section id="5.x">
-			<title>ElasticSearch + Logstash + Kibana 安装</title>
-			<para>环境准备:</para>
-			<para>操作系统： CentOS 7</para>
-			<para>Java 1.8</para>
-			<para>Redis</para>
-			<para>ElasticSearch + Logstash + Kibana 均使用 5.2 版本</para>
-			<para>以下安装均使用 Netkiller OSCM 脚本一键安装</para>
-			<section>
-				<title>ElasticSearch 安装</title>
-				<para>粘贴下面命令到Linux控制台即可一键安装</para>
-				<screen>
-				<![CDATA[
-curl -s https://raw.githubusercontent.com/netkiller/shell/master/search/elasticsearch/elasticsearch-5.x.sh | bash
-				]]>
-				</screen>
-			</section>
-			<section>
-				<title>Kibana 安装</title>
-				<screen>
-				<![CDATA[
-curl -s https://raw.githubusercontent.com/netkiller/shell/master/log/kibana/kibana-5.x.sh | bash
-				]]>
-				</screen>
-			</section>
-			<section id="logstash">
-				<title>Logstash 安装</title>
-				<screen>
-					curl -s https://raw.githubusercontent.com/netkiller/shell/master/log/kibana/logstash-5.x.sh | bash
-				</screen>
-			</section>
-			<section>
-				<title>从 5.x 升级到 6.x</title>
-				<para>升级仓库</para>
-				<screen>
-				<![CDATA[
-curl -s https://raw.githubusercontent.com/netkiller/shell/master/search/elastic/elastic-6.x.sh | bash		
-				]]>
-				</screen>
-				<screen>
-				<![CDATA[
-yum update logstash
-				]]>
-				</screen>
-			</section>
+			<screen>
+			<![CDATA[ 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+	labels:
+	app: bottleneck	
+	name: bottleneck
+	namespace: default
+spec:
+	progressDeadlineSeconds: 600
+	replicas: 1
+	revisionHistoryLimit: 10
+	selector:
+	matchLabels:
+		app: bottleneck
+	strategy:
+	rollingUpdate:
+		maxSurge: 1
+		maxUnavailable: 0
+	type: RollingUpdate
+	template:
+	metadata:
+		creationTimestamp: null
+		labels:
+		app: bottleneck
+	spec:
+		affinity: {}
+		containers:
+		- env:
+		- name: TZ
+			value: Asia/Shanghai
+		- name: JAVA_OPTS
+			value: -Xms2048m -Xmx4096m
+		- name: SPRING_OPTS
+			value: --spring.profiles.active=dev --server.undertow.worker-threads=5000
+		image: nginx:latest
+		imagePullPolicy: IfNotPresent
+		name: nginx
+		ports:
+		- containerPort: 80
+			name: http
+			protocol: TCP
+		resources: {}
+		terminationMessagePath: /dev/termination-log
+		terminationMessagePolicy: File
+		volumeMounts:
+		- mountPath: /tmp
+			name: tmp
+		- args:
+		- -c
+		- /usr/share/filebeat/filebeat.yml
+		- -e
+		env:
+		- name: TZ
+			value: Asia/Shanghai
+		- name: JAVA_OPTS
+		- name: SPRING_OPTS
+		image: docker.elastic.co/beats/filebeat:8.6.1
+		imagePullPolicy: IfNotPresent
+		name: filebeat
+		resources: {}
+		terminationMessagePath: /dev/termination-log
+		terminationMessagePolicy: File
+		volumeMounts:
+		- mountPath: /usr/share/filebeat/filebeat.yml
+			name: config
+			readOnly: true
+			subPath: filebeat.yml
+		- mountPath: /tmp
+			name: tmp
+		dnsPolicy: ClusterFirst
+		restartPolicy: Always
+		schedulerName: default-scheduler
+		securityContext: {}
+		terminationGracePeriodSeconds: 30
+		volumes:
+		- configMap:
+			defaultMode: 420
+			name: filebeat
+		name: config
+		- emptyDir: {}
+		name: tmp
+			]]>
+			</screen>
 		</section>
 	</section>
 	<section id="logstash.cli">
@@ -1528,6 +1592,60 @@ output {
 [root@netkiller log]# cat test.json | nc -u 127.0.0.1 12202
 			]]>
 			</screen>
+		</section>
+		<section id="6.x">
+			<title>6.x</title>
+			<screen>
+			<![CDATA[
+curl -s https://raw.githubusercontent.com/netkiller/shell/master/search/elastic/elastic-6.x.sh | bash
+			]]>
+			</screen>
+		</section>
+		<section id="5.x">
+			<title>ElasticSearch + Logstash + Kibana 安装</title>
+			<para>环境准备:</para>
+			<para>操作系统： CentOS 7</para>
+			<para>Java 1.8</para>
+			<para>Redis</para>
+			<para>ElasticSearch + Logstash + Kibana 均使用 5.2 版本</para>
+			<para>以下安装均使用 Netkiller OSCM 脚本一键安装</para>
+			<section>
+				<title>ElasticSearch 安装</title>
+				<para>粘贴下面命令到Linux控制台即可一键安装</para>
+				<screen>
+				<![CDATA[
+curl -s https://raw.githubusercontent.com/netkiller/shell/master/search/elasticsearch/elasticsearch-5.x.sh | bash
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>Kibana 安装</title>
+				<screen>
+				<![CDATA[
+curl -s https://raw.githubusercontent.com/netkiller/shell/master/log/kibana/kibana-5.x.sh | bash
+				]]>
+				</screen>
+			</section>
+			<section id="logstash">
+				<title>Logstash 安装</title>
+				<screen>
+					curl -s https://raw.githubusercontent.com/netkiller/shell/master/log/kibana/logstash-5.x.sh | bash
+				</screen>
+			</section>
+			<section>
+				<title>从 5.x 升级到 6.x</title>
+				<para>升级仓库</para>
+				<screen>
+				<![CDATA[
+curl -s https://raw.githubusercontent.com/netkiller/shell/master/search/elastic/elastic-6.x.sh | bash		
+				]]>
+				</screen>
+				<screen>
+				<![CDATA[
+yum update logstash
+				]]>
+				</screen>
+			</section>
 		</section>
 	</section>
 </section>
