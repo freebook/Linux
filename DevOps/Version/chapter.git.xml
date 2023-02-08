@@ -230,7 +230,27 @@ $ git commit -a -m '冲突已经处理'
 $ git push	
 				]]>
 				</screen>
-				<para></para>
+			</section>
+			<section>
+				<title>使用远程分支强行覆盖本地分支</title>
+				<para>方法一</para>
+				<screen>
+				<![CDATA[ 
+neo@MacBook-Pro-M2 ~/w/netkiller (master) > git fetch --all
+neo@MacBook-Pro-M2 ~/w/netkiller (master) > git reset --hard origin/master				
+				]]>
+				</screen>
+				<para>方法二</para>
+				<screen>
+				<![CDATA[ 
+git pull --force <远程主机> <远程分支>:<本地分支>				
+				]]>
+				</screen>
+				<screen>
+				<![CDATA[ 
+neo@MacBook-Pro-M2 ~/w/netkiller (master) > git pull --force origin master:master
+				]]>
+				</screen>
 			</section>
 		</section>
 
