@@ -28,6 +28,7 @@
 <!ENTITY chapter.log.xml		 		SYSTEM "chapter.log.xml">
 <!ENTITY section.log.xml				SYSTEM "section.log.xml">
 <!ENTITY section.log.elk.xml			SYSTEM "section.log.elk.xml">
+<!ENTITY section.log.elk.filebeat.xml	SYSTEM "section.log.elk.filebeat.xml">
 <!ENTITY section.log.loki.xml			SYSTEM "section.log.loki.xml">
 <!ENTITY section.log.flume.xml			SYSTEM "section.log.flume.xml">
 <!ENTITY chapter.zipkin.xml			 	SYSTEM "chapter.zipkin.xml">

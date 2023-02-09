@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="beats"><?dbhtml dir="elk" ?>
+    <title>Beats</title>
+    <subtitle>Beats 是一个免费且开放的平台，集合了多种单一用途数据采集器。它们从成百上千或成千上万台机器和系统向 Logstash 或 Elasticsearch 发送数据。</subtitle>
+    <section id="beta.setup">
+        <title>安装 Beta</title>
+        <section id="6.x">
+            <title>Beats 6.x 安装</title>
+            <screen>
+        <![CDATA[
+curl -s https://raw.githubusercontent.com/netkiller/shell/master/search/elastic/elastic-6.x.sh | bash
+curl -s https://raw.githubusercontent.com/netkiller/shell/master/search/elastic/beats/beats.sh | bash
+        ]]>
+            </screen>
+        </section>
+        <section id="beats">
+            <title>Beats 5.x 安装</title>
+            <screen>
+                curl -s https://raw.githubusercontent.com/netkiller/shell/master/log/beats/beats-5.x.sh | bash
+            </screen>
+        </section>
+    </section>
+    <section id="filebeat">
+        <title>Filebeat</title>
+        <section>
+            <title>模块管理</title>
+            <screen>
+            <![CDATA[
+filebeat modules list				
+            ]]>
+            </screen>
+        </section>
+        <section>
+            <title>文件到文件</title>
+            <screen>
+            <![CDATA[
+filebeat.inputs:
+- type: log
+paths:
+- /data/logs/*
+fields:
+project: ${PROJECT}
+group: ${GROUP}
+stage: ${STAGE}
+format: ${FORMAT}
+
+processors:
+- add_cloud_metadata:
+- add_host_metadata:
+
+output.file:
+path: "/tmp"
+filename: filebeat			
+            ]]>
+            </screen>
+        </section>
+        <section>
+            <title>TCP</title>
+            <screen>
+            <![CDATA[
+[docker@netkiller ~]$ cat filebeat.tcp.yml 
+filebeat.inputs:
+- type: tcp
+max_message_size: 10MiB
+host: "localhost:9000"
+
+output.file:
+path: "/tmp"
+filename: filebeat.log			
+            ]]>
+            </screen>
+            <para></para>
+            <screen>
+            <![CDATA[
+[docker@netkiller ~]$ sudo chmod go-w /home/docker/filebeat.tcp.yml				
+            ]]>
+            </screen>
+            <screen>
+            <![CDATA[
+[docker@netkiller ~]$ ss -lnt | grep 9000
+LISTEN 0      1024       127.0.0.1:9000       0.0.0.0:*  				
+            ]]>
+            </screen>
+            <screen>
+            <![CDATA[
+[docker@netkiller ~]$ echo "Hello world!!!" | nc localhost 9000
+echo "Hello worldss -lnt | grep 9000!" | nc localhost 9000
+
+[docker@netkiller ~]$ cat /etc/filesystems | nc localhost 9000
+
+[docker@netkiller ~]$ sudo cat /tmp/filebeat.log-20220728.ndjson |jq | grep message
+"message": "Hello worldss -lnt | grep 9000!"
+"message": "ext4",
+"message": "ext3",
+"message": "ext2",
+"message": "nodev proc",
+"message": "nodev devpts",
+"message": "iso9660"
+"message": "vfat",
+"message": "hfs",
+"message": "hfsplus",
+"message": "*",				
+            ]]>
+            </screen>
+        </section>
+    </section>
+    <section>
+        <title>配置实例</title>
+        <para>filebeat.yml</para>
+        <screen>
+        <![CDATA[
+filebeat.inputs:
+- type: log
+  paths:
+  - /tmp/*
+  fields:
+    project: www
+    group: netkiller.cn
+    stage: dev
+    format: json
+
+  multiline:
+    pattern: '^\[[^stacktrace]'
+    negate: true
+    match: after
+
+processors:
+  - add_cloud_metadata:
+  - add_host_metadata:
+
+output.logstash:
+  hosts: ["172.18.200.10:5044"]        
+        ]]>
+        </screen>
+    </section>
+</section>
