@@ -1,12 +1,13 @@
 <?xml version="1.1" encoding="UTF-8"?>
-<section>
-    <title>Git server hooks</title>
+<section id="gitlab.server.hooks">
+    <title>服务器端 hooks</title>
+    <subtitle>Git server hooks</subtitle>
     <section>
         <title>创建全局 Server hooks</title>
         <para>https://docs.gitlab.com/ee/administration/server_hooks.html</para>
         <para>配置 custom_hooks_dir</para>
         <screen>
-    <![CDATA[ 
+            <![CDATA[
 vim /etc/gitlab/gitlab.rb 
 
 # 这个配置已经作废
@@ -15,23 +16,23 @@ gitlab_shell['custom_hooks_dir'] = "/opt/gitlab/embedded/service/gitlab-shell/ho
 # 在 gitaly 下面加入配置
 gitaly['custom_hooks_dir'] = "/var/opt/gitlab/gitaly/custom_hooks"
     ]]>
-    </screen>
+        </screen>
         <screen>
-    <![CDATA[ 
+        <![CDATA[
 mkdir -p /var/opt/gitlab/gitaly/custom_hooks
 vim /var/opt/gitlab/gitaly/custom_hooks/commit-msg    
 chmod +x /var/opt/gitlab/gitaly/custom_hooks/commit-msg
-    ]]>
-    </screen>
+        ]]>
+        </screen>
         <para>多个配置可以创建一个 commit-msg.d 目录，然后把多个脚本放入该目录</para>
         <screen>
-    <![CDATA[ 
+            <![CDATA[
 root@netkiller:/opt/gitlab# mkdir -p /var/opt/gitlab/gitaly/custom_hooks/commit-msg.d
 root@netkiller:/opt/gitlab# vim /var/opt/gitlab/gitaly/custom_hooks/commit-msg.d/commit-msg
 root@netkiller:/opt/gitlab# chmod +x /var/opt/gitlab/gitaly/custom_hooks/commit-msg.d/commit-msg
 root@netkiller:/opt/gitlab# gitlab-ctl reconfigure    
-    ]]>
-    </screen>
+        ]]>
+        </screen>
     </section>
     <section>
         <title>给单个仓库配置 Server hooks</title>
@@ -40,9 +41,10 @@ root@netkiller:/opt/gitlab# gitlab-ctl reconfigure
             <para>https://gitlab.netkiller.cn/admin/projects/chenjingfeng/backup</para>
             <para>Gitaly storage name: default</para>
             <para>Gitaly relative path:
-                @hashed/10/86/1086d35563c495c1cecbce12135cab3b945e01dd185ea2c1dc8ace5ad988977e.git</para>
+                @hashed/10/86/1086d35563c495c1cecbce12135cab3b945e01dd185ea2c1dc8ace5ad988977e.git
+            </para>
             <screen>
-            <![CDATA[ 
+                <![CDATA[
 root@9b03d2708db7:/var/opt/gitlab# cat /var/opt/gitlab/gitaly/config.toml | grep ^path
 path = '/var/opt/gitlab/git-data/repositories'
 
@@ -52,7 +54,102 @@ root@9b03d2708db7:/var/opt/gitlab/git-data/repositories# cd \@hashed/10/86/1086d
             </screen>
         </section>
         <section>
-            <title>创建 hooks 脚本</title> mkdir -p custom_hooks vim custom_hooks/commit-msg chmod +x
-            custom_hooks/commit-msg </section>
+            <title>创建 hooks 脚本</title>
+            <screen>
+            <![CDATA[
+mkdir -p custom_hooks
+vim custom_hooks/commit-msg
+chmod +x custom_hooks/commit-msg
+            ]]>
+            </screen>
+
+        </section>
     </section>
+</section>
+<section id="git.hooks">
+    <title>客户端 hooks</title>
+    <section>
+        <title>集成禅道</title>
+        <section>
+            <title>Linux/MacOS</title>
+            <para>配置模版目录</para>
+            <screen>
+            <![CDATA[
+test -d ~/workspace/template/hooks && exit
+pip3 install requests
+mkdir -p ~/workspace/template/hooks
+curl -s https://raw.githubusercontent.com/netkiller/devops/master/share/git/hooks/commit-msg -o ~/workspace/template/hooks/commit-msg
+git config --global init.templatedir ~/workspace/template/
+            ]]>
+            </screen>
+            <para>已存在项目需要手工处理，运行下面脚本</para>
+            <screen>
+                <![CDATA[
+pip3 install requests
+curl -s https://raw.githubusercontent.com/netkiller/devops/master/share/git/hooks/commit-msg -o .git/hooks/commit-msg
+chmod +x .git/hooks/commit-msg
+            ]]>
+            </screen>
+        </section>
+        <section>
+            <title>Windows</title>
+            <para>手工安装 Python 下载地址 <ulink url="https://www.python.org/ftp/python/3.11.1/python-3.11.1-amd64.exe" />，安装到 C:\Python 目录下</para>
+            <para>Window 11 也可以使用 Winget 安装</para>
+            <screen>
+                <![CDATA[
+winget install python
+            ]]>
+            </screen>
+            <para>安装完成之后安装依赖包</para>
+            <screen>
+                <![CDATA[
+pip3 install requests
+                ]]>
+            </screen>
+            <para>设置模板</para>
+            <screen>
+            <![CDATA[
+mkdir c:\workspace\template\hooks
+powershell curl -o c:\workspace\template\hooks\commit-msg https://raw.githubusercontent.com/netkiller/devops/master/share/git/hooks/commit-msg
+git config --global init.templatedir c:\workspace\template
+git config -l
+            ]]>
+            </screen>
+            <para>已存在项目安装 Script</para>
+            <screen>
+            <![CDATA[
+powershell curl -o .git/hooks/commit-msg https://raw.githubusercontent.com/netkiller/devops/master/share/git/hooks/commit-msg
+            ]]>
+            </screen>
+        </section>
+        <section>
+            <title>使用方法</title>
+            <para>提交信息格式</para>
+            <screen>
+                <![CDATA[
+代码提交时，提交信息这样写：
+
+BUG 1234
+
+如果本次提交代码修复了多个 BUG 这样写：
+
+BUG 123 456 789
+
+如果是需求，这样写：
+
+TASK 123
+
+还可以这样写：
+
+BUG 123 456 789
+TASK 1223 4556 1789
+
+临时提交，不关联BUG和TASK这样写：
+
+TMP 随便写点啥
+                ]]>
+            </screen>
+        </section>
+    </section>
+
 </section>
