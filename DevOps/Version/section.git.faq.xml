@@ -162,6 +162,29 @@ modified:   project/src/main/java/cn/netkiller/controller/DemoSceneController.ja
         </screen>
     </section>
     <section>
+    	<title>合并分支中的单个</title>
+    	<para>git merge 会合并两个分支中的所有文件，如果我们只想合并单个文件，可以这样做。</para>
+    	<para></para>
+    	<screen>
+    	<![CDATA[
+git checkout feature 
+git checkout --patch master file.txt    	
+    	]]>
+    	</screen>
+    	<para>例如热修复生产代码，将hotfix分支的文件file.txt 合到master分支上；</para>
+    	
+    	
+    	<screen>
+    	<![CDATA[
+git checkout master
+git checkout hotfix file.txt
+git commit -a -m '修复生产BUG'
+    	]]>
+    	</screen>
+    	<para>这种方式相当于吧 file.txt 文件从 hotfix 分支复制到 master 分支，适合处理二进制文件。</para>
+       	
+    </section>
+    <section>
         <title>每个项目一个证书</title>
         <para>方法一</para>
         <screen>
