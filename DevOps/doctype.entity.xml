@@ -2,7 +2,14 @@
 <!ENTITY part.version.xml					SYSTEM "part.version.xml">
 <!ENTITY chapter.version.cvs	 			SYSTEM "Version/chapter.version.cvs.xml">
 <!ENTITY chapter.version.svn 				SYSTEM "Version/chapter.version.svn.xml">
+
 <!ENTITY chapter.git.xml	 				SYSTEM "Version/chapter.git.xml">
+<!ENTITY section.git.repo.xml 				SYSTEM "Version/section.git.repo.xml">
+<!ENTITY section.git.diff.xml	 			SYSTEM "Version/section.git.diff.xml">
+<!ENTITY section.git.merge.xml	 			SYSTEM "Version/section.git.merge.xml">
+<!ENTITY section.git.branch.xml	 			SYSTEM "Version/section.git.branch.xml">
+<!ENTITY section.git.remote.xml 			SYSTEM "Version/section.git.remote.xml">
+<!ENTITY section.git.log.xml	 			SYSTEM "Version/section.git.log.xml">
 <!ENTITY section.git.config.xml 			SYSTEM "Version/section.git.config.xml">
 <!ENTITY section.git.other.xml 			    SYSTEM "Version/section.git.other.xml">
 <!ENTITY section.git.faq.xml	 			SYSTEM "Version/section.git.faq.xml">

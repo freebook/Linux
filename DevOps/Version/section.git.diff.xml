@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="git.diff">
+	<title>比较文件</title>
+	<section>
+		<title>比较 SHA</title>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-M2 ~/w/netkiller (dev)> git diff cef86cfdb62de992b587c07425c8e7fa927a4b4d 66da93554af5d2e2398eb474b6981aa85a91547c		
+		]]>
+		</screen>
+	</section>
+</section>

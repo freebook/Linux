@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="git.branch">
+		<title>分支管理</title>
+		<subtitle>Manipulating branches</subtitle>
+		<para>git-branch - List, create, or delete branches</para>
+		<section id="branch.list">
+			<title>查看本地分支</title>
+			<screen><![CDATA[
+$ git branch
+* master
+			]]></screen>
+			<para>查看远程分支</para>
+			<screen>
+			<![CDATA[
+git branch -a			
+			]]>
+			</screen>
+		</section>
+		<section id="branch.create">
+			<title>创建分支</title>
+			<screen>
+			<![CDATA[
+$ git branch development
+$ git branch
+* master
+  development
+			]]>
+			</screen>
+			<para>机遇分支创建分支</para>
+			<screen>
+			<![CDATA[
+$ git checkout -b feature develop
+$ git push --set-upstream origin feature
+			]]>
+			</screen>
+		</section>
+		<section id="branch.delete">
+			<title>删除分支</title>
+			<screen><![CDATA[
+$ git branch -d staging
+Deleted branch staging.
+
+$ git branch
+* master
+			]]></screen>
+		</section>
+		<section id="branch.switch">
+			<title>切换分支</title>
+			<screen><![CDATA[
+$ git branch
+* master
+  testing
+
+$ git checkout testing
+Switched to branch "testing"
+
+$ git branch
+  master
+* testing
+			]]></screen>
+		</section>
+		<section>
+			<title>重命名分支</title>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~/workspace/api.netkiller.cn % git checkout test
+neo@MacBook-Pro-Neo ~/workspace/api.netkiller.cn % git branch -m test testing
+neo@MacBook-Pro-Neo ~/workspace/api.netkiller.cn % git push --delete origin test
+neo@MacBook-Pro-Neo ~/workspace/api.netkiller.cn % git push origin testing
+			]]>
+			</screen>
+		</section>
+		<section id="git-show-branch">
+			<title>git-show-branch - Show branches and their commits</title>
+			<screen><![CDATA[
+$ git-show-branch
+! [master] add a new file
+ * [mybranch] add a new file
+--
++* [master] add a new file
+			]]></screen>
+		</section>
+	</section>

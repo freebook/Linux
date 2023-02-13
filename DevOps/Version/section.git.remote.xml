@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="git.remote">
+	<title>远程仓库</title>
+	<para>添加远程仓库</para>
+	<screen>
+		<![CDATA[
+git remote add origin git@localhost:example.git
+		]]>
+	</screen>
+	<para>查看远程仓库</para>
+	<screen>
+		<![CDATA[
+git remote show
+origin
+		]]>
+	</screen>
+	<para></para>
+	<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~> git remote -v
+origin	git@192.168.30.5:netkiller.cn/www.netkiller.cn.git (fetch)
+origin	git@192.168.30.5:netkiller.cn/www.netkiller.cn.git (push)			
+			]]>
+	</screen>
+	<para>添加多个远程仓库</para>
+	<screen><![CDATA[
+git remote add origin git@localhost:example.git
+git remote add another https://gitcafe.com/netkiller/netkiller.gitcafe.com.git
+git push origin master
+git push another master
+		]]></screen>
+	<para>修改远程仓库</para>
+	<screen>
+			<![CDATA[
+git remote set-url origin git@gitlab.netkiller.cn:netkiller.cn/www.netkiller.cn.git
+git remote set-url origin https://gitlab.netkiller.cn/netkiller.cn/www.netkiller.cn.git
+			]]>
+	</screen>
+	<section id="git.remote.rename">
+		<title>修改 origin</title>
+		<screen>
+		<![CDATA[
+git remote rename origin old-origin
+		]]>
+		</screen>
+	</section>
+	<section id="git.remote.remove">
+		<title>删除 origin</title>
+		<screen>
+		<![CDATA[
+git remote remove origin		
+		]]>
+		</screen>
+		<para>删除远程仓库</para>
+		<screen>
+		<![CDATA[
+git remote rm origin
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>仓库共享</title>
+		<section id="git.server">
+			<title>Setting up a git server</title>
+			<para>First we need to setup a user with a home folder. We will store
+				all the repositories in this users home folder.</para>
+			<screen>
+		<![CDATA[
+sudo adduser git
+		]]>
+			</screen>
+			<para>Rather than giving out the password to the git user account use
+				ssh keys to login so that you can have multiple developers connect
+				securely and easily.</para>
+			<para>Next we will make a repository. For this example we will work
+				with a repository called example. Login as the user git and add the
+				repository.</para>
+			<para>login to remote server</para>
+			<screen>
+		<![CDATA[
+ssh git@REMOTE_SERVER
+		]]>
+			</screen>
+			<para>once logged in</para>
+			<screen>
+		<![CDATA[
+sudo mkdir example.git
+cd example.git
+sudo git --bare init
+Initialized empty Git repository in /home/git/example.git/
+		]]>
+			</screen>
+			<para>That’s all there is to creating a repository. Notice we named
+				our folder with a .git extension.</para>
+			<para>Also notice the ‘bare’ option. By default the git repository
+				assumes that you’ll be using it as your working directory, so git
+				stores the actual bare repository files in a .git directory
+				alongside all the project files. Since we are setting up a remote
+				server we don’t need copies of the files on the filesystem. Instead,
+				all we need are the deltas and binary objects of the repository. By
+				setting ‘bare’ we tell git not to store the current files of the
+				repository only the diffs. This is optional as
+				you may have need to be able to browse the files on your remote server.
+			</para>
+			<para>Finally all you need to do is add your files to the remote
+				repository. We will assume you don’t have any files yet.</para>
+			<screen>
+		<![CDATA[
+mkdir example
+cd example
+git init
+touch README
+git add README
+git commit -m 'first commit'
+git remote add origin git@REMOTE_SERVER:example.git
+git push origin master
+		]]>
+			</screen>
+			<para>replace REMOTE_SERVER with your server name or IP</para>
+
+		</section>
+
+	</section>
+</section>
