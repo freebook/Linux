@@ -30,7 +30,7 @@ $ cat file | grep '.'
 		]]></screen>
 	</section>
 	<section id="grep.output">
-		<title>Output control</title>
+		<title>输出控制（Output control）</title>
 		<section>
 			<title>显示行号</title>
 			<screen>
@@ -147,6 +147,22 @@ $ grep -c nameserver /etc/resolv.conf
 # grep -c POST /www/logs/access.log
 421
 			]]></screen>
+		</section>
+		<section>
+			<title>binary file matches</title>
+			<screen>
+			<![CDATA[
+log@logging ~/netkiller> grep '1052302282228360003' spring.2023-02-28.log
+grep: spring.2023-02-28.log: binary file matches		
+			]]>
+			</screen>
+			<para>虽然这是文本文件，但是文件中含有二进制内容输出，导致 grep 误以为是二进制文件</para>
+			<para>解决方法 -a, --text equivalent to --binary-files=text</para>
+			<screen>
+		<![CDATA[
+log@logging ~/netkiller> grep -a '1052302282228360003' spring.2023-02-28.log
+		]]>
+			</screen>
 		</section>
 	</section>
 	<section id="grep.context">
@@ -411,4 +427,5 @@ docker:x:991:www,gitlab-runner
 			</screen>
 		</section>
 	</section>
+	
 </section>
