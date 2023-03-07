@@ -192,4 +192,93 @@ git push
 			]]>
 		</screen>
 	</section>
+	<section id="git.cherry-pick">
+		<title>Git 合并特定 commits 到另一个分支</title>
+		<para>用法</para>
+		<screen>
+		<![CDATA[
+git cherry-pick [<options>] <commit-ish>...
+
+常用options:
+    --quit                退出当前的chery-pick序列
+    --continue            继续当前的chery-pick序列
+    --abort               取消当前的chery-pick序列，恢复当前分支
+    -n, --no-commit       不自动提交
+    -e, --edit            编辑提交信息		
+		]]>
+		</screen>
+		<para>操作步骤</para>
+		<screen>
+		<![CDATA[
+git log --oneline -3
+git switch test		
+
+git log --oneline -3
+git cherry-pick 2c0a8637a46c2f22eb703a9be7f09d005ed390ff
+git push
+git log --oneline -3
+		]]>
+		</screen>
+		<para>找到我们需要合并的 commit，我需要合并的是 2c0a8637a46c2f22eb703a9be7f09d005ed390ff</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-M2 ~/w/netkiller (master)> git log -3
+commit 2c0a8637a46c2f22eb703a9be7f09d005ed390ff (HEAD -> master, origin/master)
+Author: Neo Chan <netkiller@msn.com>
+Date:   Tue Mar 7 13:59:26 2023 +0800
+
+    [TASK#12773 定时任务增加日志输出和执行结果钉钉通知](https://zentao.netkiller.cn/zentao/task-view-12773.html)
+
+commit ada2c7e1c8cd1b9f306050e6ad95a7fe1406ab41
+Author: Neo Chan <netkiller@msn.com>
+Date:   Mon Mar 6 18:54:26 2023 +0800
+
+    [TASK#12744 Excel 生成错误](https://zentao.netkiller.cn/zentao/task-view-12744.html)
+
+commit e0b828fa3941bb7d8698322a4e4b2c96aa3fe841 (origin/branch_order_gross_profit_20230302, origin/branch_dongguan_shell_20230302)
+Merge: bf3e45a d00eefb
+Author: Neo Chan <netkiller@msn.com>
+Date:   Tue Feb 28 09:51:55 2023 +0800
+
+    Merge branch 'grey'		
+		]]>
+		</screen>
+		<para>切换道目的分支</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-M2 ~/w/netkiller (master)> git switch test
+Switched to branch 'test'
+Your branch is up to date with 'origin/test'.
+neo@MacBook-Pro-M2 ~/w/netkiller (test)> git pull
+Already up to date.		
+		]]>
+		</screen>
+		<para>查看目的分支的日志</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-M2 ~/w/netkiller (test)> git log --oneline -3
+f8bf5e1 (HEAD -> test, origin/test) [TASK#12744 Excel 生成错误](https://zentao.netkiller.cn/zentao/task-view-12744.html)
+a42d15d Merge branch 'bugfix-online-20230214' into test
+c8229b1 [BUG #0] 收入成本excel优化		
+		]]>
+		</screen>
+		<para>合并代码，然后push代码</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-M2 ~/w/netkiller (test)> git cherry-pick 2c0a8637a46c2f22eb703a9be7f09d005ed390ff
+[test 235aa71] [TASK#12773 定时任务增加日志输出和执行结果钉钉通知](https://zentao.netkiller.cn/zentao/task-view-12773.html)
+ Date: Tue Mar 7 13:59:26 2023 +0800
+ 8 files changed, 66 insertions(+), 13 deletions(-)
+neo@MacBook-Pro-M2 ~/w/netkiller (test)> git push	
+		]]>
+		</screen>
+		<para>合并成功</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-M2 ~/w/netkiller (test)> git log --oneline -1
+235aa71 (HEAD -> pre, origin/pre) [TASK#12773 定时任务增加日志输出和执行结果钉钉通知](https://zentao.netkiller.cn/zentao/task-view-12773.html)
+		]]>
+		</screen>
+	</section>
+	
 </section>

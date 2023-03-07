@@ -9,4 +9,19 @@ neo@MacBook-Pro-M2 ~/w/netkiller (dev)> git diff cef86cfdb62de992b587c07425c8e7f
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>分支比较</title>
+		<para>比较两个分支的差异</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-M2 ~/w/netkiller (test)> git diff dev test --stat		
+		]]>
+		</screen>
+		<para>比较两个分支的文件差异</para>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro-M2 ~/w/netkiller (test)> git diff dev test  src/main/resources/bootstrap.yml		
+		]]>
+		</screen>
+	</section>
 </section>
