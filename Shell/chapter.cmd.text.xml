@@ -118,6 +118,35 @@ file^M
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>与管道配合使用</title>
+			<screen>
+			<![CDATA[
+[log@logging tmp]$ cat <<EOF | grep 'm'
+İsmail
+Ahmet
+Ali
+Elif
+Mehmet
+EOF
+İsmail
+Ahmet
+Mehmet			
+			]]>
+			</screen>
+			<para>多管道</para>
+			<screen>
+			<![CDATA[
+cat <<EOF | grep 'm' | tee matched_names.txt
+İsmail
+Ahmet
+Ali
+Elif
+Mehmet
+EOF			
+			]]>
+			</screen>
+		</section>
 	</section>
 
 	<section id="nl">
