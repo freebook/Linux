@@ -811,6 +811,43 @@ output {
 				</screen>
 				<para>/usr/share/logstash/bin/logstash -f date.conf</para>
 			</section>
+			<section>
+				<title>数据清洗</title>
+				<para>丢弃日志种包含 MonthShardingAlgorithm 字符串的日志</para>
+				<screen>
+				<![CDATA[
+root@logging /o/l/p/e/03# cat /srv/logstash/pipeline/filebeat.conf
+input {
+  beats {
+    port => 5044
+  }
+}
+filter{
+	if "MonthShardingAlgorithm" in [message] {
+		drop{}
+	}
+}
+output {
+    file {
+        path => "/opt/log/%{[fields][environment]}/%{[fields][service]}/%{+MM}/spring.%{+yyyy}-%{+MM}-%{+dd}.log"
+        codec => line { format => "%{message}"}
+    }
+    #file {
+    #    path => "/opt/log/%{[fields][environment]}/%{[fields][service]}/%{+MM}/spring.%{+yyyy}-%{+MM}-%{+dd}.log.json.gz"
+    #    codec => json_lines
+    #    gzip => true
+    #}
+    redis {
+        host => ["r-bp1d17217fa77e14756.redis.rds.aliyuncs.com"]
+        password => "Ejy2016redis"
+        key => "filebeat2"
+        codec => json_lines
+        data_type => "list"
+    }
+}
+				]]>
+				</screen>
+			</section>
 			<section id="grok.debug">
 				<title>grok debug 工具</title>
 				<para>http://grokdebug.herokuapp.com</para>
