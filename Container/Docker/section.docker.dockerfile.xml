@@ -199,6 +199,54 @@ nginx: digest: sha256:ad9bd1ae3a3e17dac70f32afc14baf90932949d3eaa8bebbe907726aca
 		</section>
 	</section>
 	<section>
+		<title>基于 Alpine 制作镜像</title>
+		<para>获取最新镜像</para>
+		<screen>
+		<![CDATA[
+root@netkiller ~# docker pull alpine:latest
+		]]>
+		</screen>
+		<para>运行镜像，看看这个镜像，在里面模拟一次执行</para>
+		<screen>
+		<![CDATA[
+root@netkiller ~# docker run --rm -it --name=alpine --entrypoint=sh alpine:latest
+		]]>
+		</screen>
+		<para>进入容器，修改apk库的镜像</para>
+		<screen>
+		<![CDATA[
+root@netkiller ~# docker run --rm -it --name=alpine --entrypoint=sh alpine:latest
+
+sed 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' -i /etc/apk/repositories 
+apk update
+apk add python3
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+FROM python:3-alpine
+MAINTAINER netkiller "netkiller@msn.com"
+
+RUN echo https://mirrors.aliyun.com/alpine/latest-stable/main/ > /etc/apk/repositories
+RUN pip install --no-cache-dir flask && pip3 install python-jenkins
+RUN pip install --no-cache-dir netkiller-devops --upgrade -i https://pypi.tuna.tsinghua.edu.cn/simple
+RUN mkdir -p /data 
+
+ADD ./ /data
+
+RUN chmod +x /data/devops
+RUN rm -rf /var/cache/apk/*
+
+WORKDIR /data
+
+EXPOSE 8080
+
+CMD ["python3", "app.py"]		
+		]]>
+		</screen>
+	</section>
+	<section>
 		<title>Dockerfile 缺失的工具</title>
 		<para>工作中我们常常发现官方镜像裁剪的面目全非，里面缺失很多常用工具，这种情况给我们工作带来诸多不便。</para>
 		<section>
