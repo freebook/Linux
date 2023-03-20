@@ -1643,7 +1643,9 @@ deploy-job:
 	<section id="gitlab.runner.nacos">
 		<title>持续部署 Nacos</title>
 		<para>背景，微服务开发中，常常会用到注册中心和配置中心，目前国内比较流行使用 Nacos，Nacos 的配置是保存在数据库中的，不方便维护。代码的变更与配置的版本是没有强关联的，尤其是并行开发中，我们需要多套开发和测试环境时，配置管理的工作会带来挑战，如果配置中心管理不善，就会出现各种问题，例如相互覆盖，版本不一致等等。</para>
-		<para>我更趋向让配置与代码版本强关联，让配置管理与持续集成和部署融合，配置变更由持续部署流水线自行完成，而不是让管理员去 Nacos 后台手工处理。于是变产生了下面的工具。</para>
+		<para>虽然 Nacos 也有历史记录，需要为每个人创建一个帐号，才能实现在版本管理中看到谁在什么时间修改了配置。但是即使这样，配置的版本与代码是没有关联的，我们不清楚不同的代码版本需要那些必要的配置项。</para>
+		<para>我更趋向让配置与代码版本强关联，实现配置的版本与代码的版本一致，让配置管理与持续集成和部署融合，配置变更由持续部署流水线自行完成，而不是让管理员去 Nacos 后台手工处理。于是变产生了下面的工具。</para>
+
 		<section>
 			<title>nacos 持续部署工具</title>
 			<para>安装 netkiller-devops 工具</para>
@@ -1781,7 +1783,7 @@ None
 			]]>
 			</screen>
 		</section>
-			<section>
+		<section>
 			<title>.gitlab-ci.yml 配置案例</title>
 			<para>方案一，使用 Shell 执行器，在 gitlab runner 节点上安装 netkiller-devops 包</para>
 			<screen>
