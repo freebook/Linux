@@ -272,4 +272,13 @@ rsync -auzv --delete * git@netkiller.cn:/opt/backup/code/
         ]]>
         </screen>
     </section>
+    <section>
+    	<title>找回丢失的分支</title>
+    	<screen>
+    	<![CDATA[
+git reflog 
+git checkout -b your_branch commit-id    	
+    	]]>
+    	</screen>
+    </section>
 </section>
