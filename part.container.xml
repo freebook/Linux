@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
+	&chapter.docker.xml;
+	&chapter.podman.xml;
+	&part.kubernetes.xml;
+	&chapter.container.xml;
 <part id="index"><?dbhtml dir="virtualization" ?>
 	<title>Virtualization</title>
 	&chapter.virtualization.xml;
