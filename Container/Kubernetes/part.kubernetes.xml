@@ -2,4 +2,5 @@
 <part id="index"><?dbhtml dir="kubernetes" ?>
 	<title>Kubernetes</title>
 	&chapter.kubernetes.xml;
+	&chapter.rancher.xml;
 </part>	

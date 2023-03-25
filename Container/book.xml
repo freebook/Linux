@@ -71,8 +71,7 @@
 	&book.preface.xml;
 	&chapter.docker.xml;
 	&chapter.podman.xml;
-	&chapter.kubernetes.xml;
-	&chapter.rancher.xml;
+	&part.kubernetes.xml;
 	&chapter.container.xml;
 	&chapter.virtualization.xml;
 	<!-- =========================================================================== -->
