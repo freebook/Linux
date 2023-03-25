@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="kubectl">
+<chapter id="kubectl">
 	<title>Kubernetes 集群管理</title>
 	<subtitle>kubectl - controls the Kubernetes cluster manager. </subtitle>
 	<para>kubectl是Kubernetes的命令行管理工具</para>
@@ -336,27 +336,73 @@ To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 	</section>
 	<section id="kubectl.namespace">
 		<title>namespace 命名空间</title>
-		<screen>
-		<![CDATA[
+		<section>
+			<title>查看命名空间</title>
+			<screen>
+			<![CDATA[
+root@netkiller ~# kubectl get ns
+NAME              STATUS   AGE
+default           Active   197d
+kube-system       Active   197d
+kube-public       Active   197d
+kube-node-lease   Active   197d
+longhorn-system   Active   195d
+test              Active   163d
+gitlab            Active   156d
+dev               Active   155d
+training          Active   133d
+project           Active   24h
+
+root@netkiller ~# kubectl get namespace
+NAME              STATUS   AGE
+default           Active   197d
+kube-system       Active   197d
+kube-public       Active   197d
+kube-node-lease   Active   197d
+longhorn-system   Active   195d
+test              Active   163d
+gitlab            Active   156d
+dev               Active   155d
+training          Active   133d
+project           Active   24h			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>创建命名空间</title>
+			<screen>
+			<![CDATA[
 $ kubectl create namespace new-namespace		
-		]]>
-		</screen>
-		<para> 创建 jenkins-namespace.yaml</para>
-		<screen>
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>使用 yaml 创建命名空间</title>
+			<para> 创建 jenkins-namespace.yaml</para>
+			<screen>
 			<![CDATA[
 apiVersion: v1
 kind: Namespace
 metadata:
   name: jenkins-project
 			]]>
-		</screen>
-		<screen>
+			</screen>
+			<screen>
 			<![CDATA[
 $ kubectl create -f jenkins-namespace.yaml
 namespace ”jenkins-project“ created			
 			]]>
-		</screen>
-
+			</screen>
+		</section>
+		<section>
+			<title>删除命名空间</title>
+			<screen>
+			<![CDATA[
+root@netkiller ~# kubectl delete namespace new-namespace
+namespace "new-namespace" deleted			
+			]]>
+			</screen>
+		</section>
 	</section>
 
 	<section id="kubectl.label">
@@ -3409,4 +3455,4 @@ kubectl replace -f ingress.yaml
 		</section>
 	</section>
 
-</section>
+</chapter>

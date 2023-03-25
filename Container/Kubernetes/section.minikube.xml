@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="minikube">
+<chapter id="minikube">
 	<title>Minikube</title>
 	<section id="minikube.install">
 		<title>CentOS 8 安装 minikube</title>
@@ -1224,4 +1224,4 @@ Neo-iMac:nginx neo$ minikube start --image-mirror-country=cn --insecure-registry
 			</screen>
 		</section>
 	</section>
-</section>
+</chapter>

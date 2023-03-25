@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="microk8s">
+<chapter id="microk8s">
 	<title>microk8s</title>
 	<para>https://microk8s.io</para>
 	<para>更多配置参考官网 https://github.com/ubuntu/microk8s</para>
@@ -334,5 +334,4 @@ kube-system   replicaset.apps/dashboard-metrics-scraper-78d7698477   1         1
 			</screen>
 		</section>
 	</section>
-
-</section>
+</chapter>

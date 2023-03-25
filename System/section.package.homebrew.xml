@@ -7,6 +7,21 @@
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"	
 	]]>
 	</screen>
+	<para>国内镜像安装</para>
+	<screen>
+	<![CDATA[
+/bin/zsh -c "$(curl -fsSL https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)"	
+	]]>
+	</screen>
+	<para>运行下面命令，让brew生效</para>
+	<screen>
+	<![CDATA[
+source /Users/neo/.zprofile	
+neo@MacBook-Pro-M2 ops % git config --global --add safe.directory /opt/homebrew/Library/Taps/homebrew/homebrew-core
+neo@MacBook-Pro-M2 ops % git config --global --add safe.directory /opt/homebrew/Library/Taps/homebrew/homebrew-cask
+
+	]]>
+	</screen>
 	<section>
 		<title>OpenJDK 8</title>
 		<screen>

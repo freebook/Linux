@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id$ -->
-<section id="helm">
+<chapter id="helm">
 	<title>Helm - The package manager for Kubernetes</title>
 	<para>https://helm.sh</para>
 	<section id="helm.setup">
@@ -393,4 +393,4 @@ helm repo add elastic https://helm.elastic.co
 	<section id="helm.faq">
 		<title>Helm Faq</title>
 	</section>
-</section>
+</chapter>

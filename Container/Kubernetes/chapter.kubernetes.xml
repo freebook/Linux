@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="index"><?dbhtml dir="kubernetes" ?>
-	<title>Kubernetes</title>
+
 	&section.minikube.xml;
 	&section.microk8s.xml;
 	&section.kubectl.xml;
@@ -8,4 +7,4 @@
 	&section.istio.xml;
 	&section.kubeapps.xml;
 	&section.kubernetes.helm.xml;
-</chapter>
+

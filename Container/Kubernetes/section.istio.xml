@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="istio">
+<chapter id="istio">
 	<title>istio</title>
 	<para></para>
 	<section>
@@ -26,4 +26,4 @@ metadata:
 		]]>
 		</screen>	
 	</section>
-</section>
+</chapter>

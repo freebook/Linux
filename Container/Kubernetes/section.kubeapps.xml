@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section>
+<chapter>
 	<title>Kubeapps</title>
 	<para>Kubeapps is a web-based UI for deploying and managing applications in Kubernetes clusters</para>
 	<para>
 		<ulink url="https://kubeapps.com" />
 	</para>
-</section>
+</chapter>
