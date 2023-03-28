@@ -2,6 +2,16 @@
 <!-- $Id: chapter.cmd.directory.find.xml 634 2013-07-10 11:45:59Z netkiller $ -->
 <section id="find">
 	<title>find - search for files in a directory hierarchy</title>
+	<section>
+		<title>多目录匹配</title>
+		<para>{/System,}/Library/Fonts</para>
+		<para>匹配 /System/Library/Fonts 和 /Library/Fonts 两个目录</para>
+		<screen>
+		<![CDATA[
+find {/System,}/Library/Fonts -name \*ttf		
+		]]>
+		</screen>
+	</section>
 	<section id="find.name">
 		<title>name</title>
 		<para>Find every file under directory /usr ending in "stat".</para>
