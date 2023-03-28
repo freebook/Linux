@@ -19,7 +19,42 @@
 			<title>查看所有字体</title>
 			<screen>
 			<![CDATA[
-[root@netkiller fonts]# fc-list			
+[root@netkiller fonts]# fc-list
+
+root@netkiller ~# fc-list
+/usr/share/fonts/dejavu-sans-fonts/DejaVuSans-ExtraLight.ttf: DejaVu Sans,DejaVu Sans Light:style=ExtraLight
+/usr/share/fonts/cantarell/Cantarell-Light.otf: Cantarell,Cantarell Light:style=Light,Regular
+/usr/share/fonts/cantarell/Cantarell-VF.otf: Cantarell:style=Bold
+/usr/share/fonts/dejavu-sans-fonts/DejaVuSansCondensed.ttf: DejaVu Sans,DejaVu Sans Condensed:style=Condensed,Book
+/usr/share/fonts/dejavu-sans-fonts/DejaVuSansCondensed-Bold.ttf: DejaVu Sans,DejaVu Sans Condensed:style=Condensed Bold,Bold
+/usr/share/X11/fonts/Type1/c0611bt_.pfb: Courier 10 Pitch:style=Bold Italic
+/usr/share/X11/fonts/Type1/UTBI____.pfa: Utopia:style=Bold Italic
+/usr/share/fonts/cantarell/Cantarell-Bold.otf: Cantarell:style=Bold
+/usr/share/fonts/cantarell/Cantarell-ExtraBold.otf: Cantarell,Cantarell Extra Bold:style=Extra Bold,Regular
+/usr/share/fonts/dejavu-sans-fonts/DejaVuSans-Oblique.ttf: DejaVu Sans:style=Oblique
+/usr/share/X11/fonts/Type1/c0419bt_.pfb: Courier 10 Pitch:style=Regular
+/usr/share/fonts/cantarell/Cantarell-VF.otf: Cantarell:style=Light
+/usr/share/fonts/cantarell/Cantarell-VF.otf: Cantarell:style=Regular
+/usr/share/fonts/dejavu-sans-fonts/DejaVuSansCondensed-Oblique.ttf: DejaVu Sans,DejaVu Sans Condensed:style=Condensed Oblique,Oblique
+/usr/share/fonts/cantarell/Cantarell-Thin.otf: Cantarell,Cantarell Thin:style=Thin,Regular
+/usr/share/X11/fonts/Type1/c0648bt_.pfb: Bitstream Charter:style=Regular
+/usr/share/fonts/dejavu-sans-fonts/DejaVuSans-Bold.ttf: DejaVu Sans:style=Bold
+/usr/share/X11/fonts/Type1/cursor.pfa: Cursor:style=Regular
+/usr/share/fonts/dejavu-sans-fonts/DejaVuSans.ttf: DejaVu Sans:style=Regular,Book
+/usr/share/fonts/dejavu-sans-fonts/DejaVuSans-BoldOblique.ttf: DejaVu Sans:style=Bold Oblique
+/usr/share/X11/fonts/Type1/UTB_____.pfa: Utopia:style=Bold
+/usr/share/fonts/cantarell/Cantarell-VF.otf: Cantarell
+/usr/share/fonts/dejavu-sans-fonts/DejaVuSansCondensed-BoldOblique.ttf: DejaVu Sans,DejaVu Sans Condensed:style=Condensed Bold Oblique,Bold Oblique
+/usr/share/fonts/cantarell/Cantarell-VF.otf: Cantarell:style=Extra Bold
+/usr/share/X11/fonts/Type1/c0583bt_.pfb: Courier 10 Pitch:style=Bold
+/usr/share/X11/fonts/Type1/UTI_____.pfa: Utopia:style=Italic
+/usr/share/X11/fonts/Type1/c0582bt_.pfb: Courier 10 Pitch:style=Italic
+/usr/share/fonts/cantarell/Cantarell-Regular.otf: Cantarell:style=Regular
+/usr/share/fonts/cantarell/Cantarell-VF.otf: Cantarell:style=Thin
+/usr/share/X11/fonts/Type1/c0633bt_.pfb: Bitstream Charter:style=Bold Italic
+/usr/share/X11/fonts/Type1/c0649bt_.pfb: Bitstream Charter:style=Italic
+/usr/share/X11/fonts/Type1/c0632bt_.pfb: Bitstream Charter:style=Bold
+/usr/share/X11/fonts/Type1/UTRG____.pfa: Utopia:style=Regular			
 			]]>
 			</screen>
 		</section>
