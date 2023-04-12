@@ -645,7 +645,7 @@ spec:
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="service.externalname">
 			<title>externalname</title>
 			<para>语法</para>
 			<screen>
@@ -710,9 +710,46 @@ kubectl create service externalname my-externalname --external-name bar.com
 				]]>
 				</screen>
 			</section>
+			<section>
+				<title>Example mongo</title>
+				<screen>
+				<![CDATA[
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo
+  namespace: default
+spec:
+  externalName: master
+  ports:
+  - name: mongo
+    port: 27017
+    protocol: TCP
+    targetPort: 27017
+  sessionAffinity: None
+  type: ExternalName				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>Example MySQL</title>
+				<screen>
+				<![CDATA[
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+  namespace: default
+spec:
+  externalName: dev.mysql.netkiller.cn
+  sessionAffinity: None
+  type: ExternalName				
+				]]>
+				</screen>
+			</section>
 		</section>
-		<section>
-			<title>loadbalancer</title>
+		<section id="service.loadbalancer">
+			<title>负载均衡</title>
 			<para>语法</para>
 			<screen>
 			<![CDATA[
@@ -764,6 +801,48 @@ kubectl create service loadbalancer my-lb --tcp=5678:8080
 		  targetPort: 9376
 	  type: LoadBalancer      
 		  ]]>
+				</screen>
+			</section>
+			<section>
+				<title>Example Redis</title>
+				<screen>
+				<![CDATA[
+apiVersion: v1
+kind: Service
+metadata:
+  name: test
+  namespace: default
+  resourceVersion: "42471353"
+spec:
+  allocateLoadBalancerNodePorts: true
+  clusterIP: 10.43.242.167
+  clusterIPs:
+  - 10.43.242.167
+  externalIPs:
+  - 172.18.200.55
+  externalTrafficPolicy: Cluster
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: redis
+    nodePort: 31143
+    port: 6380
+    protocol: TCP
+    targetPort: 6379
+  selector:
+    app: redis
+  sessionAffinity: None
+  type: LoadBalancer
+status:
+  loadBalancer:
+    ingress:
+    - ip: 172.18.200.5
+    - ip: 172.18.200.50
+    - ip: 172.18.200.51
+				
+				]]>
 				</screen>
 			</section>
 		</section>
@@ -1722,7 +1801,7 @@ kubectl expose deployment nginx --port=80 --target-port=8080 --type=LoadBalancer
 			</screen>
 		</section>
 		<section>
-			<title></title>
+			<title>部署容器</title>
 			<screen>
 		<![CDATA[
 kubectl create deployment registry --image=registry:latest
@@ -1730,8 +1809,6 @@ kubectl get deploy
 		]]>
 			</screen>
 		</section>
-
-
 		<section>
 			<title>删除 deployment</title>
 			<screen>
@@ -1783,6 +1860,15 @@ kubectl rollout undo deployment/nginx-deployment --to-revision=3
 		]]>
 			</screen>
 		</section>
+		<section id="rollout.restart">
+			<title>重启容器</title>
+			<screen>
+			<![CDATA[
+root@netkiller ~/neo (master)# kubectl rollout restart deployment netkiller -n project			
+			]]>
+			</screen>
+		</section>
+
 	</section>
 
 	<section id="kubectl.logs">
