@@ -1131,7 +1131,7 @@ helm uninstall traefik-crd --namespace kube-system
 				</para>
 				<screen>
 			<![CDATA[
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.3.0/deploy/static/provider/cloud/deploy.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.7.0/deploy/static/provider/cloud/deploy.yaml
 			]]>
 				</screen>
 				<para>修改镜像库地址，否则无法下载</para>
@@ -1140,7 +1140,9 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/cont
 wget https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.3.0/deploy/static/provider/cloud/deploy.yaml
 vim deploy.yaml
 :%s:registry.k8s.io/ingress-nginx/:registry.cn-hangzhou.aliyuncs.com/google_containers/:g  			
-:%s:registry.cn-hangzhou.aliyuncs.com/google_containers/controller:registry.cn-hangzhou.aliyuncs.com/google_containers/nginx-ingress-controller:g 
+:%s:registry.cn-hangzhou.aliyuncs.com/google_containers/controller:registry.cn-hangzhou.aliyuncs.com/google_containers/nginx-ingress-controller:g
+
+kubectl apply -f deploy.yaml  
 			]]>
 				</screen>
 				<para>svclb-ingress-nginx-controller 启动不起来</para>

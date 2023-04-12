@@ -7,6 +7,20 @@
 	&section.package.dnf.xml;
 	&section.package.yum.xml;
 	&section.package.homebrew.xml;
+	<section id="SDKMAN">
+		<title>SDKMAN</title>
+		<screen>
+		<![CDATA[
+curl -s "https://get.sdkman.io" | bash		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+sdk install gradle 8.0.2		
+		]]>
+		</screen>
+	</section>
 	<section>
 		<title>清理安装包</title>
 		<screen>
