@@ -441,27 +441,7 @@ EOF
 			</screen>
 		</section>
 	</section>
-	<section id="gitlab.runner.maven">
-		<title>制作 Maven 镜像</title>
-		<para>自建 Maven 仓库，需要配置 settings.xml，这时就需要制作一个 Maven 镜像，同事有 COPY 命令把 settings.xml 文件复制到 /usr/share/maven/conf/settings.xml 目录</para>
-		<screen>
-    <![CDATA[
-[root@netkiller jdk11]# ls
-Dockerfile  build.sh  settings.xml
 
-[root@netkiller jdk11]# cat Dockerfile
-FROM maven:3.8.6-openjdk-11
-
-COPY settings.xml /root/.m2/settings.xml
-COPY settings.xml /usr/share/maven/conf/settings.xml
-
-[root@netkiller jdk11]# cat build.sh
-docker build -t "registry.netkiller.cn/share/maven:3.8.6-openjdk-11" .
-docker push registry.netkiller.cn/share/maven:3.8.6-openjdk-11    
-    ]]>
-		</screen>
-		<para></para>
-	</section>
 	<section id="gitlab.runner.tags">
 		<title>tags 的使用方法</title>
 		<para>tags 是给 Gitlab Runner 打个标签，我的用法是多次注册，例如 shell 执行器的标签是 shell, Docker 执行器的标签是 docker，这样便可以在.gitlab-ci.yml文件中来选择使用那个执行器来触发操作。</para>
@@ -697,137 +677,6 @@ deploy-job:
     - scp src/main/docker/docker-compose.yaml www@$HOST:/opt/netkiller.cn/api.netkiller.cn/
     - ssh www@$HOST "sudo docker-compose -f /opt/netkiller.cn/api.netkiller.cn/docker-compose.yaml up"
     - ssh www@$HOST "sudo docker-compose -f /opt/netkiller.cn/api.netkiller.cn/docker-compose.yaml restart"		
-		]]>
-		</screen>
-	</section>
-	<section id="gitlab.runner.JaCoCo">
-		<title>JaCoCo</title>
-		<para>
-			JaCoCo Java Code Coverage Library
-			<ulink url="https://www.jacoco.org/jacoco/index.html" />
-		</para>
-		<para>pom.xml 中必须有单元测试依赖</para>
-		<screen>
-		<![CDATA[
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>		
-		]]>
-		</screen>
-		<para>不能跳过单元测试</para>
-		<screen>
-		<![CDATA[
-			 <plugin>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<skip>false</skip>
-				</configuration>
-			</plugin> 		
-		]]>
-		</screen>
-		<para>添加 JaCoCo 插件</para>
-		<screen>
-		<![CDATA[
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>report</id>
-						<phase>test</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>		
-		]]>
-		</screen>
-		<para>最后运行 mvn test 调试一下，输入类似下面</para>
-		<screen>
-		<![CDATA[
-[INFO] ------------------------< cn.netkiller:config >-------------------------
-[INFO] Building config 0.0.1-SNAPSHOT
-[INFO] --------------------------------[ jar ]---------------------------------
-[INFO] 
-[INFO] --- jacoco-maven-plugin:0.8.7:prepare-agent (default) @ config ---
-[INFO] argLine set to -javaagent:/Users/neo/.m2/repository/org/jacoco/org.jacoco.agent/0.8.7/org.jacoco.agent-0.8.7-runtime.jar=destfile=/Users/neo/workspace/microservice/config/target/jacoco.exec
-[INFO] 
-[INFO] --- maven-resources-plugin:3.2.0:resources (default-resources) @ config ---
-[INFO] Using 'UTF-8' encoding to copy filtered resources.
-[INFO] Using 'UTF-8' encoding to copy filtered properties files.
-[INFO] Copying 1 resource
-[INFO] Copying 6 resources
-[INFO] 
-[INFO] --- maven-compiler-plugin:3.8.1:compile (default-compile) @ config ---
-[INFO] Nothing to compile - all classes are up to date
-[INFO] 
-[INFO] --- maven-resources-plugin:3.2.0:testResources (default-testResources) @ config ---
-[INFO] Using 'UTF-8' encoding to copy filtered resources.
-[INFO] Using 'UTF-8' encoding to copy filtered properties files.
-[INFO] Copying 1 resource
-[INFO] 
-[INFO] --- maven-compiler-plugin:3.8.1:testCompile (default-testCompile) @ config ---
-[INFO] Nothing to compile - all classes are up to date
-[INFO] 
-[INFO] --- maven-surefire-plugin:2.22.2:test (default-test) @ config ---
-[INFO] 
-[INFO] -------------------------------------------------------
-[INFO]  T E S T S
-[INFO] -------------------------------------------------------
-[INFO] 
-[INFO] Results:
-[INFO] 
-[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0
-[INFO] 
-[INFO] 
-[INFO] --- jacoco-maven-plugin:0.8.7:report (report) @ config ---
-[INFO] Loading execution data file /Users/neo/workspace/microservice/config/target/jacoco.exec
-[INFO] Analyzed bundle 'config' with 1 classes
-[INFO] ------------------------------------------------------------------------
-[INFO] BUILD SUCCESS
-[INFO] ------------------------------------------------------------------------
-[INFO] Total time:  3.335 s
-[INFO] Finished at: 2021-10-22T15:52:36+08:00
-[INFO] ------------------------------------------------------------------------		
-		]]>
-		</screen>
-		<para>配置持续集成流水线 .gitlab-ci.yml 文件</para>
-		<screen>
-		<![CDATA[
-cache:
-  untracked: true
-
-stages:
-  - build
-  - test
-  - deploy
-		
-test-job:
-  stage: test
-  variables:
-    GIT_STRATEGY: none
-  only: 
-    - tags
-    - development
-    - testing
-  script:
-    - mvn test
-  after_script:
-    - lrsync 'zito-admin/target/site/*' www@report.netkiller.cn:/opt/netkiller.cn/report.netkiller.cn
-    - wechat -t 1 代码覆盖率报告 http://report.netkiller.cn/jacoco/index.html		
 		]]>
 		</screen>
 	</section>
@@ -1513,6 +1362,421 @@ deploy-job:
   environment:
     name: $CI_COMMIT_BRANCH
     url: $CI_COMMIT_BRANCH.netkiller.cn/api/monitor/health		
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section id="gitlab.runner.Java">
+		<title>Java 持续集成相关</title>
+
+		<section id="gitlab.runner.maven">
+			<title>制作 Maven 镜像</title>
+			<para>自建 Maven 仓库，需要配置 settings.xml，这时就需要制作一个 Maven 镜像，同事有 COPY 命令把 settings.xml 文件复制到 /usr/share/maven/conf/settings.xml 目录</para>
+			<screen>
+    <![CDATA[
+[root@netkiller jdk11]# ls
+Dockerfile  build.sh  settings.xml
+
+[root@netkiller jdk11]# cat Dockerfile
+FROM maven:3.8.6-openjdk-11
+
+COPY settings.xml /root/.m2/settings.xml
+COPY settings.xml /usr/share/maven/conf/settings.xml
+
+[root@netkiller jdk11]# cat build.sh
+docker build -t "registry.netkiller.cn/share/maven:3.8.6-openjdk-11" .
+docker push registry.netkiller.cn/share/maven:3.8.6-openjdk-11    
+    ]]>
+			</screen>
+			<para></para>
+		</section>
+		<section id="gitlab.runner.JaCoCo">
+			<title>JaCoCo</title>
+			<para>
+				JaCoCo Java Code Coverage Library
+				<ulink url="https://www.jacoco.org/jacoco/index.html" />
+			</para>
+			<para>pom.xml 中必须有单元测试依赖</para>
+			<screen>
+		<![CDATA[
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>		
+		]]>
+			</screen>
+			<para>不能跳过单元测试</para>
+			<screen>
+		<![CDATA[
+			 <plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<skip>false</skip>
+				</configuration>
+			</plugin> 		
+		]]>
+			</screen>
+			<para>添加 JaCoCo 插件</para>
+			<screen>
+		<![CDATA[
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>		
+		]]>
+			</screen>
+			<para>最后运行 mvn test 调试一下，输入类似下面</para>
+			<screen>
+		<![CDATA[
+[INFO] ------------------------< cn.netkiller:config >-------------------------
+[INFO] Building config 0.0.1-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.7:prepare-agent (default) @ config ---
+[INFO] argLine set to -javaagent:/Users/neo/.m2/repository/org/jacoco/org.jacoco.agent/0.8.7/org.jacoco.agent-0.8.7-runtime.jar=destfile=/Users/neo/workspace/microservice/config/target/jacoco.exec
+[INFO] 
+[INFO] --- maven-resources-plugin:3.2.0:resources (default-resources) @ config ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[INFO] Copying 1 resource
+[INFO] Copying 6 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.1:compile (default-compile) @ config ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-resources-plugin:3.2.0:testResources (default-testResources) @ config ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.1:testCompile (default-testCompile) @ config ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.22.2:test (default-test) @ config ---
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.7:report (report) @ config ---
+[INFO] Loading execution data file /Users/neo/workspace/microservice/config/target/jacoco.exec
+[INFO] Analyzed bundle 'config' with 1 classes
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  3.335 s
+[INFO] Finished at: 2021-10-22T15:52:36+08:00
+[INFO] ------------------------------------------------------------------------		
+		]]>
+			</screen>
+			<para>配置持续集成流水线 .gitlab-ci.yml 文件</para>
+			<screen>
+		<![CDATA[
+cache:
+  untracked: true
+
+stages:
+  - build
+  - test
+  - deploy
+		
+test-job:
+  stage: test
+  variables:
+    GIT_STRATEGY: none
+  only: 
+    - tags
+    - development
+    - testing
+  script:
+    - mvn test
+  after_script:
+    - lrsync 'zito-admin/target/site/*' www@report.netkiller.cn:/opt/netkiller.cn/report.netkiller.cn
+    - wechat -t 1 代码覆盖率报告 http://report.netkiller.cn/jacoco/index.html		
+		]]>
+			</screen>
+		</section>
+		<section>
+			<title>并行开发解决版本冲突</title>
+			<para>Maven 项目 parent 文件</para>
+			<screen>
+			<![CDATA[
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>cn.netkiller</groupId>
+    <artifactId>test</artifactId>
+    <version>0.0.1${project.branch}${project.phase}</version>
+    <packaging>pom</packaging>
+    <name>test</name>
+    <url>http://maven.apache.org</url>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>18</maven.compiler.source>
+        <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
+        <selenium.version>4.8.1</selenium.version>
+        <project.phase>-SNAPSHOT</project.phase>
+        <project.branch></project.branch>
+    </properties>
+    <distributionManagement>
+        <repository>
+            <id>repository</id>
+            <name>Release repository</name>
+            <url>https://maven.netkiller.cn/repository/repository/</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Snapshots repository</name>
+            <url>https://maven.netkiller.cn/repository/snapshots/</url>
+        </snapshotRepository>
+
+    </distributionManagement>
+    <modules>
+        <module>common</module>
+        <module>selenium</module>
+    </modules>
+
+</project>			
+			]]>
+			</screen>
+			<para>模块</para>
+			<screen>
+			<![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <packaging>jar</packaging>
+    <parent>
+        <groupId>cn.netkiller</groupId>
+        <artifactId>test</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>common</artifactId>
+    <!--    <version>${project.parent.version}${project.branch}</version>-->
+
+    <properties>
+        <maven.compiler.source>18</maven.compiler.source>
+        <maven.compiler.target>18</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+</project>
+			]]>
+			</screen>
+			<para>构建快照版本 common-0.0.1-SNAPSHOT.jar</para>
+			<screen>
+			<![CDATA[
+neo@macbook-pro-neo ~/w/test> mvn clean package deploy
+
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] test                                                               [pom]
+[INFO] common                                                             [jar]
+[INFO] selenium                                                           [jar]
+[INFO] 
+[INFO] -------------------------< cn.netkiller:test >--------------------------
+[INFO] Building test 0.0.1-SNAPSHOT                                       [1/3]
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ test ---
+[INFO] 
+[INFO] ------------------------< cn.netkiller:common >-------------------------
+[INFO] Building common 0.0.1-SNAPSHOT                                     [2/3]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ common ---
+[INFO] Deleting /Users/neo/workspace/test/common/target
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ common ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 0 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ common ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /Users/neo/workspace/test/common/target/classes
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ common ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /Users/neo/workspace/test/common/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ common ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.12.4:test (default-test) @ common ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ common ---
+[INFO] Building jar: /Users/neo/workspace/test/common/target/common-0.0.1-SNAPSHOT.jar
+[INFO] 
+[INFO] -----------------------< cn.netkiller:selenium >------------------------
+[INFO] Building selenium 0.0.1-SNAPSHOT                                   [3/3]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ selenium ---
+[INFO] Deleting /Users/neo/workspace/test/selenium/target
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ selenium ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /Users/neo/workspace/test/selenium/src/main/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.1:compile (default-compile) @ selenium ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 8 source files to /Users/neo/workspace/test/selenium/target/classes
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ selenium ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /Users/neo/workspace/test/selenium/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.1:testCompile (default-testCompile) @ selenium ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 2 source files to /Users/neo/workspace/test/selenium/target/test-classes
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.12.4:test (default-test) @ selenium ---
+[INFO] 
+[INFO] --- maven-jar-plugin:3.1.1:jar (default-jar) @ selenium ---
+[INFO] Building jar: /Users/neo/workspace/test/selenium/target/selenium-0.0.1-SNAPSHOT.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for test 0.0.1-SNAPSHOT:
+[INFO] 
+[INFO] test ............................................... SUCCESS [  0.125 s]
+[INFO] common ............................................. SUCCESS [  1.422 s]
+[INFO] selenium ........................................... SUCCESS [  1.457 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  3.158 s
+[INFO] Finished at: 2023-04-05T18:32:45+08:00
+[INFO] ------------------------------------------------------------------------	
+			]]>
+			</screen>
+			<para>构建开发环境快照版本 common-0.0.1-dev-SNAPSHOT.jar</para>
+			<screen>
+			<![CDATA[
+neo@macbook-pro-neo ~/w/t/common> mvn clean package -Dproject.branch=-dev
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------< cn.netkiller:common >-------------------------
+[INFO] Building common 0.0.1-dev-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ common ---
+[INFO] Deleting /Users/neo/workspace/test/common/target
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ common ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 0 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ common ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /Users/neo/workspace/test/common/target/classes
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ common ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /Users/neo/workspace/test/common/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ common ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.12.4:test (default-test) @ common ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ common ---
+[INFO] Building jar: /Users/neo/workspace/test/common/target/common-0.0.1-dev-SNAPSHOT.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  1.384 s
+[INFO] Finished at: 2023-04-05T18:34:50+08:00
+[INFO] ------------------------------------------------------------------------			
+			]]>
+			</screen>
+			<para>构建RELEASE版本 common-0.0.1.jar</para>
+			<screen>
+			<![CDATA[
+neo@macbook-pro-neo ~/w/t/common> mvn clean package -Dproject.phase=
+			
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for test 0.0.1:
+[INFO] 
+[INFO] common ............................................. SUCCESS [  6.828 s]
+[INFO] selenium ........................................... SUCCESS [  6.351 s]
+[INFO] test ............................................... SUCCESS [  3.274 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  16.631 s
+[INFO] Finished at: 2023-04-05T16:16:28+08:00
+[INFO] ------------------------------------------------------------------------
+			]]>
+			</screen>
+			<para>构建带有 “-RELEASE” 后缀的版本 common-0.0.1-RELEASE.jar</para>
+			<screen>
+			<![CDATA[
+neo@macbook-pro-neo ~/w/t/common> mvn clean package -Dproject.phase=-RELEASE
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------< cn.netkiller:common >-------------------------
+[INFO] Building common 0.0.1-RELEASE
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ common ---
+[INFO] Deleting /Users/neo/workspace/test/common/target
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ common ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 0 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ common ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /Users/neo/workspace/test/common/target/classes
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ common ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /Users/neo/workspace/test/common/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ common ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.12.4:test (default-test) @ common ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ common ---
+[INFO] Building jar: /Users/neo/workspace/test/common/target/common-0.0.1-RELEASE.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  1.656 s
+[INFO] Finished at: 2023-04-05T18:36:30+08:00
+[INFO] ------------------------------------------------------------------------			
 			]]>
 			</screen>
 		</section>
