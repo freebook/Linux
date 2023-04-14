@@ -5,4 +5,14 @@
 		<title>链接到 Kubernetes</title>
 		
 	</section>
+	<section>
+		<title>504 Gateway Time-out</title>
+		<screen>
+		<![CDATA[
+nginx.ingress.kubernetes.io/proxy-connect-timeout: "300"
+nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+nginx.ingress.kubernetes.io/proxy-send-timeout: "300"		
+		]]>
+		</screen>
+	</section>
 </chapter>

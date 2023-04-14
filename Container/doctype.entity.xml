@@ -55,7 +55,9 @@
 <!ENTITY section.container.kubernetes.xml	SYSTEM "section.container.kubernetes.xml">
 <!ENTITY section.container.docker.xml		SYSTEM "section.container.docker.xml">
 
-<!ENTITY chapter.podman.xml  					SYSTEM "Podman/chapter.podman.xml">
-<!ENTITY section.podman.install.xml  			SYSTEM "Podman/section.podman.install.xml">
+<!ENTITY chapter.podman.xml  				SYSTEM "Podman/chapter.podman.xml">
+<!ENTITY section.podman.install.xml  		SYSTEM "Podman/section.podman.install.xml">
 <!ENTITY section.podman.cli.xml  			SYSTEM "Podman/section.podman.cli.xml">
-<!ENTITY section.podman.example.xml  			SYSTEM "Podman/section.podman.example.xml">
+<!ENTITY section.podman.example.xml  		SYSTEM "Podman/section.podman.example.xml">
+
+<!ENTITY chapter.aliyun.xml			  		SYSTEM "Aliyun/chapter.aliyun.xml">
