@@ -13,7 +13,7 @@ wget https://www.sonatype.com/oss-thank-you-tar.gz
 			<title>Docker</title>
 			<screen>
 			<![CDATA[
-docker run -d -p 8081:8081 --restart=always --name nexus sonatype/nexus3			
+docker run -d -p 8081:8081 --restart=always --name nexus sonatype/nexus3
 			]]>
 			</screen>
 		</section>
