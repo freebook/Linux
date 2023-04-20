@@ -411,5 +411,5 @@ split -b 10m large.bin new_file_prefix
 			]]></screen>
 		</section>
 	</section>
-	&chapter.cmd.directory.find.xml;
+	&section.cmd.directory.find.xml;
 </section>

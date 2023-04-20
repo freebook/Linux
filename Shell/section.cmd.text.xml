@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: chapter.cmd.text.xml 591 2013-05-20 10:15:16Z netkiller $ -->
+<!-- $Id: section.cmd.text.xml 591 2013-05-20 10:15:16Z netkiller $ -->
 <section id="text">
 	<title>文本处理</title>
 	<section id="iconv">
@@ -628,8 +628,8 @@ devpts	     /dev/pts	          devpts     mode=0620,gid=5       0 0
 			<para>将16个空格替换为一个TAB符</para>
 		</section>
 	</section>
-	&chapter.cmd.text.grep.xml;
-	&chapter.cmd.text.sort.xml;
+	&section.cmd.text.grep.xml;
+	&section.cmd.text.sort.xml;
 	&chapter.text.awk.xml;
 	&chapter.text.sed.xml;
 </section>

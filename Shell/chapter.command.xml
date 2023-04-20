@@ -3,16 +3,16 @@
 <chapter id="index"><?dbhtml dir="cli" ?>
 	<title>Shell 命令</title>
 
-	&chapter.cmd.man.xml;
-	&chapter.cmd.sys.xml;
-	&chapter.cmd.directory.xml;
-	&chapter.cmd.compress.xml;
-	&chapter.cmd.datetime.xml;
-	&chapter.cmd.numeric.xml;
-	&chapter.cmd.text.xml;
-	&chapter.cmd.table.xml;
-	&chapter.cmd.io.xml;
-	&chapter.cmd.binary.xml;
+	&section.cmd.man.xml;
+	&section.cmd.sys.xml;
+	&section.cmd.directory.xml;
+	&section.cmd.compress.xml;
+	&section.cmd.datetime.xml;
+	&section.cmd.numeric.xml;
+	&section.cmd.text.xml;
+	&section.cmd.table.xml;
+	&section.cmd.io.xml;
+	&section.cmd.binary.xml;
 
 	&chapter.text.vim.xml;
 	&chapter.utility.wget.xml;
