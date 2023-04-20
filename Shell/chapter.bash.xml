@@ -1,242 +1,57 @@
 <!-- http://tldp.org/LDP/abs/html/index.html -->
 <chapter id="index"><?dbhtml dir="bash" ?>
 	<title>Bash Shell</title>
-	<section id="bash.key">
-		<title>快捷键</title>
-		<screen>
-		<![CDATA[
-Ctrl+p shell中上一个命令,或者 文本中移动到上一行
-Ctrl+n shell中下一个命令,或者 文本中移动到下一行
-Ctrl+r 往后搜索历史命令
-Ctrl+s 往前搜索历史命令
-Ctrl+f 光标前移
-Ctrl+b 光标后退
-Ctrl+a 到行首
-Ctrl+e 到行尾
-Ctrl+d 删除一个字符,删除一个字符，相当于通常的Delete键
-Ctrl+h 退格删除一个字符,相当于通常的Backspace键
-Ctrl+u 删除到行首
-Ctrl+k 删除到行尾
-Ctrl+l 类似 clear 命令效果
-Ctrl+y 粘贴		
-		]]>
-		</screen>
-	</section>
-	<section>
-		<title>执行程序返回值</title>
-		<screen>
-		<![CDATA[
-"OS error code 1: Operation not permitted"
-"OS error code 2: No such file or directory"
-"OS error code 3: No such process"
-"OS error code 4: Interrupted system call"
-"OS error code 5: Input/output error"
-"OS error code 6: No such device or address"
-"OS error code 7: Argument list too long"
-"OS error code 8: Exec format error"
-"OS error code 9: Bad file descriptor"
-"OS error code 10: No child processes"
-"OS error code 11: Resource temporarily unavailable"
-"OS error code 12: Cannot allocate memory"
-"OS error code 13: Permission denied"
-"OS error code 14: Bad address"
-"OS error code 15: Block device required"
-"OS error code 16: Device or resource busy"
-"OS error code 17: File exists"
-"OS error code 18: Invalid cross-device link"
-"OS error code 19: No such device"
-"OS error code 20: Not a directory"
-"OS error code 21: Is a directory"
-"OS error code 22: Invalid argument"
-"OS error code 23: Too many open files in system"
-"OS error code 24: Too many open files"
-"OS error code 25: Inappropriate ioctl for device"
-"OS error code 26: Text file busy"
-"OS error code 27: File too large"
-"OS error code 28: No space left on device"
-"OS error code 29: Illegal seek"
-"OS error code 30: Read-only file system"
-"OS error code 31: Too many links"
-"OS error code 32: Broken pipe"
-"OS error code 33: Numerical argument out of domain"
-"OS error code 34: Numerical result out of range"
-"OS error code 35: Resource deadlock avoided"
-"OS error code 36: File name too long"
-"OS error code 37: No locks available"
-"OS error code 38: Function not implemented"
-"OS error code 39: Directory not empty"
-"OS error code 40: Too many levels of symbolic links"
-"OS error code 42: No message of desired type"
-"OS error code 43: Identifier removed"
-"OS error code 44: Channel number out of range"
-"OS error code 45: Level 2 not synchronized"
-"OS error code 46: Level 3 halted"
-"OS error code 47: Level 3 reset"
-"OS error code 48: Link number out of range"
-"OS error code 49: Protocol driver not attached"
-"OS error code 50: No CSI structure available"
-"OS error code 51: Level 2 halted"
-"OS error code 52: Invalid exchange"
-"OS error code 53: Invalid request descriptor"
-"OS error code 54: Exchange full"
-"OS error code 55: No anode"
-"OS error code 56: Invalid request code"
-"OS error code 57: Invalid slot"
-"OS error code 59: Bad font file format"
-"OS error code 60: Device not a stream"
-"OS error code 61: No data available"
-"OS error code 62: Timer expired"
-"OS error code 63: Out of streams resources"
-"OS error code 64: Machine is not on the network"
-"OS error code 65: Package not installed"
-"OS error code 66: Object is remote"
-"OS error code 67: Link has been severed"
-"OS error code 68: Advertise error"
-"OS error code 69: Srmount error"
-"OS error code 70: Communication error on send"
-"OS error code 71: Protocol error"
-"OS error code 72: Multihop attempted"
-"OS error code 73: RFS specific error"
-"OS error code 74: Bad message"
-"OS error code 75: Value too large for defined data type"
-"OS error code 76: Name not unique on network"
-"OS error code 77: File descriptor in bad state"
-"OS error code 78: Remote address changed"
-"OS error code 79: Can not access a needed shared library"
-"OS error code 80: Accessing a corrupted shared library"
-"OS error code 81: .lib section in a.out corrupted"
-"OS error code 82: Attempting to link in too many shared libraries"
-"OS error code 83: Cannot exec a shared library directly"
-"OS error code 84: Invalid or incomplete multibyte or wide character"
-"OS error code 85: Interrupted system call should be restarted"
-"OS error code 86: Streams pipe error"
-"OS error code 87: Too many users"
-"OS error code 88: Socket operation on non-socket"
-"OS error code 89: Destination address required"
-"OS error code 90: Message too long"
-"OS error code 91: Protocol wrong type for socket"
-"OS error code 92: Protocol not available"
-"OS error code 93: Protocol not supported"
-"OS error code 94: Socket type not supported"
-"OS error code 95: Operation not supported"
-"OS error code 96: Protocol family not supported"
-"OS error code 97: Address family not supported by protocol"
-"OS error code 98: Address already in use"
-"OS error code 99: Cannot assign requested address"
-"OS error code 100: Network is down"
-"OS error code 101: Network is unreachable"
-"OS error code 102: Network dropped connection on reset"
-"OS error code 103: Software caused connection abort"
-"OS error code 104: Connection reset by peer"
-"OS error code 105: No buffer space available"
-"OS error code 106: Transport endpoint is already connected"
-"OS error code 107: Transport endpoint is not connected"
-"OS error code 108: Cannot send after transport endpoint shutdown"
-"OS error code 109: Too many references: cannot splice"
-"OS error code 110: Connection timed out"
-"OS error code 111: Connection refused"
-"OS error code 112: Host is down"
-"OS error code 113: No route to host"
-"OS error code 114: Operation already in progress"
-"OS error code 115: Operation now in progress"
-"OS error code 116: Stale NFS file handle"
-"OS error code 117: Structure needs cleaning"
-"OS error code 118: Not a XENIX named type file"
-"OS error code 119: No XENIX semaphores available"
-"OS error code 120: Is a named type file"
-"OS error code 121: Remote I/O error"
-"OS error code 122: Disk quota exceeded"
-"OS error code 123: No medium found"
-"OS error code 124: Wrong medium type"
-"OS error code 125: Operation canceled"
-"OS error code 126: Required key not available"
-"OS error code 127: Key has expired"
-"OS error code 128: Key has been revoked"
-"OS error code 129: Key was rejected by service"
-"OS error code 130: Owner died"
-"OS error code 131: State not recoverable"		
-		]]>
-		</screen>
-	</section>
 	<section id="option">
 		<title>bash - GNU Bourne-Again SHell</title>
 		<section>
 			<title>-n 检查脚本是否有语法错误</title>
-			<screen><![CDATA[
+			<screen>
+			<![CDATA[
 
-			]]></screen>
+			]]>
+			</screen>
 		</section>
 		<section>
 			<title>-x 显示详细运行过程</title>
-			<screen><![CDATA[
+			<screen>
+			<![CDATA[
 
-			]]></screen>
+			]]>
+			</screen>
 		</section>
 	</section>
-
-
-	<section id="introduction">
-		<title>Introduction</title>
-		<section id="commands.chsh">
-			<title>chsh - change login shell</title>
-			<screen><![CDATA[
-# chsh --list
-/bin/sh
-/bin/bash
-/sbin/nologin
-/bin/tcsh
-/bin/csh
-/bin/ksh
-
-# chsh --list-shells
-/bin/sh
-/bin/bash
-/sbin/nologin
-/bin/dash
-/bin/zsh
-		]]></screen>
-			<screen><![CDATA[
-$ chsh -s /bin/zsh
-or
-$ usermod -s /bin/zsh
-		]]></screen>
-			<para>show me current shell</para>
-			<screen><![CDATA[
-neo@netkiller:~$ echo $SHELL
-/bin/zsh
-
-neo@netkiller:~$ cat /etc/passwd|grep neo
-neo:x:1000:1000:Neo Chen,,,:/home/neo:/bin/zsh
-		]]></screen>
-		</section>
-		<section>
-			<title>切换身份</title>
-			<para>判断当前用户是否为root</para>
-			<screen><![CDATA[
+	<section>
+		<title>切换身份</title>
+		<para>判断当前用户是否为root</para>
+		<screen>
+		<![CDATA[
 #!/bin/bash
 if [[ $EUID -ne 0 ]]; then
    echo "This script must be run as root" 
    exit 1
-fi		
-		]]></screen>
-			<para>使用 #!/bin/su 可以切换当前shell的所有者，全局切换</para>
-			<screen><![CDATA[
+fi
+		]]>
+		</screen>
+		<para>使用 #!/bin/su 可以切换当前shell的所有者，全局切换</para>
+		<screen>
+		<![CDATA[
 # cat test.sh
 
 #!/bin/su www
 ls
-		]]></screen>
-			<para>局部切换，运行$PROG后将pid（进程ID）写入$PIDFILE文件</para>
-			<screen>
+		]]>
+		</screen>
+		<para>局部切换，运行$PROG后将pid（进程ID）写入$PIDFILE文件</para>
+		<screen>
 		<![CDATA[
 su - $USER -c "$PROG & echo \$! > $PIDFILE"
 		]]>
-			</screen>
-		</section>
+		</screen>
+	</section>
 
-		<section id="stdin-stdout-stderr">
-			<title>I/O 重定向</title>
-			<screen>
+	<section id="stdin-stdout-stderr">
+		<title>I/O 重定向</title>
+		<screen>
 		<![CDATA[
 cat <<End-of-message
    8 -------------------------------------
@@ -248,9 +63,9 @@ cat <<End-of-message
   14 -------------------------------------
 End-of-message
 		]]>
-			</screen>
-			<para></para>
-			<screen>
+		</screen>
+		<para></para>
+		<screen>
 		<![CDATA[
 MYSQL=mysql
 MYSQLOPTS="-h $zs_host -u $zs_user -p$zs_pass $zs_db"
@@ -269,11 +84,11 @@ SELECT
 FROM  category
 SQL
 		]]>
-			</screen>
-			<para><![CDATA[<<-LimitString]]>可以抑制输出时前边的tab(不是空格).
-				这可以增加一个脚本的可读性.
-			</para>
-			<screen>
+		</screen>
+		<para><![CDATA[<<-LimitString]]>可以抑制输出时前边的tab(不是空格).
+			这可以增加一个脚本的可读性.
+		</para>
+		<screen>
 		<![CDATA[
 cat <<-ENDOFMESSAGE
 	This is line 1 of the message.
@@ -284,9 +99,9 @@ cat <<-ENDOFMESSAGE
 ENDOFMESSAGE
 
 		]]>
-			</screen>
-			<para>关闭参数替换</para>
-			<screen>
+		</screen>
+		<para>关闭参数替换</para>
+		<screen>
 		<![CDATA[
 NAME="John Doe"
 RESPONDENT="the author of this fine script"
@@ -298,8 +113,8 @@ Greetings to you, $NAME, from $RESPONDENT.
 
 Endofmessage
 		]]>
-			</screen>
-			<screen>
+		</screen>
+		<screen>
 		<![CDATA[
 NAME="John Doe"
 RESPONDENT="the author of this fine script"
@@ -311,23 +126,23 @@ Greetings to you, $NAME, from $RESPONDENT.
 
 Endofmessage
 		]]>
-			</screen>
-			<section>
-				<title>stdout</title>
-				<screen><![CDATA[
+		</screen>
+		<section>
+			<title>stdout</title>
+			<screen><![CDATA[
 $ ln -s /dev/stdout test
 $ cat file > test
 			]]></screen>
-			</section>
-			<section>
-				<title>error 重定向</title>
-				<screen>
+		</section>
+		<section>
+			<title>error 重定向</title>
+			<screen>
 			<![CDATA[
 your_shell 2>&1
 			]]>
-				</screen>
-				<para>错误输出演示</para>
-				<screen>
+			</screen>
+			<para>错误输出演示</para>
+			<screen>
 			<![CDATA[
 [root@localhost ~]# id ethereum
 id: ethereum: no such user
@@ -344,38 +159,38 @@ id: ethereum: no such user
 
 查看 test 文件，内容空。
 			]]>
-				</screen>
-				<para>继续做实验</para>
-				<screen>
+			</screen>
+			<para>继续做实验</para>
+			<screen>
 			<![CDATA[
 [root@localhost ~]# id ethereum > test 2>&1 
 [root@localhost ~]# cat test 
 id: ethereum: no such user
 			]]>
-				</screen>
-				<para>测试实验结果成功了，将错误输出转到标准输出，然后写入文件。</para>
-			</section>
-			<section>
-				<title>使用块记录日志</title>
-				<screen>
+			</screen>
+			<para>测试实验结果成功了，将错误输出转到标准输出，然后写入文件。</para>
+		</section>
+		<section>
+			<title>使用块记录日志</title>
+			<screen>
 			<![CDATA[
 {
 	...
 	...
 } > $LOGFILE 2>&1
 			]]>
-				</screen>
-			</section>
-			<section id="tee">
-				<title>tee - read from standard input and write to standard output and files</title>
-				<screen><![CDATA[
+			</screen>
+		</section>
+		<section id="tee">
+			<title>tee - read from standard input and write to standard output and files</title>
+			<screen><![CDATA[
 echo 1 > /proc/sys/net/ipv4/ip_forward
 echo 1 | sudo tee /proc/sys/net/ipv4/ip_forward;
 			]]></screen>
 
-				<section id="">
-					<title>重定向到文件</title>
-					<screen>
+			<section id="">
+				<title>重定向到文件</title>
+				<screen>
 				<![CDATA[
 sudo mkdir -p /etc/docker
 sudo tee /etc/docker/daemon.json <<-'EOF'
@@ -386,18 +201,18 @@ EOF
 sudo systemctl daemon-reload
 sudo systemctl restart docker
 				]]>
-					</screen>
-				</section>
-				<section id="nettee">
-					<title>nettee - a network "tee" program</title>
-					<screen><![CDATA[
+				</screen>
+			</section>
+			<section id="nettee">
+				<title>nettee - a network "tee" program</title>
+				<screen><![CDATA[
 
 				]]></screen>
-				</section>
 			</section>
-			<section>
-				<title>创建文件</title>
-				<screen>
+		</section>
+		<section>
+			<title>创建文件</title>
+			<screen>
 			<![CDATA[
 cat << EOF > foo.sh
    printf "%s was here" "$name"
@@ -407,52 +222,52 @@ cat >> foo.sh <<EOF
    printf "%s was here" "$name"
 EOF
 			]]>
-				</screen>
+			</screen>
 
-			</section>
-			<section>
-				<title>快速清空一个文件的内容</title>
-				<screen><![CDATA[
+		</section>
+		<section>
+			<title>快速清空一个文件的内容</title>
+			<screen><![CDATA[
 $ > /www/access.log
 			]]></screen>
-			</section>
 		</section>
-		<section id="pipes">
-			<title>pipes (FIFOs)</title>
-			<para>create a pipes</para>
-			<screen><![CDATA[
+	</section>
+	<section id="pipes">
+		<title>pipes (FIFOs)</title>
+		<para>create a pipes</para>
+		<screen><![CDATA[
 $ mkfifo /tmp/pipe
 $ mkfifo -m 0644 /tmp/pipe
 
 $ mknod /tmp/pipe p
 		]]></screen>
-			<para>let's see it</para>
-			<screen><![CDATA[
+		<para>let's see it</para>
+		<screen><![CDATA[
 $ ls -l /tmp/piple
 prw-r--r-- 1 neo neo 0 2009-03-13 14:40 /tmp/piple
 		]]></screen>
-			<para>remove a pipes</para>
-			<screen><![CDATA[
+		<para>remove a pipes</para>
+		<screen><![CDATA[
 rm /tmp/pipe
 		]]></screen>
-			<para>using it</para>
-			<para>standing by pipe</para>
-			<screen><![CDATA[
+		<para>using it</para>
+		<para>standing by pipe</para>
+		<screen><![CDATA[
 $ cat /tmp/pipe
 		]]></screen>
-			<para>push string to pipe</para>
-			<screen><![CDATA[
+		<para>push string to pipe</para>
+		<screen><![CDATA[
 $ echo hello world > /tmp/pipe
 		]]></screen>
-			<para>fetch string from /tmp/pipe</para>
-			<screen><![CDATA[
+		<para>fetch string from /tmp/pipe</para>
+		<screen><![CDATA[
 $ cat /tmp/piple
 hello world
 		]]></screen>
-		</section>
-		<section id="mktemp">
-			<title>mktemp - create a temporary file or directory 临时目录与文件</title>
-			<screen><![CDATA[
+	</section>
+	<section id="mktemp">
+		<title>mktemp - create a temporary file or directory 临时目录与文件</title>
+		<screen><![CDATA[
 # mktemp
 /tmp/tmp.p8p0v5YzPf
 
@@ -465,8 +280,8 @@ hello world
 # mktemp /tmp/test.XXXXXXX
 /tmp/test.CnyLr7C
 		]]></screen>
-			<para>创建临时目录</para>
-			<screen><![CDATA[
+		<para>创建临时目录</para>
+		<screen><![CDATA[
 # mktemp -d
 /tmp/tmp.xg5gFj0w8D
 
@@ -476,63 +291,63 @@ hello world
 $ mktemp -d --suffix=.tmp -p /tmp deploy.XXXXXX
 /tmp/deploy.FwebCc.tmp
 		]]></screen>
-		</section>
-		<section id="history">
-			<title>History 命令历史记录</title>
-			<section>
-				<title>.bash_history</title>
-				<para>从安全角度考虑禁止记录history</para>
-				<screen><![CDATA[
+	</section>
+	<section id="history">
+		<title>History 命令历史记录</title>
+		<section>
+			<title>.bash_history</title>
+			<para>从安全角度考虑禁止记录history</para>
+			<screen><![CDATA[
 ln -s /dev/null .bash_history
 			]]></screen>
-				<section>
-					<title>格式定义</title>
-					<para>定制.bash_history格式</para>
-					<screen><![CDATA[
+			<section>
+				<title>格式定义</title>
+				<para>定制.bash_history格式</para>
+				<screen><![CDATA[
 export HISTSIZE=1000
 export HISTFILESIZE=2000
 export HISTTIMEFORMAT="%Y-%m-%d-%H:%M:%S "
 export HISTFILE="~/.bash_history"
 				]]></screen>
 
-					<para>看看实际效果</para>
-					<screen><![CDATA[
+				<para>看看实际效果</para>
+				<screen><![CDATA[
 $ history | head
     1  2012-02-27-09:10:45 do-release-upgrade
     2  2012-02-27-09:10:45 vim /etc/network/interfaces
     3  2012-02-27-09:10:45 vi /etc/network/interfaces
     4  2012-02-27-09:10:45 ping www.163.com
 				]]></screen>
-					<tip>
-						<para>CentOS 可以添加到 /etc/bashrc 这样可以对所有用户起作用</para>
-						<screen><![CDATA[
+				<tip>
+					<para>CentOS 可以添加到 /etc/bashrc 这样可以对所有用户起作用</para>
+					<screen><![CDATA[
 echo 'export HISTTIMEFORMAT="%Y-%m-%d-%H:%M:%S "' >> /etc/bashrc
 					]]></screen>
-					</tip>
-				</section>
-				<section>
-					<title>设置忽略命令</title>
-					<para>HISTIGNORE 可以设置那些命令不记入history列表。</para>
-					<screen><![CDATA[
+				</tip>
+			</section>
+			<section>
+				<title>设置忽略命令</title>
+				<para>HISTIGNORE 可以设置那些命令不记入history列表。</para>
+				<screen><![CDATA[
 HISTIGNORE="ls:ll:la:cd:exit:clear:logout"
 HISTTIMEFORMAT="[%Y-%m-%d - %H:%M:%S] "
 HISTFILE=~/.history
 HISTSIZE=50000
 SAVEHIST=50000
 				]]></screen>
-				</section>
 			</section>
-			<section>
-				<title>.mysql_history</title>
-				<screen><![CDATA[
+		</section>
+		<section>
+			<title>.mysql_history</title>
+			<screen><![CDATA[
 ln -s /dev/null .mysql_history
 			]]></screen>
-				<para>插入时间点，在~/.bashrc中加入下面命令</para>
-				<screen><![CDATA[
+			<para>插入时间点，在~/.bashrc中加入下面命令</para>
+			<screen><![CDATA[
 $ tail ~/.bashrc
 echo `date` >> ~/.mysql_history
 			]]></screen>
-				<screen><![CDATA[
+			<screen><![CDATA[
 $ tail ~/.mysql_history
 EXPLAIN SELECT * FROM stuff where id=3 \G
 EXPLAIN SELECT * FROM stuff where id='3' \G
@@ -546,16 +361,16 @@ EXPLAIN SELECT * FROM stuff where id='2' or created = '2012-02-01' \G
 EXPLAIN SELECT * FROM stuff where id='2' and created = '2012-02-01' \G
 Mon Feb 27 11:48:37 CST 2012
 			]]></screen>
-			</section>
 		</section>
+	</section>
 
-		<section id="hash">
-			<title>hash - hash database access method</title>
-			<para>hase 命令：用来显示和清除哈希表，执行命令的时候，系统将先查询哈希表。</para>
-			<para>当你输入命令，首先在hash表中寻找，如果不存在，才会利用$PATH环境变量指定的路径寻找命令，然后加以执行。同时也会将其放入到hash table 中，当下一次执行同样的命令时就不会再通过$PATH寻找。以此提高命令的执行效率。</para>
+	<section id="hash">
+		<title>hash - hash database access method</title>
+		<para>hase 命令：用来显示和清除哈希表，执行命令的时候，系统将先查询哈希表。</para>
+		<para>当你输入命令，首先在hash表中寻找，如果不存在，才会利用$PATH环境变量指定的路径寻找命令，然后加以执行。同时也会将其放入到hash table 中，当下一次执行同样的命令时就不会再通过$PATH寻找。以此提高命令的执行效率。</para>
 
-			<para>显示哈希表中命令使用频率</para>
-			<screen><![CDATA[
+		<para>显示哈希表中命令使用频率</para>
+		<screen><![CDATA[
 $ hash
 hits	command
    6	/usr/bin/svn
@@ -574,8 +389,8 @@ hits	command
    2	/usr/bin/man
   23	/bin/ls
 		]]></screen>
-			<para>显示哈希表</para>
-			<screen><![CDATA[
+		<para>显示哈希表</para>
+		<screen><![CDATA[
 $ hash -l
 builtin hash -p /usr/bin/svn svn
 builtin hash -p /bin/chown chown
@@ -593,13 +408,13 @@ builtin hash -p /bin/ps ps
 builtin hash -p /usr/bin/man man
 builtin hash -p /bin/ls ls
 		]]></screen>
-			<para>显示命令的完整路径</para>
-			<screen><![CDATA[
+		<para>显示命令的完整路径</para>
+		<screen><![CDATA[
 $ hash -t git
 /usr/bin/git
 		]]></screen>
-			<para>向哈希表中增加内容</para>
-			<screen>
+		<para>向哈希表中增加内容</para>
+		<screen>
 		<![CDATA[
 $ hash -p /home/www/deployment/run run
 
@@ -627,27 +442,25 @@ OPTION:
 	cron setup
 	cron edit
 		]]>
-			</screen>
-			<para>命令等同于</para>
-			<screen><![CDATA[
+		</screen>
+		<para>命令等同于</para>
+		<screen><![CDATA[
 PATH=$PATH:$HOME/www/deployment
 
 export PATH
 		]]></screen>
-			<para>删除哈希表内容</para>
-			<screen><![CDATA[
+		<para>删除哈希表内容</para>
+		<screen><![CDATA[
 $ hash -r
 
 $ hash -l
 hash: hash table empty
 		]]></screen>
-		</section>		
-	&chapter.bash.prompt.xml;
-	</section>
-
-	&chapter.bash.variable.xml;
-	&chapter.bash.conditions.xml;
-	&chapter.bash.loop.xml;
+	</section>		
+	&section.bash.prompt.xml;
+	&section.bash.variable.xml;
+	&section.bash.conditions.xml;
+	&section.bash.loop.xml;
 
 
 	<section id="functions">
@@ -655,31 +468,36 @@ hash: hash table empty
 		<example>
 			<title>Functions with parameters sample</title>
 			<programlisting>
-				#!/bin/bash
-				function quit {
-				exit
-				}
-				function e {
-				echo $1
-				}
-				e Hello
-				e World
-				quit
-				echo foo
+			<![CDATA[
+#!/bin/bash
+function quit {
+	exit
+}
+function e {
+	echo $1
+}
+
+e Hello
+e World
+quit
+echo foo			
+			]]>
 			</programlisting>
 		</example>
 		<section>
 			<title>Local variables</title>
 			<programlisting>
-				#!/bin/bash
-				HELLO=Hello
-				function hello {
-				local HELLO=World
-				echo $HELLO
-				}
-				echo $HELLO
-				hello
-				echo $HELLO
+			<![CDATA[
+#!/bin/bash
+HELLO=Hello
+function hello {
+	local HELLO=World
+	echo $HELLO
+}
+echo $HELLO
+hello
+echo $HELLO
+			]]>
 			</programlisting>
 		</section>
 	</section>
@@ -688,50 +506,59 @@ hash: hash table empty
 		<example>
 			<title>Using select to make simple menus</title>
 			<programlisting>
-				#!/bin/bash
-				OPTIONS="Hello Quit"
-				select opt in $OPTIONS; do
-				if [ "$opt" = "Quit" ]; then
-				echo done
-				exit
-				elif [ "$opt" = "Hello" ]; then
-				echo Hello World
-				else
-				clear
-				echo bad option
-				fi
-				done
+			<![CDATA[
+#!/bin/bash
+OPTIONS="Hello Quit"
+select opt in $OPTIONS; do
+	if [ "$opt" = "Quit" ]; then
+		echo done
+		exit
+	elif [ "$opt" = "Hello" ]; then
+		echo Hello World
+	else
+		clear
+		echo bad option
+	fi
+done
+			]]>
 			</programlisting>
 		</example>
 		<example>
 			<title>Using the command line</title>
 			<programlisting>
-				#!/bin/bash
-				if [ -z "$1" ]; then
-				echo usage: $0 directory
-				exit
-				fi
-				SRCD=$1
-				TGTD="/var/backups/"
-				OF=home-$(date +%Y%m%d).tgz
-				tar -cZf $TGTD$OF $SRCD
+			<![CDATA[
+#!/bin/bash
+if [ -z "$1" ]; then
+	echo usage: $0 directory
+	exit
+fi
+SRCD=$1
+TGTD="/var/backups/"
+OF=home-$(date +%Y%m%d).tgz
+tar -cZf $TGTD$OF $SRCD			
+			]]>
+
 			</programlisting>
 		</example>
 		<example>
 			<title>Reading user input with read</title>
 			<para>In many ocations you may want to prompt the user for some input, and there are several ways to achive this. This is one of those ways:</para>
 			<programlisting>
-				#!/bin/bash
-				echo Please, enter your name
-				read NAME
-				echo "Hi $NAME!"
+			<![CDATA[
+#!/bin/bash
+echo Please, enter your name
+read NAME
+echo "Hi $NAME!"			
+			]]>
 			</programlisting>
 			<para>As a variant, you can get multiple values with read, this example may clarify this.</para>
 			<programlisting>
-				#!/bin/bash
-				echo Please, enter your firstname and lastname
-				read FN LN
-				echo "Hi! $LN, $FN !"
+			<![CDATA[
+#!/bin/bash
+echo Please, enter your firstname and lastname
+read FN LN
+echo "Hi! $LN, $FN !"			
+			]]>
 			</programlisting>
 		</example>
 		<section>
@@ -770,6 +597,6 @@ su - $USER -c "$PROG & echo \$! > $PIDFILE"
 		]]>
 		</screen>
 	</section>
-	&chapter.bash.example.xml;
+	&section.bash.example.xml;
 
 </chapter>

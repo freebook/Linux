@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.shell.xml 591 2013-05-20 10:15:16Z netkiller $ -->
-
+	&section.shell.xml;
 	&chapter.bash.xml;
 	&chapter.zsh.xml;
 	&chapter.command.xml;

@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 	<!ENTITY chapter.shell.xml					SYSTEM "chapter.shell.xml">
+	<!ENTITY section.shell.xml					SYSTEM "section.shell.xml">
 	<!ENTITY chapter.bash.xml					SYSTEM "chapter.bash.xml">
-	<!ENTITY chapter.bash.prompt.xml			SYSTEM "chapter.bash.prompt.xml">
-	<!ENTITY chapter.bash.variable.xml	 		SYSTEM "chapter.bash.variable.xml">
-	<!ENTITY chapter.bash.conditions.xml		SYSTEM "chapter.bash.conditions.xml">
-	<!ENTITY chapter.bash.loop.xml				SYSTEM "chapter.bash.loop.xml">
+	<!ENTITY section.bash.prompt.xml			SYSTEM "section.bash.prompt.xml">
+	<!ENTITY section.bash.variable.xml	 		SYSTEM "section.bash.variable.xml">
+	<!ENTITY section.bash.conditions.xml		SYSTEM "section.bash.conditions.xml">
+	<!ENTITY section.bash.loop.xml				SYSTEM "section.bash.loop.xml">
+	<!ENTITY section.bash.example.xml	 		SYSTEM "section.bash.example.xml">
 	
-	<!ENTITY chapter.bash.example.xml	 		SYSTEM "chapter.bash.example.xml">
 	<!ENTITY chapter.zsh.xml	 				SYSTEM "chapter.zsh.xml">	
 	<!ENTITY section.shell.fish.xml				SYSTEM "section.shell.fish.xml">
 	
