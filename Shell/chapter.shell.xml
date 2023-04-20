@@ -4,6 +4,5 @@
 	&chapter.bash.xml;
 	&chapter.zsh.xml;
 	&chapter.command.xml;
-	&chapter.utility.xml;
 	&chapter.tui.xml;
 	&section.shell.interesting.xml;

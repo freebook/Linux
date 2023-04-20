@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.cmd.numeric.xml 375 2012-03-21 03:00:42Z netkiller $ -->
 <section id="numeric">
-	<title>Numeric</title>
+	<title>数值与运算</title>
 	<section>
 		<title>数值运算</title>
 		<screen>

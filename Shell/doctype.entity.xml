@@ -13,19 +13,19 @@
 	
 
 	<!ENTITY chapter.command.xml				SYSTEM "chapter.command.xml">
-	<!ENTITY chapter.cmd.sys.xml				SYSTEM "chapter.cmd.sys.xml">
-	<!ENTITY chapter.cmd.man.xml				SYSTEM "chapter.cmd.man.xml">
-	<!ENTITY chapter.cmd.directory.xml			SYSTEM "chapter.cmd.directory.xml">
-	<!ENTITY chapter.cmd.directory.find.xml		SYSTEM "chapter.cmd.directory.find.xml">
-	<!ENTITY chapter.cmd.compress.xml			SYSTEM "chapter.cmd.compress.xml">
-	<!ENTITY chapter.cmd.numeric.xml			SYSTEM "chapter.cmd.numeric.xml">
-	<!ENTITY chapter.cmd.datetime.xml			SYSTEM "chapter.cmd.datetime.xml">
-	<!ENTITY chapter.cmd.text.xml		 		SYSTEM "chapter.cmd.text.xml">
-	<!ENTITY chapter.cmd.text.grep.xml	 		SYSTEM "chapter.cmd.text.grep.xml">
-	<!ENTITY chapter.cmd.text.sort.xml			SYSTEM "chapter.cmd.text.sort.xml">
-	<!ENTITY chapter.cmd.table.xml				SYSTEM "chapter.cmd.table.xml">
-	<!ENTITY chapter.cmd.io.xml					SYSTEM "chapter.cmd.io.xml">
-	<!ENTITY chapter.cmd.binary.xml				SYSTEM "chapter.cmd.binary.xml">
+	<!ENTITY section.cmd.sys.xml				SYSTEM "section.cmd.sys.xml">
+	<!ENTITY section.cmd.man.xml				SYSTEM "section.cmd.man.xml">
+	<!ENTITY section.cmd.directory.xml			SYSTEM "section.cmd.directory.xml">
+	<!ENTITY section.cmd.directory.find.xml		SYSTEM "section.cmd.directory.find.xml">
+	<!ENTITY section.cmd.compress.xml			SYSTEM "section.cmd.compress.xml">
+	<!ENTITY section.cmd.numeric.xml			SYSTEM "section.cmd.numeric.xml">
+	<!ENTITY section.cmd.datetime.xml			SYSTEM "section.cmd.datetime.xml">
+	<!ENTITY section.cmd.text.xml		 		SYSTEM "section.cmd.text.xml">
+	<!ENTITY section.cmd.text.grep.xml	 		SYSTEM "section.cmd.text.grep.xml">
+	<!ENTITY section.cmd.text.sort.xml			SYSTEM "section.cmd.text.sort.xml">
+	<!ENTITY section.cmd.table.xml				SYSTEM "section.cmd.table.xml">
+	<!ENTITY section.cmd.io.xml					SYSTEM "section.cmd.io.xml">
+	<!ENTITY section.cmd.binary.xml				SYSTEM "section.cmd.binary.xml">
 	<!ENTITY section.cmd.sum.xml				SYSTEM "section.cmd.sum.xml">
 	<!ENTITY section.cmd.template.xml			SYSTEM "section.cmd.template.xml">
 	

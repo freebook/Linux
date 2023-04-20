@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.cmd.directory.xml 376 2012-03-21 03:35:46Z netkiller $ -->
 <section id="directory">
-	<title>Directory and File System Related</title>
+	<title>目录和文件</title>
 	<section id="dirname">
 		<title>dirname</title>
 		<screen><![CDATA[
