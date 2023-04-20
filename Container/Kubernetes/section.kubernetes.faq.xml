@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+	<title>常见问题</title>
+	<section>
+		<title>从局域网访问POD</title>
+		<screen>
+		<![CDATA[
+宿主主机：172.18.200.5
+POD网络：
+
+[root@agent-5 ~]# kubectl -n project get pods -o wide
+NAME                                         READY   STATUS             RESTARTS         AGE     IP            NODE      NOMINATED NODE   READINESS GATES
+neo-sms-cb888b96b-khhjb                 	 1/1     Running            0                9d      10.42.0.101   master    <none>           <none>
+neo-xxl-job-admin-6868fc69b6-rdjkx     	 	 1/1     Running            0                9d      10.42.6.165   agent-5   <none>           <none>
+neo-job-executor-5ddd9c8f56-6pbzr       	 1/1     Running            0                9d      10.42.6.164   agent-5   <none>           <none>
+netkiller-gateway-575cc78dd8-pg8w7           1/1     Running            0                9d      10.42.1.182   agent-1   <none>           <none>
+netkiller-aaa-portal-f49849579-l4gp5         1/1     Running            0                9d      10.42.0.102   master    <none>           <none>
+netkiller-pay-5d4bbcd695-47v7w               1/1     Running            0                9d      10.42.0.112   master    <none>           <none>
+netkiller-pay-5565c6ffc-x4gl2                1/1     Running            0                9d      10.42.0.116   master    <none>           <none>
+neo-finance-admin-696f55f858-ffgbt           1/1     Running            0                8d      10.42.1.232   agent-1   <none>           <none>
+neo-finance-7676dcbf8-q2sxq                  1/1     Running            0                5d18h   10.42.1.23    agent-1   <none>           <none>
+		]]>
+		</screen>
+		<para>我们只需要在访问 POD 的机器上配置路由即可</para>
+		<screen>
+		<![CDATA[
+root@netkiller ~# ip route add 10.42.0.0/16 via 172.18.200.5		
+		]]>
+		</screen>
+		<para>ping 测试</para>
+		<screen>
+		<![CDATA[
+root@netkiller ~# ping 10.42.1.101 -c 1
+PING 10.42.1.101 (10.42.1.101) 56(84) bytes of data.
+64 bytes from 10.42.1.101: icmp_seq=1 ttl=62 time=0.530 ms
+
+--- 10.42.1.101 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 0.530/0.530/0.530/0.000 ms		
+		]]>
+		</screen>
+		<para>MacOS</para>
+		<screen>
+		<![CDATA[
+sudo route -n add -net 192.168.0.0 -netmask 255.255.255.0 192.168.5.254 
+sudo route -n add -net 10.42.0.0 -netmask 255.255.0.0 172.18.200.5 		
+
+
+Last login: Wed Apr 19 16:43:30 on ttys007
+neo@MacBook-Pro-M2 ~ % sudo route -n add -net 10.42.0.0 -netmask 255.255.0.0 172.18.200.5
+Password:
+add net 10.42.0.0: gateway 172.18.200.5
+		]]>
+		</screen>
+	</section>
+</section>

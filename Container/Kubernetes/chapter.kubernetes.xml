@@ -7,4 +7,4 @@
 	&section.istio.xml;
 	&section.kubeapps.xml;
 	&section.kubernetes.helm.xml;
-
+	&section.kubernetes.faq.xml;

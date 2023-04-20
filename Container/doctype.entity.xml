@@ -43,6 +43,7 @@
 <!ENTITY section.kubectl.yaml.xml		SYSTEM "Kubernetes/section.kubectl.yaml.xml">
 <!ENTITY section.istio.xml				SYSTEM "Kubernetes/section.istio.xml">
 <!ENTITY section.kubernetes.helm.xml	SYSTEM "Kubernetes/section.kubernetes.helm.xml">
+<!ENTITY section.kubernetes.faq.xml		SYSTEM "Kubernetes/section.kubernetes.faq.xml">
 
 <!ENTITY chapter.rancher.xml			SYSTEM "Rancher/chapter.rancher.xml">
 <!ENTITY section.rancher.xml			SYSTEM "Rancher/section.rancher.xml">
