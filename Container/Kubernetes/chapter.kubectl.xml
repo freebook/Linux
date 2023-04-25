@@ -155,6 +155,42 @@ mongodba-6d5d6ddf64-jw4fv   1/1     Running   0          16h
 		]]>
 		</screen>
 	</section>
+	<section id="kubectl.exec">
+		<title>执行 Shell</title>
+		<para>进入容器内部.</para>
+		<screen>
+		<![CDATA[
+$ kubectl get pods
+NAME                        READY   STATUS    RESTARTS   AGE
+mongodba-6d5d6ddf64-jw4fv   1/1     Running   0          16h
+
+$ kubectl exec -it mongodba-6d5d6ddf64-jw4fv bash		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+kubectl run busybox --image=busybox:latest		
+
+iMac:kubernetes neo$ kubectl exec -it busybox -- nslookup www.netkiller.cn
+Server:		10.10.0.10
+Address:	10.10.0.10:53
+
+Non-authoritative answer:
+www.netkiller.cn	canonical name = netkiller.github.io
+Name:	netkiller.github.io
+Address: 185.199.110.153
+Name:	netkiller.github.io
+Address: 185.199.108.153
+Name:	netkiller.github.io
+Address: 185.199.111.153
+Name:	netkiller.github.io
+Address: 185.199.109.153
+
+*** Can't find www.netkiller.cn: No answer
+		]]>
+		</screen>
+
+	</section>
 	<section id="kubectl.info">
 		<title>查看信息</title>
 		<section>
@@ -331,6 +367,59 @@ KubeDNS is running at https://172.16.0.121:8443/api/v1/namespaces/kube-system/se
 
 To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.		
 		]]>
+			</screen>
+		</section>
+	</section>
+	<section id="kubectl.logs">
+		<title>查看 pod 日志</title>
+		<screen>
+		<![CDATA[
+kubectl logs <pod-name>
+kubectl logs --previous <pod-name>
+kubectl logs -l app=your-app-name | grep "xxx"
+kubectl logs --selector role=cool-app | grep "xxx"
+		]]>
+		</screen>
+	</section>
+	<section id="kubectl.cp">
+		<title>复制文件</title>
+		<screen>
+		<![CDATA[
+kubectl cp netkiller/job-executor-77fc6b4db-5dzxz:logs/info.2022-07-29.log Downloads/info.2022-07-29.log -c job-executor		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+kubectl cp Downloads/myfile netkiller/job-executor-77fc6b4db-5dzxz:/tmp/myfile -c job-executor		
+		]]>
+		</screen>
+	</section>
+	<section id="kubectl.edit">
+		<title>edit</title>
+		<screen>
+		<![CDATA[
+kubectl edit --namespace=kube-system rc kubernetes-dashboard		
+		]]>
+		</screen>
+	</section>
+	<section id="kubectl.port-forward">
+		<title>端口转发</title>
+		<para>将 本地 0.0.0.0:27017 端口转发到 service 端口</para>
+		<screen>
+		<![CDATA[
+neo@Netkiller-iMac ~> kubectl port-forward --address 0.0.0.0 service/mongo 27017
+Forwarding from 0.0.0.0:27017 -> 27017		
+		]]>
+		</screen>
+	</section>
+	<section id="kubelet.sysctls">
+		<title>操作系统资源配置</title>
+		<section>
+			<title>sysctls</title>
+			<screen>
+			<![CDATA[
+kubelet --experimental-allowed-unsafe-sysctls 'kernel.msg*,kernel.shmmax,kernel.sem,net.ipv4.route.min_pmtu'
+			]]>
 			</screen>
 		</section>
 	</section>
@@ -1871,17 +1960,7 @@ root@netkiller ~/neo (master)# kubectl rollout restart deployment netkiller -n p
 
 	</section>
 
-	<section id="kubectl.logs">
-		<title>查看 pod 日志</title>
-		<screen>
-		<![CDATA[
-kubectl logs <pod-name>
-kubectl logs --previous <pod-name>
-kubectl logs -l app=your-app-name | grep "xxx"
-kubectl logs --selector role=cool-app | grep "xxx"
-		]]>
-		</screen>
-	</section>
+	
 	<section id="kubectl.endpoints">
 		<title>endpoints</title>
 		<screen>
@@ -1892,50 +1971,8 @@ nginx   10.42.0.19:80,10.42.0.20:80,10.42.0.21:80   3m56s
 		]]>
 		</screen>
 	</section>
-	<section id="kubectl.exec">
-		<title>执行 Shell</title>
-		<para>进入容器内部.</para>
-		<screen>
-		<![CDATA[
-$ kubectl get pods
-NAME                        READY   STATUS    RESTARTS   AGE
-mongodba-6d5d6ddf64-jw4fv   1/1     Running   0          16h
-
-$ kubectl exec -it mongodba-6d5d6ddf64-jw4fv bash		
-		]]>
-		</screen>
-		<screen>
-		<![CDATA[
-kubectl run busybox --image=busybox:latest		
-
-iMac:kubernetes neo$ kubectl exec -it busybox -- nslookup www.netkiller.cn
-Server:		10.10.0.10
-Address:	10.10.0.10:53
-
-Non-authoritative answer:
-www.netkiller.cn	canonical name = netkiller.github.io
-Name:	netkiller.github.io
-Address: 185.199.110.153
-Name:	netkiller.github.io
-Address: 185.199.108.153
-Name:	netkiller.github.io
-Address: 185.199.111.153
-Name:	netkiller.github.io
-Address: 185.199.109.153
-
-*** Can't find www.netkiller.cn: No answer
-		]]>
-		</screen>
-
-	</section>
-	<section id="kubectl.edit">
-		<title>edit</title>
-		<screen>
-		<![CDATA[
-kubectl edit --namespace=kube-system rc kubernetes-dashboard		
-		]]>
-		</screen>
-	</section>
+	
+	
 
 	<section id="kubectl.port-forward">
 		<title>port-forward 端口映射</title>
@@ -2861,27 +2898,8 @@ FIELDS:
 			</screen>
 		</section>
 	</section>
-	<section id="kubelet.sysctls">
-		<title>操作系统资源配置</title>
-		<section>
-			<title>sysctls</title>
-			<screen>
-			<![CDATA[
-kubelet --experimental-allowed-unsafe-sysctls 'kernel.msg*,kernel.shmmax,kernel.sem,net.ipv4.route.min_pmtu'
-			]]>
-			</screen>
-		</section>
-	</section>
-	<section id="kubectl.port-forward">
-		<title>端口转发</title>
-		<para>将 本地 0.0.0.0:27017 端口转发到 service 端口</para>
-		<screen>
-		<![CDATA[
-neo@Netkiller-iMac ~> kubectl port-forward --address 0.0.0.0 service/mongo 27017
-Forwarding from 0.0.0.0:27017 -> 27017		
-		]]>
-		</screen>
-	</section>
+	
+	
 	<section id="kubectl.images">
 		<title>更新镜像</title>
 		<para>更新资源对象的容器镜像</para>
@@ -2907,19 +2925,7 @@ kubectl set image daemonset abc *=nginx:1.9.1
 		]]>
 		</screen>
 	</section>
-	<section id="kubectl.cp">
-		<title>复制文件</title>
-		<screen>
-		<![CDATA[
-kubectl cp netkiller/job-executor-77fc6b4db-5dzxz:logs/info.2022-07-29.log Downloads/info.2022-07-29.log -c job-executor		
-		]]>
-		</screen>
-		<screen>
-		<![CDATA[
-kubectl cp Downloads/myfile netkiller/job-executor-77fc6b4db-5dzxz:/tmp/myfile -c job-executor		
-		]]>
-		</screen>
-	</section>
+	
 	<section id="kubectl.describe">
 		<title>describe</title>
 		<section>
@@ -3254,6 +3260,69 @@ helloworld
 		<para>正常情况 Service 只是暴露了端口，这个端口是可以对外访问的，但是80端口只有一个，很多 Service 都要使用 80端口，这时就需要使用虚拟主机技术。</para>
 		<para>多个 Service 共同使用一个 80 端口，通过域名区分业务。这就是 Ingress 存在的意义。</para>
 		<section>
+			<title>管理 Ingress</title>
+			<screen>
+			<![CDATA[
+# 查看已有配置
+kubectl describe ingress test
+
+# 修改配置
+kubectl edit ingress test	
+
+# 来重新载入配置
+kubectl replace -f ingress.yaml		
+			]]>
+			</screen>
+		
+		</section>
+			<section>
+				<title>挂载 SSL 证书上</title>
+				<para>自签名证书</para>
+				<screen>
+				<![CDATA[
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout tls.key -out tls.crt -subj "/CN=bar.foo.com/O=bar.foo.com"				
+				]]>
+				</screen>
+				<para>如果是购买的SSL证书，通常有两个问题，*.key 和 *.pem，这里的 pem 证书就是 cert 证书。</para>
+				<screen>
+				<![CDATA[
+[root@agent-5 tmp]# kubectl create secret tls netkiller --key netkiller.cn.key --cert netkiller.cn.pem
+secret/netkiller created
+[root@agent-5 tmp]# kubectl get secret netkiller
+NAME      TYPE                DATA   AGE
+netkiller   kubernetes.io/tls   2      26s				
+				]]>
+				</screen>
+				<para>yaml 中添加 tls 配置项</para>
+				<screen>
+				<![CDATA[
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+  name: netkiller-test
+  namespace: project
+spec:
+  rules:
+    - host: project.netkiller.cn
+      http:
+        paths:
+          - backend:
+              service:
+                name: netkiller-test
+                port:
+                  number: 80
+            path: /netkiller-test-service
+            pathType: ImplementationSpecific
+  tls:
+    - hosts:
+        - project.netkiller.cn
+      secretName: netkiller
+				]]>
+				</screen>
+			</section>
+		<section>
 			<title>端口</title>
 			<screen>
 			<![CDATA[
@@ -3523,22 +3592,46 @@ $ for i in $(seq 1 5); do curl -b 'canary=always' http://canary.netkiller.cn; ec
 				</screen>
 			</section>
 		</section>
-
 		<section>
-			<title>管理 Ingress</title>
+			<title>解决 504 网关超时</title>
+			<para>增加下面配置项</para>
 			<screen>
 			<![CDATA[
-# 查看已有配置
-kubectl describe ingress test
-
-# 修改配置
-kubectl edit ingress test	
-
-# 来重新载入配置
-kubectl replace -f ingress.yaml		
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: '300'
+    nginx.ingress.kubernetes.io/proxy-read-timeout: '300'
+    nginx.ingress.kubernetes.io/proxy-send-timeout: '300'			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: '300'
+    nginx.ingress.kubernetes.io/proxy-read-timeout: '300'
+    nginx.ingress.kubernetes.io/proxy-send-timeout: '300'
+  name: netkiller-test
+  namespace: project
+spec:
+  rules:
+    - host: project.netkiller.cn
+      http:
+        paths:
+          - backend:
+              service:
+                name: netkiller-test
+                port:
+                  number: 80
+            path: /netkiller-test-service
+            pathType: ImplementationSpecific
+  tls:
+    - hosts:
+        - project.netkiller.cn
+      secretName: netkiller			
 			]]>
 			</screen>
 		</section>
 	</section>
-
 </chapter>
