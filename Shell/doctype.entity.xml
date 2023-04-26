@@ -28,6 +28,7 @@
 	<!ENTITY section.cmd.binary.xml				SYSTEM "section.cmd.binary.xml">
 	<!ENTITY section.cmd.sum.xml				SYSTEM "section.cmd.sum.xml">
 	<!ENTITY section.cmd.template.xml			SYSTEM "section.cmd.template.xml">
+	<!ENTITY section.cmd.diff.xml				SYSTEM "section.cmd.diff.xml">
 	
 	<!ENTITY chapter.text.vim.xml	 			SYSTEM "chapter.text.vim.xml">
 	<!ENTITY chapter.text.awk.xml				SYSTEM "chapter.text.awk.xml">

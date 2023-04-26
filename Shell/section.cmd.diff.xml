@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="diff">
+	<title>文件比较</title>
+	<section>
+		<title>diff</title>
+		<screen>
+		<![CDATA[
+usage: diff [-aBbdilpTtw] [-c | -e | -f | -n | -q | -u] [--ignore-case]
+            [--no-ignore-case] [--normal] [--strip-trailing-cr] [--tabsize]
+            [-I pattern] [-F pattern] [-L label] file1 file2
+       diff [-aBbdilpTtw] [-I pattern] [-L label] [--ignore-case]
+            [--no-ignore-case] [--normal] [--strip-trailing-cr] [--tabsize]
+            [-F pattern] -C number file1 file2
+       diff [-aBbdiltw] [-I pattern] [--ignore-case] [--no-ignore-case]
+            [--normal] [--strip-trailing-cr] [--tabsize] -D string file1 file2
+       diff [-aBbdilpTtw] [-I pattern] [-L label] [--ignore-case]
+            [--no-ignore-case] [--normal] [--tabsize] [--strip-trailing-cr]
+            [-F pattern] -U number file1 file2
+       diff [-aBbdilNPprsTtw] [-c | -e | -f | -n | -q | -u] [--ignore-case]
+            [--no-ignore-case] [--normal] [--tabsize] [-I pattern] [-L label]
+            [-F pattern] [-S name] [-X file] [-x pattern] dir1 dir2
+       diff [-aBbditwW] [--expand-tabs] [--ignore-all-blanks]
+            [--ignore-blank-lines] [--ignore-case] [--minimal]
+            [--no-ignore-file-name-case] [--strip-trailing-cr]
+            [--suppress-common-lines] [--tabsize] [--text] [--width]
+            -y | --side-by-side file1 file2
+       diff [--help] [--version]		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>sdiff</title>
+		<screen>
+		<![CDATA[
+usage: sdiff [-abdilstW] [-I regexp] [-o outfile] [-w width] file1 file2
+
+-l, --left-column: only print the left column for identical lines.
+-o OUTFILE, --output=OUTFILE: interactively merge file1 and file2 into outfile.
+-s, --suppress-common-lines: skip identical lines.
+-w WIDTH, --width=WIDTH: print a maximum of WIDTH characters on each line.
+
+Options passed to diff(1) are:
+	-a, --text: treat file1 and file2 as text files.
+	-b, --ignore-trailing-cr: ignore trailing blank spaces.
+	-d, --minimal: minimize diff size.
+	-I RE, --ignore-matching-lines=RE: ignore changes whose line matches RE.
+	-i, --ignore-case: do a case-insensitive comparison.
+	-t, --expand-tabs: sxpand tabs to spaces.
+	-W, --ignore-all-spaces: ignore all spaces.
+	--speed-large-files: assume large file with scattered changes.
+	--strip-trailing-cr: strip trailing carriage return.
+	--ignore-file-name-case: ignore case of file names.
+	--no-ignore-file-name-case: do not ignore file name case
+	--tabsize NUM: change size of tabs (default 8.)
+	--diff-program=PROGRAM: Use PROGRAM to compare files.		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>diff3</title>
+		<screen>
+		<![CDATA[
+Usage: diff3 [OPTION]... MYFILE OLDFILE YOURFILE
+Compare three files line by line.
+
+  -e  --ed  Output unmerged changes from OLDFILE to YOURFILE into MYFILE.
+  -E  --show-overlap  Output unmerged changes, bracketing conflicts.
+  -A  --show-all  Output all changes, bracketing conflicts.
+  -x  --overlap-only  Output overlapping changes.
+  -X  Output overlapping changes, bracketing them.
+  -3  --easy-only  Output unmerged nonoverlapping changes.
+
+  -m  --merge  Output merged file instead of ed script (default -A).
+  -L LABEL  --label=LABEL  Use LABEL instead of file name.
+  -i  Append `w' and `q' commands to ed scripts.
+  -a  --text  Treat all files as text.
+  -T  --initial-tab  Make tabs line up by prepending a tab.
+  --diff-program=PROGRAM  Use PROGRAM to compare files.
+
+  -v  --version  Output version info.
+  --help  Output this help.
+
+If a FILE is `-', read standard input.
+
+Report bugs to <bug-gnu-utils@gnu.org>.		
+		]]>
+		</screen>
+	</section>
+</section>

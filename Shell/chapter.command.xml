@@ -13,6 +13,7 @@
 	&section.cmd.table.xml;
 	&section.cmd.io.xml;
 	&section.cmd.binary.xml;
+	&section.cmd.diff.xml;
 
 	&chapter.text.vim.xml;
 	&chapter.utility.wget.xml;
