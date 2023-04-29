@@ -369,7 +369,8 @@ eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
 root@logging ~# echo "<a href='https://api.netkiller.cn/neo-service/orderComputerRetry?orderId=1052304281534390016&orderStatus=1'>重试</a>" | grep -oP '(?<=orderId\=\d)\d+'	
 			]]>
 			</screen>
-			<screen><![CDATA[
+			<screen>
+			<![CDATA[
 [neo@netkiller nginx]$ grep -Po '\w+\.js' www.netkiller.cn.access.log
 index.js
 min.js
@@ -401,7 +402,8 @@ ctrl.js
 packed.js
 min.js
 common.js
-			]]></screen>
+			]]>
+			</screen>
 		</section>
 		
 	</section>
