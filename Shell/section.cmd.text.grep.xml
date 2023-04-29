@@ -346,6 +346,29 @@ UUID=4d3468de-a2ac-451c-b693-3bdca8832096 swap                    swap    defaul
 		<section>
 			<title>-P, --perl-regexp Perl正则表达式</title>
 			<para>Interpret PATTERN as a Perl regular expression. This is highly experimental and grep -P may warn of unimplemented features.</para>
+			<para>取网卡IP地址</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# ifconfig eth0
+eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.1.104  netmask 255.255.255.0  broadcast 192.168.1.255
+        ether 00:16:3e:14:2f:9e  txqueuelen 1000  (Ethernet)
+        RX packets 3192683236  bytes 793770390138 (739.2 GiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 3115395437  bytes 2842927192254 (2.5 TiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+[root@netkiller ~]# ip -4 addr show "eth0" | grep -oP '(?<=inet\s)\d+(\.\d+){3}'
+192.168.1.104
+[root@netkiller ~]# 			
+			]]>
+			</screen>
+			<para>取出 orderId=105230428153439001 中的订单号</para>
+			<screen>
+			<![CDATA[
+root@logging ~# echo "<a href='https://api.netkiller.cn/neo-service/orderComputerRetry?orderId=1052304281534390016&orderStatus=1'>重试</a>" | grep -oP '(?<=orderId\=\d)\d+'	
+			]]>
+			</screen>
 			<screen><![CDATA[
 [neo@netkiller nginx]$ grep -Po '\w+\.js' www.netkiller.cn.access.log
 index.js
@@ -380,6 +403,7 @@ min.js
 common.js
 			]]></screen>
 		</section>
+		
 	</section>
 	<section id="fgrep">
 		<title>fgrep</title>
@@ -426,6 +450,97 @@ docker:x:991:www,gitlab-runner
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title></title>
+			<para>需求：日志如下，需要取出 orderId=1052304281528490008 中的订单号 1052304281528490008</para>
+			<screen>
+			<![CDATA[
+[2023-04-28 15:28:54] [netkiller-5f6fb96b97-mh4rm] [ERROR] [ConsumeMessageThread_3] cn.netkiller.service.factory.OrderComputeFactory.execute(OrderComputeFactory.java:86) - <a href='https://api.netkiller.cn/netkiller/orderComputerRetry?orderId=1052304281528380003&orderStatus=1'>重试</a>,订单计算执行失败，OrderComputeDto{orderId=1052304281528380003, orderStatus=1, orderType=10, platformId=103, platformName='全球购骑士卡', productType=79, stationId=9482},异常信息：192.168.11.107:8080 failed to respond executing POST http://test-service/test-service/order/addOrderPayInfo
+[2023-04-28 15:29:01] [netkiller-5f6fb96b97-mh4rm] [ERROR] [ConsumeMessageThread_19] cn.netkiller.service.factory.OrderComputeFactory.execute(OrderComputeFactory.java:86) - <a href='https://api.netkiller.cn/netkiller/orderComputerRetry?orderId=1052304281528410008&orderStatus=1'>重试</a>,订单计算执行失败，OrderComputeDto{orderId=1052304281528410008, orderStatus=1, orderType=10, platformId=103, platformName='全球购骑士卡', productType=79, stationId=39094},异常信息：192.168.9.78:8080 failed to respond executing POST http://test-service/test-service/station/settleInfo/getSettleInfoByStationId?stationId=39094
+[2023-04-28 15:29:00] [netkiller-5f6fb96b97-6qgqj] [ERROR] [ConsumeMessageThread_1] cn.netkiller.service.factory.OrderComputeFactory.execute(OrderComputeFactory.java:86) - <a href='https://api.netkiller.cn/netkiller/orderComputerRetry?orderId=1052304281528430003&orderStatus=1'>重试</a>,订单计算执行失败，OrderComputeDto{orderId=1052304281528430003, orderStatus=1, orderType=10, platformId=1587, platformName='平安好车主', productType=820, stationId=17749},异常信息：Connect to 192.168.9.78:8080 [/192.168.9.78] failed: Connection refused (Connection refused) executing POST http://test-service/test-service/order/addOrderStationSettleInfo
+[2023-04-28 15:29:13] [netkiller-5f6fb96b97-6qgqj] [ERROR] [ConsumeMessageThread_3] cn.netkiller.service.factory.OrderComputeFactory.execute(OrderComputeFactory.java:86) - <a href='https://api.netkiller.cn/netkiller/orderComputerRetry?orderId=1052304281528490008&orderStatus=1'>重试</a>,订单计算执行失败，OrderComputeDto{orderId=1052304281528490008, orderStatus=1, orderType=10, platformId=1293, platformName='高德地图-api', productType=674, stationId=39697},异常信息：192.168.10.10:8080 failed to respond executing POST http://test-service/test-service/order/addOrderBaseInfo
+[2023-04-28 15:32:14] [netkiller-5f6fb96b97-mh4rm] [ERROR] [ConsumeMessageThread_14] cn.netkiller.service.factory.OrderComputeFactory.execute(OrderComputeFactory.java:86) - <a href='https://api.netkiller.cn/netkiller/orderComputerRetry?orderId=1052304281532030009&orderStatus=1'>重试</a>,订单计算执行失败，OrderComputeDto{orderId=1052304281532030009, orderStatus=1, orderType=10, platformId=531, platformName='货拉拉API', productType=293, stationId=39496},异常信息：192.168.10.12:8080 failed to respond executing POST http://test-service/test-service/order/addOrderStationSettleInfo
+[2023-04-28 15:34:53] [netkiller-5f6fb96b97-mh4rm] [ERROR] [ConsumeMessageThread_18] cn.netkiller.service.factory.OrderComputeFactory.execute(OrderComputeFactory.java:86) - <a href='https://api.netkiller.cn/netkiller/orderComputerRetry?orderId=1052304281534390016&orderStatus=1'>重试</a>,订单计算执行失败，OrderComputeDto{orderId=1052304281534390016, orderStatus=1, orderType=10, platformId=1587, platformName='平安好车主', productType=820, stationId=37711},异常信息：192.168.14.155:8080 failed to respond executing POST http://test-service/test-service/order/addOrderStationSettleInfo			
+			]]>
+			</screen>
+			<para>第一步、先初步取出需要的数据</para>
+			<screen>
+			<![CDATA[
+root@logging ~# cat prod/netkiller/04/failed.log | egrep -o 'orderId=(.*)&'
+orderId=1052304281517470004&
+orderId=1052304281517280005&
+orderId=1052304281517060003&
+orderId=1052304281517370019&
+orderId=1052304281517140014&
+orderId=1052304281517250005&
+orderId=1052304281517140006&			
+			]]>
+			</screen>
+			<para>第二步、去掉不需要的字符串，只保留订单号</para>
+			<screen>
+			<![CDATA[
+root@logging ~# cat prod/netkiller/04/failed.log | egrep -o 'orderId=(.*)&' | sed -e 's/orderId=//' -e 's/&//' 
+1052304281517470004
+1052304281517280005
+1052304281517060003
+1052304281517370019
+1052304281517140014
+1052304281517250005
+1052304281517140006
+1052304281517190008
+1052304281517440008			
+			]]>
+			</screen>
+			<para>第三步、对数据排序</para>
+			<screen>
+			<![CDATA[
+root@logging ~# cat prod/netkiller/04/failed.log | egrep -o 'orderId=(.*)&' | sed -e 's/orderId=//' -e 's/&//' | sort 
+1052304281439440007
+1052304281516190004
+1052304281517060003
+1052304281517070003
+1052304281517110004
+1052304281517140006
+1052304281517140014
+1052304281517160006
+1052304281517160013			
+			]]>
+			</screen>
+			<para>第四步、去除重复数据</para>
+			<screen>
+			<![CDATA[
+root@logging ~# cat prod/netkiller/04/failed.log | egrep -o 'orderId=(.*)&' | sed -e 's/orderId=//' -e 's/&//' | sort | uniq
+1052304281439440007
+1052304281516190004
+1052304281517060003
+1052304281517070003
+1052304281517110004
+1052304281517140006
+1052304281517140014
+			]]>
+			</screen>
+			<para>第五步、确认一下去掉了多少重复数据</para>
+			<screen>
+			<![CDATA[
+root@logging ~# cat prod/netkiller/04/failed.log | egrep -o 'orderId=(.*)&' | sed -e 's/orderId=//' -e 's/&//' | sort | wc -l
+208
+root@logging ~# cat prod/netkiller/04/failed.log | egrep -o 'orderId=(.*)&' | sed -e 's/orderId=//' -e 's/&//' | sort | uniq | wc -l
+205
+			
+			]]>
+			</screen>
+			<para>第一步</para>
+			<screen>
+			<![CDATA[
+			
+			]]>
+			</screen>
+			<para>第一步</para>
+			<screen>
+			<![CDATA[
+			
+			]]>
+			</screen>
+		</section>
 	</section>
-	
 </section>
