@@ -795,7 +795,7 @@ output {
 				</screen>
 				<para>/usr/share/logstash/bin/logstash -f date.conf</para>
 			</section>
-			<section>
+			<section id="filter.drop">
 				<title>数据清洗</title>
 				<para>丢弃日志种包含 MonthShardingAlgorithm 字符串的日志</para>
 				<screen>
@@ -835,6 +835,49 @@ output {
 			<section id="grok.debug">
 				<title>grok debug 工具</title>
 				<para>http://grokdebug.herokuapp.com</para>
+				<ulink url="https://github.com/elastic/logstash/blob/v1.4.2/patterns/grok-patterns">grok-patterns</ulink>
+				<para>filebeat 发送过来日志是文本可是，我们需要使用 grok 匹配后将对应的值放入指定变量</para>
+				<screen>
+				<![CDATA[
+input {
+  beats {
+    port => 5044   
+  }
+}
+filter{
+    if "MonthShardingAlgorithm" in [message] {
+        drop{}
+    }
+
+    grok{
+        match => ["message", "\[%{TIMESTAMP_ISO8601:timestamp}\] \[%{NOTSPACE:hostname}\] \[%{LOGLEVEL:level}\] \[%{NOTSPACE:thread-id}\] %{NOTSPACE:class} - %{JAVALOGMESSAGE:msg}"]
+        #target => "result"
+    }
+}
+output {
+    file {
+        path => "/opt/log/%{[fields][environment]}/%{[fields][service]}/%{+MM}/spring.%{+yyyy}-%{+MM}-%{+dd}.log"
+        codec => line { format => "%{message}"}
+    }
+    file {
+        path => "/opt/log/%{[fields][environment]}/%{[fields][service]}/%{+MM}/%{+dd}/spring.%{level}.log"
+        codec => line { format => "%{message}"}
+    }
+
+    if "ERROR" == [level] {
+        file {
+            path => "/opt/log/%{[fields][environment]}/%{[fields][service]}/beats.log"
+            codec => line { format => "%{message}"}
+        }
+    }
+    file {
+        path => "/opt/log/beats.%{+yyyy}-%{+MM}-%{+dd}.log.gz"
+        codec => json_lines
+        gzip => true
+    }
+}				
+				]]>
+				</screen>
 			</section>
 		</section>
 		<section id="output">
@@ -1515,36 +1558,7 @@ output {
 			]]>
 			</screen>
 		</section>
-		<section>
-			<title>从 filebeat 到 redis</title>
-			<screen>
-			<![CDATA[ 
-input {
-	beats {
-		port => 5044
-	}
-}
-output {
-	file {
-		path => "/opt/log/%{[fields][environment]}/%{[fields][service]}/spring.%{+yyyy}-%{+MM}-%{+dd}.log"
-		codec => line { format => "%{message}"}
-	}
-	file {
-		path => "/opt/log/%{[fields][environment]}/%{[fields][service]}/spring.%{+yyyy}-%{+MM}-%{+dd}.log.json.gz"
-		codec => json_lines
-		gzip => true
-	}
-	redis {
-		host => ["redis.netkiller.cn"]
-		password => "passw0rd"
-		key => "filebeat"
-		codec => json_lines
-		data_type => "channel"
-	}
-}
-			]]>
-			</screen>
-		</section>
+
 		<section>
 			<title>Logstash 集成禅道</title>
 			<para>日志钉钉报警，同时创建禅道任务，用来跟进故障</para>
