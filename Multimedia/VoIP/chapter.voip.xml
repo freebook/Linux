@@ -6,6 +6,7 @@
 	
 	&chapter.gatekeeper.xml;
 	&chapter.opensips.xml;
+	&section.voip.linphone.xml;
 	
 <chapter id="pbx">
 	<title>PBX</title>
