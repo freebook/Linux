@@ -154,11 +154,11 @@ mongodba-6d5d6ddf64-jw4fv   1/1     Running   0          16h
 # kubectl exec -it mongodba-6d5d6ddf64-jw4fv bash		
 		]]>
 		</screen>
-	</section>
-	<section id="kubectl.exec">
-		<title>执行 Shell</title>
-		<para>进入容器内部.</para>
-		<screen>
+
+		<section id="kubectl.exec">
+			<title>执行 Shell</title>
+			<para>进入容器内部.</para>
+			<screen>
 		<![CDATA[
 $ kubectl get pods
 NAME                        READY   STATUS    RESTARTS   AGE
@@ -167,7 +167,7 @@ mongodba-6d5d6ddf64-jw4fv   1/1     Running   0          16h
 $ kubectl exec -it mongodba-6d5d6ddf64-jw4fv bash		
 		]]>
 		</screen>
-		<screen>
+			<screen>
 		<![CDATA[
 kubectl run busybox --image=busybox:latest		
 
@@ -190,12 +190,12 @@ Address: 185.199.109.153
 		]]>
 		</screen>
 
-	</section>
-	<section id="kubectl.info">
-		<title>查看信息</title>
-		<section>
-			<title>api-versions</title>
-			<screen>
+		</section>
+		<section id="kubectl.info">
+			<title>查看信息</title>
+			<section>
+				<title>api-versions</title>
+				<screen>
 		<![CDATA[
 iMac:springboot neo$ kubectl api-versions
 admissionregistration.k8s.io/v1
@@ -236,26 +236,26 @@ v1
 		
 		]]>
 			</screen>
-		</section>
-		<section id="get.nodes">
-			<title>节点</title>
-			<screen>
+			</section>
+			<section id="get.nodes">
+				<title>节点</title>
+				<screen>
 		<![CDATA[
 [root@localhost ~]# kubectl get nodes
 NAME       STATUS   ROLES    AGE   VERSION
 minikube   Ready    master   23m   v1.13.2		
 		]]>
 			</screen>
-			<section id="get.nodes">
-				<title>nodes</title>
-				<screen>
+				<section id="get.nodes">
+					<title>nodes</title>
+					<screen>
 		<![CDATA[
 [root@localhost ~]# kubectl get nodes
 NAME       STATUS   ROLES    AGE    VERSION
 minikube   Ready    master   119m   v1.13.2		
 		]]>
 				</screen>
-				<screen>
+					<screen>
 		<![CDATA[
 iMac:~ neo$ kubectl get node 
 NAME       STATUS   ROLES    AGE   VERSION
@@ -266,14 +266,14 @@ NAME       STATUS   ROLES    AGE   VERSION   INTERNAL-IP    EXTERNAL-IP   OS-IMA
 minikube   Ready    master   42h   v1.19.0   192.168.64.2   <none>        Buildroot 2019.02.11   4.19.114         docker://19.3.12		
 		]]>
 				</screen>
+				</section>
+
 			</section>
 
-		</section>
 
-
-		<section id="get.cs">
-			<title>查询集群状态</title>
-			<screen>
+			<section id="get.cs">
+				<title>查询集群状态</title>
+				<screen>
 		<![CDATA[
 [root@localhost ~]# kubectl get cs
 NAME                 STATUS    MESSAGE              ERROR
@@ -282,10 +282,10 @@ scheduler            Healthy   ok
 etcd-0               Healthy   {"health": "true"}   		
 		]]>
 			</screen>
-		</section>
-		<section id="kubectl.config">
-			<title>config</title>
-			<screen>
+			</section>
+			<section id="kubectl.config">
+				<title>config</title>
+				<screen>
 		<![CDATA[
 [root@localhost ~]# kubectl config view
 apiVersion: v1
@@ -309,7 +309,7 @@ users:
     client-key: /root/.minikube/client.key		
 		]]>
 			</screen>
-			<screen>
+				<screen>
 		<![CDATA[
 iMac:~ neo$ kubectl config view
 apiVersion: v1
@@ -345,21 +345,21 @@ users:
     client-key: /Users/neo/.minikube/profiles/minikube/client.key		
 		]]>
 			</screen>
-			<section>
-				<title>use-context</title>
-				<para>如果之前用其他方式运行Kubernetes，如 minikube, mircok8s 等等，可以使用下面命令切换。
-				</para>
-				<screen>
+				<section>
+					<title>use-context</title>
+					<para>如果之前用其他方式运行Kubernetes，如 minikube, mircok8s 等等，可以使用下面命令切换。
+					</para>
+					<screen>
 			<![CDATA[
 $ kubectl config use-context docker-for-desktop		
 			]]>
 				</screen>
-			</section>
+				</section>
 
-		</section>
-		<section id="cluster-info">
-			<title>cluster-info</title>
-			<screen>
+			</section>
+			<section id="cluster-info">
+				<title>cluster-info</title>
+				<screen>
 		<![CDATA[
 [root@localhost ~]# kubectl cluster-info
 Kubernetes master is running at https://172.16.0.121:8443
@@ -368,11 +368,11 @@ KubeDNS is running at https://172.16.0.121:8443/api/v1/namespaces/kube-system/se
 To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.		
 		]]>
 			</screen>
+			</section>
 		</section>
-	</section>
-	<section id="kubectl.logs">
-		<title>查看 pod 日志</title>
-		<screen>
+		<section id="kubectl.logs">
+			<title>查看 pod 日志</title>
+			<screen>
 		<![CDATA[
 kubectl logs <pod-name>
 kubectl logs --previous <pod-name>
@@ -380,47 +380,326 @@ kubectl logs -l app=your-app-name | grep "xxx"
 kubectl logs --selector role=cool-app | grep "xxx"
 		]]>
 		</screen>
-	</section>
-	<section id="kubectl.cp">
-		<title>复制文件</title>
-		<screen>
+		</section>
+		<section id="kubectl.cp">
+			<title>复制文件</title>
+			<screen>
 		<![CDATA[
 kubectl cp netkiller/job-executor-77fc6b4db-5dzxz:logs/info.2022-07-29.log Downloads/info.2022-07-29.log -c job-executor		
 		]]>
 		</screen>
-		<screen>
+			<screen>
 		<![CDATA[
 kubectl cp Downloads/myfile netkiller/job-executor-77fc6b4db-5dzxz:/tmp/myfile -c job-executor		
 		]]>
 		</screen>
-	</section>
-	<section id="kubectl.edit">
-		<title>edit</title>
-		<screen>
+		</section>
+		<section id="kubectl.edit">
+			<title>edit</title>
+			<screen>
 		<![CDATA[
 kubectl edit --namespace=kube-system rc kubernetes-dashboard		
 		]]>
 		</screen>
-	</section>
-	<section id="kubectl.port-forward">
-		<title>端口转发</title>
-		<para>将 本地 0.0.0.0:27017 端口转发到 service 端口</para>
-		<screen>
-		<![CDATA[
-neo@Netkiller-iMac ~> kubectl port-forward --address 0.0.0.0 service/mongo 27017
-Forwarding from 0.0.0.0:27017 -> 27017		
-		]]>
-		</screen>
-	</section>
-	<section id="kubelet.sysctls">
-		<title>操作系统资源配置</title>
-		<section>
-			<title>sysctls</title>
-			<screen>
+		</section>
+		<section id="kubectl.port-forward">
+			<title>端口转发</title>
+			<section id="kubectl.port-forward">
+				<title>Service 端口映射</title>
+				<screen>
+			<![CDATA[
+$ kubectl port-forward svc/demo 8080:8080		
+			]]>
+			</screen>
+			</section>
+			<section>
+				<title>绑定地址</title>
+				<para>将本地 0.0.0.0:27017 端口转发到 service 端口</para>
+				<screen>
+			<![CDATA[
+	neo@Netkiller-iMac ~> kubectl port-forward --address 0.0.0.0 service/mongo 27017
+	Forwarding from 0.0.0.0:27017 -> 27017		
+			]]>
+			</screen>
+			</section>
+		</section>
+		<section id="kubelet.sysctls">
+			<title>操作系统资源配置</title>
+			<section>
+				<title>sysctls</title>
+				<screen>
 			<![CDATA[
 kubelet --experimental-allowed-unsafe-sysctls 'kernel.msg*,kernel.shmmax,kernel.sem,net.ipv4.route.min_pmtu'
 			]]>
 			</screen>
+			</section>
+		</section>
+		<section id="kubectl.endpoints">
+			<title>endpoints</title>
+			<screen>
+		<![CDATA[
+Neo-iMac:kubernetes neo$ rancher kubectl get endpoints nginx
+NAME    ENDPOINTS                                   AGE
+nginx   10.42.0.19:80,10.42.0.20:80,10.42.0.21:80   3m56s		
+		]]>
+		</screen>
+		</section>
+		<section id="kubectl.explain">
+			<title>explain</title>
+			<section>
+				<title>ingress</title>
+				<screen>
+			<![CDATA[
+iMac:kubernetes neo$ kubectl explain ingress
+KIND:     Ingress
+VERSION:  extensions/v1beta1
+
+DESCRIPTION:
+     Ingress is a collection of rules that allow inbound connections to reach
+     the endpoints defined by a backend. An Ingress can be configured to give
+     services externally-reachable urls, load balance traffic, terminate SSL,
+     offer name based virtual hosting etc. DEPRECATED - This group version of
+     Ingress is deprecated by networking.k8s.io/v1beta1 Ingress. See the release
+     notes for more information.
+
+FIELDS:
+   apiVersion	<string>
+     APIVersion defines the versioned schema of this representation of an
+     object. Servers should convert recognized schemas to the latest internal
+     value, and may reject unrecognized values. More info:
+     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+
+   kind	<string>
+     Kind is a string value representing the REST resource this object
+     represents. Servers may infer this from the endpoint the client submits
+     requests to. Cannot be updated. In CamelCase. More info:
+     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+
+   metadata	<Object>
+     Standard object's metadata. More info:
+     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+
+   spec	<Object>
+     Spec is the desired state of the Ingress. More info:
+     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+
+   status	<Object>
+     Status is the current state of the Ingress. More info:
+     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status			
+			]]>
+			</screen>
+				<para>查看 ingress.spec 配置清单</para>
+				<screen>
+			<![CDATA[
+iMac:kubernetes neo$ kubectl explain ingress.spec
+KIND:     Ingress
+VERSION:  extensions/v1beta1
+
+RESOURCE: spec <Object>
+
+DESCRIPTION:
+     Spec is the desired state of the Ingress. More info:
+     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+
+     IngressSpec describes the Ingress the user wishes to exist.
+
+FIELDS:
+   backend	<Object>
+     A default backend capable of servicing requests that don't match any rule.
+     At least one of 'backend' or 'rules' must be specified. This field is
+     optional to allow the loadbalancer controller or defaulting logic to
+     specify a global default.
+
+   ingressClassName	<string>
+     IngressClassName is the name of the IngressClass cluster resource. The
+     associated IngressClass defines which controller will implement the
+     resource. This replaces the deprecated `kubernetes.io/ingress.class`
+     annotation. For backwards compatibility, when that annotation is set, it
+     must be given precedence over this field. The controller may emit a warning
+     if the field and annotation have different values. Implementations of this
+     API should ignore Ingresses without a class specified. An IngressClass
+     resource may be marked as default, which can be used to set a default value
+     for this field. For more information, refer to the IngressClass
+     documentation.
+
+   rules	<[]Object>
+     A list of host rules used to configure the Ingress. If unspecified, or no
+     rule matches, all traffic is sent to the default backend.
+
+   tls	<[]Object>
+     TLS configuration. Currently the Ingress only supports a single TLS port,
+     443. If multiple members of this list specify different hosts, they will be
+     multiplexed on the same port according to the hostname specified through
+     the SNI TLS extension, if the ingress controller fulfilling the ingress
+     supports SNI.			
+			]]>
+			</screen>
+			</section>
+		</section>
+
+		<section id="kubectl.describe">
+			<title>describe</title>
+			<section>
+				<title>storageclasses.storage.k8s.io</title>
+				<screen>
+			<![CDATA[
+[root@master ~]# kubectl describe storageclasses.storage.k8s.io
+Name:                  longhorn-storage
+IsDefaultClass:        No
+Annotations:           <none>
+Provisioner:           driver.longhorn.io
+Parameters:            diskSelector=hdd,numberOfReplicas=2,staleReplicaTimeout=2880
+AllowVolumeExpansion:  True
+MountOptions:          <none>
+ReclaimPolicy:         Delete
+VolumeBindingMode:     Immediate
+Events:                <none>
+
+
+Name:            longhorn
+IsDefaultClass:  No
+Annotations:     longhorn.io/last-applied-configmap=kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: longhorn
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+reclaimPolicy: "Delete"
+volumeBindingMode: Immediate
+parameters:
+  numberOfReplicas: "3"
+  staleReplicaTimeout: "30"
+  fromBackup: ""
+  fsType: "ext4"
+  dataLocality: "disabled"
+,storageclass.beta.kubernetes.io/is-default-class=false,storageclass.kubernetes.io/is-default-class=false
+Provisioner:           driver.longhorn.io
+Parameters:            dataLocality=disabled,fromBackup=,fsType=ext4,numberOfReplicas=3,staleReplicaTimeout=30
+AllowVolumeExpansion:  True
+MountOptions:          <none>
+ReclaimPolicy:         Delete
+VolumeBindingMode:     Immediate
+Events:                <none>
+
+
+Name:                  local-path
+IsDefaultClass:        Yes
+Annotations:           objectset.rio.cattle.io/applied=H4sIAAAAAAAA/4yRT+vUMBCGv4rMua1bu1tKwIOu7EUEQdDzNJlux6aZkkwry7LfXbIqrIffn2PyZN7hfXIFXPg7xcQSwEBSiXimaupSxfJ2q6GAiYMDA9/+oKPHlKCAmRQdKoK5AoYgisoSUj5K/5OsJtIqslQWVT3lNM4xUDzJ5VegWJ63CQxMTXogW128+czBvf/gnIQXIwLOBAa8WPTl30qvGkoL2jw5rT2V6ZKUZij+SbG5eZVRDKR0F8SpdDTg6rW8YzCgcSW4FeCxJ/+sjxHTCAbqrhmag20Pw9DbZtfu210z7JuhPnQ719m2w3cOe7fPof81W1DHfLlE2Th/IEUwEDHYkWJe8PCsgJgL8PxVPNsLGPhEnjRr2cSvM33k4Dicv4jLC34g60niiWPSo4S0zhTh9jsAAP//ytgh5S0CAAA,objectset.rio.cattle.io/id=,objectset.rio.cattle.io/owner-gvk=k3s.cattle.io/v1, Kind=Addon,objectset.rio.cattle.io/owner-name=local-storage,objectset.rio.cattle.io/owner-namespace=kube-system,storageclass.beta.kubernetes.io/is-default-class=true,storageclass.kubernetes.io/is-default-class=true
+Provisioner:           rancher.io/local-path
+Parameters:            <none>
+AllowVolumeExpansion:  <unset>
+MountOptions:          <none>
+ReclaimPolicy:         Delete
+VolumeBindingMode:     WaitForFirstConsumer
+Events:                <none>
+			]]>
+			</screen>
+			</section>
+			<section>
+				<title>pod</title>
+				<screen>
+			<![CDATA[
+[root@master ~]# kubectl describe pvc
+Name:          elasticsearch-elasticsearch-data-0
+Namespace:     default
+StorageClass:  local-path
+Status:        Bound
+Volume:        pvc-a2ebce5a-9ae1-46e9-ae9f-8840027bf5d8
+Labels:        app=elasticsearch
+               role=data
+Annotations:   pv.kubernetes.io/bind-completed: yes
+               pv.kubernetes.io/bound-by-controller: yes
+               volume.beta.kubernetes.io/storage-provisioner: rancher.io/local-path
+               volume.kubernetes.io/selected-node: agent-1
+               volume.kubernetes.io/storage-provisioner: rancher.io/local-path
+Finalizers:    [kubernetes.io/pvc-protection]
+Capacity:      1Gi
+Access Modes:  RWO
+VolumeMode:    Filesystem
+Used By:       elasticsearch-data-0
+Events:        <none>
+
+
+Name:          elasticsearch-elasticsearch-data-1
+Namespace:     default
+StorageClass:  local-path
+Status:        Bound
+Volume:        pvc-f0d9d5df-9704-44a7-93ff-8a4f431af226
+Labels:        app=elasticsearch
+               role=data
+Annotations:   pv.kubernetes.io/bind-completed: yes
+               pv.kubernetes.io/bound-by-controller: yes
+               volume.beta.kubernetes.io/storage-provisioner: rancher.io/local-path
+               volume.kubernetes.io/selected-node: master
+               volume.kubernetes.io/storage-provisioner: rancher.io/local-path
+Finalizers:    [kubernetes.io/pvc-protection]
+Capacity:      1Gi
+Access Modes:  RWO
+VolumeMode:    Filesystem
+Used By:       elasticsearch-data-1
+Events:        <none>
+
+
+Name:          elasticsearch-elasticsearch-data-2
+Namespace:     default
+StorageClass:  local-path
+Status:        Bound
+Volume:        pvc-722cce94-b2c5-457a-8e01-9a2a52b12128
+Labels:        app=elasticsearch
+               role=data
+Annotations:   pv.kubernetes.io/bind-completed: yes
+               pv.kubernetes.io/bound-by-controller: yes
+               volume.beta.kubernetes.io/storage-provisioner: rancher.io/local-path
+               volume.kubernetes.io/selected-node: agent-1
+               volume.kubernetes.io/storage-provisioner: rancher.io/local-path
+Finalizers:    [kubernetes.io/pvc-protection]
+Capacity:      1Gi
+Access Modes:  RWO
+VolumeMode:    Filesystem
+Used By:       elasticsearch-data-2
+Events:        <none>
+
+
+Name:          longhorn-volv-pvc
+Namespace:     default
+StorageClass:  longhorn
+Status:        Bound
+Volume:        pvc-5dc3ae33-9f86-4650-82ba-a7b681963adc
+Labels:        <none>
+Annotations:   pv.kubernetes.io/bind-completed: yes
+               pv.kubernetes.io/bound-by-controller: yes
+               volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
+               volume.kubernetes.io/storage-provisioner: driver.longhorn.io
+Finalizers:    [kubernetes.io/pvc-protection]
+Capacity:      2Gi
+Access Modes:  RWO
+VolumeMode:    Filesystem
+Used By:       volume-test
+Events:        <none>
+
+
+Name:          redis
+Namespace:     default
+StorageClass:  local-path
+Status:        Pending
+Volume:        
+Labels:        <none>
+Annotations:   <none>
+Finalizers:    [kubernetes.io/pvc-protection]
+Capacity:      
+Access Modes:  
+VolumeMode:    Filesystem
+Used By:       redis-0
+Events:
+  Type    Reason                Age                   From                         Message
+  ----    ------                ----                  ----                         -------
+  Normal  WaitForFirstConsumer  29s (x481 over 120m)  persistentvolume-controller  waiting for first consumer to be created before binding
+[root@master ~]# 
+			]]>
+			</screen>
+			</section>
 		</section>
 	</section>
 	<section id="kubectl.namespace">
@@ -1057,36 +1336,29 @@ metadata:
 		]]>
 		</screen>
 	</section>
-	<section id="kubectl.deployment">
-		<title>部署管理</title>
+
+	<section id="kubectl.pods">
+		<title>Pod 管理</title>
+		<para>Pod 状态说明</para>
+		<itemizedlist>
+			<title>Pod 状态：</title>
+			<listitem>
+				Pending：Pod已经被创建，但还没有完成调度，或者说有一个或多个镜像正处于从远程仓库下载的过程。处在这个阶段的Pod可能正在写数据到etcd中、调度、pull镜像或启动容器。
+			</listitem>
+			<listitem>
+				Pending：Pod已经被创建，但还没有完成调度，或者说有一个或多个镜像正处于从远程仓库下载的过程。处在这个阶段的Pod可能正在写数据到etcd中、调度、pull镜像或启动容器。
+			</listitem>
+			<listitem>Running：该Pod已经绑定到了一个节点上，Pod中所有的容器都已被创建。至少有一个容器正在运行，或者正处于启动或重启状态。
+			</listitem>
+			<listitem>Succeeded：Pod中的所有的容器已经正常的执行后退出，并且不会自动重启，一般会是在部署job的时候会出现。
+			</listitem>
+			<listitem>Failed：Pod中的所有容器都已终止了，并且至少有一个容器是因为失败终止。也就是说，容器以非0状态退出或者被系统终止。
+			</listitem>
+			<listitem>Unkonwn：APIServer无法正常获取到Pod对象的状态信息，通常是由于其无法与所在工作节点的kubelet通信所致。
+			</listitem>
+		</itemizedlist>
+		<para>Pod 错误的详细的说明</para>
 		<screen>
-		<![CDATA[
-kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
-kubectl get pods --namespace=kube-system		
-		]]>
-		</screen>
-		<section id="kubectl.pods">
-			<title>Pod 管理</title>
-			<para>Pod 状态说明</para>
-			<itemizedlist>
-				<title>Pod 状态：</title>
-				<listitem>
-					Pending：Pod已经被创建，但还没有完成调度，或者说有一个或多个镜像正处于从远程仓库下载的过程。处在这个阶段的Pod可能正在写数据到etcd中、调度、pull镜像或启动容器。
-				</listitem>
-				<listitem>
-					Pending：Pod已经被创建，但还没有完成调度，或者说有一个或多个镜像正处于从远程仓库下载的过程。处在这个阶段的Pod可能正在写数据到etcd中、调度、pull镜像或启动容器。
-				</listitem>
-				<listitem>Running：该Pod已经绑定到了一个节点上，Pod中所有的容器都已被创建。至少有一个容器正在运行，或者正处于启动或重启状态。
-				</listitem>
-				<listitem>Succeeded：Pod中的所有的容器已经正常的执行后退出，并且不会自动重启，一般会是在部署job的时候会出现。
-				</listitem>
-				<listitem>Failed：Pod中的所有容器都已终止了，并且至少有一个容器是因为失败终止。也就是说，容器以非0状态退出或者被系统终止。
-				</listitem>
-				<listitem>Unkonwn：APIServer无法正常获取到Pod对象的状态信息，通常是由于其无法与所在工作节点的kubelet通信所致。
-				</listitem>
-			</itemizedlist>
-			<para>Pod 错误的详细的说明</para>
-			<screen>
 		<![CDATA[
 状态						描述
 CrashLoopBackOff		容器退出，kubelet正在将它重启
@@ -1109,25 +1381,25 @@ DockerDaemonNotReady	docker还没有完全启动
 NetworkPluginNotReady	网络插件还没有完全启动		
 		]]>
 			</screen>
-			<section>
-				<title>查看 POD 状态</title>
-				<para></para>
-				<screen>
+		<section>
+			<title>查看 POD 状态</title>
+			<para></para>
+			<screen>
 			<![CDATA[
 kubectl get pod <pod-name> -o wide		
 kubectl get pods --all-namespaces			
 			]]>
 				</screen>
-				<para>查看默认命名空间下的 pod</para>
-				<screen>
+			<para>查看默认命名空间下的 pod</para>
+			<screen>
 			<![CDATA[ 
 [root@localhost ~]# kubectl get pod
 NAME                              READY   STATUS    RESTARTS   AGE
 hello-minikube-5c856cbf98-6vfvp   1/1     Running   0          6m59s
 			]]>
 				</screen>
-				<para>查看所有命名空间下的 Pod</para>
-				<screen>
+			<para>查看所有命名空间下的 Pod</para>
+			<screen>
 		<![CDATA[				
 [root@localhost ~]# kubectl get pods --all-namespaces
 NAMESPACE     NAME                                   READY   STATUS    RESTARTS   AGE
@@ -1144,7 +1416,7 @@ kube-system   kubernetes-dashboard-ccc79bfc9-dxcq2   1/1     Running   7        
 kube-system   storage-provisioner                    1/1     Running   2          4d18h		
 		]]>
 				</screen>
-				<screen>
+			<screen>
 			<![CDATA[
 iMac:~ neo$ kubectl get pods --output=wide
 NAME                        READY   STATUS             RESTARTS   AGE   IP           NODE       NOMINATED NODE   READINESS GATES
@@ -1152,20 +1424,20 @@ registry-65854b565b-bkhvq   0/1     ImagePullBackOff   0          18m   172.17.0
 			
 			]]>
 				</screen>
-				<para>查看pod标签</para>
-				<screen>
+			<para>查看pod标签</para>
+			<screen>
 			<![CDATA[
 kubectl get pods --show-labels			
 			]]>
 				</screen>
-				<para>查看指定标签的pod</para>
-				<screen>
+			<para>查看指定标签的pod</para>
+			<screen>
 			<![CDATA[
 kubectl get pods -l run=nginx			
 			]]>
 				</screen>
-				<para>指定命名空间</para>
-				<screen>
+			<para>指定命名空间</para>
+			<screen>
 		<![CDATA[
 [root@localhost ~]# kubectl get pod --namespace=kube-system
 NAME                                   READY   STATUS    RESTARTS   AGE
@@ -1181,70 +1453,103 @@ kubernetes-dashboard-ccc79bfc9-dxcq2   1/1     Running   5          16m
 storage-provisioner                    1/1     Running   0          39m		
 		]]>
 				</screen>
-				<section>
-					<title>格式化输出</title>
-					<screen>
+			<section>
+				<title>格式化输出</title>
+				<screen>
 			<![CDATA[
 neo@Netkiller-iMac ~> kubectl get pods -l app=nacos -o jsonpath='{.items[0].metadata.name}'
 nacos-0⏎   			
 			]]>
 					</screen>
-				</section>
-				<section>
-					<title>查看 pod 下面容器</title>
-					<para></para>
-					<screen>
+			</section>
+			<section>
+				<title>查看 pod 下面容器</title>
+				<para></para>
+				<screen>
 			<![CDATA[
 root@logging ~# kubectl --kubeconfig=/home/prod/.kube/config -n netkiller get pod neo-6787cfcb9-8s8pp -o jsonpath="{.spec.containers[*].name}"
 filebeat neo  
 			]]>
 					</screen>
-				</section>
 			</section>
-			<section>
-				<title>运行 POD</title>
-				<screen>
+		</section>
+		<section>
+			<title>运行 POD</title>
+			<screen>
 			<![CDATA[
 iMac:kubernetes neo$ kubectl run registry --image=registry:latest			
 			]]>
 				</screen>
-				<para></para>
-				<screen>
+			<para></para>
+			<screen>
 			<![CDATA[
 kubectl run busybox --image=busybox --command -- ping www.netkiller.cn			
 			]]>
 				</screen>
-				<para></para>
-				<screen>
+			<para></para>
+			<screen>
 			<![CDATA[
 kubectl run nginx --replicas=3 --labels="app=example" --image=nginx:latest --port=80			
 			]]>
 				</screen>
-				<para></para>
-				<screen>
+			<para></para>
+			<screen>
 			<![CDATA[
 kubectl run busybox --rm=true --image=busybox --restart=Never -it			
 			]]>
 				</screen>
-			</section>
+			<para>通过 Yaml 文件运行 Pod</para>
+			<screen>
+		<![CDATA[
+apiVersion: v1
+kind: Pod
+metadata:
+  name: counter
+spec:
+  containers:
+  - name: count
+    image: busybox
+    args: [/bin/sh, -c, 'i=0; while true; do echo "$i: $(date)"; i=$((i+1)); sleep 1; done']		
+		]]>
+				</screen>
+			<para>创建 pod</para>
+			<screen>
+		<![CDATA[
+iMac:kubernetes neo$ kubectl create -f pod.yaml 
+pod/counter created
 
-			<section>
-				<title>删除 pod</title>
-				<screen>
+iMac:kubernetes neo$ kubectl logs counter
+0: Sun Oct  4 12:32:44 UTC 2020
+1: Sun Oct  4 12:32:45 UTC 2020
+2: Sun Oct  4 12:32:46 UTC 2020
+3: Sun Oct  4 12:32:47 UTC 2020
+4: Sun Oct  4 12:32:48 UTC 2020
+5: Sun Oct  4 12:32:49 UTC 2020
+6: Sun Oct  4 12:32:50 UTC 2020
+7: Sun Oct  4 12:32:51 UTC 2020
+8: Sun Oct  4 12:32:52 UTC 2020
+9: Sun Oct  4 12:32:53 UTC 2020
+		]]>
+				</screen>
+		</section>
+
+		<section>
+			<title>删除 pod</title>
+			<screen>
 			<![CDATA[
 kubectl delete -n default pod registry	
 kubectl delete -n default pod counter			
 			]]>
 				</screen>
-			</section>
-			<section id="kubectl.describe">
-				<title>查看 Pod 的事件</title>
-				<screen>
+		</section>
+		<section id="kubectl.describe">
+			<title>查看 Pod 的事件</title>
+			<screen>
 		<![CDATA[
 kubectl describe pod <pod-name> 		
 		]]>
 				</screen>
-				<screen>
+			<screen>
 		<![CDATA[
 iMac:~ neo$ kubectl describe pod springboot
 Name:         springboot
@@ -1293,32 +1598,32 @@ Events:
   Normal  Pulling    79s   kubelet            Pulling image "127.0.0.1:5000/netkiller/config:latest"		
 		]]>
 				</screen>
-			</section>
+		</section>
+		<section>
+			<title>Taint（污点）和 Toleration（容忍）</title>
+			<para>其目的是分配 pod 在集群间的调度，Taint 和 toleration 相互配合，可以用来避免 pod
+				被分配到某个节点上。这跟节点亲和性作用相反。
+			</para>
+			<para>给 node 节点设置 label，通过给 pod 设置 nodeSelector 将 pod 调度到匹配标签的节点上。
+			</para>
+			<para>如果设置 toleration 应用于 pod 上，则表示 pod 可以被调度到 taint 的节点上。</para>
 			<section>
-				<title>Taint（污点）和 Toleration（容忍）</title>
-				<para>其目的是分配 pod 在集群间的调度，Taint 和 toleration 相互配合，可以用来避免 pod
-					被分配到某个节点上。这跟节点亲和性作用相反。
-				</para>
-				<para>给 node 节点设置 label，通过给 pod 设置 nodeSelector 将 pod 调度到匹配标签的节点上。
-				</para>
-				<para>如果设置 toleration 应用于 pod 上，则表示 pod 可以被调度到 taint 的节点上。</para>
-				<section>
-					<title>Taint（污点）设置</title>
-					<para>设置污点: kubectl taint node [node] key=value:[effect]</para>
-					<orderedlist>
-						<title>effect 参数</title>
-						<listitem>NoSchedule ：不能被调度。</listitem>
-						<listitem>PreferNoSchedule：尽量不要调度。</listitem>
-						<listitem>NoExecute：不允许该节点有 Pod。</listitem>
-					</orderedlist>
-					<para>在 shenzhen 节点上设置Taint，键为key，值为value，effect是NoSchedule。</para>
-					<screen>
+				<title>Taint（污点）设置</title>
+				<para>设置污点: kubectl taint node [node] key=value:[effect]</para>
+				<orderedlist>
+					<title>effect 参数</title>
+					<listitem>NoSchedule ：不能被调度。</listitem>
+					<listitem>PreferNoSchedule：尽量不要调度。</listitem>
+					<listitem>NoExecute：不允许该节点有 Pod。</listitem>
+				</orderedlist>
+				<para>在 shenzhen 节点上设置Taint，键为key，值为value，effect是NoSchedule。</para>
+				<screen>
 				<![CDATA[
 kubectl taint nodes shenzhen key=value:NoSchedule
 				]]>
 					</screen>
-					<para>这意味着除非pod只有明确声明toleration可以容忍这个Taint，否则就不会被调度到该节点。</para>
-					<screen>
+				<para>这意味着除非pod只有明确声明toleration可以容忍这个Taint，否则就不会被调度到该节点。</para>
+				<screen>
 				<![CDATA[
 apiVersion: v1
 kind: Pod
@@ -1335,11 +1640,11 @@ spec:
       image: busybox:latest				
 				]]>
 					</screen>
-				</section>
-				<section>
-					<title>Toleration（容忍）调度</title>
-					<para>key 存在即可匹配</para>
-					<screen>
+			</section>
+			<section>
+				<title>Toleration（容忍）调度</title>
+				<para>key 存在即可匹配</para>
+				<screen>
 				<![CDATA[
 spec:
   tolerations:
@@ -1348,8 +1653,8 @@ spec:
     effect: "NoSchedule"				
 				]]>
 					</screen>
-					<para>key 必须存在，并且值等 value</para>
-					<screen>
+				<para>key 必须存在，并且值等 value</para>
+				<screen>
 				<![CDATA[
 spec:
   tolerations:
@@ -1359,8 +1664,8 @@ spec:
     effect: "NoSchedule"				
 				]]>
 					</screen>
-					<para>在pod上设置多个toleration：</para>
-					<screen>
+				<para>在pod上设置多个toleration：</para>
+				<screen>
 				<![CDATA[
 spec:				
   tolerations:
@@ -1374,11 +1679,11 @@ spec:
     effect: "NoExecute"				
 				]]>
 					</screen>
-					<para>如果给node加上Taint
-						effect=NoExecute的，该节点上的没有设置toleration的pod都会被立刻驱逐，设置
-						tolerationSeconds 后会给 Pod 一个宽限期。
-					</para>
-					<screen>
+				<para>如果给node加上Taint
+					effect=NoExecute的，该节点上的没有设置toleration的pod都会被立刻驱逐，设置
+					tolerationSeconds 后会给 Pod 一个宽限期。
+				</para>
+				<screen>
 				<![CDATA[
 spec:		
   tolerations:
@@ -1389,65 +1694,29 @@ spec:
     tolerationSeconds: 3600
 				]]>
 					</screen>
-				</section>
-				<section>
-					<title>使用场景</title>
-					<para>例如有些节点上挂了SSD，给redis,mongodb,mysql 使用，有些节点上安装了显卡GPU。就可以使用 taint
-					</para>
-					<screen>
+			</section>
+			<section>
+				<title>使用场景</title>
+				<para>例如有些节点上挂了SSD，给redis,mongodb,mysql 使用，有些节点上安装了显卡GPU。就可以使用 taint
+				</para>
+				<screen>
 				<![CDATA[
 kubectl taint nodes shenzhen special=true:NoSchedule
 kubectl taint nodes guangdong special=true:PreferNoSchedule				
 				]]>
 					</screen>
-				</section>
 			</section>
-			<section id="Pod">
-				<title>Pod</title>
-				<screen>
-		<![CDATA[
-apiVersion: v1
-kind: Pod
-metadata:
-  name: counter
-spec:
-  containers:
-  - name: count
-    image: busybox
-    args: [/bin/sh, -c, 'i=0; while true; do echo "$i: $(date)"; i=$((i+1)); sleep 1; done']		
-		]]>
-				</screen>
-				<para>创建 pod</para>
-				<screen>
-		<![CDATA[
-iMac:kubernetes neo$ kubectl create -f pod.yaml 
-pod/counter created
+		</section>
+		<section id="pod.spec.containers.imagePullPolicy">
+			<title>镜像拉取策略</title>
+			<para>imagePullPolicy: Always 总是拉取</para>
+			<para>imagePullPolicy: IfNotPresent 默认值,本地有则使用本地镜像,不拉取</para>
+			<para>imagePullPolicy: Never 只使用本地镜像，从不拉取</para>
 
-iMac:kubernetes neo$ kubectl logs counter
-0: Sun Oct  4 12:32:44 UTC 2020
-1: Sun Oct  4 12:32:45 UTC 2020
-2: Sun Oct  4 12:32:46 UTC 2020
-3: Sun Oct  4 12:32:47 UTC 2020
-4: Sun Oct  4 12:32:48 UTC 2020
-5: Sun Oct  4 12:32:49 UTC 2020
-6: Sun Oct  4 12:32:50 UTC 2020
-7: Sun Oct  4 12:32:51 UTC 2020
-8: Sun Oct  4 12:32:52 UTC 2020
-9: Sun Oct  4 12:32:53 UTC 2020
-		]]>
-				</screen>
-				<section id="pod.spec.containers.imagePullPolicy">
-					<title>容器编排</title>
-					<section id="imagePullPolicy ">
-						<title>镜像拉取策略</title>
-						<para>imagePullPolicy: Always 总是拉取</para>
-						<para>imagePullPolicy: IfNotPresent 默认值,本地有则使用本地镜像,不拉取</para>
-						<para>imagePullPolicy: Never 只使用本地镜像，从不拉取</para>
-					</section>
-				</section>
-				<section id="pod.spec.hostAliases">
-					<title>指定主机名</title>
-					<screen>
+		</section>
+		<section id="pod.spec.hostAliases">
+			<title>指定主机名</title>
+			<screen>
 			<![CDATA[
 apiVersion: v1
 kind: Pod
@@ -1473,10 +1742,10 @@ spec:
     - "/etc/hosts"			
 			]]>
 					</screen>
-				</section>
-				<section id="pod.spec.containers.env">
-					<title>环境变量</title>
-					<screen>
+		</section>
+		<section id="pod.spec.containers.env">
+			<title>环境变量</title>
+			<screen>
 			<![CDATA[
 apiVersion: v1
 kind: Pod
@@ -1518,8 +1787,8 @@ spec:
   restartPolicy: Never			
 			]]>
 					</screen>
-					<para></para>
-					<screen>
+			<para></para>
+			<screen>
 			<![CDATA[
 apiVersion: v1
 kind: Pod
@@ -1568,12 +1837,15 @@ spec:
   restartPolicy: Never			
 			]]>
 					</screen>
-				</section>
-				<section id="pod.spec.containers.readinessProbe">
-					<title>健康状态检查</title>
-					<para>就绪探针</para>
-					<screen>
-			<![CDATA[
+		</section>
+		<section id="pod.spec.containers.readinessProbe">
+			<title>健康状态检查</title>
+
+			<section id="readinessProbe">
+				<title>readinessProbe (就绪探测)</title>
+				<para>就绪探针检查容器是否能够正常对外提供服务</para>
+				<screen>
+				<![CDATA[
         readinessProbe: 
           exec:
             command:
@@ -1581,22 +1853,69 @@ spec:
             - /tmp/healthy
           initialDelaySeconds: 10         #10s之后开始第一次探测
           periodSeconds: 5                #第一次探测之后每隔5s探测一次			
-			]]>
-					</screen>
-					<para></para>
-				</section>
-				<section id="pod.spec.securityContext">
-					<title>securityContext</title>
-					<section>
-						<title>sysctls</title>
-						<para></para>
-						<screen>
+				]]>
+				</screen>
+
+			</section>
+			<section id="livenessProbe ">
+				<title>livenessProbe (存活探测)</title>
+				<para>检测容器中的应用是否健康，然后将检查结果和重启策略restartPolicy来对Pod进行重启</para>
+				<para>命令方式</para>
+				<screen>
+				<![CDATA[ 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-health
+spec:
+  containers:
+  - name: nginx-liveness
+    image: nginx:latest
+    command:
+    - /bin/sh
+    - -c
+    - /usr/sbin/nginx; sleep 60; rm -rf /run/nginx.pid
+    livenessProbe:
+      exec:
+        command: [ "/bin/sh", "-c", "test", "-e", "/run/nginx.pid" ]
+  restartPolicy: Always				
+				]]>
+				</screen>
+				<para>TCP 方式</para>
+				<screen>
+				<![CDATA[ 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-health
+spec:
+  containers:
+  - name: nginx-liveness
+    image: nginx:latest
+    command:
+    - /bin/sh
+    - -c
+    - /usr/sbin/nginx; sleep 60; rm -rf /run/nginx.pid
+    livenessProbe:
+      tcpSocket:
+        port: 80
+  restartPolicy: Always				
+				]]>
+				</screen>
+			</section>
+		</section>
+		<section id="pod.spec.securityContext">
+			<title>securityContext</title>
+			<section>
+				<title>sysctls</title>
+				<para></para>
+				<screen>
 				<![CDATA[
 kubelet --allowed-unsafe-sysctls \
   'kernel.msg*,net.core.somaxconn' ...				
 				]]>
 						</screen>
-						<screen>
+				<screen>
 				<![CDATA[
 apiVersion: v1
 kind: Pod
@@ -1613,11 +1932,11 @@ spec:
       value: "65536"				
 				]]>
 						</screen>
-					</section>
-					<section>
-						<title>runAsUser</title>
-						<para>allowPrivilegeEscalation 表示是否继承父进程权限，runAsUser 表示使用 UID 1000 的用户运行</para>
-						<screen>
+			</section>
+			<section>
+				<title>runAsUser</title>
+				<para>allowPrivilegeEscalation 表示是否继承父进程权限，runAsUser 表示使用 UID 1000 的用户运行</para>
+				<screen>
 				<![CDATA[
 apiVersion: v1
 kind: Pod
@@ -1634,7 +1953,7 @@ spec:
       allowPrivilegeEscalation: false				
 				]]>
 						</screen>
-						<screen>
+				<screen>
 				<![CDATA[
    spec:
      securityContext:
@@ -1643,12 +1962,12 @@ spec:
         runAsNonRoot: true				
 				]]>
 						</screen>
-					</section>
+			</section>
 
-					<section>
-						<title>security.alpha.kubernetes.io/sysctls</title>
-						<para>security.alpha.kubernetes.io/sysctls</para>
-						<screen>
+			<section>
+				<title>security.alpha.kubernetes.io/sysctls</title>
+				<para>security.alpha.kubernetes.io/sysctls</para>
+				<screen>
 			<![CDATA[
 apiVersion: v1
 kind: Pod
@@ -1659,8 +1978,8 @@ metadata:
 spec:			
 			]]>
 						</screen>
-						<para>unsafe-sysctls</para>
-						<screen>
+				<para>unsafe-sysctls</para>
+				<screen>
 			<![CDATA[
 apiVersion: v1
 kind: Pod
@@ -1673,12 +1992,12 @@ spec:
     privileged: true                                                                      #开启privileged权限			
 			]]>
 						</screen>
-					</section>
-				</section>
-				<section id="pod.nodeName">
-					<title>nodeName 选择节点</title>
-					<para>首先查看节点名称</para>
-					<screen>
+			</section>
+		</section>
+		<section id="pod.nodeName">
+			<title>nodeName 选择节点</title>
+			<para>首先查看节点名称</para>
+			<screen>
 			<![CDATA[
 [root@master ~]# kubectl get node
 NAME      STATUS   ROLES                  AGE     VERSION
@@ -1687,8 +2006,8 @@ master    Ready    control-plane,master   2d13h   v1.24.4+k3s1
 agent-2   Ready    <none>                 13h     v1.24.4+k3s1			
 			]]>
 					</screen>
-					<para>使用 nodeName: master 选择节点</para>
-					<screen>
+			<para>使用 nodeName: master 选择节点</para>
+			<screen>
 			<![CDATA[
 metadata:
   name: redis
@@ -1754,18 +2073,18 @@ apiVersion: apps/v1
 kind: StatefulSet			
 			]]>
 					</screen>
-				</section>
-				<section id="pod.nodeSelector">
-					<title>nodeSelector 选择节点</title>
-					<para>首先给节点打标签，例如 disk-type=ssd</para>
-					<screen>
+		</section>
+		<section id="pod.nodeSelector">
+			<title>nodeSelector 选择节点</title>
+			<para>首先给节点打标签，例如 disk-type=ssd</para>
+			<screen>
 			<![CDATA[
 [root@master ~]# kubectl label nodes agent-1 disk-type=ssd
 node/agent-1 labeled			
 			]]>
 					</screen>
-					<para>查看标签</para>
-					<screen>
+			<para>查看标签</para>
+			<screen>
 			<![CDATA[
 [root@master ~]# kubectl get node --show-labels
 NAME         STATUS   ROLES    AGE   VERSION   LABELS
@@ -1774,8 +2093,8 @@ agent-1   Ready    <none>   42d   v1.17.4   beta.kubernetes.io/arch=amd64,beta.k
 agent-2   Ready    <none>   42d   v1.17.4   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/arch=amd64,kubernetes.io/hostname=agent-2,kubernetes.io/os=linux			
 			]]>
 					</screen>
-					<para></para>
-					<screen>
+			<para></para>
+			<screen>
 			<![CDATA[
 apiVersion: apps/v1
 kind: Deployment
@@ -1804,17 +2123,17 @@ spec:
         disk-type: ssd			
 			]]>
 					</screen>
-					<para>删除标签</para>
-					<screen>
+			<para>删除标签</para>
+			<screen>
 			<![CDATA[
 [root@master ~]# kubectl label nodes agent-1 disk-type-
 node/agent-1 unlabeled		
 			]]>
 					</screen>
-				</section>
-				<section id="pod.nodeAffinity">
-					<title>nodeAffinity 选择节点</title>
-					<screen>
+		</section>
+		<section id="pod.nodeAffinity">
+			<title>nodeAffinity 选择节点</title>
+			<screen>
 			<![CDATA[
 nodeAffinity可对应的两种策略：
 preferredDuringScheduling(IgnoredDuringExecution / RequiredDuringExecution) 软策略
@@ -1829,21 +2148,21 @@ Gt：label的值大于某个值（字符串比较）
 Lt：label的值小于某个值（字符串比较）
 			]]>
 					</screen>
-				</section>
-				<section id="pod.taint">
-					<title>Taint（污点）和 Toleration（容忍）</title>
-					<screen>
+		</section>
+		<section id="pod.taint">
+			<title>Taint（污点）和 Toleration（容忍）</title>
+			<screen>
 			<![CDATA[
 			
 			]]>
 					</screen>
-				</section>
-				<section id="pod.strategy">
-					<title>strategy</title>
-					<para>滚动升级策略:</para>
-					<para>超过期望的Pod数量:1</para>
-					<para>不可用Pod最大数量:0</para>
-					<screen>
+		</section>
+		<section id="pod.strategy">
+			<title>strategy</title>
+			<para>滚动升级策略:</para>
+			<para>超过期望的Pod数量:1</para>
+			<para>不可用Pod最大数量:0</para>
+			<screen>
 			<![CDATA[
   strategy:
     rollingUpdate:
@@ -1852,7 +2171,7 @@ Lt：label的值小于某个值（字符串比较）
     type: RollingUpdate
 			]]>
 					</screen>
-					<screen>
+			<screen>
 			<![CDATA[
   strategy:
       type: RollingUpdate
@@ -1861,9 +2180,16 @@ Lt：label的值小于某个值（字符串比较）
         maxSurge: 25%
 			]]>
 					</screen>
-				</section>
-			</section>
 		</section>
+	</section>
+	<section id="kubectl.deployment">
+		<title>部署管理</title>
+		<screen>
+		<![CDATA[
+kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
+kubectl get pods --namespace=kube-system		
+		]]>
+		</screen>
 		<section id="kubectl.expose">
 			<title>expose</title>
 			<para></para>
@@ -1907,7 +2233,7 @@ kubectl delete deployment hello-minikube
 			</screen>
 		</section>
 		<section id="kubectl.scale">
-			<title>资源管理</title>
+			<title>扩容管理</title>
 			<screen>
 		<![CDATA[
 kubectl scale -n default deployment nginx --replicas=1	
@@ -1957,31 +2283,32 @@ root@netkiller ~/neo (master)# kubectl rollout restart deployment netkiller -n p
 			]]>
 			</screen>
 		</section>
-
+		<section id="kubectl.images">
+			<title>更新镜像</title>
+			<para>更新资源对象的容器镜像</para>
+			<para>可使用资源对象包括（不区分大小写）：pod (po)、replicationcontroller(rc)、deployment(deploy)、daemonset(ds)、job、replicaset (rs)
+			</para>
+			<screen>
+			<![CDATA[
+kubectl set image deployment/nginx nginx=nginx:1.20.0
+kubectl set image deployment/nginx busybox=busybox nginx=nginx:1.10.1
+			]]>
+			</screen>
+			<para>携带参数</para>
+			<screen>
+			<![CDATA[
+kubectl set image deployments,rc nginx=nginx:1.9.1 --all		
+			]]>
+			</screen>
+			<para>使用通配符</para>
+			<screen>
+			<![CDATA[
+kubectl set image daemonset abc *=nginx:1.9.1		
+			]]>
+			</screen>
+		</section>
 	</section>
 
-	
-	<section id="kubectl.endpoints">
-		<title>endpoints</title>
-		<screen>
-		<![CDATA[
-Neo-iMac:kubernetes neo$ rancher kubectl get endpoints nginx
-NAME    ENDPOINTS                                   AGE
-nginx   10.42.0.19:80,10.42.0.20:80,10.42.0.21:80   3m56s		
-		]]>
-		</screen>
-	</section>
-	
-	
-
-	<section id="kubectl.port-forward">
-		<title>port-forward 端口映射</title>
-		<screen>
-		<![CDATA[
-$ kubectl port-forward svc/demo 8080:8080		
-		]]>
-		</screen>
-	</section>
 	<section id="kubectl.secret">
 		<title>secret 密钥管理</title>
 		<section>
@@ -2806,290 +3133,7 @@ spec:
 			</section>
 		</section>
 	</section>
-	<section id="kubectl.explain">
-		<title>explain</title>
-		<section>
-			<title>ingress</title>
-			<screen>
-			<![CDATA[
-iMac:kubernetes neo$ kubectl explain ingress
-KIND:     Ingress
-VERSION:  extensions/v1beta1
 
-DESCRIPTION:
-     Ingress is a collection of rules that allow inbound connections to reach
-     the endpoints defined by a backend. An Ingress can be configured to give
-     services externally-reachable urls, load balance traffic, terminate SSL,
-     offer name based virtual hosting etc. DEPRECATED - This group version of
-     Ingress is deprecated by networking.k8s.io/v1beta1 Ingress. See the release
-     notes for more information.
-
-FIELDS:
-   apiVersion	<string>
-     APIVersion defines the versioned schema of this representation of an
-     object. Servers should convert recognized schemas to the latest internal
-     value, and may reject unrecognized values. More info:
-     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
-
-   kind	<string>
-     Kind is a string value representing the REST resource this object
-     represents. Servers may infer this from the endpoint the client submits
-     requests to. Cannot be updated. In CamelCase. More info:
-     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-
-   metadata	<Object>
-     Standard object's metadata. More info:
-     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
-
-   spec	<Object>
-     Spec is the desired state of the Ingress. More info:
-     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
-
-   status	<Object>
-     Status is the current state of the Ingress. More info:
-     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status			
-			]]>
-			</screen>
-			<para>查看 ingress.spec 配置清单</para>
-			<screen>
-			<![CDATA[
-iMac:kubernetes neo$ kubectl explain ingress.spec
-KIND:     Ingress
-VERSION:  extensions/v1beta1
-
-RESOURCE: spec <Object>
-
-DESCRIPTION:
-     Spec is the desired state of the Ingress. More info:
-     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
-
-     IngressSpec describes the Ingress the user wishes to exist.
-
-FIELDS:
-   backend	<Object>
-     A default backend capable of servicing requests that don't match any rule.
-     At least one of 'backend' or 'rules' must be specified. This field is
-     optional to allow the loadbalancer controller or defaulting logic to
-     specify a global default.
-
-   ingressClassName	<string>
-     IngressClassName is the name of the IngressClass cluster resource. The
-     associated IngressClass defines which controller will implement the
-     resource. This replaces the deprecated `kubernetes.io/ingress.class`
-     annotation. For backwards compatibility, when that annotation is set, it
-     must be given precedence over this field. The controller may emit a warning
-     if the field and annotation have different values. Implementations of this
-     API should ignore Ingresses without a class specified. An IngressClass
-     resource may be marked as default, which can be used to set a default value
-     for this field. For more information, refer to the IngressClass
-     documentation.
-
-   rules	<[]Object>
-     A list of host rules used to configure the Ingress. If unspecified, or no
-     rule matches, all traffic is sent to the default backend.
-
-   tls	<[]Object>
-     TLS configuration. Currently the Ingress only supports a single TLS port,
-     443. If multiple members of this list specify different hosts, they will be
-     multiplexed on the same port according to the hostname specified through
-     the SNI TLS extension, if the ingress controller fulfilling the ingress
-     supports SNI.			
-			]]>
-			</screen>
-		</section>
-	</section>
-	
-	
-	<section id="kubectl.images">
-		<title>更新镜像</title>
-		<para>更新资源对象的容器镜像</para>
-		<para>可使用资源对象包括（不区分大小写）：pod (po)、replicationcontroller (rc)、deployment
-			(deploy)、daemonset (ds)、job、replicaset (rs)
-		</para>
-		<screen>
-		<![CDATA[
-kubectl set image deployment/nginx nginx=nginx:1.20.0
-kubectl set image deployment/nginx busybox=busybox nginx=nginx:1.10.1
-		]]>
-		</screen>
-		<para>携带参数</para>
-		<screen>
-		<![CDATA[
-kubectl set image deployments,rc nginx=nginx:1.9.1 --all		
-		]]>
-		</screen>
-		<para>使用通配符</para>
-		<screen>
-		<![CDATA[
-kubectl set image daemonset abc *=nginx:1.9.1		
-		]]>
-		</screen>
-	</section>
-	
-	<section id="kubectl.describe">
-		<title>describe</title>
-		<section>
-			<title>storageclasses.storage.k8s.io</title>
-			<screen>
-			<![CDATA[
-[root@master ~]# kubectl describe storageclasses.storage.k8s.io
-Name:                  longhorn-storage
-IsDefaultClass:        No
-Annotations:           <none>
-Provisioner:           driver.longhorn.io
-Parameters:            diskSelector=hdd,numberOfReplicas=2,staleReplicaTimeout=2880
-AllowVolumeExpansion:  True
-MountOptions:          <none>
-ReclaimPolicy:         Delete
-VolumeBindingMode:     Immediate
-Events:                <none>
-
-
-Name:            longhorn
-IsDefaultClass:  No
-Annotations:     longhorn.io/last-applied-configmap=kind: StorageClass
-apiVersion: storage.k8s.io/v1
-metadata:
-  name: longhorn
-  annotations:
-    storageclass.kubernetes.io/is-default-class: "true"
-provisioner: driver.longhorn.io
-allowVolumeExpansion: true
-reclaimPolicy: "Delete"
-volumeBindingMode: Immediate
-parameters:
-  numberOfReplicas: "3"
-  staleReplicaTimeout: "30"
-  fromBackup: ""
-  fsType: "ext4"
-  dataLocality: "disabled"
-,storageclass.beta.kubernetes.io/is-default-class=false,storageclass.kubernetes.io/is-default-class=false
-Provisioner:           driver.longhorn.io
-Parameters:            dataLocality=disabled,fromBackup=,fsType=ext4,numberOfReplicas=3,staleReplicaTimeout=30
-AllowVolumeExpansion:  True
-MountOptions:          <none>
-ReclaimPolicy:         Delete
-VolumeBindingMode:     Immediate
-Events:                <none>
-
-
-Name:                  local-path
-IsDefaultClass:        Yes
-Annotations:           objectset.rio.cattle.io/applied=H4sIAAAAAAAA/4yRT+vUMBCGv4rMua1bu1tKwIOu7EUEQdDzNJlux6aZkkwry7LfXbIqrIffn2PyZN7hfXIFXPg7xcQSwEBSiXimaupSxfJ2q6GAiYMDA9/+oKPHlKCAmRQdKoK5AoYgisoSUj5K/5OsJtIqslQWVT3lNM4xUDzJ5VegWJ63CQxMTXogW128+czBvf/gnIQXIwLOBAa8WPTl30qvGkoL2jw5rT2V6ZKUZij+SbG5eZVRDKR0F8SpdDTg6rW8YzCgcSW4FeCxJ/+sjxHTCAbqrhmag20Pw9DbZtfu210z7JuhPnQ719m2w3cOe7fPof81W1DHfLlE2Th/IEUwEDHYkWJe8PCsgJgL8PxVPNsLGPhEnjRr2cSvM33k4Dicv4jLC34g60niiWPSo4S0zhTh9jsAAP//ytgh5S0CAAA,objectset.rio.cattle.io/id=,objectset.rio.cattle.io/owner-gvk=k3s.cattle.io/v1, Kind=Addon,objectset.rio.cattle.io/owner-name=local-storage,objectset.rio.cattle.io/owner-namespace=kube-system,storageclass.beta.kubernetes.io/is-default-class=true,storageclass.kubernetes.io/is-default-class=true
-Provisioner:           rancher.io/local-path
-Parameters:            <none>
-AllowVolumeExpansion:  <unset>
-MountOptions:          <none>
-ReclaimPolicy:         Delete
-VolumeBindingMode:     WaitForFirstConsumer
-Events:                <none>
-			]]>
-			</screen>
-		</section>
-		<section>
-			<title>pod</title>
-			<screen>
-			<![CDATA[
-[root@master ~]# kubectl describe pvc
-Name:          elasticsearch-elasticsearch-data-0
-Namespace:     default
-StorageClass:  local-path
-Status:        Bound
-Volume:        pvc-a2ebce5a-9ae1-46e9-ae9f-8840027bf5d8
-Labels:        app=elasticsearch
-               role=data
-Annotations:   pv.kubernetes.io/bind-completed: yes
-               pv.kubernetes.io/bound-by-controller: yes
-               volume.beta.kubernetes.io/storage-provisioner: rancher.io/local-path
-               volume.kubernetes.io/selected-node: agent-1
-               volume.kubernetes.io/storage-provisioner: rancher.io/local-path
-Finalizers:    [kubernetes.io/pvc-protection]
-Capacity:      1Gi
-Access Modes:  RWO
-VolumeMode:    Filesystem
-Used By:       elasticsearch-data-0
-Events:        <none>
-
-
-Name:          elasticsearch-elasticsearch-data-1
-Namespace:     default
-StorageClass:  local-path
-Status:        Bound
-Volume:        pvc-f0d9d5df-9704-44a7-93ff-8a4f431af226
-Labels:        app=elasticsearch
-               role=data
-Annotations:   pv.kubernetes.io/bind-completed: yes
-               pv.kubernetes.io/bound-by-controller: yes
-               volume.beta.kubernetes.io/storage-provisioner: rancher.io/local-path
-               volume.kubernetes.io/selected-node: master
-               volume.kubernetes.io/storage-provisioner: rancher.io/local-path
-Finalizers:    [kubernetes.io/pvc-protection]
-Capacity:      1Gi
-Access Modes:  RWO
-VolumeMode:    Filesystem
-Used By:       elasticsearch-data-1
-Events:        <none>
-
-
-Name:          elasticsearch-elasticsearch-data-2
-Namespace:     default
-StorageClass:  local-path
-Status:        Bound
-Volume:        pvc-722cce94-b2c5-457a-8e01-9a2a52b12128
-Labels:        app=elasticsearch
-               role=data
-Annotations:   pv.kubernetes.io/bind-completed: yes
-               pv.kubernetes.io/bound-by-controller: yes
-               volume.beta.kubernetes.io/storage-provisioner: rancher.io/local-path
-               volume.kubernetes.io/selected-node: agent-1
-               volume.kubernetes.io/storage-provisioner: rancher.io/local-path
-Finalizers:    [kubernetes.io/pvc-protection]
-Capacity:      1Gi
-Access Modes:  RWO
-VolumeMode:    Filesystem
-Used By:       elasticsearch-data-2
-Events:        <none>
-
-
-Name:          longhorn-volv-pvc
-Namespace:     default
-StorageClass:  longhorn
-Status:        Bound
-Volume:        pvc-5dc3ae33-9f86-4650-82ba-a7b681963adc
-Labels:        <none>
-Annotations:   pv.kubernetes.io/bind-completed: yes
-               pv.kubernetes.io/bound-by-controller: yes
-               volume.beta.kubernetes.io/storage-provisioner: driver.longhorn.io
-               volume.kubernetes.io/storage-provisioner: driver.longhorn.io
-Finalizers:    [kubernetes.io/pvc-protection]
-Capacity:      2Gi
-Access Modes:  RWO
-VolumeMode:    Filesystem
-Used By:       volume-test
-Events:        <none>
-
-
-Name:          redis
-Namespace:     default
-StorageClass:  local-path
-Status:        Pending
-Volume:        
-Labels:        <none>
-Annotations:   <none>
-Finalizers:    [kubernetes.io/pvc-protection]
-Capacity:      
-Access Modes:  
-VolumeMode:    Filesystem
-Used By:       redis-0
-Events:
-  Type    Reason                Age                   From                         Message
-  ----    ------                ----                  ----                         -------
-  Normal  WaitForFirstConsumer  29s (x481 over 120m)  persistentvolume-controller  waiting for first consumer to be created before binding
-[root@master ~]# 
-			]]>
-			</screen>
-		</section>
-	</section>
 	<section id="kubectl.clusterrolebinding">
 		<title>clusterrolebinding</title>
 		<screen>
@@ -3273,18 +3317,18 @@ kubectl edit ingress test
 kubectl replace -f ingress.yaml		
 			]]>
 			</screen>
-		
+
 		</section>
-			<section>
-				<title>挂载 SSL 证书上</title>
-				<para>自签名证书</para>
-				<screen>
+		<section>
+			<title>挂载 SSL 证书上</title>
+			<para>自签名证书</para>
+			<screen>
 				<![CDATA[
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout tls.key -out tls.crt -subj "/CN=bar.foo.com/O=bar.foo.com"				
 				]]>
 				</screen>
-				<para>如果是购买的SSL证书，通常有两个问题，*.key 和 *.pem，这里的 pem 证书就是 cert 证书。</para>
-				<screen>
+			<para>如果是购买的SSL证书，通常有两个问题，*.key 和 *.pem，这里的 pem 证书就是 cert 证书。</para>
+			<screen>
 				<![CDATA[
 [root@agent-5 tmp]# kubectl create secret tls netkiller --key netkiller.cn.key --cert netkiller.cn.pem
 secret/netkiller created
@@ -3293,8 +3337,8 @@ NAME      TYPE                DATA   AGE
 netkiller   kubernetes.io/tls   2      26s				
 				]]>
 				</screen>
-				<para>yaml 中添加 tls 配置项</para>
-				<screen>
+			<para>yaml 中添加 tls 配置项</para>
+			<screen>
 				<![CDATA[
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -3321,7 +3365,7 @@ spec:
       secretName: netkiller
 				]]>
 				</screen>
-			</section>
+		</section>
 		<section>
 			<title>端口</title>
 			<screen>
