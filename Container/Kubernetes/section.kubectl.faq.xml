@@ -133,4 +133,40 @@ neo@MacBook-Pro-M2 ~ % kubectl exec -it  -n default pod-69d699b66f-jp6hr -- sh
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>监控 JVM</title>
+		<para>通过环境变量，开启 JMX 服务</para>
+		<screen>
+		<![CDATA[ 
+  containers:
+    - name: xxx
+      image: xxx-image
+      ports:
+        - name: tcp-jmx
+          containerPort: 5000
+          protocol: TCP
+      env:
+        - name: JAVA_OPTIONS
+          value: >-
+            -Xmx3000m 
+            -Xms3000m 
+            -XX:+UnlockExperimentalVMOptions
+            -XX:+UseCGroupMemoryLimitForHeap 
+            -Dcom.sun.management.jmxremote
+            -Dcom.sun.management.jmxremote.authenticate=false
+            -Dcom.sun.management.jmxremote.ssl=false
+            -Dcom.sun.management.jmxremote.port=5000
+            -Dcom.sun.management.jmxremote.rmi.port=5000
+            -Djava.rmi.server.hostname=localhost
+		]]>
+		</screen>
+		<para>Pod启动后，为了连接到该JMX服务，我们需要在本地建立端口转发规则</para>
+		<screen>
+		<![CDATA[ 
+kubectl -n default get pods
+kubectl -n default port-forward xxx-pod 5000		
+		]]>
+		</screen>
+		<para>现在便可以启动 VisualVM 监控 JVM 了</para>
+	</section>
 </section>
