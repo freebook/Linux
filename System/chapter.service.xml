@@ -631,7 +631,15 @@ lines 1-11/11 (END)
 		]]>
 		</screen>
 	</section>
-	
+	<section>
+		<title>查看配置项</title>
+		<screen>
+		<![CDATA[ 
+root@iZ6we9kdkvpx08ljamn4r6Z:~# systemctl show --property=Environment docker
+Environment=		
+		]]>
+		</screen>
+	</section>
 	&chapter.service.ubuntu.xml;
 	&chapter.service.centos.xml;
 </chapter>

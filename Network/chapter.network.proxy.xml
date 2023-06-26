@@ -1,5 +1,6 @@
 <chapter id="index"><?dbhtml dir="proxy" ?>
 	<title>Proxy Server</title>
+  &chapter.network.proxy.socks;
 	<section id="apache">
 		<title>Apache Proxy</title>
 		<command></command>
@@ -88,5 +89,4 @@ netkiller@Linux-server:/etc/apache2$ cat mods-available/proxy.conf
 	</section>
 	&chapter.network.proxy.squid;
 	&chapter.network.proxy.web;
-	&chapter.network.proxy.socks;
 </chapter>

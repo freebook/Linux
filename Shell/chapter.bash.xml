@@ -1,5 +1,6 @@
 <!-- http://tldp.org/LDP/abs/html/index.html -->
-<chapter id="index"><?dbhtml dir="bash" ?>
+<chapter id="index">
+	<?dbhtml dir="bash"?>
 	<title>Bash Shell</title>
 	<section id="option">
 		<title>bash - GNU Bourne-Again SHell</title>
@@ -338,6 +339,30 @@ SAVEHIST=50000
 			</section>
 		</section>
 		<section>
+			<title>清理历史记录</title>
+			<screen>
+			<![CDATA[
+# history -cw			
+			]]>
+			</screen>
+			<para>清楚指定行</para>
+			<screen>
+			<![CDATA[
+# history -d 5
+			]]>
+			</screen>
+			<para>临时关闭历史记录</para>
+			<screen>
+			<![CDATA[
+# 关闭
+# set +o history
+
+# 恢复
+# set -o history
+			]]>
+			</screen>
+		</section>
+		<section>
 			<title>.mysql_history</title>
 			<screen><![CDATA[
 ln -s /dev/null .mysql_history
@@ -456,14 +481,7 @@ $ hash -r
 $ hash -l
 hash: hash table empty
 		]]></screen>
-	</section>		
-	&section.bash.prompt.xml;
-	&section.bash.variable.xml;
-	&section.bash.conditions.xml;
-	&section.bash.loop.xml;
-
-
-	<section id="functions">
+	</section> &section.bash.prompt.xml; &section.bash.variable.xml; &section.bash.conditions.xml; &section.bash.loop.xml; <section id="functions">
 		<title>Functions</title>
 		<example>
 			<title>Functions with parameters sample</title>
@@ -596,7 +614,4 @@ input=$(sed 's/[^0-9]*//g' <<< $input)
 su - $USER -c "$PROG & echo \$! > $PIDFILE"
 		]]>
 		</screen>
-	</section>
-	&section.bash.example.xml;
-
-</chapter>
+	</section> &section.bash.example.xml; </chapter>
