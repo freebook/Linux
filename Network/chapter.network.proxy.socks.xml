@@ -2,15 +2,203 @@
 <!-- $Id: chapter.network.proxy.socks.xml 347 2012-02-08 06:58:49Z netkiller $ -->
 <section id="socks">
 	<title>Socks/Socks5</title>
+
+	<section id="Shadowsocks">
+		<title>Shadowsocks - A secure socks5 proxy, designed to protect your Internet traffic.</title>
+		<para>
+			<ulink url=" https://shadowsocks.org/" />
+		</para>
+		<section id="Shadowsocks.server">
+			<title>Server</title>
+			<section>
+				<title>Python PyPI</title>
+				<screen>
+				<![CDATA[
+yum install epel-release -y
+pip install shadowsocks
+
+cat > /etc/sysctl.d/local.conf << EOF
+# max open files
+fs.file-max = 51200
+# max read buffer
+net.core.rmem_max = 67108864
+# max write buffer
+net.core.wmem_max = 67108864
+# default read buffer
+net.core.rmem_default = 65536
+# default write buffer
+net.core.wmem_default = 65536
+# max processor input queue
+net.core.netdev_max_backlog = 4096
+# max backlog
+net.core.somaxconn = 4096
+# resist SYN flood attacks
+net.ipv4.tcp_syncookies = 1
+# reuse timewait sockets when safe
+net.ipv4.tcp_tw_reuse = 1
+# turn off fast timewait sockets recycling
+net.ipv4.tcp_tw_recycle = 0
+# short FIN timeout
+net.ipv4.tcp_fin_timeout = 30
+# short keepalive time
+net.ipv4.tcp_keepalive_time = 1200
+# outbound port range
+net.ipv4.ip_local_port_range = 10000 65000
+# max SYN backlog
+net.ipv4.tcp_max_syn_backlog = 4096
+# max timewait sockets held by system simultaneously
+net.ipv4.tcp_max_tw_buckets = 5000
+# turn on TCP Fast Open on both client and server side
+net.ipv4.tcp_fastopen = 3
+# TCP receive buffer
+net.ipv4.tcp_rmem = 4096 87380 67108864
+# TCP write buffer
+net.ipv4.tcp_wmem = 4096 65536 67108864
+# turn on path MTU discovery
+net.ipv4.tcp_mtu_probing = 1
+# for high-latency network
+net.ipv4.tcp_congestion_control = hybla
+# for low-latency network, use cubic instead
+# net.ipv4.tcp_congestion_control = cubic
+EOF
+
+mkdir -p /etc/shadowsocks/
+
+cat > /etc/shadowsocks/ssserver.json << EOF
+{
+        "server": "0.0.0.0",
+        "server_port": 8399,
+        "local_address": "127.0.0.1",
+        "local_port": 1080,
+        "password": "netkiller",
+        "timeout": 300,
+        "method": "aes-256-cfb",
+        "fast_open": false
+}
+EOF
+
+# 启动
+ssserver -c /etc/shadowsocks/ssserver.json -d start
+
+wget -N --no-check-certificate https://raw.githubusercontent.com/wn789/serverspeeder/master/serverspeeder.sh
+bash serverspeeder.sh
+service serverSpeeder start
+				]]>
+				</screen>
+				<screen>
+			<![CDATA[
+service serverSpeeder start #启动
+service serverSpeeder stop #停止
+service serverSpeeder reload #重新加载配置
+service serverSpeeder restart #重启
+service serverSpeeder status #状态
+service serverSpeeder stats #统计
+service serverSpeeder renewLic #更新许可文件
+service serverSpeeder update #更新
+chattr -i /serverspeeder/etc/apx* && /serverspeeder/bin/serverSpeeder.sh uninstall -f #卸载			
+			]]>
+				</screen>
+			</section>
+			<section>
+				<title>GitHub</title>
+				<screen>
+				<![CDATA[
+$ git clone https://github.com/shadowsocks/shadowsocks.git
+$ cd shadowsocks
+$ python setup.py				
+				]]>
+				</screen>
+			</section>
+		</section>
+		<section id="ssserver">
+			<title>ssserver 命令</title>
+			<screen>
+			<![CDATA[
+[root@iZj6c39y62jl5b1wmfv6u8Z ~]# ssserver --help
+usage: ssserver [OPTION]...
+A fast tunnel proxy that helps you bypass firewalls.
+
+You can supply configurations via either config file or command line arguments.
+
+Proxy options:
+  -c CONFIG              path to config file
+  -s SERVER_ADDR         server address, default: 0.0.0.0
+  -p SERVER_PORT         server port, default: 8388
+  -k PASSWORD            password
+  -m METHOD              encryption method, default: aes-256-cfb
+  -t TIMEOUT             timeout in seconds, default: 300
+  --fast-open            use TCP_FASTOPEN, requires Linux 3.7+
+  --workers WORKERS      number of workers, available on Unix/Linux
+  --forbidden-ip IPLIST  comma seperated IP list forbidden to connect
+  --manager-address ADDR optional server manager UDP address, see wiki
+
+General options:
+  -h, --help             show this help message and exit
+  -d start/stop/restart  daemon mode
+  --pid-file PID_FILE    pid file for daemon mode
+  --log-file LOG_FILE    log file for daemon mode
+  --user USER            username to run as
+  -v, -vv                verbose mode
+  -q, -qq                quiet mode, only show warnings/errors
+  --version              show version information
+
+Online help: <https://github.com/shadowsocks/shadowsocks>			
+			]]>
+			</screen>
+			<para>不适用配置文件，命令行启动方法。</para>
+			<screen>
+			<![CDATA[
+ssserver -s ::0 -p 448 -k passw0rd -m aes-256-cfb --user nobody --workers 2 -d start			
+			]]>
+			</screen>
+		</section>
+		<section id="Shadowsocks.client">
+			<title>Client</title>
+			<section id="shadowsocks.client.windows">
+				<title>Shadowsocks for Windows </title>
+				<para>
+					<ulink url="https://github.com/shadowsocks/shadowsocks-windows/releases" />
+				</para>
+			</section>
+			<section id="shadowsocks.client.linux">
+				<title>Shadowsocks for Linux </title>
+				<para>
+					<ulink url="https://github.com/shadowsocks/shadowsocks-windows/releases" />
+				</para>
+				<screen>
+				<![CDATA[ 
+root@netkiller:~# cat /etc/shadowsocks.json 
+{
+"server":"ss.netkiller.cn",
+"server_port":3389,
+"local_address": "127.0.0.1",
+"local_port":1080,
+"password":"netkiller",
+"timeout":600,
+"method":"aes-256-cfb"
+}
+				]]>
+				</screen>
+				<screen>
+				<![CDATA[ 
+sslocal -c /etc/shadowsocks.json -d start				
+				]]>
+				</screen>
+			</section>
+		</section>
+	</section>
+
 	<section>
 		<title>Socks5</title>
 		<para>软件包socks5-v1.0r11他的主站已经无法访问,你可以搜一下.
 		</para>
 		<para>安装</para>
 		<screen>
-			./configure --with-threads
-			make
-			make install
+		<![CDATA[ 
+./configure --with-threads
+make
+make install		
+		]]>		
 		</screen>
 	</section>
 	<section id="dante-server">
@@ -193,162 +381,5 @@ client {
 		]]>
 		</screen>
 	</section>
-	<section id="Shadowsocks">
-		<title>Shadowsocks - A secure socks5 proxy, designed to protect your Internet traffic.</title>
-		<para>
-			<ulink url=" https://shadowsocks.org/" />
-		</para>
-		<section id="Shadowsocks.server">
-			<title>Server</title>
-			<section>
-				<title>Python PyPI</title>
-				<screen>
-				<![CDATA[
-yum install epel-release -y
-yum install python2-pip
-pip install shadowsocks
 
-cat > /etc/sysctl.d/local.conf << EOF
-# max open files
-fs.file-max = 51200
-# max read buffer
-net.core.rmem_max = 67108864
-# max write buffer
-net.core.wmem_max = 67108864
-# default read buffer
-net.core.rmem_default = 65536
-# default write buffer
-net.core.wmem_default = 65536
-# max processor input queue
-net.core.netdev_max_backlog = 4096
-# max backlog
-net.core.somaxconn = 4096
-# resist SYN flood attacks
-net.ipv4.tcp_syncookies = 1
-# reuse timewait sockets when safe
-net.ipv4.tcp_tw_reuse = 1
-# turn off fast timewait sockets recycling
-net.ipv4.tcp_tw_recycle = 0
-# short FIN timeout
-net.ipv4.tcp_fin_timeout = 30
-# short keepalive time
-net.ipv4.tcp_keepalive_time = 1200
-# outbound port range
-net.ipv4.ip_local_port_range = 10000 65000
-# max SYN backlog
-net.ipv4.tcp_max_syn_backlog = 4096
-# max timewait sockets held by system simultaneously
-net.ipv4.tcp_max_tw_buckets = 5000
-# turn on TCP Fast Open on both client and server side
-net.ipv4.tcp_fastopen = 3
-# TCP receive buffer
-net.ipv4.tcp_rmem = 4096 87380 67108864
-# TCP write buffer
-net.ipv4.tcp_wmem = 4096 65536 67108864
-# turn on path MTU discovery
-net.ipv4.tcp_mtu_probing = 1
-# for high-latency network
-net.ipv4.tcp_congestion_control = hybla
-# for low-latency network, use cubic instead
-# net.ipv4.tcp_congestion_control = cubic
-EOF
-
-mkdir -p /etc/shadowsocks/
-
-cat > /etc/shadowsocks/ssserver.json << EOF
-{
-        "server": "0.0.0.0",
-        "server_port": 8399,
-        "local_address": "127.0.0.1",
-        "local_port": 1080,
-        "password": "netkiller",
-        "timeout": 300,
-        "method": "aes-256-cfb",
-        "fast_open": false
-}
-EOF
-
-# 启动
-ssserver -c /etc/shadowsocks/ssserver.json -d start
-
-wget -N --no-check-certificate https://raw.githubusercontent.com/wn789/serverspeeder/master/serverspeeder.sh
-bash serverspeeder.sh
-service serverSpeeder start
-				]]>
-				</screen>
-				<screen>
-			<![CDATA[
-service serverSpeeder start #启动
-service serverSpeeder stop #停止
-service serverSpeeder reload #重新加载配置
-service serverSpeeder restart #重启
-service serverSpeeder status #状态
-service serverSpeeder stats #统计
-service serverSpeeder renewLic #更新许可文件
-service serverSpeeder update #更新
-chattr -i /serverspeeder/etc/apx* && /serverspeeder/bin/serverSpeeder.sh uninstall -f #卸载			
-			]]>
-				</screen>
-			</section>
-			<section>
-				<title>GitHub</title>
-				<screen>
-				<![CDATA[
-$ git clone https://github.com/shadowsocks/shadowsocks.git
-$ cd shadowsocks
-$ python setup.py				
-				]]>
-				</screen>
-			</section>
-		</section>
-		<section id="ssserver">
-			<title>ssserver 命令</title>
-			<screen>
-			<![CDATA[
-[root@iZj6c39y62jl5b1wmfv6u8Z ~]# ssserver --help
-usage: ssserver [OPTION]...
-A fast tunnel proxy that helps you bypass firewalls.
-
-You can supply configurations via either config file or command line arguments.
-
-Proxy options:
-  -c CONFIG              path to config file
-  -s SERVER_ADDR         server address, default: 0.0.0.0
-  -p SERVER_PORT         server port, default: 8388
-  -k PASSWORD            password
-  -m METHOD              encryption method, default: aes-256-cfb
-  -t TIMEOUT             timeout in seconds, default: 300
-  --fast-open            use TCP_FASTOPEN, requires Linux 3.7+
-  --workers WORKERS      number of workers, available on Unix/Linux
-  --forbidden-ip IPLIST  comma seperated IP list forbidden to connect
-  --manager-address ADDR optional server manager UDP address, see wiki
-
-General options:
-  -h, --help             show this help message and exit
-  -d start/stop/restart  daemon mode
-  --pid-file PID_FILE    pid file for daemon mode
-  --log-file LOG_FILE    log file for daemon mode
-  --user USER            username to run as
-  -v, -vv                verbose mode
-  -q, -qq                quiet mode, only show warnings/errors
-  --version              show version information
-
-Online help: <https://github.com/shadowsocks/shadowsocks>			
-			]]>
-			</screen>
-			<para>不适用配置文件，命令行启动方法。</para>
-			<screen>
-			<![CDATA[
-ssserver -s ::0 -p 448 -k passw0rd -m aes-256-cfb --user nobody --workers 2 -d start			
-			]]>
-			</screen>
-		</section>
-		<section id="Shadowsocks.client">
-			<title>Client</title>
-			<section id="">
-				<title>Shadowsocks for Windows </title>
-				<para><ulink url="https://github.com/shadowsocks/shadowsocks-windows/releases" /></para>
-			</section>
-		</section>
-	</section>
 </section>
