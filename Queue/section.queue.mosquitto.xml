@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="mosquitto">
+        <title>mosquitto: Open Source MQTT v5/v3.1.x Broker</title>
+        <section>
+                <title>安装</title>
+                <screen>
+    <![CDATA[
+dnf install -y mosquitto
+systemctl enable mosquitto
+systemctl start mosquitto
+        ]]>
+        </screen>
+                <para>检查是否工作正常，开启两个终端窗口，分别运行下面两个命令。</para>
+                <screen>
+        <![CDATA[
+[root@netkiller ~]# mosquitto_sub -h localhost -t "sensor/temperature"
+23
+        ]]>
+        </screen>
+                <screen>
+        <![CDATA[
+[root@netkiller ~]# mosquitto_pub -h localhost -t sensor/temperature -m 23       
+        ]]>
+        </screen>
+        </section>
+        <section>
+                <title>配置</title>
+                <screen>
+        <![CDATA[
+[root@netkiller ~]# grep -v "^#" /etc/mosquitto/mosquitto.conf | grep -v "^$"
+listener 1883 0.0.0.0
+allow_anonymous false
+password_file /etc/mosquitto/pwfile
+        ]]>
+        </screen>
+                <screen>
+        <![CDATA[
+[root@netkiller ~]# touch /etc/mosquitto/pwfile
+[root@netkiller ~]# mosquitto_passwd -b /etc/mosquitto/pwfile homeassistant fag9iaTaix8nohL2cheenai7nua3sohjohfah7iuz1ileSheiRahs0och9Aedai8
+        ]]>
+        </screen>
+                <para></para>
+                <screen>
+        <![CDATA[ 
+        ]]>
+        </screen>
+        </section>
+</section>
