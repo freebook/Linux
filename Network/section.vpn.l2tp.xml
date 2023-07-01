@@ -16,7 +16,73 @@
 	</orderedlist>
 	<para></para>
 	<section>
-		<title>Ubuntu/Debian</title>
+		<title>Docker 安装 L2TP</title>
+		<para>
+			<ulink url="https://github.com/hwdsl2/docker-ipsec-vpn-server" />
+		</para>
+		<screen>
+		<![CDATA[ 
+docker run \
+   --name ipsec-vpn-server \
+   --restart=always \
+   -e VPN_IPSEC_PSK=secret \
+   -e VPN_USER=neo \
+   -e VPN_PASSWORD=chen \
+   -p 500:500/udp \
+   -p 4500:4500/udp \
+   -v /lib/modules:/lib/modules:ro \
+   -d --privileged \
+   hwdsl2/ipsec-vpn-server		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[ 
+root@netkiller:~# docker logs -f ipsec-vpn-server
+
+Trying to auto discover IP of this server...
+
+Starting IPsec service...
+
+================================================
+
+IPsec VPN server is now ready for use!
+
+Connect to your new VPN with these details:
+
+Server IP: 118.216.150.196
+IPsec PSK: secret
+Username: neo
+Password: chen
+
+Write these down. You'll need them to connect!
+
+VPN client setup: https://vpnsetup.net/clients2
+
+================================================
+
+xl2tpd[1]: Not looking for kernel SAref support.
+xl2tpd[1]: Using l2tp kernel support.
+xl2tpd[1]: xl2tpd version xl2tpd-1.3.18 started on 572c9e11099b PID:1
+xl2tpd[1]: Written by Mark Spencer, Copyright (C) 1998, Adtran, Inc.
+xl2tpd[1]: Forked by Scott Balmos and David Stipp, (C) 2001
+xl2tpd[1]: Inherited by Jeff McAdams, (C) 2002
+xl2tpd[1]: Forked again by Xelerance (www.xelerance.com) (C) 2006-2016
+xl2tpd[1]: Listening on IP address 0.0.0.0, port 1701		
+		]]>
+		</screen>
+		<para>连接到L2TP会打印如下日志</para>
+		<screen>
+		<![CDATA[ 
+xl2tpd[1]: Connection established to 221.229.164.130, 61844.  Local: 32536, Remote: 32 (ref=0/0).  LNS session is 'default'
+xl2tpd[1]: check_control: Received out of order control packet on tunnel 32 (got 2, expected 3)
+xl2tpd[1]: handle_control: bad control packet!
+xl2tpd[1]: Call established with 221.229.164.130, PID: 660, Local: 2572, Remote: 37820, Serial: 1		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>Ubuntu</title>
 
 		<procedure>
 			<title>install l2tpd</title>
@@ -372,12 +438,12 @@ maxfail 0
 	</section>
 	<section id="ipsec">
 		<title>Ipsec VPN</title>
-		
+
 		<section id="ipsec-tools">
 			<title>ipsec-tools - IPsec tools for Linux</title>
 			<para>https://trac.ipsec-tools.net/</para>
 		</section>
-	</section>	
+	</section>
 	<section>
 		<title>FAQ</title>
 		<section>
