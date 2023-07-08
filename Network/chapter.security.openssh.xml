@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.security.openssh.xml 651 2013-07-25 09:39:11Z netkiller $ -->
-<chapter id="index"><?dbhtml dir="openssh" ?>
+<chapter id="index">
+	<?dbhtml dir="openssh"?>
 	<title>OpenSSH</title>
 	<para>ssh 连接过程</para>
 	<screen>
@@ -259,6 +260,13 @@ GSSAPIAuthentication no
 				<screen>
 				<![CDATA[
 IgnoreUserKnownHosts yes
+				]]>
+				</screen>
+				<para>修改配置文件“~/.ssh/config”, 加入下面配置项</para>
+				<screen>
+				<![CDATA[ 
+StrictHostKeyChecking no                                      
+UserKnownHostsFile /dev/null 				
 				]]>
 				</screen>
 			</section>
@@ -543,7 +551,7 @@ ssh: connect to host 172.18.100.253 port 22: Operation timed out
 			]]>
 			</screen>
 		</section>
-		
+
 	</section>
 	<section id="ssh.tunnel">
 		<title>OpenSSH Tunnel</title>
