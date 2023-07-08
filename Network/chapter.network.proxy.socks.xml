@@ -11,6 +11,22 @@
 		<section id="Shadowsocks.server">
 			<title>Server</title>
 			<section>
+				<title>Docker 方式安装</title>
+				<screen>
+				<![CDATA[ 
+[root@netkiller ~]# docker run -d --name shadowsocks \
+-p 8388:8388 \
+-e PASSWORD=netkiller \
+shadowsocks/shadowsocks-libev
+
+[root@netkiller ~]# docker exec -it shadowsocks ps
+PID   USER     TIME  COMMAND
+    1 nobody    0:00 ss-server -s 0.0.0.0 -p 8388 -k netkiller -m aes-256-gcm -t 300 -d 8.8.8.8,8.8.4.4 -u
+   19 nobody    0:00 ps
+				]]>
+				</screen>
+			</section>
+			<section>
 				<title>Python PyPI</title>
 				<screen>
 				<![CDATA[
