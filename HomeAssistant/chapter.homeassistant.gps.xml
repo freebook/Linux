@@ -1,27 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="mqtt">
-	<title>MQTT</title>
-	<screen>
-		<![CDATA[ 
-pip3 install -i https://pypi.doubanio.com/simple paho-mqtt
-		]]>
-	</screen>
-	<section>
-		<title>Retain</title>
-		<para>MQTT 发送数据被定义为 Retain 之后，会保留在队列之中，每次订阅消息都会发布一次。</para>
-		<para>删除一个Retain消息，可以向这个topic发布一个长度为0的 Retain 消息即可。</para>
-	</section>
-	<section>
-		<title>QoS</title>
-		<para></para>
-		<itemizedlist>
-			<title>MQTT 定义了三个 QoS 等级，分别为：</title>
-			<listitem>QoS 0，最多交付一次。</listitem>
-			<listitem>QoS 1，至少交付一次。</listitem>
-			<listitem>QoS 2，只交付一次。</listitem>
-		</itemizedlist>
-	</section>
-</chapter>
 <chapter id="chatgpt">
 	<title>ChatGPT 接口</title>
 	<section>

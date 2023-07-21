@@ -1,48 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="mosquitto">
-        <title>mosquitto: Open Source MQTT v5/v3.1.x Broker</title>
-        <section>
-                <title>安装</title>
-                <screen>
+<chapter id="mqtt">
+	<title>MQTT</title>
+	<section id="mosquitto">
+		<title>mosquitto: Open Source MQTT v5/v3.1.x Broker</title>
+		<section>
+			<title>安装</title>
+			<screen>
     <![CDATA[
 dnf install -y mosquitto
 systemctl enable mosquitto
 systemctl start mosquitto
         ]]>
-        </screen>
-                <para>检查是否工作正常，开启两个终端窗口，分别运行下面两个命令。</para>
-                <screen>
+			</screen>
+			<para>检查是否工作正常，开启两个终端窗口，分别运行下面两个命令。</para>
+			<screen>
         <![CDATA[
 [root@netkiller ~]# mosquitto_sub -h localhost -t "sensor/temperature"
 23
         ]]>
-        </screen>
-                <screen>
+			</screen>
+			<screen>
         <![CDATA[
 [root@netkiller ~]# mosquitto_pub -h localhost -t sensor/temperature -m 23       
         ]]>
-        </screen>
-        </section>
-        <section>
-                <title>配置</title>
-                <screen>
+			</screen>
+		</section>
+		<section>
+			<title>配置</title>
+			<screen>
         <![CDATA[
 [root@netkiller ~]# grep -v "^#" /etc/mosquitto/mosquitto.conf | grep -v "^$"
 listener 1883 0.0.0.0
 allow_anonymous false
 password_file /etc/mosquitto/pwfile
         ]]>
-        </screen>
-                <screen>
+			</screen>
+			<screen>
         <![CDATA[
 [root@netkiller ~]# touch /etc/mosquitto/pwfile
 [root@netkiller ~]# mosquitto_passwd -b /etc/mosquitto/pwfile homeassistant fag9iaTaix8nohL2cheenai7nua3sohjohfah7iuz1ileSheiRahs0och9Aedai8
         ]]>
-        </screen>
-                <para></para>
-                <screen>
+			</screen>
+			<para></para>
+			<screen>
         <![CDATA[ 
         ]]>
-        </screen>
-        </section>
-</section>
+			</screen>
+		</section>
+	</section>
+
+	<section>
+		<title>Python 开发接口</title>
+		<para>安装包</para>
+		<screen>
+		<![CDATA[ 
+pip3 install -i https://pypi.doubanio.com/simple paho-mqtt
+		]]>
+		</screen>
+		<screen>
+			<![CDATA[
+	
+			]]>
+		</screen>
+	</section>
+	<section>
+		<title>Retain</title>
+		<para>MQTT 发送数据被定义为 Retain 之后，会保留在队列之中，每次订阅消息都会发布一次。</para>
+		<para>删除一个Retain消息，可以向这个topic发布一个长度为0的 Retain 消息即可。</para>
+	</section>
+	<section>
+		<title>QoS</title>
+		<para></para>
+		<itemizedlist>
+			<title>MQTT 定义了三个 QoS 等级，分别为：</title>
+			<listitem>QoS 0，最多交付一次。</listitem>
+			<listitem>QoS 1，至少交付一次。</listitem>
+			<listitem>QoS 2，只交付一次。</listitem>
+		</itemizedlist>
+	</section>
+</chapter>
