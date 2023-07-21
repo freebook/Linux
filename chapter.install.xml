@@ -84,7 +84,8 @@ net-tools bind-utils
 			]]>
 		</screen>
 		<para>设置终端字符集（这样对 macOS 更友好），还可以解决 Failed to set locale, defaulting
-			to C.UTF-8 问题
+			to
+			C.UTF-8 问题
 		</para>
 		<screen>
 			<![CDATA[
@@ -353,23 +354,7 @@ dnf install -y virt-manager
 		</section>
 	</section>
 </section>
-<section id="linux.init">
-	<title>Linux 通用初始化设置</title>
-	<section>
-		<title>vim 初始化</title>
-		<screen>
-		<![CDATA[
-cat >> ~/.vimrc <<EOF
-set ts=4
-set softtabstop=4
-set shiftwidth=4
-set expandtab
-set autoindent
-EOF
-		]]>
-		</screen>
-	</section>
-</section>
+
 <section id="linux.debian">
 	<title>Debian 12</title>
 	<para>下载并制作启动盘，如果你的网络环境比较好，可以网络安装，下载 debian-12.0.0-amd64-netinst.iso </para>
@@ -400,6 +385,14 @@ Password:
 3931095040 bytes transferred in 353.732449 secs (11113188 bytes/sec)
 	]]>
 	</screen>
+	<section id="debian.init">
+		<title>通用初始化设置</title>
+		<screen>
+		<![CDATA[
+apt install -y curl vim		
+		]]>
+		</screen>
+	</section>
 </section>
 <section id="install.ubuntu">
 	<title>Debian / Ubuntu</title>
