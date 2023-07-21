@@ -45,4 +45,20 @@
 
 	]]>
 	</screen>
+	<section>
+		<title>--raw-output</title>
+		<programlisting>
+		<![CDATA[
+root@homeassistant:~# cat /etc/hassio.json
+{
+    "supervisor": "ghcr.io/home-assistant/aarch64-hassio-supervisor",
+    "machine": "qemuarm-64",
+    "data": "/usr/share/hassio"
+}
+
+root@homeassistant:~# jq --raw-output '.data // "/usr/share/hassio"' /etc/hassio.json
+/usr/share/hassio		
+		]]>
+		</programlisting>
+	</section>
 </section>

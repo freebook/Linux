@@ -2,26 +2,48 @@
 <section id="package.apt">
 	<title>APT 包管理</title>
 	<para>包管理工具</para>
-	<section id="apt-cache">
-		<title>apt-cache</title>
-		<section>
-			<title>search</title>
-			<screen>
+	<para>apt 命令默认从cdrom安装</para>
+	<para>注释/etc/apt/sources.list中的deb cdrom项, apt会从互联网上安装</para>
+	<screen><![CDATA[
+netkiller@Linux-server:~$ sudo vi /etc/apt/sources.list
+# deb cdrom:[Ubuntu-Server 6.10 _Edgy Eft_ - Release i386 (20061025.1)]/ edgy main restricted
+	]]></screen>
+
+	<command>apt-setup </command>
+
+	<para>安装是首先会下载包到/var/cache/apt/archives/目录</para>
+	<section id="apt.search">
+		<title>搜索软件包</title>
+		<screen>
 			<![CDATA[
-# apt-cache search tcpdump
+# apt search tcpdump
 			]]>
-			</screen>
-		</section>
-		<section>
-			<title>depends</title>
-			<screen><![CDATA[
-# apt-cache depends tcpdump
-			]]></screen>
-		</section>
-		<section>
-			<title>policy</title>
-			<screen><![CDATA[
-$ apt-cache policy tcpdump
+		</screen>
+		<para>apt-cache 是早期版本，目前已经废弃</para>
+		<screen>
+		<![CDATA[
+$ apt-cache search package
+		]]>
+		</screen>
+	</section>
+	<section id="apt.show">
+		<title>显示软件包的详细信息</title>
+
+		<para>软件包的详细信息:</para>
+		<screen>
+		<![CDATA[
+$ apt show package
+		]]></screen>
+
+		<para>列出软件包, 以及逆向依赖的软件包的详细版本信息:</para>
+		<screen><![CDATA[
+$ apt showpkg package
+		]]></screen>
+	</section>
+	<section id="apt.policy">
+		<title>policy</title>
+		<screen><![CDATA[
+$ apt policy tcpdump
 tcpdump:
   Installed: 4.0.0-6ubuntu3
   Candidate: 4.0.0-6ubuntu3
@@ -30,90 +52,148 @@ tcpdump:
         500 http://us.archive.ubuntu.com/ubuntu/ lucid/main Packages
         100 /var/lib/dpkg/status
 
+root@homeassistant:~# apt policy tcpdump
+tcpdump:
+  Installed: (none)
+  Candidate: 4.99.0-2+deb11u1
+  Version table:
+     4.99.3-1~bpo11+1 100
+        100 https://mirrors.tuna.tsinghua.edu.cn/debian bullseye-backports/main arm64 Packages
+     4.99.0-2+deb11u1 500
+        500 https://mirrors.tuna.tsinghua.edu.cn/debian bullseye/main arm64 Packages
 			]]></screen>
-		</section>
-		<section>
-			<title>查看所属镜像</title>
-			<screen>
+	</section>
+	<section id="apt.depends">
+		<title>软件包的依赖关系</title>
+		<para>列出软件包的依赖关系:</para>
+		<screen><![CDATA[
+$ apt-cache depends package
+			]]></screen>
+		<screen>
+		<![CDATA[
+# apt-cache depends tcpdump
+		]]></screen>
+	</section>
+	<section id="apt.madison">
+		<title>查看所属镜像</title>
+		<screen>
 			<![CDATA[
-neo@m-1d41c853af58:~$ apt-cache madison docker
+neo@netkiller:~$ apt madison docker
     docker |      1.5-2 | http://mirrors.ustc.edu.cn/ubuntu cosmic/universe amd64 Packages
     docker |      1.5-2 | http://mirrors.ustc.edu.cn/ubuntu cosmic/universe i386 Packages			
+			]]>
+		</screen>
+	</section>
+	<section id="apt.install">
+		<title>Installation</title>
+		<screen><![CDATA[
+$ sudo apt install package
+		]]>
+		</screen>
+
+		<section>
+			<title>本地安装</title>
+			<screen>
+		<![CDATA[
+wget https://github.com/home-assistant/supervised-installer/releases/latest/download/homeassistant-supervised.deb
+apt install ./homeassistant-supervised.deb		
+		]]>
+			</screen>
+		</section>
+		<section>
+			<title>dpkg 安装</title>
+			<para>*.deb</para>
+			<screen>
+			<![CDATA[
+sudo dpkg -i *.deb
 			]]>
 			</screen>
 		</section>
 	</section>
-	<section id="apt-get">
-		<title>Apt-Get</title>
-		<para>apt 命令默认从cdrom安装</para>
-		<para>注释/etc/apt/sources.list中的deb cdrom项, apt会从互联网上安装</para>
-		<screen><![CDATA[
-netkiller@Linux-server:~$ sudo vi /etc/apt/sources.list
-# deb cdrom:[Ubuntu-Server 6.10 _Edgy Eft_ - Release i386 (20061025.1)]/ edgy main restricted
-		]]></screen>
-
-		<command>apt-setup </command>
-
-		<para>安装是首先会下载包到/var/cache/apt/archives/目录</para>
+	<section id="apt.reinstall">
+		<title>重新安装</title>
+		<screen>
+		<![CDATA[
+sudo apt reinstall package
+		]]>
+		</screen>
+	</section>
+	<section id="apt.list">
+		<title>列出已安装软件包</title>
+		<screen>
+			<![CDATA[
+root@homeassistant:~# apt list --installed
+Listing... Done
+adduser/oldstable,oldstable,now 3.118 all [installed]
+apparmor/oldstable,now 2.13.6-10 arm64 [installed]
+apt-transport-https/oldstable,oldstable,now 2.2.4 all [installed]
+apt-utils/oldstable,now 2.2.4 arm64 [installed]
+apt/oldstable,now 2.2.4 arm64 [installed]
+armbian-bsp-cli-rk3318-box/now 22.05.0-trunk arm64 [installed,upgradable to: 23.02.2]
+armbian-config/bullseye,bullseye,bullseye,now 23.02.2 all [installed]
+armbian-firmware/now 22.05.0-trunk all [installed,upgradable to: 23.02.2]
+base-files/now 11.1+deb11u3 arm64 [installed,upgradable to: 11.1+deb11u7]
+base-passwd/oldstable,now 3.5.51 arm64 [installed]			
+			]]>
+		</screen>
 		<section>
-			<title>Search</title>
-			<para>Searching a software package</para>
-			<screen><![CDATA[
-$ apt-cache search package
-			]]></screen>
-			<para>列出软件包的详细信息:</para>
-			<screen><![CDATA[
-$ apt-cache show package
-			]]></screen>
-			<para>列出软件包的依赖关系:</para>
-			<screen><![CDATA[
-$ apt-cache depends package
-			]]></screen>
-			<para>列出软件包, 以及逆向依赖的软件包的详细版本信息:</para>
-			<screen><![CDATA[
-$ apt-cache showpkg package
-			]]></screen>
+			<title>列出不能更新的包</title>
+			<screen>
+			<![CDATA[
+neo@netkiller ~ % apt list --upgradable
+Listing... Done
+dh-python/groovy,groovy 4.20200925 all [upgradable from: 4.20191017ubuntu7]
+iptables/groovy-updates 1.8.5-3ubuntu2.20.10.1 amd64 [upgradable from: 1.8.5-3ubuntu1]
+krb5-locales/groovy-updates,groovy-updates,groovy-security,groovy-security 1.17-10ubuntu0.1 all [upgradable from: 1.17-10]
+libgssapi-krb5-2/groovy-updates,groovy-security 1.17-10ubuntu0.1 amd64 [upgradable from: 1.17-10]
+libgssapi-krb5-2/groovy-updates,groovy-security 1.17-10ubuntu0.1 i386 [upgradable from: 1.17-10]
+libip4tc2/groovy-updates 1.8.5-3ubuntu2.20.10.1 amd64 [upgradable from: 1.8.5-3ubuntu1]
+libip6tc2/groovy-updates 1.8.5-3ubuntu2.20.10.1 amd64 [upgradable from: 1.8.5-3ubuntu1]
+libk5crypto3/groovy-updates,groovy-security 1.17-10ubuntu0.1 amd64 [upgradable from: 1.17-10]
+libk5crypto3/groovy-updates,groovy-security 1.17-10ubuntu0.1 i386 [upgradable from: 1.17-10]
+libkrb5-3/groovy-updates,groovy-security 1.17-10ubuntu0.1 amd64 [upgradable from: 1.17-10]
+libkrb5-3/groovy-updates,groovy-security 1.17-10ubuntu0.1 i386 [upgradable from: 1.17-10]
+libkrb5support0/groovy-updates,groovy-security 1.17-10ubuntu0.1 amd64 [upgradable from: 1.17-10]
+libkrb5support0/groovy-updates,groovy-security 1.17-10ubuntu0.1 i386 [upgradable from: 1.17-10]
+libldap-2.4-2/groovy-updates,groovy-security 2.4.53+dfsg-1ubuntu1.2 amd64 [upgradable from: 2.4.53+dfsg-1ubuntu1.1]
+libldap-common/groovy-updates,groovy-updates,groovy-security,groovy-security 2.4.53+dfsg-1ubuntu1.2 all [upgradable from: 2.4.53+dfsg-1ubuntu1.1]
+libxtables12/groovy-updates 1.8.5-3ubuntu2.20.10.1 amd64 [upgradable from: 1.8.5-3ubuntu1]
+linux-generic/groovy-updates 5.8.0.29.34 amd64 [upgradable from: 5.8.0.28.33]
+linux-headers-generic/groovy-updates 5.8.0.29.34 amd64 [upgradable from: 5.8.0.28.33]
+linux-image-generic/groovy-updates 5.8.0.29.34 amd64 [upgradable from: 5.8.0.28.33]
+linux-libc-dev/groovy-updates 5.8.0-29.31 amd64 [upgradable from: 5.8.0-28.30]			
+			]]>
+			</screen>
 		</section>
-		<section id="install">
-			<title>Installation</title>
-			<screen><![CDATA[
-$ sudo apt install package
-			]]></screen>
-			<para>*.deb</para>
-			<screen><![CDATA[
-sudo dpkg -i *.deb
-			]]></screen>
-		</section>
-		<section id="update">
-			<title>Update</title>
-			<screen><![CDATA[
+	</section>
+	<section id="apt.update">
+		<title>Update</title>
+		<screen><![CDATA[
 $ apt update
 $ apt upgrade
 			]]></screen>
-			<para>Smart software update</para>
-			<screen><![CDATA[
+		<para>Smart software update</para>
+		<screen><![CDATA[
 $ apt dist-upgrade
 			]]></screen>
-		</section>
-		<section id="remove">
-			<title>Remove</title>
-			<para> 删除系统中的foo软件包</para>
-			<screen><![CDATA[
+	</section>
+	<section id="api.remove">
+		<title>Remove</title>
+		<para> 删除系统中的foo软件包</para>
+		<screen><![CDATA[
 $ sudo apt remove foo
 			]]></screen>
-			<para>删除系统中的package软件包及其配置文件</para>
-			<screen><![CDATA[
+		<para>删除系统中的package软件包及其配置文件</para>
+		<screen><![CDATA[
 $ sudo apt remove --purge package
 			]]></screen>
-		</section>
-		<section id="purge">
-			<title>purge</title>
-			<screen><![CDATA[
+	</section>
+	<section id="apt.purge">
+		<title>purge</title>
+		<screen><![CDATA[
 sudo apt purge package			
-			]]></screen>
-		</section>
-		<!-- 　　apt-cache search package 搜索包 　　apt-cache show package 获取包的相关信息，如说明、大小、版本等 　　sudo apt-get install package 安装包 　　sudo apt-get install package - - reinstall 重新安装包 　　sudo apt-get -f install 修复安装"-f = ――fix-missing" 　　sudo apt-get remove package 删除包 　　sudo apt-get remove package - - purge 删除包，包括删除配置文件等 　　sudo apt-get update 更新源 　　sudo apt-get upgrade 更新已安装的包 　　sudo apt-get dist-upgrade 升级系统 　　sudo apt-get dselect-upgrade 使用 dselect 升级 　　apt-cache depends package 了解使用依赖 　　apt-cache rdepends package 是查看该包被哪些包依赖 
-			　　sudo apt-get build-dep package 安装相关的编译环境 　　apt-get source package 下载该包的源代码 　　sudo apt-get clean && sudo apt-get autoclean 清理无用的包 　　sudo apt-get check 检查是否有损坏的依赖 -->
+		]]>
+		</screen>
 	</section>
 	<section id="aptitude">
 		<title>aptitude</title>
@@ -123,7 +203,7 @@ neo@kerberos:~$ tasksel
 neo@kerberos:~$ aptitude
 		]]></screen>
 	</section>
-	<section id="upgrades">
+	<section id="apt.upgrades">
 		<title>Automatic Updates</title>
 		<screen><![CDATA[
 sudo apt-get install unattended-upgrades
@@ -167,35 +247,7 @@ neo@netkiller:~$ sudo screen -r 1955
 继续			
 			]]></screen>
 		</section>
-		<section>
-			<title>列出不能更新的包</title>
-			<screen>
-			<![CDATA[
-neo@netkiller ~ % apt list --upgradable
-Listing... Done
-dh-python/groovy,groovy 4.20200925 all [upgradable from: 4.20191017ubuntu7]
-iptables/groovy-updates 1.8.5-3ubuntu2.20.10.1 amd64 [upgradable from: 1.8.5-3ubuntu1]
-krb5-locales/groovy-updates,groovy-updates,groovy-security,groovy-security 1.17-10ubuntu0.1 all [upgradable from: 1.17-10]
-libgssapi-krb5-2/groovy-updates,groovy-security 1.17-10ubuntu0.1 amd64 [upgradable from: 1.17-10]
-libgssapi-krb5-2/groovy-updates,groovy-security 1.17-10ubuntu0.1 i386 [upgradable from: 1.17-10]
-libip4tc2/groovy-updates 1.8.5-3ubuntu2.20.10.1 amd64 [upgradable from: 1.8.5-3ubuntu1]
-libip6tc2/groovy-updates 1.8.5-3ubuntu2.20.10.1 amd64 [upgradable from: 1.8.5-3ubuntu1]
-libk5crypto3/groovy-updates,groovy-security 1.17-10ubuntu0.1 amd64 [upgradable from: 1.17-10]
-libk5crypto3/groovy-updates,groovy-security 1.17-10ubuntu0.1 i386 [upgradable from: 1.17-10]
-libkrb5-3/groovy-updates,groovy-security 1.17-10ubuntu0.1 amd64 [upgradable from: 1.17-10]
-libkrb5-3/groovy-updates,groovy-security 1.17-10ubuntu0.1 i386 [upgradable from: 1.17-10]
-libkrb5support0/groovy-updates,groovy-security 1.17-10ubuntu0.1 amd64 [upgradable from: 1.17-10]
-libkrb5support0/groovy-updates,groovy-security 1.17-10ubuntu0.1 i386 [upgradable from: 1.17-10]
-libldap-2.4-2/groovy-updates,groovy-security 2.4.53+dfsg-1ubuntu1.2 amd64 [upgradable from: 2.4.53+dfsg-1ubuntu1.1]
-libldap-common/groovy-updates,groovy-updates,groovy-security,groovy-security 2.4.53+dfsg-1ubuntu1.2 all [upgradable from: 2.4.53+dfsg-1ubuntu1.1]
-libxtables12/groovy-updates 1.8.5-3ubuntu2.20.10.1 amd64 [upgradable from: 1.8.5-3ubuntu1]
-linux-generic/groovy-updates 5.8.0.29.34 amd64 [upgradable from: 5.8.0.28.33]
-linux-headers-generic/groovy-updates 5.8.0.29.34 amd64 [upgradable from: 5.8.0.28.33]
-linux-image-generic/groovy-updates 5.8.0.29.34 amd64 [upgradable from: 5.8.0.28.33]
-linux-libc-dev/groovy-updates 5.8.0-29.31 amd64 [upgradable from: 5.8.0-28.30]			
-			]]>
-			</screen>
-		</section>
+
 
 	</section>
 	<section id="sources.list">
@@ -238,6 +290,7 @@ EOF
 			</screen>
 		</section>
 	</section>
+
 	<section id="dpkg">
 		<title>dpkg</title>
 		<section>
@@ -318,10 +371,12 @@ squid3-cgi: /etc/squid3/cachemgr.conf
 		</section>
 
 		<section>
-			<title>dpkg-deb - Debian package archive (.deb) manipulation tool</title>
+			<title>dpkg-deb - Debian package archive (.deb) manipulation tool
+			</title>
 			<section>
 				<title>-X, --vextract archive directory
-					Extract and display the filenames contained by a
+					Extract and display the
+					filenames contained by a
 					package
 				</title>
 				<screen><![CDATA[
@@ -331,7 +386,9 @@ $ dpkg -X dmd_2.057-0_amd64.deb dmd_2.057-0_amd64
 
 			<section>
 				<title>-e, --control archive [directory]
-					Extracts the control information files from a package archive into the specified directory.
+					Extracts the control
+					information files from a package archive into the specified
+					directory.
 				</title>
 				<screen><![CDATA[
 $ dpkg -e dmd_2.057-0_amd64.deb
@@ -457,7 +514,9 @@ $ sudo /cdrom/cdromupgrade
 	<section id="deb">
 		<title>制作.deb安装包</title>
 		<section id="checkinstall">
-			<title>checkinstall — Track installation of local software, and produce a binary manageable with your package management software.</title>
+			<title>checkinstall — Track installation of local software, and
+				produce a binary manageable with your package management software.
+			</title>
 			<screen><![CDATA[
 $ tar xxx.tar.gz
 $ cd xxx
@@ -470,14 +529,22 @@ $ sudo apt-get install checkinstall
 
 		</section>
 		<section id="dh_make">
-			<title>dh_make - prepare Debian packaging for an original source archive</title>
-			<para>http://www.debian.org/doc/manuals/maint-guide/index.zh-cn.html</para>
+			<title>dh_make - prepare Debian packaging for an original source
+				archive
+			</title>
+			<para>http://www.debian.org/doc/manuals/maint-guide/index.zh-cn.html
+			</para>
 			<para>http://www.debian.org/doc/manuals/maint-guide/</para>
 		</section>
 		<section id="control">
 			<title>control</title>
-			<para>Architecture: any | amd64 | i386 The generated binary package is an architecture dependent one usually in a compiled language.</para>
-			<para>Architecture: all The generated binary package is an architecture independent one usually consisting of text, images, or scripts in an interpreted language.</para>
+			<para>Architecture: any | amd64 | i386 The generated binary package
+				is an architecture dependent one usually in a compiled language.
+			</para>
+			<para>Architecture: all The generated binary package is an
+				architecture independent one usually consisting of text, images, or
+				scripts in an interpreted language.
+			</para>
 		</section>
 	</section>
 </section>

@@ -370,6 +370,23 @@ EOF
 		</screen>
 	</section>
 </section>
+<section id="linux.debian">
+	<title>Debian 12</title>
+	<para>下载并制作启动盘</para>
+	<screen>
+	<![CDATA[
+neo@MacBook-Pro-M2 ~/Downloads> ls debian-12.0.0-amd64-netinst.iso
+debian-12.0.0-amd64-netinst.iso
+
+neo@MacBook-Pro-M2 ~/Downloads> sudo dd if=debian-12.0.0-amd64-netinst.iso of=/dev/rdisk4 bs=16M status=progress oflag=sync
+Password:
+  771751936 bytes (772 MB, 736 MiB) transferred 93.628s, 8243 kB/s
+46+1 records in
+46+1 records out
+773849088 bytes transferred in 93.869599 secs (8243873 bytes/sec)
+	]]>
+	</screen>
+</section>
 <section id="install.ubuntu">
 	<title>Debian / Ubuntu</title>
 	<para>
