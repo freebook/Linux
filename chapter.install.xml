@@ -372,7 +372,7 @@ EOF
 </section>
 <section id="linux.debian">
 	<title>Debian 12</title>
-	<para>下载并制作启动盘</para>
+	<para>下载并制作启动盘，如果你的网络环境比较好，可以网络安装，下载 debian-12.0.0-amd64-netinst.iso </para>
 	<screen>
 	<![CDATA[
 neo@MacBook-Pro-M2 ~/Downloads> ls debian-12.0.0-amd64-netinst.iso
@@ -384,6 +384,20 @@ Password:
 46+1 records in
 46+1 records out
 773849088 bytes transferred in 93.869599 secs (8243873 bytes/sec)
+	]]>
+	</screen>
+	<para>debian-12.0.0-amd64-DVD-1.iso 是离线安装 DVD 版本</para>
+	<screen>
+	<![CDATA[
+neo@MacBook-Pro-M2 ~/Downloads> ls debian-12.0.0-amd64-DVD-1.iso
+debian-12.0.0-amd64-DVD-1.iso
+	
+neo@MacBook-Pro-M2 ~/Downloads> sudo dd if=debian-12.0.0-amd64-DVD-1.iso of=/dev/rdisk4 bs=16M status=progress oflag=sync
+Password:
+  3925868544 bytes (3926 MB, 3744 MiB) transferred 353.296s, 11 MB/s
+234+1 records in
+234+1 records out
+3931095040 bytes transferred in 353.732449 secs (11113188 bytes/sec)
 	]]>
 	</screen>
 </section>
