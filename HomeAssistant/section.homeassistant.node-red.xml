@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="Node-Red">
+	<title>Node-Red</title>
+	<!-- <graphic format="png" fileref="../images/solution/sns/sns-people.png" 
+		srccredit="neo" /> -->
+	<section>
+		<title>function </title>
+		<para>组装播放 Call Service 文本</para>
+		<!-- <graphic format="png" fileref="../images/solution/payment/payment.merchant.png" 
+			srccredit="neo" width="" /> -->
+		<programlisting>
+		<![CDATA[ 
+var items = ['让我想想', '思考中', '稍等'];
+var item = items[Math.floor(Math.random() * items.length)];
+var body = {};
+body.payload={};
+body.payload.data={};
+body.payload.data.text = item;
+body.payload.data.silent = true;
+return body;		
+		]]>
+		</programlisting>
+		<section>
+			<title>银行方案</title>
+			<para>银行接口方案.</para>
+			<!-- <graphic format="png"
+				fileref="../images/solution/payment/payment.bank.png"
+				srccredit="neo" width="" /> -->
+			<programlisting>
+			<![CDATA[
+			
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section>
+		<title>方案</title>
+
+		
+	</section>
+	<section id="payment.interface">
+		<title>支付接口</title>
+		<graphic format="png"
+			fileref="../images/solution/payment/payment.workflow.png"
+			srccredit="neo" width="" />
+		<para>支付接口需要考虑</para>
+	</section>
+
+</chapter>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!ENTITY part.homeassistant.xml 				SYSTEM "part.homeassistant.xml">
+<!ENTITY chapter.homeassistant.xml 				SYSTEM "chapter.homeassistant.xml">
+<!ENTITY section.homeassistant.node-red.xml		SYSTEM "section.homeassistant.node-red.xml">
+<!ENTITY chapter.homeassistant.gps.xml			SYSTEM "chapter.homeassistant.gps.xml">
+<!ENTITY chapter.homeassistant.mosquitto.xml	SYSTEM "chapter.homeassistant.mosquitto.xml">
+<!ENTITY section.homeassistant.faq.xml	 		SYSTEM "section.homeassistant.faq.xml">

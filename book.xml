@@ -86,6 +86,9 @@
 	<!ENTITY % sbc.doctype.entity.xml 				SYSTEM "SBC/doctype.entity.xml">
 	%sbc.doctype.entity.xml;
 	
+	<!ENTITY % homeassistant.doctype.entity.xml 			SYSTEM "HomeAssistant/doctype.entity.xml">
+	%homeassistant.doctype.entity.xml;
+	
 	<!ENTITY part.im 								SYSTEM "part.im.xml">
 	<!ENTITY chapter.gps 							SYSTEM "chapter.gps.xml">
 	<!ENTITY chapter.ibm.websphere.xml		 		SYSTEM "Middleware/chapter.ibm.websphere.xml">
@@ -192,8 +195,9 @@
 	&chapter.ibm.websphere.xml;
 	<!-- =========================================================================== -->
 	&part.sbc.xml;
-	&chapter.faq.xml;
+	&part.homeassistant.xml;
 	<!-- =========================================================================== -->
+	&chapter.faq.xml;
 	&book.appendix.xml;
 	&book.history.xml;
 	<!-- =========================================================================== -->

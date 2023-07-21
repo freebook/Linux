@@ -1,0 +1,501 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="homeassistant">
+	<title>Home Assistant</title>
+	<para>Home Assistant 建议安装在 Debian 系的 Linux 中</para>
+	<!-- <screenshot> <screeninfo>perl</screeninfo> <graphic format="png" fileref="../images/solution/perl_solution.png" 
+		srccredit="neo" /> </screenshot> <graphic format="png" fileref="../images/solution/python_solution.png" 
+		srccredit="neo" /> -->
+	<section>
+		<title>安装 Home Assistant</title>
+		<section>
+			<title>Docker 安装</title>
+			<para>安装 Docker</para>
+			<!-- apt-transport-https ca-certificates lsb-release -->
+			<screen>
+  			<![CDATA[ 
+mkdir -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+apt update -y
+apt install -y curl gnupg2 
+apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+  			]]>
+			</screen>
+		</section>
+		<section id="debian">
+			<title>Debian</title>
+			<para>安装依赖包</para>
+			<screen>
+  			<![CDATA[ 
+apt update
+apt install udisks2
+  			]]>
+			</screen>
+			<para>Agent for Home Assistant OS</para>
+			<screen>
+  			<![CDATA[ 
+wget https://github.com/home-assistant/os-agent/releases/latest/download/os-agent_1.5.1_linux_x86_64.deb
+apt install ./os-agent_1.5.1_linux_x86_64.deb
+systemctl status haos-agent
+
+https://github.com/home-assistant/os-agent/releases/tag/1.5.1
+  			]]>
+			</screen>
+			
+			<para></para>
+			<screen>
+			<![CDATA[ 
+wget https://github.com/home-assistant/supervised-installer/releases/download/1.4.3/homeassistant-supervised.deb
+dpkg -i homeassistant-supervised.deb
+
+wget https://github.com/home-assistant/supervised-installer/releases/latest/download/homeassistant-supervised.deb
+apt install ./homeassistant-supervised.deb
+			]]>
+			</screen>
+			<screen>
+	<![CDATA[
+sudo docker run --restart always -d --name homeassistant \
+-v /PATH_TO_YOUR_CONFIG:/config \
+--device=/PATH_TO_YOUR_USB_STICK \
+-e TZ=Australia/Melbourne --net=host \
+ghcr.io/home-assistant/home-assistant:stable
+
+sudo dpkg -i https://github.com/home-assistant/supervised-installer/releases/download/1.4.3/homeassistant-supervised.deb
+
+sudo docker run --restart always -d --name homeassistant \
+--restart=unless-stopped \
+-v /srv/homeassistant:/config \
+-p 8123:8123 -p 4357:4357 \
+-e TZ=Asia/Shanghai --net=host \
+ghcr.io/home-assistant/home-assistant:stable
+	]]>
+			</screen>
+			<para>重启 debian </para>
+			<screen>
+  			<![CDATA[ 
+reboot
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+ 			<![CDATA[
+version: '3'
+  services:
+	homeassistant:
+	  container_name: homeassistant
+	  image: "ghcr.io/home-assistant/home-assistant:stable"
+	  volumes:
+		- /PATH_TO_YOUR_CONFIG:/config
+		- /etc/localtime:/etc/localtime:ro
+	  restart: unless-stopped
+	  privileged: true
+	  network_mode: host  
+			]]>
+			</screen>
+		</section>
+		<section id="ubuntu">
+			<title>Ubuntu</title>
+			<screen>
+			<![CDATA[ 
+
+wget https://github.com/home-assistant/os-agent/releases/latest/download/os-agent.deb
+apt install ./homeassistant-supervised.deb
+
+wget https://github.com/home-assistant/os-agent/releases/latest/download/os-agent_1.5.1_linux_x86_64.deb
+apt install ./os-agent_1.5.1_linux_x86_64.deb
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -  
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"  
+apt install docker-ce
+
+wget https://github.com/home-assistant/supervised-installer/releases/latest/download/homeassistant-supervised.deb
+apt install ./homeassistant-supervised.deb
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>升级</title>
+			<screen>
+			<![CDATA[
+root@homeassistant:~# apt list --installed | grep homeassistant-supervised
+
+WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+
+homeassistant-supervised/now 1.4.2 all [installed,local]			
+			]]>
+			</screen>
+			<para>前往 https://github.com/home-assistant/supervised-installer/releases 找到需要升级的版本</para>
+			<screen>
+			<![CDATA[
+root@homeassistant:~# wget https://github.com/home-assistant/supervised-installer/releases/download/1.5.0/homeassistant-supervised.deb			
+			]]>
+			</screen>
+			<para>使用下面命令更新</para>
+			<screen>
+			<![CDATA[
+dpkg -i --ignore-depends=systemd-resolved ./homeassistant-supervised.deb
+			]]>
+			</screen>
+			<para>更新过程演示</para>
+			<screen>
+			<![CDATA[
+root@homeassistant:~# dpkg -i --ignore-depends=systemd-resolved ./homeassistant-supervised.deb
+(Reading database ... 35672 files and directories currently installed.)
+Preparing to unpack ./homeassistant-supervised.deb ...
+[warn]
+[warn] If you want more control over your own system, run
+[warn] Home Assistant as a VM or run Home Assistant Core
+[warn] via a Docker container.
+[warn]
+Leaving 'diversion of /etc/NetworkManager/NetworkManager.conf to /etc/NetworkManager/NetworkManager.conf.real by homeassistant-supervised'
+Leaving 'diversion of /etc/NetworkManager/system-connections/default to /etc/NetworkManager/system-connections/default.real by homeassistant-supervised'
+Leaving 'diversion of /etc/docker/daemon.json to /etc/docker/daemon.json.real by homeassistant-supervised'
+Leaving 'diversion of /etc/network/interfaces to /etc/network/interfaces.real by homeassistant-supervised'
+Unpacking homeassistant-supervised (1.5.0) over (1.4.2) ...
+Setting up homeassistant-supervised (1.5.0) ...
+[info] Restarting NetworkManager
+[info] Restarting docker service
+
+
+PING checkonline.home-assistant.io (127.0.0.1) 56(84) bytes of data.
+64 bytes from localhost (127.0.0.1): icmp_seq=1 ttl=64 time=0.391 ms
+
+--- checkonline.home-assistant.io ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 0.391/0.391/0.391/0.000 ms
+[info] Install supervisor startup scripts
+[info] Install AppArmor scripts
+[info] Start Home Assistant Supervised
+[info] Installing the 'ha' cli
+[warn] Could not find /etc/default/grub or /boot/firmware/cmdline.txt failed to switch to cgroup v1
+[info] Within a few minutes you will be able to reach Home Assistant at:
+[info] http://homeassistant.local:8123 or using the IP address of your
+[info] machine: http://10.10.0.10:8123			
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section id="hassio">
+		<title>配置文件</title>
+		<screen>
+		<![CDATA[ 
+/usr/share/hassio/homeassistant		
+		]]>
+		</screen>
+	</section>
+	<section id="hacs">
+		<title>Home Assistant Community Store</title>
+		<para>https://github.com/hacs</para>
+		<para>
+			<ulink url="https://github.com/hassio-addons/repository" />
+		</para>
+		<section>
+			<title>正常安装</title>
+			<para>配置 DNS</para>
+			<screen>
+			<![CDATA[ 
+homeassistant:/config# cat /etc/resolv.conf 
+search local.hass.io
+nameserver 8.8.8.8			
+			]]>
+			</screen>
+			<para>进入容器安装 hacs</para>
+			<screen>
+			<![CDATA[ 
+docker exec -it homeassistant bash
+wget -O - https://get.hacs.xyz | bash -
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[ 
+homeassistant:/config# cat /etc/resolv.conf 
+search local.hass.io
+nameserver 8.8.8.8
+
+homeassistant:/config# wget -O - https://get.hacs.xyz | bash -
+Connecting to get.hacs.xyz ([2606:4700:3031::ac43:8f2c]:443)
+Connecting to raw.githubusercontent.com ([2606:50c0:8001::154]:443)
+writing to stdout
+INFO: Trying to find the correct directory...
+-                    100% |*************************|  3988  0:00:00 ETA
+written to stdout
+INFO: Found Home Assistant configuration directory at '/config'
+INFO: Changing to the custom_components directory...
+INFO: Downloading HACS
+Connecting to github.com (20.205.243.166:443)
+Connecting to github.com (20.205.243.166:443)
+Connecting to objects.githubusercontent.com (185.199.108.133:443)
+saving to 'hacs.zip'
+hacs.zip             100% |*************************| 3889k  0:00:00 ETA
+'hacs.zip' saved
+INFO: Creating HACS directory...
+INFO: Unpacking HACS...
+
+INFO: Verifying versions
+INFO: Current version is 2023.6.2, minimum version is 2022.11.0
+
+INFO: Removing HACS zip file...
+INFO: Installation complete.
+
+INFO: Remember to restart Home Assistant before you configure it			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>遇到 Github 无法访问的情况怎么处理</title>
+			<para>如果无法下载，请添加 hosts 文件</para>
+			<screen>
+			<![CDATA[ 
+docker exec -i homeassistant bash -c "echo 199.232.96.133    raw.githubusercontent.com >> /etc/hosts"
+docker exec -i homeassistant bash -c "echo 140.82.114.4    github.com >> /etc/hosts"
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>手工安装</title>
+			<para>手工安装，下载 hacs.zip 文件，然后复制到 homeassistant 机器上</para>
+			<screen>
+			<![CDATA[
+unzip hacs.zip
+scp -r hacs root@homeassistant.local:/tmp/
+			]]>
+			</screen>
+			<para>将宿主主机的 hacs 目录复制到 homeassistant 容器中的 /config/custom_components/
+				目录下
+			</para>
+			<screen>
+			<![CDATA[
+root@homeassistant:~# docker cp /tmp/hacs homeassistant:/config/custom_components/
+                             Successfully copied 11.6MB to homeassistant:/config/custom_components/
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+root@homeassistant:~# docker exec -it homeassistant bash
+homeassistant:/config# ls custom_components/
+hacs
+			]]>
+			</screen>
+			<para>
+				集成方法
+				<ulink url="https://hacs.xyz/docs/configuration/basic/" />
+			</para>
+		</section>
+		<section>
+			<title>Node-Red</title>
+			<para>/usr/share/hassio/homeassistant/custom_components</para>
+			<screen>
+			<![CDATA[ 
+scp -r hass-node-red-1.4.0 root@homeassistant.local:/usr/share/hassio/homeassistant/custom_components/
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Xiaomi Miot Auto</title>
+			<para>手工安装</para>
+			<screen>
+			<![CDATA[
+			
+			]]>
+			</screen>
+		</section>
+
+	</section>
+	
+	<section id="ha.cli">
+		<title>ha 命令</title>
+
+		<section>
+			<title>检查版本</title>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-M2 ~> curl -s https://version.home-assistant.io/stable.json
+{
+  "channel": "stable",
+  "supervisor": "2023.07.1",
+  "homeassistant": {
+    "default": "2023.7.2",
+    "qemux86": "2023.7.2",
+    "qemux86-64": "2023.7.2",
+    "qemuarm": "2023.7.2",
+    "qemuarm-64": "2023.7.2",
+    "generic-x86-64": "2023.7.2",
+    "intel-nuc": "2023.7.2",
+    "khadas-vim3": "2023.7.2",
+    "raspberrypi": "2023.7.2",
+    "raspberrypi2": "2023.7.2",
+    "raspberrypi3": "2023.7.2",
+    "raspberrypi3-64": "2023.7.2",
+    "raspberrypi4": "2023.7.2",
+    "raspberrypi4-64": "2023.7.2",
+    "yellow": "2023.7.2",
+    "tinker": "2023.7.2",
+    "odroid-c2": "2023.7.2",
+    "odroid-c4": "2023.7.2",
+    "odroid-m1": "2023.7.2",
+    "odroid-n2": "2023.7.2",
+    "odroid-xu": "2023.7.2"
+  },
+  "hassos": {
+    "ova": "10.3",
+    "rpi2": "10.3",
+    "rpi3": "10.3",
+    "rpi3-64": "10.3",
+    "rpi4": "10.3",
+    "rpi4-64": "10.3",
+    "yellow": "10.3",
+    "tinker": "10.3",
+    "odroid-c2": "10.3",
+    "odroid-c4": "10.3",
+    "odroid-m1": "10.3",
+    "odroid-n2": "10.3",
+    "odroid-xu4": "10.3",
+    "generic-x86-64": "10.3",
+    "generic-aarch64": "10.3",
+    "khadas-vim3": "10.3"
+  },
+  "hassos-upgrade": {
+    "9": "9.5",
+    "8": "8.5",
+    "7": "7.6",
+    "6": "6.6",
+    "5": "5.13",
+    "4": "4.20",
+    "3": "3.13"
+  },
+  "ota": "https://github.com/home-assistant/operating-system/releases/download/{version}/{os_name}_{board}-{version}.raucb",
+  "cli": "2023.06.0",
+  "dns": "2023.06.2",
+  "audio": "2023.06.0",
+  "multicast": "2023.06.2",
+  "observer": "2023.06.0",
+  "image": {
+    "core": "homeassistant/{machine}-homeassistant",
+    "supervisor": "homeassistant/{arch}-hassio-supervisor",
+    "cli": "homeassistant/{arch}-hassio-cli",
+    "audio": "homeassistant/{arch}-hassio-audio",
+    "dns": "homeassistant/{arch}-hassio-dns",
+    "observer": "homeassistant/{arch}-hassio-observer",
+    "multicast": "homeassistant/{arch}-hassio-multicast"
+  },
+  "images": {
+    "core": "ghcr.io/home-assistant/{machine}-homeassistant",
+    "supervisor": "ghcr.io/home-assistant/{arch}-hassio-supervisor",
+    "cli": "ghcr.io/home-assistant/{arch}-hassio-cli",
+    "audio": "ghcr.io/home-assistant/{arch}-hassio-audio",
+    "dns": "ghcr.io/home-assistant/{arch}-hassio-dns",
+    "observer": "ghcr.io/home-assistant/{arch}-hassio-observer",
+    "multicast": "ghcr.io/home-assistant/{arch}-hassio-multicast"
+  }
+}			
+			]]>
+			</screen>
+		</section>
+		<section id="ha.network">
+			<title>network</title>
+			<screen>
+			<![CDATA[ 
+root@homeassistant:~# ha network info
+docker:
+  address: 172.30.32.0/23
+  dns: 172.30.32.3
+  gateway: 172.30.32.1
+  interface: hassio
+host_internet: false
+interfaces:
+- connected: true
+  enabled: true
+  interface: eth0
+  ipv4:
+	address:
+	- 192.168.30.126/24
+	gateway: 192.168.30.1
+	method: auto
+	nameservers:
+	- 202.96.134.133
+	- 114.114.114.114
+	ready: true
+  ipv6:
+	address:
+	- fe80::aefb:5aa3:1dff:71af/64
+	gateway: null
+	method: disabled
+	nameservers: []
+	ready: true
+  primary: true
+  type: ethernet
+  vlan: null
+  wifi: null
+supervisor_internet: false    
+	]]>
+			</screen>
+			<screen>
+			<![CDATA[ 
+root@homeassistant:~# ha network info | grep internet
+host_internet: false
+supervisor_internet: false    
+			]]>
+			</screen>
+		</section>
+		<section id="ha.dns">
+			<title>修改 DNS</title>
+			<screen>
+	  		<![CDATA[ 
+ha dns options --servers dns://8.8.8.8      
+	  		]]>
+			</screen>
+		</section>
+		<section id="ha.supervisor">
+			<title>supervisor 管理</title>
+			<screen>
+			<![CDATA[
+root@homeassistant:~# ha supervisor available-updates
+available_updates:
+- panel_path: /update-available/core
+  update_type: core
+  version_latest: 2023.7.2
+- icon: /addons/a0d7b954_nodered/icon
+  name: Node-RED
+  panel_path: /update-available/a0d7b954_nodered
+  update_type: addon
+  version_latest: 14.4.0			
+			]]>
+			</screen>
+
+		</section>
+		<section id="ha.core">
+			<title>core</title>
+			<screen>
+			<![CDATA[
+root@homeassistant:~# ha core update
+Error: 'HomeAssistantCore.update' blocked from execution, no host internet connection
+
+root@homeassistant:~# ha jobs info
+ignore_conditions: []
+
+root@homeassistant:~# ha jobs options --ignore-conditions internet_host
+Command completed successfully.
+
+root@homeassistant:~# ha jobs info
+ignore_conditions:
+- internet_host
+
+root@homeassistant:~# ha core update			
+			]]>
+			</screen>
+		</section>
+		<section id="ha.jobs">
+			<title>jobs</title>
+			<screen>
+			<![CDATA[
+ha jobs options --ignore-conditions internet_host			
+ha jobs options --ignore-conditions healthy
+			]]>
+			</screen>
+		</section>
+	</section>
+	
+	&section.homeassistant.faq.xml;
+
+</chapter>

@@ -355,10 +355,22 @@ dnf install -y virt-manager
 	</section>
 </section>
 
-<section id="linux.debian">
-	<title>Debian 12</title>
-	<para>下载并制作启动盘，如果你的网络环境比较好，可以网络安装，下载 debian-12.0.0-amd64-netinst.iso </para>
-	<screen>
+
+<section id="install.ubuntu">
+	<title>Debian / Ubuntu</title>
+	<para>
+		Ubuntu Server Edition
+		<ulink url="http://www.ubuntu.com/">http://www.ubuntu.com/</ulink>
+	</para>
+	<para>
+		Debian
+		<ulink url="https://www.debian.org/index.zh-cn.html">https://www.debian.org/index.zh-cn.html</ulink>
+	</para>
+	<section id="linux.debian">
+		<title>Debian 12</title>
+		<para>下载并制作启动盘，如果你的网络环境比较好，可以网络安装，下载 debian-12.0.0-amd64-netinst.iso
+		</para>
+		<screen>
 	<![CDATA[
 neo@MacBook-Pro-M2 ~/Downloads> ls debian-12.0.0-amd64-netinst.iso
 debian-12.0.0-amd64-netinst.iso
@@ -370,9 +382,9 @@ Password:
 46+1 records out
 773849088 bytes transferred in 93.869599 secs (8243873 bytes/sec)
 	]]>
-	</screen>
-	<para>debian-12.0.0-amd64-DVD-1.iso 是离线安装 DVD 版本</para>
-	<screen>
+		</screen>
+		<para>debian-12.0.0-amd64-DVD-1.iso 是离线安装 DVD 版本</para>
+		<screen>
 	<![CDATA[
 neo@MacBook-Pro-M2 ~/Downloads> ls debian-12.0.0-amd64-DVD-1.iso
 debian-12.0.0-amd64-DVD-1.iso
@@ -384,26 +396,16 @@ Password:
 234+1 records out
 3931095040 bytes transferred in 353.732449 secs (11113188 bytes/sec)
 	]]>
-	</screen>
-	<section id="debian.init">
-		<title>通用初始化设置</title>
-		<screen>
+		</screen>
+		<section id="debian.init">
+			<title>通用初始化设置</title>
+			<screen>
 		<![CDATA[
 apt install -y curl vim		
 		]]>
-		</screen>
+			</screen>
+		</section>
 	</section>
-</section>
-<section id="install.ubuntu">
-	<title>Debian / Ubuntu</title>
-	<para>
-		Ubuntu Server Edition
-		<ulink url="http://www.ubuntu.com/">http://www.ubuntu.com/</ulink>
-	</para>
-	<para>
-		Debian
-		<ulink url="https://www.debian.org/index.zh-cn.html">https://www.debian.org/index.zh-cn.html</ulink>
-	</para>
 	<section>
 		<title>历史记录优化</title>
 		<screen>
@@ -721,6 +723,14 @@ Aug 16 12:57:16 testing systemd[1]: Started /etc/rc.d/rc.local Compatibility.
 root@production:~# ufw disable
 Firewall stopped and disabled on system startup			
 			]]>
+		</screen>
+	</section>
+	<section>
+		<title>更换包镜像</title>
+		<screen>
+		<![CDATA[
+sudo sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list		
+		]]>
 		</screen>
 	</section>
 
@@ -1132,344 +1142,7 @@ systemctl disable ip6tables
 		</screen>
 	</section>
 </section>
-<section id="install.ubuntu">
-	<title>Debian / Ubuntu</title>
-	<para>
-		Ubuntu Server Edition
-		<ulink url="http://www.ubuntu.com/">http://www.ubuntu.com/</ulink>
-	</para>
-	<para>
-		Debian
-		<ulink url="https://www.debian.org/index.zh-cn.html">https://www.debian.org/index.zh-cn.html</ulink>
-	</para>
-	<section>
-		<title>历史记录优化</title>
-		<screen>
-			<![CDATA[
-cat >> /etc/profile.d/history.sh <<EOF
-# Administrator specific aliases and functions for system security
-# Add by netkiller
-export HISTSIZE=10000
-export HISTFILESIZE=10000
-export HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S "
-export TIME_STYLE=long-iso
-EOF
 
-source /etc/profile.d/history.sh				
-			]]>
-		</screen>
-	</section>
-	<section>
-		<title>关闭 SELinux</title>
-		<screen>
-			<![CDATA[
-cat >> /etc/selinux/config <<EOF
-# Add by netkiller
-SELINUX=disabled
-EOF
-
-setenforce Permissive		
-			]]>
-		</screen>
-		<tip>
-			<para>很多云主机的linux系统selinux被裁剪掉了，所以不用关闭 selinux</para>
-		</tip>
-	</section>
-	<section>
-		<title>sysctl / ulimit</title>
-		<para>sysctl 优化</para>
-		<screen>
-			<![CDATA[
-cat >> /etc/sysctl.conf <<EOF
-
-# Netkiller
-net.ipv4.ip_local_port_range = 1025 65500
-net.ipv4.tcp_tw_reuse = 1
-net.ipv4.tcp_keepalive_time = 1800
-net.core.netdev_max_backlog=3000
-net.ipv4.tcp_max_syn_backlog = 1024
-net.ipv4.tcp_max_tw_buckets = 4096
-net.core.somaxconn = 1024
-
-# TCP BBR
-net.core.default_qdisc=fq
-net.ipv4.tcp_congestion_control=bbr
-EOF
-#net.ipv4.tcp_syncookies = 1
-#net.ipv4.tcp_fin_timeout = 60
-
-sysctl -p			
-			]]>
-		</screen>
-		<tip>
-			<para>如果是阿里云会自动帮你配置</para>
-			<programlisting>
-				<![CDATA[
-# see details in https://help.aliyun.com/knowledge_detail/39428.html
-net.ipv4.conf.all.rp_filter = 0
-net.ipv4.conf.default.rp_filter = 0
-net.ipv4.conf.default.arp_announce = 2
-net.ipv4.conf.lo.arp_announce = 2
-net.ipv4.conf.all.arp_announce = 2
-
-# see details in https://help.aliyun.com/knowledge_detail/41334.html
-net.ipv4.tcp_max_tw_buckets = 5000
-net.ipv4.tcp_syncookies = 1
-net.ipv4.tcp_max_syn_backlog = 1024
-net.ipv4.tcp_synack_retries = 2
-net.ipv4.tcp_slow_start_after_idle = 0				
-				]]>
-			</programlisting>
-		</tip>
-		<para>ulimit 优化</para>
-		<screen>
-			<![CDATA[
-cat > /etc/security/limits.d/20-nofile.conf <<EOF
-
-www soft nofile 65535
-www hard nofile 65535
-
-nginx soft nofile 65535
-nginx hard nofile 65535
-
-mysql soft nofile 65535
-mysql hard nofile 65535
-
-redis soft nofile 65535
-redis hard nofile 65535
-
-rabbitmq soft nofile 40960
-rabbitmq hard nofile 40960
-
-hadoop soft nofile 65535
-hadoop hard nofile 65535
-
-EOF			
-			]]>
-		</screen>
-		<tip>
-			<para>如果是阿里云，不需要配置</para>
-			<screen>
-			<![CDATA[
-root@netkiller:~# cat /etc/security/limits.conf | tail -n 6
-
-# End of file
-root soft nofile 65535
-root hard nofile 65535
-* soft nofile 65535
-* hard nofile 65535			
-			]]>
-			</screen>
-		</tip>
-		<para>Redis 配置</para>
-		<screen>
-			<![CDATA[
-cat >> /etc/sysctl.conf <<EOF
-
-# Redis
-net.core.somaxconn = 1024
-vm.overcommit_memory=1
-EOF				
-			]]>
-		</screen>
-		<para>MongoDB 配置</para>
-		<screen>
-			<![CDATA[
-cat <<'EOF'>> /etc/rc.local 
-		
-if test -f /sys/kernel/mm/transparent_hugepage/enabled; then
-	echo never > /sys/kernel/mm/transparent_hugepage/enabled
-fi
-
-if test -f /sys/kernel/mm/transparent_hugepage/defrag; then
-	echo never > /sys/kernel/mm/transparent_hugepage/defrag
-fi
-EOF
-			]]>
-		</screen>
-	</section>
-	<section>
-		<title>时间同步</title>
-		<para>查看时区</para>
-		<screen>
-			<![CDATA[
-cat /etc/timezone			
-			]]>
-		</screen>
-		<para></para>
-		<screen>
-			<![CDATA[
-root@netkiller:~# timedatectl set-local-rtc 0
-root@netkiller:~# timedatectl
-      Local time: Tue 2021-08-17 10:32:27 CST
-  Universal time: Tue 2021-08-17 02:32:27 UTC
-        RTC time: Tue 2021-08-17 02:32:27
-       Time zone: Asia/Shanghai (CST, +0800)
- Network time on: yes
-NTP synchronized: yes
- RTC in local TZ: no			
-			]]>
-		</screen>
-		<para>确认 Network time on: yes 和 NTP synchronized: yes 开启，然后启动时间同步
-			systemd-timesyncd.service。
-		</para>
-		<screen>
-			<![CDATA[
-root@netkiller:~# systemctl start systemd-timesyncd.service
-
-root@netkiller:~# systemctl status systemd-timesyncd.service
-● systemd-timesyncd.service - Network Time Synchronization
-   Loaded: loaded (/lib/systemd/system/systemd-timesyncd.service; enabled; vendor preset: enabled)
-  Drop-In: /lib/systemd/system/systemd-timesyncd.service.d
-           └─disable-with-time-daemon.conf
-   Active: inactive (dead)
-Condition: start condition failed at Tue 2021-08-17 10:29:36 CST; 14min ago
-     Docs: man:systemd-timesyncd.service(8)
-
-Aug 17 10:29:36 netkiller systemd[1]: Stopped Network Time Synchronization.			
-			]]>
-		</screen>
-		<para>如果 systemd-timesyncd.service 启动失败，可能是系统已经有其他时间同步服务在运行。查看方法
-		</para>
-		<screen>
-			<![CDATA[
-root@netkiller:~# cat /lib/systemd/system/systemd-timesyncd.service.d/disable-with-time-daemon.conf 
-[Unit]
-# don't run timesyncd if we have another NTP daemon installed
-ConditionFileIsExecutable=!/usr/sbin/ntpd
-ConditionFileIsExecutable=!/usr/sbin/openntpd
-ConditionFileIsExecutable=!/usr/sbin/chronyd
-ConditionFileIsExecutable=!/usr/sbin/VBoxService			
-			]]>
-		</screen>
-		<para>然后逐一检查 ConditionFileIsExecutable 后面的程序，最终我们找到了 chronyd</para>
-		<screen>
-			<![CDATA[
-root@netkiller:~# whereis chronyd
-chronyd: /usr/sbin/chronyd /usr/share/man/man8/chronyd.8.gz
-
-root@netkiller:~# systemctl status chrony
-● chrony.service - LSB: Controls chronyd NTP time daemon
-   Loaded: loaded (/etc/init.d/chrony; bad; vendor preset: enabled)
-   Active: active (running) since Mon 2021-08-16 19:05:31 CST; 15h ago
-     Docs: man:systemd-sysv-generator(8)
-   CGroup: /system.slice/chrony.service
-           └─1222 /usr/sbin/chronyd
-
-Aug 16 19:05:29 netkiller systemd[1]: Starting LSB: Controls chronyd NTP time daemon...
-Aug 16 19:05:29 netkiller chronyd[1222]: chronyd version 2.1.1 starting (+CMDMON +NTP +REFCLOCK +RTC +PRIVDROP -DEBUG +ASYNCDNS +IPV6 +SECHASH)
-Aug 16 19:05:29 netkiller chronyd[1222]: Frequency -14.398 +/- 0.452 ppm read from /var/lib/chrony/drift
-Aug 16 19:05:31 netkiller chrony[1201]: Password: chronyd is running and online.
-Aug 16 19:05:31 netkiller systemd[1]: Started LSB: Controls chronyd NTP time daemon.
-Aug 16 19:05:39 netkiller chronyd[1222]: Selected source 100.100.61.88			
-			]]>
-		</screen>
-		<para>确保 chronyd 处于工作状态，systemd-timesyncd.service 与 chronyd
-			选择其中一个即可。所以我们不用在关心 systemd-timesyncd.service
-		</para>
-	</section>
-	<section>
-		<title>启动 rc.local</title>
-		<para>/etc/rc.local 是一个开机启动脚本</para>
-		<tip>
-			<para>很多系统已经弃用了该运行方案</para>
-		</tip>
-		<screen>
-			<![CDATA[
-root@netkiller:~# cat /etc/rc.local
-#!/bin/sh -e
-#
-# rc.local
-#
-# This script is executed at the end of each multiuser runlevel.
-# Make sure that the script will "exit 0" on success or any other
-# value on error.
-#
-# In order to enable or disable this script just change the execution
-# bits.
-#
-# By default this script does nothing.
-
-exit 0	
-			]]>
-		</screen>
-		<para>注意：一定要删除 exit 0，之所以加入这行就是linux系统不鼓励你使用 rc.local </para>
-		<screen>
-			<![CDATA[
-root@netkiller:~# sed -i '$d' /etc/rc.local			
-			]]>
-		</screen>
-		<para>删除后效果</para>
-		<screen>
-			<![CDATA[
-root@netkiller:~# cat /etc/rc.local
-#!/bin/sh -e
-#
-# rc.local
-#
-# This script is executed at the end of each multiuser runlevel.
-# Make sure that the script will "exit 0" on success or any other
-# value on error.
-#
-# In order to enable or disable this script just change the execution
-# bits.
-#
-# By default this script does nothing.
-
-			]]>
-		</screen>
-		<para>rc-local.service 需要做如下配置</para>
-		<!-- /lib/systemd/system/rc-local.service.d/debian.conf -->
-		<screen>
-			<![CDATA[
-cat >> /lib/systemd/system/rc-local.service <<EOF
-
-[Install]
-WantedBy=multi-user.target
-EOF		
-			]]>
-		</screen>
-		<para></para>
-		<screen>
-			<![CDATA[
-[root@testing ~]# chmod +x /etc/rc.local
-
-[root@testing ~]# systemctl enable rc-local
-Created symlink /etc/systemd/system/multi-user.target.wants/rc-local.service → /usr/lib/systemd/system/rc-local.service.
-
-[root@testing ~]# systemctl start rc-local	
-
-[root@testing ~]# systemctl status rc-local
-● rc-local.service - /etc/rc.d/rc.local Compatibility
-   Loaded: loaded (/usr/lib/systemd/system/rc-local.service; enabled; vendor preset: disabled)
-   Active: active (exited) since Mon 2021-08-16 12:57:16 CST; 2s ago
-     Docs: man:systemd-rc-local-generator(8)
-  Process: 532000 ExecStart=/etc/rc.d/rc.local start (code=exited, status=0/SUCCESS)
-
-Aug 16 12:57:16 testing systemd[1]: Starting /etc/rc.d/rc.local Compatibility...
-Aug 16 12:57:16 testing systemd[1]: Started /etc/rc.d/rc.local Compatibility.	
-			]]>
-		</screen>
-	</section>
-	<section>
-		<title>禁用防火墙</title>
-		<para>禁用防火墙</para>
-		<screen>
-			<![CDATA[
-root@production:~# ufw disable
-Firewall stopped and disabled on system startup			
-			]]>
-		</screen>
-	</section>
-	<section>
-		<title>更换包镜像</title>
-		<screen>
-		<![CDATA[
-sudo sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list		
-		]]>
-		</screen>
-	</section>
-</section>
 <section id="linux.alpine">
 	<title>Alpine Linux</title>
 	<para>
@@ -1479,7 +1152,12 @@ sudo sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
 	<para>Alpine Linux is a security-oriented, lightweight Linux
 		distribution based on musl libc and busybox.
 	</para>
-	<!-- <section> <title>HDD Partition</title> <para>partition</para> <table> <title>Linux partition</title> <tgroup cols="2"> <thead> <row> <entry>volume</entry> <entry>size</entry> </row> </thead> <tbody> <row> <entry>/boot</entry> <entry>500M</entry> </row> <row> <entry>/</entry> <entry>50G</entry> </row> <row> <entry>/opt</entry> <entry>remainder</entry> </row> <row> <entry>swap</entry> <entry>memory * 2</entry> </row> </tbody> </tgroup> </table> </section> -->
+	<!-- <section> <title>HDD Partition</title> <para>partition</para> <table> 
+		<title>Linux partition</title> <tgroup cols="2"> <thead> <row> <entry>volume</entry> 
+		<entry>size</entry> </row> </thead> <tbody> <row> <entry>/boot</entry> <entry>500M</entry> 
+		</row> <row> <entry>/</entry> <entry>50G</entry> </row> <row> <entry>/opt</entry> 
+		<entry>remainder</entry> </row> <row> <entry>swap</entry> <entry>memory * 
+		2</entry> </row> </tbody> </tgroup> </table> </section> -->
 </section>
 
 

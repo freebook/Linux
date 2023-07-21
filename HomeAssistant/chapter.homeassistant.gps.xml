@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="mqtt">
+	<title>MQTT</title>
+	<screen>
+		<![CDATA[ 
+pip3 install -i https://pypi.doubanio.com/simple paho-mqtt
+		]]>
+	</screen>
+	<section>
+		<title>Retain</title>
+		<para>MQTT 发送数据被定义为 Retain 之后，会保留在队列之中，每次订阅消息都会发布一次。</para>
+		<para>删除一个Retain消息，可以向这个topic发布一个长度为0的 Retain 消息即可。</para>
+	</section>
+	<section>
+		<title>QoS</title>
+		<para></para>
+		<itemizedlist>
+			<title>MQTT 定义了三个 QoS 等级，分别为：</title>
+			<listitem>QoS 0，最多交付一次。</listitem>
+			<listitem>QoS 1，至少交付一次。</listitem>
+			<listitem>QoS 2，只交付一次。</listitem>
+		</itemizedlist>
+	</section>
+</chapter>
+<chapter id="chatgpt">
+	<title>ChatGPT 接口</title>
+	<section>
+		<title>ChatGPT Web 界面</title>
+		<para>https://github.com/Yidadaa/ChatGPT-Next-Web</para>
+		<screen>
+			<![CDATA[ 
+docker pull yidadaa/chatgpt-next-web
+
+docker run -d --name chatgpt-next-web -p 3000:3000 \
+   -e OPENAI_API_KEY="sk-" \
+   -e CODE="netkiller" \
+   yidadaa/chatgpt-next-web
+			]]>
+		</screen>
+	</section>
+	<section>
+		<title>ChatGPT 接口</title>
+		<screen>
+			<![CDATA[ 
+docker login
+docker build --tag netkiller/chatgpt:1.0.1 .
+docker push netkiller/chatgpt
+
+docker stop chatgpt
+docker rm chatgpt
+docker run --name chatgpt --restart=unless-stopped -d --network host \
+-e OPENAI_API_KEY=sk-1xLgiKe7G7rhCGLDYUkxtXZHHi5NiT3BlbkFJTRBjEsKNNj4 \
+netkiller/chatgpt:1.0.1
+docker logs -f chatgpt
+			]]>
+		</screen>
+		<screen>
+			<![CDATA[ 
+curl -XPOST -d "query=深圳在哪里" http://127.0.0.1:8080/query
+			]]>
+		</screen>
+	</section>
+</chapter>
+
+<chapter id="gps">
+	<title>GPS</title>
+	<section>
+		<title>GPS 模块</title>
+		<screen>
+			<![CDATA[ 
+cat /dev/ttyACM0 | grep GPTXT    
+			]]>
+		</screen>
+	</section>
+	<section>
+		<title>GPS 协议</title>
+		<screen>
+			<![CDATA[ 
+例：$GPRMC,024813.640,A,3158.4608,N,11848.3737,E,10.05,324.27,150706,,,A*50
+字段0：$GPRMC，语句ID，表明该语句为Recommended Minimum Specific GPS/TRANSIT Data（RMC）推荐最小定位信息
+字段1：UTC时间，hhmmss.sss格式
+字段2：状态，A=定位，V=未定位
+字段3：纬度ddmm.mmmm，度分格式（前导位数不足则补0）
+字段4：纬度N（北纬）或S（南纬）
+字段5：经度dddmm.mmmm，度分格式（前导位数不足则补0）
+字段6：经度E（东经）或W（西经）
+字段7：速度，节，Knots
+字段8：方位角，度
+字段9：UTC日期，DDMMYY格式
+字段10：磁偏角，（000 - 180）度（前导位数不足则补0）
+字段11：磁偏角方向，E=东W=西
+字段12：模式，A=自动，D=差分，E=估测，N=数据无效（3.0协议内容）
+字段13：校验值（$与*之间的数异或后的值）    
+			]]>
+		</screen>
+	</section>
+	<section>
+		<title>安装 gpsd</title>
+
+		<screen>
+	<![CDATA[ 
+apt install gpsd gpsd-clients gpsd-tools    
+	]]>
+		</screen>
+		<screen>
+	<![CDATA[ 
+root@homeassistant:~# stty speed 115200 -F /dev/ttyACM0
+9600    
+	]]>
+		</screen>
+		<para>配置 GPS 设备，修改 /etc/default/gpsd 配置文件</para>
+		<screen>
+	<![CDATA[ 
+root@homeassistant:~# cat /etc/default/gpsd 
+# Devices gpsd should collect to at boot time.
+# They need to be read/writeable, either by user gpsd or the group dialout.
+DEVICES="/dev/ttyACM0"
+
+# Other options you want to pass to gpsd
+GPSD_OPTIONS=""
+
+# Automatically hot add/remove USB GPS devices via gpsdctl
+USBAUTO="true"
+	]]>
+		</screen>
+		<para>默认 gpds 开启 ipv6，有些系统已经禁用了ipv6，就会出现下面的错误</para>
+		<screen>
+	<![CDATA[ 
+Jun 26 17:11:11 homeassistant systemd[15955]: gpsd.socket: Failed to create listening socket ([::1]:2947): Cannot assign requested address
+Jun 26 17:11:11 homeassistant systemd[1]: gpsd.socket: Failed to receive listening socket ([::1]:2947): Input/output error
+Jun 26 17:11:11 homeassistant systemd[1]: gpsd.socket: Failed to listen on sockets: Input/output error
+Jun 26 17:11:11 homeassistant systemd[1]: gpsd.socket: Failed with result 'resources'.
+Jun 26 17:11:11 homeassistant systemd[1]: Failed to listen on GPS (Global Positioning System) Daemon Sockets.
+Jun 26 17:13:14 homeassistant systemd[16112]: gpsd.socket: Failed to create listening socket ([::1]:2947): Cannot assign requested address
+Jun 26 17:13:14 homeassistant systemd[1]: gpsd.socket: Failed to receive listening socket ([::1]:2947): Input/output error
+Jun 26 17:13:14 homeassistant systemd[1]: gpsd.socket: Failed to listen on sockets: Input/output error
+Jun 26 17:13:14 homeassistant systemd[1]: gpsd.socket: Failed with result 'resources'.
+Jun 26 17:13:14 homeassistant systemd[1]: Failed to listen on GPS (Global Positioning System) Daemon Sockets.    
+	]]>
+		</screen>
+		<para>屏蔽 #ListenStream=[::1]:2947 这行</para>
+		<screen>
+	<![CDATA[ 
+root@homeassistant:~# vim /lib/systemd/system/gpsd.socket
+[Unit]
+Description=GPS (Global Positioning System) Daemon Sockets
+
+[Socket]
+ListenStream=/run/gpsd.sock
+#ListenStream=[::1]:2947
+ListenStream=127.0.0.1:2947
+# To allow gpsd remote access, start gpsd with the -G option and
+# uncomment the next two lines:
+# ListenStream=[::]:2947
+# ListenStream=0.0.0.0:2947
+SocketMode=0600
+BindIPv6Only=yes
+
+[Install]
+WantedBy=sockets.target
+	]]>
+		</screen>
+		<para></para>
+		<screen>
+	<![CDATA[ 
+root@homeassistant:~# systemctl daemon-reload
+root@homeassistant:~# systemctl restart gpsd.socket    
+
+root@homeassistant:~# systemctl status gpsd.socket
+● gpsd.socket - GPS (Global Positioning System) Daemon Sockets
+	 Loaded: loaded (/lib/systemd/system/gpsd.socket; enabled; vendor preset: enabled)
+	 Active: active (listening) since Mon 2023-06-26 17:14:51 CST; 4min 0s ago
+   Triggers: ● gpsd.service
+	 Listen: /run/gpsd.sock (Stream)
+			 127.0.0.1:2947 (Stream)
+	  Tasks: 0 (limit: 2182)
+	 Memory: 8.0K
+	 CGroup: /system.slice/gpsd.socket
+
+Jun 26 17:14:51 homeassistant systemd[1]: Listening on GPS (Global Positioning System) Daemon Sockets.
+
+root@homeassistant:~# systemctl restart gpsd
+root@homeassistant:~# systemctl status gpsd
+● gpsd.service - GPS (Global Positioning System) Daemon
+	 Loaded: loaded (/lib/systemd/system/gpsd.service; disabled; vendor preset: enabled)
+	 Active: active (running) since Mon 2023-06-26 17:22:12 CST; 5s ago
+TriggeredBy: ● gpsd.socket
+	Process: 16904 ExecStart=/usr/sbin/gpsd $GPSD_OPTIONS $OPTIONS $DEVICES (code=exited, status=0/SUCCESS)
+   Main PID: 16905 (gpsd)
+	  Tasks: 1 (limit: 2182)
+	 Memory: 508.0K
+	 CGroup: /system.slice/gpsd.service
+			 └─16905 /usr/sbin/gpsd /dev/ttyACM0
+
+Jun 26 17:22:12 homeassistant systemd[1]: Starting GPS (Global Positioning System) Daemon...
+Jun 26 17:22:12 homeassistant systemd[1]: Started GPS (Global Positioning System) Daemon.
+	]]>
+		</screen>
+	</section>
+</chapter>

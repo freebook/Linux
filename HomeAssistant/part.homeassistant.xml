@@ -1,0 +1,7 @@
+﻿<part id="index"><?dbhtml dir="homeassistant"?>
+	<title>Home Assistant</title>
+ 	&chapter.homeassistant.xml;
+ 	&section.homeassistant.node-red.xml;
+ 	&chapter.homeassistant.mosquitto.xml;
+ 	&chapter.homeassistant.gps.xml;
+</part>
