@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="mqtt">
 	<title>MQTT</title>
+	<section>
+		<title>免费的 MQTT 测试服务器</title>
+		<para>broker.hivemq.com</para>
+		<para>broker.emqx.io</para>
+		<para><ulink url="tcp://iot.eclipse.org:1883" /></para>
+	</section>
 	<section id="mosquitto">
 		<title>mosquitto: Open Source MQTT v5/v3.1.x Broker</title>
 		<section>
