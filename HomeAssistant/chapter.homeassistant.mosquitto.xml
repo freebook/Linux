@@ -5,7 +5,68 @@
 		<title>免费的 MQTT 测试服务器</title>
 		<para>broker.hivemq.com</para>
 		<para>broker.emqx.io</para>
-		<para><ulink url="tcp://iot.eclipse.org:1883" /></para>
+		<para>
+			<ulink url="tcp://iot.eclipse.org:1883" />
+		</para>
+	</section>
+	<section>
+		<title>MQTT 主题通配符</title>
+		<para>MQTT 主题通配符包含: 单层通配符 + 及多层通配符 #，通配符主要用于客户端一次订阅多个主题。</para>
+		<para>
+		</para>
+		<tip>
+			<para>注意：通配符只能用于订阅，不能用于发布。</para>
+		</tip>
+		<screen>
+			<![CDATA[
++ 有效
+sensor/+ 有效
+sensor/+/temperature 有效
+sensor+ 无效（没有占据整个层级）
+			]]>
+		</screen>
+		<para>sensor/+ 会匹配以下主题：</para>
+		<screen>
+			<![CDATA[
+sensor/1
+sensor/temperature
+			]]>
+		</screen>
+		<para>如果客户端订阅了主题 sensor/+/temperature，将会收到以下主题的消息：</para>
+		<screen>
+			<![CDATA[
+sensor/1/temperature
+sensor/2/temperature
+...
+sensor/n/temperature
+
+sensor/test/temperature
+			]]>
+		</screen>
+		<para>但是不会匹配以下主题：</para>
+		<screen>
+			<![CDATA[
+sensor/bedroom/1/temperature
+			]]>
+		</screen>
+		<para>多层通配符，井字符号（#）是用于匹配主题中任意层级的通配符。</para>
+		<screen>
+			<![CDATA[
+# 有效，匹配所有主题
+sensor/# 有效
+sensor/bedroom# 无效（没有占据整个层级）
+sensor/#/temperature 无效（不是主题最后一个字符）		
+			]]>
+		</screen>
+		<para>如果客户端订阅主题 senser/#，它将会收到以下主题的消息：</para>
+		<screen>
+			<![CDATA[
+sensor
+sensor/temperature
+sensor/1/temperature	
+			]]>
+		</screen>		
+		
 	</section>
 	<section id="mosquitto">
 		<title>mosquitto: Open Source MQTT v5/v3.1.x Broker</title>
