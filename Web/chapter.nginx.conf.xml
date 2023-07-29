@@ -26,45 +26,47 @@ events {
 		]]>
 		</screen>
 	</section>
-	<section id="http">
-		<title>http 配置</title>
-		<section>
-			<title>缓冲区相关设置</title>
-			<para>自定义缓冲区相关设置</para>
-			<screen>
+	&chapter.nginx.var.xml;
+</section>
+<section id="http">
+	<title>http 配置</title>
+	<section>
+		<title>缓冲区相关设置</title>
+		<para>自定义缓冲区相关设置</para>
+		<screen>
 			<![CDATA[
 client_body_buffer_size 1K;
 client_header_buffer_size 1k;
 client_max_body_size 1k;
 large_client_header_buffers 2 1k;
 			]]>
-			</screen>
-			<para>上传文件提示 client intended to send too large body，配置下面参数可以解决。</para>
-			<screen>
+		</screen>
+		<para>上传文件提示 client intended to send too large body，配置下面参数可以解决。</para>
+		<screen>
 			<![CDATA[
 server {
   ...
   client_max_body_size 200M;
 }
 			]]>
-			</screen>
-		</section>
-		<section id="timeout">
-			<title>超时设置</title>
-			<para>超时相关设置</para>
-			<screen>
+		</screen>
+	</section>
+	<section id="timeout">
+		<title>超时设置</title>
+		<para>超时相关设置</para>
+		<screen>
 			<![CDATA[
 	client_body_timeout 10;
 	client_header_timeout 10;
 	keepalive_timeout 65;
 	send_timeout 10;
 			]]>
-			</screen>
-		</section>
+		</screen>
+	</section>
 
-		<section id="gzip">
-			<title>gzip</title>
-			<screen>
+	<section id="gzip">
+		<title>gzip</title>
+		<screen>
 			<![CDATA[
 	gzip on;
 	gzip_min_length 1000;
@@ -77,25 +79,25 @@ server {
 	gzip_disable "MSIE [1-6].";
 	gzip_types text/plain application/x-javascript text/css text/javascript;
 			]]>
-			</screen>
-			<para>gzip_types 压缩类型</para>
-			<screen>
+		</screen>
+		<para>gzip_types 压缩类型</para>
+		<screen>
 			<![CDATA[
 	gzip_types text/plain text/css application/javascript text/javascript application/x-javascript text/xml application/xml application/xml+rss application/json;
 			]]>
-			</screen>
-			<para>text/html 是 gzip_types 默认值，所以不要将text/html加入到gzip_types</para>
+		</screen>
+		<para>text/html 是 gzip_types 默认值，所以不要将text/html加入到gzip_types</para>
 
-			<para>测试，验证 gzip 正常工作</para>
-			<screen>
+		<para>测试，验证 gzip 正常工作</para>
+		<screen>
 			<![CDATA[
 neo@netkiller:~/workspace$ curl -s -I -H 'Accept-Encoding: gzip,deflate' http://img.netkiller.cn/js/react.js | grep gzip
 Content-Encoding: gzip
 			]]>
-			</screen>
-			<para>如果提示 Content-Encoding: gzip 便是配置正确</para>
-			<para>不仅仅只能压缩html,js,css还能压缩json</para>
-			<screen>
+		</screen>
+		<para>如果提示 Content-Encoding: gzip 便是配置正确</para>
+		<para>不仅仅只能压缩html,js,css还能压缩json</para>
+		<screen>
 			<![CDATA[
 neo@netkiller:~$ curl -s -I -H 'Accept-Encoding: gzip,deflate' http://inf.netkiller.cn/list/json/2.json
 HTTP/1.1 200 OK
@@ -109,22 +111,22 @@ Access-Control-Allow-Headers: Content-Type,Origin
 Access-Control-Allow-Methods: GET,OPTIONS
 Content-Encoding: gzip
 			]]>
-			</screen>
-			<section>
-				<title>CDN支持</title>
-				<para>配置 gzip_proxied any; 后CDN才能识别 gzip</para>
-				<screen>
+		</screen>
+		<section>
+			<title>CDN支持</title>
+			<para>配置 gzip_proxied any; 后CDN才能识别 gzip</para>
+			<screen>
 				<![CDATA[
 server_tokens off;
 gzip on;
 gzip_types text/plain text/css application/javascript text/javascript application/x-javascript text/xml application/xml application/xml+rss application/json;
 gzip_proxied any;
 				]]>
-				</screen>
-			</section>
-			<section>
-				<title>使用包含配置文件配置 gzip</title>
-				<screen>
+			</screen>
+		</section>
+		<section>
+			<title>使用包含配置文件配置 gzip</title>
+			<screen>
 				<![CDATA[
 cat <<-EOF> /etc/nginx/conf.d/gzip.conf
 gzip on;
@@ -137,14 +139,14 @@ EOF
 # text/html 类型无需配置，否则会提示
 # nginx: [warn] duplicate MIME type "text/html" in /etc/nginx/conf.d/default.conf				
 				]]>
-				</screen>
-			</section>
-
+			</screen>
 		</section>
-		<section id="server_tokens">
-			<title>server_tokens</title>
-			<para>隐藏nginx版本号</para>
-			<screen>
+
+	</section>
+	<section id="server_tokens">
+		<title>server_tokens</title>
+		<para>隐藏nginx版本号</para>
+		<screen>
 			<![CDATA[
 http {
 ...
@@ -152,11 +154,11 @@ server_tokens off;
 ...
 }
 			]]>
-			</screen>
-		</section>
-		<section id="ssi">
-			<title>ssi</title>
-			<screen>
+		</screen>
+	</section>
+	<section id="ssi">
+		<title>ssi</title>
+		<screen>
 			<![CDATA[
 http {
 	ssi on;
@@ -168,8 +170,8 @@ location / {
 	ssi_types text/shtml;
 }
 			]]>
-			</screen>
-			<screen>
+		</screen>
+		<screen>
 			<![CDATA[
 	ssi on;
 	ssi_silent_errors on;
@@ -181,15 +183,19 @@ location / {
 	large_client_header_buffers 4 32k;
 	client_max_body_size 8m;
 			]]>
-			</screen>
-			<para>ssi_silent_errors 默认值是off，开启后在处理SSI文件出错时不输出错误提示:"[an error occurred while processing the directive] "</para>
-			<para>ssi_types 默认是ssi_types text/html，如果需要shtml支持，则需要设置：ssi_types text/shtml</para>
-			<para>ssi_value_length 默认值是 256，用于定义SSI参数的长度。</para>
-		</section>
-		<section id="http.resolver">
-			<title>DNS 解析</title>
-			<para>从指定的 DNS 解析域名</para>
-			<screen>
+		</screen>
+		<para>ssi_silent_errors 默认值是off，开启后在处理SSI文件出错时不输出错误提示:"[an error
+			occurred while processing the directive] "
+		</para>
+		<para>ssi_types 默认是ssi_types text/html，如果需要shtml支持，则需要设置：ssi_types
+			text/shtml
+		</para>
+		<para>ssi_value_length 默认值是 256，用于定义SSI参数的长度。</para>
+	</section>
+	<section id="http.resolver">
+		<title>DNS 解析</title>
+		<para>从指定的 DNS 解析域名</para>
+		<screen>
 			<![CDATA[
 resolver 202.102.134.68 114.114.114.114 valid=5 ipv6=off;
 set $proxy "http://api.netkiller.cn:8080";
@@ -197,12 +203,8 @@ location /v1/api {
     proxy_pass $proxy;
 }			
 			]]>
-			</screen>
-		</section>
+		</screen>
 	</section>
-	
-	&chapter.nginx.var.xml;
-
 	<section id="server">
 		<title>server</title>
 		<section id="listen">
@@ -232,77 +234,293 @@ location /v1/api {
 			]]>
 			</screen>
 		</section>
-		<section id="http.server.example">
-			<title>单域名虚拟主机</title>
+		<section id="server_name">
+			<title>server_name 配置</title>
+			<para>匹配所有域名</para>
 			<screen>
 			<![CDATA[
-# cat /etc/nginx/conf.d/images.conf
+	server_name _;
+			]]>
+			</screen>
+			<para>泛解析主机</para>
+			<screen>
+			<![CDATA[
+server {
+    listen       80;
+    server_name  example.org  www.example.org;
+    ...
+}
+
+server {
+    listen       80;
+    server_name  *.example.org;
+    ...
+}
+
+server {
+    listen       80;
+    server_name  mail.*;
+    ...
+}
+
+server {
+    listen       80;
+    server_name  ~^(?<user>.+)\.example\.net$;
+    ...
+}			
+			]]>
+			</screen>
+		</section><section id="http.server.location">
+			<title>location</title>
+			<screen><![CDATA[
+				location / {
+				root /www;
+				index index.html index.htm;
+				}
+			]]></screen>
+
+			<section id="location.deny">
+				<title>禁止访问特定目录</title>
+				<para>location 匹配到特定的 path 将拒绝用户访问。</para>
+				<screen>
+				<![CDATA[
+    location ~ /\.ht {
+        deny  all;
+    }
+    
+	location ~ ^/(config|include)/ {
+		deny all;
+		break;
+	}
+				]]>
+				</screen>
+			</section>
+			<section id="server.location">
+				<title>引用document_root之外的资源</title>
+				<para>引用document_root之外的资源需要 root 绝对路径指向目标文件夹</para>
+				<screen>
+				<![CDATA[
+	location / {
+		root /www/example.com/m.example.com;
+		try_files $uri $uri/ @proxy;
+	}
+	location ^~ /module/ {
+		root /www/example.com/www.example.com;
+	}
+
+	# 下面的写法是错误的，通过error_log 我们可以看到被定为到/www/example.com/m.example.com/module
+	location /module/ {
+		root /www/example.com/www.example.com;
+	}
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>处理扩展名</title>
+				<screen>
+				<![CDATA[
+    location ~ \.php$ {
+        root           /opt/netkiller.cn/cms.netkiller.cn;
+        fastcgi_pass   127.0.0.1:9000;
+        fastcgi_index  index.php;
+        fastcgi_param  SCRIPT_FILENAME  /opt/netkiller.cn/cms.netkiller.cn$fastcgi_script_name;
+        include        fastcgi_params;
+    }				
+				]]>
+				</screen>
+			</section>
+			<section id="location.log">
+				<title>location 中关闭日志</title>
+				<screen>
+			<![CDATA[
+        location = /favicon.ico {
+                log_not_found off;
+                access_log off;
+        }
+ 
+        location = /robots.txt {
+                allow all;
+                log_not_found off;
+                access_log off;
+        }			
+			]]>
+				</screen>
+
+			</section>
+			<section>
+				<title>匹配多个目录</title>
+				<screen>
+				<![CDATA[
+    location ~ /(dev|stage|prod) {
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header REMOTE-HOST $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://api.netkiller.cn:8080;
+    }				
+				]]>
+				</screen>
+			</section>
+
+		</section><section id="root">
+			<title>root 通过$host智能匹配目录</title>
+			<para>为每个host创建一个目录太麻烦，</para>
+			<screen>
+			<![CDATA[
+	server {
+		listen 80;
+		server_name www.netkiller.cn news.netkiller.cn bbs.netkiller.cn;
+	
+		charset utf-8;
+		access_log /var/log/nginx/test.access.log main;
+	
+		location / {
+			root /www/netkiller.cn/$host;
+			index index.html index.htm;
+		}
+	}
+			]]>
+			</screen>
+			<para>处理主机名中的域</para>
+			<screen>
+			<![CDATA[
+	server {
+		listen 80;
+		server_name *.example.com example.com;
+		if ($host = 'example.com' ) {
+			rewrite ^/(.*)$ http://www.example.com/$1 permanent;
+		}
+	
+		if ( $host ~* (.*)\.(.*)\.(.*)) {
+			set $subdomain $1;
+			set $domain $2.$3;
+		}
+	
+		root /www/$domain/$subdomain;
+		index index.html index.php;
+	
+		location ~ .*\.(php|shtml)?$ {
+			fastcgi_pass 127.0.0.1:9000;
+			fastcgi_index index.php;
+			include fcgi.conf;
+		}
+	}
+			]]>
+			</screen>
+			<para>或者采用这种格式 /www/example.com/www.example.com</para>
+			<screen><![CDATA[
+				root /www/$domain/$host;
+			]]></screen>
+			<para>更简洁的方法，只需在 /www/下面创建 域名目录即可例如/www/www.example.com</para>
+			<screen>
+			<![CDATA[
 server {
 	listen 80;
-	server_name images.example.com;
-	
-	#charset koi8-r;
-	access_log /var/log/nginx/images.access.log main;
-	
-	location / {
-		root /www/images;
-		index index.html index.htm;
+	server_name *.example.com example.com;
+	if ($host = 'example.com' ) {
+		rewrite ^/(.*)$ http://www.example.com/$1 permanent;
 	}
 	
-	#error_page 404 /404.html;
+	root /www/$host;
+	index index.html index.php;
 	
-	# redirect server error pages to the static page /50x.html
-	#
-	error_page 500 502 503 504 /50x.html;
-		location = /50x.html {
-		root /usr/share/nginx/html;
+	location ~ .*\.(php|shtml)?$ {
+		fastcgi_pass 127.0.0.1:9000;
+		fastcgi_index index.php;
+		include fcgi.conf;
 	}
-	
-	# proxy the PHP scripts to Apache listening on 127.0.0.1:80
-	#
-	#location ~ \.php$ {
-	# proxy_pass http://127.0.0.1;
-	#}
-	
-	# pass the
-	PHP scripts to FastCGI server listening on 127.0.0.1:9000
-	#
-	#location ~ \.php$ {
-	# root html;
-	# fastcgi_pass 127.0.0.1:9000;
-	# fastcgi_index index.php;
-	# fastcgi_param SCRIPT_FILENAME /scripts$fastcgi_script_name;
-	# include fastcgi_params;
-	#}
-	
-	# deny access to .htaccess files, if Apache's document root
-	# concurs with nginx's one
-	#
-	#location ~ /\.ht {
-	# deny all;
-	#}
 }
 			]]>
 			</screen>
 
-			<para>绑定多个域名</para>
+			<section>
+				<title></title>
+				<screen>
+				<![CDATA[
+server {
+    listen       80;
+    listen       443 ssl http2;
+    server_name  report.netkiller.cn;
+    include /etc/nginx/default.d/*.conf;
+    access_log /var/log/nginx/report.netkiller.cn.access.log;
+    error_log /var/log/nginx/report.netkiller.cn.error.log;
+
+    error_page 497 https://$host$uri?$args;
+    if ($scheme = http) {
+	    return 301 https://$server_name$request_uri;
+    }
+
+    location / {
+    	root   /opt/netkiller.cn/report.netkiller.cn;
+	    index  index.html;
+    }
+
+    location /api/ {
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header REMOTE-HOST $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://dashboard.netkiller.cn:8080/;
+    }
+    location /file/download { 
+        proxy_set_header Host $host; 
+        proxy_set_header X-Real-IP $remote_addr; 
+        proxy_set_header REMOTE-HOST $remote_addr; 
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; 
+        proxy_pass http://dashboard.netkiller.cn:8080; 
+    }
+    error_page 404 /404.html;
+        location = /40x.html {
+    }
+
+    error_page 500 502 503 504 /50x.html;
+        location = /50x.html {
+    }
+}				
+				]]>
+				</screen>
+				<para>⚠️注意，两个 proxy_pass 的区别：</para>
+				<para>/api/ 匹配后等效 /api/* = http://dashboard.netkiller.cn:8080/*
+				</para>
+				<para>/file/download 匹配等效 /file/download/* =
+					http://dashboard.netkiller.cn:8080/file/download/*
+				</para>
+			</section>
+
+		</section><section id="try_files">
+			<title>try_files</title>
 			<screen>
 			<![CDATA[
-	server_name images.example.com img1.example.com img2.example.com;
-			]]>
-			</screen>
-			<para>使用通配符匹配</para>
-			<screen>
-			<![CDATA[
-	server_name *.example.com
-	server_name www.*;
-			]]>
-			</screen>
-			<para>正则匹配</para>
-			<screen>
-			<![CDATA[
-	server_name ~^(.+)\.example\.com$;
-	server_name ~^(www\.)?(.+)$;
+	server {
+		listen 80;
+		server_name www.example.com example.com;
+	
+		location / {
+			try_files $uri $uri/ /index.php?/$request_uri;
+		}
+	
+		location /example {
+			alias /www/example/;
+			index index.php index.html;
+		}
+	
+		error_page 500 502 503 504 /50x.html;
+			location = /50x.html {
+			root /usr/share/nginx/html;
+		}
+	
+		location ~ \.php$ {
+			root html;
+			fastcgi_pass 127.0.0.1:9000;
+			fastcgi_index index.php;
+			fastcgi_param SCRIPT_FILENAME /www/example$fastcgi_script_name;
+			include fastcgi_params;
+		}
+	
+		location ~ /\.ht {
+			deny all;
+		}
+	}
 			]]>
 			</screen>
 		</section>
@@ -397,7 +615,9 @@ Email Address []:netkiller@msn.com
 
 			]]>
 				</screen>
-				<para>注意: Common Name (eg, your name or your server's hostname) []:api.netkiller.cn 要跟你的 nginx server_name api.netkiller.cn 一样。</para>
+				<para>注意: Common Name (eg, your name or your server's hostname)
+					[]:api.netkiller.cn 要跟你的 nginx server_name api.netkiller.cn 一样。
+				</para>
 			</section>
 
 			<section id="spdy">
@@ -441,7 +661,9 @@ server {
 }
 			]]>
 				</screen>
-				<para>spdy 是google提出的标准，现在已经归入 http2 标准，Nginx 1.10 之后建议使用 http2 替代 spdy.</para>
+				<para>spdy 是google提出的标准，现在已经归入 http2 标准，Nginx 1.10 之后建议使用 http2 替代
+					spdy.
+				</para>
 			</section>
 			<section id="http2">
 				<title>HTTP2</title>
@@ -694,260 +916,102 @@ curl --insecure --key client.key --cert ./client.crt:123456  https://api.netkill
 					<para>注意： --cert 参数需要写入路径和密码</para>
 				</section>
 			</section>
-		</section>
-		<section id="server_name">
-			<title>server_name 配置</title>
-			<para>匹配所有域名</para>
-			<screen>
+		</section><section id="add_header">
+			<title>add_header</title>
+			<section id="cache">
+				<title>Cache</title>
+				<para># 相关页面设置Cache-Control头信息</para>
+				<screen>
 			<![CDATA[
-	server_name _;
+	if ($request_uri ~* "^/$|^/news/.+/|^/info/.+/") {
+		add_header Cache-Control max-age=3600;
+	}
+
+	if ($request_uri ~* "^/suggest/|^/categories/") {
+		add_header Cache-Control max-age=86400;
+	}
 			]]>
-			</screen>
-			<para>泛解析主机</para>
-			<screen>
-			<![CDATA[
-server {
-    listen       80;
-    server_name  example.org  www.example.org;
-    ...
-}
-
-server {
-    listen       80;
-    server_name  *.example.org;
-    ...
-}
-
-server {
-    listen       80;
-    server_name  mail.*;
-    ...
-}
-
-server {
-    listen       80;
-    server_name  ~^(?<user>.+)\.example\.net$;
-    ...
-}			
-			]]>
-			</screen>
-		</section>
-		<section id="http.server.location">
-			<title>location</title>
-			<screen><![CDATA[
-				location / {
-				root /www;
-				index index.html index.htm;
-				}
-			]]></screen>
-
-			<section id="location.deny">
-				<title>禁止访问特定目录</title>
-				<para>location 匹配到特定的 path 将拒绝用户访问。</para>
+				</screen>
 				<screen>
 				<![CDATA[
-    location ~ /\.ht {
-        deny  all;
-    }
-    
-	location ~ ^/(config|include)/ {
-		deny all;
-		break;
-	}
+add_header     Nginx-Cache     "HIT  from  www.example.com";
+or
+add_header     Nginx-Cache     "$upstream_cache_status  from  www.example.com";
 				]]>
 				</screen>
 			</section>
-			<section id="server.location">
-				<title>引用document_root之外的资源</title>
-				<para>引用document_root之外的资源需要 root 绝对路径指向目标文件夹</para>
+			<section>
+				<title>Access-Control-Allow</title>
+				<screen>
+				<![CDATA[
+		location ~* \.(eot|ttf|woff)$ {
+			add_header Access-Control-Allow-Origin *;
+		}
+
+		location /js/ {
+			add_header Access-Control-Allow-Origin https://www.mydomain.com/;
+			add_header Access-Control-Allow-Methods GET,OPTIONS;
+			add_header Access-Control-Allow-Headers *;
+		}
+				]]>
+				</screen>
 				<screen>
 				<![CDATA[
 	location / {
-		root /www/example.com/m.example.com;
-		try_files $uri $uri/ @proxy;
-	}
-	location ^~ /module/ {
-		root /www/example.com/www.example.com;
-	}
-
-	# 下面的写法是错误的，通过error_log 我们可以看到被定为到/www/example.com/m.example.com/module
-	location /module/ {
-		root /www/example.com/www.example.com;
+		if ($request_method = OPTIONS ) {
+			add_header Access-Control-Allow-Origin "http://example.com";
+			add_header Access-Control-Allow-Methods "GET, OPTIONS";
+			add_header Access-Control-Allow-Headers "Authorization";
+			add_header Access-Control-Allow-Credentials "true";
+			add_header Content-Length 0;
+			add_header Content-Type text/plain;
+			return 200;
+		}
 	}
 				]]>
 				</screen>
-			</section>
-			<section>
-				<title>处理扩展名</title>
-				<screen>
-				<![CDATA[
-    location ~ \.php$ {
-        root           /opt/netkiller.cn/cms.netkiller.cn;
-        fastcgi_pass   127.0.0.1:9000;
-        fastcgi_index  index.php;
-        fastcgi_param  SCRIPT_FILENAME  /opt/netkiller.cn/cms.netkiller.cn$fastcgi_script_name;
-        include        fastcgi_params;
-    }				
-				]]>
-				</screen>
-			</section>
-			<section id="location.log">
-				<title>location 中关闭日志</title>
-				<screen>
-			<![CDATA[
-        location = /favicon.ico {
-                log_not_found off;
-                access_log off;
-        }
- 
-        location = /robots.txt {
-                allow all;
-                log_not_found off;
-                access_log off;
-        }			
-			]]>
-				</screen>
-
-			</section>
-			<section>
-				<title>匹配多个目录</title>
-				<screen>
-				<![CDATA[
-    location ~ /(dev|stage|prod) {
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header REMOTE-HOST $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_pass http://api.netkiller.cn:8080;
-    }				
-				]]>
-				</screen>
-			</section>
-
-		</section>
-
-		<section id="root">
-			<title>root 通过$host智能匹配目录</title>
-			<para>为每个host创建一个目录太麻烦，</para>
-			<screen>
-			<![CDATA[
-	server {
-		listen 80;
-		server_name www.netkiller.cn news.netkiller.cn bbs.netkiller.cn;
-	
-		charset utf-8;
-		access_log /var/log/nginx/test.access.log main;
-	
-		location / {
-			root /www/netkiller.cn/$host;
-			index index.html index.htm;
-		}
-	}
-			]]>
-			</screen>
-			<para>处理主机名中的域</para>
-			<screen>
-			<![CDATA[
-	server {
-		listen 80;
-		server_name *.example.com example.com;
-		if ($host = 'example.com' ) {
-			rewrite ^/(.*)$ http://www.example.com/$1 permanent;
-		}
-	
-		if ( $host ~* (.*)\.(.*)\.(.*)) {
-			set $subdomain $1;
-			set $domain $2.$3;
-		}
-	
-		root /www/$domain/$subdomain;
-		index index.html index.php;
-	
-		location ~ .*\.(php|shtml)?$ {
-			fastcgi_pass 127.0.0.1:9000;
-			fastcgi_index index.php;
-			include fcgi.conf;
-		}
-	}
-			]]>
-			</screen>
-			<para>或者采用这种格式 /www/example.com/www.example.com</para>
-			<screen><![CDATA[
-				root /www/$domain/$host;
-			]]></screen>
-			<para>更简洁的方法，只需在 /www/下面创建 域名目录即可例如/www/www.example.com</para>
-			<screen>
-			<![CDATA[
-server {
-	listen 80;
-	server_name *.example.com example.com;
-	if ($host = 'example.com' ) {
-		rewrite ^/(.*)$ http://www.example.com/$1 permanent;
-	}
-	
-	root /www/$host;
-	index index.html index.php;
-	
-	location ~ .*\.(php|shtml)?$ {
-		fastcgi_pass 127.0.0.1:9000;
-		fastcgi_index index.php;
-		include fcgi.conf;
-	}
-}
-			]]>
-			</screen>
-
-			<section>
-				<title></title>
+				<para>允许 所有头部 所有域 所有方法</para>
 				<screen>
 				<![CDATA[
 server {
-    listen       80;
-    listen       443 ssl http2;
-    server_name  report.netkiller.cn;
-    include /etc/nginx/default.d/*.conf;
-    access_log /var/log/nginx/report.netkiller.cn.access.log;
-    error_log /var/log/nginx/report.netkiller.cn.error.log;
-
-    error_page 497 https://$host$uri?$args;
-    if ($scheme = http) {
-	    return 301 https://$server_name$request_uri;
-    }
-
-    location / {
-    	root   /opt/netkiller.cn/report.netkiller.cn;
-	    index  index.html;
-    }
-
-    location /api/ {
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header REMOTE-HOST $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_pass http://dashboard.netkiller.cn:8080/;
-    }
-    location /file/download { 
-        proxy_set_header Host $host; 
-        proxy_set_header X-Real-IP $remote_addr; 
-        proxy_set_header REMOTE-HOST $remote_addr; 
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; 
-        proxy_pass http://dashboard.netkiller.cn:8080; 
-    }
-    error_page 404 /404.html;
-        location = /40x.html {
-    }
-
-    error_page 500 502 503 504 /50x.html;
-        location = /50x.html {
-    }
+	...
+	location / {
+		add_header 'Access-Control-Allow-Origin' '*';
+		add_header 'Access-Control-Allow-Headers' '*';
+		add_header 'Access-Control-Allow-Methods' '*';
+		# OPTIONS 直接返回204
+		if ($request_method = 'OPTIONS') {
+			return 204;
+		}
+	}
+	...
 }				
 				]]>
 				</screen>
-				<para>⚠️注意，两个 proxy_pass 的区别：</para>
-				<para>/api/ 匹配后等效 /api/* = http://dashboard.netkiller.cn:8080/*</para>
-				<para>/file/download 匹配等效 /file/download/* = http://dashboard.netkiller.cn:8080/file/download/*</para>
+				<para>使用 $http_origin 变量</para>
+				<screen>
+				<![CDATA[
+add_header 'Access-Control-Allow-Origin' $http_origin;
+add_header 'Access-Control-Allow-Credentials' 'true';
+add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+add_header 'Access-Control-Allow-Headers' 'DNT,web-token,app-token,Authorization,Accept,Origin,Keep-Alive,User-Agent,X-Mx-ReqToken,X-Data-Type,X-Auth-Token,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range';
+add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
+if ($request_method = 'OPTIONS') {
+	add_header 'Access-Control-Max-Age' 1728000;
+	add_header 'Content-Type' 'text/plain; charset=utf-8';
+	add_header 'Content-Length' 0;
+	return 204;
+}				
+				]]>
+				</screen>
 			</section>
-
+		</section><section id="client_max_body_size">
+			<title>client_max_body_size 上传文件尺寸限制</title>
+			<programlisting>
+			<![CDATA[
+client_max_body_size 2M;			
+			]]>
+			</programlisting>
 		</section>
 
 		<section id="expires">
@@ -1103,7 +1167,9 @@ server {
 		}
 				]]>
 				</screen>
-				<para>下面例子是缓存 /detail/html/5/4/321035.html， 但排除 /detail/html/5/4/0.html</para>
+				<para>下面例子是缓存 /detail/html/5/4/321035.html， 但排除
+					/detail/html/5/4/0.html
+				</para>
 				<screen>
 				<![CDATA[
 	if ($request_uri ~ ^/detail/html/[0-9]+/[0-9]/[^0][0-9]+\.html ) {
@@ -1214,141 +1280,9 @@ autoindex_localtime on;
 			</screen>
 		</section>
 
-		<section id="try_files">
-			<title>try_files</title>
-			<screen>
-			<![CDATA[
-	server {
-		listen 80;
-		server_name www.example.com example.com;
-	
-		location / {
-			try_files $uri $uri/ /index.php?/$request_uri;
-		}
-	
-		location /example {
-			alias /www/example/;
-			index index.php index.html;
-		}
-	
-		error_page 500 502 503 504 /50x.html;
-			location = /50x.html {
-			root /usr/share/nginx/html;
-		}
-	
-		location ~ \.php$ {
-			root html;
-			fastcgi_pass 127.0.0.1:9000;
-			fastcgi_index index.php;
-			fastcgi_param SCRIPT_FILENAME /www/example$fastcgi_script_name;
-			include fastcgi_params;
-		}
-	
-		location ~ /\.ht {
-			deny all;
-		}
-	}
-			]]>
-			</screen>
-		</section>
-		<section id="add_header">
-			<title>add_header</title>
-			<section id="cache">
-				<title>Cache</title>
-				<para># 相关页面设置Cache-Control头信息</para>
-				<screen>
-			<![CDATA[
-	if ($request_uri ~* "^/$|^/news/.+/|^/info/.+/") {
-		add_header Cache-Control max-age=3600;
-	}
-
-	if ($request_uri ~* "^/suggest/|^/categories/") {
-		add_header Cache-Control max-age=86400;
-	}
-			]]>
-				</screen>
-				<screen>
-				<![CDATA[
-add_header     Nginx-Cache     "HIT  from  www.example.com";
-or
-add_header     Nginx-Cache     "$upstream_cache_status  from  www.example.com";
-				]]>
-				</screen>
-			</section>
-			<section>
-				<title>Access-Control-Allow</title>
-				<screen>
-				<![CDATA[
-		location ~* \.(eot|ttf|woff)$ {
-			add_header Access-Control-Allow-Origin *;
-		}
-
-		location /js/ {
-			add_header Access-Control-Allow-Origin https://www.mydomain.com/;
-			add_header Access-Control-Allow-Methods GET,OPTIONS;
-			add_header Access-Control-Allow-Headers *;
-		}
-				]]>
-				</screen>
-				<screen>
-				<![CDATA[
-	location / {
-		if ($request_method = OPTIONS ) {
-			add_header Access-Control-Allow-Origin "http://example.com";
-			add_header Access-Control-Allow-Methods "GET, OPTIONS";
-			add_header Access-Control-Allow-Headers "Authorization";
-			add_header Access-Control-Allow-Credentials "true";
-			add_header Content-Length 0;
-			add_header Content-Type text/plain;
-			return 200;
-		}
-	}
-				]]>
-				</screen>
-				<para>允许 所有头部 所有域 所有方法</para>
-				<screen>
-				<![CDATA[
-server {
-	...
-	location / {
-		add_header 'Access-Control-Allow-Origin' '*';
-		add_header 'Access-Control-Allow-Headers' '*';
-		add_header 'Access-Control-Allow-Methods' '*';
-		# OPTIONS 直接返回204
-		if ($request_method = 'OPTIONS') {
-			return 204;
-		}
-	}
-	...
-}				
-				]]>
-				</screen>
-				<para>使用 $http_origin 变量</para>
-				<screen>
-				<![CDATA[
-add_header 'Access-Control-Allow-Origin' $http_origin;
-add_header 'Access-Control-Allow-Credentials' 'true';
-add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
-add_header 'Access-Control-Allow-Headers' 'DNT,web-token,app-token,Authorization,Accept,Origin,Keep-Alive,User-Agent,X-Mx-ReqToken,X-Data-Type,X-Auth-Token,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range';
-add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
-if ($request_method = 'OPTIONS') {
-	add_header 'Access-Control-Max-Age' 1728000;
-	add_header 'Content-Type' 'text/plain; charset=utf-8';
-	add_header 'Content-Length' 0;
-	return 204;
-}				
-				]]>
-				</screen>
-			</section>
-		</section>
-		<section id="client_max_body_size">
-			<title>client_max_body_size 上传文件尺寸限制</title>
-			<programlisting>
-			<![CDATA[
-client_max_body_size 2M;			
-			]]>
-			</programlisting>
-		</section>
+		
+		
+		
 		<section id="return">
 			<title>return</title>
 			<para>301 跳转</para>
@@ -1373,7 +1307,6 @@ client_max_body_size 2M;
 			</screen>
 		</section>
 	</section>
-
 	<section id="rewrite">
 		<title>rewrite</title>
 		<screen>
@@ -1452,7 +1385,8 @@ http://www.netkiller.cn/redirect/index.html?skuid=133
 http://www.netkiller.cn/to/133.html
 			]]>
 			</screen>
-			<para>注意：nginx rewrite 并不支持http get 参数处理，也就是说“?”之后的内容rewrite根部获取不到。</para>
+			<para>注意：nginx rewrite 并不支持http get 参数处理，也就是说“?”之后的内容rewrite根部获取不到。
+			</para>
 			<para>下面的例子是行不通的</para>
 			<screen>
 			<![CDATA[
@@ -1540,11 +1474,84 @@ location / {
 			</screen>
 		</section>
 	</section>
+</section>
 
+<section id="http.server.example">
+			<title>单域名虚拟主机</title>
+			<screen>
+			<![CDATA[
+# cat /etc/nginx/conf.d/images.conf
+server {
+	listen 80;
+	server_name images.example.com;
+	
+	#charset koi8-r;
+	access_log /var/log/nginx/images.access.log main;
+	
+	location / {
+		root /www/images;
+		index index.html index.htm;
+	}
+	
+	#error_page 404 /404.html;
+	
+	# redirect server error pages to the static page /50x.html
+	#
+	error_page 500 502 503 504 /50x.html;
+		location = /50x.html {
+		root /usr/share/nginx/html;
+	}
+	
+	# proxy the PHP scripts to Apache listening on 127.0.0.1:80
+	#
+	#location ~ \.php$ {
+	# proxy_pass http://127.0.0.1;
+	#}
+	
+	# pass the
+	PHP scripts to FastCGI server listening on 127.0.0.1:9000
+	#
+	#location ~ \.php$ {
+	# root html;
+	# fastcgi_pass 127.0.0.1:9000;
+	# fastcgi_index index.php;
+	# fastcgi_param SCRIPT_FILENAME /scripts$fastcgi_script_name;
+	# include fastcgi_params;
+	#}
+	
+	# deny access to .htaccess files, if Apache's document root
+	# concurs with nginx's one
+	#
+	#location ~ /\.ht {
+	# deny all;
+	#}
+}
+			]]>
+			</screen>
 
-	<section id="upstream">
-		<title>upstream 负载均衡</title>
-		<screen>
+			<para>绑定多个域名</para>
+			<screen>
+			<![CDATA[
+	server_name images.example.com img1.example.com img2.example.com;
+			]]>
+			</screen>
+			<para>使用通配符匹配</para>
+			<screen>
+			<![CDATA[
+	server_name *.example.com
+	server_name www.*;
+			]]>
+			</screen>
+			<para>正则匹配</para>
+			<screen>
+			<![CDATA[
+	server_name ~^(.+)\.example\.com$;
+	server_name ~^(www\.)?(.+)$;
+			]]>
+			</screen>
+		</section><section id="upstream">
+	<title>upstream 负载均衡</title>
+	<screen>
 		<![CDATA[
 http {
 	upstream myapp1 {
@@ -1561,10 +1568,10 @@ http {
 	}
 }
 		]]>
-		</screen>
-		<section>
-			<title>weight 权重配置</title>
-			<screen>
+	</screen>
+	<section>
+		<title>weight 权重配置</title>
+		<screen>
 			<![CDATA[
 	upstream myapp1 {
 		server srv1.example.com weight=3;
@@ -1572,11 +1579,11 @@ http {
 		server srv3.example.com;
 	}
 			]]>
-			</screen>
-		</section>
-		<section>
-			<title>backup 实现热备</title>
-			<screen>
+		</screen>
+	</section>
+	<section>
+		<title>backup 实现热备</title>
+		<screen>
 			<![CDATA[
 	upstream backend {
 		server backend1.example.com weight=5;
@@ -1593,9 +1600,8 @@ http {
 		}
 	}
 			]]>
-			</screen>
-		</section>
+		</screen>
 	</section>
+</section>
 	&chapter.nginx.proxy.xml;
 	&chapter.nginx.conf.fastcgi.xml;
-</section>	

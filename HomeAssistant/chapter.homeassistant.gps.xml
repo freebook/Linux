@@ -174,4 +174,19 @@ Jun 26 17:22:12 homeassistant systemd[1]: Started GPS (Global Positioning System
 	]]>
 		</screen>
 	</section>
+	<section id="traccar">
+		<title>traccar</title>
+		<screen>
+		<![CDATA[
+mkdir -p /opt/traccar/
+docker run  --rm  --entrypoint cat  traccar/traccar:latest  /opt/traccar/conf/traccar.xml > /opt/traccar/traccar.xml
+
+docker run -d --restart always --name traccar --hostname traccar \
+-p 8082:8082 -p 5023:5023 -p 5023:5023/udp -p 5055:5055 -p 5055:5055/udp \
+-v /opt/traccar/logs:/opt/traccar/logs:rw -v /opt/traccar/traccar.xml:/opt/traccar/conf/traccar.xml:ro \
+-v /opt/traccar/templates:/opt/traccar/templates/short \
+-e TZ=Asia/Shanghai traccar/traccar:latest		
+		]]>
+		</screen>
+	</section>
 </chapter>
