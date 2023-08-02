@@ -26,7 +26,7 @@
 <!ENTITY section.vpn.l2tp.xml 			SYSTEM "section.vpn.l2tp.xml">
 <!ENTITY section.vpn.ipsec.xml			SYSTEM "section.vpn.ipsec.xml">
 <!ENTITY section.vpn.openswan.xml	 	SYSTEM "section.vpn.openswan.xml">
-<!ENTITY section.vpn.strongswan.xml	 	SYSTEM "section.vpn.strongswan.xml">
+<!ENTITY section.vpn.ikev2.xml	 		SYSTEM "section.vpn.ikev2.xml">
 
 <!ENTITY section.im.irc.xml				SYSTEM "section.im.irc.xml">
 <!ENTITY section.im.jabber.xml			SYSTEM "section.im.jabber.xml">

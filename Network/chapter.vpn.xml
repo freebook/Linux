@@ -6,6 +6,8 @@
 	&section.vpn.pptpd.xml;
 	&section.vpn.l2tp.xml;
 	&section.vpn.ipsec.xml;
+	&section.vpn.ikev2.xml;
+	&section.vpn.openswan.xml;
 	<section id="n2n">
 		<title>N2N VPN</title>
 		<ulink url="http://www.ntop.org/products/n2n/" />
