@@ -405,6 +405,11 @@ silly_bohr
 docker update --restart=always [容器名]					
 				]]>
 			</screen>
+			<screen>
+			<![CDATA[
+docker update --restart=unless-stopped chatgpt			
+			]]>
+			</screen>
 		</section>
 		<section id="docker.ps">
 			<title>ps</title>
