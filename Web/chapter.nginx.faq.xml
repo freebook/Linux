@@ -546,4 +546,30 @@ server {
 		]]>
 		</screen>
 	</section>
+	<section id="nginx.http2">
+		<title>nginx: [warn] the "listen ... http2" directive is deprecated, use the "http2" directive instead</title>
+		<para>下面方式已经被弃用</para>
+		<screen>
+		<![CDATA[
+server
+{
+	listen 443 ssl http2;
+	listen [::]:443 ssl http2;
+	……
+}		
+		]]>
+		</screen>
+		<para>解决方案</para>
+		<screen>
+		<![CDATA[
+server
+{
+	listen 443 ssl;
+	listen [::]:443 ssl;
+	http2 on;
+	……
+}		
+		]]>
+		</screen>
+	</section>
 </section>
