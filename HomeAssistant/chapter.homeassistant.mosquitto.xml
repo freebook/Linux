@@ -9,7 +9,7 @@
 			<ulink url="tcp://iot.eclipse.org:1883" />
 		</para>
 	</section>
-	
+
 	<section id="mosquitto">
 		<title>mosquitto: Open Source MQTT v5/v3.1.x Broker</title>
 		<section>
@@ -50,7 +50,7 @@ password_file /etc/mosquitto/pwfile
 [root@netkiller ~]# mosquitto_passwd -b /etc/mosquitto/pwfile homeassistant fag9iaTaix8nohL2cheenai7nua3sohjohfah7iuz1ileSheiRahs0och9Aedai8
         ]]>
 			</screen>
-			
+
 		</section>
 		<section>
 			<title>Docker 方式安装</title>
@@ -140,8 +140,8 @@ sensor
 sensor/temperature
 sensor/1/temperature	
 			]]>
-		</screen>		
-		
+		</screen>
+
 	</section>
 	<section>
 		<title>Retain</title>

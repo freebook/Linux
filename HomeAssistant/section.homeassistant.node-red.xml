@@ -23,8 +23,7 @@ return body;
 		<section>
 			<title>银行方案</title>
 			<para>银行接口方案.</para>
-			<!-- <graphic format="png"
-				fileref="../images/solution/payment/payment.bank.png"
+			<!-- <graphic format="png" fileref="../images/solution/payment/payment.bank.png" 
 				srccredit="neo" width="" /> -->
 			<programlisting>
 			<![CDATA[
@@ -36,7 +35,7 @@ return body;
 	<section>
 		<title>方案</title>
 
-		
+
 	</section>
 	<section id="payment.interface">
 		<title>支付接口</title>

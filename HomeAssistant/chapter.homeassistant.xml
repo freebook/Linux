@@ -42,7 +42,7 @@ systemctl status haos-agent
 https://github.com/home-assistant/os-agent/releases/tag/1.5.1
   			]]>
 			</screen>
-			
+
 			<para></para>
 			<screen>
 			<![CDATA[ 
@@ -125,7 +125,10 @@ WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
 homeassistant-supervised/now 1.4.2 all [installed,local]			
 			]]>
 			</screen>
-			<para>前往 https://github.com/home-assistant/supervised-installer/releases 找到需要升级的版本</para>
+			<para>前往
+				https://github.com/home-assistant/supervised-installer/releases
+				找到需要升级的版本
+			</para>
 			<screen>
 			<![CDATA[
 root@homeassistant:~# wget https://github.com/home-assistant/supervised-installer/releases/download/1.5.0/homeassistant-supervised.deb			
@@ -302,7 +305,7 @@ scp -r hass-node-red-1.4.0 root@homeassistant.local:/usr/share/hassio/homeassist
 		</section>
 
 	</section>
-	
+
 	<section id="ha.cli">
 		<title>ha 命令</title>
 
