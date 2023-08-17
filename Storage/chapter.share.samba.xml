@@ -3,8 +3,22 @@
 	<title>Samba</title>
 	<section id="install">
 		<title>install</title>
+		<section>
+			<title>Debian 12</title>
+			<screen>
+			<![CDATA[
+apt install samba			
+			]]>
+			</screen>
+			<para>/etc/samba/smb.conf 将 Home 目录修改为可写模式</para>
+			<screen>
+			<![CDATA[
+   read only = no			
+			]]>
+			</screen>
+		</section>
 		<section id="samba.rocky">
-			<title>CentOS 8 Stream / Rocky Linux 8.5</title>
+			<title>CentOS 8 Stream / Rocky Linux 9.2</title>
 			<para>服务器端</para>
 			<screen>
 			<![CDATA[
@@ -276,7 +290,8 @@ hosts deny=192.168.50.10 192.168.10.   ## 禁止IP 192.168.50.10 及 192.168.10.
 		<title>Samba 相关命令</title>
 
 		<section id="testparm">
-			<title>testparm - check an smb.conf configuration file for internal correctness</title>
+			<title>testparm - check an smb.conf configuration file for internal
+				correctness</title>
 			<screen><![CDATA[
 # testparm
 Load smb config files from /etc/samba/smb.conf
@@ -356,7 +371,8 @@ Added user www.
 		]]></screen>
 		</section>
 		<section id="nmblookup">
-			<title>nmblookup - NetBIOS over TCP/IP client used to lookup NetBIOS names</title>
+			<title>nmblookup - NetBIOS over TCP/IP client used to lookup NetBIOS
+				names</title>
 			<screen><![CDATA[
 		<![CDATA[
 $ nmblookup -A 172.16.0.5
@@ -390,7 +406,7 @@ Looking up status of 172.16.0.5
 			<![CDATA[
 [root@netkiller ~]# mount.cifs //192.168.30.7/share /mnt			
 			]]>
-			</screen>	
+			</screen>
 			<para>挂载用户共享目录</para>
 			<screen>
 			<![CDATA[
@@ -459,7 +475,8 @@ $ mount -t cifs //192.168.0.2/ /mnt/
 			</section>
 		</section>
 		<section id="smbclient">
-			<title>smbclient - ftp-like client to access SMB/CIFS resources on servers</title>
+			<title>smbclient - ftp-like client to access SMB/CIFS resources on
+				servers</title>
 			<screen><![CDATA[
 $ sudo apt-get install smbclient
 		]]></screen>
@@ -558,7 +575,8 @@ smb: \> quit
 			</section>
 		</section>
 		<section id="smbtar">
-			<title>smbtar - shell script for backing up SMB/CIFS shares directly to UNIX tape drives</title>
+			<title>smbtar - shell script for backing up SMB/CIFS shares directly
+				to UNIX tape drives</title>
 		</section>
 
 
