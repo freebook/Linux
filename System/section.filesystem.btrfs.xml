@@ -49,24 +49,31 @@ ID 641 gen 21351 top level 5 path git
 	</section>
 	<section id="snapshot">
 		<title> 快照 snapshot</title>
-		<screen><![CDATA[
+		<screen>
+		<![CDATA[
 创建快照
 # btrfs subvolume snapshot /www /www/backup_2012
+
 查看快照
 # btrfs subvolume list -a /www
+
 挂在快照
 # mount -t btrfs -o subvol=backup_2012 /dev/md127p5 /mnt/snap
+
 删除快照
 # btrfs subvolume delete /www/backup_2012
 Delete subvolume '/www/backup_2012'
-		]]></screen>
+		]]>
+		</screen>
 	</section>
 	<section id="mount">
 		<title>挂载 btrfs</title>
-		<screen><![CDATA[
+		<screen>
+		<![CDATA[
 # mkdir /mnt/btrfs
 # mount /dev/sdb1 /mnt/btrfs
-		]]></screen>
+		]]>
+		</screen>
 		<para>查看挂载是否成功</para>
 		<screen><![CDATA[
 # df -Th
@@ -195,7 +202,18 @@ drwxr-xr-x 1 www    www     24 2016-12-08 16:54 www
 		<title>btrfsctl</title>
 		<section id="btrfs.resizes">
 			<title>Resizes the filesystem</title>
+			<screen>
+			<![CDATA[
+# btrfs filesystem resize max /
+To extend the file system to a specific size:
 
+# btrfs filesystem resize size /
+Replace size with the desired size in bytes. You can also specify units on the value, such as K (kibibytes), M (mebibytes), or G (gibibytes). Alternatively, you can specify an increase or decrease to the current size by prefixing the value with a plus (+) or a minus (-) sign, respectively:
+
+# btrfs filesystem resize +size /
+# btrfs filesystem resize -size /			
+			]]>
+			</screen>
 		</section>
 		<section id="btrfs.snapshot">
 			<title>Snapshot</title>
