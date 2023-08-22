@@ -13,7 +13,24 @@ apt install samba
 			<para>/etc/samba/smb.conf 将 Home 目录修改为可写模式</para>
 			<screen>
 			<![CDATA[
+[homes]
    read only = no			
+			]]>
+			</screen>
+			<para>添加用户</para>
+			<screen>
+			<![CDATA[
+sudo smbpasswd -L -a backup
+			]]>
+			</screen>
+			<para>配置共享目录</para>
+			<screen>
+			<![CDATA[
+[backup]
+	path = /opt/backup
+    public = yes
+    writable = yes
+	valid users = backup
 			]]>
 			</screen>
 		</section>
