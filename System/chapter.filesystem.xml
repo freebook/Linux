@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: chapter.system.filesystem.xml 500 2012-12-04 09:01:55Z netkiller $ -->
+<!-- $Id: chapter.system.filesystem.xml 500 2012-12-04 09:01:55Z netkiller 
+	$ -->
 <chapter id="index"><?dbhtml dir="filesystem" ?>
 	<title>File System 文件系统</title>
 	<section id="etc.fstab">
@@ -187,7 +188,7 @@ UUID=D168-FFBD          /boot/efi               vfat    defaults,uid=0,gid=0,uma
 UUID=ec48f3c2-80c8-4ed1-be56-049a95c2b60e	/opt/log	xfs noatime,nodiratime,noexec 0 0		
 			]]>
 			</screen>
-			
+
 			<para>验证 noatime,nodiratime</para>
 			<screen>
 			<![CDATA[ 
@@ -242,8 +243,10 @@ UUID=ff8945bf-fa45-49e5-b3d2-bb833bc6dc9c none            swap    sw            
 			]]>
 			</screen>
 			<para>背景如下：</para>
-			<para>我们的服务器通常有一个系统盘，用来安装操作系统，再挂在一个数据盘用来存储数据，这个数据盘有时是机械硬盘，为了提高IO性能，我们通常会禁止atime，为了提高安全性，我们还会禁止创建可执行文件。</para>
-			<para>noatime 禁止更新访问时间, nodiratime 禁止更新目录访问时间, noexec 禁止创建可执行文件</para>
+			<para>我们的服务器通常有一个系统盘，用来安装操作系统，再挂在一个数据盘用来存储数据，这个数据盘有时是机械硬盘，为了提高IO性能，我们通常会禁止atime，为了提高安全性，我们还会禁止创建可执行文件。
+			</para>
+			<para>noatime 禁止更新访问时间, nodiratime 禁止更新目录访问时间, noexec 禁止创建可执行文件
+			</para>
 			<screen>
 			<![CDATA[ 
 root@logging ~# cat /etc/fstab
@@ -320,14 +323,7 @@ neo@netkiller:~# mkfs.ext2 /dev/sdb1
 neo@netkiller:~$ sudo mkfs.ext3 /dev/sdb1
 		]]></screen>
 	</section>
-	<section id="reiserfs">
-		<title>ReiserFS</title>
-		<para>you also can using other file system</para>
-		<para>reiserfs</para>
-		<screen><![CDATA[
-neo@netkiller:~$ sudo mkfs.reiserfs /dev/sdb1
-		]]></screen>
-	</section>
+	
 
 	<section id="ext4">
 		<title>EXT4</title>
@@ -380,246 +376,19 @@ proc                    /proc                   proc    defaults        0 0
 			]]></screen>
 		</section>
 	</section>
+	<section id="reiserfs">
+		<title>ReiserFS</title>
+		<para>you also can using other file system</para>
+		<para>reiserfs</para>
+		<screen><![CDATA[
+neo@netkiller:~$ sudo mkfs.reiserfs /dev/sdb1
+		]]></screen>
+	</section>
 	<section id="lvm">
 		<title>LVM</title>
 		<para>请参考《Netkiller Storage 手札》·LVM相关章节</para>
 	</section>
-	<section id="index"><?dbhtml dir="btrfs" ?>
-		<title>Btrfs</title>
-		<para>The btrfs utility is a toolbox for managing btrfs filesystems. There are command groups to work with subvolumes, devices, for whole filesystem or other specific actions.</para>
-		<section id="fstab">
-			<title>/etc/fstab</title>
-			<screen><![CDATA[
-[root@netkiller ~]# cat /etc/fstab 
-
-#
-# /etc/fstab
-# Created by anaconda on Fri Nov 21 18:16:53 2014
-#
-# Accessible filesystems, by reference, are maintained under '/dev/disk'
-# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info
-#
-UUID=6634633e-001d-43ba-8fab-202f1df93339 / ext4 defaults,barrier=0 1 1
-UUID=786f570d-fe5c-4d5f-832a-c1b0963dd4e6 /srv btrfs defaults 1 1
-UUID=786f570d-fe5c-4d5f-832a-c1b0963dd4e6 /var/lib/mongo  btrfs   noatime,nodiratime,subvol=@mongo 0 2
-UUID=786f570d-fe5c-4d5f-832a-c1b0963dd4e6 /var/lib/mysql  btrfs   noatime,nodiratime,subvol=@mysql 0 2
-UUID=786f570d-fe5c-4d5f-832a-c1b0963dd4e6 /www  btrfs   noatime,nodiratime,subvol=www 0 2
-		]]></screen>
-			<screen><![CDATA[
-[root@netkiller ~]# df -T
-Filesystem     Type     1K-blocks    Used Available Use% Mounted on
-/dev/vda1      ext4      41151808 4902608  34135768  13% /
-devtmpfs       devtmpfs   8127268       0   8127268   0% /dev
-tmpfs          tmpfs      8133908       4   8133904   1% /dev/shm
-tmpfs          tmpfs      8133908  849468   7284440  11% /run
-tmpfs          tmpfs      8133908       0   8133908   0% /sys/fs/cgroup
-/dev/vdb1      btrfs    104856576 1404116 101369420   2% /srv
-/dev/vdb1      btrfs    104856576 1404116 101369420   2% /var/lib/mongo
-/dev/vdb1      btrfs    104856576 1404116 101369420   2% /var/lib/mysql
-tmpfs          tmpfs      1626784       0   1626784   0% /run/user/0
-/dev/vdb1      btrfs    104856576 1404116 101369420   2% /www
-		]]></screen>
-			<screen><![CDATA[
-[root@netkiller ~]# ll /srv/
-total 0
-drwxr-xr-x 1 www    www    132 2016-12-08 15:17 apache-tomcat-8.5.8
-drwxr-xr-x 1 root   root   132 2016-12-08 16:11 apache-tomcat-www
-drwxr-xr-x 1 mongod mongod 608 2016-12-26 09:18 @mongo
-drwxr-x--x 1 mysql  mysql  448 2016-12-26 09:16 @mysql
-drwxr-xr-x 1 root   root     0 2016-11-30 13:24 @redis
-drwxr-xr-x 1 root   root    22 2016-12-08 16:32 sbin
-drwxr-xr-x 1 www    www     24 2016-12-08 16:54 www
-		]]></screen>
-		</section>
-		<section id="format">
-			<title>btrfs</title>
-			<screen><![CDATA[
-yum install btrfs-progs
-		]]></screen>
-			<screen><![CDATA[
-# mkfs.btrfs /dev/sdb1
-		]]></screen>
-			<para>指定卷标</para>
-			<screen><![CDATA[
-# mkfs.btrfs /dev/sdb2 -L /backup
-		]]></screen>
-		</section>
-		<section id="mount">
-			<title>Mount Btrfs</title>
-			<screen><![CDATA[
-# mkdir /mnt/btrfs
-# mount /dev/sdb1 /mnt/btrfs
-		]]></screen>
-			<para>查看挂载是否成功</para>
-			<screen><![CDATA[
-# df -Th
-Filesystem    Type    Size  Used Avail Use% Mounted on
-/dev/sda1     ext4     49G   15G   32G  32% /
-tmpfs        tmpfs     32G  264K   32G   1% /dev/shm
-/dev/sda3     ext4     52G  1.3G   48G   3% /var
-/dev/sdb1    btrfs    2.0T   14G  2.0T   1% /mnt/btrfs
-		]]></screen>
-			<screen><![CDATA[
- 针对 SSD 的优化:
-# mount –t btrfs –o SSD /dev/sda5 /btrfsdisk
-
-
-打开压缩功能：
-# mount –t btrfs –o compress /dev/sda5 /btrfsdisk
-		]]></screen>
-			<section id="mount.snap">
-				<title>Mount Snap</title>
-				<para>mount -t btrfs -o subvol=your_snapshot /dev/sdb2 /mnt/snap</para>
-				<screen><![CDATA[
-mount -t btrfs -o subvol=aaa /dev/md127p5 /mnt/snap
-			]]></screen>
-			</section>
-			<section id="btrfs.fstab">
-				<title>fstab</title>
-				<section id="btrfs-show">
-					<title>btrfs-show</title>
-					<screen><![CDATA[
-[root@r610 ~]# btrfs-show
-Label: none  uuid: 0b097eeb-1f0b-476a-955b-52122ef42bfc
-        Total devices 1 FS bytes used 13.03GB
-        devid    1 size 2.00TB used 24.04GB path /dev/sdb1
-
-Btrfs Btrfs v0.19
-				]]></screen>
-				</section>
-				<section>
-					<title>/etc/fstab</title>
-					<screen><![CDATA[
-UUID=0b097eeb-1f0b-476a-955b-52122ef42bfc /opt    btrfs   defaults 1 2
-				]]></screen>
-				</section>
-			</section>
-		</section>
-		<section id="subvolumes">
-			<title>subvolumes</title>
-			<screen><![CDATA[
-# df -T
-Filesystem     Type  1K-blocks      Used Available Use% Mounted on
-/dev/md126p2   ext4   50395844  19952780  27883064  42% /
-tmpfs          tmpfs   4024944       800   4024144   1% /dev/shm
-/dev/md126p1   ext4     495844    172140    298104  37% /boot
-/dev/md126p6   btrfs 500084736 360835636 119893924  76% /opt
-/dev/md126p5   btrfs 409600000  24927332 368284612   7% /www
-
-# btrfs subvolume create /www/git
-Create subvolume '/www/git'
-
-# btrfs subvolume list /www
-ID 641 gen 21351 top level 5 path git
-			]]></screen>
-			<para>fstab 挂在子卷</para>
-			<screen><![CDATA[
-$ cat /etc/fstab 
-
-#
-# /etc/fstab
-# Created by anaconda on Thu Oct 18 13:53:45 2012
-#
-# Accessible filesystems, by reference, are maintained under '/dev/disk'
-# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info
-#
-UUID=88ec1ccf-7d8d-4107-a143-1ed0ec64a572 /                       ext4    defaults        1 1
-UUID=c0786771-1c85-45be-a9ab-ef3ee16fccb4 /boot                   ext4    defaults        1 2
-UUID=e1b89740-21f0-4507-97e9-a658cd7d3716 /opt                    btrfs   defaults        1 2
-UUID=76e46795-ebaf-4d2d-8996-1e15979bf3c8 /www                    btrfs   defaults        1 2
-UUID=76e46795-ebaf-4d2d-8996-1e15979bf3c8 /home/git               btrfs   defaults,subvol=git        1 2
-UUID=c578f1b3-4bbe-4f48-b3d3-3929c65cb99c swap                    swap    defaults        0 0
-tmpfs                   /dev/shm                tmpfs   defaults        0 0
-devpts                  /dev/pts                devpts  gid=5,mode=620  0 0
-sysfs                   /sys                    sysfs   defaults        0 0
-proc                    /proc                   proc    defaults        0 0
-		]]></screen>
-		</section>
-		<section id="snapshot">
-			<title>snapshot</title>
-			<screen><![CDATA[
-创建快照
-# btrfs subvolume snapshot /www /www/backup_2012
-查看快照
-# btrfs subvolume list -a /www
-挂在快照
-# mount -t btrfs -o subvol=backup_2012 /dev/md127p5 /mnt/snap
-删除快照
-# btrfs subvolume delete /www/backup_2012
-Delete subvolume '/www/backup_2012'
-		]]></screen>
-		</section>
-		<section id="btrfsctl">
-			<title>btrfsctl</title>
-			<section id="btrfs.resizes">
-				<title>Resizes the filesystem</title>
-
-			</section>
-			<section id="btrfs.snapshot">
-				<title>Snapshot</title>
-				<para>Btrfs v0.19</para>
-				<screen><![CDATA[
-# touch /mnt/btrfs/test1
-# touch /mnt/btrfs/test2
-# ls /mnt/btrfs/test?
-/mnt/btrfs/test1  /mnt/btrfs/test2
-				]]></screen>
-				<screen><![CDATA[
-# echo 'This is a test' > /mnt/btrfs/test1
-# btrfsctl –s snap1 /mnt/btrfs
-#vi test1
- Test1 is modified
-#cd /mnt/btrfs/snap1
-#cat test1
- This is a test
-			]]></screen>
-			</section>
-		</section>
-		<section id="btrfs-vol">
-			<title>btrfs-vol</title>
-			<screen><![CDATA[
-# btrfs-vol –a /dev/sdc1 /mnt/btrfs
-		]]></screen>
-		</section>
-		<section id="btrfs-convert">
-			<title>btrfs-convert</title>
-			<screen><![CDATA[
-btrfs-convert /dev/sdb1
-		]]></screen>
-		</section>
-		<section id="btrfsck">
-			<title>btrfsck</title>
-			<screen><![CDATA[
-# btrfsck /dev/sdb1
-found 13994164224 bytes used err is 0
-total csum bytes: 13588316
-total tree bytes: 79728640
-total fs tree bytes: 28860416
-btree space waste bytes: 10282024
-file data blocks allocated: 13931024384
- referenced 13906980864
-Btrfs Btrfs v0.19
-		]]></screen>
-		</section>
-		<section id="btrfs-debug-tree">
-			<title>btrfs-debug-tree</title>
-			<screen><![CDATA[
-[root@r610 ~]# btrfs-debug-tree /dev/sdb1 |head
-root tree
-leaf 49463296 items 9 free space 2349 generation 298 owner 1
-fs uuid 0b097eeb-1f0b-476a-955b-52122ef42bfc
-chunk uuid 2826f868-c775-4835-8690-1020a2a9fbf5
-        item 0 key (EXTENT_TREE ROOT_ITEM 0) itemoff 3756 itemsize 239
-                root data bytenr 49446912 level 2 dirid 0 refs 1
-        item 1 key (DEV_TREE ROOT_ITEM 0) itemoff 3517 itemsize 239
-                root data bytenr 36139008 level 0 dirid 0 refs 1
-        item 2 key (FS_TREE INODE_REF 6) itemoff 3500 itemsize 17
-                inode ref index 0 namelen 7 name: default
-
-		]]></screen>
-		</section>
-	</section>
-
+	&section.filesystem.btrfs.xml;
 	<section id="zfs">
 		<title>zfs</title>
 		<screen><![CDATA[

@@ -18,6 +18,7 @@
 	<!ENTITY chapter.console.xml			SYSTEM "chapter.console.xml">
 	<!ENTITY section.disk.hdd.xml	 		SYSTEM "section.disk.hdd.xml">
 	<!ENTITY chapter.filesystem.xml			SYSTEM "chapter.filesystem.xml">
+	<!ENTITY section.filesystem.btrfs.xml	SYSTEM "section.filesystem.btrfs.xml">
 	<!ENTITY chapter.service.xml	 		SYSTEM "chapter.service.xml">
 	<!ENTITY chapter.service.ubuntu.xml 	SYSTEM "chapter.service.ubuntu.xml">
 	<!ENTITY chapter.service.centos.xml		SYSTEM "chapter.service.centos.xml">
@@ -26,7 +27,7 @@
 	<!ENTITY chapter.system.logging.xml 	SYSTEM "chapter.system.logging.xml">
 	<!ENTITY chapter.system.sys.xml			SYSTEM "chapter.system.sys.xml">
 	<!ENTITY chapter.etc.xml				SYSTEM "chapter.etc.xml">
-	<!ENTITY chapter.kickstart.xml		SYSTEM "chapter.kickstart.xml">
+	<!ENTITY chapter.kickstart.xml			SYSTEM "chapter.kickstart.xml">
 	<!ENTITY chapter.crontab.xml			SYSTEM "chapter.crontab.xml">
 	
 	<!ENTITY section.system.network.xml		SYSTEM "section.system.network.xml">
