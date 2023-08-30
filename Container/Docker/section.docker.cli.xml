@@ -410,6 +410,24 @@ docker update --restart=always [容器名]
 docker update --restart=unless-stopped chatgpt			
 			]]>
 			</screen>
+			<screen>
+			<![CDATA[
+root@homeassistant:~# docker inspect homeassistant | grep -i -A 5 RestartPolicy
+            "RestartPolicy": {
+                "Name": "",
+                "MaximumRetryCount": 0
+            },
+
+root@homeassistant:~# docker update homeassistant --restart=always
+homeassistant
+
+root@homeassistant:~# docker inspect homeassistant | grep -i -A 3 RestartPolicy
+            "RestartPolicy": {
+                "Name": "always",
+                "MaximumRetryCount": 0
+            },	
+			]]>
+			</screen>
 		</section>
 		<section id="docker.ps">
 			<title>ps</title>
