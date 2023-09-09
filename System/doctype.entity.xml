@@ -32,4 +32,4 @@
 	
 	<!ENTITY section.system.network.xml		SYSTEM "section.system.network.xml">
 	<!ENTITY section.network.router.xml		SYSTEM "section.network.router.xml">
-	<!ENTITY section.network.dns.xml		SYSTEM "section.network.dns.xml">
+	<!ENTITY section.system.network.ipv6.xml	SYSTEM "section.system.network.ipv6.xml">

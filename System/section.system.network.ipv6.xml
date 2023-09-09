@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+	<title>IPv6</title>
+	<section>
+		<title>禁用 IPv6</title>
+		<para>有些 Linux 发行版会将 ipv6 设为默认，国内 ipv6 支持不好，导致网络出现异常</para>
+		<para>创建文件 /etc/sysctl.d/ipv6.conf</para>
+		<screen>
+		<![CDATA[
+net.ipv6.conf.all.disable_ipv6 = 1
+net.ipv6.conf.default.disable_ipv6 = 1
+net.ipv6.conf.lo.disable_ipv6 = 1
+net.ipv6.conf.eth0.disable_ipv6 = 1
+		]]>
+		</screen>
+		
+	</section>
+	
+	
+</section>

@@ -48,6 +48,74 @@ docker rmi $(docker images -q)
 		</screen>
 	</section>
 	<section>
+		<title>no space left on device</title>
+		<para>failed to start daemon: Unable to get the TempDir under /var/lib/docker: mkdir /var/lib/docker/tmp: no space left on device</para>
+		<para>排查思路</para>
+		<screen>
+		<![CDATA[
+Sep 08 11:09:28 homeassistant dockerd[2114]: time="2023-09-08T11:09:28.010100708+08:00" level=info msg="Starting up"
+Sep 08 11:09:28 homeassistant dockerd[2114]: time="2023-09-08T11:09:28.010549583+08:00" level=warning msg="Running experimental build"
+Sep 08 11:09:28 homeassistant dockerd[2114]: failed to start daemon: Unable to get the TempDir under /var/lib/docker: mkdir /var/lib/docker/tmp: no space left on device
+Sep 08 11:09:28 homeassistant systemd[1]: docker.service: Main process exited, code=exited, status=1/FAILURE
+		]]>
+		</screen>
+		<para>确认磁盘剩余空间</para>
+		<screen>
+		<![CDATA[
+root@homeassistant:~# df
+Filesystem     1K-blocks    Used Available Use% Mounted on
+/dev/root       14913852 9847068   4366996  70% /
+devtmpfs          931216       0    931216   0% /dev
+tmpfs             998896       0    998896   0% /dev/shm
+tmpfs             399560    5800    393760   2% /run
+tmpfs               5120       0      5120   0% /run/lock
+tmpfs               4096       0      4096   0% /sys/fs/cgroup
+tmpfs             998896       0    998896   0% /tmp
+/dev/zram1         49560   35356     10620  77% /var/log
+tmpfs             199776       0    199776   0% /run/user/0
+		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+root@homeassistant:~# cat /etc/fstab 
+dev/mmcblk2p4 / ext4 defaults,noatime,commit=600,errors=remount-ro 0 1
+tmpfs /tmp tmpfs defaults,nosuid 0 0
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+root@homeassistant:~# fdisk -l
+Disk /dev/mmcblk2: 14.56 GiB, 15634268160 bytes, 30535680 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: gpt
+Disk identifier: 0E6E0000-0000-4631-8000-1AEB00004F1C
+
+Device         Start      End  Sectors  Size Type
+/dev/mmcblk2p1 16384    24575     8192    4M unknown
+/dev/mmcblk2p2 24576    32767     8192    4M unknown
+/dev/mmcblk2p3 32768    98303    65536   32M unknown
+/dev/mmcblk2p4 98304 30535615 30437312 14.5G unknown
+
+
+Disk /dev/zram0: 975.49 MiB, 1022873600 bytes, 249725 sectors
+Units: sectors of 1 * 4096 = 4096 bytes
+Sector size (logical/physical): 4096 bytes / 4096 bytes
+I/O size (minimum/optimal): 4096 bytes / 4096 bytes
+
+
+Disk /dev/zram1: 50 MiB, 52428800 bytes, 12800 sectors
+Units: sectors of 1 * 4096 = 4096 bytes
+Sector size (logical/physical): 4096 bytes / 4096 bytes
+I/O size (minimum/optimal): 4096 bytes / 4096 bytes		
+		]]>
+		</screen>
+	</section>
+	<section>
 		<title>Bitnami</title>
 		<para>
 			<ulink url="https://github.com/bitnami" />
