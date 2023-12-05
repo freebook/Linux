@@ -13,9 +13,17 @@ $ sudo apt-get install imagemagick
 	<section id="convert">
 		<title>convert</title>
 		<section>
-			<title>批量转换</title>
+			<title>批量转换格式</title>
 			<screen>
 convert *.jpg gkp-*.png
+			</screen>
+			<para>jpeg 转 png</para>
+			<screen>
+			<![CDATA[
+for jpeg in *.jpeg; do
+    convert $jpeg ${jpeg%.jpeg}.png
+done			
+			]]>
 			</screen>
 		</section>
 		<section>
