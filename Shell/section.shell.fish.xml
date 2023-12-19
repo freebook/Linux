@@ -21,4 +21,12 @@ fish_config theme show
             </screen>
         </section>
     </section>
+    <section>
+    	<title>环境变量</title>
+    	<screen>
+    	<![CDATA[
+set JAVA_HOME $(/usr/libexec/java_home)    	
+    	]]>
+    	</screen>
+    </section>
 </section>
