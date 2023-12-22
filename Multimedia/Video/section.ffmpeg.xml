@@ -13,6 +13,12 @@
 brew install ffmpeg		
 		]]>
 		</screen>
+		<para></para>
+		<section>
+		<![CDATA[
+sudo apt-get install ffmpeg		
+		]]>
+		</section>
 	</section>
 	<section>
 		<title>视频格式转换</title>
@@ -46,4 +52,80 @@ ffmpeg -i input.mp4 -vf subtitles=caption.srt -y output.mp4
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>音频格式转换</title>
+		<section>
+			<title>mp3 转 wav</title>
+			<para>mp3 转 wav</para>
+			<screen>
+			<![CDATA[
+ffmpeg -i input.mp3 -f wav output.wav
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>wav 转 mp3</title>
+			<para>wav 转 mp3</para>
+			<screen>
+			<![CDATA[
+ffmpeg -i input.wav -f mp2 output.mp3
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>wav to pcm</title>
+			<screen>
+			<![CDATA[
+ffmpeg -i input.wav -f s16be -ar 8000 -ac 1 -acodec pcm_s16be output.pcm		
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>pcm to wav</title>
+			<screen>
+			<![CDATA[
+ffmpeg -i input.pcm -f s16be -ar 8000 -ac 2 -acodec pcm_s16be  output.wav
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>批量把wav转mp3</title>
+			<screen>
+			<![CDATA[
+#!/bin/bash
+
+folder=/home/XXX
+
+for file in $(find "$folder" -type f -iname "*.mp3")
+do
+    name=$(basename "$file" .mp3)
+    dir=$(dirname "$file")
+    echo ffmpeg -i "$file" -acodec pcm_s16le -ac 1 -ar 16000 "$dir"/"$name".wav
+    ffmpeg -i "$file" -acodec pcm_s16le -ac 1 -ar 16000 "$dir"/"$name".wav
+
+done		
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>批量把pcm转wav</title>
+			<screen>
+			<![CDATA[
+#!/bin/bash
+
+folder=/home/XXX
+mkdir "$folder"/out
+
+for file in $(find "$folder" -type f -iname "*.pcm")
+do
+    name=$(basename "$file" .pcm)
+    dir=$(dirname "$file")
+    echo ffmpeg -f s16le -ar 16000 -ac 1 -acodec pcm_s16le -i "$file" "$dir"/out/"$name".wav
+    ffmpeg -f s16le -ar 16000 -ac 1 -acodec pcm_s16le -i "$file" "$dir"/out/"$name".wav
+done
+			]]>
+			</screen>
+		</section>
+	</section>
+
 </section>

@@ -1,37 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="audio" ?>
 	<title>Audio</title>
-	<subtitle>Digital Audio Workstation</subtitle>
-	<para>http://revo-create.com/viewthread.php?tid=11731</para>
-	<para></para>
-	<orderedlist>
-		<title>混音系列</title>
-		<listitem><para>ardour</para></listitem>
-		<listitem><para>Pulseaudio</para></listitem>
-		<listitem><para></para></listitem>
-	</orderedlist>
-	<orderedlist>
-		<title>取样器</title>
-		<listitem><para>Qsynth</para></listitem>
-	</orderedlist>
-	&chapter.ardour.xml;
+	<section id="lame">
+		<title>lame</title>
+		<screen>
+		<![CDATA[
+lame input.wav output.mp3		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+# Re-encode existing MP3 to 64 kbps MP3
+lame -b 64 original.mp3 new.mp3	
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+# By default, lame uses constant bit rate (CBR) encoding. 
+# You can also use average bit rate (ABR) encoding, 
+# e.g. for an average bit rate of 123 kbps:
+lame --abr 123 input.wav output.mp3
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+# or variable (VBR) encoding, e.g. between 32 kbps and 192 kbps:
+lame -v -b 32 -B 192 input.wav output.mp3
+		]]>
+		</screen>
 	
-	&chapter.lmms.xml;
-	&chapter.qsynth.xml;
-	&chapter.rosegarden.xml;
-	&chapter.terminatorx.xml;
-	
-	&chapter.pulseaudio.xml;
-<section id="synthesizer">
-	<title>Synthesizer</title>
-	<orderedlist>
-		<title>合成器</title>
-		<listitem><para>ZynAddSubFX</para></listitem>
-	</orderedlist>	
-	&chapter.zynaddsubfx.xml;
-</section>
-<section id="drums">
-	<title>Drums</title>
-	&chapter.hydrogen.xml;
-</section>
+	</section>
+
 </chapter>
