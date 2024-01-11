@@ -126,6 +126,14 @@ done
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>AMR</title>
+			<para>Mp3 转 AMR</para>
+			<screen>
+			<![CDATA[
+ffmpeg -i input.mp3 -ar 8000 -ab 12.2k -ac 1 output.amr
+			]]>
+			</screen>
+		</section>
 	</section>
-
 </section>
