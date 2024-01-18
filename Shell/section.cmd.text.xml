@@ -217,6 +217,15 @@ CENTOS LINUX RELEASE 7.5.1804 (CORE)
 NETKILLER			
 			]]>
 			</screen>
+			<screen>
+			<![CDATA[
+neo@MacBook-Pro-M2 ~> uuidgen
+71386AEE-C468-44E1-A0A3-FB4EBB4600AA
+
+neo@MacBook-Pro-M2 ~> uuidgen | tr [:upper:] [:lower:]
+3d807c48-ef5f-4297-869f-120cb713f752			
+			]]>
+			</screen>
 		</section>
 		<section>
 			<title>[CHAR*] 和 [CHAR*REPEAT]</title>
