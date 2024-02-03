@@ -15,6 +15,13 @@ net.ipv6.conf.eth0.disable_ipv6 = 1
 		</screen>
 		
 	</section>
-	
+	<section>
+		<title>Ipv6 无法连接</title>
+		<screen>
+		<![CDATA[
+		
+		]]>
+		</screen>
+	</section>
 	
 </section>
