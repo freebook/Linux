@@ -132,6 +132,11 @@ find /usr/www/phpmyadmin -type f -exec chmod 644 {} \;
 		<screen><![CDATA[
 find . -type f -mtime +7 -delete
 		]]></screen>
+		<screen>
+			<![CDATA[
+find . -type f -name "*.xhtml" -delete
+			]]>
+		</screen>
 	</section>
 	<section id="find.exec">
 		<title>exec</title>
