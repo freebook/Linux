@@ -2,7 +2,7 @@
 <section id="install">
 	<title>安装 Docker</title>
 	<section id="docker.centos8">
-		<title>Rocky Linux 9.2 / AlmiLinux 9.2 / CentOS 8 Stream</title>
+		<title>Rocky Linux / AlmiLinux / CentOS 8 Stream</title>
 		<para>安装 Docker</para>
 		<screen>
 		<![CDATA[

@@ -1,6 +1,6 @@
 
 
-<section id="RockyLinuxInstall">
+<section id="RockyLinux">
 	<title>Rocky Linux</title>
 	<para>CentOS 8 的后续版本，CentOS 替代方案</para>
 	<section>
@@ -57,7 +57,7 @@ sudo dd if=Rocky-9.0-x86_64-minimal.iso of=/dev/rdisk4 bs=100m
 		<para>Rocky Linux 安装过程与 CentOS 8 没有太大差异。</para>
 	</section>
 	<section>
-		<title>Rocky-9.0-x86_64-minimal.iso 镜像初始化</title>
+		<title>Rocky-9.3-x86_64-minimal.iso 镜像初始化</title>
 		<para></para>
 		<para>首次安装后初始化系统</para>
 		<screen>
@@ -222,12 +222,17 @@ visudo -c
 		<para>桌面版 AlmaLinux-9-latest-x86_64-dvd.iso</para>
 		<screen>
 		<![CDATA[
+neo@MacBook-Pro-M2 ~/Downloads> sudo dd if=AlmaLinux-9.3-x86_64-minimal.iso of=/dev/rdisk4 bs=100m		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
 iMac:Downloads neo$ sudo dd if=AlmaLinux-9-latest-x86_64-dvd.iso of=/dev/rdisk2 bs=100m
 		]]>
 		</screen>
 	</section>
 	<section>
-		<title>AlmaLinux 9.0 镜像安装初始化</title>
+		<title>AlmaLinux 镜像安装初始化</title>
 		<screen>
 			<![CDATA[
 dnf -y upgrade
