@@ -54,18 +54,28 @@ password_file /etc/mosquitto/pwfile
 		</section>
 		<section>
 			<title>Docker 方式安装</title>
-			<para></para>
+			<para>生成配置文件</para>
+			<screen>
+			<![CDATA[
+mkdir -p /opt/mosquitto/
+docker run  --rm  --entrypoint cat eclipse-mosquitto:latest /mosquitto/config/mosquitto.conf > /opt/mosquitto/mosquitto.conf			
+			]]>
+			</screen>
+			<para>运行容器</para>
 			<screen>
 	        <![CDATA[
-mkdir -p /opt/mosquitto/
-docker run  --rm  --entrypoint cat eclipse-mosquitto:latest /mosquitto/config/mosquitto.conf > /opt/mosquitto/mosquitto.conf
-
 docker run -d --restart always --name mosquitto --hostname mosquitto.netkiller.cn \
 -p 1883:1883 \
 -v /opt/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro \
 -v /opt/mosquitto/data:/mosquitto/data:rw \
 -e TZ=Asia/Shanghai traccar/traccar:latest
 	        ]]>
+			</screen>
+			<para>创建密码</para>
+			<screen>
+			<![CDATA[
+/mosquitto # mosquitto_passwd -c -b /mosquitto/config/pwfile netkiller passw0rd			
+			]]>
 			</screen>
 		</section>
 	</section>
