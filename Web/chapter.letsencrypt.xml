@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="letsencrypt">
+	<title>Let's Encrypt's 免费SSL证书</title>
+	<section>
+		<title>安装 certbot 工具</title>
+		<screen>
+			<![CDATA[
+dnf install -y epel-release
+dnf install -y certbot python3-certbot-nginx	
+			]]>
+		</screen>
+		<para>如果是本地安装 nginx 请使用下面命令</para>
+		<screen>
+			<![CDATA[
+certbot --nginx -d example.com -d www.example.com			
+			]]>
+		</screen>
+		<para>如果是 docker 安装 nginx 使用下面命令，只生成证书，然后使用 -v 参数将证书挂在到 docker 容器内即可
+		</para>
+		<screen>
+			<![CDATA[
+mkdir -p /opt/nginx/cert
+docker cp nginx:/etc/nginx/conf.d /opt/nginx/conf.d
+			
+certbot certonly --nginx --webroot -w /opt/nginx/html -d netkiller.cn -m netkiller@msn.com --agree-tos
+			]]>
+		</screen>
+	</section>
+	<section id="免费SS证书">
+		<title>生成证书，HTTP 文件认证</title>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# certbot certonly --webroot -w /opt/nginx/html/ -d www.netkiller.cn
+[root@netkiller ~]# certbot certonly --webroot -w /opt/nginx/html/ -d www.netkiller.cn --preferred-challenges http
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>手工生成证书，基于 DNS 认证</title>
+		<para></para>
+		<screen>
+			<![CDATA[
+# 泛域名：
+certbot certonly -d *.netkiller.cn --manual --preferred-challenges dns
+
+# 主域名：
+certbot certonly -d netkiller.cn --manual --preferred-challenges dns			
+			]]>
+		</screen>
+		<screen>
+			<![CDATA[
+[root@netkiller ~]# certbot certonly --manual -d *.netkiller.cn
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+Enter email address (used for urgent renewal and security notices)
+ (Enter 'c' to cancel): netkiller@msn.com
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Please read the Terms of Service at
+https://letsencrypt.org/documents/LE-SA-v1.3-September-21-2022.pdf. You must
+agree in order to register with the ACME server. Do you agree?
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(Y)es/(N)o: yes
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Would you be willing, once your first certificate is successfully issued, to
+share your email address with the Electronic Frontier Foundation, a founding
+partner of the Let's Encrypt project and the non-profit organization that
+develops Certbot? We'd like to send you email about our work encrypting the web,
+EFF news, campaigns, and ways to support digital freedom.
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(Y)es/(N)o: Y
+Account registered.
+Requesting a certificate for *.netkiller.cn
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Please deploy a DNS TXT record under the name:
+
+_acme-challenge.netkiller.cn.
+
+with the following value:
+
+u32jWv6ycALqXM3duCLCsCxllrcTLwm9oa42H_GPzSM
+
+Before continuing, verify the TXT record has been deployed. Depending on the DNS
+provider, this may take some time, from a few seconds to multiple minutes. You can
+check if it has finished deploying with aid of online tools, such as the Google
+Admin Toolbox: https://toolbox.googleapps.com/apps/dig/#TXT/_acme-challenge.netkiller.cn.
+Look for one or more bolded line(s) below the line ';ANSWER'. It should show the
+value(s) you've just added.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Press Enter to Continue
+
+Successfully received certificate.
+Certificate is saved at: /etc/letsencrypt/live/netkiller.cn/fullchain.pem
+Key is saved at:         /etc/letsencrypt/live/netkiller.cn/privkey.pem
+This certificate expires on 2023-11-06.
+These files will be updated when the certificate renews.
+
+NEXT STEPS:
+- This certificate will not be renewed automatically. Autorenewal of --manual certificates requires the use of an authentication hook script (--manual-auth-hook) but one was not provided. To renew this certificate, repeat this same certbot command before the certificate's expiry date.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+If you like Certbot, please consider supporting our work by:
+ * Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
+ * Donating to EFF:                    https://eff.org/donate-le
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -			
+			]]>
+		</screen>
+		<para>配置 Nginx</para>
+		<screen>
+			<![CDATA[
+server {
+    listen 443 ssl;
+    server_name  www.netkiller.cn;
+    http2 on;
+    
+    # 这里是你证书的位置
+    ssl_certificate /etc/letsencrypt/live/netkiller.cn/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/netkiller.cn/privkey.pem;
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+    ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE;
+    ssl_prefer_server_ciphers on;
+
+    location / {
+      	root /usr/share/nginx/html;
+      	index  index.html;
+    }
+
+    error_page 404 /404.html;
+        location = /40x.html {
+    }
+
+    error_page 500 502 503 504 /50x.html;
+        location = /50x.html {
+    }
+}			
+			]]>
+		</screen>
+	</section>
+	<section>
+		<title>证书更新</title>
+		<para>证书到期之后需要更新</para>
+		<screen>
+		<![CDATA[
+root@iZ6we2qd9sralbm45a85ebZ:~# certbot certonly -d *.netkiller.cn --manual --preferred-challenges dns
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+Plugins selected: Authenticator manual, Installer None
+Obtaining a new certificate
+Performing the following challenges:
+dns-01 challenge for netkiller.cn
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+NOTE: The IP of this machine will be publicly logged as having requested this
+certificate. If you're running certbot in manual mode on a machine that is not
+your server, please ensure you're okay with that.
+
+Are you OK with your IP being logged?
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(Y)es/(N)o: Y
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Please deploy a DNS TXT record under the name
+_acme-challenge.netkiller.cn with the following value:
+
+YzX9BAX-mRvnE46ml2q_Cm4aiUvcrOhbLp-i4o1BR7s
+
+Before continuing, verify the record is deployed.
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Press Enter to Continue
+Waiting for verification...
+Cleaning up challenges
+
+IMPORTANT NOTES:
+ - Congratulations! Your certificate and chain have been saved at:
+   /etc/letsencrypt/live/netkiller.cn/fullchain.pem
+   Your key file has been saved at:
+   /etc/letsencrypt/live/netkiller.cn/privkey.pem
+   Your cert will expire on 2024-02-04. To obtain a new or tweaked
+   version of this certificate in the future, simply run certbot
+   again. To non-interactively renew *all* of your certificates, run
+   "certbot renew"
+ - If you like Certbot, please consider supporting our work by:
+
+   Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
+   Donating to EFF:                    https://eff.org/donate-le
+
+root@iZ6we2qd9sralbm45a85ebZ:~# ls /etc/letsencrypt/live/netkiller.cn/
+cert.pem  chain.pem  fullchain.pem  privkey.pem  README		
+		]]>
+		</screen>
+	</section>
+
+	<section>
+		<title>Chrome</title>
+		<para>
+			检查你的浏览器是否支持 HTTP2
+			<ulink url="chrome://net-internals/#http2" />
+		</para>
+		<screen>
+			HTTP/2 Enabled: true
+		</screen>
+		<para>表示正常</para>
+	</section>
+</chapter>

@@ -12,4 +12,4 @@
 	&chapter.varnish.xml;
     &chapter.web.cherokee.xml;
     &chapter.web.jetty.xml;
-	&chapter.http2.xml;
+	&chapter.letsencrypt.xml;
