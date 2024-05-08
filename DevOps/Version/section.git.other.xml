@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: section.git.gitolite.xml 472 2012-10-24 05:30:15Z netkiller $ -->
 <section>
-	<title>git-rev-parse - Pick out and massage parameters</title>
+	<title>git rev-parse - Pick out and massage parameters</title>
 	<section>
 		<title>获得当前提交ID</title>
 		<screen>
@@ -10,10 +10,19 @@ root@netkiller /d/s/test (master)# git rev-parse HEAD
 a7b5dc12c595e8abaae8800a86f93b475e833ce3		
 		]]>
 		</screen>
+	</section>
+	<section>
+		<title>--short</title>
 		<screen>
 		<![CDATA[
 root@netkiller /d/s/test (master)# git rev-parse --short HEAD
 a7b5dc1		
+		]]>
+		</screen>		
+		<screen>
+		<![CDATA[
+PS D:\GitHub\Java> git rev-parse --short HEAD
+4d1fc8e		
 		]]>
 		</screen>
 	</section>
