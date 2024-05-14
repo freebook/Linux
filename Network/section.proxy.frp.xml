@@ -65,5 +65,41 @@ Last login: Tue May 14 18:02:22 2024 from 127.0.0.1
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>配置 systemd</title>
+		<para>服务端</para>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# vim /etc/systemd/system/frps.service
 		
+[Unit]
+Description = frp server
+After = network.target syslog.target
+Wants = network.target
+
+[Service]
+Type = simple
+ExecStart = /srv/frp/frps -c /srv/frp/frps.ini
+
+[Install]
+WantedBy = multi-user.target		
+		]]>
+		</screen>
+		<para>本地客户端</para>
+		<screen>
+		<![CDATA[
+[Unit]
+Description = frp client
+After = network.target syslog.target
+Wants = network.target
+
+[Service]
+Type = simple
+ExecStart = /srv/frp/frpc -c /srv/frp/frpc.ini
+
+[Install]
+WantedBy = multi-user.target		
+		]]>
+		</screen>
+	</section>
 </section>
