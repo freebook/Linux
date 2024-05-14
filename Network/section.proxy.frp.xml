@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.network.rinetd.xml 418 2012-05-25 14:17:16Z netkiller $ -->
+<section id="frp">
+	<title>frp 反向代理</title>
+	<section>
+		<title>安装</title>
+		<para>服务端</para>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# wget https://github.com/fatedier/frp/releases/download/v0.58.0/frp_0.58.0_linux_amd64.tar.gz
+[root@netkiller ~]# tar zxvf frp_0.58.0_linux_amd64.tar.gz
+[root@netkiller ~]# mv frp_0.58.0_linux_amd64 /srv/frp
+[root@netkiller ~]# cat /srv/frp/frps.toml
+bindPort = 7000
+[root@netkiller ~]# /srv/frp/frps -c /srv/frp/frps.toml
+2024-05-14 17:33:03.111 [I] [frps/root.go:105] frps uses config file: /srv/frp/frps.toml
+2024-05-14 17:33:03.193 [I] [server/service.go:237] frps tcp listen on 0.0.0.0:7000
+2024-05-14 17:33:03.193 [I] [frps/root.go:114] frps started successfully
+		]]>
+		</screen>
+		<para>客户端</para>
+		<screen>
+		<![CDATA[
+root@debian:~# wget https://github.com/fatedier/frp/releases/download/v0.58.0/frp_0.58.0_linux_amd64.tar.gz
+root@debian:~# tar zxvf frp_0.58.0_linux_amd64.tar.gz
+root@debian:~# mv frp_0.58.0_linux_amd64 /srv/frp
+root@debian:~# cp /srv/frp/frpc.toml{,.backup}
+root@debian:~# cat /srv/frp/frpc.toml
+serverAddr = "127.0.0.1"
+serverPort = 7000
+
+[[proxies]]
+name = "test-tcp"
+type = "tcp"
+localIP = "127.0.0.1"
+localPort = 22
+remotePort = 6000		
+		]]>
+		</screen>
+		<para>修改 serverAddr 为你服务器的地址或域名</para>
+		<screen>
+		<![CDATA[
+root@debian:~#  /srv/frp/frpc -c /srv/frp/frpc.toml
+2024-05-14 18:01:36.285 [I] [sub/root.go:142] start frpc service for config file [/srv/frp/frpc.toml]
+2024-05-14 18:01:36.285 [I] [client/service.go:294] try to connect to server...
+2024-05-14 18:01:36.390 [I] [client/service.go:286] [2808f61df6d5b133] login to server success, get run id [2808f61df6d5b133]
+2024-05-14 18:01:36.390 [I] [proxy/proxy_manager.go:173] [2808f61df6d5b133] proxy added: [ssh]
+2024-05-14 18:01:36.401 [I] [client/control.go:168] [2808f61df6d5b133] [ssh] start proxy success		
+		]]>
+		</screen>
+		<para>登录测试</para>
+		<screen>
+		<![CDATA[
+PS C:\Users\neo> ssh docker@dev.netkiller.cn -oPort=7022
+docker@dev.netkiller.cn's password:
+Linux debian 6.1.0-20-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.85-1 (2024-04-11) x86_64
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Tue May 14 18:02:22 2024 from 127.0.0.1
+		]]>
+		</screen>
+	</section>
+		
+</section>

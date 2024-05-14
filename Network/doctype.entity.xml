@@ -10,7 +10,7 @@
 <!ENTITY chapter.network.proxy.web 		SYSTEM "chapter.network.proxy.web.xml">
 <!ENTITY chapter.network.proxy.socks 	SYSTEM "chapter.network.proxy.socks.xml">
 <!ENTITY chapter.network.p2p	 		SYSTEM "chapter.network.p2p.xml">
-<!ENTITY chapter.network.rinetd.xml		SYSTEM "chapter.network.rinetd.xml">
+<!ENTITY section.proxy.frp.xml			SYSTEM "section.proxy.frp.xml">
 <!ENTITY section.network.ddns.xml		SYSTEM "section.network.ddns.xml">
 
 <!ENTITY chapter.firewall.xml 			SYSTEM "chapter.firewall.xml">
