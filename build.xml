@@ -8,7 +8,7 @@
 	<property name="workspace" value="${env.HOME}/workspace" />
 	<property name="docbook" value="${workspace}/${ant.project.name}" />
 	<property name="resources" value="${docbook}/images" />
-	<property name="public_html" value="${env.HOME}/git/netkiller.github.io/${ant.project.name}" />
+	<property name="public_html" value="${env.HOME}/tmp/netkiller.github.io/${ant.project.name}" />
 	<!--	<property name="public_html" value="${env.HOME}/tmp/${ant.project.name}" /> -->
 	<property name="htmlhelp" value="${env.HOME}/tmp/${ant.project.name}" />
 	<property name="epub" value="${tmp}/${ant.project.name}.tmp" />
