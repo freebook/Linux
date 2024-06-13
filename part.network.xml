@@ -1,7 +1,6 @@
 <part id="index"><?dbhtml dir="network" ?>
 	<title>Network Application</title>
 	&chapter.network.xml;
-	&chapter.network.rinetd.xml;
 	<chapter>
 		<title>即时通信</title>
 		&section.im.matrix.xml;
