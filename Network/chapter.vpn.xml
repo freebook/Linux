@@ -22,4 +22,8 @@ n2n - Peer-to-Peer VPN network daemon
 		<title>Hypersocket VPN</title>
 		<para>http://sourceforge.net/p/hypersocket-vpn/wiki/CentOS/</para>
 	</section>
+	<section>
+		<title>Tailscale</title>
+		<para></para>
+	</section>
 </chapter>
