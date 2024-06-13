@@ -84,11 +84,11 @@ Your name is tcpdump
 		<section id="xargs.i">
 			<title>-I 替换操作</title>
 			<para>-I R                         same as --replace=R</para>
-			<screen>
+			<screen><![CDATA[
 复制所有图片文件到 /data/images 目录下：
 
 ls *.jpg | xargs -n1 -I cp {} /data/images
-			</screen>		
+			]]></screen>		
 			<screen>
 			<![CDATA[
 读取stdin，将格式化后的参数传递给命令xargs的一个选项-I，使用-I指定一个替换字符串{}，这个字符串在xargs扩展时会被替换掉，当-I与xargs结合使用，每一个参数命令都会被执行一次：
@@ -128,10 +128,10 @@ Hello noreply
 Hello tcpdump
 			]]>
 			</screen>
-			<screen>
+			<screen><![CDATA[
 -I 使用-I指定一个替换字符串,这个字符串在xargs扩展时会被替换掉,当-I与xargs结合使用,每一个参数命令都会被执行一次.
 mysql -u root -predhat -s -e "show databases" | egrep "^mt4_user_equity_" | xargs -I "@@" mysql -u root -predhat -e "DROP DATABASE \`@@\`;"  			
-			</screen>
+			]]></screen>
 		</section>	
 		<section id="xargs.n">
 			<title>-n, --max-args=MAX-ARGS      use at most MAX-ARGS arguments per command line</title>
@@ -250,13 +250,26 @@ ls: 无法访问M*: 没有那个文件或目录
 /bin/echo d e f ?...n
 			]]>
 			</screen>
+			<para>由于 docker images|grep none|awk '{print $3}' 返回空字符串，提示 Remove one or more images，使用 -r 参数判断返回字符串为空，不再执行后面的命令。</para>
+			<screen>
+			<![CDATA[
+[root@netkiller watch]# docker images|grep none|awk '{print $3}'|xargs docker rmi -f > /dev/null 
+"docker rmi" requires at least 1 argument.
+See 'docker rmi --help'.
+
+Usage:  docker rmi [OPTIONS] IMAGE [IMAGE...]
+
+Remove one or more images
+[root@netkiller watch]# docker images|grep none|awk '{print $3}'|xargs -r docker rmi -f > /dev/null 
+			]]>
+			</screen>
 		</section>
 		<section id="xargs.p">
 			<title>-p, --interactive            prompt before running commands</title>
 			<para> -p 确认操作选项,具有可交互性:</para>
-			<screen>
+			<screen><![CDATA[
 -P 修改最大的进程数, 默认是1.为 0 时候为 as many as it can.
-			</screen>
+			]]></screen>
 		</section>
 	</section>
 </section>
