@@ -108,23 +108,57 @@ docker tag netkiller/config:10.10 netkiller/config
 iMac:registry neo$ docker tag 127.0.0.1:5000/netkiller/config:latest 192.168.64.2:30050/netkiller/config:latest		
 		]]>
 		</screen>
-		
+
 	</section>
 	<section id="docker.image.save">
 		<title>保存和载入镜像</title>
 		<para>保存镜像</para>
 		<screen>
 			<![CDATA[
-$sudo docker save -o ubuntu_14.10.tar ubuntu:14.10			
+$sudo docker save -o ubuntu_14.10.tar ubuntu:14.10
 			]]>
 		</screen>
 		<para>载入镜像</para>
 		<screen>
 			<![CDATA[
+$ sudo docker load -i image.tar
+或
 $ sudo docker load --input ubuntu_14.10.tar
 或
 $ sudo docker load < ubuntu_14.10.tar
 			]]>
+		</screen>
+		<para>例如，我们需要吧 openjdk 镜像从一个服务器，复制到另一个服务器上去。</para>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# docker save -o openjdk.tar openjdk:8
+[root@netkiller ~]# gzip openjdk.tar
+		]]>
+		</screen>
+
+		<screen>
+		<![CDATA[
+[root@production ~]# gunzip openjdk.tar.gz 
+
+[root@production ~]# docker load -i openjdk.tar 
+9c742cd6c7a5: Loading layer [==================================================>]  129.2MB/129.2MB
+03127cdb479b: Loading layer [==================================================>]   11.3MB/11.3MB
+293d5db30c9f: Loading layer [==================================================>]  19.31MB/19.31MB
+9b55156abf26: Loading layer [==================================================>]  156.5MB/156.5MB
+b626401ef603: Loading layer [==================================================>]  11.74MB/11.74MB
+53a0b163e995: Loading layer [==================================================>]  3.584kB/3.584kB
+6b5aaff44254: Loading layer [==================================================>]  209.8MB/209.8MB
+Loaded image: openjdk:8
+
+[root@production ~]# docker images
+REPOSITORY          TAG       IMAGE ID       CREATED         SIZE
+nginx               latest    7383c266ef25   7 weeks ago     188MB
+redis               latest    9509c4dd19fb   2 months ago    116MB
+eclipse-mosquitto   latest    c5ad25289f64   2 months ago    13.3MB
+openjdk             22        2a271298cf19   3 months ago    557MB
+openjdk             8         b273004037cc   22 months ago   526MB
+openjdk             17        5e28ba2b4cdb   2 years ago     471MB
+		]]>
 		</screen>
 	</section>
 	<section id="docker.image.remove">
