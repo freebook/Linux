@@ -7,3 +7,6 @@
 [submodule "Project/Management"]
 	path = Project/Management
 	url = git@github.com:freebook/Management.git
+[submodule "DevOps/Management"]
+	path = DevOps/Management
+	url = git@github.com:freebook/Management.git
