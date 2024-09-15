@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Id: book.xml 559 2013-04-10 07:03:49Z netkiller $ -->
 <?xml-stylesheet type="text/xsl" href="../stylesheet/docbook-article.xsl"?>
-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V5.0//EN"
-	"/usr/local/Cellar/docbook/5.1_1/docbook/xml/5.0/dtd/docbook.dtd" [
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V5.0//EN" "/opt/homebrew/Cellar/docbook/5.1_1/docbook/xml/5.0/dtd/docbook.dtd" [
 
 	<!ENTITY % common.doctype.entity.xml 		SYSTEM "../common/doctype.entity.xml">
 	%common.doctype.entity.xml;
