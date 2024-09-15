@@ -8,11 +8,11 @@
 	<property name="workspace" value="${env.HOME}/workspace" />
 	<property name="docbook" value="${workspace}/${ant.project.name}" />
 	<property name="resources" value="images" />
-	<property name="public_html" value="${env.HOME}/git/netkiller.github.io/${ant.project.name}" />
+	<property name="public_html" value="${env.HOME}/tmp/netkiller.github.io/${ant.project.name}" />
 	<!--	<property name="public_html" value="${env.HOME}/tmp/${ant.project.name}" /> -->
 	<property name="htmlhelp" value="${env.HOME}/tmp/${ant.project.name}" />
 	<property name="epub" value="${tmp}/${ant.project.name}.tmp" />
-	<property name="download" value="${env.HOME}/git/netkiller.github.io/download" />
+	<property name="download" value="${env.HOME}/tmp/netkiller.github.io/download" />
 	<property name="epub.bookname" value="Netkiller-Monitoring" />
 	<property name="project.version" value="0.0.1" />
 	<property name="ant.log" value="/tmp/ant.log" />
