@@ -377,6 +377,7 @@ location / {
 
 <section id="server">
 	<title>server</title>
+
 	<section id="listen">
 		<title>listen</title>
 		<para>绑定IP地址</para>
@@ -406,14 +407,96 @@ location / {
 	</section>
 	<section id="server_name">
 		<title>server_name 配置</title>
-		<para>匹配所有域名</para>
-		<screen>
+		<section>
+			<title>默认配置</title>
+			<para>匹配所有域名</para>
+			<screen>
 			<![CDATA[
 	server_name _;
 			]]>
-		</screen>
-		<para>泛解析主机</para>
-		<screen>
+			</screen>
+		</section>
+		<section id="http.server.example">
+			<title>单域名虚拟主机</title>
+			<screen>
+			<![CDATA[
+# cat /etc/nginx/conf.d/images.conf
+server {
+	listen 80;
+	server_name images.example.com;
+	
+	#charset koi8-r;
+	access_log /var/log/nginx/images.access.log main;
+	
+	location / {
+		root /www/images;
+		index index.html index.htm;
+	}
+	
+	#error_page 404 /404.html;
+	
+	# redirect server error pages to the static page /50x.html
+	#
+	error_page 500 502 503 504 /50x.html;
+		location = /50x.html {
+		root /usr/share/nginx/html;
+	}
+	
+	# proxy the PHP scripts to Apache listening on 127.0.0.1:80
+	#
+	#location ~ \.php$ {
+	# proxy_pass http://127.0.0.1;
+	#}
+	
+	# pass the
+	PHP scripts to FastCGI server listening on 127.0.0.1:9000
+	#
+	#location ~ \.php$ {
+	# root html;
+	# fastcgi_pass 127.0.0.1:9000;
+	# fastcgi_index index.php;
+	# fastcgi_param SCRIPT_FILENAME /scripts$fastcgi_script_name;
+	# include fastcgi_params;
+	#}
+	
+	# deny access to .htaccess files, if Apache's document root
+	# concurs with nginx's one
+	#
+	#location ~ /\.ht {
+	# deny all;
+	#}
+}
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>多个域名绑定</title>
+			<para>绑定多个域名</para>
+			<screen>
+			<![CDATA[
+	server_name images.example.com img1.example.com img2.example.com;
+			]]>
+			</screen>
+		</section>
+
+		<section>
+			<title>泛解析主机</title>
+			<para>使用通配符匹配</para>
+			<screen>
+			<![CDATA[
+	server_name *.example.com
+	server_name www.*;
+			]]>
+			</screen>
+			<para>正则匹配</para>
+			<screen>
+			<![CDATA[
+	server_name ~^(.+)\.example\.com$;
+	server_name ~^(www\.)?(.+)$;
+			]]>
+			</screen>
+			<para>泛解析主机</para>
+			<screen>
 			<![CDATA[
 server {
     listen       80;
@@ -439,7 +522,8 @@ server {
     ...
 }			
 			]]>
-		</screen>
+			</screen>
+		</section>
 	</section>
 	<section id="http.server.location">
 		<title>location</title>
@@ -1560,79 +1644,3 @@ http {
 
 	&chapter.nginx.proxy.xml;
 	&chapter.nginx.conf.fastcgi.xml;
-
-
-<section id="http.server.example">
-	<title>单域名虚拟主机</title>
-	<screen>
-			<![CDATA[
-# cat /etc/nginx/conf.d/images.conf
-server {
-	listen 80;
-	server_name images.example.com;
-	
-	#charset koi8-r;
-	access_log /var/log/nginx/images.access.log main;
-	
-	location / {
-		root /www/images;
-		index index.html index.htm;
-	}
-	
-	#error_page 404 /404.html;
-	
-	# redirect server error pages to the static page /50x.html
-	#
-	error_page 500 502 503 504 /50x.html;
-		location = /50x.html {
-		root /usr/share/nginx/html;
-	}
-	
-	# proxy the PHP scripts to Apache listening on 127.0.0.1:80
-	#
-	#location ~ \.php$ {
-	# proxy_pass http://127.0.0.1;
-	#}
-	
-	# pass the
-	PHP scripts to FastCGI server listening on 127.0.0.1:9000
-	#
-	#location ~ \.php$ {
-	# root html;
-	# fastcgi_pass 127.0.0.1:9000;
-	# fastcgi_index index.php;
-	# fastcgi_param SCRIPT_FILENAME /scripts$fastcgi_script_name;
-	# include fastcgi_params;
-	#}
-	
-	# deny access to .htaccess files, if Apache's document root
-	# concurs with nginx's one
-	#
-	#location ~ /\.ht {
-	# deny all;
-	#}
-}
-			]]>
-	</screen>
-
-	<para>绑定多个域名</para>
-	<screen>
-			<![CDATA[
-	server_name images.example.com img1.example.com img2.example.com;
-			]]>
-	</screen>
-	<para>使用通配符匹配</para>
-	<screen>
-			<![CDATA[
-	server_name *.example.com
-	server_name www.*;
-			]]>
-	</screen>
-	<para>正则匹配</para>
-	<screen>
-			<![CDATA[
-	server_name ~^(.+)\.example\.com$;
-	server_name ~^(www\.)?(.+)$;
-			]]>
-	</screen>
-</section>

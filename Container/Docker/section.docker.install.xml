@@ -401,7 +401,7 @@ docker volume rm $(docker volume ls -q)
 		</screen>
 	</section>
 	<section>
-		<title>早起版本</title>
+		<title>早期版本</title>
 		<section>
 			<title>CentOS 7 docker-ce</title>
 			<para>

@@ -13,7 +13,8 @@
 DOCKER_OPTS="-H unix:///var/run/docker.sock -H tcp://0.0.0.0:2375"
 			]]>
 			</screen>
-			<para>修改/usr/lib/systemd/system/docker.service 在[Service]的ExexStart=下面增加一行$DOCKER_OPTS</para>
+			<para>修改/usr/lib/systemd/system/docker.service
+				在[Service]的ExexStart=下面增加一行$DOCKER_OPTS</para>
 			<screen>
 			<![CDATA[
 [Unit]
@@ -164,7 +165,8 @@ $ docker --tlsverify \
   info			
 			]]>
 			</screen>
-			<para>我们可以把 ca.pem cert.pem key.pem 三个文件放入客户端 ~/.docker 中，然后配置环境变量就可以简化命令了</para>
+			<para>我们可以把 ca.pem cert.pem key.pem 三个文件放入客户端 ~/.docker
+				中，然后配置环境变量就可以简化命令了</para>
 			<screen>
 			<![CDATA[
 $ export DOCKER_HOST=tcp://192.168.5.10:2376 DOCKER_TLS_VERIFY=1
@@ -247,6 +249,11 @@ Server:
 	</section>
 	<section>
 		<title>镜像配置</title>
+		<screen>
+		<![CDATA[
+		
+		]]>
+		</screen>
 		<section>
 			<title>临时选择镜像</title>
 			<para>您可以在 Docker 守护进程启动时传入 --registry-mirror 参数：</para>
@@ -258,7 +265,8 @@ $ docker --registry-mirror=https://registry.docker-cn.com daemon
 		</section>
 		<section>
 			<title>切换国内镜像</title>
-			<para>设置默认镜像，修改 /etc/docker/daemon.json 文件，并添加上 registry-mirrors 键值。</para>
+			<para>设置默认镜像，修改 /etc/docker/daemon.json 文件，并添加上 registry-mirrors 键值。
+			</para>
 			<para>Docker 中国官方镜像</para>
 			<screen>
 		<![CDATA[

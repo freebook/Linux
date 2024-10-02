@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="letsencrypt">
+<chapter id="index"><?dbhtml dir="letsencrypt" ?>
 	<title>Let's Encrypt's 免费SSL证书</title>
-	<section>
+	<section id="letsencrypt.install">
 		<title>安装 certbot 工具</title>
 		<screen>
 			<![CDATA[
@@ -26,7 +26,7 @@ certbot certonly --nginx --webroot -w /opt/nginx/html -d netkiller.cn -m netkill
 			]]>
 		</screen>
 	</section>
-	<section id="免费SS证书">
+	<section id="letsencrypt.webroot">
 		<title>生成证书，HTTP 文件认证</title>
 		<screen>
 		<![CDATA[
@@ -35,7 +35,7 @@ certbot certonly --nginx --webroot -w /opt/nginx/html -d netkiller.cn -m netkill
 		]]>
 		</screen>
 	</section>
-	<section>
+	<section id="letsencrypt.dns">
 		<title>手工生成证书，基于 DNS 认证</title>
 		<para></para>
 		<screen>
@@ -138,7 +138,7 @@ server {
 			]]>
 		</screen>
 	</section>
-	<section>
+	<section id="letsencrypt.update">
 		<title>证书更新</title>
 		<para>证书到期之后需要更新</para>
 		<screen>
@@ -189,17 +189,5 @@ root@iZ6we2qd9sralbm45a85ebZ:~# ls /etc/letsencrypt/live/netkiller.cn/
 cert.pem  chain.pem  fullchain.pem  privkey.pem  README		
 		]]>
 		</screen>
-	</section>
-
-	<section>
-		<title>Chrome</title>
-		<para>
-			检查你的浏览器是否支持 HTTP2
-			<ulink url="chrome://net-internals/#http2" />
-		</para>
-		<screen>
-			HTTP/2 Enabled: true
-		</screen>
-		<para>表示正常</para>
 	</section>
 </chapter>

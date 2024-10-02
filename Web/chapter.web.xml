@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.web.xml 624 2013-06-21 10:50:00Z netkiller $ -->
+	&chapter.letsencrypt.xml;
 	&chapter.nginx.xml;
 	&chapter.openresty.xml;
 	&chapter.caddy.xml;
@@ -8,8 +9,7 @@
 	&chapter.lighttpd.xml;
 	&chapter.resin.xml;
 	&chapter.web.app;
-	&chapter.web.optimization;
 	&chapter.varnish.xml;
     &chapter.web.cherokee.xml;
     &chapter.web.jetty.xml;
-	&chapter.letsencrypt.xml;
+   	&chapter.web.optimization;
