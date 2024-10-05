@@ -4,7 +4,7 @@
 	<section>
 		<title>开启远程访问</title>
 		<section>
-			<title></title>
+			<title>/etc/sysconfig/docker</title>
 
 			<para>修改/etc/sysconfig/docker文件，在最后增加一行DOCKER_OPTS</para>
 			<para>vim /etc/sysconfig/docker</para>
@@ -14,7 +14,8 @@ DOCKER_OPTS="-H unix:///var/run/docker.sock -H tcp://0.0.0.0:2375"
 			]]>
 			</screen>
 			<para>修改/usr/lib/systemd/system/docker.service
-				在[Service]的ExexStart=下面增加一行$DOCKER_OPTS</para>
+				在[Service]的ExexStart=下面增加一行$DOCKER_OPTS
+			</para>
 			<screen>
 			<![CDATA[
 [Unit]
@@ -109,7 +110,7 @@ $ docker info
 			</screen>
 		</section>
 		<section>
-			<title></title>
+			<title>检查 listen 端口</title>
 			<para>查看端口</para>
 			<screen>
 			<![CDATA[
@@ -137,43 +138,7 @@ DOCKER_HOST=tcp://192.168.57.110:2376
 			]]>
 			</screen>
 		</section>
-		<section>
-			<title>配置SSL证书</title>
-			<para></para>
-			<screen>
-			<![CDATA[
-{
-  "tlsverify": true,
-  "tlscert": "/etc/docker/server-cert.pem",
-  "tlskey": "/etc/docker/server-key.pem",
-  "tlscacert": "/etc/docker/ca.pem",
-  "hosts":[
-    "unix:///var/run/docker.sock",
-    "tcp://0.0.0.0:2376"
-  ]
-}			
-			]]>
-			</screen>
-			<para></para>
-			<screen>
-			<![CDATA[
-$ docker --tlsverify \
-  --tlscacert=/Users/neo/test/ca.pem \
-  --tlscert=/Users/neo/test/cert.pem \
-  --tlskey=/Users/neo/test/key.pem \
-  -H=192.168.57.110:2376 \
-  info			
-			]]>
-			</screen>
-			<para>我们可以把 ca.pem cert.pem key.pem 三个文件放入客户端 ~/.docker
-				中，然后配置环境变量就可以简化命令了</para>
-			<screen>
-			<![CDATA[
-$ export DOCKER_HOST=tcp://192.168.5.10:2376 DOCKER_TLS_VERIFY=1
-$ docker info			
-			]]>
-			</screen>
-		</section>
+
 		<section>
 			<title>通过 SSH 连接远程 Docker </title>
 			<screen>
@@ -249,9 +214,13 @@ Server:
 	</section>
 	<section>
 		<title>镜像配置</title>
+		<para>查询是否配置了镜像</para>
 		<screen>
 		<![CDATA[
-		
+[root@netkiller ~]# sudo docker info | grep -A3 "Registry Mirrors:"
+ Registry Mirrors:
+  https://a180fad96c78c15d011853a05d49bdd2.mirror.swr.myhuaweicloud.com/
+ Live Restore Enabled: false		
 		]]>
 		</screen>
 		<section>
@@ -317,4 +286,42 @@ $ docker --registry-mirror=https://registry.docker-cn.com daemon
 		</screen>
 	</section>
 
+	<section>
+		<title>配置SSL证书</title>
+		<para></para>
+		<screen>
+			<![CDATA[
+{
+  "tlsverify": true,
+  "tlscert": "/etc/docker/server-cert.pem",
+  "tlskey": "/etc/docker/server-key.pem",
+  "tlscacert": "/etc/docker/ca.pem",
+  "hosts":[
+    "unix:///var/run/docker.sock",
+    "tcp://0.0.0.0:2376"
+  ]
+}			
+			]]>
+		</screen>
+		<para></para>
+		<screen>
+			<![CDATA[
+$ docker --tlsverify \
+  --tlscacert=/Users/neo/test/ca.pem \
+  --tlscert=/Users/neo/test/cert.pem \
+  --tlskey=/Users/neo/test/key.pem \
+  -H=192.168.57.110:2376 \
+  info			
+			]]>
+		</screen>
+		<para>我们可以把 ca.pem cert.pem key.pem 三个文件放入客户端 ~/.docker
+			中，然后配置环境变量就可以简化命令了
+		</para>
+		<screen>
+			<![CDATA[
+$ export DOCKER_HOST=tcp://192.168.5.10:2376 DOCKER_TLS_VERIFY=1
+$ docker info			
+			]]>
+		</screen>
+	</section>
 </section>
