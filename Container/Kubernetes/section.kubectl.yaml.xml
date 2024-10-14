@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- <section id="kubectl.yaml"> <title>Kubernetes YAML</title> <section id="Service"> <title>Service</title> </section> </section> -->
-<chapter id="kubectl.example">
+<section id="kubectl.example">
 	<title>kubectl example</title>
 	<section>
 		<title>私有 registry</title>
@@ -51,4 +51,4 @@ minikube service hello-minikube --url
 		]]>
 		</screen>
 	</section>
-</chapter>
+</section>

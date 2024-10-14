@@ -72,7 +72,8 @@
 	&chapter.aliyun.xml;
 	&chapter.docker.xml;
 	&chapter.podman.xml;
-	&part.kubernetes.xml;
+	&chapter.kubernetes.xml;
+	&chapter.rancher.xml;
 	&chapter.container.xml;
 	&chapter.virtualization.xml;
 	<!-- =========================================================================== -->

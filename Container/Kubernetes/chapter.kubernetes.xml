@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<chapter id="index"><?dbhtml dir="kubernetes" ?>
+	<title>Kubernetes</title>
 	&section.minikube.xml;
 	&section.microk8s.xml;
-	&chapter.kubectl.xml;
+	&section.kubectl.xml;
 	&section.kubectl.yaml.xml;
 	&section.istio.xml;
 	&section.kubeapps.xml;
 	&section.kubernetes.helm.xml;
 	&section.kubernetes.faq.xml;
+</chapter>	
