@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="ntp">
-	<title>Synchronizes system time using the Network Time Protocol (NTP)</title>
+	<title>Synchronizes system time using the Network Time Protocol (NTP)
+	</title>
 	<para>http://www.ntp.org</para>
 	<section id="chronyd">
 		<title>chronyd</title>
-		<subtitle>chronyd 是 ntpd 的替代品，在 CentOS 8 中 chronyd 取代了 ntpd 的位置</subtitle>
+		<subtitle>chronyd 是 ntpd 的替代品，在 CentOS 8 中 chronyd 取代了 ntpd 的位置
+		</subtitle>
 		<para>安装</para>
 		<screen>
 		<![CDATA[
@@ -14,9 +16,112 @@ systemctl start chronyd
 		]]>
 		</screen>
 		<para>chrony 的配置文件位于 /etc/chrony.conf </para>
-		<para>查看同步状态</para>
-		<screen>
-		<![CDATA[
+
+		<section>
+			<title>配置文件</title>
+			<screen>
+			<![CDATA[
+[root@testing ~]# cat /etc/chrony.conf 
+
+server ntp.myhuaweicloud.com minpoll 4 maxpoll 10 iburst
+
+# Ignore stratum in source selection.
+stratumweight 0.05
+
+# Record the rate at which the system clock gains/losses time.
+driftfile /var/lib/chrony/drift
+
+# Enable kernel RTC synchronization.
+rtcsync
+
+# In first three updates step the system clock instead of slew
+# if the adjustment is larger than 10 seconds.
+makestep 10 3
+
+# Allow NTP client access from local network.
+#allow 192.168/16
+
+# Listen for commands only on localhost.
+bindcmdaddress 127.0.0.1
+bindcmdaddress ::1
+
+# Serve time even if not synchronized to any NTP server.
+#local stratum 10
+
+# Disable logging of client accesses.
+noclientlog
+
+# Send a message to syslog if a clock adjustment is larger than 0.5 seconds.
+logchange 0.5
+
+logdir /var/log/chrony
+#log measurements statistics tracking			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title></title>
+			<screen>
+			<![CDATA[
+			
+			]]>
+			</screen>
+			<para>查看同步时间服务器列表</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# chronyc sources
+MS Name/IP address         Stratum Poll Reach LastRx Last sample               
+===============================================================================
+^- a.chl.la                      2   8   372   643    -30ms[  -28ms] +/-  143ms
+^- ntp1.flashdance.cx            2   8   177   455  +1760us[+3207us] +/-  166ms
+^* 203.107.6.88                  2   9   377   193  +2478us[+3976us] +/-   27ms
+^- ntp8.flashdance.cx            2   8   135   445  -8210us[-6856us] +/-  183ms		
+			]]>
+			</screen>
+		</section>
+
+		<section>
+			<title>查看同步状态</title>
+			<screen>
+			<![CDATA[
+[root@testing ~]# chronyc sourcestats -v
+                             .- Number of sample points in measurement set.
+                            /    .- Number of residual runs with same sign.
+                           |    /    .- Length of measurement set (time).
+                           |   |    /      .- Est. clock freq error (ppm).
+                           |   |   |      /           .- Est. error in freq.
+                           |   |   |     |           /         .- Est. offset.
+                           |   |   |     |          |          |   On the -.
+                           |   |   |     |          |          |   samples. \
+                           |   |   |     |          |          |             |
+Name/IP Address            NP  NR  Span  Frequency  Freq Skew  Offset  Std Dev
+==============================================================================			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>同步状态</title>
+			<screen>
+			<![CDATA[
+[root@testing ~]# chronyc tracking
+Reference ID    : 00000000 ()
+Stratum         : 0
+Ref time (UTC)  : Thu Jan 01 00:00:00 1970
+System time     : 0.000000000 seconds fast of NTP time
+Last offset     : +0.000000000 seconds
+RMS offset      : 0.000000000 seconds
+Frequency       : 0.000 ppm slow
+Residual freq   : +0.000 ppm
+Skew            : 0.000 ppm
+Root delay      : 1.000000000 seconds
+Root dispersion : 1.000000000 seconds
+Update interval : 0.0 seconds
+Leap status     : Not synchronised			
+			]]>
+			</screen>
+			<para>查看同步状态</para>
+			<screen>
+			<![CDATA[
 [root@localhost ~]# chronyc tracking
 Reference ID    : CB6B0658 (203.107.6.88)
 Stratum         : 3
@@ -31,20 +136,18 @@ Root delay      : 0.053295419 seconds
 Root dispersion : 0.001933562 seconds
 Update interval : 256.4 seconds
 Leap status     : Normal		
-		]]>
-		</screen>
-		<para>查看同步时间服务器列表</para>
-		<screen>
-		<![CDATA[
-[root@localhost ~]# chronyc sources
-MS Name/IP address         Stratum Poll Reach LastRx Last sample               
-===============================================================================
-^- a.chl.la                      2   8   372   643    -30ms[  -28ms] +/-  143ms
-^- ntp1.flashdance.cx            2   8   177   455  +1760us[+3207us] +/-  166ms
-^* 203.107.6.88                  2   9   377   193  +2478us[+3976us] +/-   27ms
-^- ntp8.flashdance.cx            2   8   135   445  -8210us[-6856us] +/-  183ms		
-		]]>
-		</screen>
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>手工同步</title>
+			<screen>
+			<![CDATA[
+[root@testing ~]# chronyc -a makestep 
+200 OK			
+			]]>
+			</screen>
+		</section>
 	</section>
 
 	<section id="openntpd">
