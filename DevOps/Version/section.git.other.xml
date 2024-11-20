@@ -1,5 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: section.git.gitolite.xml 472 2012-10-24 05:30:15Z netkiller $ -->
+<section id="archive">
+	<title>archive 代码打包</title>
+	<section>
+		<title>查看支持的格式</title>
+		<para>git archive -l</para>
+		<screen>
+		<![CDATA[
+neo@Netkiller-Mac-mini-M4 netkiller % git archive -l
+tar
+tgz
+tar.gz
+zip
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>导出分支代码</title>
+		<programlisting>
+		<![CDATA[
+neo@Netkiller-Mac-mini-M4 netkiller % git archive --format tar.gz --output "/tmp/output.tar.gz" master		
+		]]>
+		</programlisting>
+		<para>从 dev 分支导出 zip 格式代码，压缩率 -0 (0-9 取值，数字越大压缩率越高)</para>
+		<screen>
+		<![CDATA[
+git archive --format zip --output "./output.zip" dev -0		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>导出制定版本</title>
+		<screen>
+		<![CDATA[
+git archive --format tar.gz --output "./output.tar.gz" 5ca16ac0d603603	
+		]]>
+		</screen>
+	</section>
+	
+</section>
 <section>
 	<title>git rev-parse - Pick out and massage parameters</title>
 	<section>
