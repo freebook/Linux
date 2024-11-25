@@ -1,6 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<section id="git.show">
+	<title>git show - Show various types of objects</title>
+	<screen>
+		<![CDATA[
+$ git show
+commit f6fda79f2f550ea3b2c1b483371ed5d12499ac35
+Author: chen <openunix@163.com>
+Date:   Sat Nov 1 08:50:45 2008 -0400
+
+    add a new file
+
+diff --git a/newfile b/newfile
+new file mode 100644
+index 0000000..b659464
+--- /dev/null
++++ b/newfile
+@@ -0,0 +1 @@
++hello world!!!
+		]]>
+	</screen>
+	<section>
+		<title>查看指定版本的文件内容</title>
+		<screen>
+			<![CDATA[
+neo@MacBook-Pro-Neo ~/workspace/devops % git show fda886b0ae1526020c366cea2b747b3ceda18ff6:setup.py			
+			]]>
+		</screen>
+	</section>
+</section>
 <section id="git.log">
-	<title>git log</title>
+	<title>git log 日志</title>
 	<screen>
 		<![CDATA[
 git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
@@ -166,19 +195,19 @@ git log --since="2023-02-11" --no-merges --pretty=format:"%h %an %ai %s"
 		]]>
 		</screen>
 	</section>
-</section>
-<section id="git.reflog">
-	<title>reflog</title>
-	<para>reflog 类似我们软件中的 Undo/Redo ，就像使用 CMD+Z / CMD + SHIFT +Z
-		一样进行版本的切换和回滚。reflog 日志是保存在本地的，并不会 push 到远程，这就是他与 git log 的区别。
-	</para>
-	<para>git reflog 与 git log的区别，git log 可以显示所有提交过的版本信息，但不包括已经被删除的 commit 记录和 reset 的操作
-	</para>
-	<para>git reflog
-		可以是显示所有的操作记录，包括提交，回退的操作。一般用来找出操作记录中的版本号，进行回退，常用于恢复本地的错误操作。
-	</para>
-	<para>git reflog 用法</para>
-	<screen>
+	<section id="git.reflog">
+		<title>reflog</title>
+		<para>reflog 类似我们软件中的 Undo/Redo ，就像使用 CMD+Z / CMD + SHIFT +Z
+			一样进行版本的切换和回滚。reflog 日志是保存在本地的，并不会 push 到远程，这就是他与 git log 的区别。
+		</para>
+		<para>git reflog 与 git log的区别，git log 可以显示所有提交过的版本信息，但不包括已经被删除的 commit
+			记录和 reset 的操作
+		</para>
+		<para>git reflog
+			可以是显示所有的操作记录，包括提交，回退的操作。一般用来找出操作记录中的版本号，进行回退，常用于恢复本地的错误操作。
+		</para>
+		<para>git reflog 用法</para>
+		<screen>
 		<![CDATA[
 Neo-iMac:test.netkiller.cn neo$ git reflog
 120f1bb (HEAD -> main) HEAD@{0}: reset: moving to 120f1bb
@@ -187,12 +216,40 @@ de5ca5d (origin/main, origin/HEAD) HEAD@{2}: reset: moving to HEAD
 de5ca5d (origin/main, origin/HEAD) HEAD@{3}: pull: Fast-forward
 120f1bb (HEAD -> main) HEAD@{4}: clone: from 192.168.30.5:netkiller.cn/test.netkiller.cn.git
 		]]>
-	</screen>
-	<para>回滚到 120f1bb</para>
-	<screen>
+		</screen>
+		<para>回滚到 120f1bb</para>
+		<screen>
 		<![CDATA[
 Neo-iMac:test.netkiller.cn neo$ git reset --hard 120f1bb
 HEAD is now at 120f1bb Initial commit		
 		]]>
-	</screen>
+		</screen>
+	</section>
+</section>
+<section>
+	<title>git rev-parse - Pick out and massage parameters</title>
+	<section>
+		<title>获得当前提交ID</title>
+		<screen>
+		<![CDATA[
+root@netkiller /d/s/test (master)# git rev-parse HEAD
+a7b5dc12c595e8abaae8800a86f93b475e833ce3		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>--short</title>
+		<screen>
+		<![CDATA[
+root@netkiller /d/s/test (master)# git rev-parse --short HEAD
+a7b5dc1		
+		]]>
+		</screen>		
+		<screen>
+		<![CDATA[
+PS D:\GitHub\Java> git rev-parse --short HEAD
+4d1fc8e		
+		]]>
+		</screen>
+	</section>
 </section>

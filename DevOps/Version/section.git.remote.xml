@@ -3,37 +3,38 @@
 	<title>远程仓库</title>
 	<section>
 		<title>查看远程地址</title>
+		<para>查看远程仓库</para>
 		<screen>
-			<para>查看远程仓库</para>
-			<screen>
 		<![CDATA[
 git remote show
 origin
 		]]>
-			</screen>
-			<para></para>
-			<screen>
-			<![CDATA[
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
 neo@MacBook-Pro-Neo ~> git remote -v
 origin	git@192.168.30.5:netkiller.cn/www.netkiller.cn.git (fetch)
 origin	git@192.168.30.5:netkiller.cn/www.netkiller.cn.git (push)			
 			]]>
-			</screen>
+		</screen>
+		<screen>
 		<![CDATA[
 neo@MacBook-Pro-M2 ~/netkiller (dev)> git remote get-url origin
 ssh://git@gitlab.netkiller.cn/galaxy/ensd-fscs.git		
 		]]>
 		</screen>
-		<section>
-			<title>显示远程地址</title>
-			<screen>
+	</section>
+	<section>
+		<title>显示远程地址</title>
+		<screen>
 	<![CDATA[
 neo@MacBook-Pro-M2 ~/w/test (master)> git ls-remote --get-url origin
 ssh://git@gitlab.netkiller.cn:/chenjingfeng/test.git	
 	]]>
-			</screen>
-		</section>
+		</screen>
 	</section>
+
 	<section>
 		<title>添加远程仓库</title>
 		<para>添加远程仓库</para>
@@ -79,72 +80,398 @@ git remote rm origin
 		]]>
 		</screen>
 	</section>
-	<section>
+	<section id="git.server">
 		<title>仓库共享</title>
-		<section id="git.server">
-			<title>Setting up a git server</title>
-			<para>First we need to setup a user with a home folder. We will store
-				all the repositories in this users home folder.
-			</para>
-			<screen>
+		<para>准备一台服务器</para>
+		<para>首先创建一个名为 git 用户</para>
+		<screen>
 		<![CDATA[
-sudo adduser git
+[git@netkiller ~]$ sudo adduser git
 		]]>
-			</screen>
-			<para>Rather than giving out the password to the git user account use
-				ssh keys to login so that you can have multiple developers connect
-				securely and easily.
-			</para>
-			<para>Next we will make a repository. For this example we will work
-				with a repository called example. Login as the user git and add the
-				repository.
-			</para>
-			<para>login to remote server</para>
-			<screen>
+		</screen>
+		<para>然后给 git 用户设置一个密码，当然你也可以不用密码，使用SSH证书登陆，将需要登陆 git 服务器的公钥证书添加到 .ssh/authorized_keys 文件</para>
+		<screen>
 		<![CDATA[
-ssh git@REMOTE_SERVER
+[git@netkiller ~]$ cat .ssh/authorized_keys 
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDJi+vHwfOhm4hx2UWn5knfBe/k6d9K2aXOHhUVP43uSBlg8wmW/YVwoJo8B/XY3KqGFxxWyd1AVP6J273UBik= neo@MacBook-Pro-M2.local
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABlcFRWoBigBw7HwrszParVuJjP3wyJeOdNSevcgjG2ql985Vg3TXi2i2tNXQQeJGXwgWaDPsnowJtuGrnIXUw0bQa/iuBiMF40= neo@netkiller		
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABlcFRWoBigBw7HwPsnowJtuGrnMF40rszParVuJjP3wyJIXUw0bQa/iuBieOdNSevcgjG2ql985Vg3TXi2i2tNXQQeJGXwgWaD= neo@Macmini-M4.local	
+
+[git@netkiller ~]$ ll .ssh/
+total 16
+-rw------- 1 git git 1145 Oct 10 11:19 authorized_keys
+-rw------- 1 git git 2603 Oct 10 11:19 id_rsa
+-rw------- 1 git git 1774 Oct 10 11:19 known_hosts
 		]]>
-			</screen>
-			<para>once logged in</para>
-			<screen>
+		</screen>
+		<para>注意 authorized_keys 文件的权限</para>
+		<para>登陆 git 服务器</para>
+		<screen>
 		<![CDATA[
-sudo mkdir example.git
-cd example.git
-sudo git --bare init
-Initialized empty Git repository in /home/git/example.git/
+ssh git@git.netkiller.cn
 		]]>
-			</screen>
-			<para>That’s all there is to creating a repository. Notice we named
-				our folder with a .git extension.
-			</para>
-			<para>Also notice the ‘bare’ option. By default the git repository
-				assumes that you’ll be using it as your working directory, so git
-				stores the actual bare repository files in a .git directory
-				alongside all the project files. Since we are setting up a remote
-				server we don’t need copies of the files on the filesystem. Instead,
-				all we need are the deltas and binary objects of the repository. By
-				setting ‘bare’ we tell git not to store the current files of the
-				repository only the diffs. This is optional as
-				you may have need to be able to browse the files on your remote server.
-			</para>
-			<para>Finally all you need to do is add your files to the remote
-				repository. We will assume you don’t have any files yet.
-			</para>
-			<screen>
+		</screen>
+		<para>创建一个共享仓库</para>
+		<screen>
 		<![CDATA[
-mkdir example
-cd example
-git init
+[git@netkiller ~]$ sudo mkdir example.git
+[git@netkiller ~]$ cd example.git
+[git@netkiller example.git]$ sudo git --bare init
+[git@netkiller example.git]$ Initialized empty Git repository in /home/git/example.git/
+		]]>
+		</screen>
+		<para>注意，与本地仓库不同，这里需要使用 --bare 选项。</para>
+		<para>创建分支，设置默认分支，这里使用 main 作为默认分支，当然你也可以使用 master</para>
+		<screen>
+		<![CDATA[
+[git@netkiller example.git]$ git branch -m main
+[git@netkiller example.git]$ git config --global init.defaultBranch main		
+		]]>
+		</screen>
+		<para>致辞 git server 部分已经完成</para>
+		<para>下面你可以测试一下 git 服务器的工作情况</para>
+		<screen>
+		<![CDATA[
+neo@Neo-Mac-mini-M4 workspace % git clone git@git.netkiller.cn:example.git
+Cloning into 'example'...
+Warning: Permanently added 'git.netkiller.cn' (ED25519) to the list of known hosts.
+warning: You appear to have cloned an empty repository.		
+		]]>
+		</screen>
+		<para>如果是已存在的git 仓库，可以使用 git remote add origin git@REMOTE_SERVER:example.git 修改</para>
+		<screen>
+		<![CDATA[
 touch README
 git add README
 git commit -m 'first commit'
 git remote add origin git@REMOTE_SERVER:example.git
 git push origin master
 		]]>
-			</screen>
-			<para>replace REMOTE_SERVER with your server name or IP</para>
+		</screen>
+	</section>
+	<section id="git-daemon">
+	<title>git-daemon 服务器</title>
+	<section>
+		<title>git-daemon - A really simple server for git repositories</title>
+		<para>在/home/gitroot/ 上运行 git 守护进程</para>
+		<screen><![CDATA[
+$ cd /home/gitroot
+$ mkdir test.git
+$ cd test.git
+$ git --bare init --shared
+Initialized empty shared Git repository in /home/gitroot/test.git/
+	]]></screen>
+		<screen>
+	<![CDATA[
+git daemon --verbose --export-all --base-path=/home/gitroot --enable=receive-pack --reuseaddr
+	]]>
+		</screen>
+		<para>允许push,否则该仓库只能clone/pull</para>
+		<screen><![CDATA[
+sudo git daemon --verbose --export-all --base-path=/home/gitroot --enable=upload-pack --enable=upload-archive --enable=receive-pack
+	]]></screen>
+		<para>或者增加配置项</para>
+		<screen><![CDATA[
+$ git config daemon.receivepack true
+$ git config --file config receive.denyCurrentBranch ignore
+	]]></screen>
+	</section>
+	<section id="git-daemon-sysvinit">
+		<title>git-daemon-sysvinit</title>
+		<para>for a read-only repo:</para>
+		<screen>
+	<![CDATA[
+$ sudo apt-get install git-daemon-sysvinit
 
-		</section>
+
+$ dpkg -l git-daemon-sysvinit
+Desired=Unknown/Install/Remove/Purge/Hold
+| Status=Not/Inst/Conf-files/Unpacked/halF-conf/Half-inst/trig-aWait/Trig-pend
+|/ Err?=(none)/Reinst-required (Status,Err: uppercase=bad)
+||/ Name                                   Version                  Architecture             Description
++++-======================================-========================-========================-==================================================================================
+ii  git-daemon-sysvinit                    1:1.7.10.4-1ubuntu1      all                      fast, scalable, distributed revision control system (git-daemon service)
+
+
+$ dpkg -L git-daemon-sysvinit
+/.
+/usr
+/usr/share
+/usr/share/git-core
+/usr/share/git-core/sysvinit
+/usr/share/git-core/sysvinit/sentinel
+/usr/share/doc
+/usr/share/doc/git-daemon-sysvinit
+/usr/share/doc/git-daemon-sysvinit/copyright
+/usr/share/doc/git-daemon-sysvinit/README.Debian
+/etc
+/etc/default
+/etc/default/git-daemon
+/etc/init.d
+/etc/init.d/git-daemon
+/usr/share/doc/git-daemon-sysvinit/changelog.Debian.gz
+	]]>
+		</screen>
+		<para>配置 /etc/default/git-daemon 文件</para>
+	</section>
+	<section id="git.xinetd">
+		<title>inet.conf / xinetd 方式启动</title>
+		<procedure>
+			<title>git-daemon</title>
+			<step>
+				<para>/etc/shells</para>
+				<para>/etc/shells 最后一行添加 '/usr/bin/git-shell'</para>
+				<screen><![CDATA[
+$ grep git /etc/shells
+/usr/bin/git-shell
+			]]></screen>
+			</step>
+			<step>
+				<para>add new user 'git' and 'gitroot' for git</para>
+				<para>you need to assign shell with /usr/bin/git-shell</para>
+				<screen><![CDATA[
+$ sudo adduser git --shell /usr/bin/git-shell
+$ sudo adduser gitroot --ingroup git --shell /bin/bash
+			]]></screen>
+				<para>/etc/passwd</para>
+				<screen><![CDATA[
+$ grep git /etc/passwd
+git:x:1001:1002:,,,:/home/git:/usr/bin/git-shell
+gitroot:x:1002:1002:,,,:/home/gitroot:/bin/bash
+			]]></screen>
+			</step>
+			<step>
+				<para>/etc/services</para>
+				<screen><![CDATA[
+$ grep 9418 /etc/services
+git             9418/tcp                        # Git Version Control System
+			]]></screen>
+			</step>
+			<step>
+				<para>/etc/inet.conf</para>
+				<screen><![CDATA[
+$ grep git /etc/inet.conf
+git     stream  tcp     nowait  nobody \
+/usr/bin/git-daemon git-daemon --inetd --syslog --export-all /home/gitroot
+			]]></screen>
+				<para>reload inetd</para>
+				<screen><![CDATA[
+$ sudo pkill -HUP inetd
+			]]></screen>
+			</step>
+			<step>
+				<para>xinetd</para>
+				<para>目前的Linux逐渐使用xinetd.d替代inet.conf，如Redhat系列已经不再使用inet.conf, Ubuntu系列发行版已经不预装inet与xinetd</para>
+				<screen><![CDATA[
+$ apt-cache search xinetd
+globus-gfork-progs - Globus Toolkit - GFork Programs
+rlinetd - gruesomely over-featured inetd replacement
+update-inetd - inetd configuration file updater
+xinetd - replacement for inetd with many enhancements
+
+$ sudo apt-get install xinetd
+			]]></screen>
+				<para>/etc/xinetd.d/</para>
+				<screen><![CDATA[
+$ cat /etc/xinetd.d/git
+# default: off
+# description: The git server offers access to git repositories
+service git
+{
+	disable 		= no
+	type            = UNLISTED
+	port            = 9418
+	socket_type     = stream
+	protocol 		= tcp
+	wait            = no
+	user            = gitroot
+	server          = /usr/bin/git
+	server_args     = daemon --inetd --export-all --enable=receive-pack --reuseaddr --base-path=/home/gitroot
+	log_on_failure  += USERID
+}
+			]]></screen>
+				<para>reload xinitd</para>
+				<screen><![CDATA[
+$ sudo /etc/init.d/xinetd reload
+* Reloading internet superserver configuration xinetd                                       [ OK ]
+			]]></screen>
+			</step>
+		</procedure>
+	</section>
+	<section id="git-daemon-run">
+		<title>git-daemon-run</title>
+		<screen><![CDATA[
+$ sudo apt-get install git-daemon-run
+	]]></screen>
+		<para>安装后会创建下面两个用户</para>
+		<screen><![CDATA[
+$ cat /etc/passwd | grep git
+gitlog:x:117:65534::/nonexistent:/bin/false
+gitdaemon:x:118:65534::/nonexistent:/bin/false
+	]]></screen>
+		<para>git-daemon-run 包携带的文件</para>
+		<screen><![CDATA[
+$ dpkg -L git-daemon-run
+/.
+/etc
+/etc/sv
+/etc/sv/git-daemon
+/etc/sv/git-daemon/run
+/etc/sv/git-daemon/log
+/etc/sv/git-daemon/log/run
+/usr
+/usr/share
+/usr/share/doc
+/usr/share/doc/git-daemon-run
+/usr/share/doc/git-daemon-run/changelog.gz
+/usr/share/doc/git-daemon-run/changelog.Debian.gz
+/usr/share/doc/git-daemon-run/README.Debian
+/usr/share/doc/git-daemon-run/copyright
+	]]></screen>
+		<para>同时创建下面配置文件</para>
+		<screen><![CDATA[
+$ find /etc/sv/git-daemon/
+/etc/sv/git-daemon/
+/etc/sv/git-daemon/run
+/etc/sv/git-daemon/supervise
+/etc/sv/git-daemon/log
+/etc/sv/git-daemon/log/run
+/etc/sv/git-daemon/log/supervise
+	]]></screen>
+		<para>编辑/etc/sv/git-daemon/run配置</para>
+		<screen>
+	<![CDATA[
+$ sudo vim /etc/sv/git-daemon/run
+
+#!/bin/sh
+exec 2>&1
+echo 'git-daemon starting.'
+exec chpst -ugitdaemon \
+"$(git --exec-path)"/git-daemon --verbose --reuseaddr \
+--base-path=/var/cache /var/cache/git
+	]]>
+		</screen>
+		<para></para>
+		<screen><![CDATA[
+git-daemon --verbose --reuseaddr \
+--base-path=/var/cache /var/cache/git
+
+改为
+
+git-daemon --verbose --reuseaddr \
+--enable=receive-pack --export-all --base-path=/opt/git
+	]]></screen>
+		<tip>
+			<para>
+				* 我加上了一个--export-all 使用该选项后，在git仓库中就不必创建git-daemon-export-ok文件。
+			</para>
+			<para>其他选项--enable=upload-pack --enable=upload-archive --enable=receive-pack</para>
+		</tip>
+		<para>/etc/services 文件中加入</para>
+		<screen><![CDATA[
+# Local services
+git             9418/tcp                        # Git Version Control System
+	]]></screen>
+		<para>确认已经加入</para>
+		<screen><![CDATA[
+$ grep 9418 /etc/services
+	]]></screen>
+		<para>启动git-daemon</para>
+		<screen><![CDATA[
+$ sudo sv stop git-daemon
+
+or
+
+$ sudo runsv git-daemon
+runsv git-daemon: fatal: unable to change to directory: file does not exist
+	]]></screen>
+		<para>扫描git端口，确认git-daemon已经启动</para>
+		<screen><![CDATA[
+$ nmap localhost
+
+Starting Nmap 5.00 ( http://nmap.org ) at 2012-01-31 10:45 CST
+Warning: Hostname localhost resolves to 2 IPs. Using 127.0.0.1.
+Interesting ports on localhost (127.0.0.1):
+Not shown: 989 closed ports
+PORT     STATE SERVICE
+21/tcp   open  ftp
+22/tcp   open  ssh
+53/tcp   open  domain
+80/tcp   open  http
+111/tcp  open  rpcbind
+139/tcp  open  netbios-ssn
+445/tcp  open  microsoft-ds
+1723/tcp open  pptp
+3128/tcp open  squid-http
+3306/tcp open  mysql
+9418/tcp open  git
+	]]></screen>
 
 	</section>
+	<section id="git.daemon.test">
+		<title>Testing</title>
+		<screen>
+	<![CDATA[
+$ sudo mkdir -p /opt/git/example.git
+$ cd /opt/git/example.git
+$ git init
+$ sudo vim example.git/.git/config
+[receive]
+denyCurrentBranch = ignore
+
+$ sudo chown gitdaemon -R /opt/git/*
+$ touch git-daemon-export-ok
+	]]>
+		</screen>
+		<para>.git/config 文件应该是下面这样</para>
+		<screen><![CDATA[
+$ cat example.git/.git/config
+[core]
+repositoryformatversion = 0
+filemode = true
+bare = false
+logallrefupdates = true
+
+[receive]
+denyCurrentBranch = ignore
+	]]></screen>
+		<para>git-clone git://localhost/example.git</para>
+		<screen>
+	<![CDATA[
+neo@deployment:/tmp$ git clone git://localhost/example.git example.git
+Cloning into example.git...
+warning: You appear to have cloned an empty repository.
+neo@deployment:/tmp$ cd example.git/
+neo@deployment:/tmp/example.git$ echo helloworld > hello.txt
+neo@deployment:/tmp/example.git$ git add hello.txt
+neo@deployment:/tmp/example.git$ git commit -m 'Initial commit'
+[master (root-commit) 65a0f83] Initial commit
+1 files changed, 1 insertions(+), 0 deletions(-)
+create mode 100644 hello.txt
+	]]>
+		</screen>
+		<para>我们添加了一些文件 push 到服务器</para>
+		<screen><![CDATA[
+$ git push origin master
+Counting objects: 3, done.
+Delta compression using up to 2 threads.
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (3/3), 214 bytes, done.
+Total 3 (delta 0), reused 0 (delta 0)
+To git://localhost/example.git
+* [new branch]      master -> master
+	]]></screen>
+		<para>然后再git clone，可以看到文件数目</para>
+		<screen>
+	<![CDATA[
+$ git-clone git://localhost/example.git
+Cloning into example...
+remote: Counting objects: 3, done.
+remote: Compressing objects: 100% (2/2), done.
+remote: Total 3 (delta 0), reused 0 (delta 0)
+Receiving objects: 100% (3/3), done.
+	]]>
+		</screen>
+	</section>
+</section>
 </section>

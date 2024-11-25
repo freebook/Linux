@@ -53,40 +53,9 @@ $ cat ~/.gitconfig
 	&section.git.repo.xml;
 	&section.git.branch.xml;
 	&section.git.log.xml;
-	&section.git.remote.xml;
-
-	
-	<section id="git.show">
-		<title>git show - Show various types of objects</title>
-		<screen>
-		<![CDATA[
-$ git show
-commit f6fda79f2f550ea3b2c1b483371ed5d12499ac35
-Author: chen <openunix@163.com>
-Date:   Sat Nov 1 08:50:45 2008 -0400
-
-    add a new file
-
-diff --git a/newfile b/newfile
-new file mode 100644
-index 0000000..b659464
---- /dev/null
-+++ b/newfile
-@@ -0,0 +1 @@
-+hello world!!!
-		]]>
-		</screen>
-		<section>
-			<title>查看指定版本的文件内容</title>
-			<screen>
-			<![CDATA[
-neo@MacBook-Pro-Neo ~/workspace/devops % git show fda886b0ae1526020c366cea2b747b3ceda18ff6:setup.py			
-			]]>
-			</screen>
-		</section>
-	</section>
 	&section.git.merge.xml;
 	&section.git.diff.xml;
+	&section.git.remote.xml;
 	&section.git.submodule.xml;
 	&section.git.lfs.xml;
 	&section.git.config.xml;
