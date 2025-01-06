@@ -214,6 +214,143 @@ visudo -c
 			]]>
 		</screen>
 	</section>
+	<section id="rockylinux.net">
+		<title>.Net 环境</title>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# dnf search dotnet
+Last metadata expiration check: 0:30:16 ago on Mon 06 Jan 2025 11:11:05 AM CST.
+=============================================================== Name Matched: dotnet ================================================================
+dotnet-apphost-pack-6.0.x86_64 : Targeting Pack for Microsoft.NETCore.App 6.0
+dotnet-apphost-pack-7.0.x86_64 : Targeting Pack for Microsoft.NETCore.App 7.0
+dotnet-apphost-pack-8.0.x86_64 : Targeting Pack for Microsoft.NETCore.App 8.0
+dotnet-apphost-pack-9.0.x86_64 : Targeting Pack for Microsoft.NETCore.App 9.0
+dotnet-host.x86_64 : .NET command line launcher
+dotnet-hostfxr-6.0.x86_64 : .NET command line host resolver
+dotnet-hostfxr-7.0.x86_64 : .NET command line host resolver
+dotnet-hostfxr-8.0.x86_64 : .NET command line host resolver
+dotnet-hostfxr-9.0.x86_64 : .NET command line host resolver
+dotnet-runtime-6.0.x86_64 : NET 6.0 runtime
+dotnet-runtime-7.0.x86_64 : NET 7.0 runtime
+dotnet-runtime-8.0.x86_64 : NET 8.0 runtime
+dotnet-runtime-9.0.x86_64 : NET 9.0 runtime
+dotnet-runtime-dbg-8.0.x86_64 : Managed debug symbols NET 8.0 runtime
+dotnet-runtime-dbg-9.0.x86_64 : Managed debug symbols NET 9.0 runtime
+dotnet-sdk-6.0.x86_64 : .NET 6.0 Software Development Kit
+dotnet-sdk-7.0.x86_64 : .NET 7.0 Software Development Kit
+dotnet-sdk-8.0.x86_64 : .NET 8.0 Software Development Kit
+dotnet-sdk-9.0.x86_64 : .NET 9.0 Software Development Kit
+dotnet-sdk-aot-9.0.x86_64 : Ahead-of-Time (AOT) support for the .NET 9.0 Software Development Kit
+dotnet-sdk-dbg-8.0.x86_64 : Managed debug symbols for the .NET 8.0 Software Development Kit
+dotnet-sdk-dbg-9.0.x86_64 : Managed debug symbols for the .NET 9.0 Software Development Kit
+dotnet-targeting-pack-6.0.x86_64 : Targeting Pack for Microsoft.NETCore.App 6.0
+dotnet-targeting-pack-7.0.x86_64 : Targeting Pack for Microsoft.NETCore.App 7.0
+dotnet-targeting-pack-8.0.x86_64 : Targeting Pack for Microsoft.NETCore.App 8.0
+dotnet-targeting-pack-9.0.x86_64 : Targeting Pack for Microsoft.NETCore.App 9.0
+dotnet-templates-6.0.x86_64 : .NET 6.0 templates
+dotnet-templates-7.0.x86_64 : .NET 7.0 templates
+dotnet-templates-8.0.x86_64 : .NET 8.0 templates
+dotnet-templates-9.0.x86_64 : .NET 9.0 templates
+		]]>
+		</screen>
+		<section>
+			<title>运行环境</title>
+			<para>只安装运行境</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# dnf install dotnet-runtime-7.0
+			]]>		
+			</screen>
+		</section>
+		<section>
+			<title>开发包</title>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# dnf install dotnet-sdk-7.0
+			]]>
+			</screen>			
+		</section>
+		<section id="aspnetcore">
+			<title>aspnetcore</title>
+			<programlisting>
+			<![CDATA[
+[root@netkiller ~]# dnf search aspnetcore
+Last metadata expiration check: 0:31:08 ago on Mon 06 Jan 2025 11:11:05 AM CST.
+======================================================== Name & Summary Matched: aspnetcore =========================================================
+aspnetcore-targeting-pack-6.0.x86_64 : Targeting Pack for Microsoft.AspNetCore.App 6.0
+aspnetcore-targeting-pack-7.0.x86_64 : Targeting Pack for Microsoft.AspNetCore.App 7.0
+aspnetcore-targeting-pack-8.0.x86_64 : Targeting Pack for Microsoft.AspNetCore.App 8.0
+aspnetcore-targeting-pack-9.0.x86_64 : Targeting Pack for Microsoft.AspNetCore.App 9.0
+============================================================= Name Matched: aspnetcore ==============================================================
+aspnetcore-runtime-6.0.x86_64 : ASP.NET Core 6.0 runtime
+aspnetcore-runtime-7.0.x86_64 : ASP.NET Core 7.0 runtime
+aspnetcore-runtime-8.0.x86_64 : ASP.NET Core 8.0 runtime
+aspnetcore-runtime-9.0.x86_64 : ASP.NET Core 9.0 runtime
+aspnetcore-runtime-dbg-8.0.x86_64 : Managed debug symbols for the ASP.NET Core 8.0 runtime
+aspnetcore-runtime-dbg-9.0.x86_64 : Managed debug symbols for the ASP.NET Core 9.0 runtime			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>后台运行</title>
+			<para></para>
+			<programlisting>
+			<![CDATA[
+[Unit]
+Description="Netkiller Service"
+Wants=network-online.target
+StartLimitIntervalSec=60
+StartLimitBurst=5
+ 
+[Service]
+WorkingDirectory=/srv/RCT/WD.Net.Web.Admin
+ExecStart=dotnet /srv/RCT/WD.Net.Web.Admin/bin/Release/net7.0/WD.Net.Web.Admin.dll --urls "http://*:8086"
+Restart=always
+RestartSec=10s
+StartLimitInterval=0 
+
+[Install]
+WantedBy=default.target
+			]]>
+			</programlisting>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# systemctl start api.service
+[root@netkiller ~]# systemctl status api.service			
+			]]>
+			</screen>
+			<para>配置文件中设置端口</para>
+			<programlisting>
+			<![CDATA[
+dotnet YourApp.dll --urls "http://*:5002"			
+			]]>
+			</programlisting>
+			<para>在 appsettings.json 或 appsettings.Production.json 中直接配置端口号：</para>
+			<programlisting>
+			<![CDATA[
+示例：
+
+{
+  "Kestrel": {
+    "Endpoints": {
+      "Http": {
+        "Url": "http://localhost:5003"
+      }
+    }
+  }
+}			
+			]]>
+			</programlisting>
+			<para></para>
+			<screen>
+			<![CDATA[
+[root@netkiller net7.0]# ss -lnt | egrep "8085|8086"
+LISTEN 0      512                *:8086            *:*          
+LISTEN 0      512                *:8085            *:* 			
+			]]>
+			</screen>
+		</section>
+	</section>
 </section>
 <section id="AlmaLinux">
 	<title>AlmaLinux</title>
@@ -701,14 +838,14 @@ EOF
 		<para></para>
 		<screen>
 			<![CDATA[
-[root@testing ~]# chmod +x /etc/rc.local
+[root@netkiller ~]# chmod +x /etc/rc.local
 
-[root@testing ~]# systemctl enable rc-local
+[root@netkiller ~]# systemctl enable rc-local
 Created symlink /etc/systemd/system/multi-user.target.wants/rc-local.service → /usr/lib/systemd/system/rc-local.service.
 
-[root@testing ~]# systemctl start rc-local	
+[root@netkiller ~]# systemctl start rc-local	
 
-[root@testing ~]# systemctl status rc-local
+[root@netkiller ~]# systemctl status rc-local
 ● rc-local.service - /etc/rc.d/rc.local Compatibility
    Loaded: loaded (/usr/lib/systemd/system/rc-local.service; enabled; vendor preset: disabled)
    Active: active (exited) since Mon 2021-08-16 12:57:16 CST; 2s ago
@@ -738,7 +875,36 @@ sudo sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
 		]]>
 		</screen>
 	</section>
-
+	<section>
+		<title>The following signatures couldn't be verified because the public key is not available: NO_PUBKEY</title>
+		<screen>
+		<![CDATA[
+W: GPG error: https://mirrors.cloud.tencent.com/debian-security buster/updates InRelease: The following signatures couldn't be verified because the public key is not available: NO_PUBKEY 112695A0E562B32A NO_PUBKEY 54404762BBB6E853
+E: The repository 'https://mirrors.cloud.tencent.com/debian-security buster/updates InRelease' is not signed.
+N: Updating from such a repository can't be done securely, and is therefore disabled by default.
+N: See apt-secure(8) manpage for repository creation and user configuration details.
+E: The repository 'https://mirrors.cloud.tencent.com/debian buster-backports Release' does not have a Release file.
+N: Updating from such a repository can't be done securely, and is therefore disabled by default.
+N: See apt-secure(8) manpage for repository creation and user configuration details.
+E: The repository 'https://mirrors.aliyun.com/dotnet/apt stable Release' does not have a Release file.
+N: Updating from such a repository can't be done securely, and is therefore disabled by default.
+N: See apt-secure(8) manpage for repository creation and user configuration details.
+E: The repository 'https://mirrors.cloud.tencent.com/dotnet/apt stable Release' does not have a Release file.
+N: Updating from such a repository can't be done securely, and is therefore disabled by default.
+N: See apt-secure(8) manpage for repository creation and user configuration details.
+		]]>
+		</screen>
+		<para>解决方案</para>
+		<screen>
+		<![CDATA[
+ubuntu@VM-0-13-ubuntu:/etc/apt$ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 54404762BBB6E853
+Executing: /tmp/apt-key-gpghome.IEJiYBE5PB/gpg.1.sh --keyserver keyserver.ubuntu.com --recv-keys 54404762BBB6E853
+gpg: key A48449044AAD5C5D: public key "Debian Security Archive Automatic Signing Key (11/bullseye) <ftpmaster@debian.org>" imported
+gpg: Total number processed: 1
+gpg:               imported: 1		
+		]]>
+		</screen>
+	</section>		
 
 </section>
 <section id="install.centos8">
@@ -1073,7 +1239,7 @@ visudo -c
 		<para>/etc/rc.local 是一个开机启动脚本</para>
 		<screen>
 		<![CDATA[
-[root@testing ~]# cat /etc/rc.local
+[root@netkiller ~]# cat /etc/rc.local
 #!/bin/bash
 # THIS FILE IS ADDED FOR COMPATIBILITY PURPOSES
 #
@@ -1107,14 +1273,14 @@ EOF
 		<para></para>
 		<screen>
 			<![CDATA[
-[root@testing ~]# chmod +x /etc/rc.d/rc.local		
+[root@netkiller ~]# chmod +x /etc/rc.d/rc.local		
 
-[root@testing ~]# systemctl enable rc-local
+[root@netkiller ~]# systemctl enable rc-local
 Created symlink /etc/systemd/system/multi-user.target.wants/rc-local.service → /usr/lib/systemd/system/rc-local.service.
 
-[root@testing ~]# systemctl start rc-local	
+[root@netkiller ~]# systemctl start rc-local	
 
-[root@testing ~]# systemctl status rc-local
+[root@netkiller ~]# systemctl status rc-local
 ● rc-local.service - /etc/rc.d/rc.local Compatibility
    Loaded: loaded (/usr/lib/systemd/system/rc-local.service; enabled; vendor preset: disabled)
    Active: active (exited) since Mon 2021-08-16 12:57:16 CST; 2s ago
