@@ -50,6 +50,14 @@ $ cat ~/.gitconfig
 			]]></screen>
 		</step>
 	</procedure>
+	<section>
+		<title>指定目录</title>
+		<screen>
+		<![CDATA[
+git -C /srv/rct pull		
+		]]>
+		</screen>
+	</section>
 	&section.git.repo.xml;
 	&section.git.branch.xml;
 	&section.git.log.xml;
