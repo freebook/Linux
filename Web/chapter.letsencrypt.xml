@@ -3,28 +3,46 @@
 	<title>Let's Encrypt's 免费SSL证书</title>
 	<section id="letsencrypt.install">
 		<title>安装 certbot 工具</title>
-		<screen>
+
+		<section>
+			<title>CentOS/Rocky Linux</title>
+			<screen>
 			<![CDATA[
 dnf install -y epel-release
 dnf install -y certbot python3-certbot-nginx	
 			]]>
-		</screen>
-		<para>如果是本地安装 nginx 请使用下面命令</para>
-		<screen>
+			</screen>
+			<para>如果是本地安装 nginx 请使用下面命令</para>
+			<screen>
 			<![CDATA[
 certbot --nginx -d example.com -d www.example.com			
 			]]>
-		</screen>
-		<para>如果是 docker 安装 nginx 使用下面命令，只生成证书，然后使用 -v 参数将证书挂在到 docker 容器内即可
-		</para>
-		<screen>
+			</screen>
+			<para>如果是 docker 安装 nginx 使用下面命令，只生成证书，然后使用 -v 参数将证书挂在到 docker 容器内即可
+			</para>
+			<screen>
 			<![CDATA[
 mkdir -p /opt/nginx/cert
 docker cp nginx:/etc/nginx/conf.d /opt/nginx/conf.d
 			
 certbot certonly --nginx --webroot -w /opt/nginx/html -d netkiller.cn -m netkiller@msn.com --agree-tos
 			]]>
-		</screen>
+			</screen>
+
+		</section>
+		<section>
+			<title>Ubuntu</title>
+			<screen>
+			<![CDATA[
+$ sudo apt install python3-certbot-nginx			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+certbot certonly -d *.netkiller.cn --manual --preferred-challenges dns			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="letsencrypt.webroot">
 		<title>生成证书，HTTP 文件认证</title>

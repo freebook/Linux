@@ -195,6 +195,134 @@ git log --since="2023-02-11" --no-merges --pretty=format:"%h %an %ai %s"
 		]]>
 		</screen>
 	</section>
+	<section id="git.log.diff-filter">
+		<title>过滤</title>
+		<screen>
+		<![CDATA[
+neo@Neo-Mac-mini-M4 ~/G/python (master)> git log --diff-filter=D --summary | grep delete
+            deleted:    "Netkiller Python \346\211\213\346\234\255.docx"
+            deleted:    crawler/__pycache__/requests.cpython-39.pyc
+ delete mode 100644 "Netkiller Python \346\211\213\346\234\255.docx"
+ delete mode 100644 crawler/__pycache__/requests.cpython-39.pyc
+ delete mode 100644 crawler/requests-get.py
+ delete mode 100644 intesting/99.py
+ delete mode 100644 intesting/love.py
+ delete mode 100644 intesting/test.py
+ delete mode 100644 netkiller-2021-02-16.log
+ delete mode 100644 new.docx
+ delete mode 100644 numpy/test.py
+ delete mode 100644 pandas/demo/html.py
+ delete mode 100644 pandas/method/date.py
+ delete mode 100644 pyaudio/client.py
+ delete mode 100644 pyaudio/server.py
+ delete mode 100644 single.py
+ delete mode 100644 test.xlsx
+ delete mode 100644 type/str.py
+            deleted:    pandas/demo/doc.html
+ delete mode 100644 pandas/demo/doc.html
+ delete mode 100644 "pandas/\345\233\242\350\264\255.xlsx"
+ delete mode 100644 netkiller.pid
+ delete mode 100644 pandas/dataframe/demo1.py
+ delete mode 100644 terminal/progress-demo.py		
+		]]>
+		</screen>
+	</section>
+	<section id="git.log.all">
+		<title>all</title>
+		<screen>
+		<![CDATA[
+neo@Neo-Mac-mini-M4 ~/G/python (master) [SIGINT]> git log --all -- pandas/demo/html.py
+commit 7af7df5fce170692b6ad35e0c8e52300c4e96bc0 (HEAD -> master, origin/master, origin/HEAD)
+Author: Neo Chan <netkiller@msn.com>
+Date:   Tue Dec 3 00:37:45 2024 +0800
+
+            deleted:    "Netkiller Python \346\211\213\346\234\255.docx"
+            deleted:    crawler/__pycache__/requests.cpython-39.pyc
+
+commit efb002d74f6fd05cc2fdaf1111b431699d4562bf
+Author: neo <netkiller@msn.com>
+Date:   Thu Apr 4 23:45:54 2024 +0800
+
+            modified:   pandas/demo/html.py
+
+commit bc23e7890c79eac5a79b7d49cb58918dcd22ab40
+Author: neo <netkiller@msn.com>
+Date:   Thu Mar 14 17:04:01 2024 +0800
+
+            modified:   .gitignore
+            modified:   .vscode/settings.json
+            modified:   pandas/demo/html.py
+
+commit 16abfa18f09533884e8594d407a767725d75f455
+Author: neo <netkiller@msn.com>
+Date:   Tue Dec 19 16:43:25 2023 +0800
+
+            modified:   pandas/demo/html.py
+
+commit 758edc1210100b64ea60c34f3f38589d670c3ccc
+Author: neo <netkiller@msn.com>
+Date:   Tue Sep 5 09:14:20 2023 +0800
+
+            modified:   .vscode/settings.json
+            modified:   pandas/demo/html.py
+
+commit 631e5b5be42b392f92b90505213fca9db52415d9
+Author: neo <netkiller@msn.com>
+Date:   Sat May 27 16:09:39 2023 +0800
+
+            deleted:    pandas/demo/doc.html
+            modified:   pandas/demo/html.py		
+		]]>
+		</screen>
+	</section>
+	<section id="git.log.full-history">
+		<title>full-history</title>
+		<screen>
+		<![CDATA[
+neo@Neo-Mac-mini-M4 ~/G/python (master) [1]> git log --all --full-history -- pandas/demo/html.py
+commit 7af7df5fce170692b6ad35e0c8e52300c4e96bc0 (HEAD -> master, origin/master, origin/HEAD)
+Author: Neo Chan <netkiller@msn.com>
+Date:   Tue Dec 3 00:37:45 2024 +0800
+
+            deleted:    "Netkiller Python \346\211\213\346\234\255.docx"
+            deleted:    crawler/__pycache__/requests.cpython-39.pyc
+
+commit efb002d74f6fd05cc2fdaf1111b431699d4562bf
+Author: neo <netkiller@msn.com>
+Date:   Thu Apr 4 23:45:54 2024 +0800
+
+            modified:   pandas/demo/html.py
+
+commit bc23e7890c79eac5a79b7d49cb58918dcd22ab40
+Author: neo <netkiller@msn.com>
+Date:   Thu Mar 14 17:04:01 2024 +0800
+
+            modified:   .gitignore
+            modified:   .vscode/settings.json
+            modified:   pandas/demo/html.py
+
+commit 16abfa18f09533884e8594d407a767725d75f455
+Author: neo <netkiller@msn.com>
+Date:   Tue Dec 19 16:43:25 2023 +0800
+
+            modified:   pandas/demo/html.py
+
+commit 758edc1210100b64ea60c34f3f38589d670c3ccc
+Author: neo <netkiller@msn.com>
+Date:   Tue Sep 5 09:14:20 2023 +0800
+
+            modified:   .vscode/settings.json
+            modified:   pandas/demo/html.py
+
+commit 631e5b5be42b392f92b90505213fca9db52415d9
+Author: neo <netkiller@msn.com>
+Date:   Sat May 27 16:09:39 2023 +0800
+
+            deleted:    pandas/demo/doc.html
+            modified:   pandas/demo/html.py		
+		]]>
+		</screen>
+	</section>
 	<section id="git.reflog">
 		<title>reflog</title>
 		<para>reflog 类似我们软件中的 Undo/Redo ，就像使用 CMD+Z / CMD + SHIFT +Z
