@@ -533,7 +533,28 @@ server {
 				index index.html index.htm;
 				}
 			]]></screen>
-
+		<section>
+			<title>精确匹配</title>
+			<programlisting>
+			<![CDATA[
+location = /test.html {
+    root   /usr/local/var/www/html;
+    index  /test.html;
+}			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>扩展名匹配</title>
+			<screen>
+			<![CDATA[
+location ~* \.(gif|jpg|jpeg)$ {
+    # 匹配所有以 gif jpg jpeg结尾的请求。
+}			
+			]]>
+			</screen>
+		</section>
+		
 		<section id="location.deny">
 			<title>禁止访问特定目录</title>
 			<para>location 匹配到特定的 path 将拒绝用户访问。</para>
