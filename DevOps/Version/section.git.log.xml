@@ -47,49 +47,8 @@ d670460b4b4aece5915caf5c68d12f560a9fe3e4
 		]]>
 		</screen>
 	</section>
-	<section>
-		<title>一行显示 --oneline</title>
-		<screen>
-			<![CDATA[
-Neo-iMac:test.netkiller.cn neo$ git log --name-status
-commit 120f1bb6ff391c6b9b24899804f0292370873485 (HEAD -> main)
-Author: 陈景峰 <neo@netkiller.cn>
-Date:   Thu Dec 2 04:10:16 2021 +0000
 
-    Initial commit
-
-A       README.md
-Neo-iMac:test.netkiller.cn neo$ git log --name-status --oneline
-120f1bb (HEAD -> main) Initial commit
-A       README.md			
-			]]>
-		</screen>
-		<para></para>
-		<screen>
-			<![CDATA[
-Neo-iMac:www.netkiller.cn neo$ git log --name-status --oneline --graph
-* 7ca7fb7 (HEAD -> main, origin/main, origin/HEAD) sign
-| M     README.md
-* ba9a9a6 更新.gitlab-ci.yml文件
-| M     .gitlab-ci.yml
-* 8af932e 更新.gitlab-ci.yml文件
-| M     .gitlab-ci.yml
-* 6fe467b Update app.js
-| M     app.js
-* a019da0 更新.gitlab-ci.yml文件
-| M     .gitlab-ci.yml
-* 65afb8b 更新.gitlab-ci.yml文件
-| M     .gitlab-ci.yml
-* 061c78d 更新.gitlab-ci.yml文件
-| A     .gitlab-ci.yml
-* 149daf5 Add new file
-| A     app.js
-* e927196 更新README.md
-  A     README.md			
-			]]>
-		</screen>
-	</section>
-	<section>
+	<section id="git.log.file">
 		<title>查看文件历史记录</title>
 		<screen>
 			<![CDATA[
@@ -139,6 +98,64 @@ ac8e573123142a2856d44d13307dd4c46b134ceb fixed logging bug
 		</screen>
 	</section>
 	<section>
+		<title>目录历史记录</title>
+		<screen>
+		<![CDATA[
+git log --pretty=oneline -- .		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+git log --oneline -- path/to/folder
+git log --name-status -- path/to/folder		
+git log --pretty=oneline -- path/to/folder
+git log -p -- path/to/folder		
+		]]>
+		</screen>
+	</section>
+	<section id="git.log.oneline">
+		<title>一行显示 --oneline</title>
+		<screen>
+			<![CDATA[
+Neo-iMac:test.netkiller.cn neo$ git log --name-status
+commit 120f1bb6ff391c6b9b24899804f0292370873485 (HEAD -> main)
+Author: 陈景峰 <neo@netkiller.cn>
+Date:   Thu Dec 2 04:10:16 2021 +0000
+
+    Initial commit
+
+A       README.md
+Neo-iMac:test.netkiller.cn neo$ git log --name-status --oneline
+120f1bb (HEAD -> main) Initial commit
+A       README.md			
+			]]>
+		</screen>
+		<para></para>
+		<screen>
+			<![CDATA[
+Neo-iMac:www.netkiller.cn neo$ git log --name-status --oneline --graph
+* 7ca7fb7 (HEAD -> main, origin/main, origin/HEAD) sign
+| M     README.md
+* ba9a9a6 更新.gitlab-ci.yml文件
+| M     .gitlab-ci.yml
+* 8af932e 更新.gitlab-ci.yml文件
+| M     .gitlab-ci.yml
+* 6fe467b Update app.js
+| M     app.js
+* a019da0 更新.gitlab-ci.yml文件
+| M     .gitlab-ci.yml
+* 65afb8b 更新.gitlab-ci.yml文件
+| M     .gitlab-ci.yml
+* 061c78d 更新.gitlab-ci.yml文件
+| A     .gitlab-ci.yml
+* 149daf5 Add new file
+| A     app.js
+* e927196 更新README.md
+  A     README.md			
+			]]>
+		</screen>
+	</section>
+	<section id="log.format">
 		<title>格式化</title>
 		<para>格式参数</para>
 		<screen>
