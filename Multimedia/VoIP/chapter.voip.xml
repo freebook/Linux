@@ -6,60 +6,28 @@
 	
 	&chapter.gatekeeper.xml;
 	&chapter.opensips.xml;
+	&chapter.asterisk.xml;
 	&section.voip.linphone.xml;
 	
-<chapter id="pbx">
-	<title>PBX</title>
+	
 
-	<section id="asterisk">
-		<title>Asterisk (OpenSource Linux PBX that supports both SIP and H.323)</title>
-		<para>http://www.asteriskpbx.com/</para>
-		<screen>
-netkiller@shenzhen:~$ apt-cache search Asterisk
-asterisk-app-dtmftotext - Text entry application for Asterisk
-asterisk-app-fax - Softfax application for Asterisk
-asterisk-app-misdn-v110 - V.110 protocol handler for Asterisk
-asterisk-chan-capi - Common ISDN API 2.0 implementation for Asterisk
-asterisk-chan-misdn - mISDN support for Asterisk
-asterisk-oh323 - oh323 channel driver for Asterisk
-asterisk-prompt-de - German voice prompts for the Asterisk PBX
-asterisk-prompt-es-co - Colombian Spanish voice prompts for Asterisk
-asterisk-prompt-fr - French voice prompts for Asterisk
-asterisk-prompt-it - Italian voice prompts for the Asterisk PBX
-asterisk-prompt-se - Swedish voice prompts for Asterisk
-asterisk-rate-engine - Asterisk least cost routing module
-asterisk-sounds-extra - Additional sound files for the Asterisk PBX
-destar - management interface for the Asterisk PBX
-gastman - GUI tool for Asterisk administration and monitoring
-iaxmodem - software modem with IAX2 connectivity
-kiax - IAX VoIP softphone
-libiax-dev - implementation of the Inter-Asterisk eXchange protocol (devel)
-libiax0 - implementation of the Inter-Asterisk eXchange protocol
-op-panel - switchboard type application for the Asterisk PBX
-asterisk-prompt-es - Spanish prompts for the Asterisk PBX
-asterisk - Open Source Private Branch Exchange (PBX)
-asterisk-bristuff - Open Source Private Branch Exchange (PBX) - BRIstuff-enabled version
-asterisk-classic - Open Source Private Branch Exchange (PBX) - original Digium version
-asterisk-config - config files for asterisk
-asterisk-dev - development files for asterisk
-asterisk-doc - documentation for asterisk
-asterisk-h323 - asterisk H.323 VoIP channel
-asterisk-sounds-main - sound files for asterisk
-asterisk-web-vmail - Web-based (CGI) voice mail interface for Asterisk
-netkiller@shenzhen:~$
-		</screen>
-	</section>
-
-	<section id="freeswitch">
+	<chapter id="freeswitch">
 		<title>FreeSWITCH</title>
 		<ulink url="https://www.freeswitch.org/" />
-	</section>
+	</chapter>
 	
-	<section id="yate">
+	<chapter id="yate">
 		<title>Yate - Yet Another Telephony Engine (includes SIP to H.323 translation)</title>
 		<para>http://yate.null.ro/pmwiki/</para>
-	</section>
-</chapter>
+		<section id="yate.server">
+			<title>Yate Server</title>
+		</section>
+		<section id="yate.client">
+			<title>Yate Client</title>
+			<para>http://yateclient.yate.ro/</para>
+		</section>
+	</chapter>
+
 
 	<chapter id="vocal">
 		<title>VOCAL (includes a SIP to H.323 translator)</title>
@@ -72,11 +40,7 @@ netkiller@shenzhen:~$
 		<title>linphone</title>
 		<para>http://www.linphone.org</para>
 	</section>
-	<section id="yate.client">
-		<title>Yate Client</title>
-		<para>http://yateclient.yate.ro/</para>
-	</section>
-	
+
 </chapter>
 
 </part>

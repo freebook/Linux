@@ -7,6 +7,66 @@
 	<section id="opensips.install">
 		<title>安装 OpenSIPS</title>
 		<section>
+			<title>Rocky Linux / AlmiLinux</title>
+			<para>安装 yum 源</para>
+			<screen>
+			<![CDATA[
+dnf install https://yum.opensips.org/3.5/releases/el/9/x86_64/opensips-yum-releases-3.5-6.el9.noarch.rpm
+			]]>
+			</screen>
+			<para>安装包</para>
+			<screen>
+			<![CDATA[
+dnf install opensips opensips-cli
+			]]>
+			</screen>
+			
+			<para>查看配置文件</para>
+			<screen>
+			<![CDATA[
+[root@testing ~]# ls /etc/opensips/
+dictionary.opensips  opensips.cfg  scenario_callcenter.xml  tls
+
+[root@testing ~]# cp /etc/opensips/opensips.cfg{,.original} 
+			]]>
+			</screen>
+			<para>检查配置文件</para>
+			<screen>
+			<![CDATA[
+[root@testing ~]# opensips -C
+Mar  1 17:44:51 [3320338] INFO:core:fix_poll_method: using epoll as the IO watch method (auto detected)
+Listening on
+             udp: 0.0.0.0 [0.0.0.0]:5060
+Aliases:
+
+Mar  1 17:44:51 [3320338] NOTICE:core:main: config file ok, exiting...
+			]]>
+			</screen>
+			<para>安装包</para>
+			<screen>
+			<![CDATA[
+[root@testing ~]# dnf install opensips-auth-modules opensips-berkeley-module
+			]]>
+			</screen>
+			
+			
+			<screen>
+			<![CDATA[
+[root@testing etc]# lsof -i:5060
+COMMAND      PID     USER   FD   TYPE   DEVICE SIZE/OFF NODE NAME
+opensips 3328387 opensips   46u  IPv4 30784823      0t0  UDP localhost:sip
+opensips 3328388 opensips   46u  IPv4 30784823      0t0  UDP localhost:sip
+opensips 3328389 opensips   46u  IPv4 30784823      0t0  UDP localhost:sip
+opensips 3328390 opensips   46u  IPv4 30784823      0t0  UDP localhost:sip
+opensips 3328391 opensips   46u  IPv4 30784823      0t0  UDP localhost:sip
+opensips 3328392 opensips   46u  IPv4 30784823      0t0  UDP localhost:sip
+opensips 3328393 opensips   46u  IPv4 30784823      0t0  UDP localhost:sip
+opensips 3328394 opensips   46u  IPv4 30784823      0t0  UDP localhost:sip
+opensips 3328395 opensips   46u  IPv4 30784823      0t0  UDP localhost:sip			
+			]]>
+			</screen>
+		</section>
+		<section>
 			<title>centos 6.5 默认安装</title>
 			<para>centos 6.5 环境默认 opensips 包含如下软件包版本为1.7</para>
 			<para># yum search opensips</para>

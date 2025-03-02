@@ -1,0 +1,512 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="asterisk">
+	<title>Asterisk (OpenSource Linux PBX that supports both SIP and H.323)
+	</title>
+	<para>http://www.asteriskpbx.com/</para>
+	<section>
+		<title>Redhat/CentOS/RockyLinux/AlmiLinux</title>
+		<screen>
+			<![CDATA[
+[root@testing ~]# dnf install asterisk asterisk-pjsip
+			]]>
+		</screen>
+		<screen>
+			<![CDATA[
+[root@testing ~]# ls /etc/asterisk/
+acl.conf              cdr.conf              dnsmgr.conf       modules.conf           say.conf
+adsi.conf             cdr_custom.conf       dsp.conf          musiconhold.conf       sla.conf
+aeap.conf             cdr_manager.conf      dundi.conf        muted.conf             smdi.conf
+agents.conf           cdr_syslog.conf       enum.conf         osp.conf               sorcery.conf
+alarmreceiver.conf    cel_beanstalkd.conf   extconfig.conf    phoneprov.conf         stasis.conf
+amd.conf              cel.conf              extensions.conf   prometheus.conf        statsd.conf
+ari.conf              cel_custom.conf       features.conf     queuerules.conf        stir_shaken.conf
+ast_debug_tools.conf  cli_aliases.conf      followme.conf     queues.conf            telcordia-1.adsi
+asterisk.adsi         cli.conf              http.conf         resolver_unbound.conf  udptl.conf
+asterisk.conf         cli_permissions.conf  indications.conf  res_parking.conf       users.conf
+ccss.conf             codecs.conf           logger.conf       res_stun_monitor.conf  vpb.conf
+cdr_beanstalkd.conf   confbridge.conf       manager.conf      rtp.conf
+[root@testing ~]#
+			]]>
+		</screen>
+		<screen>
+			<![CDATA[
+[root@testing ~]# cp /etc/asterisk/asterisk.conf{,.original} 
+			]]>
+		</screen>
+		<screen>
+			<![CDATA[
+[root@testing ~]# cp /etc/asterisk/extensions.conf{,.original} 
+
+[root@testing ~]# cat /etc/asterisk/extensions.conf
+[from-internal]
+exten = 100,1,Answer()
+same = n,Wait(1)
+same = n,Playback(hello-world)
+same = n,Hangup()
+			]]>
+		</screen>
+		<screen>
+			<![CDATA[
+[root@testing ~]# cp /etc/asterisk/pjsip.conf{,.original}			
+[root@testing ~]# cat /etc/asterisk/sip.conf
+[general]
+context=default
+
+[6001]
+type=friend
+context=from-internal
+host=dynamic
+secret=unsecurepassword
+disallow=all
+allow=ulaw
+			]]>
+		</screen>
+		<screen>
+			<![CDATA[
+[root@testing ~]# vim /etc/asterisk/pjsip.conf
+[root@testing ~]# cat /etc/asterisk/pjsip.conf
+[transport-udp]
+type=transport
+protocol=udp
+bind=0.0.0.0
+
+[6001]
+type=endpoint
+transport=transport-udp
+context=from-internal
+disallow=all
+allow=ulaw
+allow=gsm
+auth=6001
+aors=6001
+
+[6001]
+type=auth
+auth_type=userpass
+username=6001
+password=unsecurepassword
+
+[6001]
+type=aor
+max_contacts=1
+			]]>
+		</screen>
+		<screen>
+			<![CDATA[
+[root@testing ~]# systemctl enable asterisk
+[root@testing ~]# systemctl start asterisk
+[root@testing ~]# systemctl status asterisk
+● asterisk.service - Asterisk PBX and telephony daemon.
+     Loaded: loaded (/usr/lib/systemd/system/asterisk.service; disabled; preset: disabled)
+     Active: active (running) since Sat 2025-03-01 18:34:36 CST; 10s ago
+   Main PID: 3321189 (asterisk)
+      Tasks: 42 (limit: 100479)
+     Memory: 32.3M
+        CPU: 493ms
+     CGroup: /system.slice/asterisk.service
+             └─3321189 /usr/sbin/asterisk -f -C /etc/asterisk/asterisk.conf
+
+Mar 01 18:34:38 testing asterisk[3321189]: [Mar  1 18:34:38] WARNING[3321189]: loader.c:2487 load_modules: Module 'app_>
+Mar 01 18:34:38 testing asterisk[3321189]: [Mar  1 18:34:38] WARNING[3321189]: loader.c:2487 load_modules: Module 'app_>
+Mar 01 18:34:38 testing asterisk[3321189]: [Mar  1 18:34:38] ERROR[3321189]: loader.c:2508 load_modules: Error loading >
+Mar 01 18:34:38 testing asterisk[3321189]: [Mar  1 18:34:38] ERROR[3321189]: loader.c:2508 load_modules: Error loading >
+Mar 01 18:34:38 testing asterisk[3321189]: [Mar  1 18:34:38] ERROR[3321189]: loader.c:2508 load_modules: Failed to reso>
+Mar 01 18:34:38 testing asterisk[3321189]: [Mar  1 18:34:38] ERROR[3321189]: loader.c:2508 load_modules: res_stir_shake>
+Mar 01 18:34:38 testing asterisk[3321189]: [Mar  1 18:34:38] ERROR[3321189]: loader.c:2508 load_modules: cdr_syslog dec>
+Mar 01 18:34:38 testing asterisk[3321189]: [Mar  1 18:34:38] ERROR[3321189]: loader.c:2508 load_modules: Failed to reso>
+Mar 01 18:34:38 testing asterisk[3321189]: [Mar  1 18:34:38] ERROR[3321189]: loader.c:2508 load_modules: res_http_media>
+Mar 01 18:34:38 testing asterisk[3321189]: Asterisk Ready.
+			]]>
+		</screen>
+		<screen>
+			<![CDATA[
+[root@testing ~]# ss -lnp | grep asterisk
+u_str LISTEN 0      2                                                              /run/asterisk/asterisk.ctl 30717648               * 0    users:(("asterisk",pid=3322611,fd=5))
+
+udp   UNCONN 0      0                                                                                 0.0.0.0:56265            0.0.0.0:*    users:(("asterisk",pid=3322611,fd=8))
+
+udp   UNCONN 0      0                                                                                 0.0.0.0:4520             0.0.0.0:*    users:(("asterisk",pid=3322611,fd=17))
+
+udp   UNCONN 0      0                                                                                 0.0.0.0:5060             0.0.0.0:*    users:(("asterisk",pid=3322611,fd=10))
+
+udp   UNCONN 0      0                                                                                    [::]:43446               [::]:*    users:(("asterisk",pid=3322611,fd=9))			
+			]]>
+		</screen>
+		<screen>
+			<![CDATA[
+[root@testing ~]# asterisk -rx "pjsip list auths"
+
+  I/OAuth:  <AuthId/UserName.............................................................>
+==========================================================================================
+
+     Auth:  6001/6001
+
+Objects found: 1			
+			]]>
+		</screen>
+	</section>
+	<section>
+		<title>源码安装 asterisk-22</title>
+		<screen>
+			<![CDATA[
+cd /usr/local/src/
+wget https://downloads.asterisk.org/pub/telephony/asterisk/asterisk-22-current.tar.gz
+tar zxvf asterisk-22-current.tar.gz		
+cd asterisk-22.2.0/
+./configure
+make menuselect	
+			]]>
+		</screen>
+	</section>
+	<section>
+		<title>Ubuntu</title>
+		<screen>
+			<![CDATA[
+netkiller@shenzhen:~$ apt-cache search Asterisk
+asterisk-app-dtmftotext - Text entry application for Asterisk
+asterisk-app-fax - Softfax application for Asterisk
+asterisk-app-misdn-v110 - V.110 protocol handler for Asterisk
+asterisk-chan-capi - Common ISDN API 2.0 implementation for Asterisk
+asterisk-chan-misdn - mISDN support for Asterisk
+asterisk-oh323 - oh323 channel driver for Asterisk
+asterisk-prompt-de - German voice prompts for the Asterisk PBX
+asterisk-prompt-es-co - Colombian Spanish voice prompts for Asterisk
+asterisk-prompt-fr - French voice prompts for Asterisk
+asterisk-prompt-it - Italian voice prompts for the Asterisk PBX
+asterisk-prompt-se - Swedish voice prompts for Asterisk
+asterisk-rate-engine - Asterisk least cost routing module
+asterisk-sounds-extra - Additional sound files for the Asterisk PBX
+destar - management interface for the Asterisk PBX
+gastman - GUI tool for Asterisk administration and monitoring
+iaxmodem - software modem with IAX2 connectivity
+kiax - IAX VoIP softphone
+libiax-dev - implementation of the Inter-Asterisk eXchange protocol (devel)
+libiax0 - implementation of the Inter-Asterisk eXchange protocol
+op-panel - switchboard type application for the Asterisk PBX
+asterisk-prompt-es - Spanish prompts for the Asterisk PBX
+asterisk - Open Source Private Branch Exchange (PBX)
+asterisk-bristuff - Open Source Private Branch Exchange (PBX) - BRIstuff-enabled version
+asterisk-classic - Open Source Private Branch Exchange (PBX) - original Digium version
+asterisk-config - config files for asterisk
+asterisk-dev - development files for asterisk
+asterisk-doc - documentation for asterisk
+asterisk-h323 - asterisk H.323 VoIP channel
+asterisk-sounds-main - sound files for asterisk
+asterisk-web-vmail - Web-based (CGI) voice mail interface for Asterisk
+netkiller@shenzhen:~$
+			]]>
+		</screen>
+	</section>
+	<section>
+		<title>拨号规则设置</title>
+		<para>extensions.conf </para>
+		<screen>
+			<![CDATA[
+[root@testing ~]# cat /etc/asterisk/extensions.conf
+[from-internal]
+exten = 100,1,Answer()
+same = n,Wait(1)
+same = n,Playback(hello-world)
+same = n,Hangup()	
+			]]>
+		</screen>
+
+		<screen>
+			<![CDATA[
+[from-internal]
+exten => 10010,1,Dial(PJSIP/1111) /*当拨打10010时转到分机1111中*/
+ 
+exten => 10086,1,Dial(PJSIP/6666) /*当拨打10086时转到分机6666中*/
+ 
+exten => 110,1,Answer()  /*当拨打110时自动接听*/
+same => Wait(1)
+same => n,Playback(hello-world)
+same => n,Hangup()
+			]]>
+		</screen>
+		<screen>
+			<![CDATA[
+asterisk -rx “core restart now”
+asterisk -rvvvvv
+			]]>
+		</screen>
+	</section>
+	<section>
+		<title>pjsip</title>
+		<screen>
+			<![CDATA[
+testing*CLI> pjsip show auths
+
+  I/OAuth:  <AuthId/UserName.............................................................>
+==========================================================================================
+
+     Auth:  6001/6001
+
+Objects found: 1
+
+testing*CLI> 			
+			]]>
+		</screen>
+		<screen>
+			<![CDATA[
+testing*CLI> dialplan show 6001@from-internal
+There is no existence of 'from-internal' context
+Command 'dialplan show 6001@from-internal' failed.
+			]]>
+		</screen>
+		<screen>
+			<![CDATA[
+sip show peers
+			]]>
+		</screen>
+		<screen>
+			<![CDATA[
+			
+			]]>
+		</screen>
+
+	</section>
+	<section>
+		<title>配置例子</title>
+		<section>
+			<title>sip.conf</title>
+			
+
+			
+			<screen>
+			<![CDATA[
+[root@testing ~]# cat /etc/asterisk/sip.conf
+[general]
+context=default
+bindport=5060
+tcpbindaddr=0.0.0.0
+tcpenable=yes
+externip=139.9.54.211
+localnet=192.168.0.0/255.255.255.0;
+nat=force_rport,comedia
+canreinvite=no
+qualify=yes
+;directmedia=no
+nat=yes
+transport=udp
+
+
+[6000]
+type=friend
+context=default
+username=6000
+secret=6000
+host=dynamic
+;transport=tcp
+;transport=udp
+;nat=yes
+;directmedia=no
+disallow=all
+allow=ulaw
+allow=alaw
+allow=g722
+allow=g729
+;allow=h263
+;allow=h264
+
+[6001]
+type=friend
+context=default
+username=6001
+secret=6001
+host=dynamic
+;transport=udp
+;nat=yes
+;directmedia=no
+disallow=all
+allow=ulaw
+allow=alaw
+allow=g722
+allow=g729
+;allow=h263
+;allow=h264
+
+[6002]
+type=friend
+context=default
+username=6002
+secret=6002
+host=dynamic
+;transport=udp
+;nat=yes
+;directmedia=no
+disallow=all
+allow=ulaw
+allow=alaw
+allow=g722
+allow=g729
+;allow=h263
+;allow=h264
+
+[6003]
+type=friend
+context=default
+username=6003
+secret=6003
+host=dynamic
+;transport=udp
+;nat=yes
+;directmedia=no
+disallow=all
+allow=ulaw
+allow=alaw
+allow=g722
+allow=g729
+;allow=h263
+;allow=h264
+
+[6004]
+type=friend
+context=default
+username=6004
+secret=6004
+host=dynamic
+;transport=udp
+;nat=yes
+;directmedia=no
+disallow=all
+allow=ulaw
+allow=alaw
+allow=g722
+allow=g729
+;allow=h263
+;allow=h264			
+			]]>
+			</screen>
+			
+			<screen>
+			<![CDATA[
+[root@testing ~]# cat /etc/asterisk/extensions.conf
+[general]
+static=yes
+writeprotect=no
+
+[default]
+exten => 6001,1,Dial(SIP/6001)
+
+exten => 6002,1,Dial(SIP/6002)
+
+exten => 6003,1,Dial(SIP/6003)
+
+exten => 6000,1,Dial(SIP/6000)
+
+exten => 6004,1,Dial(SIP/6004)			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[]]>
+			</screen>
+			<screen>
+			<![CDATA[]]>
+			</screen>
+			<screen>
+			<![CDATA[]]>
+			</screen>
+			<screen>
+			<![CDATA[
+asterisk -rx "core restart now"
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>pjsip.conf</title>
+			<screen>
+			<![CDATA[
+[root@testing asterisk]# cat pjsip.conf
+[transport-udp]
+type=transport
+protocol=udp
+bind=0.0.0.0
+
+[6000]
+type=endpoint
+transport=transport-udp
+context=from-internal
+disallow=all
+allow=ulaw
+auth=auth
+aors=aors
+
+[auth]
+type=auth
+auth_type=userpass
+username=neo
+password=chen
+
+[aors]
+type=aor
+max_contacts=3
+
+[6001]
+type=endpoint
+transport=transport-udp
+context=from-internal
+disallow=all
+allow=ulaw
+allow=gsm
+auth=6001
+aors=6001
+
+[6001]
+type=auth
+auth_type=userpass
+password=6001
+username=unsecurepassword
+
+[6001]
+type=aor
+max_contacts=1
+
+[6002]
+type=endpoint
+transport=transport-udp
+context=from-internal
+disallow=all
+allow=ulaw
+auth=6002
+aors=6002
+
+[6002]
+type=auth
+auth_type=userpass
+username=6002
+password=unsecurepassword
+
+
+[6002]
+type=aor
+max_contacts=2
+
+[6003]
+type=endpoint
+transport=transport-udp
+context=from-internal
+disallow=all
+allow=ulaw
+auth=6003
+aors=6003
+
+[6003]
+type=auth
+auth_type=userpass
+username=6003
+password=unsecurepassword
+
+[6003]
+type=aor
+max_contacts=3			
+				]]>
+			</screen>
+			<screen>
+				<![CDATA[
+				
+				]]>
+			</screen>
+		</section>
+	</section>
+</chapter>
