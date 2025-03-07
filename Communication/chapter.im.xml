@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="im" ?>
+	<title>即时通信</title>
+	&section.im.matrix.xml;
+	&section.im.irc.xml;
+	&section.im.jabber.xml;
+	&section.im.innd.xml;
+</chapter>

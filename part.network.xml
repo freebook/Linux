@@ -1,13 +1,6 @@
 <part id="index"><?dbhtml dir="network" ?>
 	<title>Network Application</title>
 	&chapter.network.xml;
-	<chapter>
-		<title>即时通信</title>
-		&section.im.matrix.xml;
-		&section.im.irc.xml;
-		&section.im.jabber.xml;
-		&section.im.innd.xml;
-	</chapter>
 	&chapter.network.proxy;
 	&chapter.firewall.xml;
 	&chapter.network.tc.xml;

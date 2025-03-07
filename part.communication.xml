@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<part id="communication">
+	<title>文字/语音/视频 通信</title>
+	&chapter.im.xml;
+	&chapter.voip.xml;
+</part>	

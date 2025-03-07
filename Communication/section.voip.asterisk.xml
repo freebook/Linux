@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="asterisk">
+<section id="asterisk">
 	<title>Asterisk (OpenSource Linux PBX that supports both SIP and H.323)
 	</title>
 	<para>http://www.asteriskpbx.com/</para>
@@ -509,4 +509,4 @@ max_contacts=3
 			</screen>
 		</section>
 	</section>
-</chapter>
+</section>

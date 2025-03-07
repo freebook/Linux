@@ -28,9 +28,3 @@
 <!ENTITY chapter.rtsp.xml			SYSTEM "Stream/chapter.rtsp.xml">
 
 <!ENTITY chapter.miscellaneous.xml	SYSTEM "chapter.miscellaneous.xml">
-
-<!ENTITY chapter.voip.xml 			SYSTEM "VoIP/chapter.voip.xml">
-<!ENTITY chapter.opensips.xml 		SYSTEM "VoIP/chapter.opensips.xml">
-<!ENTITY chapter.gatekeeper.xml 	SYSTEM "VoIP/chapter.gatekeeper.xml">
-<!ENTITY chapter.asterisk.xml	 	SYSTEM "VoIP/chapter.asterisk.xml">
-<!ENTITY section.voip.linphone.xml 	SYSTEM "VoIP/section.voip.linphone.xml">

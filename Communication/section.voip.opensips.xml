@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="opensips">
+<section id="opensips">
 	<title>OpenSIPS</title>
 	<subtitle>OpenSER SIP Server 已经更名为 OpenSIPS</subtitle>
 	<para>OpenSER SIP Server 已经更名为 OpenSIPS</para>
@@ -457,4 +457,4 @@ new user '1005' added
 1002
 		</screen>
 	</section>
-</chapter>
+</section>

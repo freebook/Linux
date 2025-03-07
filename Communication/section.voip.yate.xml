@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="yate">
+	<title>Yate - Yet Another Telephony Engine (includes SIP to H.323 translation)</title>
+	<para>http://yate.null.ro/pmwiki/</para>
+	<section id="yate.server">
+		<title>Yate Server</title>
+		<para>安装编译工具</para>
+		<screen>
+		<![CDATA[
+dnf install automake g++
+			]]>
+		</screen>
+		
+		<screen>
+		<![CDATA[
+cd /usr/local/src/
+git clone https://github.com/yatevoip/yate.git
+cd yate/
+./autogen.sh
+./configure
+make
+make install-noapi
+		]]>
+		</screen>
+		<para>安装 Yate 服务器</para>
+		<screen>
+		<![CDATA[
+[root@testing yate]# cp packing/rpm/yate.service /etc/systemd/system/		
+
+vim /etc/systemd/system/yate.service
+
+ExecStart=/usr/bin/yate -d -p /var/run/yate.pid $OPTS
+
+改为 
+
+ExecStart=/usr/local/bin/yate -d -p /var/run/yate.pid $OPTS
+		]]>
+		</screen>
+		<para>配置动态链接库</para>
+		<screen>
+		<![CDATA[
+[root@testing yate]# echo "/usr/local/lib" > /etc/ld.so.conf.d/local.conf
+[root@testing yate]# ldconfig
+[root@testing yate]# yate -V
+Yate 6.4.1 devel1 re137d739519b25cc146bd5d9568238072be1b386
+		]]>
+		</screen>
+		<para>启动 Yate 服务</para>
+		<screen>
+		<![CDATA[
+[root@testing yate]# systemctl enable yate			
+[root@testing yate]# systemctl status yate
+● yate.service - YATE Telephony Server
+     Loaded: loaded (/etc/systemd/system/yate.service; disabled; preset: disabled)
+     Active: active (running) since Fri 2025-03-07 08:36:01 CST; 5s ago
+       Docs: man:yate(8)
+    Process: 3465509 ExecStart=/usr/local/bin/yate -d -p /var/run/yate.pid $OPTS (code=exited, status=0/SUCCESS)
+   Main PID: 3465510 (yate)
+      Tasks: 18 (limit: 100479)
+     Memory: 13.0M
+        CPU: 4.920s
+     CGroup: /system.slice/yate.service
+             ├─3465510 /usr/local/bin/yate -d -p /var/run/yate.pid -F -s -r -l /var/log/yate -vvv -DF
+             └─3465511 /usr/local/bin/yate -d -p /var/run/yate.pid -F -s -r -l /var/log/yate -vvv -DF
+
+Mar 07 08:36:01 testing systemd[1]: Starting YATE Telephony Server...
+Mar 07 08:36:01 testing systemd[1]: Started YATE Telephony Server.
+		]]>
+		</screen>
+		
+		<section>
+			<title></title>
+			<screen>
+			<![CDATA[
+[root@testing ~]# cd /usr/local/etc/yate/
+[root@testing yate]# cp /usr/local/etc/yate/regfile.conf{,.original} 
+
+
+[root@testing yate]# systemctl restart yate
+
+[root@testing yate]# ss -lnp | grep yate
+udp   UNCONN 0      0                                                                                 0.0.0.0:4569             0.0.0.0:*    users:(("yate",pid=3466166,fd=6))
+
+udp   UNCONN 0      0                                                                                 0.0.0.0:5060             0.0.0.0:*    users:(("yate",pid=3466166,fd=3))
+
+tcp   LISTEN 0      2                                                                               127.0.0.1:5038             0.0.0.0:*    users:(("yate",pid=3466166,fd=5))
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>regexroute.conf</title>
+			<screen>
+			<![CDATA[
+[root@testing ~]# cd /usr/local/etc/yate/
+[root@testing yate]# cp /usr/local/etc/yate/regexroute.conf{,.original} 
+
+[root@testing yate]# cp /usr/local/etc/yate/regexroute.conf
+
+加入一行
+
+${username}^$=-;error=noauth
+
+[root@testing yate]# grep -v "^;" regexroute.conf | grep -v "^$"
+[priorities]
+[$once]
+[$init]
+[extra]
+[contexts]
+[default]
+^99991001$=tone/dial
+^99991002$=tone/busy
+^99991003$=tone/ring
+^99991004$=tone/specdial
+^99991005$=tone/congestion
+^99991006$=tone/outoforder
+^99991007$=tone/milliwatt
+^99991008$=tone/info
+${username}^$=-;error=noauth                                                                            127.0.0.1:5038             0.0.0.0:*    users:(("yate",pid=3466166,fd=5))
+			]]>
+			</screen>
+		</section>
+		 
+		<section>
+			<title>5038 端口</title>
+			<para></para>
+			<screen>
+			<![CDATA[
+[root@testing yate]# telnet localhost 5038
+Trying ::1...
+telnet: connect to address ::1: Connection refused
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+YATE 6.4.1-devel1 re137d739519b25cc146bd5d9568238072be1b386 (http://YATE.null.ro) ready on testing.			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>配置文件样本</title>
+			<screen>
+			<![CDATA[
+[root@testing yate]# ls /usr/local/src/yate/conf.d/
+accfile.conf.sample       filetransfer.conf.sample  openssl.conf.sample       users.conf.sample
+amrnbcodec.conf.sample    gvoice.conf.sample        pbxassist.conf.sample     wiresniff.conf.sample
+analog.conf.sample        h323chan.conf.sample      pgsqldb.conf.sample       wpcard.conf.sample
+cache.conf.sample         heartbeat.conf.sample     presence.conf.sample      yate.conf.sample
+callcounters.conf.sample  hep3_capture.conf.sample  providers.conf.default    yate-qt4.conf.default
+callfork.conf.sample      isupmangler.conf.sample   queues.conf.sample        ybladerf.conf.sample
+camel_map.conf.sample     jabberclient.conf.sample  queuesnotify.conf.sample  yiaxchan.conf.sample
+ccongestion.conf.sample   jabberserver.conf.sample  radiotest.conf.sample     yjinglechan.conf.sample
+cdrbuild.conf.sample      javascript.conf.sample    regexroute.conf.sample    yradius.conf.sample
+cdrfile.conf.sample       jbfeatures.conf.sample    regfile.conf.sample       yrtpchan.conf.sample
+ciscosm.conf.sample       lateroute.conf.sample     register.conf.sample      ysigchan.conf.sample
+clustering.conf.sample    lksctp.conf.sample        rmanager.conf.sample      ysipchan.conf.sample
+cpuload.conf.sample       Makefile                  sigtransport.conf.sample  ysnmpagent.conf.sample
+dbpbx.conf.sample         Makefile.in               sip_cnam_lnp.conf.sample  ysockschan.conf.sample
+dsoundchan.conf.sample    mgcpca.conf.sample        sipfeatures.conf.sample   ystunchan.conf.sample
+dummyradio.conf.sample    mgcpgw.conf.sample        sqlitedb.conf.sample      zapcard.conf.sample
+enumroute.conf.sample     moh.conf.sample           ss7_lnp_ansi.conf.sample  zlibcompress.conf.sample
+eventlogs.conf.sample     monitoring.conf.sample    subscription.conf.sample
+extmodule.conf.sample     mux.conf.sample           tdmcard.conf.sample
+fileinfo.conf.sample      mysqldb.conf.sample       tonegen.conf.sample			
+			]]>
+			</screen>
+		</section>
+		
+		
+		
+		
+	</section>
+	<section id="yate.client">
+		<title>Yate Client</title>
+		<para>http://yateclient.yate.ro/</para>
+	</section>
+</section>

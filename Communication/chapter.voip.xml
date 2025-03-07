@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.voip.xml 375 2012-03-21 03:00:42Z netkiller $ -->
+<chapter id="index"><?dbhtml dir="voip" ?>
+	<title>Voice over IP</title>
+	<para>安装环境 ubuntu 13.10</para>
+	&section.voip.yate.xml;
+	&section.voip.gatekeeper.xml;
+	&section.voip.opensips.xml;
+	&section.voip.asterisk.xml;
+	&section.voip.linphone.xml;
+	
+	<section id="freeswitch">
+		<title>FreeSWITCH</title>
+		<ulink url="https://www.freeswitch.org/" />
+	</section>
+	
+	<section id="vocal">
+		<title>VOCAL (includes a SIP to H.323 translator)</title>
+		<para>http://www.vovida.org/</para>
+	</section>
+
+	<section id="client">
+		<title>SIP/H.323 客户端</title>
+		<section id="linphone">
+			<title>linphone</title>
+			<para>http://www.linphone.org</para>
+		</section>
+	
+	</section>
+
+</chapter>
