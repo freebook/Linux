@@ -134,6 +134,13 @@ Escape character is '^]'.
 YATE 6.4.1-devel1 re137d739519b25cc146bd5d9568238072be1b386 (http://YATE.null.ro) ready on testing.			
 			]]>
 			</screen>
+			<para>开启 DEBUG</para>
+			<screen>
+			<![CDATA[
+debug on 
+color on			
+			]]>
+			</screen>
 		</section>
 		<section>
 			<title>配置文件样本</title>
