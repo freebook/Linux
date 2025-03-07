@@ -170,10 +170,53 @@ fileinfo.conf.sample      mysqldb.conf.sample       tonegen.conf.sample
 			]]>
 			</screen>
 		</section>
-		
-		
-		
-		
+		<section>
+			<title>SBC(SIP Session Border Controller) 会话边界控制器</title>
+			<para>启用 SBC</para>
+			<screen>
+			<![CDATA[
+cp /usr/local/etc/yate/ysipchan.conf{,.original}
+cp /usr/local/etc/yate/regexroute.conf{,.original}
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+[root@testing ~]# vim /usr/local/etc/yate/ysipchan.conf
+[root@testing ~]# egrep -v "^;|^$" /usr/local/etc/yate/ysipchan.conf
+[general]
+ignorevia=enable			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+			
+			]]>
+			</screen>
+			<para>regexroute.conf 配置转发策略</para>
+			<screen>
+			<![CDATA[
+[root@testing ~]# vim /usr/local/etc/yate/regexroute.conf
+[root@testing ~]#			
+[root@testing ~]# egrep -v "^;|^$" /usr/local/etc/yate/regexroute.conf
+[priorities]
+[$once]
+[$init]
+[extra]
+[contexts]
+[default]
+^99991001$=tone/dial
+^99991002$=tone/busy
+^99991003$=tone/ring
+^99991004$=tone/specdial
+^99991005$=tone/congestion
+^99991006$=tone/outoforder
+^99991007$=tone/milliwatt
+^99991008$=tone/info
+${username}^$=-;error=noauth
+${rtp_forward}possible=;rtp_forward=yes
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="yate.client">
 		<title>Yate Client</title>
