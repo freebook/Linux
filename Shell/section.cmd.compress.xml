@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.cmd.compress.xml 663 2013-08-15 09:45:39Z netkiller $ -->
 <section id="package">
-	<title>package / compress and decompress</title>
+	<title>包管理 / 压缩 / 解压</title>
+	<subtitle>package / compress and decompress</subtitle>
 	<section id="tar">
 		<title>tar — The GNU version of the tar archiving utility</title>
 		<section id="tar.cvf">

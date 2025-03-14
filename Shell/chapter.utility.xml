@@ -2,4 +2,6 @@
 <!-- $Id: chapter.utility.xml 664 2013-08-19 10:23:23Z netkiller $ -->
 <chapter id="index"><?dbhtml dir="utility" ?>
 	<title>Utility Programs</title>
+	&section.utility.terminal.xml;
+	&section.utility.asciinema.xml;
 </chapter>

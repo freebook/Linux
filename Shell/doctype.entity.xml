@@ -37,7 +37,7 @@
 	<!ENTITY chapter.utility.xml		 		SYSTEM "chapter.utility.xml">
 	<!ENTITY chapter.utility.curl.xml	 		SYSTEM "chapter.utility.curl.xml">
 	<!ENTITY chapter.utility.wget.xml			SYSTEM "chapter.utility.wget.xml">
-	<!ENTITY chapter.utility.tui.xml	 		SYSTEM "chapter.utility.tui.xml">
+	<!ENTITY section.utility.terminal.xml 		SYSTEM "section.utility.terminal.xml">
 	<!ENTITY chapter.utility.jq.xml	 			SYSTEM "chapter.utility.jq.xml">
 	<!ENTITY section.utility.asciinema.xml 		SYSTEM "section.utility.asciinema.xml">
 	<!ENTITY chapter.klish.xml			 		SYSTEM "chapter.klish.xml">

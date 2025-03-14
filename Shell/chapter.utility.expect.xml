@@ -258,26 +258,10 @@ expect {
 		]]>
 		</screen>
 	</section>
-</section>
-<section id="expect-lite">
+	<section id="expect-lite">
 	<title>expect-lite - quick and easy command line automation tool</title>
-	<screen>
-
-	</screen>
-</section>
-<section id="sshpass">
-	<title>sshpass - noninteractive ssh password provider</title>
-	<para><command>sshpass -p 'ssh_password' ssh www.example.org</command></para>
-	<screen>
-# ssh neo@192.168.6.1
-The authenticity of host '192.168.6.1 (192.168.6.1)' can't be established.
-RSA key fingerprint is c9:97:95:2a:5c:6a:2f:ac:e8:ac:94:24:b0:5c:45:8a.
-Are you sure you want to continue connecting (yes/no)? yes
-Warning: Permanently added '192.168.6.1' (RSA) to the list of known hosts.
-neo@192.168.6.1's password: 
-
-[root@centos6]~# sshpass -p 'chen' ssh neo@192.168.6.1
-Last login: Wed Nov 13 15:24:50 2013
-[neo@NEO ~]$ 
-	</screen>
+		<screen>
+		<![CDATA[]]>
+		</screen>
+	</section>
 </section>

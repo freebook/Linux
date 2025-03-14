@@ -5,4 +5,4 @@
 	&chapter.zsh.xml;
 	&chapter.command.xml;
 	&chapter.tui.xml;
-	&section.shell.interesting.xml;
+	&chapter.utility.xml;

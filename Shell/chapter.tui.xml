@@ -1,5 +1,5 @@
 <chapter id="index"><?dbhtml dir="terminal" ?>
-	<title>Shell Terminal</title>
+	<title>TUI</title>
 	<subtitle>dialog, whiptail, gdialog, kdialog and nautilus</subtitle>
 	<section id="resize">
 		<title>terminal</title>
@@ -367,4 +367,17 @@ whiptail --title "Menu example" --menu "Choose an option" 22 78 16 \
 		</section>	
 		
 	</section>
+	<section id="htop">
+		<title>htop - interactive process viewer</title>
+		<screen>
+		</screen>
+	</section>
+	<section id="elinks">
+		<title>elinks</title>
+	</section>
+	<section id="chat">
+		<title>chat</title>
+		<para>finch,irssi</para>
+	</section>
+	&section.shell.interesting.xml;
 </chapter>
