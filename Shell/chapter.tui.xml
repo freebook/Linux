@@ -1,4 +1,4 @@
-chapter id="index"><?dbhtml dir="terminal" ?>
+<chapter id="index"><?dbhtml dir="terminal" ?>
 	<title>TUI</title>
 	<subtitle>dialog, whiptail, gdialog, kdialog and nautilus</subtitle>
 	<section id="resize">
@@ -7,27 +7,34 @@ chapter id="index"><?dbhtml dir="terminal" ?>
 			<title>resize - set TERMCAP and terminal settings to current xterm window size</title>
 			<para>显示终端屏幕的尺寸</para>
 			<screen>
+			<![CDATA[
 $ resize
 COLUMNS=151;
 LINES=46;
 export COLUMNS LINES;		
+			]]>
 			</screen>
 			<para>设置终端屏幕的尺寸</para>
 			<screen>
+			<![CDATA[
 eval `resize`
+			]]>
 			</screen>
 		</section>			
 		<section>
 			<title>tset, reset - terminal initialization</title>
 			<screen>
+			<![CDATA[
 tset -e ^? 设置Backspace删除前面一个字符
-tset -k ^C 设置删除一行
+tset -k ^C 设置删除一行			
+			]]>
 			</screen>
 			<para>建议使用stty替代tset</para>
 		</section>
 		<section>
 			<title>stty - change and print terminal line settings</title>
 			<screen>
+			<![CDATA[
 $ stty
 speed 38400 baud; line = 0;
 eol = M-^?; eol2 = M-^?; swtch = M-^?;
@@ -40,15 +47,17 @@ lnext = ^V; flush = ^O; min = 1; time = 0;
 -parenb -parodd cs8 hupcl -cstopb cread -clocal -crtscts
 -ignbrk brkint -ignpar -parmrk -inpck -istrip -inlcr -igncr icrnl ixon -ixoff -iuclc ixany imaxbel iutf8
 opost -olcuc -ocrnl onlcr -onocr -onlret -ofill -ofdel nl0 cr0 tab0 bs0 vt0 ff0
-isig icanon iexten echo echoe echok -echonl -noflsh -xcase -tostop -echoprt echoctl echoke
-
+isig icanon iexten echo echoe echok -echonl -noflsh -xcase -tostop -echoprt echoctl echoke			
+			]]>
 			</screen>
 			<screen>
+			<![CDATA[
 OLDCONFIG=`stty -g`      # save configuration
 stty -echo               # do not display password
 echo "Enter password: \c"
 read PASSWD              # get the password
-stty $OLDCONFIG          # restore configuration			
+stty $OLDCONFIG          # restore configuration						
+			]]>
 			</screen>
 		</section>				
 	</section>
@@ -56,6 +65,7 @@ stty $OLDCONFIG          # restore configuration
 		<title>tput</title>
 		<para>为输出着色</para>
 		<screen>
+		<![CDATA[
 tput Color Capabilities:
 
 tput setab [1-7] – Set a background color using ANSI escape
@@ -83,10 +93,12 @@ Color Code for tput:
 4 – Blue
 5 – Magenta
 6 – Cyan	
-7 – White
+7 – White		
+		]]>
 		</screen>
 		
 		<screen>
+		<![CDATA[
 NORMAL=$(tput sgr0)  
 RED=$(tput setaf 1)  
 GREEN=$(tput setaf 2; tput bold)  
@@ -137,11 +149,14 @@ info "Task has been completed."
 
 # To print debug 
 debug "This is a debug message."
+		]]>
 		</screen>
 		<section>
 			<title>Change the prompt color using tput</title>
 			<screen>
+			<![CDATA[
 $ export PS1="\[$(tput bold)$(tput setb 4)$(tput setaf 7)\]\u@\h:\w $ \[$(tput sgr0)\]"			
+			]]>
 			</screen>
 		</section>
 		
@@ -149,13 +164,17 @@ $ export PS1="\[$(tput bold)$(tput setb 4)$(tput setaf 7)\]\u@\h:\w $ \[$(tput s
 	<section id="dialog">
 		<title>dialog</title>
 		<screen>
+		<![CDATA[
 $ sudo apt-get install dialog		
+		]]>
 		</screen>
 		<section>
 			<title>--inputbox</title>
 			<screen>
+			<![CDATA[
 result=$(dialog --output-fd 1 --inputbox "Enter some text" 10 30)
-echo Result=$result		
+echo Result=$result			
+			]]>
 			</screen>
 		</section>
 	</section>
@@ -165,7 +184,9 @@ echo Result=$result
 		<section>
 			<title>--msgbox</title>
 			<screen>
-whiptail --title "Example Dialog" --msgbox "This is an example of a message box. You must hit OK to continue." 8 78
+			<![CDATA[
+whiptail --title "Example Dialog" --msgbox "This is an example of a message box. You must hit OK to continue." 8 78			
+			]]>
 			</screen>
 			<screen>
             <![CDATA[                                                   
@@ -183,7 +204,9 @@ whiptail --title "Example Dialog" --msgbox "This is an example of a message box.
 		<section>
 			<title>--infobox</title>
 			<screen>
-whiptail --title "Example Dialog" --infobox "This is an example of a message box. You must hit OK to continue." 8 78
+			<![CDATA[
+whiptail --title "Example Dialog" --infobox "This is an example of a message box. You must hit OK to continue." 8 78			
+			]]>
 			</screen>
 		</section>
 		<section>
@@ -191,6 +214,7 @@ whiptail --title "Example Dialog" --infobox "This is an example of a message box
 			<example>
 				<title>whiptail - yesno</title>
 				<screen>
+				<![CDATA[
 #! /bin/bash
 # http://archives.seul.org/seul/project/Feb-1998/msg00069.html
 if (whiptail --title "PPP Configuration" --backtitle "Welcome to SEUL" --yesno "
@@ -203,9 +227,11 @@ SEUL" --yesno "           Are you sure?" 7 40)
                 echo -e "\nGood, because I can't do that yet!\n"
         else
                 echo -e "\nToo bad, I can't do that yet\n"
-fi
+fi				
+				]]>
 				</screen>
 				<screen>
+				<![CDATA[
 whiptail --title "Example Dialog" --yesno "This is an example of a yes/no box." 8 78
  
 exitstatus=$?
@@ -216,11 +242,14 @@ else
 fi
  
 echo "(Exit status was $exitstatus)"
+				]]>
 				</screen>
 			</example>
 			<para>设置--yes-button，--no-button，--ok-button 按钮的文本</para>
 			<screen>
+			<![CDATA[
 whiptail --title "Example Dialog" --yesno "This is an example of a message box. You must hit OK to continue." 8 78 --no-button 取消 --yes-button 确认
+			]]>
 			</screen>			
 		</section>	
 		<section>
@@ -228,23 +257,25 @@ whiptail --title "Example Dialog" --yesno "This is an example of a message box. 
 			<example>
 				<title>whiptail - inputbox</title>
 				<screen>
+				<![CDATA[
 result=$(tempfile) ; chmod go-rw $result
 whiptail --inputbox "Enter some text" 10 30 2>$result
 echo Result=$(cat $result)
-rm $result
+rm $result				
+				]]>
 				</screen>
 				<screen>
 				<![CDATA[
-                         ┌────────────────────────────┐                         
-                         │ Enter some text            │                         
-                         │                            │                         
-                         │ __________________________ │                         
-                         │                            │                         
-                         │                            │                         
-                         │                            │                         
-                         │    <Ok>        <Cancel>    │                         
-                         │                            │                         
-                         └────────────────────────────┘                         
+      ┌────────────────────────────┐                         
+      │ Enter some text            │                         
+      │                            │                         
+      │ __________________________ │                         
+      │                            │                         
+      │                            │                         
+      │                            │                         
+      │    <Ok>        <Cancel>    │                         
+      │                            │                         
+      └────────────────────────────┘                         
 				]]>
 				</screen>
 				<screen>
@@ -286,7 +317,9 @@ whiptail --title "Example Dialog" --textbox /etc/passwd 20 60
 				</screen>
 				<para>为文本取添加滚动条功能</para>
 				<screen>
-whiptail --title "Example Dialog" --textbox /etc/passwd 20 60 --scrolltext
+				<![CDATA[
+whiptail --title "Example Dialog" --textbox /etc/passwd 20 60 --scrolltext				
+				]]>
 				</screen>				
 			</example>
 		</section>
@@ -296,12 +329,14 @@ whiptail --title "Example Dialog" --textbox /etc/passwd 20 60 --scrolltext
 			<example>
 				<title>whiptail - example 1</title>
 				<screen>
+				<![CDATA[
 whiptail --title "Check list example" --checklist \
 "Choose user's permissions" 20 78 16 \
 "NET_OUTBOUND" "Allow connections to other hosts" ON \
 "NET_INBOUND" "Allow connections from other hosts" OFF \
 "LOCAL_MOUNT" "Allow mounting of local devices" OFF \
-"REMOTE_MOUNT" "Allow mounting of remote devices" OFF
+"REMOTE_MOUNT" "Allow mounting of remote devices" OFF				
+				]]>
 				</screen>
 			</example>
 		</section>	
@@ -310,12 +345,14 @@ whiptail --title "Check list example" --checklist \
 			<example>
 				<title>whiptail - radiolist</title>
 				<screen>
+				<![CDATA[
 whiptail --title "Check list example" --radiolist \
 "Choose user's permissions" 20 78 16 \
 "NET_OUTBOUND" "Allow connections to other hosts" ON \
 "NET_INBOUND" "Allow connections from other hosts" OFF \
 "LOCAL_MOUNT" "Allow mounting of local devices" OFF \
-"REMOTE_MOUNT" "Allow mounting of remote devices" OFF
+"REMOTE_MOUNT" "Allow mounting of remote devices" OFF				
+				]]>
 				</screen>
 			</example>
 		</section>			
