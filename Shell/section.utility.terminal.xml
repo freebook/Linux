@@ -5,56 +5,253 @@
 		<title>screen - screen manager with VT100/ANSI terminal emulation</title>
 		<para>screen 类似 jobs, 前者是对terminal, 后者针对进程。你可以随时再次链接screen会话，而不用担心中途因网络不稳定造成的中断。</para>
 		<screen>
+		<![CDATA[
 sudo apt-get install screen
+		]]>
 		</screen>
 		<para>进入</para>
 		<screen>
+		<![CDATA[
 screen
+		]]>		
 		</screen>
 		<para>查看任务</para>
 		<screen>
+		<![CDATA[
 screen -ls
+		]]>	
 		</screen>
 		<para>重新连接会话</para>
 		<screen>
-screen -r 16582
+		<![CDATA[
+screen -r 16582		
+		]]>
 		</screen>
-		<para>退出screen 使用组合键  C-a K 或者</para>
+		<para>退出screen 使用组合键 C-a K 或者</para>
 		<screen>
+		<![CDATA[
 screen -wipe
+		]]>
 		</screen>
 	</section>
 
 	<section id="terminal.tmux">
 		<title>tmux — terminal multiplexer</title>
 		<para>http://tmux.sourceforge.net/</para>
-		<para>查看当前session <command>$tmux ls</command></para>
-		<screen>
+		<section>
+			<title>创建会话</title>
+			<para>创建session</para>
+			<screen>
+			<![CDATA[
+tmux new -s session-name
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>查看会话</title>
+			<para>查看当前session
+				<command>$tmux ls</command>
+			</para>
+			<screen>
+			<![CDATA[
 $ tmux ls
 0: 1 windows (created Mon Aug 19 10:12:15 2013) [270x56] (attached)
 
 $ tmux list-sessions
-0: 1 windows (created Mon Aug 19 10:12:15 2013) [270x56] (attached)
-		</screen>
-		<para>创建session</para>
-		<screen>
-tmux new -s session-name
-		</screen>
-		<para>结束session</para>
-		<screen>
-$tmux kill-session -t 0
+0: 1 windows (created Mon Aug 19 10:12:15 2013) [270x56] (attached)			
+			]]>
 
-#结束所有session
-$tmux kill-server
-		</screen>
-		<para>使当前会话进入后台</para>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>进入后台</title>
+			<para>使当前会话进入后台，在 tmux 窗口中，按下Ctrl+b d或者输入tmux detach命令，就会将当前会话与窗口分离。</para>
+			<screen>
+			<![CDATA[
 tmux detach
-		</screen>
-		<para>恢复session, detach的反向操作</para>
-		<screen>
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>恢复会话</title>
+			<para>恢复session, detach的反向操作</para>
+			<screen>
+			<![CDATA[
 tmux attach -t session-id
-		</screen>
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>切换会话</title>
+			<para>tmux switch命令用于切换会话。</para>
+			<screen>
+			<![CDATA[
+# 使用会话编号
+$ tmux switch -t 0
+# 使用会话名称
+$ tmux switch -t <session-name>			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>重命名会话</title>
+			<para>tmux rename-session命令用于重命名会话。</para>
+			<screen>
+			<![CDATA[
+$ tmux rename-session -t 0 <new-name>			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>结束会话</title>
+			<para>结束session</para>
+			<screen>
+			<![CDATA[
+$ tmux kill-session -t 0
+			
+			]]>
+			</screen>
+			<para>结束所有session</para>
+			<screen>
+			<![CDATA[
+$ tmux kill-server			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>快捷键</title>
+			<para>下面是一些会话相关的快捷键。</para>
+			<screen>
+			<![CDATA[
+Ctrl+b d：分离当前会话。
+Ctrl+b s：列出所有会话。
+Ctrl+b $：重命名当前会话。			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>窗口管理</title>
+			<para>tmux split-window 命令用来划分窗口。</para>
+			<screen>
+			<![CDATA[
+# 划分上下两个窗口
+$ tmux split-window
+# 划分左右两个窗口
+$ tmux split-window -h
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>移动光标</title>
+			<para>tmux select-pane命令用来移动光标位置。</para>
+			<screen>
+			<![CDATA[
+# 光标切换到上方窗口
+$ tmux select-pane -U
+# 光标切换到下方窗口
+$ tmux select-pane -D
+# 光标切换到左边窗口
+$ tmux select-pane -L
+# 光标切换到右边窗口
+$ tmux select-pane -R
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>交换窗口位置</title>
+			<para>tmux swap-pane命令用来交换窗口位置。</para>
+			<screen>
+			<![CDATA[
+# 当前窗口上移
+$ tmux swap-pane -U
+# 当前窗口下移
+$ tmux swap-pane -D			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>窗口快捷键</title>
+			<para>下面是一些窗口操作的快捷键。</para>
+			<screen>
+			<![CDATA[
+Ctrl+b %：划分左右两个窗口。
+Ctrl+b "：划分上下两个窗口。
+Ctrl+b <arrow key>：光标切换到其他窗口。<arrow key>是指向要切换到的窗口的方向键，比如切换到下方窗口，就按方向键↓。
+Ctrl+b ;：光标切换到上一个窗口。
+Ctrl+b o：光标切换到下一个窗口。
+Ctrl+b {：当前窗口与上一个窗口交换位置。
+Ctrl+b }：当前窗口与下一个窗口交换位置。
+Ctrl+b Ctrl+o：所有窗口向前移动一个位置，第一个窗口变成最后一个窗口。
+Ctrl+b Alt+o：所有窗口向后移动一个位置，最后一个窗口变成第一个窗口。
+Ctrl+b x：关闭当前窗口。
+Ctrl+b !：将当前窗口拆分为一个独立窗口。
+Ctrl+b z：当前窗口全屏显示，再使用一次会变回原来大小。
+Ctrl+b Ctrl+<arrow key>：按箭头方向调整窗口大小。
+Ctrl+b q：显示窗口编号。			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>窗口管理</title>
+			<para>新建窗口</para>
+			<screen>
+			<![CDATA[
+tmux new-window命令用来创建新窗口。
+
+$ tmux new-window
+# 新建一个指定名称的窗口
+$ tmux new-window -n <window-name>			
+			]]>
+			</screen>
+			<para>切换窗口</para>
+			<screen>
+			<![CDATA[
+tmux select-window命令用来切换窗口。
+
+# 切换到指定编号的窗口
+$ tmux select-window -t <window-number>
+# 切换到指定名称的窗口
+$ tmux select-window -t <window-name>			
+			]]>
+			</screen>
+			<para>重命名窗口</para>
+			<screen>
+			<![CDATA[
+tmux rename-window命令用于为当前窗口起名（或重命名）。
+
+$ tmux rename-window <new-name>	
+			]]>
+			</screen>
+			<para>窗口快捷键</para>
+			<screen>
+			<![CDATA[
+下面是一些窗口操作的快捷键。
+
+Ctrl+b c：创建一个新窗口，状态栏会显示多个窗口的信息。
+Ctrl+b p：切换到上一个窗口（按照状态栏上的顺序）。
+Ctrl+b n：切换到下一个窗口。
+Ctrl+b <number>：切换到指定编号的窗口，其中的<number>是状态栏上的窗口编号。
+Ctrl+b w：从列表中选择窗口。
+Ctrl+b ,：窗口重命名。					
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>管理命令</title>
+			<para>下面是一些管理相关命令。</para>
+			<screen>
+			<![CDATA[
+# 列出所有快捷键，及其对应的 tmux 命令
+$ tmux list-keys
+# 列出所有 tmux 命令及其参数
+$ tmux list-commands
+# 列出当前所有 tmux 会话的信息
+$ tmux info
+# 重新加载当前的 tmux 配置
+$ tmux source-file ~/.tmux.conf			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="byobu">
 		<title>byobu - wrapper script for seeding a user's byobu configuration and launching a text based window manager (either screen or tmux)</title>
@@ -62,5 +259,5 @@ tmux attach -t session-id
 
 		</screen>
 	</section>
-	
+
 </section>
