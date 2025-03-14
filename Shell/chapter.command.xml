@@ -25,6 +25,7 @@
 
 	&section.cmd.sum.xml;
 	&section.cmd.template.xml;
+	
 	&chapter.miscellaneous.xml;
 
 </chapter>

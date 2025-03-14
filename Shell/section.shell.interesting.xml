@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section>
-    <title>有趣的 Shell 应用</title>
-    <section>
-        <title>Ascii 星球大战电影</title>
-        <screen>
+<section id="shell.interesting">
+	<title>有趣的 Shell 应用</title>
+	<section>
+		<title>Ascii 星球大战电影</title>
+		<screen>
         <![CDATA[ 
 neo@MacBook-Pro-M2 ~>  nc towel.blinkenlights.nl 23        
         ]]>
-        </screen>
-    </section>
-    <section>
-        <title>天气预报</title>
-        <screen>
+		</screen>
+	</section>
+	<section>
+		<title>天气预报</title>
+		<screen>
         <![CDATA[ 
 neo@MacBook-Pro-M2 ~> curl http://wttr.in/
 Weather report: Shenzhen, China
@@ -54,6 +54,18 @@ Weather report: Shenzhen, China
 
 Follow @igor_chubin for wttr.in updates    
         ]]>
-        </screen>
-    </section>
+		</screen>
+	</section>
+	<section id="htop">
+		<title>htop - interactive process viewer</title>
+		<screen>
+		</screen>
+	</section>
+	<section id="elinks">
+		<title>elinks</title>
+	</section>
+	<section id="chat">
+		<title>chat</title>
+		<para>finch,irssi</para>
+	</section>
 </section>
