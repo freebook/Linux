@@ -1,6 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="log">
 	<title>Logging 日志</title>
+	<section id="lastlog">
+		<title>lastlog - reports the most recent login of all users or of a given user</title>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# lastlog 
+Username         Port     From                                       Latest
+root             pts/0    198.19.0.198                              Sun Mar 30 12:20:32 +0800 2025
+bin                                                                 **Never logged in**
+daemon                                                              **Never logged in**
+adm                                                                 **Never logged in**
+lp                                                                  **Never logged in**
+sync                                                                **Never logged in**
+shutdown                                                            **Never logged in**
+halt                                                                **Never logged in**
+mail                                                                **Never logged in**
+operator                                                            **Never logged in**
+games                                                               **Never logged in**
+ftp                                                                 **Never logged in**
+nobody                                                              **Never logged in**
+systemd-coredump                                                    **Never logged in**
+dbus                                                                **Never logged in**
+tss                                                                 **Never logged in**
+sssd                                                                **Never logged in**
+sshd                                                                **Never logged in**
+chrony                                                              **Never logged in**
+tcpdump                                                             **Never logged in**
+systemd-oom                                                         **Never logged in**
+docker           pts/0    14.153.186.26                             Sat Mar 29 17:52:43 +0800 2025
+polkitd                                                             **Never logged in**
+rtkit                                                               **Never logged in**
+pipewire                                                            **Never logged in**
+geoclue                                                             **Never logged in**
+flatpak                                                             **Never logged in**
+git              pts/1                                              Wed Jan  8 14:27:24 +0800 2025
+coturn                                                              **Never logged in**
+neo                                                                 **Never logged in**
+opensips                                                            **Never logged in**
+unbound                                                             **Never logged in**
+asterisk                                                            **Never logged in**
+kamailio                                                            **Never logged in**		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>last, lastb - show a listing of last logged in users</title>
+		<screen>
+		<![CDATA[
+[root@testing ~]# lastb |more
+root     ssh:notty    85.198.17.238    Sun Mar 30 12:14 - 12:14  (00:00)
+root     ssh:notty    193.32.162.130   Sun Mar 30 12:06 - 12:06  (00:00)
+test     ssh:notty    14.103.86.183    Sun Mar 30 11:06 - 11:06  (00:00)
+test     ssh:notty    14.103.86.183    Sun Mar 30 11:06 - 11:06  (00:00)
+teamspea ssh:notty    14.103.86.183    Sun Mar 30 11:05 - 11:05  (00:00)
+teamspea ssh:notty    14.103.86.183    Sun Mar 30 11:05 - 11:05  (00:00)
+user     ssh:notty    211.20.21.9      Sun Mar 30 11:03 - 11:03  (00:00)
+user     ssh:notty    211.20.21.9      Sun Mar 30 11:03 - 11:03  (00:00)
+ubuntu   ssh:notty    211.20.21.9      Sun Mar 30 10:58 - 10:58  (00:00)
+ubuntu   ssh:notty    211.20.21.9      Sun Mar 30 10:58 - 10:58  (00:00)
+user2    ssh:notty    211.20.21.9      Sun Mar 30 10:56 - 10:56  (00:00)
+user2    ssh:notty    211.20.21.9      Sun Mar 30 10:56 - 10:56  (00:00)
+user1    ssh:notty    14.103.86.183    Sun Mar 30 10:55 - 10:55  (00:00)
+user1    ssh:notty    14.103.86.183    Sun Mar 30 10:55 - 10:55  (00:00)
+test     ssh:notty    211.20.21.9      Sun Mar 30 10:51 - 10:51  (00:00)
+test     ssh:notty    211.20.21.9      Sun Mar 30 10:51 - 10:51  (00:00)
+ubuntu   ssh:notty    14.103.86.183    Sun Mar 30 10:50 - 10:50  (00:00)
+ubuntu   ssh:notty    14.103.86.183    Sun Mar 30 10:50 - 10:50  (00:00)
+username ssh:notty    170.64.128.219   Sun Mar 30 10:42 - 10:42  (00:00)
+kingbase ssh:notty    170.64.128.219   Sun Mar 30 10:42 - 10:42  (00:00)
+kingbase ssh:notty    170.64.128.219   Sun Mar 30 10:42 - 10:42  (00:00)		
+		]]>
+		</screen>
+	</section>
 	<section id="rsyslog">
 		<title>rsyslog</title>
 		<para>www.rsyslog.com</para>
