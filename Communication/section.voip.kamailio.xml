@@ -1842,28 +1842,27 @@ INFO: started (pid: 1963857)
 		]]>
 			</screen>
 		</section>
-	</section>
-	<section>
-		<title>用户管理</title>
 		<section>
-			<title>添加用户</title>
-			<screen>
+			<title>用户管理</title>
+			<section>
+				<title>添加用户</title>
+				<screen>
 			<![CDATA[
 kamctl add neo passw0rd			
 			]]>
-			</screen>
-		</section>
-		<section>
-			<title>查看用户</title>
-			<screen>
+				</screen>
+			</section>
+			<section>
+				<title>查看用户</title>
+				<screen>
 			<![CDATA[
 [root@netkiller ~]# kamctl show neo
 database engine 'DBTEXT' loaded
 Control engine 'RPCFIFO' loaded
 [1, 'neo', 'netkiller.cn', '12345678', 'b43c9a9b43d85880cdfc4cba7100fc9c', '513a61b6cbc9594cb07b9a69b2d21a8e']			
 			]]>
-			</screen>
-			<screen>
+				</screen>
+				<screen>
 			<![CDATA[
 [root@netkiller ~]# kamctl db show subscriber
 database engine 'DBTEXT' loaded
@@ -1873,11 +1872,11 @@ Control engine 'RPCFIFO' loaded
 [3, '6001', 'netkiller.cn', '6001', 'f6175848a51d0f74bc93a4e72c0ca98e', 'd119ff48e7b8021c60005375e1af5205']
 [4, '6002', 'netkiller.cn', '6002', '5f89ff48b4a67537c5e5b707f9661474', 'f8003867c0f09bb9bd2c59f4b4506003']			
 			]]>
-			</screen>
-		</section>
-		<section>
-			<title>删除用户</title>
-			<screen>
+				</screen>
+			</section>
+			<section>
+				<title>删除用户</title>
+				<screen>
 			<![CDATA[
 [root@netkiller ~]# kamctl rm  neo
 database engine 'DBTEXT' loaded
@@ -1886,13 +1885,14 @@ is_user: user counter=1
 Updated dbaliases, rows affected: 0
 Updated subscriber, rows affected: 1			
 			]]>
-			</screen>
+				</screen>
+			</section>
 		</section>
-	</section>
 
-	<section>
-		<title>监控模式</title>
-		<screen>
+
+		<section>
+			<title>监控模式</title>
+			<screen>
 		<![CDATA[
 [root@netkiller ~]# kamctl moni		
 [cycle #: 5; if constant make sure server lives]
@@ -1918,14 +1918,15 @@ Shared Memory Statistics:
     shmem:fragments = 1			    shmem:max_used_size = 2942016	    shmem:total_size = 67108864
     shmem:free_size = 64181808		    shmem:real_used_size = 2927056	    shmem:used_size = 2613760		
 		]]>
-		</screen>
-		<section>
-			<title>调试模式</title>
-			<screen>
+			</screen>
+			<section>
+				<title>调试模式</title>
+				<screen>
 			<![CDATA[
 [root@netkiller ~]# ngrep -d any -qt -W byline . port 5060		
 			]]>
-			</screen>
+				</screen>
+			</section>
 		</section>
 	</section>
 </section>
