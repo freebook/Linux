@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="rtp">
+	<title>RTP</title>
+	<section id="RTPProxy">
+		<title>RTPProxy</title>
+		<screen>
+		<![CDATA[
+[root@testing ~]# cd /usr/local/src/
+$ git clone -b master https://github.com/sippy/rtpproxy.git
+$ git -C rtpproxy submodule update --init --recursive
+$ cd rtpproxy
+$ ./configure
+$ make && make install
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+sudo groupadd --system rtpproxy
+sudo useradd -s /sbin/nologin --system -g rtpproxy rtpproxy		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+vim /etc/rsyslog.d/50-default.conf
+local5.*        /var/log/rtpproxy.log
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+vim /etc/logrotate.d/rtpproxy
+/var/log/rtpproxy.log {
+  missingok
+  compress
+  delaycompress
+  notifempty
+  copytruncate
+  rotate 5
+  daily
+}		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+[Unit]
+Description=RTPProxy media server
+After=network.target
+Requires=network.target
+
+[Service]
+Type=simple
+PIDFile=/var/run/rtpproxy/rtpproxy.pid
+Environment='OPTIONS= -f -L 4096 -l 0.0.0.0 -m 10000 -M 20000 -d INFO:LOG_LOCAL5'
+
+Restart=always
+RestartSec=5
+
+ExecStartPre=-/bin/mkdir /var/run/rtpproxy
+ExecStartPre=-/bin/chown rtpproxy:rtpproxy /var/run/rtpproxy
+
+ExecStart=/usr/local/bin/rtpproxy -p /var/run/rtpproxy/rtpproxy.pid -s unix:/var/run/rtpproxy/rtpproxy.sock \
+ -u rtpproxy rtpproxy -n unix:/var/run/rtpproxy/rtpproxy_timeout.sock $OPTIONS
+ExecStop=/usr/bin/pkill -F /var/run/rtpproxy/rtpproxy.pid
+
+ExecStopPost=-/bin/rm -R /var/run/rtpproxy
+
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=rtpproxy
+SyslogFacility=local5
+
+TimeoutStartSec=10
+TimeoutStopSec=10
+
+[Install]
+WantedBy=multi-user.target		
+		]]>
+		</screen>
+		<para>/etc/systemd/system/sockets.target.wants/rtpproxy.socket</para>
+		<screen>
+		<![CDATA[
+[Socket]
+ListenStream=/var/run/rtpproxy/rtpproxy.sock
+SocketUser=rtpproxy
+SocketGroup=rtpproxy
+SocketMode=755
+ExecStartPost=-/bin/chown rtpproxy:rtpproxy /var/run/rtpproxy
+
+[Install]
+WantedBy=sockets.target
+		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+systemctl start rtpproxy.socket
+systemctl start rtpproxy.service		
+		]]>
+		</screen>
+		<para>rtpproxy 参数解释如下：</para>
+		<screen>
+		<![CDATA[
+-A 本机外网地址
+-l 本机内网侦听地址
+-s 本机侦听opensips通知端口
+-n 超时通知接收端口
+-F 不检查是否为超级用户模式
+-d 调试消息输出级别
+-m rtp最小端口
+-M rtp最大端口
+
+-d
+log_level为日志级别，值如下
+DBUG INFO WARN ERR CRIT
+log_facility为日志输出到哪，利用的系统日志		
+		]]>
+		</screen>
+	</section>
+	<section id="rtpengine">
+		<title>rtpengine</title>
+		<screen>
+		<![CDATA[
+git clone https://github.com/sipwise/rtpengine.git		
+		]]>
+		</screen>
+	</section>
+</section>

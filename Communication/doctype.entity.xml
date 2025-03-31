@@ -12,3 +12,4 @@
 <!ENTITY section.voip.asterisk.xml	 	SYSTEM "section.voip.asterisk.xml">
 <!ENTITY section.voip.yate.xml	 		SYSTEM "section.voip.yate.xml">
 <!ENTITY section.voip.kamailio.xml 		SYSTEM "section.voip.kamailio.xml">
+<!ENTITY section.voip.rtp.xml	 		SYSTEM "section.voip.rtp.xml">
