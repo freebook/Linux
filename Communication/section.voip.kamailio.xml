@@ -115,6 +115,14 @@ listen=tcp:192.168.0.71:5060 advertise 139.9.54.21:5060
 rtpproxy -A 139.9.54.211 -l 192.168.0.71 -s udp:127.0.0.1:7722 -F -m 35000 -M 65000
 			]]>
 			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# ps ax | grep rtp
+1994065 ?        Ssl    0:39 rtpproxy -A 139.9.54.211 -l 192.168.0.71 -s udp:127.0.0.1:7722 -F
+2011637 pts/2    S+     0:00 grep --color=auto rtp			
+			]]>
+			</screen>
 		</section>
 		<section id="kamailio.mysql">
 			<title>MySQL 数据库</title>

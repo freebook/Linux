@@ -129,7 +129,94 @@ log_facility为日志输出到哪，利用的系统日志
 		<title>rtpengine</title>
 		<screen>
 		<![CDATA[
-git clone https://github.com/sipwise/rtpengine.git		
+hostnamectl set-hostname netkiller --static
+cd /usr/local/src/		
+git clone https://github.com/sipwise/rtpengine.git
+cd rtpengine/daemon
+make && make install
+
+cd rtpengine/kernel-module 
+make
+make install
+modprobe xt_RTPENGINE
+
+cd rtpengine/ iptables-extension
+make && make install
+cp libxt_RTPENGINE.so /usr/lib64/xtables/ 
+
+
+rtpengine -n 127.0.0.1:7722 --interface=pub/10.10.28.131 --interface=priv/192.168.28.131 --log-facility=local3 --num-threads=32 --tos=184
+
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+echo "local1.*      -/var/log/rtpengine/rtpengine.log;clean_template" >> /etc/rsyslog.conf
+mkdir -p /var/log/rtpengine
+touch /var/log/rtpengine/rtpengine.log
+		
+echo "/var/log/rtpengine/rtpengine.log {
+daily
+rotate 4
+missingok
+dateext
+copytruncate
+compress
+}" > /etc/logrotate.d/rtpengine
+		
+		]]>
+		</screen>
+		<para>111.111.111.111 改为 WAN IP</para>
+		<screen>
+		<![CDATA[
+echo "OPTIONS=\"-i 111.111.111.111 -n 127.0.0.1:2223 -m 10000 -M 60000 -L 4 --log-facility=local1 --table=8 --delete-delay=0 --timeout=60 --silent-timeout=600 --final-timeout=7200 –offer-timeout=60 --num-threads=12 --tos=184 –no-fallback\"" > /etc/sysconfig/rtpengine
+
+		
+echo "[Unit]
+Description=Kernel based rtp proxy
+After=syslog.target
+After=network-online.target
+After=iptables.service
+Requires=network-online.target
+
+[Service]
+Type=forking
+PIDFile=/var/run/rtpengine.pid
+EnvironmentFile=-/etc/sysconfig/rtpengine
+ExecStart=/usr/local/bin/rtpengine -p /var/run/rtpengine.pid \$OPTIONS
+
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target" > /etc/systemd/system/rtpengine.service		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+echo 'add 8' > /proc/rtpengine/control
+
+		
+iptables -I INPUT -p udp -j RTPENGINE --id 8
+ip6tables -I INPUT -p udp -j RTPENGINE --id 8
+service iptables save
+service ip6tables save
+		
+		]]>
+		</screen>
+		<para>启动 rtpengine.service</para>
+		<screen>
+		<![CDATA[
+systemctl enable rtpengine.service
+systemctl start rtpengine.service
+systemctl status rtpengine.service
+
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+rtpengine --codecs | grep "G729"		
 		]]>
 		</screen>
 	</section>
