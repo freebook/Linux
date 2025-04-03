@@ -8,7 +8,7 @@
 	&section.voip.gatekeeper.xml;
 	&section.voip.opensips.xml;
 	&section.voip.asterisk.xml;
-	
+
 	<section id="freeswitch">
 		<title>FreeSWITCH</title>
 		<ulink url="https://www.freeswitch.org/" />
@@ -20,7 +20,7 @@
 	</section>
 	
 	&section.voip.rtp.xml;
-	
+
 	<section id="client">
 		<title>SIP/H.323 客户端</title>
 		<section id="linphone">
@@ -31,5 +31,143 @@
 			</para>
 		</section>
 	</section>
-	
+	<section>
+		<title>sngrep - SIP Messages flow viewer</title>
+		<section>
+			<title>Rocky Linux 安装 sngrep</title>
+
+			<screen>
+		<![CDATA[
+cat > /etc/yum.repos.d/irontec.repo <<EOF
+[irontec]
+name=Irontec RPMs repository
+baseurl=http://packages.irontec.com/centos/8/x86_64/
+EOF
+		]]>
+			</screen>
+			<screen>
+		<![CDATA[
+[root@netkiller ~]# dnf search sngrep
+Last metadata expiration check: 0:00:04 ago on Thu 03 Apr 2025 09:37:24 AM CST.
+============================================ Name Exactly Matched: sngrep =============================================
+sngrep.src : SIP Messages flow viewer
+sngrep.x86_64 : SIP Messages flow viewer
+=========================================== Name & Summary Matched: sngrep ============================================
+sngrep-debuginfo.x86_64 : Debug information for package sngrep
+sngrep-debugsource.x86_64 : Debug sources for package sngrep
+		]]>
+			</screen>
+			<screen>
+		<![CDATA[
+[root@netkiller ~]# rpm -import http://packages.irontec.com/public.key
+[root@netkiller ~]# dnf install sngrep
+		]]>
+			</screen>
+			<screen>
+		<![CDATA[
+[root@netkiller ~]# sngrep -V
+sngrep - 1.4.7
+Copyright (C) 2013-2018 Irontec S.L.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+ * Compiled with Wide-character support.
+ * Compiled with Perl Compatible regular expressions support.
+ * Compiled with IPv6 support.
+ * Compiled with EEP/HEP support.
+
+Written by Ivan Alonso [aka Kaian]
+		]]>
+			</screen>
+		</section>
+		<section>
+			<title>MacOS</title>
+			<screen>
+			<![CDATA[
+brew install sngrep
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>debian 安装sngrep</title>
+			<screen>
+			<![CDATA[
+echo "deb http://packages.irontec.com/debian jessie main" >> /etc/apt/sources.list
+wget http://packages.irontec.com/public.key -q -O - | apt-key add -
+apt-get install sngrep -y
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>命令行参数</title>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# sngrep --HELP
+- option requires an argument.
+[root@netkiller ~]# sngrep --help
+Usage: sngrep [-hVcivNqrD] [-IO pcap_dump] [-d dev] [-l limit] [-B buffer] [-LH capture_url] [<match expression>] [<bpf filter>]
+
+    -h --help            This usage
+    -V --version         Version information
+    -d --device          Use this capture device instead of default
+    -I --input           Read captured data from pcap file
+    -O --output          Write captured data to pcap file
+    -B --buffer          Set pcap buffer size in MB (default: 2)
+    -c --calls           Only display dialogs starting with INVITE
+    -r --rtp             Capture RTP packets payload
+    -l --limit           Set capture limit to N dialogs
+    -i --icase           Make <match expression> case insensitive
+    -v --invert          Invert <match expression>
+    -N --no-interface    Don't display sngrep interface, just capture
+    -q --quiet           Don't print captured dialogs in no interface mode
+    -D --dump-config     Print active configuration settings and exit
+    -f --config          Read configuration from file
+    -F --no-config       Do not read configuration from default config file
+    -R --rotate          Rotate calls when capture limit have been reached
+    -H --eep-send        Homer sipcapture url (udp:X.X.X.X:XXXX)
+    -L --eep-listen      Listen for encapsulated packets (udp:X.X.X.X:XXXX)			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+-h --help: 显示帮助信息
+-V --version: 显示版本信息
+-d --device: 指定抓包的网卡
+-I --input: 从pacp文件中解析sip包
+-O --output: 输出捕获的包到pacp文件中
+-c --calls: 仅显示invite消息
+-r --rtp: Capture RTP packets payload 捕获rtp包
+-l --limit: 限制捕获对话的数量
+-i --icase: 使大小写不敏感
+-v --invert: 颠倒（不太明白）
+-N --no-interface: Don’t display sngrep interface, just capture
+-q --quiet: Don’t print captured dialogs in no interface mode
+-D --dump-config: Print active configuration settings and exit
+-f --config: Read configuration from file
+-R --rotate: Rotate calls when capture limit have been reached.
+-H --eep-send: Homer sipcapture url (udp:X.X.X.X:XXXX)
+-L --eep-listen: Listen for encapsulated packets (udp:X.X.X.X:XXXX)
+-k --keyfile: RSA private keyfile to decrypt captured packets
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>UI 快捷鍵</title>
+			<screen>
+			<![CDATA[
+Arrow keys: Move through the list，除了上下箭头还可以使用j,k来移动光标
+Enter: Display current or selected dialog(s) message flow
+A: Auto scroll to new calls，自动滚动到新的call
+F2 or s: Save selected/all dialog(s) to a PCAP file, 保存dialog到pacp文件
+F3 or / or TAB: Enter a display filter. This filter will be applied to the text lines in the list，进入搜索
+F4 or x: Display current selected dialog and its related one. 回到第一个sip消息上
+F5: Clear call list, 清空呼叫列表
+F6 or r: Display selected dialog(s) messages in raw text, 显示原始的sip消息
+F7 or f: Show advanded filters dialogs 显示高级过滤弹窗
+F9 or l: Turn on/off address resolution if enabled
+F10 or t: Select displayed columns, 显示或者隐藏侧边sip消息栏			
+			]]>
+			</screen>
+		</section>
+	</section>
 </chapter>
