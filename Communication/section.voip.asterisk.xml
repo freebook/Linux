@@ -7,12 +7,12 @@
 		<title>Redhat/CentOS/RockyLinux/AlmiLinux</title>
 		<screen>
 			<![CDATA[
-[root@testing ~]# dnf install asterisk asterisk-pjsip
+[root@netkiller ~]# dnf install asterisk asterisk-pjsip
 			]]>
 		</screen>
 		<screen>
 			<![CDATA[
-[root@testing ~]# ls /etc/asterisk/
+[root@netkiller ~]# ls /etc/asterisk/
 acl.conf              cdr.conf              dnsmgr.conf       modules.conf           say.conf
 adsi.conf             cdr_custom.conf       dsp.conf          musiconhold.conf       sla.conf
 aeap.conf             cdr_manager.conf      dundi.conf        muted.conf             smdi.conf
@@ -25,19 +25,19 @@ asterisk.adsi         cli.conf              http.conf         resolver_unbound.c
 asterisk.conf         cli_permissions.conf  indications.conf  res_parking.conf       users.conf
 ccss.conf             codecs.conf           logger.conf       res_stun_monitor.conf  vpb.conf
 cdr_beanstalkd.conf   confbridge.conf       manager.conf      rtp.conf
-[root@testing ~]#
+[root@netkiller ~]#
 			]]>
 		</screen>
 		<screen>
 			<![CDATA[
-[root@testing ~]# cp /etc/asterisk/asterisk.conf{,.original} 
+[root@netkiller ~]# cp /etc/asterisk/asterisk.conf{,.original} 
 			]]>
 		</screen>
 		<screen>
 			<![CDATA[
-[root@testing ~]# cp /etc/asterisk/extensions.conf{,.original} 
+[root@netkiller ~]# cp /etc/asterisk/extensions.conf{,.original} 
 
-[root@testing ~]# cat /etc/asterisk/extensions.conf
+[root@netkiller ~]# cat /etc/asterisk/extensions.conf
 [from-internal]
 exten = 100,1,Answer()
 same = n,Wait(1)
@@ -47,8 +47,8 @@ same = n,Hangup()
 		</screen>
 		<screen>
 			<![CDATA[
-[root@testing ~]# cp /etc/asterisk/pjsip.conf{,.original}			
-[root@testing ~]# cat /etc/asterisk/sip.conf
+[root@netkiller ~]# cp /etc/asterisk/pjsip.conf{,.original}			
+[root@netkiller ~]# cat /etc/asterisk/sip.conf
 [general]
 context=default
 
@@ -63,8 +63,8 @@ allow=ulaw
 		</screen>
 		<screen>
 			<![CDATA[
-[root@testing ~]# vim /etc/asterisk/pjsip.conf
-[root@testing ~]# cat /etc/asterisk/pjsip.conf
+[root@netkiller ~]# vim /etc/asterisk/pjsip.conf
+[root@netkiller ~]# cat /etc/asterisk/pjsip.conf
 [transport-udp]
 type=transport
 protocol=udp
@@ -93,9 +93,9 @@ max_contacts=1
 		</screen>
 		<screen>
 			<![CDATA[
-[root@testing ~]# systemctl enable asterisk
-[root@testing ~]# systemctl start asterisk
-[root@testing ~]# systemctl status asterisk
+[root@netkiller ~]# systemctl enable asterisk
+[root@netkiller ~]# systemctl start asterisk
+[root@netkiller ~]# systemctl status asterisk
 ● asterisk.service - Asterisk PBX and telephony daemon.
      Loaded: loaded (/usr/lib/systemd/system/asterisk.service; disabled; preset: disabled)
      Active: active (running) since Sat 2025-03-01 18:34:36 CST; 10s ago
@@ -106,21 +106,21 @@ max_contacts=1
      CGroup: /system.slice/asterisk.service
              └─3321189 /usr/sbin/asterisk -f -C /etc/asterisk/asterisk.conf
 
-Mar 01 18:34:38 testing asterisk[3321189]: [Mar  1 18:34:38] WARNING[3321189]: loader.c:2487 load_modules: Module 'app_>
-Mar 01 18:34:38 testing asterisk[3321189]: [Mar  1 18:34:38] WARNING[3321189]: loader.c:2487 load_modules: Module 'app_>
-Mar 01 18:34:38 testing asterisk[3321189]: [Mar  1 18:34:38] ERROR[3321189]: loader.c:2508 load_modules: Error loading >
-Mar 01 18:34:38 testing asterisk[3321189]: [Mar  1 18:34:38] ERROR[3321189]: loader.c:2508 load_modules: Error loading >
-Mar 01 18:34:38 testing asterisk[3321189]: [Mar  1 18:34:38] ERROR[3321189]: loader.c:2508 load_modules: Failed to reso>
-Mar 01 18:34:38 testing asterisk[3321189]: [Mar  1 18:34:38] ERROR[3321189]: loader.c:2508 load_modules: res_stir_shake>
-Mar 01 18:34:38 testing asterisk[3321189]: [Mar  1 18:34:38] ERROR[3321189]: loader.c:2508 load_modules: cdr_syslog dec>
-Mar 01 18:34:38 testing asterisk[3321189]: [Mar  1 18:34:38] ERROR[3321189]: loader.c:2508 load_modules: Failed to reso>
-Mar 01 18:34:38 testing asterisk[3321189]: [Mar  1 18:34:38] ERROR[3321189]: loader.c:2508 load_modules: res_http_media>
-Mar 01 18:34:38 testing asterisk[3321189]: Asterisk Ready.
+Mar 01 18:34:38 netkiller asterisk[3321189]: [Mar  1 18:34:38] WARNING[3321189]: loader.c:2487 load_modules: Module 'app_>
+Mar 01 18:34:38 netkiller asterisk[3321189]: [Mar  1 18:34:38] WARNING[3321189]: loader.c:2487 load_modules: Module 'app_>
+Mar 01 18:34:38 netkiller asterisk[3321189]: [Mar  1 18:34:38] ERROR[3321189]: loader.c:2508 load_modules: Error loading >
+Mar 01 18:34:38 netkiller asterisk[3321189]: [Mar  1 18:34:38] ERROR[3321189]: loader.c:2508 load_modules: Error loading >
+Mar 01 18:34:38 netkiller asterisk[3321189]: [Mar  1 18:34:38] ERROR[3321189]: loader.c:2508 load_modules: Failed to reso>
+Mar 01 18:34:38 netkiller asterisk[3321189]: [Mar  1 18:34:38] ERROR[3321189]: loader.c:2508 load_modules: res_stir_shake>
+Mar 01 18:34:38 netkiller asterisk[3321189]: [Mar  1 18:34:38] ERROR[3321189]: loader.c:2508 load_modules: cdr_syslog dec>
+Mar 01 18:34:38 netkiller asterisk[3321189]: [Mar  1 18:34:38] ERROR[3321189]: loader.c:2508 load_modules: Failed to reso>
+Mar 01 18:34:38 netkiller asterisk[3321189]: [Mar  1 18:34:38] ERROR[3321189]: loader.c:2508 load_modules: res_http_media>
+Mar 01 18:34:38 netkiller asterisk[3321189]: Asterisk Ready.
 			]]>
 		</screen>
 		<screen>
 			<![CDATA[
-[root@testing ~]# ss -lnp | grep asterisk
+[root@netkiller ~]# ss -lnp | grep asterisk
 u_str LISTEN 0      2                                                              /run/asterisk/asterisk.ctl 30717648               * 0    users:(("asterisk",pid=3322611,fd=5))
 
 udp   UNCONN 0      0                                                                                 0.0.0.0:56265            0.0.0.0:*    users:(("asterisk",pid=3322611,fd=8))
@@ -134,7 +134,7 @@ udp   UNCONN 0      0                                                           
 		</screen>
 		<screen>
 			<![CDATA[
-[root@testing ~]# asterisk -rx "pjsip list auths"
+[root@netkiller ~]# asterisk -rx "pjsip list auths"
 
   I/OAuth:  <AuthId/UserName.............................................................>
 ==========================================================================================
@@ -265,7 +265,7 @@ zeroconf.conf：zeroconf是一个轻量级的服务发现协议，适用于注�
 		<para>extensions.conf </para>
 		<screen>
 			<![CDATA[
-[root@testing ~]# cat /etc/asterisk/extensions.conf
+[root@netkiller ~]# cat /etc/asterisk/extensions.conf
 [from-internal]
 exten = 100,1,Answer()
 same = n,Wait(1)
@@ -298,7 +298,7 @@ asterisk -rvvvvv
 		<title>pjsip</title>
 		<screen>
 			<![CDATA[
-testing*CLI> pjsip show auths
+netkiller*CLI> pjsip show auths
 
   I/OAuth:  <AuthId/UserName.............................................................>
 ==========================================================================================
@@ -307,12 +307,12 @@ testing*CLI> pjsip show auths
 
 Objects found: 1
 
-testing*CLI> 			
+netkiller*CLI> 			
 			]]>
 		</screen>
 		<screen>
 			<![CDATA[
-testing*CLI> dialplan show 6001@from-internal
+netkiller*CLI> dialplan show 6001@from-internal
 There is no existence of 'from-internal' context
 Command 'dialplan show 6001@from-internal' failed.
 			]]>
@@ -338,7 +338,7 @@ sip show peers
 			
 			<screen>
 			<![CDATA[
-[root@testing ~]# cat /etc/asterisk/sip.conf
+[root@netkiller ~]# cat /etc/asterisk/sip.conf
 [general]
 context=default
 bindport=5060
@@ -444,7 +444,7 @@ allow=g729
 			
 			<screen>
 			<![CDATA[
-[root@testing ~]# cat /etc/asterisk/extensions.conf
+[root@netkiller ~]# cat /etc/asterisk/extensions.conf
 [general]
 static=yes
 writeprotect=no
@@ -480,7 +480,7 @@ asterisk -rx "core restart now"
 			<title>pjsip.conf</title>
 			<screen>
 			<![CDATA[
-[root@testing asterisk]# cat pjsip.conf
+[root@netkiller asterisk]# cat pjsip.conf
 [transport-udp]
 type=transport
 protocol=udp

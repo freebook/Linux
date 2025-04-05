@@ -7,9 +7,13 @@
 <!ENTITY section.im.innd.xml 			SYSTEM "section.im.innd.xml">
 
 <!ENTITY chapter.voip.xml 				SYSTEM "chapter.voip.xml">
+<!ENTITY section.voip.freeswitch.xml	SYSTEM "section.voip.freeswitch.xml">
 <!ENTITY section.voip.opensips.xml 		SYSTEM "section.voip.opensips.xml">
 <!ENTITY section.voip.gatekeeper.xml 	SYSTEM "section.voip.gatekeeper.xml">
 <!ENTITY section.voip.asterisk.xml	 	SYSTEM "section.voip.asterisk.xml">
 <!ENTITY section.voip.yate.xml	 		SYSTEM "section.voip.yate.xml">
 <!ENTITY section.voip.kamailio.xml 		SYSTEM "section.voip.kamailio.xml">
 <!ENTITY section.voip.rtp.xml	 		SYSTEM "section.voip.rtp.xml">
+
+
+<!ENTITY chapter.rtc.xml		 		SYSTEM "chapter.rtc.xml">

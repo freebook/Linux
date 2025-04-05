@@ -3,4 +3,5 @@
 	<title>文字/语音/视频 通信</title>
 	&chapter.im.xml;
 	&chapter.voip.xml;
+	&chapter.rtc.xml;
 </part>	

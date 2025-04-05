@@ -280,11 +280,67 @@ ffedfcfbdcaebdec  /etc/issue
 	</section>
 	<section id="cut">
 		<title>cut - remove sections from each line of files</title>
-		<para>列操作</para>
-		<screen><![CDATA[
+		<section>
+			<title>字符操作</title>
+			<para>截取第 8 个字符</para>
+			<screen>
+			<![CDATA[
+[root@production ~]# echo 1234567890 | cut -c 8
+8			
+			]]>
+			</screen>
+			<para>从第五个字符开始，截取后面的</para>
+			<screen>
+			<![CDATA[
+[root@production ~]# echo 1234567890 | cut -c 5-
+567890			
+			]]>
+			</screen>
+			<para>截取第8个字符前面的字符串</para>
+			<screen>
+			<![CDATA[
+[root@production ~]# echo 1234567890 | cut -c -8
+12345678			
+			]]>
+			</screen>
+			<para>从第4字符开始，截取至第8个字符为止</para>
+			<screen>
+			<![CDATA[
+[root@production ~]# echo 1234567890 | cut -c 4-8
+45678			
+			]]>
+			</screen>
+			<para>每一行操作，截取位置1-4的字符</para>
+			<screen>
+			<![CDATA[
+$ cat /etc/passwd | cut -c 1-4
+root
+daem
+bin:
+sys:
+sync
+game
+man:
+
+$ echo "No such file or directory"| cut -c4-7
+such
+
+$ echo "No such file or directory"| cut -c -8
+No such
+
+$ echo "No such file or directory"| cut -c-8
+No such
+
+        	]]>
+        	</screen>
+		</section>
+		<section>
+			<title>列操作</title>
+			<para>获取文本第一列</para>
+			<screen><![CDATA[
 $ last | grep  'neo' | cut -d ' ' -f1
         ]]></screen>
-		<screen><![CDATA[
+			<screen><![CDATA[
 $ cat /etc/passwd | cut -d ':' -f1
 root
 daemon
@@ -328,27 +384,8 @@ ntp:/etc/ntp
 nagios:/var/log/nagios
 
         ]]></screen>
-		<para>行操作</para>
-		<screen><![CDATA[
-$ cat /etc/passwd | cut -c 1-4
-root
-daem
-bin:
-sys:
-sync
-game
-man:
-
-$ echo "No such file or directory"| cut -c4-7
-such
-
-$ echo "No such file or directory"| cut -c -8
-No such
-
-$ echo "No such file or directory"| cut -c-8
-No such
-
-        ]]></screen>
+			
+		</section>
 	</section>
 	<section id="printf">
 		<title>printf - format and print data</title>
@@ -641,4 +678,30 @@ devpts	     /dev/pts	          devpts     mode=0620,gid=5       0 0
 	&section.cmd.text.sort.xml;
 	&chapter.text.awk.xml;
 	&chapter.text.sed.xml;
+	<section id="shell.xml">
+		<title>XML 工具</title>
+		<section>
+			<title>xmllint - command line XML tool</title>
+			<para>格式化输出 XML 文件</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# xmllint --format --noblanks /etc/freeswitch/autoload_configs/switch.conf.xml
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>xmlstarlet - command line XML/XSLT toolkit</title>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# dnf install xmlstarlet
+			]]>
+			</screen>
+			<para>删除 XML 文件中的注释</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# xmlstarlet ed -d '//comment()' /etc/freeswitch/vars.xml			
+			]]>
+			</screen>
+		</section>
+	</section>
 </section>

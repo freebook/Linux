@@ -24,16 +24,16 @@ dnf install opensips opensips-cli
 			<para>查看配置文件</para>
 			<screen>
 			<![CDATA[
-[root@testing ~]# ls /etc/opensips/
+[root@netkiller ~]# ls /etc/opensips/
 dictionary.opensips  opensips.cfg  scenario_callcenter.xml  tls
 
-[root@testing ~]# cp /etc/opensips/opensips.cfg{,.original} 
+[root@netkiller ~]# cp /etc/opensips/opensips.cfg{,.original} 
 			]]>
 			</screen>
 			<para>检查配置文件</para>
 			<screen>
 			<![CDATA[
-[root@testing ~]# opensips -C
+[root@netkiller ~]# opensips -C
 Mar  1 17:44:51 [3320338] INFO:core:fix_poll_method: using epoll as the IO watch method (auto detected)
 Listening on
              udp: 0.0.0.0 [0.0.0.0]:5060
@@ -45,14 +45,14 @@ Mar  1 17:44:51 [3320338] NOTICE:core:main: config file ok, exiting...
 			<para>安装包</para>
 			<screen>
 			<![CDATA[
-[root@testing ~]# dnf install opensips-auth-modules opensips-berkeley-module
+[root@netkiller ~]# dnf install opensips-auth-modules opensips-berkeley-module
 			]]>
 			</screen>
 			
 			
 			<screen>
 			<![CDATA[
-[root@testing etc]# lsof -i:5060
+[root@netkiller etc]# lsof -i:5060
 COMMAND      PID     USER   FD   TYPE   DEVICE SIZE/OFF NODE NAME
 opensips 3328387 opensips   46u  IPv4 30784823      0t0  UDP localhost:sip
 opensips 3328388 opensips   46u  IPv4 30784823      0t0  UDP localhost:sip
