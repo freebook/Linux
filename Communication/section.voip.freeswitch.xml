@@ -27,7 +27,7 @@ dnf install -y https://$(< /etc/yum/vars/signalwireusername):$(< /etc/yum/vars/s
 		<para>查看相关包</para>
 		<screen>
 		<![CDATA[
-[root@production ~]# dnf search freeswitch
+[root@netkiller ~]# dnf search freeswitch
 FreeSWITCH Packages for Enterprise Linux 9 - x86_64                                                                                                    174 kB/s | 752 kB     00:04    
 FreeSWITCH Packages for Enterprise Linux 9 - x86_64 - Debug                                                                                            168 kB/s | 752 kB     00:04    
 FreeSWITCH Packages for Enterprise Linux 9 - x86_64 - Source                                                                                           174 kB/s | 752 kB     00:04    
@@ -195,7 +195,7 @@ python-ESL.x86_64 : The Python ESL module allows for native interaction with Fre
 		<para>查看版本信息</para>
 		<screen>
 		<![CDATA[
-[root@production ~]# dnf info freeswitch
+[root@netkiller ~]# dnf info freeswitch
 Last metadata expiration check: 0:03:19 ago on Sat 05 Apr 2025 07:50:56 AM CST.
 Available Packages
 Name         : freeswitch
@@ -374,18 +374,18 @@ Description  : FreeSWITCH is an open source telephony platform designed to facil
 		</para>
 		<screen>
 		<![CDATA[
-[root@production ~]# dnf install -y https://pkgs.sysadmins.ws/el8/extras/x86_64/compat-openssl10-1.0.2o-3.el8.x86_64.rpm
-[root@production ~]# dnf install -y https://repo.almalinux.org/almalinux/9/CRB/x86_64/os/Packages/libmemcached-awesome-1.1.0-12.el9.x86_64.rpm
-[root@production ~]# dnf install -y https://cdn.amazonlinux.com/2/core/2.0/x86_64/6b0225ccc542f3834c95733dcf321ab9f1e77e6ca6817469771a8af7c49efe6c/../../../../../blobstore/9696af59b58e65548eb6c3256ef10b139190dee9c3efd8a28602db3497a80441/ldns-1.6.16-10.amzn2.x86_64.rpm
-[root@production ~]# dnf install -y freeswitch-config-vanilla freeswitch-lang-en freeswitch-sounds-en-us-* freeswitch-sounds-music-* freeswitch-codec-opus freeswitch-lua
+[root@netkiller ~]# dnf install -y https://pkgs.sysadmins.ws/el8/extras/x86_64/compat-openssl10-1.0.2o-3.el8.x86_64.rpm
+[root@netkiller ~]# dnf install -y https://repo.almalinux.org/almalinux/9/CRB/x86_64/os/Packages/libmemcached-awesome-1.1.0-12.el9.x86_64.rpm
+[root@netkiller ~]# dnf install -y https://cdn.amazonlinux.com/2/core/2.0/x86_64/6b0225ccc542f3834c95733dcf321ab9f1e77e6ca6817469771a8af7c49efe6c/../../../../../blobstore/9696af59b58e65548eb6c3256ef10b139190dee9c3efd8a28602db3497a80441/ldns-1.6.16-10.amzn2.x86_64.rpm
+[root@netkiller ~]# dnf install -y freeswitch-config-vanilla freeswitch-lang-en freeswitch-sounds-en-us-* freeswitch-sounds-music-* freeswitch-codec-opus freeswitch-lua
 		]]>
 		</screen>
 		<para>启动 freeswitch</para>
 		<screen>
 		<![CDATA[
-[root@production ~]# systemctl enable freeswitch
-[root@production ~]# systemctl start freeswitch
-[root@production ~]# systemctl status freeswitch
+[root@netkiller ~]# systemctl enable freeswitch
+[root@netkiller ~]# systemctl start freeswitch
+[root@netkiller ~]# systemctl status freeswitch
 		]]>
 		</screen>
 	</section>
@@ -417,7 +417,7 @@ FireWall Ports  Network Protocol    Application Protocol    Description
 		]]>
 		</screen>
 		<para>fail2ban 自动拦截恶意注册</para>
-		
+
 	</section>
 	<section id="freeswitch.etc">
 		<title>配置 freeswitch</title>
@@ -425,13 +425,13 @@ FireWall Ports  Network Protocol    Application Protocol    Description
 			<title>基本配置 /etc/freeswitch/vars.xml </title>
 			<screen>
 			<![CDATA[
-[root@production ~]# cp /etc/freeswitch/vars.xml{,.backup}
+[root@netkiller ~]# cp /etc/freeswitch/vars.xml{,.backup}
 			]]>
 			</screen>
 			<para>随机产生密码</para>
 			<screen>
 			<![CDATA[
-[root@production ~]# randpasswd | cut -c -10
+[root@netkiller ~]# randpasswd | cut -c -10
 NLYPx9JjSx			
 			]]>
 			</screen>
@@ -464,7 +464,7 @@ NLYPx9JjSx
 				<para>这是我的配置仅供参考</para>
 				<screen>
 				<![CDATA[
-[root@production ~]# xmlstarlet ed -d '//comment()' /etc/freeswitch/vars.xml
+[root@netkiller ~]# xmlstarlet ed -d '//comment()' /etc/freeswitch/vars.xml
 <?xml version="1.0"?>
 <include>
   <X-PRE-PROCESS cmd="set" data="default_password=eFy1zKZ3S2wcZoKG"/>
@@ -583,16 +583,16 @@ NLYPx9JjSx
 			<para>通常在 /etc/freeswitch/vars.xml 中配置，在 internal.xml 和 external.xml 中通过变量引用</para>
 			<screen>
 			<![CDATA[
-[root@production ~]# cp /etc/freeswitch/sip_profiles/internal.xml{,.backup}
-[root@production ~]# cp /etc/freeswitch/sip_profiles/external.xml{,.backup}
-[root@production ~]# cp /etc/freeswitch/sip_profiles/internal-ipv6.xml{,.backup}
-[root@production ~]# cp /etc/freeswitch/sip_profiles/external-ipv6.xml{,.backup}
+[root@netkiller ~]# cp /etc/freeswitch/sip_profiles/internal.xml{,.backup}
+[root@netkiller ~]# cp /etc/freeswitch/sip_profiles/external.xml{,.backup}
+[root@netkiller ~]# cp /etc/freeswitch/sip_profiles/internal-ipv6.xml{,.backup}
+[root@netkiller ~]# cp /etc/freeswitch/sip_profiles/external-ipv6.xml{,.backup}
 			]]>
 			</screen>
 			<para>NAT 配置 172.16.0.10 替换成公网 IP 地址</para>
 			<screen>
 			<![CDATA[
-[root@production ~]# vim /etc/freeswitch/sip_profiles/internal.xml
+[root@netkiller ~]# vim /etc/freeswitch/sip_profiles/internal.xml
     <param name="ext-rtp-ip" value="$${external_rtp_ip}"/>
     <param name="ext-sip-ip" value="$${external_sip_ip}"/>
 改为
@@ -604,7 +604,7 @@ NLYPx9JjSx
 			<para></para>
 			<screen>
 			<![CDATA[
-[root@production ~]# vim /etc/freeswitch/sip_profiles/external.xml
+[root@netkiller ~]# vim /etc/freeswitch/sip_profiles/external.xml
     <param name="ext-rtp-ip" value="$${external_rtp_ip}"/>
     <param name="ext-sip-ip" value="$${external_sip_ip}"/>
 改为
@@ -617,8 +617,8 @@ NLYPx9JjSx
 			<title>switch.conf.xml</title>
 			<screen>
 			<![CDATA[
-[root@production ~]# cp /etc/freeswitch/autoload_configs/switch.conf.xml{,.backup}
-[root@production ~]# xmlstarlet ed -d '//comment()' /etc/freeswitch/autoload_configs/switch.conf.xml
+[root@netkiller ~]# cp /etc/freeswitch/autoload_configs/switch.conf.xml{,.backup}
+[root@netkiller ~]# xmlstarlet ed -d '//comment()' /etc/freeswitch/autoload_configs/switch.conf.xml
 			]]>
 			</screen>
 			<para>配置交换机名称</para>
@@ -647,7 +647,7 @@ NLYPx9JjSx
 			<para>默认是 :: 表示 ipv6 localhost，如果需要远程访问可以改为 listen-ip 0.0.0.0</para>
 			<screen>
 			<![CDATA[
-[root@production ~]# cat /etc/freeswitch/autoload_configs/event_socket.conf.xml
+[root@netkiller ~]# cat /etc/freeswitch/autoload_configs/event_socket.conf.xml
 <configuration name="event_socket.conf" description="Socket Client">
   <settings>
     <param name="nat-map" value="false"/>
@@ -666,7 +666,7 @@ NLYPx9JjSx
 			<para>参考 /etc/freeswitch/sip_profiles/external/example.xml 文件</para>
 			<screen>
 			<![CDATA[
-[root@production ~]# cat /etc/freeswitch/sip_profiles/external/example.xml
+[root@netkiller ~]# cat /etc/freeswitch/sip_profiles/external/example.xml
 <include>
   <!--<gateway name="asterlink.com">-->
   <!--/// account username *required* ///-->
@@ -713,7 +713,7 @@ NLYPx9JjSx
 			<para>配置网关</para>
 			<screen>
 			<![CDATA[
-[root@production ~]# cat > /etc/freeswitch/sip_profiles/external/hamsoverip.xml <<EOF
+[root@netkiller ~]# cat > /etc/freeswitch/sip_profiles/external/hamsoverip.xml <<EOF
 <include>
 	<gateway name="hamsoverip">
 		<param name="username" value="300177"/>
@@ -729,7 +729,7 @@ EOF
 			<para>配置拨号规则</para>
 			<screen>
 			<![CDATA[
-[root@production ~]# cat > /etc/freeswitch/dialplan/default/hamsoverip.com.xml <<"EOF"
+[root@netkiller ~]# cat > /etc/freeswitch/dialplan/default/hamsoverip.com.xml <<"EOF"
 <include>
 	<extension name="hamsoverip.com">
 		<condition field="destination_number" expression="^300(\d+)$">
@@ -745,7 +745,7 @@ EOF
 			<title>logfile.conf.xml</title>
 			<screen>
 			<![CDATA[
-[root@production ~]# cat /etc/freeswitch/autoload_configs/logfile.conf.xml 
+[root@netkiller ~]# cat /etc/freeswitch/autoload_configs/logfile.conf.xml 
 <configuration name="logfile.conf" description="File Logging">
   <settings>
    <!-- true to auto rotate on HUP, false to open/close -->
@@ -781,9 +781,31 @@ EOF
 	</section>
 	<section id="freeswitch.mysql">
 		<title>MySQL 模块配置</title>
-		<screen>
-		<![CDATA[
-[root@production ~]# cat /etc/freeswitch/autoload_configs/pre_load_modules.conf.xml
+		<section>
+			<title>安装 mariadb</title>
+			<screen>
+			<![CDATA[
+yum install -y mariadb mariadb-server
+service mariadb start
+systemctl enable mariadb
+mysql_secure_installation 			
+			]]>
+			</screen>
+		</section>
+
+		<section>
+			<title>安装模块</title>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# dnf install -y freeswitch-database-mariadb			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>启用 mysql 支持</title>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# cat /etc/freeswitch/autoload_configs/pre_load_modules.conf.xml
 <configuration name="pre_load_modules.conf" description="Modules">
   <modules>
     <!-- Databases -->
@@ -791,43 +813,88 @@ EOF
     <load module="mod_pgsql"/>
   </modules>
 </configuration>		
-		]]>
-		</screen>
-		<para>注释 mod_pgsql 启用 mod_mariadb</para>
-		<screen>
-		<![CDATA[
+			]]>
+			</screen>
+			<para>注释 mod_pgsql 启用 mod_mariadb</para>
+			<screen>
+			<![CDATA[
     <load module="mod_mariadb"/>
     <!-- <load module="mod_pgsql"/> -->
-		]]>
-		</screen>
-		<para>数据源格式</para>
-		<screen>
-		<![CDATA[
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>db.conf.xml</title>
+			<screen>
+			<![CDATA[
+[root@production ~]# cat /etc/freeswitch/autoload_configs/db.conf.xml 
+<configuration name="db.conf" description="LIMIT DB Configuration">
+  <settings>
+    <!--<param name="odbc-dsn" value="dsn:user:pass"/>-->
+  </settings>
+</configuration>			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+<configuration name="db.conf" description="LIMIT DB Configuration">
+  <settings>
+    <param name="core-db-dsn" value="mariadb://Server=192.168.0.11;Port=3307;Database=freeswitch;Uid=root;Pwd=123456;" />
+  </settings>
+</configuration>
+			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>switch.conf.xml</title>
+			<para>修改下面文件中的 core-db-dsn</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# vim /etc/freeswitch/autoload_configs/switch.conf.xml		
+			]]>
+			</screen>
+
+			<screen>
+			<![CDATA[
+[root@production ~]# cat /etc/freeswitch/autoload_configs/switch.conf.xml | grep dsn
+    <!-- <param name="core-db-dsn" value="pgsql://hostaddr=127.0.0.1 dbname=freeswitch user=freeswitch password='' options='-c client_min_messages=NOTICE'" /> -->
+    <!-- <param name="core-db-dsn" value="postgresql://freeswitch:@127.0.0.1/freeswitch?options=-c%20client_min_messages%3DNOTICE" /> -->
+    <param name="core-db-dsn" value="mariadb://Server=localhost;Database=freeswitch;Uid=freeswitch;Pwd=pass;" />
+    <!-- <param name="core-db-dsn" value="dsn:username:password" /> -->			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>修改 sip_profile 配置文件</title>
+			<para>数据源格式</para>
+			<screen>
+			<![CDATA[
 mariadb://Server=localhost;Database=freeswitch;Uid=freeswitch;Pwd=pass;		
-		]]>
-		</screen>
-		<para>修改下面文件中的 odbc-dsn</para>
-		<screen>
-		<![CDATA[
-[root@production ~]# vim /etc/freeswitch/autoload_configs/switch.conf.xml
-[root@production ~]# vim /etc/freeswitch/autoload_configs/db.conf.xml
-[root@production ~]# vim /etc/freeswitch/sip_profiles/internal.xml
-[root@production ~]# vim /etc/freeswitch/sip_profiles/internal-ipv6.xml
-		]]>
-		</screen>
-		<para>修改下面文件中的 core-db-dsn</para>
-		<screen>
-		<![CDATA[
-[root@production ~]# vim /etc/freeswitch/autoload_configs/switch.conf.xml		
-		]]>
-		</screen>
-		<para>用下面命令检查是否遗漏</para>
-		<screen>
-		<![CDATA[
-[root@production ~]# grep -r 'odbc-dsn' /etc/freeswitch/*/*.xml
-[root@production ~]# grep -r 'core-db-dsn' /etc/freeswitch/*/*.xml
-		]]>
-		</screen>
+			]]>
+			</screen>
+			<para>修改下面文件中的 odbc-dsn</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# vim /etc/freeswitch/autoload_configs/switch.conf.xml
+[root@netkiller ~]# vim /etc/freeswitch/autoload_configs/db.conf.xml
+[root@netkiller ~]# vim /etc/freeswitch/sip_profiles/internal.xml
+[root@netkiller ~]# vim /etc/freeswitch/sip_profiles/internal-ipv6.xml
+			]]>
+			</screen>
+
+		</section>
+		<section>
+			<title>检查配置</title>
+			<para>用下面命令检查是否遗漏</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# grep -r 'odbc-dsn' /etc/freeswitch/*/*.xml
+[root@netkiller ~]# grep -r 'core-db-dsn' /etc/freeswitch/*/*.xml
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="freeswitch.number">
 		<title>测试号码</title>
@@ -854,7 +921,7 @@ mariadb://Server=localhost;Database=freeswitch;Uid=freeswitch;Pwd=pass;
 			<para>1000-1019 测试账号位置</para>
 			<screen>
 			<![CDATA[
-[root@production ~]# ls /etc/freeswitch/directory/default/
+[root@netkiller ~]# ls /etc/freeswitch/directory/default/
 1000.xml  1002.xml  1004.xml  1006.xml  1008.xml  1010.xml  1012.xml  1014.xml  1016.xml  1018.xml  brian.xml    example.com.xml
 1001.xml  1003.xml  1005.xml  1007.xml  1009.xml  1011.xml  1013.xml  1015.xml  1017.xml  1019.xml  default.xml  skinny-example.xml			
 			]]>
@@ -862,7 +929,7 @@ mariadb://Server=localhost;Database=freeswitch;Uid=freeswitch;Pwd=pass;
 			<para>用户配置文件</para>
 			<screen>
 			<![CDATA[
-[root@production ~]# cat /etc/freeswitch/directory/default/1000.xml 
+[root@netkiller ~]# cat /etc/freeswitch/directory/default/1000.xml 
 <include>
   <user id="1000">
     <params>
@@ -892,7 +959,7 @@ mariadb://Server=localhost;Database=freeswitch;Uid=freeswitch;Pwd=pass;
 			<para>用下面方法查看密码</para>
 			<screen>
 			<![CDATA[
-[root@production ~]# cat /etc/freeswitch/vars.xml | grep default_password
+[root@netkiller ~]# cat /etc/freeswitch/vars.xml | grep default_password
        YOU SHOULD CHANGE THIS default_password value if you don't want to be subject to any
   <X-PRE-PROCESS cmd="set" data="default_password=eFo1zKZyS2wcZ3KG"/>		
 			]]>
@@ -905,7 +972,7 @@ mariadb://Server=localhost;Database=freeswitch;Uid=freeswitch;Pwd=pass;
 		<para>进入 fs_cli</para>
 		<screen>
 		<![CDATA[
-[root@production ~]# fs_cli 
+[root@netkiller ~]# fs_cli 
 .=======================================================.
 |            _____ ____     ____ _     ___              |
 |           |  ___/ ___|   / ___| |   |_ _|             |
@@ -980,7 +1047,25 @@ sofia profile internal siptrace off
 			]]>
 			</screen>
 		</section>
-		
-		
+		<section id="sofia.status">
+			<title>sofia status</title>
+			<screen>
+			<![CDATA[
+[root@production ~]# fs_cli -x "sofia status"
+                     Name          Type                                       Data      State
+=================================================================================================
+            external-ipv6       profile                   sip:mod_sofia@[::1]:5080      RUNNING (0)
+          sip.aigcsst.com         alias                                   internal      ALIASED
+                 external       profile           sip:mod_sofia@192.168.0.230:5080      RUNNING (0)
+    external::example.com       gateway                    sip:joeuser@example.com      NOREG
+     external::hamsoverip       gateway      sip:300177@pbx-ap.hamsoverip.com:5160      REGED
+            internal-ipv6       profile                   sip:mod_sofia@[::1]:5060      RUNNING (0)
+                 internal       profile           sip:mod_sofia@192.168.0.230:5060      RUNNING (0)
+=================================================================================================
+4 profiles 1 alias			
+			]]>
+			</screen>
+		</section>
+
 	</section>
 </section>
