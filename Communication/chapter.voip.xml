@@ -273,5 +273,13 @@ Content-Length: 0.
 		]]>
 		</screen>
 		<para>差异是 Kamailio 采用 Authorization 方案，而 freeSWITCH 采用 WWW-Authenticate 方案</para>
+		<para>最终发现是 NAT Src Port 问题</para>
+		<para>解决方案</para>
+		<screen>
+		<![CDATA[
+[root@production ~]# grep "NDLB-force-rport" /etc/freeswitch/sip_profiles/internal.xml 
+    <param name="NDLB-force-rport" value="true"/>
+		]]>
+		</screen>
 	</section>
 </chapter>

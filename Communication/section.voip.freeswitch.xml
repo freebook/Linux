@@ -827,7 +827,7 @@ mysql_secure_installation
 			<title>db.conf.xml</title>
 			<screen>
 			<![CDATA[
-[root@production ~]# cat /etc/freeswitch/autoload_configs/db.conf.xml 
+[root@netkiller ~]# cat /etc/freeswitch/autoload_configs/db.conf.xml 
 <configuration name="db.conf" description="LIMIT DB Configuration">
   <settings>
     <!--<param name="odbc-dsn" value="dsn:user:pass"/>-->
@@ -858,7 +858,7 @@ mysql_secure_installation
 
 			<screen>
 			<![CDATA[
-[root@production ~]# cat /etc/freeswitch/autoload_configs/switch.conf.xml | grep dsn
+[root@netkiller ~]# cat /etc/freeswitch/autoload_configs/switch.conf.xml | grep dsn
     <!-- <param name="core-db-dsn" value="pgsql://hostaddr=127.0.0.1 dbname=freeswitch user=freeswitch password='' options='-c client_min_messages=NOTICE'" /> -->
     <!-- <param name="core-db-dsn" value="postgresql://freeswitch:@127.0.0.1/freeswitch?options=-c%20client_min_messages%3DNOTICE" /> -->
     <param name="core-db-dsn" value="mariadb://Server=localhost;Database=freeswitch;Uid=freeswitch;Pwd=pass;" />
@@ -1051,11 +1051,11 @@ sofia profile internal siptrace off
 			<title>sofia status</title>
 			<screen>
 			<![CDATA[
-[root@production ~]# fs_cli -x "sofia status"
+[root@netkiller ~]# fs_cli -x "sofia status"
                      Name          Type                                       Data      State
 =================================================================================================
             external-ipv6       profile                   sip:mod_sofia@[::1]:5080      RUNNING (0)
-          sip.aigcsst.com         alias                                   internal      ALIASED
+          sip.netkiller.cn         alias                                   internal      ALIASED
                  external       profile           sip:mod_sofia@192.168.0.230:5080      RUNNING (0)
     external::example.com       gateway                    sip:joeuser@example.com      NOREG
      external::hamsoverip       gateway      sip:300177@pbx-ap.hamsoverip.com:5160      REGED
@@ -1065,7 +1065,202 @@ sofia profile internal siptrace off
 4 profiles 1 alias			
 			]]>
 			</screen>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# fs_cli -x "sofia status profile internal reg"
+
+Registrations:
+=================================================================================================
+Call-ID:        1_4246134458@192.168.123.55
+User:           1008@sip.netkiller.cn
+Contact:        "1008" <sip:1008@192.168.123.55:5060;fs_nat=yes;fs_path=sip%3A1008%40223.74.131.87%3A20508>
+Agent:          Yealink SIP-T21P_E2 52.84.0.125
+Status:         Registered(UDP-NAT)(unknown) EXP(2025-04-06 19:32:38) EXPSECS(2540)
+Ping-Status:    Reachable
+Ping-Time:      0.00
+Host:           netkiller
+IP:             223.74.131.87
+Port:           20508
+Auth-User:      1008
+Auth-Realm:     sip.netkiller.cn
+MWI-Account:    1008@sip.netkiller.cn
+
+Call-ID:        212FF149-109A-40AF-A2CF-23003FC53819
+User:           1002@sip.netkiller.cn
+Contact:        "BG7NYT" <sip:1002@172.16.0.11:5060;fs_nat=yes;fs_path=sip%3A1002%40112.97.167.132%3A13917>
+Agent:          Jami Daemon 16.0.0-fc3402940f (macOS)
+Status:         Registered(UDP-NAT)(unknown) EXP(2025-04-06 19:39:37) EXPSECS(2959)
+Ping-Status:    Reachable
+Ping-Time:      0.00
+Host:           netkiller
+IP:             112.97.167.132
+Port:           13917
+Auth-User:      1002
+Auth-Realm:     sip.netkiller.cn
+MWI-Account:    1002@sip.netkiller.cn
+
+Call-ID:        139311fc-5f0ee947@172.16.0.10
+User:           1000@sip.netkiller.cn
+Contact:        "BG7NYT" <sip:1000@172.16.0.10:5060;fs_nat=yes;fs_path=sip%3A1000%40112.97.167.132%3A12689>
+Agent:          Linksys/PAP2T-5.1.6(LS)
+Status:         Registered(UDP-NAT)(unknown) EXP(2025-04-06 19:39:51) EXPSECS(2973)
+Ping-Status:    Reachable
+Ping-Time:      0.00
+Host:           netkiller
+IP:             112.97.167.132
+Port:           12689
+Auth-User:      1000
+Auth-Realm:     sip.netkiller.cn
+MWI-Account:    1000@sip.netkiller.cn
+
+Call-ID:        5A7530FB452FDFDC5BDCD7E3A73DF6EEBC4D93D0
+User:           1006@sip.netkiller.cn
+Contact:        "" <sip:1006@10.65.4.4:23015;rinstance=18F4361D;fs_nat=yes;fs_path=sip%3A1006%40167.99.119.244%3A23015%3Brinstance%3D18F4361D>
+Agent:          Acrobits SIPIS
+Status:         Registered(UDP-NAT)(unknown) EXP(2025-04-06 18:57:03) EXPSECS(405)
+Ping-Status:    Reachable
+Ping-Time:      0.00
+Host:           netkiller
+IP:             167.99.119.244
+Port:           23015
+Auth-User:      1006
+Auth-Realm:     sip.netkiller.cn
+MWI-Account:    1006@sip.netkiller.cn
+
+Total items returned: 4
+=================================================================================================			
+			]]>
+			</screen>
 		</section>
 
+	</section>
+	<section id="freeswitch.lang">
+		<title>中文语音包</title>
+		<ulink url="https://files.freeswitch.org/releases/sounds/"/>
+		<screen>
+		<![CDATA[
+[   ]	freeswitch-sounds-zh-cn-sinmei-8000-1.0.51.tar.gz	2014-10-09 20:21	296K	 
+[   ]	freeswitch-sounds-zh-cn-sinmei-8000-1.0.51.tar.gz.md5	2014-10-09 20:21	92	 
+[   ]	freeswitch-sounds-zh-cn-sinmei-8000-1.0.51.tar.gz.sha1	2014-10-09 20:21	101	 
+[   ]	freeswitch-sounds-zh-cn-sinmei-8000-1.0.51.tar.gz.sha256	2014-10-09 20:21	127	 
+[   ]	freeswitch-sounds-zh-cn-sinmei-16000-1.0.51.tar.gz	2014-10-09 20:21	583K	 
+[   ]	freeswitch-sounds-zh-cn-sinmei-16000-1.0.51.tar.gz.md5	2014-10-09 20:21	93	 
+[   ]	freeswitch-sounds-zh-cn-sinmei-16000-1.0.51.tar.gz.sha1	2014-10-09 20:21	102	 
+[   ]	freeswitch-sounds-zh-cn-sinmei-16000-1.0.51.tar.gz.sha256	2014-10-09 20:21	128	 
+[   ]	freeswitch-sounds-zh-cn-sinmei-32000-1.0.51.tar.gz	2014-10-09 20:21	1.1M	 
+[   ]	freeswitch-sounds-zh-cn-sinmei-32000-1.0.51.tar.gz.md5	2014-10-09 20:21	93	 
+[   ]	freeswitch-sounds-zh-cn-sinmei-32000-1.0.51.tar.gz.sha1	2014-10-09 20:21	102	 
+[   ]	freeswitch-sounds-zh-cn-sinmei-32000-1.0.51.tar.gz.sha256	2014-10-09 20:21	128	 
+[   ]	freeswitch-sounds-zh-cn-sinmei-48000-1.0.51.tar.gz	2014-10-09 20:21	1.6M	 
+[   ]	freeswitch-sounds-zh-cn-sinmei-48000-1.0.51.tar.gz.md5	2014-10-09 20:21	93	 
+[   ]	freeswitch-sounds-zh-cn-sinmei-48000-1.0.51.tar.gz.sha1	2014-10-09 20:21	102	 
+[   ]	freeswitch-sounds-zh-cn-sinmei-48000-1.0.51.tar.gz.sha256	2014-10-09 20:21	128	 
+		]]>
+		</screen>
+		<para>编译 mod_say_zh 模块</para>
+		<screen>
+		<![CDATA[
+cd /usr/local/src/freeswitch/src/mod/say/mod_say_zh
+ 
+make && make install		
+		]]>
+		</screen>
+		<para>autoload_configs/modules.conf.xml</para>
+		<screen>
+		<![CDATA[
+    <!-- Say -->
+    <load module="mod_say_en"/>
+ 
+    <load module="mod_say_zh"/>
+		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+cd /usr/local/freeswitch/conf/lang/
+cp -fr en zh
+cd zh
+mv en.xml zh.xml
+		
+		]]>
+		</screen>
+		<para>zh.xml</para>
+		<screen>
+		<![CDATA[
+<language name="zh" say-module="zh" sound-prefix="$${sounds_dir}/zh/cn/link" tts-engine="mod_tts_commandline" tts-voice="link">		
+		]]>
+		</screen>
+		<para>vars.xml</para>
+		<screen>
+		<![CDATA[
+  <X-PRE-PROCESS cmd="set" data="sound_prefix=$${sounds_dir}/zh/cn/link"/>
+  <X-PRE-PROCESS cmd="set" data="default_language=zh"/>
+  <X-PRE-PROCESS cmd="set" data="default_dialect=cn"/>
+  <X-PRE-PROCESS cmd="set" data="default_voice=link"/>		
+		]]>
+		</screen>
+		<para>freeswitch.xml</para>
+		<screen>
+		<![CDATA[
+<X-PRE-PROCESS cmd="include" data="lang/zh/*.xml"/>		
+		]]>
+		</screen>
+		<para>fs_cli 手动加载模块</para>
+		<screen>
+		<![CDATA[ 
+load mod_say_zh
+reloadxml
+		
+		]]>
+		</screen>
+		<para>配置 Dialplan 拨号计划 dialplan/default.xml</para>
+		<screen>
+		<![CDATA[
+    <!--say测试-->
+	<extension name="socket_767_example">
+		<condition field="destination_number" expression="^767\d+$">
+		    <action application="answer"/>
+			<action application="say" data="zh name_spelled intered 3456789"></action>
+            <action application="say" data="en NUMBER intered 3456789"></action>
+            <action application="say" data="zh TELEPHONE_NUMBER intered 13781655437"></action>
+            <action application="playback" data="voicemail/vm-goodbye.wav"></action>
+		</condition>
+	</extension>
+		]]>
+		</screen>
+		<para>单个用户配置 1001.xml</para>
+		<screen>
+		<![CDATA[
+<variable name="language" value="zh"/>
+<variable name="default_language" value="zh"/>		
+		]]>
+		</screen>
+		<para>dialplan中配置中文</para>
+		<screen>
+		<![CDATA[
+	<extension name="ivr_demo">
+      <condition field="destination_number" expression="^5000$">
+        <action application="set" data="language=zh"/>
+        <action application="answer"/>
+        <action application="sleep" data="2000"/>
+        <action application="ivr" data="demo_ivr"/>
+      </condition>
+    </extension>
+		
+		]]>
+		</screen>
+	</section>
+	<section id="freeswitch.devel">
+		<title>开发</title>
+		<screen>
+		<![CDATA[
+        <dependency>
+            <groupId>link.thingscloud</groupId>
+            <artifactId>freeswitch-esl-spring-boot-starter</artifactId>
+            <version>2.0.0</version>
+        </dependency>		
+		]]>
+		</screen>
 	</section>
 </section>
