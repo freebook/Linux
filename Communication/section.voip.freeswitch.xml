@@ -11,7 +11,8 @@
 			注册账号
 		</para>
 
-		<para>点击自己头像，选择“Personal Access Tokens” 进入个人访问令牌页面，然后点击“+ Add New” 创建令牌。</para>
+		<para>点击自己头像，选择“Personal Access Tokens” 进入个人访问令牌页面，然后点击“+ Add New”
+			创建令牌。</para>
 		<para>Token Name 处输入令牌名称，然后点击 “Generate Token” 生成令牌。</para>
 		<para>PERSONAL ACCESS TOKEN 下面一串字符，就是令牌，请复制出来并保存好。</para>
 	</section>
@@ -423,32 +424,42 @@ FireWall Ports  Network Protocol    Application Protocol    Description
 		<title>配置 freeswitch</title>
 		<section id="vars.xml">
 			<title>基本配置 /etc/freeswitch/vars.xml </title>
-			<screen>
+			<section>
+				<title>默认密码</title>
+
+				<screen>
 			<![CDATA[
 [root@netkiller ~]# cp /etc/freeswitch/vars.xml{,.backup}
 			]]>
-			</screen>
-			<para>随机产生密码</para>
-			<screen>
+				</screen>
+				<para>随机产生密码</para>
+				<screen>
 			<![CDATA[
 [root@netkiller ~]# randpasswd | cut -c -10
 NLYPx9JjSx			
 			]]>
-			</screen>
-			<para>修改默认密码，将 1234 改为</para>
-			<screen>
+				</screen>
+				<para>修改默认密码，将 1234 改为</para>
+				<screen>
 			<![CDATA[
   <X-PRE-PROCESS cmd="set" data="default_password=1234"/>
 改为   
   <X-PRE-PROCESS cmd="set" data="default_password=NLYPx9JjSx"/>
 			]]>
-			</screen>
-			<para>配置领域</para>
+				</screen>
+			</section>
+			<section>
+				<title>领域</title>
+				<para>配置领域</para>
 			<screen>
 			<![CDATA[
 <X-PRE-PROCESS cmd="set" data="domain=sip.netkiller.cn"/>			
 			]]>
 			</screen>
+			</section>
+			<screen>
+				<title>公网IP地址</title>
+			
 			<para>配置公网IP地址</para>
 			<screen>
 			<![CDATA[
@@ -459,7 +470,48 @@ NLYPx9JjSx
 <X-PRE-PROCESS cmd="stun-set" data="external_rtp_ip=IP地址"/>
 			]]>
 			</screen>
-			<example>
+			</screen>
+			
+			<section>
+				<title>NAT 配置</title>
+				<para>前面的基本配置，是物理服务器网卡直接配置公网IP地址，很多云主机采用弹性IP机制，将公网IP映射到云主机上。这种模式就需要用到
+					NAT</para>
+				<para>配置方法还是修改 /etc/freeswitch/vars.xml 文件</para>
+				<screen>
+			<![CDATA[
+<X-PRE-PROCESS cmd="stun-set" data="external_rtp_ip=autonat:你的公网IP地址"/>
+			]]>
+				</screen>
+				<para></para>
+				<screen>
+			<![CDATA[
+  <X-PRE-PROCESS cmd="stun-set" data="external_rtp_ip=autonat:121.37.25.251"/>
+  <X-PRE-PROCESS cmd="stun-set" data="external_sip_ip=autonat:121.37.25.251"/>	
+			]]>
+				</screen>
+			</section>
+			<section>
+				<title>编码</title>
+				<screen>
+			<![CDATA[
+  <X-PRE-PROCESS cmd="set" data="global_codec_prefs=OPUS,G722,PCMU,PCMA,H264,VP8"/>
+  <X-PRE-PROCESS cmd="set" data="outbound_codec_prefs=OPUS,G722,PCMU,PCMA,H264,VP8"/>
+			]]>
+				</screen>
+			</section>
+			<section>
+				<title>控制台日志级别</title>
+				<screen>
+			<![CDATA[
+<X-PRE-PROCESS cmd="set" data="console_loglevel=4"/>
+或
+<X-PRE-PROCESS cmd="set" data="console_loglevel=info"/>
+			]]>
+				</screen>
+			</section>
+			<section>
+				<para>样本参考</para>
+				<example>
 				<title>/etc/freeswitch/vars.xml</title>
 				<para>这是我的配置仅供参考</para>
 				<screen>
@@ -467,9 +519,9 @@ NLYPx9JjSx
 [root@netkiller ~]# xmlstarlet ed -d '//comment()' /etc/freeswitch/vars.xml
 <?xml version="1.0"?>
 <include>
-  <X-PRE-PROCESS cmd="set" data="default_password=eFy1zKZ3S2wcZoKG"/>
+  <X-PRE-PROCESS cmd="set" data="default_password=******"/>
   <X-PRE-PROCESS cmd="set" data="sound_prefix=$${sounds_dir}/en/us/callie"/>
-  <X-PRE-PROCESS cmd="set" data="domain=$${local_ip_v4}"/>
+  <X-PRE-PROCESS cmd="set" data="domain=sip.aigcsst.com"/>
   <X-PRE-PROCESS cmd="set" data="domain_name=$${domain}"/>
   <X-PRE-PROCESS cmd="set" data="hold_music=local_stream://moh"/>
   <X-PRE-PROCESS cmd="set" data="use_profile=external"/>
@@ -479,8 +531,8 @@ NLYPx9JjSx
   <X-PRE-PROCESS cmd="set" data="xmpp_client_profile=xmppc"/>
   <X-PRE-PROCESS cmd="set" data="xmpp_server_profile=xmpps"/>
   <X-PRE-PROCESS cmd="set" data="bind_server_ip=auto"/>
-  <X-PRE-PROCESS cmd="stun-set" data="external_rtp_ip=stun:stun.freeswitch.org"/>
-  <X-PRE-PROCESS cmd="stun-set" data="external_sip_ip=stun:stun.freeswitch.org"/>
+  <X-PRE-PROCESS cmd="stun-set" data="external_rtp_ip=autonat:121.37.215.251"/>
+  <X-PRE-PROCESS cmd="stun-set" data="external_sip_ip=autonat:121.37.215.251"/>
   <X-PRE-PROCESS cmd="set" data="unroll_loops=true"/>
   <X-PRE-PROCESS cmd="set" data="outbound_caller_name=FreeSWITCH"/>
   <X-PRE-PROCESS cmd="set" data="outbound_caller_id=0000000000"/>
@@ -545,42 +597,17 @@ NLYPx9JjSx
   <X-PRE-PROCESS cmd="set" data="rtp_liberal_dtmf=true"/>
   <X-PRE-PROCESS cmd="set" data="video_mute_png=$${images_dir}/default-mute.png"/>
   <X-PRE-PROCESS cmd="set" data="video_no_avatar_png=$${images_dir}/default-avatar.png"/>
-</include>				
+</include>
 				]]>
 				</screen>
 			</example>
-			<section>
-				<title>NAT 配置</title>
-				<para>前面的基本配置，是物理服务器网卡直接配置公网IP地址，很多云主机采用弹性IP机制，将公网IP映射到云主机上。这种模式就需要用到 NAT</para>
-				<para>配置方法还是修改 /etc/freeswitch/vars.xml 文件</para>
-				<screen>
-			<![CDATA[
-<X-PRE-PROCESS cmd="stun-set" data="external_rtp_ip=autonat:你的公网IP地址"/>
-			]]>
-				</screen>
-				<para></para>
-				<screen>
-			<![CDATA[
-  <X-PRE-PROCESS cmd="stun-set" data="external_rtp_ip=autonat:121.37.25.251"/>
-  <X-PRE-PROCESS cmd="stun-set" data="external_sip_ip=autonat:121.37.25.251"/>	
-			]]>
-				</screen>
-			</section>
-			<section>
-				<title>控制台日志级别</title>
-				<screen>
-			<![CDATA[
-<X-PRE-PROCESS cmd="set" data="console_loglevel=4"/>
-或
-<X-PRE-PROCESS cmd="set" data="console_loglevel=info"/>
-			]]>
-				</screen>
 			</section>
 		</section>
 
 		<section id="sip_profiles">
 			<title>配置 sip_profiles</title>
-			<para>通常在 /etc/freeswitch/vars.xml 中配置，在 internal.xml 和 external.xml 中通过变量引用</para>
+			<para>通常在 /etc/freeswitch/vars.xml 中配置，在 internal.xml 和 external.xml
+				中通过变量引用</para>
 			<screen>
 			<![CDATA[
 [root@netkiller ~]# cp /etc/freeswitch/sip_profiles/internal.xml{,.backup}
@@ -1136,7 +1163,7 @@ Total items returned: 4
 	</section>
 	<section id="freeswitch.lang">
 		<title>中文语音包</title>
-		<ulink url="https://files.freeswitch.org/releases/sounds/"/>
+		<ulink url="https://files.freeswitch.org/releases/sounds/" />
 		<screen>
 		<![CDATA[
 [   ]	freeswitch-sounds-zh-cn-sinmei-8000-1.0.51.tar.gz	2014-10-09 20:21	296K	 
