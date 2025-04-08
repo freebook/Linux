@@ -141,5 +141,37 @@ ubuntu@VM-0-13-ubuntu:~/RCT$
 		]]>
 		</screen>		
 	</section>
+	<section>
+		<title>Nginx 配吹 autoindex on 出现 403 Forbidden</title>
+		<screen>
+		<![CDATA[
+server {
+    listen       80;
+    listen       443 ssl;
+    server_name  sip.aigcsst.cn 139.9.54.211;
 
+    access_log  /dev/stdout;
+    error_log   /dev/stdout;
+
+    # RSA certificate
+    # certbot certonly --webroot -w /opt/nginx/html/ -d api.aigcsst.cn
+    ssl_certificate /etc/letsencrypt/live/aigcsst.cn/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/aigcsst.cn/privkey.pem;
+
+    location / {
+        root /usr/share/nginx/avaya;
+        autoindex on;
+    }
+}
+		]]>
+		</screen>
+		<para>问题出在卷映射</para>
+		<screen>
+		<![CDATA[
+"/opt/nginx/avaya:/usr/share/nginx/avaya:ro"
+改为
+"/opt/nginx/avaya:/usr/share/nginx/avaya"
+		]]>
+		</screen>
+	</section>
 </section>
