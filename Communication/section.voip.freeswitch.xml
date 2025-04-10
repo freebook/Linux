@@ -639,6 +639,26 @@ NLYPx9JjSx
 	<param name="ext-sip-ip" value="autonat:172.16.0.10"/>    			
 			]]>
 			</screen>
+			<section>
+				<title>启用 100rel</title>
+				<screen>
+				<![CDATA[
+[root@production ~]# grep 100rel /etc/freeswitch/sip_profiles/internal.xml
+        There are known issues (asserts and segfaults) when 100rel is enabled.
+        It is not recommended to enable 100rel at this time.
+    <!--<param name="enable-100rel" value="true"/>-->
+
+[root@production ~]# vim /etc/freeswitch/sip_profiles/internal.xml
+
+[root@production ~]# systemctl restart  freeswitch
+
+[root@production ~]# grep 100rel /etc/freeswitch/sip_profiles/internal.xml
+        There are known issues (asserts and segfaults) when 100rel is enabled.
+        It is not recommended to enable 100rel at this time.
+    <param name="enable-100rel" value="true"/>				
+				]]>
+				</screen>
+			</section>
 		</section>
 		<section id="switch.conf.xml">
 			<title>switch.conf.xml</title>
@@ -922,6 +942,35 @@ mariadb://Server=localhost;Database=freeswitch;Uid=freeswitch;Pwd=pass;
 			]]>
 			</screen>
 		</section>
+	</section>
+	<section id="freeswitch.voicemail">
+		<title>语音邮箱(voicemail)</title>
+		<para>确认 voicemail 模块是否启用</para>
+		<screen>
+		<![CDATA[
+[root@production ~]# grep voicemail /etc/freeswitch/autoload_configs/modules.conf.xml 
+    <load module="mod_voicemail"/>		
+		]]>
+		</screen>
+		<para>语音信箱存储目录</para>
+		<screen>
+		<![CDATA[
+[root@production ~]# ls /var/lib/freeswitch/storage/voicemail/default/sip.aigcsst.com/
+1000  1001  1002  1003  1004  1005  1006  1007  1009  1010  1011  1012  1013		
+		]]>
+		</screen>
+		<para>拨打4000，根据提示输入user id和密码，就可以收听到留言了。</para>
+		<screen>
+		<![CDATA[
+		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+		
+		]]>
+		</screen>
 	</section>
 	<section id="freeswitch.number">
 		<title>测试号码</title>
@@ -1277,6 +1326,9 @@ reloadxml
 		
 		]]>
 		</screen>
+	</section>
+	<section id="fusionPBX">
+		<title>fusionPBX</title>
 	</section>
 	<section id="freeswitch.devel">
 		<title>开发</title>
