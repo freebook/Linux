@@ -12,7 +12,8 @@
 		</para>
 
 		<para>点击自己头像，选择“Personal Access Tokens” 进入个人访问令牌页面，然后点击“+ Add New”
-			创建令牌。</para>
+			创建令牌。
+		</para>
 		<para>Token Name 处输入令牌名称，然后点击 “Generate Token” 生成令牌。</para>
 		<para>PERSONAL ACCESS TOKEN 下面一串字符，就是令牌，请复制出来并保存好。</para>
 	</section>
@@ -451,17 +452,17 @@ NLYPx9JjSx
 			<section>
 				<title>领域</title>
 				<para>配置领域</para>
-			<screen>
+				<screen>
 			<![CDATA[
 <X-PRE-PROCESS cmd="set" data="domain=sip.netkiller.cn"/>			
 			]]>
-			</screen>
+				</screen>
 			</section>
 			<screen>
 				<title>公网IP地址</title>
-			
-			<para>配置公网IP地址</para>
-			<screen>
+
+				<para>配置公网IP地址</para>
+				<screen>
 			<![CDATA[
 <X-PRE-PROCESS cmd="stun-set" data="external_rtp_ip=stun:stun.freeswitch.org"/>
 改为
@@ -469,13 +470,14 @@ NLYPx9JjSx
 或
 <X-PRE-PROCESS cmd="stun-set" data="external_rtp_ip=IP地址"/>
 			]]>
+				</screen>
 			</screen>
-			</screen>
-			
+
 			<section>
 				<title>NAT 配置</title>
 				<para>前面的基本配置，是物理服务器网卡直接配置公网IP地址，很多云主机采用弹性IP机制，将公网IP映射到云主机上。这种模式就需要用到
-					NAT</para>
+					NAT
+				</para>
 				<para>配置方法还是修改 /etc/freeswitch/vars.xml 文件</para>
 				<screen>
 			<![CDATA[
@@ -512,9 +514,9 @@ NLYPx9JjSx
 			<section>
 				<para>样本参考</para>
 				<example>
-				<title>/etc/freeswitch/vars.xml</title>
-				<para>这是我的配置仅供参考</para>
-				<screen>
+					<title>/etc/freeswitch/vars.xml</title>
+					<para>这是我的配置仅供参考</para>
+					<screen>
 				<![CDATA[
 [root@netkiller ~]# xmlstarlet ed -d '//comment()' /etc/freeswitch/vars.xml
 <?xml version="1.0"?>
@@ -599,15 +601,16 @@ NLYPx9JjSx
   <X-PRE-PROCESS cmd="set" data="video_no_avatar_png=$${images_dir}/default-avatar.png"/>
 </include>
 				]]>
-				</screen>
-			</example>
+					</screen>
+				</example>
 			</section>
 		</section>
 
 		<section id="sip_profiles">
 			<title>配置 sip_profiles</title>
 			<para>通常在 /etc/freeswitch/vars.xml 中配置，在 internal.xml 和 external.xml
-				中通过变量引用</para>
+				中通过变量引用
+			</para>
 			<screen>
 			<![CDATA[
 [root@netkiller ~]# cp /etc/freeswitch/sip_profiles/internal.xml{,.backup}
@@ -690,7 +693,7 @@ NLYPx9JjSx
 			</screen>
 		</section>
 		<section id="event_socket.conf.xml">
-			<title>Socket Client 配置</title>
+			<title>fs_cli Socket Client 配置</title>
 			<para>默认是 :: 表示 ipv6 localhost，如果需要远程访问可以改为 listen-ip 0.0.0.0</para>
 			<screen>
 			<![CDATA[
@@ -705,6 +708,26 @@ NLYPx9JjSx
     <!--<param name="stop-on-bind-error" value="true"/>-->
   </settings>
 </configuration>			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+[root@production ~]# cat /etc/freeswitch/autoload_configs/event_socket.conf.xml 
+<configuration name="event_socket.conf" description="Socket Client">
+  <settings>
+    <param name="nat-map" value="false"/>
+    <param name="listen-ip" value="127.0.0.1"/>
+    <param name="listen-port" value="8021"/>
+    <param name="password" value="netkiller"/>
+    <!--<param name="apply-inbound-acl" value="loopback.auto"/>-->
+    <!--<param name="stop-on-bind-error" value="true"/>-->
+  </settings>
+</configuration>
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+[root@production ~]# fs_cli -p netkiller			
 			]]>
 			</screen>
 		</section>
@@ -960,9 +983,9 @@ mariadb://Server=localhost;Database=freeswitch;Uid=freeswitch;Pwd=pass;
 		]]>
 		</screen>
 		<para>拨打4000，根据提示输入user id和密码，就可以收听到留言了。</para>
-		
+
 	</section>
-	<section>
+	<section id="freeswitch.h246">
 		<title>视频通话</title>
 		<para>新增一项 proxy_media 配置</para>
 		<screen>
@@ -1127,6 +1150,15 @@ fs_cli -H 127.0.0.1 -P 8021 -p password
 			<screen>
 			<![CDATA[
 console loglevel 3			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>关闭日志</title>
+			<screen>
+			<![CDATA[
+freeswitch@-ERR switchname Command not found!> /nolog
++OK no longer logging			
 			]]>
 			</screen>
 		</section>
@@ -1351,14 +1383,102 @@ reloadxml
 	</section>
 	<section id="freeswitch.devel">
 		<title>开发</title>
-		<screen>
-		<![CDATA[
+		<section>
+			<title>FreeSWITCH 用户管理</title>
+			<ulink url="https://github.com/netkiller/freeswitch" />
+			<screen>
+			<![CDATA[
+# freeswitch 用户管理
+
+## 安装依赖
+
+pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+
+## 帮助信息
+
+```shell
+PS D:\GitHub\freeswitch> python.exe .\freeswitch.py -h
+usage: freeswitch.py [-h] [-a <number> <callsign> <callgroup> [<number> <callsign> <callgroup> ...]] [-r 1000] [-l] [-s 1000] [-d]
+
+FreeSWITCH 用户管理工具
+
+options:
+  -h, --help            show this help message and exit
+  -a <number> <callsign> <callgroup> [<number> <callsign> <callgroup> ...], --add <number> <callsign> <callgroup> [<number> <callsign> <callgroup> ...]
+                        添加用户
+  -r 1000, --remove 1000
+                        删除用户
+  -l, --list            列出用户
+  -s 1000, --show 1000  查看用户
+  -d, --debug           调试模式
+
+Author: netkiller - https://www.netkiller.cn/linux/
+
+```
+
+## 添加用户
+
+```shell
+PS D:\GitHub\freeswitch> python.exe .\freeswitch.py -a 1000 BG7NYT admin 
+```
+
+## 查看用于
+
+```shell
+PS D:\GitHub\freeswitch> python.exe .\freeswitch.py -s 1000             
+<include>
+        <user id="1000">
+                <params>
+                        <param name="password" value="B5AbNCYj"/>
+                        <param name="vm-password" value="1000"/>
+                </params>
+                <variables>
+                        <variable name="toll_allow" value="domestic,international,local"/>
+                        <variable name="accountcode" value="1000"/>
+                        <variable name="user_context" value="default"/>
+                        <variable name="effective_caller_id_name" value="BG7NYT"/>
+                        <variable name="effective_caller_id_number" value="1000"/>
+                        <variable name="outbound_caller_id_name" value="$${outbound_caller_name}"/>
+                        <variable name="outbound_caller_id_number" value="$${outbound_caller_id}"/>
+                        <variable name="callgroup" value="admin"/>
+                </variables>
+        </user>
+</include>
+```
+
+## 列出所有用户
+
+```shell
+PS D:\GitHub\freeswitch> python.exe .\freeswitch.py -l                  
++----------+--------+----------+----------+--------+
+| 电话号码 |  呼号  |   密码   | 语音信箱 | 呼叫组 |
++==========+========+==========+==========+========+
+| 1000     | BG7NYT | HbM3imgb | 2031     | admin  |
++----------+--------+----------+----------+--------+
+| 1003     | BG7NYT | 1u3Fc6t4 | 5927     | 33333  |
++----------+--------+----------+----------+--------+
+
+```
+
+## 删除用户
+
+```shell
+PS D:\GitHub\freeswitch> python.exe .\freeswitch.py -r 1000
+```			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Java 开发包</title>
+			<screen>
+			<![CDATA[
         <dependency>
             <groupId>link.thingscloud</groupId>
             <artifactId>freeswitch-esl-spring-boot-starter</artifactId>
             <version>2.0.0</version>
         </dependency>		
-		]]>
-		</screen>
+			]]>
+			</screen>
+		</section>
 	</section>
 </section>
