@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="voip.endpoints">
+	<title>电话</title>
+
+	<section id="Linksys.gateway">
+		<title>Linksys/PAP2T-5.1.6(LS) 登录 freeSWITCH 和 asterisk 失败</title>
+		<para>使用 Yate / Kamailio / OpenSIPS 作为 SIP 服务器，Linksys 能正常登录，拨打IP电话。换成 freeSWITCH 和 asterisk 无法注册。</para>
+		<para>使用 ngrep 抓包，经过分析，问题处在认证登录头</para>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# ngrep -d any -qt -W byline . port 5060 | grep  'sip:6000@sip.aigcsst.cn' -B 4 -A 9
+		]]>
+		</screen>
+		<para>对比 Kamailio 与 freeSWITCH 包的差异，最终发现问题处在认证头。</para>
+		<para>Kamailio 抓包</para>
+		<screen>
+		<![CDATA[
+U 2025/04/06 00:44:56.929467 112.97.211.57:33689 -> 192.168.0.71:5060 #7648
+REGISTER sip:sip.aigcsst.cn SIP/2.0.
+v: SIP/2.0/UDP 172.16.0.10:5060;branch=z9hG4bK-d7afde6a.
+f: BG7NYT <sip:6000@sip.aigcsst.cn>;tag=caa95e5e7bbd3850o0.
+t: BG7NYT <sip:6000@sip.aigcsst.cn>.
+i: 149a4a56-4d447c9e@172.16.0.10.
+CSeq: 44812 REGISTER.
+Max-Forwards: 70.
+Authorization: Digest username="6000",realm="sip.aigcsst.cn",nonce="Z/FfNGfxXggslcTmDFiODs1eASlSzxGl",uri="sip:sip.aigcsst.cn",algorithm=MD5,response="65963da9fec4ee95ad103a459a14fc9a".
+m: BG7NYT <sip:6000@172.16.0.10:5060>;expires=3600.
+User-Agent: Linksys/PAP2T-5.1.6(LS).
+l: 0.
+Allow: ACK, BYE, CANCEL, INFO, INVITE, NOTIFY, OPTIONS, REFER.
+k: x-sipura, replaces.
+--
+
+U 2025/04/06 00:44:56.932533 192.168.0.71:5060 -> 112.97.211.57:33689 #7649
+SIP/2.0 200 OK.
+v: SIP/2.0/UDP 172.16.0.10:5060;branch=z9hG4bK-d7afde6a;rport=33689;received=112.97.211.57.
+f: BG7NYT <sip:6000@sip.aigcsst.cn>;tag=caa95e5e7bbd3850o0.
+t: BG7NYT <sip:6000@sip.aigcsst.cn>;tag=19db6516a6b774c682ff0634f6a75b73.9d6b9329.
+i: 149a4a56-4d447c9e@172.16.0.10.
+CSeq: 44812 REGISTER.
+Contact: <sip:6000@172.16.0.10:5060>;expires=3600;received="sip:112.97.211.57:33689".
+Server: kamailio (6.0.1 (x86_64/linux)).
+Content-Length: 0.
+.
+
+
+U 2025/04/06 00:44:57.686890 192.168.0.71:5060 -> 112.97.211.57:33689 #7650
+--
+
+U 2025/04/06 00:45:11.841369 112.97.211.57:33689 -> 192.168.0.71:5060 #7658
+NOTIFY sip:sip.aigcsst.cn SIP/2.0.
+v: SIP/2.0/UDP 172.16.0.10:5060;branch=z9hG4bK-5a73dd90.
+f: BG7NYT <sip:6000@sip.aigcsst.cn>;tag=caa95e5e7bbd3850o0.
+t: <sip:sip.aigcsst.cn>.
+i: a9c72d16-16def8f8@172.16.0.10.
+CSeq: 1 NOTIFY.
+Max-Forwards: 70.
+o: keep-alive.
+User-Agent: Linksys/PAP2T-5.1.6(LS).
+l: 0.
+.
+
+
+U 2025/04/06 00:45:11.841559 192.168.0.71:5060 -> 112.97.211.57:33689 #7659
+SIP/2.0 407 Proxy Authentication Required.
+v: SIP/2.0/UDP 172.16.0.10:5060;branch=z9hG4bK-5a73dd90;rport=33689;received=112.97.211.57.
+f: BG7NYT <sip:6000@sip.aigcsst.cn>;tag=caa95e5e7bbd3850o0.
+t: <sip:sip.aigcsst.cn>;tag=19db6516a6b774c682ff0634f6a75b73.852b8afb.
+i: a9c72d16-16def8f8@172.16.0.10.
+CSeq: 1 NOTIFY.
+Proxy-Authenticate: Digest realm="sip.aigcsst.cn", nonce="Z/FfQ2fxXhf24xMVhdUVZ3A0nz7MVhSw", algorithm=MD5.
+Server: kamailio (6.0.1 (x86_64/linux)).
+Content-Length: 0.
+.			
+		]]>
+		</screen>
+		<para>freeSWITCH 抓包</para>
+		<screen>
+		<![CDATA[
+U 2025/04/06 01:00:55.850523 112.97.211.57:58663 -> 192.168.0.230:5060 #3147
+REGISTER sip:sip.aigcsst.com SIP/2.0.
+v: SIP/2.0/UDP 172.16.0.10:5060;branch=z9hG4bK-938fc74f.
+f: BG7NYT <sip:1000@sip.aigcsst.com>;tag=3bdbbba1384f43ebo1.
+t: BG7NYT <sip:1000@sip.aigcsst.com>.
+i: 1c46607e-5b671c96@172.16.0.10.
+CSeq: 53162 REGISTER.
+Max-Forwards: 70.
+m: BG7NYT <sip:1000@172.16.0.10:5060>;expires=3600.
+User-Agent: Linksys/PAP2T-5.1.6(LS).
+l: 0.
+Allow: ACK, BYE, CANCEL, INFO, INVITE, NOTIFY, OPTIONS, REFER.
+k: x-sipura, replaces.
+.
+--
+
+U 2025/04/06 01:00:55.850630 192.168.0.230:5060 -> 112.97.211.57:5060 #3148
+SIP/2.0 401 Unauthorized.
+Via: SIP/2.0/UDP 172.16.0.10:5060;branch=z9hG4bK-938fc74f;received=112.97.211.57.
+From: BG7NYT <sip:1000@sip.aigcsst.com>;tag=3bdbbba1384f43ebo1.
+To: BG7NYT <sip:1000@sip.aigcsst.com>;tag=p4681NBagg5pD.
+Call-ID: 1c46607e-5b671c96@172.16.0.10.
+CSeq: 53162 REGISTER.
+User-Agent: FreeSWITCH-mod_sofia/1.10.11-release.18~64bit.
+Allow: INVITE, ACK, BYE, CANCEL, OPTIONS, MESSAGE, INFO, UPDATE, REGISTER, REFER, NOTIFY, PUBLISH, SUBSCRIBE.
+Supported: timer, path, replaces.
+WWW-Authenticate: Digest realm="sip.aigcsst.com", nonce="6c3d755e-08c2-4a1d-ac40-457ca8c9c49a", algorithm=MD5, qop="auth".
+Content-Length: 0.
+.
+		]]>
+		</screen>
+		<para>差异是 Kamailio 采用 Authorization 方案，而 freeSWITCH 采用 WWW-Authenticate 方案</para>
+		<para>最终发现是 NAT Src Port 问题</para>
+		<para>解决方案</para>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# grep "NDLB-force-rport" /etc/freeswitch/sip_profiles/internal.xml 
+    <param name="NDLB-force-rport" value="true"/>
+		]]>
+		</screen>
+	</section>
+	<section id="endpoint.hardphone">
+		<title>Avaya</title>
+		
+		<section>
+			<title>常见问题</title>
+			<para>使用 Avaya 话机，常见问题总结</para>
+			<section>
+				<title>拨打 Avaya 话机无忙音</title>
+				<title>当你用软件或手机APP拨打 Avaya 电话，如果连忙音都听不到，一定是编码器不正确。</title>
+				<para>经过测试 Avaya 9611 话机支持：G722，G726-32，GPCMA，PCMU，G729 编码，其他编码拨打不通。</para>
+				<tip>
+					<para>注意：G726 只支持 32K 采样，如果你选择 G726 16K，24K，40K 将无法拨通 Avaya 话机</para>
+					<para>G729 我不知道那种采样可以通，因为我的测试软件PortSIP只显示了 G729 不知道那种采样，G729a 不通。</para>
+				</tip>
+				
+			</section>
+		</section>
+		<section>
+			<title>配置文件 46xxsettings.txt</title>
+			<para>设置NTP时间同步服务器</para>
+			<screen>
+			<![CDATA[
+
+SET SNTPSRVR pool.ntp.org
+设置NTP服务器，我们使用的是内网NTP
+SET GMTOFFSET 8:00
+设置时间与GMT时间的偏移量，默认是2:00，需要改成8:00
+SET DATEFORMAT %Y/%m/%d
+设置时间的显示格式 %Y是4位年，%y是2位年，%m是月，%d是日，按照习惯设置就好			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+			
+			]]>
+			</screen>
+			<para>语音信箱</para>
+			<screen>
+			<![CDATA[
+#Voicemail number
+#MSGNUM doesn't do anything in "SIPPING 19" mode, you have to use PSTN_VM_NUM
+#SET MSGNUM YOUR_VOICEMAIL_NUMBER
+SET PSTN_VM_NUM YOUR_VOICEMAIL_NUMBER
+SET MWISRVR YOUR_PROXY_IP
+			]]>
+			</screen>
+			<para>设置SET REGISTERWAIT参数</para>
+			<screen>
+			<![CDATA[
+SET REGISTERWAIT 1800
+这个参数是话机重新向PBX注册的时间，配置文件里默认是120秒，需要和PBX上的配置一致。否则会造成通话的随机中断。			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+设置LOGO
+SET CURRENT_LOGO “TL”
+#BLAKWHITE
+SET LOGOS TL=http://172.20.0.180:8080/logo_bw.jpg
+GOTO NEXT
+#COLOR
+SET LOGOS TL=http://172.20.0.180:8080/logo_c.jpg
+GOTO NEXT
+#NEXT
+
+# 96xx and 96x1 IP Phones: Screensaver Supported Formats
+# https://support.avaya.com/public/index?page=content&id=SOLN268065&group=UG_PUBLIC
+# 160x160 for a 9610,
+# Example of setting latest SIP settings file:
+SET LOGOS CRAC=http://139.9.54.211/crac.png
+SET CURRENT_LOGO CRAC
+SET BACKGROUND_IMAGE "crac.png"
+SET BACKGROUND_IMAGE_DISPLAY crac.png
+
+# Convert them back to the default settings by commenting them out using the default settings file:
+## SET  LOGOS FIFAWorldCup=../fifa_logo.jpg
+## SET  CURRENT_LOGO ""  
+## SET BACKGROUND_IMAGE "background_example1.jpg,background_example2.jpeg"
+## SET BACKGROUND_IMAGE_DISPLAY background_example1.jpg
+
+Once all the settings that are not commented are commented back to default, reload the file onto the server.
+
+
+
+			]]>
+			</screen>
+			<example>
+				<title>46xxsettings.txt</title>
+				<screen>
+				<![CDATA[
+############################################################
+## ##
+## 96xx SIP TELEPHONE SETTINGS ##
+## ##
+############################################################
+SET DOMAIN sip.aigcsst.com
+SET SIPDOMAIN sip.aigcsst.com
+SET SIPPORT 5060
+## SET SIP_CONTROLLER_LIST 121.37.215.251:5060;transport=udp,45.32.49.98:5160;transport=udp
+SET SIP_CONTROLLER_LIST 121.37.215.251:5060;transport=udp,139.9.54.211:5060;transport=udp,45.32.49.98:5160;transport=udp
+SET SIPREGPROXYPOLICY alternate
+SET SIPPROXYSRVR  
+SET ENABLE_AVAYA_ENVIRONMENT 0
+SET DNSSRVR "114.114.114.114"
+SET PSTN_VM_NUM "4000"
+SET MWISRVR 121.37.215.251
+SET SIPSIGNAL 0
+SET QKLOGINSTAT 1
+SET SNTPSRVR pool.ntp.org
+SET GMTOFFSET 8:00
+SET DSTOFFSET 1
+SET DSTSTART 2SunMar2L
+SET DSTSTOP 1SunNov2L
+SET TIMEZONE  <SET YOUR TIMEZONE IN TZDATA FORMAT>
+SET WAIT_FOR_REGISTRATION_TIMER 60
+SET REGISTERWAIT 120
+SET RECOVERYREGISTERWAIT 60
+SET WAIT_FOR_UNREGISTRATION_TIMER 32
+SET WAIT_FOR_INVITE_RESPONSE_TIMEOUT 60
+SET OUTBOUND_SUBSCRIPTION_REQUEST_DURATION 180
+SET NO_DIGITS_TIMEOUT 10
+SET INTER_DIGIT_TIMEOUT 5
+SET ENABLE_PRESENCE 0
+SET ENABLE_AUTOMATIC_ON_THE_PHONE_PRESENCE 0
+SET SPEAKERSTAT 2
+SET SDPCAPNEG 1
+SET DISPLAY_NAME_NUMBER 1
+SET PLAY_TONE_UNTIL_RTP 1
+SET SKILLSCREENTIME 1
+SET UUIDISPLAYTIME 5
+SET ENTRYNAME 0
+SET ENABLE_G729 2
+SET SEND_DTMF_TYPE 2
+SET DTMF_PAYLOAD_TYPE 101
+SET SYMMETRIC_RTP 1
+SET MATCHTYPE 1
+SET ENABLE_HOLD_BUTTON 1
+SET SIG 2
+SET PHNLD ""
+SET SUBSCRIBE_SECURITY 0
+SET ENABLE_IPOFFICE 1
+SET SUBSCRIBE_LIST_NON_AVAYA "mwi"
+SET EXTENSION_ON_TOP_LINE 2
+SET PROVIDE_OPTIONS_SCREEN 1
+SET DATEFORMAT %Y-%m-%d
+SET TIMEFORMAT 1
+SET DAYLIGHT_SAVING_SETTING_MODE 2
+SET ENABLE_EARLY_MEDIA 1
+SET SYSTEM_LANGUAGE "Mlf_Chinese.xml"
+SET LANGUAGES "Mlf_Chinese.xml"
+SET BAKLIGHTOFF 4
+SET SCREENSAVERON 3				
+				]]>
+				</screen>
+			</example>
+		</section>
+	</section>
+	<section id="linphone">
+		<title>linphone</title>
+		<para>跨平台开源免费的 SIP 客户端</para>
+		<para>
+			<ulink url="https://www.linphone.org" />
+		</para>
+	</section>
+	<section id="endpoint.jami">
+		<title>Jami</title>
+
+	</section>
+	<section id="endpoint.softphone">
+		<title>MicroSIP</title>
+
+	</section>
+</section>
+	

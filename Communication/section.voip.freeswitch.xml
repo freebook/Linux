@@ -419,7 +419,39 @@ FireWall Ports  Network Protocol    Application Protocol    Description
 		]]>
 		</screen>
 		<para>fail2ban 自动拦截恶意注册</para>
-
+		<screen>
+		<![CDATA[
+firewall-cmd --zone=public --add-port=1719/udp  --permanent
+firewall-cmd --zone=public --add-port=1720/tcp  --permanent
+firewall-cmd --zone=public --add-port=3478-3479/udp  --permanent
+firewall-cmd --zone=public --add-port=5002/tcp  --permanent
+firewall-cmd --zone=public --add-port=5003/udp  --permanent
+firewall-cmd --zone=public --add-port=5060/udp  --permanent
+firewall-cmd --zone=public --add-port=5060/tcp  --permanent
+firewall-cmd --zone=public --add-port=5070/udp  --permanent
+firewall-cmd --zone=public --add-port=5080/udp  --permanent
+firewall-cmd --zone=public --add-port=5006/tcp  --permanent
+firewall-cmd --zone=public --add-port=5007/tcp  --permanent
+firewall-cmd --zone=public --add-port=5008/tcp  --permanent
+firewall-cmd --zone=public --add-port=8021/tcp  --permanent
+firewall-cmd --zone=public --add-port=16384-32768/udp  --permanent
+firewall-cmd --zone=public --add-port=5066/tcp  --permanent
+firewall-cmd --zone=public --add-port=7443/tcp  --permanent
+		
+		]]>
+		</screen>
+		<para>重启防火墙</para>
+		<screen>
+		<![CDATA[
+firewall-cmd --reload		
+		]]>
+		</screen>
+		<para>查看已开放的端口</para>
+		<screen>
+		<![CDATA[
+firewall-cmd --list-ports
+		]]>
+		</screen>
 	</section>
 	<section id="freeswitch.etc">
 		<title>配置 freeswitch</title>
@@ -458,10 +490,10 @@ NLYPx9JjSx
 			]]>
 				</screen>
 			</section>
-			<screen>
+			<section>
 				<title>公网IP地址</title>
-
 				<para>配置公网IP地址</para>
+				<para>适用场景，公网IP直接在Linux eth0 网卡上配置。</para>
 				<screen>
 			<![CDATA[
 <X-PRE-PROCESS cmd="stun-set" data="external_rtp_ip=stun:stun.freeswitch.org"/>
@@ -471,7 +503,7 @@ NLYPx9JjSx
 <X-PRE-PROCESS cmd="stun-set" data="external_rtp_ip=IP地址"/>
 			]]>
 				</screen>
-			</screen>
+			</section>
 
 			<section>
 				<title>NAT 配置</title>
@@ -643,19 +675,29 @@ NLYPx9JjSx
 			]]>
 			</screen>
 			<section>
+				<title>旁路模式</title>
+				<para>配置 inbound-bypass-media 可以开启旁路模式，在此模式 下FreeSWITCH 只负责 SIP 信令交换，两个 endpoint 话机 RIP 语音通信是点对点方式。这样比较节省流量，但是国内网络复杂，层层 NAT 常常出现局域网正常，部署到广域网就会失败，现象是拨通之后没有语音。</para>
+				<screen>
+				<![CDATA[
+[root@netkiller ~]# grep -r 'inbound-bypass-media' /etc/freeswitch/sip_profiles/internal.xml
+    <!--<param name="inbound-bypass-media" value="true"/>-->	
+				]]>
+				</screen>
+			</section>
+			<section>
 				<title>启用 100rel</title>
 				<screen>
 				<![CDATA[
-[root@production ~]# grep 100rel /etc/freeswitch/sip_profiles/internal.xml
+[root@netkiller ~]# grep 100rel /etc/freeswitch/sip_profiles/internal.xml
         There are known issues (asserts and segfaults) when 100rel is enabled.
         It is not recommended to enable 100rel at this time.
     <!--<param name="enable-100rel" value="true"/>-->
 
-[root@production ~]# vim /etc/freeswitch/sip_profiles/internal.xml
+[root@netkiller ~]# vim /etc/freeswitch/sip_profiles/internal.xml
 
-[root@production ~]# systemctl restart  freeswitch
+[root@netkiller ~]# systemctl restart  freeswitch
 
-[root@production ~]# grep 100rel /etc/freeswitch/sip_profiles/internal.xml
+[root@netkiller ~]# grep 100rel /etc/freeswitch/sip_profiles/internal.xml
         There are known issues (asserts and segfaults) when 100rel is enabled.
         It is not recommended to enable 100rel at this time.
     <param name="enable-100rel" value="true"/>				
@@ -712,7 +754,7 @@ NLYPx9JjSx
 			</screen>
 			<screen>
 			<![CDATA[
-[root@production ~]# cat /etc/freeswitch/autoload_configs/event_socket.conf.xml 
+[root@netkiller ~]# cat /etc/freeswitch/autoload_configs/event_socket.conf.xml 
 <configuration name="event_socket.conf" description="Socket Client">
   <settings>
     <param name="nat-map" value="false"/>
@@ -727,7 +769,7 @@ NLYPx9JjSx
 			</screen>
 			<screen>
 			<![CDATA[
-[root@production ~]# fs_cli -p netkiller			
+[root@netkiller ~]# fs_cli -p netkiller			
 			]]>
 			</screen>
 		</section>
@@ -816,12 +858,12 @@ EOF
 			<para></para>
 			<screen>
 			<![CDATA[
-[root@production ~]# cp /etc/freeswitch/dialplan/default.xml{,.backup}			
+[root@netkiller ~]# cp /etc/freeswitch/dialplan/default.xml{,.backup}			
 			]]>
 			</screen>
 			<screen>
 			<![CDATA[
-[root@production ~]# vim /etc/freeswitch/dialplan/default.xml			
+[root@netkiller ~]# vim /etc/freeswitch/dialplan/default.xml			
     <extension name="Local_Extension">
       <condition field="destination_number" expression="^(10[01][0-9])$">
         <action application="export" data="dialed_extension=$1"/>
@@ -887,7 +929,7 @@ EOF
 				<para>拨出规则</para>
 				<screen>
 				<![CDATA[
-[root@production ~]# vim /etc/freeswitch/dialplan/default.xml				
+[root@netkiller ~]# vim /etc/freeswitch/dialplan/default.xml				
     <extension name="Local_Extension">
       <!-- <condition field="destination_number" expression="^(10[01][0-9])$"> -->
       <condition field="destination_number" expression="^(1\d{2,3})$">
@@ -922,7 +964,7 @@ EOF
 				<para>拨入规则</para>
 				<screen>
 				<![CDATA[
-[root@production ~]# cp /etc/freeswitch/dialplan/public.xml{,.backup}
+[root@netkiller ~]# cp /etc/freeswitch/dialplan/public.xml{,.backup}
 
     <extension name="public_extensions">
       <!-- <condition field="destination_number" expression="^(10[01][0-9])$"> -->
@@ -932,7 +974,7 @@ EOF
     </extension>
 				]]>
 				</screen>
-				
+
 			</example>
 		</section>
 		<section id="logfile.conf.xml ">
@@ -971,6 +1013,54 @@ EOF
 </configuration>			
 			]]>
 			</screen>
+		</section>
+		<section id="freeswitch.h246">
+			<title>视频通话</title>
+			<para>新增一项 proxy_media 配置</para>
+			<screen>
+		<![CDATA[
+echo '<X-PRE-PROCESS cmd="set" data="proxy_media=true"/>' >> /etc/freeswitch/vars.xml
+
+[root@netkiller ~]# echo '<X-PRE-PROCESS cmd="set" data="proxy_media=true"/>' >> /etc/freeswitch/vars.xml
+[root@netkiller ~]# grep  'proxy_media' /etc/freeswitch/vars.xml
+<X-PRE-PROCESS cmd="set" data="proxy_media=true"/>
+		]]>
+			</screen>
+			<para>去掉 inbound-proxy-media 注释</para>
+			<screen>
+		<![CDATA[
+[root@netkiller ~]# egrep "inbound-proxy-media|inbound-late-negotiation" /etc/freeswitch/sip_profiles/internal.xml
+    <!--<param name="inbound-proxy-media" value="true"/>-->
+    <param name="inbound-late-negotiation" value="true"/>
+    
+<!--<param name="inbound-proxy-media" value="true"/>-->
+修改
+<param name="inbound-proxy-media" value="true"/>
+    
+[root@netkiller ~]# egrep "inbound-proxy-media|inbound-late-negotiation" /etc/freeswitch/sip_profiles/internal.xml
+    <param name="inbound-proxy-media" value="true"/>
+    <param name="inbound-late-negotiation" value="true"/>    
+		]]>
+			</screen>
+		</section>
+		<section id="freeswitch.voicemail">
+			<title>语音邮箱(voicemail)</title>
+			<para>确认 voicemail 模块是否启用</para>
+			<screen>
+		<![CDATA[
+[root@netkiller ~]# grep voicemail /etc/freeswitch/autoload_configs/modules.conf.xml 
+    <load module="mod_voicemail"/>		
+		]]>
+			</screen>
+			<para>语音信箱存储目录</para>
+			<screen>
+		<![CDATA[
+[root@netkiller ~]# ls /var/lib/freeswitch/storage/voicemail/default/sip.aigcsst.com/
+1000  1001  1002  1003  1004  1005  1006  1007  1009  1010  1011  1012  1013		
+		]]>
+			</screen>
+			<para>拨打4000，根据提示输入user id和密码，就可以收听到留言了。</para>
+
 		</section>
 	</section>
 	<section id="freeswitch.mysql">
@@ -1090,54 +1180,7 @@ mariadb://Server=localhost;Database=freeswitch;Uid=freeswitch;Pwd=pass;
 			</screen>
 		</section>
 	</section>
-	<section id="freeswitch.voicemail">
-		<title>语音邮箱(voicemail)</title>
-		<para>确认 voicemail 模块是否启用</para>
-		<screen>
-		<![CDATA[
-[root@production ~]# grep voicemail /etc/freeswitch/autoload_configs/modules.conf.xml 
-    <load module="mod_voicemail"/>		
-		]]>
-		</screen>
-		<para>语音信箱存储目录</para>
-		<screen>
-		<![CDATA[
-[root@production ~]# ls /var/lib/freeswitch/storage/voicemail/default/sip.aigcsst.com/
-1000  1001  1002  1003  1004  1005  1006  1007  1009  1010  1011  1012  1013		
-		]]>
-		</screen>
-		<para>拨打4000，根据提示输入user id和密码，就可以收听到留言了。</para>
 
-	</section>
-	<section id="freeswitch.h246">
-		<title>视频通话</title>
-		<para>新增一项 proxy_media 配置</para>
-		<screen>
-		<![CDATA[
-echo '<X-PRE-PROCESS cmd="set" data="proxy_media=true"/>' >> /etc/freeswitch/vars.xml
-
-[root@production ~]# echo '<X-PRE-PROCESS cmd="set" data="proxy_media=true"/>' >> /etc/freeswitch/vars.xml
-[root@production ~]# grep  'proxy_media' /etc/freeswitch/vars.xml
-<X-PRE-PROCESS cmd="set" data="proxy_media=true"/>
-		]]>
-		</screen>
-		<para>去掉 inbound-proxy-media 注释</para>
-		<screen>
-		<![CDATA[
-[root@production ~]# egrep "inbound-proxy-media|inbound-late-negotiation" /etc/freeswitch/sip_profiles/internal.xml
-    <!--<param name="inbound-proxy-media" value="true"/>-->
-    <param name="inbound-late-negotiation" value="true"/>
-    
-<!--<param name="inbound-proxy-media" value="true"/>-->
-修改
-<param name="inbound-proxy-media" value="true"/>
-    
-[root@production ~]# egrep "inbound-proxy-media|inbound-late-negotiation" /etc/freeswitch/sip_profiles/internal.xml
-    <param name="inbound-proxy-media" value="true"/>
-    <param name="inbound-late-negotiation" value="true"/>    
-		]]>
-		</screen>
-	</section>
 	<section id="freeswitch.number">
 		<title>测试号码</title>
 		<para>freeswitch提供了测试号码</para>
@@ -1316,6 +1359,98 @@ sofia profile internal siptrace off
 4 profiles 1 alias			
 			]]>
 			</screen>
+
+		</section>
+		<section>
+			<title>internal 状态查看</title>
+			<screen>
+			<![CDATA[
+freeswitch@-ERR switchname Command not found!> sofia status profile internal
+=================================================================================================
+Name                    internal
+Domain Name             N/A
+Auto-NAT                true
+DBName                  sofia_reg_internal
+Pres Hosts              sip.aigcsst.com,192.168.0.230
+Dialplan                XML
+Context                 public
+Challenge Realm         auto_from
+RTP-IP                  192.168.0.230
+Ext-RTP-IP              121.37.215.251
+SIP-IP                  192.168.0.230
+Ext-SIP-IP              121.37.215.251
+URL                     sip:mod_sofia@192.168.0.230:5060
+BIND-URL                sip:mod_sofia@192.168.0.230:5060;transport=udp,tcp
+WS-BIND-URL             sip:mod_sofia@192.168.0.230:5066;transport=ws
+WSS-BIND-URL            sips:mod_sofia@192.168.0.230:7443;transport=wss
+HOLD-MUSIC              local_stream://moh
+OUTBOUND-PROXY          N/A
+CODECS IN               OPUS,G722,G729,PCMU,PCMA,H264,VP8
+CODECS OUT              OPUS,G722,G729,PCMU,PCMA,H264,VP8
+TEL-EVENT               101
+DTMF-MODE               rfc2833
+CNG                     13
+SESSION-TO              0
+MAX-DIALOG              0
+MAX-RECV-RPS            1000
+NOMEDIA                 false
+LATE-NEG                true
+PROXY-MEDIA             true
+AGGRESSIVENAT           false
+CALLS-IN                195
+FAILED-CALLS-IN         99
+CALLS-OUT               22
+FAILED-CALLS-OUT        14
+REGISTRATIONS           8
+			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>external 状态</title>
+			<screen>
+			<![CDATA[
+freeswitch@-ERR switchname Command not found!> sofia status profile external
+=================================================================================================
+Name                    external
+Domain Name             N/A
+Auto-NAT                true
+DBName                  sofia_reg_external
+Pres Hosts       
+Dialplan                XML
+Context                 public
+Challenge Realm         auto_to
+RTP-IP                  192.168.0.230
+Ext-RTP-IP              121.37.215.251
+SIP-IP                  192.168.0.230
+Ext-SIP-IP              121.37.215.251
+URL                     sip:mod_sofia@192.168.0.230:5080
+BIND-URL                sip:mod_sofia@192.168.0.230:5080;transport=udp,tcp
+HOLD-MUSIC              local_stream://moh
+OUTBOUND-PROXY          N/A
+CODECS IN               OPUS,G722,G729,PCMU,PCMA,H264,VP8
+CODECS OUT              OPUS,G722,G729,PCMU,PCMA,H264,VP8
+TEL-EVENT               101
+DTMF-MODE               rfc2833
+CNG                     13
+SESSION-TO              0
+MAX-DIALOG              0
+MAX-RECV-RPS            1000
+NOMEDIA                 false
+LATE-NEG                true
+PROXY-MEDIA             false
+AGGRESSIVENAT           false
+CALLS-IN                3
+FAILED-CALLS-IN         3
+CALLS-OUT               0
+FAILED-CALLS-OUT        0
+REGISTRATIONS           0			
+			]]>
+			</screen>
+		</section>
+
+		<section>
+			<title>注册状态查看</title>
 			<screen>
 			<![CDATA[
 [root@netkiller ~]# fs_cli -x "sofia status profile internal reg"

@@ -14,6 +14,6 @@
 <!ENTITY section.voip.yate.xml	 		SYSTEM "section.voip.yate.xml">
 <!ENTITY section.voip.kamailio.xml 		SYSTEM "section.voip.kamailio.xml">
 <!ENTITY section.voip.rtp.xml	 		SYSTEM "section.voip.rtp.xml">
-
+<!ENTITY section.voip.phone.xml	 		SYSTEM "section.voip.phone.xml">
 
 <!ENTITY chapter.rtc.xml		 		SYSTEM "chapter.rtc.xml">
