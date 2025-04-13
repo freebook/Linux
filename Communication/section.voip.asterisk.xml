@@ -147,15 +147,82 @@ Objects found: 1
 	</section>
 	<section>
 		<title>源码安装 asterisk-22</title>
+		<para></para>
+		<screen>
+		<![CDATA[
+dnf install -y automake g++
+dnf install -y svn
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+wget https://github.com/pjsip/pjproject/archive/refs/tags/2.15.1.tar.gz
+tar zxvf 2.15.1.tar.gz 
+cd pjproject-2.15.1
+./configure
+make dep
+make
+make install
+ldconfig
+ldconfig -p | grep pjsip
+		]]>
+		</screen>
 		<screen>
 			<![CDATA[
 cd /usr/local/src/
 wget https://downloads.asterisk.org/pub/telephony/asterisk/asterisk-22-current.tar.gz
-tar zxvf asterisk-22-current.tar.gz		
-cd asterisk-22.2.0/
+tar zxvf asterisk-22-current.tar.gz	
+cd asterisk-22.3.0/
+
+contrib/scripts/get_mp3_source.sh
+contrib/scripts/install_prereq install
+
 ./configure
 make menuselect	
+make -j2
+make install
+
+make samples
+make basic-pbx
+
+make config
+ldconfig
 			]]>
+		</screen>
+		
+		<screen>
+		<![CDATA[
+cat >> /etc/default/asterisk <<EOF
+AST_USER="asterisk"
+AST_GROUP="asterisk"
+EOF
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+sudo addgroup --quiet --system asterisk
+sudo adduser --quiet --system --ingroup asterisk --no-create-home --disabled-password asterisk
+usermod -a -G dialout,audio asterisk
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+sudo chown -R asterisk: /var/{lib,log,run,spool}/asterisk /usr/lib/asterisk /etc/asterisk
+sudo chmod -R 750 /var/{lib,log,run,spool}/asterisk /usr/lib/asterisk /etc/asterisk
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+systemctl enable asterisk
+sudo systemctl start asterisk
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+5060/udp
+10000:20000/udp
+		]]>
 		</screen>
 	</section>
 	<section>
