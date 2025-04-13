@@ -158,4 +158,19 @@ F10 or t: Select displayed columns, 显示或者隐藏侧边sip消息栏
 		</section>
 	</section>
 	&section.voip.phone.xml;
+	<section>
+		<title>FAQ</title>
+		<section>
+			<title>SIP ALG</title>
+			<screen>
+			<![CDATA[
+modprobe nf_nat_sip
+
+echo 1 > /proc/sys/net/netfilter/nf_conntrack_helper
+
+iptables -t raw -A PREROUTING -p udp -m udp --dport 5060 -j CT --helper sip
+			]]>
+			</screen>
+		</section>
+	</section>
 </chapter>

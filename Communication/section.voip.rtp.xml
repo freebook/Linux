@@ -3,6 +3,7 @@
 	<title>RTP</title>
 	<section id="RTPProxy">
 		<title>RTPProxy</title>
+		<para>编译安装</para>
 		<screen>
 		<![CDATA[
 [root@netkiller ~]# cd /usr/local/src/
@@ -13,18 +14,106 @@ $ ./configure
 $ make && make install
 		]]>
 		</screen>
+		<para>创建启动用户</para>
+		<screen>
+		<![CDATA[
+groupadd --system rtpproxy
+useradd -s /sbin/nologin --system -g rtpproxy rtpproxy		
+		]]>
+		</screen>
+		<para>配置 systemd 服务</para>
+		<screen>
+		<![CDATA[
+[root@production rtpproxy]# cp rpm/rtpproxy.sysconfig /etc/sysconfig/rtpproxy
+
+[root@production rtpproxy]# ifconfig eth0
+eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.0.230  netmask 255.255.255.0  broadcast 192.168.0.255
+        inet6 fe80::f816:3eff:feda:3218  prefixlen 64  scopeid 0x20<link>
+        ether fa:16:3e:da:32:18  txqueuelen 1000  (Ethernet)
+        RX packets 324462878  bytes 134919677548 (125.6 GiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 377750798  bytes 112915670453 (105.1 GiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+[root@production rtpproxy]# vim /etc/sysconfig/rtpproxy
+OPTIONS="-A 121.37.215.250 -l 192.168.0.230 -s udp:127.0.0.1:7722 -m 16384 -M 32768"
+		]]>
+		</screen>
+		<para>rtpproxy 参数解释如下：</para>
+		<screen>
+		<![CDATA[		
+-A 本机外网地址
+-l 本机内网侦听地址
+-s 本机侦听opensips通知端口
+-n 超时通知接收端口
+-F 不检查是否为超级用户模式
+-d 调试消息输出级别
+-m rtp最小端口
+-M rtp最大端口
+
+-d
+log_level为日志级别，值如下
+DBUG INFO WARN ERR CRIT
+log_facility为日志输出到哪，利用的系统日志		
+		]]>
+		</screen>
 		<para></para>
 		<screen>
 		<![CDATA[
+[root@production rtpproxy]# cp rpm/rtpproxy.socket /etc/systemd/system/sockets.target.wants/
+[root@production rtpproxy]# vim /etc/systemd/system/sockets.target.wants/rtpproxy.socket
+ListenStream=127.0.0.1:22222
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+[root@production rtpproxy]# cp rpm/rtpproxy.service /etc/systemd/system/
+[root@production rtpproxy]# vim /etc/systemd/system/rtpproxy.service
+ExecStart=/usr/bin/rtpproxy -f -p /var/run/rtpproxy/rtpproxy.pid $OPTIONS
+改为
+ExecStart=/usr/local/bin/rtpproxy -f -p /var/run/rtpproxy/rtpproxy.pid $OPTIONS
+
+#Type=notify
+改为
+Type=simple
+
+注释
+#Also=rtpproxy.socket
+
+[root@production yate]# cat /etc/systemd/system/rtpproxy.service 
+[Unit]
+Description=A symmetric RTP proxy
+After=network.target
+
+[Service]
+#Type=notify
+Type=simple
+User=rtpproxy
+Group=rtpproxy
+EnvironmentFile=/etc/sysconfig/rtpproxy
+PIDFile=/var/run/rtpproxy/rtpproxy.pid
+ExecStart=/usr/local/bin/rtpproxy -f -p /var/run/rtpproxy/rtpproxy.pid $OPTIONS
+
+[Install]
+#Also=rtpproxy.socket
+WantedBy=multi-user.target
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+[root@production yate]# mkdir /var/run/rtpproxy
+[root@production yate]# chown rtpproxy:rtpproxy /var/run/rtpproxy
+
+[root@production yate]# systemctl restart rtpproxy
+
 
 		]]>
 		</screen>
-		<screen>
-		<![CDATA[
-sudo groupadd --system rtpproxy
-sudo useradd -s /sbin/nologin --system -g rtpproxy rtpproxy		
-		]]>
-		</screen>
+		
+		
 		<para></para>
 		<screen>
 		<![CDATA[
@@ -47,7 +136,7 @@ vim /etc/logrotate.d/rtpproxy
 }		
 		]]>
 		</screen>
-		<para></para>
+		<para>UNIX Socket</para>
 		<screen>
 		<![CDATA[
 [Unit]
@@ -106,24 +195,7 @@ systemctl start rtpproxy.socket
 systemctl start rtpproxy.service		
 		]]>
 		</screen>
-		<para>rtpproxy 参数解释如下：</para>
-		<screen>
-		<![CDATA[
--A 本机外网地址
--l 本机内网侦听地址
--s 本机侦听opensips通知端口
--n 超时通知接收端口
--F 不检查是否为超级用户模式
--d 调试消息输出级别
--m rtp最小端口
--M rtp最大端口
-
--d
-log_level为日志级别，值如下
-DBUG INFO WARN ERR CRIT
-log_facility为日志输出到哪，利用的系统日志		
-		]]>
-		</screen>
+		
 	</section>
 	<section id="rtpengine">
 		<title>rtpengine</title>

@@ -1248,7 +1248,7 @@ failure_route[MANAGE_FAILURE] {
 }			
 			]]>
 			</screen>
-			<para>配置数据</para>
+			<para>配置数据库</para>
 			<screen>
 			<![CDATA[
 

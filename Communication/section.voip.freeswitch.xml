@@ -1062,6 +1062,39 @@ echo '<X-PRE-PROCESS cmd="set" data="proxy_media=true"/>' >> /etc/freeswitch/var
 			<para>拨打4000，根据提示输入user id和密码，就可以收听到留言了。</para>
 
 		</section>
+		<section>
+			<title>多租户（多领域）配置</title>
+			<![CDATA[
+[root@production ~]# cat /etc/freeswitch/directory/default/1000.xml			
+<include>
+     <domain name="sip.netkiller.cn">
+         <user id="1000">
+             <params>
+                 <param name="password" value="1234"/>
+             </params>
+         </user>
+         <user id="1001">
+             <params>
+                 <param name="password" value="1234"/>
+             </params>
+         </user>
+     </domain>
+ 
+     <domain name="voip.netkiller.cn">
+         <user id="1000">
+             <params>
+                 <param name="password" value="1234"/>                                                                                                                                        
+             </params>
+         </user>
+         <user id="1001">
+             <params>
+                 <param name="password" value="1234"/>
+             </params>
+         </user>
+     </domain>
+ </include>			
+			]]>
+		</section>
 	</section>
 	<section id="freeswitch.mysql">
 		<title>MySQL 模块配置</title>
@@ -1311,23 +1344,27 @@ fs_cli -H 127.0.0.1 -P 8021 -p password
 			]]>
 			</screen>
 		</section>
-		<section id="console.loglevel">
-			<title>loglevel</title>
-			<para>console loglevel （0~7）</para>
-			<screen>
+		<section id="fa_cli.log">
+			<title>日志</title>
+
+			<section id="console.loglevel">
+				<title>loglevel</title>
+				<para>console loglevel （0~7）</para>
+				<screen>
 			<![CDATA[
 console loglevel 3			
 			]]>
-			</screen>
-		</section>
-		<section>
-			<title>关闭日志</title>
-			<screen>
+				</screen>
+			</section>
+			<section id="nolog">
+				<title>关闭日志</title>
+				<screen>
 			<![CDATA[
 freeswitch@-ERR switchname Command not found!> /nolog
 +OK no longer logging			
 			]]>
-			</screen>
+				</screen>
+			</section>
 		</section>
 		<section id="sofia.profile">
 			<title>profile</title>
@@ -1361,7 +1398,18 @@ sofia profile internal siptrace off
 			</screen>
 
 		</section>
-		<section>
+		<section id="sofia.profile.internal.siptrace">
+			<title>sip 抓包</title>
+			<screen>
+			<![CDATA[
+sofia profile internal siptrace on
+sofia profile external siptrace on	
+			]]>
+			</screen>
+
+		</section>
+		
+		<section id="sofia.status.profile.internal">
 			<title>internal 状态查看</title>
 			<screen>
 			<![CDATA[
@@ -1406,7 +1454,7 @@ REGISTRATIONS           8
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="sofia.status.profile.external">
 			<title>external 状态</title>
 			<screen>
 			<![CDATA[
@@ -1449,7 +1497,7 @@ REGISTRATIONS           0
 			</screen>
 		</section>
 
-		<section>
+		<section id="sofia.status.profile.internal.reg">
 			<title>注册状态查看</title>
 			<screen>
 			<![CDATA[
@@ -1518,7 +1566,103 @@ Total items returned: 4
 			]]>
 			</screen>
 		</section>
+		<section id="sofia.profile.internal.rescan">
+			<title>呼叫</title>
+			<para>重新扫描加载 sip profile</para>
+			<screen>
+			<![CDATA[
+sofia profile internal rescan
+sofia profile external rescan
+			]]>
+			</screen>
+			<para>重启 sip profile</para>
+			<screen>
+			<![CDATA[
+sofia profile internal restart
+sofia profile external restart
+			]]>
+			</screen>
+		</section>
+		<section id="show.calls">
+			<title>呼叫</title>
+			<screen>
+			<![CDATA[
+# 显示当前呼叫
+show calls
 
+# 显示呼叫数量
+show calls count
+
+# 挂断某个呼叫
+uuid_kill 59b857d2-d7b8-4c7e-6666-e19be0f16643
+
+# 挂断所有呼叫
+hupall
+
+# 拨打某个用户并启用echo回音
+originate user/1000 &echo
+			]]>
+			</screen>
+		</section>
+		<section id="fs_cli.originate">
+			<title>呼叫测试</title>
+			<screen>
+			<![CDATA[
+回音测试
+originate user/1000 &echo
+
+停泊
+originate user/1000 &park  # 停泊
+
+保持
+originate user/1000 &hold # 保持
+
+播放放音
+originate user/1000 &playback(/root/welclome.wav) # 播放音乐
+
+呼叫并录音
+originate user/1000 &record(/tmp/vocie_of_alice.wav) # 呼叫并录音
+
+同振与顺振
+#经过特定的SIP服务器发起外呼，下面的命令会将INVITE先发送到192.168.2.4:5060上
+bgapi originate sofia/external/8005@001.com;fs_path=sip:192.168.2.4:5060 &echo 
+
+经过特定SIP服务器
+#经过特定的SIP服务器发起外呼，下面的命令会将INVITE先发送到192.168.2.4:5060上
+bgapi originate sofia/external/8005@001.com;fs_path=sip:192.168.2.4:5060 &echo 
+
+忽略early media
+originate {ignore_early_media=true}user/1000 &echo
+
+播放假的early media
+originate {transfer_ringback=local_stream://moh}user/1000 &echo
+
+立即播放early media
+originate {instant_ringback=true}{transfer_ringback=local_stream://moh}user/1000 &echo
+
+设置外显号码
+originate {origination_callee_id_name=7777}user/1000
+			]]>
+			</screen>
+		</section>
+		<section id="fs_cli.regex">
+			<title>正则测试</title>
+			<screen>
+			<![CDATA[
+regex 123123 | \d
+regex 123123 | ^\d*
+			]]>
+			</screen>
+		</section>
+		<section id="fs_cli.eval">
+			<title>变量求值</title>
+			<screen>
+			<![CDATA[
+eval $${mod_dir}
+eval $${recording_dir}
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="freeswitch.lang">
 		<title>中文语音包</title>
