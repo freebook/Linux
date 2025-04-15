@@ -188,7 +188,7 @@ color on
 		</screen>
 	</section>
 
-	<section>
+	<section id="yate.sbc">
 		<title>SBC(SIP Session Border Controller) 会话边界控制器</title>
 		<para>启用 SBC</para>
 		<screen>
@@ -244,20 +244,21 @@ ${rtp_forward}possible=;rtp_forward=yes
 		]]>
 		</screen>
 	</section>
-	<section>
+	<section id="yate.route">
 		<title>配置路由</title>
 		<section>
 			<title>外拨网关</title>
 
 			<section>
 				<title>配置网关</title>
-				<para></para>
+				<para>备份配置文件</para>
 				<screen>
 				<![CDATA[
 [root@netkiller yate]# cp /usr/local/etc/yate/accfile.conf{,.backup}
 [root@netkiller yate]# vim /usr/local/etc/yate/accfile.conf
 				]]>
 				</screen>
+				<para>SIP 网关账号</para>
 				<screen>
 				<![CDATA[
 [test_sip]
@@ -269,13 +270,14 @@ interval=600
 authname=6002
 password=6002
 domain=sip.netkiller.cn
-registrar=sip.netkiller.cn:5060			
+registrar=sip.netkiller.cn:5060
 				]]>
 				</screen>
 			</section>
 
 			<section>
 				<title>在 regexroute.conf 文件中加入拨号规则</title>
+				<para>路由规则</para>
 				<screen>
 			<![CDATA[
 ^177$=line/177;line=test_sip			
