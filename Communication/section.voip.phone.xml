@@ -4,7 +4,8 @@
 
 	<section id="Linksys.gateway">
 		<title>Linksys/PAP2T-5.1.6(LS) 登录 freeSWITCH 和 asterisk 失败</title>
-		<para>使用 Yate / Kamailio / OpenSIPS 作为 SIP 服务器，Linksys 能正常登录，拨打IP电话。换成 freeSWITCH 和 asterisk 无法注册。</para>
+		<para>使用 Yate / Kamailio / OpenSIPS 作为 SIP 服务器，Linksys 能正常登录，拨打IP电话。换成
+			freeSWITCH 和 asterisk 无法注册。</para>
 		<para>使用 ngrep 抓包，经过分析，问题处在认证登录头</para>
 		<screen>
 		<![CDATA[
@@ -78,10 +79,10 @@ Content-Length: 0.
 		<screen>
 		<![CDATA[
 U 2025/04/06 01:00:55.850523 112.97.211.57:58663 -> 192.168.0.230:5060 #3147
-REGISTER sip:sip.aigcsst.com SIP/2.0.
+REGISTER sip:sip.netkiller.cn SIP/2.0.
 v: SIP/2.0/UDP 172.16.0.10:5060;branch=z9hG4bK-938fc74f.
-f: BG7NYT <sip:1000@sip.aigcsst.com>;tag=3bdbbba1384f43ebo1.
-t: BG7NYT <sip:1000@sip.aigcsst.com>.
+f: BG7NYT <sip:1000@sip.netkiller.cn>;tag=3bdbbba1384f43ebo1.
+t: BG7NYT <sip:1000@sip.netkiller.cn>.
 i: 1c46607e-5b671c96@172.16.0.10.
 CSeq: 53162 REGISTER.
 Max-Forwards: 70.
@@ -96,19 +97,20 @@ k: x-sipura, replaces.
 U 2025/04/06 01:00:55.850630 192.168.0.230:5060 -> 112.97.211.57:5060 #3148
 SIP/2.0 401 Unauthorized.
 Via: SIP/2.0/UDP 172.16.0.10:5060;branch=z9hG4bK-938fc74f;received=112.97.211.57.
-From: BG7NYT <sip:1000@sip.aigcsst.com>;tag=3bdbbba1384f43ebo1.
-To: BG7NYT <sip:1000@sip.aigcsst.com>;tag=p4681NBagg5pD.
+From: BG7NYT <sip:1000@sip.netkiller.cn>;tag=3bdbbba1384f43ebo1.
+To: BG7NYT <sip:1000@sip.netkiller.cn>;tag=p4681NBagg5pD.
 Call-ID: 1c46607e-5b671c96@172.16.0.10.
 CSeq: 53162 REGISTER.
 User-Agent: FreeSWITCH-mod_sofia/1.10.11-release.18~64bit.
 Allow: INVITE, ACK, BYE, CANCEL, OPTIONS, MESSAGE, INFO, UPDATE, REGISTER, REFER, NOTIFY, PUBLISH, SUBSCRIBE.
 Supported: timer, path, replaces.
-WWW-Authenticate: Digest realm="sip.aigcsst.com", nonce="6c3d755e-08c2-4a1d-ac40-457ca8c9c49a", algorithm=MD5, qop="auth".
+WWW-Authenticate: Digest realm="sip.netkiller.cn", nonce="6c3d755e-08c2-4a1d-ac40-457ca8c9c49a", algorithm=MD5, qop="auth".
 Content-Length: 0.
 .
 		]]>
 		</screen>
-		<para>差异是 Kamailio 采用 Authorization 方案，而 freeSWITCH 采用 WWW-Authenticate 方案</para>
+		<para>差异是 Kamailio 采用 Authorization 方案，而 freeSWITCH 采用
+			WWW-Authenticate 方案</para>
 		<para>最终发现是 NAT Src Port 问题</para>
 		<para>解决方案</para>
 		<screen>
@@ -120,19 +122,22 @@ Content-Length: 0.
 	</section>
 	<section id="endpoint.hardphone">
 		<title>Avaya</title>
-		
+
 		<section>
 			<title>常见问题</title>
 			<para>使用 Avaya 话机，常见问题总结</para>
 			<section>
 				<title>拨打 Avaya 话机无忙音</title>
 				<title>当你用软件或手机APP拨打 Avaya 电话，如果连忙音都听不到，一定是编码器不正确。</title>
-				<para>经过测试 Avaya 9611 话机支持：G722，G726-32，GPCMA，PCMU，G729 编码，其他编码拨打不通。</para>
+				<para>经过测试 Avaya 9611 话机支持：G722，G726-32，GPCMA，PCMU，G729 编码，其他编码拨打不通。
+				</para>
 				<tip>
-					<para>注意：G726 只支持 32K 采样，如果你选择 G726 16K，24K，40K 将无法拨通 Avaya 话机</para>
-					<para>G729 我不知道那种采样可以通，因为我的测试软件PortSIP只显示了 G729 不知道那种采样，G729a 不通。</para>
+					<para>注意：G726 只支持 32K 采样，如果你选择 G726 16K，24K，40K 将无法拨通 Avaya 话机
+					</para>
+					<para>G729 我不知道那种采样可以通，因为我的测试软件PortSIP只显示了 G729 不知道那种采样，G729a 不通。
+					</para>
 				</tip>
-				
+
 			</section>
 		</section>
 		<section>
@@ -215,8 +220,8 @@ Once all the settings that are not commented are commented back to default, relo
 ## 96xx SIP TELEPHONE SETTINGS ##
 ## ##
 ############################################################
-SET DOMAIN sip.aigcsst.com
-SET SIPDOMAIN sip.aigcsst.com
+SET DOMAIN sip.netkiller.cn
+SET SIPDOMAIN sip.netkiller.cn
 SET SIPPORT 5060
 ## SET SIP_CONTROLLER_LIST 121.37.215.251:5060;transport=udp,45.32.49.98:5160;transport=udp
 SET SIP_CONTROLLER_LIST 121.37.215.251:5060;transport=udp,139.9.54.211:5060;transport=udp,45.32.49.98:5160;transport=udp
@@ -277,20 +282,37 @@ SET SCREENSAVERON 3
 			</example>
 		</section>
 	</section>
-	<section id="linphone">
-		<title>linphone</title>
-		<para>跨平台开源免费的 SIP 客户端</para>
-		<para>
-			<ulink url="https://www.linphone.org" />
-		</para>
-	</section>
-	<section id="endpoint.jami">
-		<title>Jami</title>
-
+	<section id="endpoint.yealink">
+		<title>电脑软件正常登录，手机APP正常登录，Yealink 电话无法登录</title>
+		<para>环境：阿里云安装 freeswitch</para>
+		<para>分析：NAT 端口问题</para>
+		<para>解决方案：开启 rport 编辑配置文件 sip_profiles/internal.xml</para>
+		<screen>
+		<![CDATA[
+<profile name="internal">
+  ...
+  <param name="NDLB-force-rport" value="true"/>
+  ...
+</profile>
+		]]>
+		</screen>
 	</section>
 	<section id="endpoint.softphone">
-		<title>MicroSIP</title>
+		<title>软电话</title>
+		<section id="MicroSIP">
+			<title>MicroSIP</title>
+		</section>
+		<section id="linphone">
+			<title>linphone</title>
+			<para>跨平台开源免费的 SIP 客户端</para>
+			<para>
+				<ulink url="https://www.linphone.org" />
+			</para>
+		</section>
+		<section id="endpoint.jami">
+			<title>Jami</title>
 
+		</section>
 	</section>
 </section>
 	
