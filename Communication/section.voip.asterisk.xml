@@ -168,6 +168,85 @@ ldconfig -p | grep pjsip
 		]]>
 		</screen>
 		<screen>
+		<![CDATA[
+[root@production pjproject-2.15.1]# pjsip-apps/bin/pjsua-x86_64-unknown-linux-gnu 
+09:40:24.622         sip_endpoint.c !.Module "mod-pjsua-log" registered
+09:40:24.623         sip_endpoint.c  .Module "mod-tsx-layer" registered
+09:40:24.623         sip_endpoint.c  .Module "mod-stateful-util" registered
+09:40:24.623         sip_endpoint.c  .Module "mod-ua" registered
+09:40:24.623         sip_endpoint.c  .Module "mod-100rel" registered
+09:40:24.623         sip_endpoint.c  .Module "mod-pjsua" registered
+09:40:24.623         sip_endpoint.c  .Module "mod-invite" registered
+09:40:24.697             alsa_dev.c  ..ALSA driver found 2 devices
+09:40:24.697             alsa_dev.c  ..ALSA initialized
+09:40:24.697                  pjlib  ..select() I/O Queue created (0x236cb68)
+09:40:24.702         sip_endpoint.c  .Module "mod-evsub" registered
+09:40:24.702         sip_endpoint.c  .Module "mod-presence" registered
+09:40:24.702         sip_endpoint.c  .Module "mod-dlg_even" registered
+09:40:24.702         sip_endpoint.c  .Module "mod-mwi" registered
+09:40:24.702         sip_endpoint.c  .Module "mod-refer" registered
+09:40:24.702         sip_endpoint.c  .Module "mod-pjsua-pres" registered
+09:40:24.702         sip_endpoint.c  .Module "mod-pjsua-im" registered
+09:40:24.702         sip_endpoint.c  .Module "mod-pjsua-options" registered
+09:40:24.702           pjsua_core.c  .1 SIP worker threads created
+09:40:24.702           pjsua_core.c  .pjsua version 2.15.1 for Linux-5.14.1.171/x86_64/glibc-2.34 initialized
+09:40:24.702           pjsua_core.c  .PJSUA state changed: CREATED --> INIT
+09:40:24.702         sip_endpoint.c  Module "mod-default-handler" registered
+09:40:24.702           conference.c  .Add port 1 (ringback) queued
+09:40:24.702           conference.c  .Add port 2 (ring) queued
+09:40:24.702           pjsua_core.c  SIP UDP socket reachable at 192.168.0.230:5060
+09:40:24.702           udp0x23c2dc0  SIP UDP transport started, published address is 192.168.0.230:5060
+09:40:24.702            pjsua_acc.c  Adding account: id=<sip:192.168.0.230:5060>
+09:40:24.703            pjsua_acc.c  .Account <sip:192.168.0.230:5060> added with id 0
+09:40:24.703            pjsua_acc.c  Modifying account 0
+09:40:24.703            pjsua_acc.c  Acc 0: setting online status to 1..
+09:40:24.703             tcptp:5060  SIP TCP listener ready for incoming connections at 192.168.0.230:5060
+09:40:24.703            pjsua_acc.c  Adding account: id=<sip:192.168.0.230:5060;transport=TCP>
+09:40:24.703            pjsua_acc.c  .Account <sip:192.168.0.230:5060;transport=TCP> added with id 1
+09:40:24.703            pjsua_acc.c  Modifying account 1
+09:40:24.703            pjsua_acc.c  Acc 1: setting online status to 1..
+09:40:24.703           pjsua_core.c  PJSUA state changed: INIT --> STARTING
+09:40:24.703         sip_endpoint.c  .Module "mod-unsolicited-mwi" registered
+09:40:24.703           pjsua_core.c  .PJSUA state changed: STARTING --> RUNNING
+09:40:24.703                 main.c  Ready: Success
+>>>>
+Account list:
+  [ 0] <sip:192.168.0.230:5060>: does not register
+       Online status: Online
+ *[ 1] <sip:192.168.0.230:5060;transport=TCP>: does not register
+       Online status: Online
+Buddy list:
+ -none-
+
++=============================================================================+
+|       Call Commands:         |   Buddy, IM & Presence:  |     Account:      |
+|                              |                          |                   |
+|  m  Make new call            | +b  Add new buddy        | +a  Add new accnt.|
+|  M  Make multiple calls      | -b  Delete buddy         | -a  Delete accnt. |
+|  a  Answer call              |  i  Send IM              | !a  Modify accnt. |
+|  h  Hangup call  (ha=all)    |  s  Subscribe presence   | rr  (Re-)register |
+|  H  Hold call                |  u  Unsubscribe presence | ru  Unregister    |
+|  o Toggle call SDP offer     |  D  Subscribe dlg event  |                   |
+|                              |  Du Unsub dlg event      |                   |
+|  v  re-inVite (release hold) |  t  Toggle online status |  >  Cycle next ac.|
+|  U  send UPDATE              |  T  Set online status    |  <  Cycle prev ac.|
+| ],[ Select next/prev call    +--------------------------+-------------------+
+|  x  Xfer call                |      Media Commands:     |  Status & Config: |
+|  X  Xfer with Replaces       |                          |                   |
+|  #  Send RFC 2833 DTMF       | cl  List ports           |  d  Dump status   |
+|  *  Send DTMF with INFO      | cc  Connect port         | dd  Dump detailed |
+| dq  Dump curr. call quality  | cd  Disconnect port      | dc  Dump config   |
+|                              |  V  Adjust audio Volume  |  f  Save config   |
+|  S  Send arbitrary REQUEST   | Cp  Codec priorities     |                   |
++-----------------------------------------------------------------------------+
+|  q  QUIT      L  ReLoad       I  IP change     n  detect NAT type           |
+|  sleep MS     echo [0|1|txt]                                                |
++=============================================================================+
+You have 0 active call
+>>> 		
+		]]>
+		</screen>
+		<screen>
 			<![CDATA[
 cd /usr/local/src/
 wget https://downloads.asterisk.org/pub/telephony/asterisk/asterisk-22-current.tar.gz
