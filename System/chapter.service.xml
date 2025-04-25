@@ -274,14 +274,24 @@ OOMScoreAdjust=-500
 WantedBy=multi-user.target
 			]]>
 			</screen>
-		</section><section id="systemctl.show">
+		</section>
+		<section id="systemctl.show">
 			<title>查看配置项</title>
 			<screen>
-		<![CDATA[ 
+			<![CDATA[ 
 root@netkiller:~# systemctl show --property=Environment docker
 Environment=		
-		]]>
+			]]>
 			</screen>
+			<section>
+				<title>查看环境变量 Environment</title>
+				<screen>
+				<![CDATA[
+[root@production ~]# systemctl show --property=Environment yate
+Environment="OPTS=-F -s -r -l /var/log/yate -vvv -DF" PWLIB_ASSERT_ACTION=C			
+				]]>
+				</screen>
+			</section>
 		</section>
 		<section id="systemctl.is-enabled">
 			<title>is-enabled 查看当前服务的启用状态</title>
@@ -663,6 +673,7 @@ EnvironmentFile=-/etc/default/medical
 			]]>
 			</screen>
 		</section>
+		
 	</section>
 	
 	&chapter.service.ubuntu.xml;
