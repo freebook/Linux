@@ -706,7 +706,7 @@ Removing CA
 DONE			
 				]]>
 				</screen>
-				
+
 				<para>删除证书</para>
 				<screen>
 				<![CDATA[
@@ -717,8 +717,8 @@ Removing CA
 DONE			
 				]]>
 				</screen>
-				
-		
+
+
 			</section>
 			<section>
 				<para>样本参考</para>
@@ -855,7 +855,8 @@ DONE
 				<title>旁路模式</title>
 				<para>配置 inbound-bypass-media 可以开启旁路模式，在此模式 下FreeSWITCH 只负责 SIP
 					信令交换，两个 endpoint 话机 RIP 语音通信是点对点方式。这样比较节省流量，但是国内网络复杂，层层 NAT
-					常常出现局域网正常，部署到广域网就会失败，现象是拨通之后没有语音。</para>
+					常常出现局域网正常，部署到广域网就会失败，现象是拨通之后没有语音。
+				</para>
 				<screen>
 				<![CDATA[
 [root@netkiller ~]# grep -r 'inbound-bypass-media' /etc/freeswitch/sip_profiles/internal.xml
@@ -918,6 +919,7 @@ DONE
 			<para>默认是 :: 表示 ipv6 localhost，如果需要远程访问可以改为 listen-ip 0.0.0.0</para>
 			<screen>
 			<![CDATA[
+[root@netkiller ~]# cp /etc/freeswitch/autoload_configs/event_socket.conf.xml{,.backup}
 [root@netkiller ~]# cat /etc/freeswitch/autoload_configs/event_socket.conf.xml
 <configuration name="event_socket.conf" description="Socket Client">
   <settings>
@@ -1015,7 +1017,7 @@ DONE
 	</gateway>
 </include>
 EOF
-			]]> 
+			]]>
 			</screen>
 			<para>配置拨号规则</para>
 			<screen>
@@ -1283,7 +1285,7 @@ echo '<X-PRE-PROCESS cmd="set" data="proxy_media=true"/>' >> /etc/freeswitch/var
 			<para>拨打4000，根据提示输入user id和密码，就可以收听到留言了。</para>
 
 		</section>
-		<section>
+		<section id="freeswitch.directory">
 			<title>多租户（多领域）配置</title>
 			<screen>
 			<![CDATA[
@@ -1318,6 +1320,184 @@ echo '<X-PRE-PROCESS cmd="set" data="proxy_media=true"/>' >> /etc/freeswitch/var
 			]]>
 			</screen>
 		</section>
+		<section id="freeswitch.directory.group">
+			<title>组呼叫配置</title>
+			<para>定义组呼叫拨号规则</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# cat /etc/freeswitch/directory/default/1000.xml			
+    <extension name="group_dial_sales">
+      <condition field="destination_number" expression="^2000$">
+        <action application="bridge" data="${group_call(sales@${domain_name})}"/>
+      </condition>
+    </extension>
+
+    <extension name="group_dial_support">
+      <condition field="destination_number" expression="^2001$">
+        <action application="bridge" data="group/support@${domain_name}"/>
+      </condition>
+    </extension>
+
+    <extension name="group_dial_billing">
+      <condition field="destination_number" expression="^2002$">
+        <action application="bridge" data="group/billing@${domain_name}"/>
+      </condition>
+    </extension>
+			]]>
+			</screen>
+			<para>配置组内用户</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# cat /etc/freeswitch/directory/default.xml 
+<!--
+    NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE
+
+    FreeSWITCH works off the concept of users and domains just like email.
+    You have users that are in domains for example 1000@domain.com.
+
+    When freeswitch gets a register packet it looks for the user in the directory
+    based on the from or to domain in the packet depending on how your sofia profile
+    is configured.  Out of the box the default domain will be the IP address of the
+    machine running FreeSWITCH.  This IP can be found by typing "sofia status" at the
+    CLI.  You will register your phones to the IP and not the hostname by default.
+    If you wish to register using the domain please open vars.xml in the root conf
+    directory and set the default domain to the hostname you desire.  Then you would
+    use the domain name in the client instead of the IP address to register
+    with FreeSWITCH.
+
+    NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE
+-->
+
+<include>
+  <!--the domain or ip (the right hand side of the @ in the addr-->
+  <domain name="$${domain}">
+    <params>
+      <param name="dial-string" value="{^^:sip_invite_domain=${dialed_domain}:presence_id=${dialed_user}@${dialed_domain}}${sofia_contact(*/${dialed_user}@${dialed_domain})},${verto_contact(${dialed_user}@${dialed_domain})}"/>
+      <!-- These are required for Verto to function properly -->
+      <param name="jsonrpc-allowed-methods" value="verto"/>
+      <!-- <param name="jsonrpc-allowed-event-channels" value="demo,conference,presence"/> -->
+    </params>
+
+    <variables>
+      <variable name="record_stereo" value="true"/>
+      <variable name="default_gateway" value="$${default_provider}"/>
+      <variable name="default_areacode" value="$${default_areacode}"/>
+      <variable name="transfer_fallback_extension" value="operator"/>
+    </variables>
+
+    <groups>
+      <group name="default">
+        <users>
+          <X-PRE-PROCESS cmd="include" data="default/*.xml"/>
+        </users>
+      </group>
+
+      <group name="sales">
+        <users>
+          <!--
+              type="pointer" is a pointer so you can have the
+              same user in multiple groups.  It basically means
+              to keep searching for the user in the directory.
+          -->
+          <user id="1000" type="pointer"/>
+          <user id="1001" type="pointer"/>
+          <user id="1002" type="pointer"/>
+          <user id="1003" type="pointer"/>
+          <user id="1004" type="pointer"/>
+        </users>
+      </group>
+
+      <group name="billing">
+        <users>
+          <user id="1005" type="pointer"/>
+          <user id="1006" type="pointer"/>
+          <user id="1007" type="pointer"/>
+          <user id="1008" type="pointer"/>
+          <user id="1009" type="pointer"/>
+        </users>
+      </group>
+
+      <group name="support">
+        <users>
+          <user id="1010" type="pointer"/>
+          <user id="1011" type="pointer"/>
+          <user id="1012" type="pointer"/>
+          <user id="1013" type="pointer"/>
+          <user id="1014" type="pointer"/>
+        </users>
+      </group>
+    </groups>
+
+  </domain>
+</include>
+
+			]]>
+			</screen>
+		</section>
+		<section id="freeswitch.directory.callgroup">
+			<title>代接电话</title>
+			<para>有一组号码，他们可能在通话，你希望终止他们的通话，接到自己这边来，可以使用，代接电话功能。</para>
+			<para>确认代接电话拨号规则已经配置 /etc/freeswitch/dialplan/default.xml</para>
+			<screen>
+			<![CDATA[
+    <extension name="global-intercept">
+      <condition field="destination_number" expression="^886$">
+        <action application="answer"/>
+        <action application="intercept" data="${hash(select/${domain_name}-last_dial_ext/global)}"/>
+        <action application="sleep" data="2000"/>
+      </condition>
+    </extension>
+
+    <extension name="group-intercept">
+      <condition field="destination_number" expression="^\*8$">
+        <action application="answer"/>
+        <action application="intercept" data="${hash(select/${domain_name}-last_dial_ext/${callgroup})}"/>
+        <action application="sleep" data="2000"/>
+      </condition>
+    </extension>
+
+    <extension name="intercept-ext">
+      <condition field="destination_number" expression="^\*\*(\d+)$">
+        <action application="answer"/>
+        <action application="intercept" data="${hash(select/${domain_name}-last_dial_ext/$1)}"/>
+        <action application="sleep" data="2000"/>
+      </condition>
+    </extension>
+
+    <extension name="redial">
+      <condition field="destination_number" expression="^(redial|870)$">
+        <action application="transfer" data="${hash(select/${domain_name}-last_dial/${caller_id_number})}"/>
+      </condition>
+    </extension>
+			]]>
+			</screen>
+			<para>创建一组用户 callgroup 相同，此处的 callgroup 与 组呼叫 没有任何关系，callgroup 是指代接电话组。</para>
+			<screen>
+			<![CDATA[
+[root@production default]# cat /etc/freeswitch/directory/default/177.xml 
+<include>
+        <user id="177">
+                <params>
+                        <param name="password" value="0848"/>
+                        <param name="vm-password" value="0848"/>
+                </params>
+                <variables>
+                        <variable name="toll_allow" value="domestic,international,local"/>
+                        <variable name="accountcode" value="177"/>
+                        <variable name="user_context" value="default"/>
+                        <variable name="effective_caller_id_name" value="BG7NYT"/>
+                        <variable name="effective_caller_id_number" value="177"/>
+                        <variable name="outbound_caller_id_name" value="$${outbound_caller_name}"/>
+                        <variable name="outbound_caller_id_number" value="$${outbound_caller_id}"/>
+                        <variable name="callgroup" value="bg7nyt"/>
+                </variables>
+        </user>
+</include>			
+			]]>
+			</screen>
+			<para>配置好后，你可以找几个电话测试，拨通一组后，用另一部话机不通 886 就能接管正在通话的号码。</para>
+		</section>
+
 	</section>
 	<section id="freeswitch.mysql">
 		<title>MySQL 模块配置</title>
