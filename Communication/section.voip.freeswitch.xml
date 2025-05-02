@@ -885,79 +885,51 @@ DONE
 				</screen>
 			</section>
 		</section>
-		<section id="switch.conf.xml">
-			<title>switch.conf.xml</title>
-			<screen>
+
+
+
+
+
+
+
+
+
+
+
+	</section>
+	<section id="switch.conf.xml">
+		<title>switch.conf.xml</title>
+		<screen>
 			<![CDATA[
 [root@netkiller ~]# cp /etc/freeswitch/autoload_configs/switch.conf.xml{,.backup}
 [root@netkiller ~]# xmlstarlet ed -d '//comment()' /etc/freeswitch/autoload_configs/switch.conf.xml
 			]]>
-			</screen>
-			<para>配置交换机名称</para>
-			<screen>
+		</screen>
+		<para>配置交换机名称</para>
+		<screen>
 			<![CDATA[
     <param name="switchname" value="netkiller"/>			
 			]]>
-			</screen>
-			<para>RTP 端口范围</para>
-			<screen>
+		</screen>
+		<para>RTP 端口范围</para>
+		<screen>
 			<![CDATA[
     <!-- RTP port range -->
     <!-- <param name="rtp-start-port" value="16384"/> -->
     <!-- <param name="rtp-end-port" value="32768"/> -->			
 			]]>
-			</screen>
-			<para>日志级别</para>
-			<screen>
+		</screen>
+		<para>日志级别</para>
+		<screen>
 			<![CDATA[
 <param name="loglevel" value="debug"/>
 			]]>
-			</screen>
-		</section>
-		<section id="event_socket.conf.xml">
-			<title>fs_cli Socket Client 配置</title>
-			<para>默认是 :: 表示 ipv6 localhost，如果需要远程访问可以改为 listen-ip 0.0.0.0</para>
-			<screen>
-			<![CDATA[
-[root@netkiller ~]# cp /etc/freeswitch/autoload_configs/event_socket.conf.xml{,.backup}
-[root@netkiller ~]# cat /etc/freeswitch/autoload_configs/event_socket.conf.xml
-<configuration name="event_socket.conf" description="Socket Client">
-  <settings>
-    <param name="nat-map" value="false"/>
-    <param name="listen-ip" value="::"/>
-    <param name="listen-port" value="8021"/>
-    <param name="password" value="ClueCon"/>
-    <!--<param name="apply-inbound-acl" value="loopback.auto"/>-->
-    <!--<param name="stop-on-bind-error" value="true"/>-->
-  </settings>
-</configuration>			
-			]]>
-			</screen>
-			<screen>
-			<![CDATA[
-[root@netkiller ~]# cat /etc/freeswitch/autoload_configs/event_socket.conf.xml 
-<configuration name="event_socket.conf" description="Socket Client">
-  <settings>
-    <param name="nat-map" value="false"/>
-    <param name="listen-ip" value="127.0.0.1"/>
-    <param name="listen-port" value="8021"/>
-    <param name="password" value="netkiller"/>
-    <!--<param name="apply-inbound-acl" value="loopback.auto"/>-->
-    <!--<param name="stop-on-bind-error" value="true"/>-->
-  </settings>
-</configuration>
-			]]>
-			</screen>
-			<screen>
-			<![CDATA[
-[root@netkiller ~]# fs_cli -p netkiller			
-			]]>
-			</screen>
-		</section>
-		<section id="freeswitch.gateway">
-			<title>网关配置</title>
-			<para>参考 /etc/freeswitch/sip_profiles/external/example.xml 文件</para>
-			<screen>
+		</screen>
+	</section>
+	<section id="freeswitch.gateway">
+		<title>网关配置</title>
+		<para>参考 /etc/freeswitch/sip_profiles/external/example.xml 文件</para>
+		<screen>
 			<![CDATA[
 [root@netkiller ~]# cat /etc/freeswitch/sip_profiles/external/example.xml
 <include>
@@ -1002,9 +974,9 @@ DONE
   <!--</gateway>-->
 </include>
 			]]>
-			</screen>
-			<para>配置网关</para>
-			<screen>
+		</screen>
+		<para>配置网关</para>
+		<screen>
 			<![CDATA[
 [root@netkiller ~]# cat > /etc/freeswitch/sip_profiles/external/hamsoverip.xml <<EOF
 <include>
@@ -1018,9 +990,9 @@ DONE
 </include>
 EOF
 			]]>
-			</screen>
-			<para>配置拨号规则</para>
-			<screen>
+		</screen>
+		<para>配置拨号规则</para>
+		<screen>
 			<![CDATA[
 [root@netkiller ~]# cat > /etc/freeswitch/dialplan/default/hamsoverip.com.xml <<"EOF"
 <include>
@@ -1032,9 +1004,9 @@ EOF
 </include>
 EOF
 			]]>
-			</screen>
-			<para>再举一个例子, 0 作为外拨号码</para>
-			<screen>
+		</screen>
+		<para>再举一个例子, 0 作为外拨号码</para>
+		<screen>
 			<![CDATA[
 cat > /etc/freeswitch/sip_profiles/external/netkiller.xml <<EOF
 <include>
@@ -1059,17 +1031,17 @@ cat > /etc/freeswitch/dialplan/default/netkiller.cn.xml <<"EOF"
 EOF
 	
 			]]>
-			</screen>
-		</section>
-		<section id="freeswitch.destination_number">
-			<title>新增号段</title>
-			<para></para>
-			<screen>
+		</screen>
+	</section>
+	<section id="freeswitch.destination_number">
+		<title>新增号段</title>
+		<para></para>
+		<screen>
 			<![CDATA[
 [root@netkiller ~]# cp /etc/freeswitch/dialplan/default.xml{,.backup}			
 			]]>
-			</screen>
-			<screen>
+		</screen>
+		<screen>
 			<![CDATA[
 [root@netkiller ~]# vim /etc/freeswitch/dialplan/default.xml			
     <extension name="Local_Extension">
@@ -1101,41 +1073,41 @@ EOF
       </condition>
     </extension>
 			]]>
-			</screen>
-			<para>默认拨号规则是 1000~1019</para>
-			<screen>
+		</screen>
+		<para>默认拨号规则是 1000~1019</para>
+		<screen>
 			<![CDATA[
 <condition field="destination_number" expression="^(10[01][0-9])$">			
 			]]>
-			</screen>
-			<para>改为 1000~1099</para>
-			<screen>
+		</screen>
+		<para>改为 1000~1099</para>
+		<screen>
 			<![CDATA[
 <condition field="destination_number" expression="^(10[0-9][0-9])$">			
 			]]>
-			</screen>
-			<para>分机号段为 1000~1999，2000</para>
-			<screen>
+		</screen>
+		<para>分机号段为 1000~1999，2000</para>
+		<screen>
 			<![CDATA[
 <condition field="destination_number" expression="^(1[0-9][0-9][0-9]|2000)$">			
 			]]>
-			</screen>
-			<para>30000~39999 | 1000~1019</para>
-			<screen>
+		</screen>
+		<para>30000~39999 | 1000~1019</para>
+		<screen>
 			<![CDATA[
   <condition field="destination_number" expression="^(3\d{4}|10[01][0-9])$">
 			]]>
-			</screen>
-			<para>长度 3 或 4 位数 100~199, 1000~1999</para>
-			<screen>
+		</screen>
+		<para>长度 3 或 4 位数 100~199, 1000~1999</para>
+		<screen>
 			<![CDATA[
 <condition field="destination_number" expression="^(1\d{2,3})$">			
 			]]>
-			</screen>
-			<example>
-				<title>拨号规则，配置两个号段 100~199，1000~1999</title>
-				<para>拨出规则</para>
-				<screen>
+		</screen>
+		<example>
+			<title>拨号规则，配置两个号段 100~199，1000~1999</title>
+			<para>拨出规则</para>
+			<screen>
 				<![CDATA[
 [root@netkiller ~]# vim /etc/freeswitch/dialplan/default.xml				
     <extension name="Local_Extension">
@@ -1168,9 +1140,9 @@ EOF
       </condition>
     </extension>				
 				]]>
-				</screen>
-				<para>拨入规则</para>
-				<screen>
+			</screen>
+			<para>拨入规则</para>
+			<screen>
 				<![CDATA[
 [root@netkiller ~]# cp /etc/freeswitch/dialplan/public.xml{,.backup}
 
@@ -1181,11 +1153,11 @@ EOF
       </condition>
     </extension>
 				]]>
-				</screen>
+			</screen>
 
-			</example>
-			<para>更推荐的方式，是增加配置文件，不修改 public.xml 文件</para>
-			<screen>
+		</example>
+		<para>更推荐的方式，是增加配置文件，不修改 public.xml 文件</para>
+		<screen>
 			<![CDATA[
 [root@netkiller freeswitch]# cat dialplan/public/hoip.xml 
 <include>
@@ -1198,11 +1170,11 @@ EOF
 
 </include>			
 			]]>
-			</screen>
-		</section>
-		<section id="logfile.conf.xml ">
-			<title>logfile.conf.xml</title>
-			<screen>
+		</screen>
+	</section>
+	<section id="logfile.conf.xml ">
+		<title>logfile.conf.xml</title>
+		<screen>
 			<![CDATA[
 [root@netkiller ~]# cat /etc/freeswitch/autoload_configs/logfile.conf.xml 
 <configuration name="logfile.conf" description="File Logging">
@@ -1235,12 +1207,12 @@ EOF
   </profiles>
 </configuration>			
 			]]>
-			</screen>
-		</section>
-		<section id="freeswitch.h246">
-			<title>视频通话</title>
-			<para>新增一项 proxy_media 配置</para>
-			<screen>
+		</screen>
+	</section>
+	<section id="freeswitch.h246">
+		<title>视频通话</title>
+		<para>新增一项 proxy_media 配置</para>
+		<screen>
 		<![CDATA[
 echo '<X-PRE-PROCESS cmd="set" data="proxy_media=true"/>' >> /etc/freeswitch/vars.xml
 
@@ -1248,9 +1220,9 @@ echo '<X-PRE-PROCESS cmd="set" data="proxy_media=true"/>' >> /etc/freeswitch/var
 [root@netkiller ~]# grep  'proxy_media' /etc/freeswitch/vars.xml
 <X-PRE-PROCESS cmd="set" data="proxy_media=true"/>
 		]]>
-			</screen>
-			<para>去掉 inbound-proxy-media 注释</para>
-			<screen>
+		</screen>
+		<para>去掉 inbound-proxy-media 注释</para>
+		<screen>
 		<![CDATA[
 [root@netkiller ~]# egrep "inbound-proxy-media|inbound-late-negotiation" /etc/freeswitch/sip_profiles/internal.xml
     <!--<param name="inbound-proxy-media" value="true"/>-->
@@ -1264,30 +1236,30 @@ echo '<X-PRE-PROCESS cmd="set" data="proxy_media=true"/>' >> /etc/freeswitch/var
     <param name="inbound-proxy-media" value="true"/>
     <param name="inbound-late-negotiation" value="true"/>    
 		]]>
-			</screen>
-		</section>
-		<section id="freeswitch.voicemail">
-			<title>语音邮箱(voicemail)</title>
-			<para>确认 voicemail 模块是否启用</para>
-			<screen>
+		</screen>
+	</section>
+	<section id="freeswitch.voicemail">
+		<title>语音邮箱(voicemail)</title>
+		<para>确认 voicemail 模块是否启用</para>
+		<screen>
 		<![CDATA[
 [root@netkiller ~]# grep voicemail /etc/freeswitch/autoload_configs/modules.conf.xml 
     <load module="mod_voicemail"/>		
 		]]>
-			</screen>
-			<para>语音信箱存储目录</para>
-			<screen>
+		</screen>
+		<para>语音信箱存储目录</para>
+		<screen>
 		<![CDATA[
 [root@netkiller ~]# ls /var/lib/freeswitch/storage/voicemail/default/sip.netkiller.com/
 1000  1001  1002  1003  1004  1005  1006  1007  1009  1010  1011  1012  1013		
 		]]>
-			</screen>
-			<para>拨打4000，根据提示输入user id和密码，就可以收听到留言了。</para>
+		</screen>
+		<para>拨打4000，根据提示输入user id和密码，就可以收听到留言了。</para>
 
-		</section>
-		<section id="freeswitch.directory">
-			<title>多租户（多领域）配置</title>
-			<screen>
+	</section>
+	<section id="freeswitch.directory">
+		<title>多租户（多领域）配置</title>
+		<screen>
 			<![CDATA[
 [root@netkiller ~]# cat /etc/freeswitch/directory/default/1000.xml			
 <include>
@@ -1318,12 +1290,12 @@ echo '<X-PRE-PROCESS cmd="set" data="proxy_media=true"/>' >> /etc/freeswitch/var
      </domain>
  </include>			
 			]]>
-			</screen>
-		</section>
-		<section id="freeswitch.directory.group">
-			<title>组呼叫配置</title>
-			<para>定义组呼叫拨号规则</para>
-			<screen>
+		</screen>
+	</section>
+	<section id="freeswitch.directory.group">
+		<title>组呼叫配置</title>
+		<para>定义组呼叫拨号规则</para>
+		<screen>
 			<![CDATA[
 [root@netkiller ~]# cat /etc/freeswitch/directory/default/1000.xml			
     <extension name="group_dial_sales">
@@ -1344,9 +1316,9 @@ echo '<X-PRE-PROCESS cmd="set" data="proxy_media=true"/>' >> /etc/freeswitch/var
       </condition>
     </extension>
 			]]>
-			</screen>
-			<para>配置组内用户</para>
-			<screen>
+		</screen>
+		<para>配置组内用户</para>
+		<screen>
 			<![CDATA[
 [root@netkiller ~]# cat /etc/freeswitch/directory/default.xml 
 <!--
@@ -1432,13 +1404,13 @@ echo '<X-PRE-PROCESS cmd="set" data="proxy_media=true"/>' >> /etc/freeswitch/var
 </include>
 
 			]]>
-			</screen>
-		</section>
-		<section id="freeswitch.directory.callgroup">
-			<title>代接电话</title>
-			<para>有一组号码，他们可能在通话，你希望终止他们的通话，接到自己这边来，可以使用，代接电话功能。</para>
-			<para>确认代接电话拨号规则已经配置 /etc/freeswitch/dialplan/default.xml</para>
-			<screen>
+		</screen>
+	</section>
+	<section id="freeswitch.directory.callgroup">
+		<title>代接电话</title>
+		<para>有一组号码，他们可能在通话，你希望终止他们的通话，接到自己这边来，可以使用，代接电话功能。</para>
+		<para>确认代接电话拨号规则已经配置 /etc/freeswitch/dialplan/default.xml</para>
+		<screen>
 			<![CDATA[
     <extension name="global-intercept">
       <condition field="destination_number" expression="^886$">
@@ -1470,9 +1442,9 @@ echo '<X-PRE-PROCESS cmd="set" data="proxy_media=true"/>' >> /etc/freeswitch/var
       </condition>
     </extension>
 			]]>
-			</screen>
-			<para>创建一组用户 callgroup 相同，此处的 callgroup 与 组呼叫 没有任何关系，callgroup 是指代接电话组。</para>
-			<screen>
+		</screen>
+		<para>创建一组用户 callgroup 相同，此处的 callgroup 与 组呼叫 没有任何关系，callgroup 是指代接电话组。</para>
+		<screen>
 			<![CDATA[
 [root@production default]# cat /etc/freeswitch/directory/default/177.xml 
 <include>
@@ -1494,10 +1466,8 @@ echo '<X-PRE-PROCESS cmd="set" data="proxy_media=true"/>' >> /etc/freeswitch/var
         </user>
 </include>			
 			]]>
-			</screen>
-			<para>配置好后，你可以找几个电话测试，拨通一组后，用另一部话机不通 886 就能接管正在通话的号码。</para>
-		</section>
-
+		</screen>
+		<para>配置好后，你可以找几个电话测试，拨通一组后，用另一部话机不通 886 就能接管正在通话的号码。</para>
 	</section>
 	<section id="freeswitch.mysql">
 		<title>MySQL 模块配置</title>
@@ -1739,6 +1709,46 @@ Type /help <enter> to see a list of commands
 fs_cli -H 127.0.0.1 -P 8021 -p password	
 		]]>
 		</screen>
+		<section id="event_socket.conf.xml">
+			<title>fs_cli Socket Client 配置</title>
+			<para>默认是 :: 表示 ipv6 localhost，如果需要远程访问可以改为 listen-ip 0.0.0.0</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# cp /etc/freeswitch/autoload_configs/event_socket.conf.xml{,.backup}
+[root@netkiller ~]# cat /etc/freeswitch/autoload_configs/event_socket.conf.xml
+<configuration name="event_socket.conf" description="Socket Client">
+  <settings>
+    <param name="nat-map" value="false"/>
+    <param name="listen-ip" value="::"/>
+    <param name="listen-port" value="8021"/>
+    <param name="password" value="ClueCon"/>
+    <!--<param name="apply-inbound-acl" value="loopback.auto"/>-->
+    <!--<param name="stop-on-bind-error" value="true"/>-->
+  </settings>
+</configuration>			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# cat /etc/freeswitch/autoload_configs/event_socket.conf.xml 
+<configuration name="event_socket.conf" description="Socket Client">
+  <settings>
+    <param name="nat-map" value="false"/>
+    <param name="listen-ip" value="127.0.0.1"/>
+    <param name="listen-port" value="8021"/>
+    <param name="password" value="netkiller"/>
+    <!--<param name="apply-inbound-acl" value="loopback.auto"/>-->
+    <!--<param name="stop-on-bind-error" value="true"/>-->
+  </settings>
+</configuration>
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# fs_cli -p netkiller			
+			]]>
+			</screen>
+		</section>
 		<section>
 			<title>退出 fs_cli</title>
 			<screen>
