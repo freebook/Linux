@@ -454,7 +454,7 @@ firewall-cmd --list-ports
 		</screen>
 	</section>
 	<section id="freeswitch.etc">
-		<title>配置 freeswitch</title>
+		<title>备份 freeswitch 配置文件</title>
 		<screen>
 		<![CDATA[
 cp /etc/freeswitch/vars.xml{,.backup}
@@ -464,46 +464,47 @@ cp /etc/freeswitch/dialplan/default.xml{,.backup}
 cp /etc/freeswitch/dialplan/public.xml{,.backup}
 		]]>
 		</screen>
-		<section id="vars.xml">
-			<title>基本配置 /etc/freeswitch/vars.xml </title>
-			<section>
-				<title>默认密码</title>
+	</section>
+	<section id="vars.xml">
+		<title>基本配置 /etc/freeswitch/vars.xml </title>
+		<section>
+			<title>默认密码</title>
 
-				<screen>
+			<screen>
 			<![CDATA[
 [root@netkiller ~]# cp /etc/freeswitch/vars.xml{,.backup}
 			]]>
-				</screen>
-				<para>随机产生密码</para>
-				<screen>
+			</screen>
+			<para>随机产生密码</para>
+			<screen>
 			<![CDATA[
 [root@netkiller ~]# randpasswd | cut -c -10
 NLYPx9JjSx			
 			]]>
-				</screen>
-				<para>修改默认密码，将 1234 改为</para>
-				<screen>
+			</screen>
+			<para>修改默认密码，将 1234 改为</para>
+			<screen>
 			<![CDATA[
   <X-PRE-PROCESS cmd="set" data="default_password=1234"/>
 改为   
   <X-PRE-PROCESS cmd="set" data="default_password=NLYPx9JjSx"/>
 			]]>
-				</screen>
-			</section>
-			<section>
-				<title>领域</title>
-				<para>配置领域</para>
-				<screen>
+			</screen>
+		</section>
+		<section>
+			<title>领域</title>
+			<para>配置领域</para>
+			<screen>
 			<![CDATA[
 <X-PRE-PROCESS cmd="set" data="domain=sip.netkiller.cn"/>			
 			]]>
-				</screen>
-			</section>
-			<section>
-				<title>公网IP地址</title>
-				<para>配置公网IP地址</para>
-				<para>适用场景，公网IP直接在Linux eth0 网卡上配置。</para>
-				<screen>
+			</screen>
+		</section>
+		<section>
+			<title>公网IP地址</title>
+			<para>配置公网IP地址</para>
+			<para>适用场景，公网IP直接在Linux eth0 网卡上配置。</para>
+			<screen>
 			<![CDATA[
 <X-PRE-PROCESS cmd="stun-set" data="external_rtp_ip=stun:stun.freeswitch.org"/>
 改为
@@ -511,221 +512,87 @@ NLYPx9JjSx
 或
 <X-PRE-PROCESS cmd="stun-set" data="external_rtp_ip=IP地址"/>
 			]]>
-				</screen>
-			</section>
+			</screen>
+		</section>
 
+		<section>
+			<title>NAT 配置</title>
+			<para>前面的基本配置，是物理服务器网卡直接配置公网IP地址，很多云主机采用弹性IP机制，将公网IP映射到云主机上。这种模式就需要用到
+				NAT
+			</para>
+			<para>配置方法还是修改 /etc/freeswitch/vars.xml 文件</para>
 			<section>
-				<title>NAT 配置</title>
-				<para>前面的基本配置，是物理服务器网卡直接配置公网IP地址，很多云主机采用弹性IP机制，将公网IP映射到云主机上。这种模式就需要用到
-					NAT
-				</para>
-				<para>配置方法还是修改 /etc/freeswitch/vars.xml 文件</para>
-				<section>
-					<title>方案一</title>
-					<screen>
+				<title>方案一</title>
+				<screen>
 					<![CDATA[
 <X-PRE-PROCESS cmd="stun-set" data="external_rtp_ip=autonat:你的公网IP地址"/>
 					]]>
-					</screen>
-					<para></para>
-					<screen>
+				</screen>
+				<para></para>
+				<screen>
 					<![CDATA[
   <X-PRE-PROCESS cmd="stun-set" data="external_rtp_ip=autonat:121.37.25.251"/>
   <X-PRE-PROCESS cmd="stun-set" data="external_sip_ip=autonat:121.37.25.251"/>	
 					]]>
-					</screen>
-				</section>
-				<section>
-					<title>方案二</title>
-					<screen>
+				</screen>
+			</section>
+			<section>
+				<title>方案二</title>
+				<screen>
 					<![CDATA[
 <X-PRE-PROCESS cmd="stun-set" data="external_rtp_ip=host:你的域名"/>
 					]]>
-					</screen>
-					<para></para>
-					<screen>
+				</screen>
+				<para></para>
+				<screen>
 					<![CDATA[
   <X-PRE-PROCESS cmd="stun-set" data="external_rtp_ip=host:sip.netkiller.cn"/>
   <X-PRE-PROCESS cmd="stun-set" data="external_sip_ip=host:sip.netkiller.cn"/>
 					]]>
-					</screen>
-				</section>
-				<section>
-					<title>方案二</title>
-					<screen>
+				</screen>
+			</section>
+			<section>
+				<title>方案二</title>
+				<screen>
 					<![CDATA[
 <X-PRE-PROCESS cmd="stun-set" data="external_rtp_ip=host:$${domain}"/>
 					]]>
-					</screen>
-					<para></para>
-					<screen>
+				</screen>
+				<para></para>
+				<screen>
 					<![CDATA[
   <X-PRE-PROCESS cmd="stun-set" data="external_rtp_ip=host:$${domain}"/>
   <X-PRE-PROCESS cmd="stun-set" data="external_sip_ip=host:$${domain}"/>
 					]]>
-					</screen>
-				</section>
+				</screen>
 			</section>
-			<section>
-				<title>编码</title>
-				<screen>
+		</section>
+		<section>
+			<title>编码</title>
+			<screen>
 			<![CDATA[
   <X-PRE-PROCESS cmd="set" data="global_codec_prefs=OPUS,G722,PCMU,PCMA,H264,VP8"/>
   <X-PRE-PROCESS cmd="set" data="outbound_codec_prefs=OPUS,G722,PCMU,PCMA,H264,VP8"/>
 			]]>
-				</screen>
-			</section>
-			<section>
-				<title>控制台日志级别</title>
-				<screen>
+			</screen>
+		</section>
+		<section>
+			<title>控制台日志级别</title>
+			<screen>
 			<![CDATA[
 <X-PRE-PROCESS cmd="set" data="console_loglevel=4"/>
 或
 <X-PRE-PROCESS cmd="set" data="console_loglevel=info"/>
 			]]>
-				</screen>
-			</section>
-			<section>
-				<title>TLS</title>
+			</screen>
+		</section>
+
+		<section>
+			<para>样本参考</para>
+			<example>
+				<title>/etc/freeswitch/vars.xml</title>
+				<para>这是我的配置仅供参考</para>
 				<screen>
-				<![CDATA[
-[root@netkiller freeswitch]# gentls_cert -h
-/usr/bin/gentls_cert <setup|create_server|create_client|clean> [options]
-
-  * commands:
-
-    setup  - Setup new CA
-    remove - Remove CA
-
-    create_server - Create new certificate (overwriting existing!)
-    create_client - Create a new client certificate (overwrites existing!)
-
-  * options:
-
-   -cn       Set common name
-   -alt      Set alternative name (use prefix 'DNS:' or 'URI:')
-   -org      Set organization name
-   -out      Filename for new certificate (create only)
-   -days     Certificate expires in X days (default: 365)				
-				]]>
-				</screen>
-				<para>用法举例</para>
-				<screen>
-				<![CDATA[
-[root@netkiller freeswitch]# gentls_cert setup -cn pbx.freeswitch.org -alt DNS:pbx.freeswitch.org -org freeswitch.org
-Creating new CA...
-..+.....+......+++++++++++++++++++++++++++++++++++++++*....+...+...+..........+.....+......+...+.+.........+..+......+...+..........+.....+.+++++++++++++++++++++++++++++++++++++++*.+..+.......+.....+......+.......+........+.........+............+....+...............+....................+.+...+.....+......+.++++++
-...+...+.+......+..+.+......+........+...+..........+........+.+......+...+.....+++++++++++++++++++++++++++++++++++++++*..+.......+...+...+..............+.+...+..+++++++++++++++++++++++++++++++++++++++*.......+..+.+..+..................+.+...++++++
------
-DONE			
-				]]>
-				</screen>
-				<para>下面是我的证书</para>
-				<screen>
-				<![CDATA[
-[root@netkiller freeswitch]# gentls_cert setup -cn sip.netkiller.cn -alt DNS:sip.netkiller.cn -org netkiller.cn
-Creating new CA...
-..........+............+++++++++++++++++++++++++++++++++++++++*....+.........+.......+.....+.+.........+.....+.+...+++++++++++++++++++++++++++++++++++++++*....+.....+............+...+.+...+......+.....+..........+......+........+...+..........+............+...+.....+.......+......+............+..+......+.+.....+.+..+......+.+.........+..+...+.+...........+.........+.+.....+.........+...+..........+.....+.+.....+....+........+.............+......+........+.+......+.....+......+........................+..........+...+.....+......+.......+...+.........+...+...+.....+......+.+.....+...+....+..+.+..+.......+...........+.............+.........+......+..+....+...+......+.....+.......+........+......+...+...+.......+...+..+...+.......+......+.........+..+..........+.....+...+..........+...........+.+......+..+.+.....................+......+........+....+........+.........+.+...+.........+...........+..........+.....+.........+.+....................+.+...+..+.+..............+.........+.........+.+..............+.+..+....+........+......+.+...+.....+.+......+.........+..+.......+...+..++++++
-.+.......+.....+.......+..+.............+..+.+.........+...+..+++++++++++++++++++++++++++++++++++++++*......+......+..+...+.........+++++++++++++++++++++++++++++++++++++++*...+.......+........+....+.....+...+...+.+.....+......+..........+...+..+.......+.....+...+...+....+............+.....+...+......+.+.....+....+..+....+..........................+.......+...+..+.+......+...+..+.............+...............+..+....+.....+.+.........+..+...+....+........+...+....+...+..............+...+.+........................+............+........+......+.+......+.....+....+.....+..........+....................+...+.+..+.........+......+...+.+...+........+.......+......+.....++++++
------
-DONE
-[root@netkiller freeswitch]# find /etc/freeswitch/tls/CA
-/etc/freeswitch/tls/CA
-/etc/freeswitch/tls/CA/config.tpl
-/etc/freeswitch/tls/CA/cacert.pem
-/etc/freeswitch/tls/CA/cakey.pem	
-
-[root@netkiller freeswitch]#  openssl x509 -noout -inform pem -text -in /etc/freeswitch/tls/CA/cacert.pem
-Certificate:
-    Data:
-        Version: 3 (0x2)
-        Serial Number:
-            4b:5a:19:ce:0c:2f:65:ea:13:3b:4b:41:0f:23:62:dc:b1:1c:b2:21
-        Signature Algorithm: sha256WithRSAEncryption
-        Issuer: CN=sip.netkiller.cn, O=netkiller.cn
-        Validity
-            Not Before: Apr 24 03:00:09 2025 GMT
-            Not After : Apr 23 03:00:09 2031 GMT
-        Subject: CN=sip.netkiller.cn, O=netkiller.cn
-        Subject Public Key Info:
-            Public Key Algorithm: rsaEncryption
-                Public-Key: (2048 bit)
-                Modulus:
-                    00:b7:98:fc:18:95:98:86:25:80:be:b9:e4:34:52:
-                    09:b5:17:ce:73:60:5a:0b:87:91:6c:6b:44:97:4c:
-                    2c:7b:15:de:80:5a:0f:a2:b7:67:ab:8e:57:4f:3b:
-                    b5:e8:8a:d9:da:02:dc:d5:f0:28:9f:bc:0a:a6:c2:
-                    c9:64:a8:aa:a9:f1:ae:38:b1:8e:83:2b:50:80:c3:
-                    5c:7f:8b:17:8c:fa:ee:b8:ac:33:dd:4f:f6:43:7f:
-                    1f:5d:ed:0f:45:cb:e8:3d:b7:36:18:77:49:59:10:
-                    6b:8c:d1:c3:bf:34:68:55:45:5f:24:ac:12:18:c9:
-                    bf:52:6b:f6:37:5b:b8:d2:05:7a:db:b2:1b:e3:a3:
-                    8d:92:9e:b7:f3:01:27:a2:1a:a7:07:21:4c:0e:d5:
-                    2a:cb:0e:ff:ea:56:06:e4:29:be:26:97:60:bb:6c:
-                    ac:ac:8c:8f:d2:52:38:94:d2:5c:0e:8c:cc:d2:c4:
-                    eb:26:0b:22:78:f5:d5:70:9b:d7:fa:b5:60:87:aa:
-                    ff:92:73:02:ad:b0:c7:41:8d:86:90:cd:ae:91:e1:
-                    61:15:52:eb:37:e9:6b:8b:40:eb:31:36:93:d6:e1:
-                    ff:8d:e6:9a:d9:84:8a:14:7a:50:57:b2:75:be:8c:
-                    a6:b0:8e:24:cb:1a:ff:42:b7:c2:4f:05:23:0d:c3:
-                    9c:45
-                Exponent: 65537 (0x10001)
-        X509v3 extensions:
-            X509v3 Subject Key Identifier: 
-                CE:04:C9:83:F9:1B:36:BE:27:25:53:77:62:15:60:E8:55:35:83:72
-            X509v3 Authority Key Identifier: 
-                CE:04:C9:83:F9:1B:36:BE:27:25:53:77:62:15:60:E8:55:35:83:72
-            X509v3 Basic Constraints: 
-                CA:TRUE
-    Signature Algorithm: sha256WithRSAEncryption
-    Signature Value:
-        ac:0d:15:4b:92:d3:09:3a:f3:3a:19:68:1f:bf:e4:ef:bb:89:
-        71:75:77:97:ae:c7:df:a1:5d:16:12:32:8a:f2:03:43:dc:78:
-        22:60:12:dc:4e:b5:aa:70:78:28:d4:bf:38:6c:0b:6c:f5:9f:
-        2c:3d:90:bf:a6:1d:52:24:5e:21:38:69:bb:a5:de:ee:31:45:
-        e7:cf:bd:86:7e:4e:ff:a5:97:9a:43:9b:4f:7e:f6:98:ae:5e:
-        aa:73:6b:14:ee:5a:73:ba:c8:02:f2:11:70:b3:5d:ad:4d:dc:
-        75:08:05:45:de:46:2c:21:fb:6c:ae:e6:7f:48:0f:ed:49:5f:
-        c1:1e:53:7c:c0:4e:11:20:52:78:2f:0a:fe:8b:ae:df:bf:5d:
-        0e:97:a7:9c:3a:1d:6c:28:9d:f5:6b:cb:13:eb:b0:32:61:ce:
-        50:b8:49:f4:4d:1b:25:83:31:9f:3b:09:6a:74:35:2c:09:6d:
-        a3:80:a5:01:db:70:5c:71:b6:94:15:35:01:f4:e0:b9:6e:f8:
-        b3:d2:2c:e9:0f:68:16:7f:e6:b9:a7:2f:08:3b:e4:dc:b9:4c:
-        50:f4:94:65:97:d0:4a:89:8d:23:63:a7:26:52:04:80:28:ec:
-        57:13:f8:e6:e9:09:e3:81:f8:67:5f:36:2a:fc:55:74:7e:c5:
-        0b:4c:a3:d3
-				]]>
-				</screen>
-				<para>删除证书</para>
-				<screen>
-				<![CDATA[
-[root@netkiller freeswitch]# gentls_cert remove
-Are you sure you want to delete the CA? [YES to delete]
-YES
-Removing CA
-DONE			
-				]]>
-				</screen>
-
-				<para>删除证书</para>
-				<screen>
-				<![CDATA[
-[root@netkiller freeswitch]# gentls_cert remove
-Are you sure you want to delete the CA? [YES to delete]
-YES
-Removing CA
-DONE			
-				]]>
-				</screen>
-
-
-			</section>
-			<section>
-				<para>样本参考</para>
-				<example>
-					<title>/etc/freeswitch/vars.xml</title>
-					<para>这是我的配置仅供参考</para>
-					<screen>
 				<![CDATA[
 [root@netkiller ~]# xmlstarlet ed -d '//comment()' /etc/freeswitch/vars.xml
 <?xml version="1.0"?>
@@ -810,26 +677,26 @@ DONE
   <X-PRE-PROCESS cmd="set" data="video_no_avatar_png=$${images_dir}/default-avatar.png"/>
 </include>
 				]]>
-					</screen>
-				</example>
-			</section>
+				</screen>
+			</example>
 		</section>
+	</section>
 
-		<section id="sip_profiles">
-			<title>配置 sip_profiles</title>
-			<para>通常在 /etc/freeswitch/vars.xml 中配置，在 internal.xml 和 external.xml
-				中通过变量引用
-			</para>
-			<screen>
+	<section id="freeswitch.sip_profiles">
+		<title>配置 NAT</title>
+		<para>通常在 /etc/freeswitch/vars.xml 中配置，在 internal.xml 和 external.xml
+			中通过变量引用
+		</para>
+		<screen>
 			<![CDATA[
 [root@netkiller ~]# cp /etc/freeswitch/sip_profiles/internal.xml{,.backup}
 [root@netkiller ~]# cp /etc/freeswitch/sip_profiles/external.xml{,.backup}
 [root@netkiller ~]# cp /etc/freeswitch/sip_profiles/internal-ipv6.xml{,.backup}
 [root@netkiller ~]# cp /etc/freeswitch/sip_profiles/external-ipv6.xml{,.backup}
 			]]>
-			</screen>
-			<para>NAT 配置 172.16.0.10 替换成公网 IP 地址</para>
-			<screen>
+		</screen>
+		<para>NAT 配置 172.16.0.10 替换成公网 IP 地址</para>
+		<screen>
 			<![CDATA[
 [root@netkiller ~]# vim /etc/freeswitch/sip_profiles/internal.xml
     <param name="ext-rtp-ip" value="$${external_rtp_ip}"/>
@@ -839,9 +706,9 @@ DONE
 	<param name="ext-sip-ip" value="autonat:172.16.0.10"/>		
 	
 			]]>
-			</screen>
-			<para></para>
-			<screen>
+		</screen>
+		<para></para>
+		<screen>
 			<![CDATA[
 [root@netkiller ~]# vim /etc/freeswitch/sip_profiles/external.xml
     <param name="ext-rtp-ip" value="$${external_rtp_ip}"/>
@@ -850,23 +717,23 @@ DONE
 	<param name="ext-rtp-ip" value="autonat:172.16.0.10"/>
 	<param name="ext-sip-ip" value="autonat:172.16.0.10"/>    			
 			]]>
-			</screen>
-			<section>
-				<title>旁路模式</title>
-				<para>配置 inbound-bypass-media 可以开启旁路模式，在此模式 下FreeSWITCH 只负责 SIP
-					信令交换，两个 endpoint 话机 RIP 语音通信是点对点方式。这样比较节省流量，但是国内网络复杂，层层 NAT
-					常常出现局域网正常，部署到广域网就会失败，现象是拨通之后没有语音。
-				</para>
-				<screen>
+		</screen>
+		<section>
+			<title>旁路模式</title>
+			<para>配置 inbound-bypass-media 可以开启旁路模式，在此模式 下FreeSWITCH 只负责 SIP
+				信令交换，两个 endpoint 话机 RIP 语音通信是点对点方式。这样比较节省流量，但是国内网络复杂，层层 NAT
+				常常出现局域网正常，部署到广域网就会失败，现象是拨通之后没有语音。
+			</para>
+			<screen>
 				<![CDATA[
 [root@netkiller ~]# grep -r 'inbound-bypass-media' /etc/freeswitch/sip_profiles/internal.xml
     <!--<param name="inbound-bypass-media" value="true"/>-->	
 				]]>
-				</screen>
-			</section>
-			<section>
-				<title>启用 100rel</title>
-				<screen>
+			</screen>
+		</section>
+		<section>
+			<title>启用 100rel</title>
+			<screen>
 				<![CDATA[
 [root@netkiller ~]# grep 100rel /etc/freeswitch/sip_profiles/internal.xml
         There are known issues (asserts and segfaults) when 100rel is enabled.
@@ -882,21 +749,84 @@ DONE
         It is not recommended to enable 100rel at this time.
     <param name="enable-100rel" value="true"/>				
 				]]>
-				</screen>
-			</section>
+			</screen>
+		</section>
+	</section>
+
+
+
+	<section id="freeswitch.number">
+		<title>测试号码</title>
+		<para>freeswitch提供了测试号码</para>
+		<screen>
+		<![CDATA[
+号码		说明
+9664	保持音乐
+9196	echo，回音测试
+9195	echo，回音测试，延迟5秒
+9197	milliwatte extension，铃音生成
+9198	TGML 铃音生成示例
+5000	示例IVR4000听取语音信箱
+33xx	电话会议，48K(其中xx可为00-99，下同)
+32xx	电话会议，32K
+31xx	电话会议，16K
+30xx	电话会议，8K
+2000-2002	呼叫组
+1000-1019	默认分机号
+		]]>
+		</screen>
+		<section>
+			<title>测试分机号</title>
+			<para>1000-1019 测试账号位置</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# ls /etc/freeswitch/directory/default/
+1000.xml  1002.xml  1004.xml  1006.xml  1008.xml  1010.xml  1012.xml  1014.xml  1016.xml  1018.xml  brian.xml    example.com.xml
+1001.xml  1003.xml  1005.xml  1007.xml  1009.xml  1011.xml  1013.xml  1015.xml  1017.xml  1019.xml  default.xml  skinny-example.xml			
+			]]>
+			</screen>
+			<para>用户配置文件</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# cat /etc/freeswitch/directory/default/1000.xml 
+<include>
+  <user id="1000">
+    <params>
+      <param name="password" value="$${default_password}"/>
+      <param name="vm-password" value="1000"/>
+    </params>
+    <variables>
+      <variable name="toll_allow" value="domestic,international,local"/>
+      <variable name="accountcode" value="1000"/>
+      <variable name="user_context" value="default"/>
+      <variable name="effective_caller_id_name" value="Extension 1000"/>
+      <variable name="effective_caller_id_number" value="1000"/>
+      <variable name="outbound_caller_id_name" value="$${outbound_caller_name}"/>
+      <variable name="outbound_caller_id_number" value="$${outbound_caller_id}"/>
+      <variable name="callgroup" value="techsupport"/>
+    </variables>
+  </user>
+</include>
+			]]>
+			</screen>
+			<para>账号密码在 /etc/freeswitch/vars.xml 配置文件中</para>
+			<screen>
+			<![CDATA[
+<X-PRE-PROCESS cmd="set" data="default_password=eFyS2wcZo1zKZ3KG"/>
+			]]>
+			</screen>
+			<para>用下面方法查看密码</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# cat /etc/freeswitch/vars.xml | grep default_password
+       YOU SHOULD CHANGE THIS default_password value if you don't want to be subject to any
+  <X-PRE-PROCESS cmd="set" data="default_password=eFo1zKZyS2wcZ3KG"/>		
+			]]>
+			</screen>
 		</section>
 
-
-
-
-
-
-
-
-
-
-
 	</section>
+
 	<section id="switch.conf.xml">
 		<title>switch.conf.xml</title>
 		<screen>
@@ -1587,77 +1517,6 @@ mariadb://Server=localhost;Database=freeswitch;Uid=freeswitch;Pwd=pass;
 		</section>
 	</section>
 
-	<section id="freeswitch.number">
-		<title>测试号码</title>
-		<para>freeswitch提供了测试号码</para>
-		<screen>
-		<![CDATA[
-号码		说明
-9664	保持音乐
-9196	echo，回音测试
-9195	echo，回音测试，延迟5秒
-9197	milliwatte extension，铃音生成
-9198	TGML 铃音生成示例
-5000	示例IVR4000听取语音信箱
-33xx	电话会议，48K(其中xx可为00-99，下同)
-32xx	电话会议，32K
-31xx	电话会议，16K
-30xx	电话会议，8K
-2000-2002	呼叫组
-1000-1019	默认分机号
-		]]>
-		</screen>
-		<section>
-			<title>测试分机号</title>
-			<para>1000-1019 测试账号位置</para>
-			<screen>
-			<![CDATA[
-[root@netkiller ~]# ls /etc/freeswitch/directory/default/
-1000.xml  1002.xml  1004.xml  1006.xml  1008.xml  1010.xml  1012.xml  1014.xml  1016.xml  1018.xml  brian.xml    example.com.xml
-1001.xml  1003.xml  1005.xml  1007.xml  1009.xml  1011.xml  1013.xml  1015.xml  1017.xml  1019.xml  default.xml  skinny-example.xml			
-			]]>
-			</screen>
-			<para>用户配置文件</para>
-			<screen>
-			<![CDATA[
-[root@netkiller ~]# cat /etc/freeswitch/directory/default/1000.xml 
-<include>
-  <user id="1000">
-    <params>
-      <param name="password" value="$${default_password}"/>
-      <param name="vm-password" value="1000"/>
-    </params>
-    <variables>
-      <variable name="toll_allow" value="domestic,international,local"/>
-      <variable name="accountcode" value="1000"/>
-      <variable name="user_context" value="default"/>
-      <variable name="effective_caller_id_name" value="Extension 1000"/>
-      <variable name="effective_caller_id_number" value="1000"/>
-      <variable name="outbound_caller_id_name" value="$${outbound_caller_name}"/>
-      <variable name="outbound_caller_id_number" value="$${outbound_caller_id}"/>
-      <variable name="callgroup" value="techsupport"/>
-    </variables>
-  </user>
-</include>
-			]]>
-			</screen>
-			<para>账号密码在 /etc/freeswitch/vars.xml 配置文件中</para>
-			<screen>
-			<![CDATA[
-<X-PRE-PROCESS cmd="set" data="default_password=eFyS2wcZo1zKZ3KG"/>
-			]]>
-			</screen>
-			<para>用下面方法查看密码</para>
-			<screen>
-			<![CDATA[
-[root@netkiller ~]# cat /etc/freeswitch/vars.xml | grep default_password
-       YOU SHOULD CHANGE THIS default_password value if you don't want to be subject to any
-  <X-PRE-PROCESS cmd="set" data="default_password=eFo1zKZyS2wcZ3KG"/>		
-			]]>
-			</screen>
-		</section>
-
-	</section>
 	<section id="freeswitch.fs_cli">
 		<title>fs_cli</title>
 		<para>进入 fs_cli</para>
@@ -2193,6 +2052,290 @@ reloadxml
 		
 		]]>
 		</screen>
+	</section>
+	<section id="freeswitch.tls">
+		<title>TLS</title>
+		<section>
+			<title>创建 CA 根证书</title>
+			<screen>
+				<![CDATA[
+[root@netkiller freeswitch]# gentls_cert -h
+/usr/bin/gentls_cert <setup|create_server|create_client|clean> [options]
+
+  * commands:
+
+    setup  - Setup new CA
+    remove - Remove CA
+
+    create_server - Create new certificate (overwriting existing!)
+    create_client - Create a new client certificate (overwrites existing!)
+
+  * options:
+
+   -cn       Set common name
+   -alt      Set alternative name (use prefix 'DNS:' or 'URI:')
+   -org      Set organization name
+   -out      Filename for new certificate (create only)
+   -days     Certificate expires in X days (default: 365)				
+				]]>
+			</screen>
+			<para>用法举例</para>
+			<screen>
+				<![CDATA[
+[root@netkiller freeswitch]# gentls_cert setup -cn pbx.freeswitch.org -alt DNS:pbx.freeswitch.org -org freeswitch.org
+Creating new CA...
+..+.....+......+++++++++++++++++++++++++++++++++++++++*....+...+...+..........+.....+......+...+.+.........+..+......+...+..........+.....+.+++++++++++++++++++++++++++++++++++++++*.+..+.......+.....+......+.......+........+.........+............+....+...............+....................+.+...+.....+......+.++++++
+...+...+.+......+..+.+......+........+...+..........+........+.+......+...+.....+++++++++++++++++++++++++++++++++++++++*..+.......+...+...+..............+.+...+..+++++++++++++++++++++++++++++++++++++++*.......+..+.+..+..................+.+...++++++
+-----
+DONE			
+				]]>
+			</screen>
+			<para>下面是我的证书</para>
+			<screen>
+				<![CDATA[
+[root@netkiller freeswitch]# gentls_cert setup -cn sip.netkiller.cn -alt DNS:sip.netkiller.cn -org netkiller.cn
+Creating new CA...
+..........+............+++++++++++++++++++++++++++++++++++++++*....+.........+.......+.....+.+.........+.....+.+...+++++++++++++++++++++++++++++++++++++++*....+.....+............+...+.+...+......+.....+..........+......+........+...+..........+............+...+.....+.......+......+............+..+......+.+.....+.+..+......+.+.........+..+...+.+...........+.........+.+.....+.........+...+..........+.....+.+.....+....+........+.............+......+........+.+......+.....+......+........................+..........+...+.....+......+.......+...+.........+...+...+.....+......+.+.....+...+....+..+.+..+.......+...........+.............+.........+......+..+....+...+......+.....+.......+........+......+...+...+.......+...+..+...+.......+......+.........+..+..........+.....+...+..........+...........+.+......+..+.+.....................+......+........+....+........+.........+.+...+.........+...........+..........+.....+.........+.+....................+.+...+..+.+..............+.........+.........+.+..............+.+..+....+........+......+.+...+.....+.+......+.........+..+.......+...+..++++++
+.+.......+.....+.......+..+.............+..+.+.........+...+..+++++++++++++++++++++++++++++++++++++++*......+......+..+...+.........+++++++++++++++++++++++++++++++++++++++*...+.......+........+....+.....+...+...+.+.....+......+..........+...+..+.......+.....+...+...+....+............+.....+...+......+.+.....+....+..+....+..........................+.......+...+..+.+......+...+..+.............+...............+..+....+.....+.+.........+..+...+....+........+...+....+...+..............+...+.+........................+............+........+......+.+......+.....+....+.....+..........+....................+...+.+..+.........+......+...+.+...+........+.......+......+.....++++++
+-----
+DONE
+[root@netkiller freeswitch]# find /etc/freeswitch/tls/CA
+/etc/freeswitch/tls/CA
+/etc/freeswitch/tls/CA/config.tpl
+/etc/freeswitch/tls/CA/cacert.pem
+/etc/freeswitch/tls/CA/cakey.pem	
+				]]>
+			</screen>
+			<para>查看证书</para>
+			<screen>
+			<![CDATA[
+[root@netkiller freeswitch]#  openssl x509 -noout -inform pem -text -in /etc/freeswitch/tls/CA/cacert.pem
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number:
+            4b:5a:19:ce:0c:2f:65:ea:13:3b:4b:41:0f:23:62:dc:b1:1c:b2:21
+        Signature Algorithm: sha256WithRSAEncryption
+        Issuer: CN=sip.netkiller.cn, O=netkiller.cn
+        Validity
+            Not Before: Apr 24 03:00:09 2025 GMT
+            Not After : Apr 23 03:00:09 2031 GMT
+        Subject: CN=sip.netkiller.cn, O=netkiller.cn
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (2048 bit)
+                Modulus:
+                    00:b7:98:fc:18:95:98:86:25:80:be:b9:e4:34:52:
+                    09:b5:17:ce:73:60:5a:0b:87:91:6c:6b:44:97:4c:
+                    2c:7b:15:de:80:5a:0f:a2:b7:67:ab:8e:57:4f:3b:
+                    b5:e8:8a:d9:da:02:dc:d5:f0:28:9f:bc:0a:a6:c2:
+                    c9:64:a8:aa:a9:f1:ae:38:b1:8e:83:2b:50:80:c3:
+                    5c:7f:8b:17:8c:fa:ee:b8:ac:33:dd:4f:f6:43:7f:
+                    1f:5d:ed:0f:45:cb:e8:3d:b7:36:18:77:49:59:10:
+                    6b:8c:d1:c3:bf:34:68:55:45:5f:24:ac:12:18:c9:
+                    bf:52:6b:f6:37:5b:b8:d2:05:7a:db:b2:1b:e3:a3:
+                    8d:92:9e:b7:f3:01:27:a2:1a:a7:07:21:4c:0e:d5:
+                    2a:cb:0e:ff:ea:56:06:e4:29:be:26:97:60:bb:6c:
+                    ac:ac:8c:8f:d2:52:38:94:d2:5c:0e:8c:cc:d2:c4:
+                    eb:26:0b:22:78:f5:d5:70:9b:d7:fa:b5:60:87:aa:
+                    ff:92:73:02:ad:b0:c7:41:8d:86:90:cd:ae:91:e1:
+                    61:15:52:eb:37:e9:6b:8b:40:eb:31:36:93:d6:e1:
+                    ff:8d:e6:9a:d9:84:8a:14:7a:50:57:b2:75:be:8c:
+                    a6:b0:8e:24:cb:1a:ff:42:b7:c2:4f:05:23:0d:c3:
+                    9c:45
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Subject Key Identifier: 
+                CE:04:C9:83:F9:1B:36:BE:27:25:53:77:62:15:60:E8:55:35:83:72
+            X509v3 Authority Key Identifier: 
+                CE:04:C9:83:F9:1B:36:BE:27:25:53:77:62:15:60:E8:55:35:83:72
+            X509v3 Basic Constraints: 
+                CA:TRUE
+    Signature Algorithm: sha256WithRSAEncryption
+    Signature Value:
+        ac:0d:15:4b:92:d3:09:3a:f3:3a:19:68:1f:bf:e4:ef:bb:89:
+        71:75:77:97:ae:c7:df:a1:5d:16:12:32:8a:f2:03:43:dc:78:
+        22:60:12:dc:4e:b5:aa:70:78:28:d4:bf:38:6c:0b:6c:f5:9f:
+        2c:3d:90:bf:a6:1d:52:24:5e:21:38:69:bb:a5:de:ee:31:45:
+        e7:cf:bd:86:7e:4e:ff:a5:97:9a:43:9b:4f:7e:f6:98:ae:5e:
+        aa:73:6b:14:ee:5a:73:ba:c8:02:f2:11:70:b3:5d:ad:4d:dc:
+        75:08:05:45:de:46:2c:21:fb:6c:ae:e6:7f:48:0f:ed:49:5f:
+        c1:1e:53:7c:c0:4e:11:20:52:78:2f:0a:fe:8b:ae:df:bf:5d:
+        0e:97:a7:9c:3a:1d:6c:28:9d:f5:6b:cb:13:eb:b0:32:61:ce:
+        50:b8:49:f4:4d:1b:25:83:31:9f:3b:09:6a:74:35:2c:09:6d:
+        a3:80:a5:01:db:70:5c:71:b6:94:15:35:01:f4:e0:b9:6e:f8:
+        b3:d2:2c:e9:0f:68:16:7f:e6:b9:a7:2f:08:3b:e4:dc:b9:4c:
+        50:f4:94:65:97:d0:4a:89:8d:23:63:a7:26:52:04:80:28:ec:
+        57:13:f8:e6:e9:09:e3:81:f8:67:5f:36:2a:fc:55:74:7e:c5:
+        0b:4c:a3:d3			
+			]]>
+			</screen>
+			<para>删除证书</para>
+			<screen>
+				<![CDATA[
+[root@netkiller freeswitch]# gentls_cert remove
+Are you sure you want to delete the CA? [YES to delete]
+YES
+Removing CA
+DONE			
+				]]>
+			</screen>
+
+			<para>删除证书</para>
+			<screen>
+				<![CDATA[
+[root@netkiller freeswitch]# gentls_cert remove
+Are you sure you want to delete the CA? [YES to delete]
+YES
+Removing CA
+DONE			
+				]]>
+			</screen>
+		</section>
+		<section>
+			<title>创建服务器证书</title>
+			<screen>
+			<![CDATA[
+gentls_cert create_server -cn sip.netkiller.cn -alt DNS:sip.netkiller.cn -org netkiller.cn
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+[root@production ~]# gentls_cert create_server -cn sip.netkiller.cn -alt DNS:sip.netkiller.cn -org netkiller.cn
+Generating new certificate...
+
+--------------------------------------------------------
+CN: "sip.netkiller.cn"
+ORG_NAME: "netkiller.cn"
+ALT_NAME: "DNS:sip.netkiller.cn"
+
+Certificate filename "agent.pem"
+
+[Is this OK? (y/N)]
+y
+..+++++++++++++++++++++++++++++++++++++++*.....+......+.......+...+..+..........+............+...........+...+...............+.......+............+..+.+...+......+.....+....+.....+....+.....+.+.....+.......+...+......+.........+.....+.+.....+...+...+.......+........+...+......+.............+.....+.+.....+.+...+...+.....+.........................+..+......+.+.....+.........+....+........+++++++++++++++++++++++++++++++++++++++*......+...+....+...+........+....+...+..++++++
+.+++++++++++++++++++++++++++++++++++++++*..+...............+++++++++++++++++++++++++++++++++++++++*.+......+.++++++
+-----
+Certificate request self-signature ok
+subject=CN=sip.netkiller.cn, O=netkiller.cn
+DONE			
+			]]>
+			</screen>
+			<para>检查证书</para>
+			<screen>
+			<![CDATA[
+[root@production ~]# openssl x509 -noout -inform pem -text -in /etc/freeswitch/tls/agent.pem 
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number:
+            29:e8:64:33:a5:79:35:54:7d:79:33:1c:73:07:9c:bc:e1:87:5f:d7
+        Signature Algorithm: sha256WithRSAEncryption
+        Issuer: CN=sip.netkiller.cn, O=netkiller.cn
+        Validity
+            Not Before: May  3 09:09:03 2025 GMT
+            Not After : May  2 09:09:03 2031 GMT
+        Subject: CN=sip.netkiller.cn, O=netkiller.cn
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (2048 bit)
+                Modulus:
+                    00:ca:a3:99:20:81:3b:12:99:57:58:15:15:48:76:
+                    83:34:84:73:e4:bf:1a:43:2a:39:a6:4e:4c:17:dd:
+                    e9:16:be:17:cb:50:ad:77:f2:1b:b7:bc:c4:c1:ae:
+                    7c:99:01:68:94:4c:e0:37:2f:25:4f:bc:18:e1:4b:
+                    db:c8:f9:65:8d:3e:81:76:17:05:54:e3:40:b2:0e:
+                    66:c4:62:fe:93:ee:9b:c8:54:df:4f:52:bf:d1:d0:
+                    7a:0f:18:98:79:59:56:49:08:9e:fb:41:53:fb:fd:
+                    23:84:87:a9:4b:f0:5c:0b:33:62:d2:7e:da:42:52:
+                    d2:c9:9f:c0:90:ac:a4:45:55:fd:fa:52:c5:c3:9a:
+                    b3:58:e9:3c:55:49:a9:c8:8c:22:4b:07:d8:db:7b:
+                    9c:9f:2c:85:ad:dc:56:f3:35:86:52:bf:bf:98:2b:
+                    fd:ea:d8:56:08:c9:60:5d:41:72:0c:bf:cf:7c:8c:
+                    4d:c6:46:85:6e:d7:94:2a:71:b5:97:72:5f:a6:2a:
+                    55:a7:74:f8:80:e5:87:77:bb:66:d5:9d:59:5b:09:
+                    03:df:3f:da:38:58:21:3b:a8:17:2d:c7:9d:a4:02:
+                    1a:30:a4:58:3e:a2:5b:54:37:92:e1:fe:5f:bd:55:
+                    3b:06:f2:75:5f:ae:57:2d:9e:39:65:fa:61:6f:f1:
+                    a4:e3
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            Netscape Comment: 
+                FS Server Cert
+            X509v3 Basic Constraints: 
+                CA:FALSE
+            X509v3 Subject Key Identifier: 
+                43:52:D7:63:2C:34:60:96:97:0B:CE:70:6A:27:70:C3:75:EF:CB:B3
+            X509v3 Authority Key Identifier: 
+                keyid:CE:04:C9:83:F9:1B:36:BE:27:25:53:77:62:15:60:E8:55:35:83:72
+                DirName:/CN=sip.netkiller.cn/O=netkiller.cn
+                serial:4B:5A:19:CE:0C:2F:65:EA:13:3B:4B:41:0F:23:62:DC:B1:1C:B2:21
+            X509v3 Subject Alternative Name: 
+                DNS:sip.netkiller.cn
+            Netscape Cert Type: 
+                SSL Server
+            X509v3 Extended Key Usage: 
+                TLS Web Server Authentication
+    Signature Algorithm: sha256WithRSAEncryption
+    Signature Value:
+        2f:e7:58:51:35:04:45:b0:72:6d:60:3f:b7:16:6f:78:4f:07:
+        91:c3:ff:dc:ea:4c:19:d0:1c:df:2b:24:16:23:b3:7c:e7:0f:
+        1c:ab:d3:a5:9b:f0:a2:0a:e8:90:12:0f:a0:b7:d2:60:9f:9d:
+        b4:20:77:ed:71:b4:54:ed:ba:82:0d:da:f2:d5:3d:d0:e5:5e:
+        b7:c5:be:c4:4f:e6:5a:f6:e8:34:04:0d:f7:23:0b:77:9a:7d:
+        27:9b:2d:50:5f:b9:84:b9:ec:b9:58:f3:2a:28:d8:0f:d5:d8:
+        86:10:72:d7:4c:d4:3c:51:ab:3b:05:cd:99:87:af:f6:00:33:
+        ff:36:20:f6:ac:0d:a6:92:88:a4:ed:78:1d:0a:13:6b:ae:6d:
+        30:7d:e1:25:b2:78:a5:07:a8:e7:fd:68:4f:c0:f9:d1:65:d1:
+        f4:e6:92:b1:e8:ee:29:ce:9a:f6:7f:50:5d:27:20:a4:7b:c7:
+        65:13:5b:62:ae:80:83:73:a6:34:d8:6b:2c:32:ab:81:bf:4d:
+        2f:7a:da:f7:71:fd:32:84:3c:a6:9c:e8:d7:0f:87:5f:14:f6:
+        0b:81:74:b0:ad:1e:01:b5:b3:03:04:8b:c3:9c:e9:72:17:6b:
+        b0:e0:09:d4:1c:71:d6:6f:d7:ab:1c:c3:1b:21:7b:33:30:8d:
+        37:72:a4:4f		
+			]]>
+			</screen>
+			<para>检查权限，必须是 640</para>
+			<!-- [root@production ~]# chown root.freeswitch agent.pem cacert.pem -->
+			<screen>
+			<![CDATA[
+[root@production ~]# chown -R freeswitch.daemon /etc/freeswitch/tls			
+[root@production ~]# ll /etc/freeswitch/tls/{cafile.pem,agent.pem}
+-rw-r----- 1 freeswitch daemon 3136 May  3 17:09 /etc/freeswitch/tls/agent.pem
+-rw-r----- 1 freeswitch daemon 1192 Apr 24 11:00 /etc/freeswitch/tls/cafile.pem	
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>开启TLS，监听 5061 端口</title>
+			<para>编辑 /etc/freeswitch/vars.xml 配置文件，把 internal_ssl_enable 和 external_ssl_enable 改为 </para>
+			<screen>
+			<![CDATA[
+[root@production ~]# cat /etc/freeswitch/vars.xml
+			
+  <!-- Internal SIP Profile -->
+  <X-PRE-PROCESS cmd="set" data="internal_auth_calls=true"/>
+  <X-PRE-PROCESS cmd="set" data="internal_sip_port=5060"/>
+  <X-PRE-PROCESS cmd="set" data="internal_tls_port=5061"/>
+  <X-PRE-PROCESS cmd="set" data="internal_ssl_enable=false"/>
+
+  <!-- External SIP Profile -->
+  <X-PRE-PROCESS cmd="set" data="external_auth_calls=false"/>
+  <X-PRE-PROCESS cmd="set" data="external_sip_port=5080"/>
+  <X-PRE-PROCESS cmd="set" data="external_tls_port=5081"/>
+  <X-PRE-PROCESS cmd="set" data="external_ssl_enable=true"/>
+			]]>
+			</screen>
+			<para>如果证书放在其他位置，需要配置下面选项指定证书位置。</para>
+			<screen>
+			<![CDATA[
+/etc/freeswitch/sip_profiles/internal.xml:    <!--<param name="tls-cert-dir" value=""/>-->
+改为 
+
+<param name="tls-cert-dir" value="/etc/freeswitch/tls"/>
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="fusionPBX">
 		<title>fusionPBX</title>
