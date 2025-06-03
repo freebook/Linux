@@ -27,7 +27,7 @@ Docker version 19.03.12, build 48a66213fe
 			<screen>
 			<![CDATA[
 GID=$(egrep -o 'docker:x:([0-9]+)' /etc/group | egrep -o '([0-9]+)')
-adduser -u ${GID} -g ${GID} -G wheel -c "Container Administrator" docker		
+adduser --system -u ${GID} -g ${GID} -G wheel -c "Container Administrator" docker		
 			]]>
 			</screen>
 			<screen>
