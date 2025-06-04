@@ -82,6 +82,30 @@ git push
 GIT_SSH_COMMAND="ssh -i ~/.ssh/id_rsa_example -F /dev/null" git clone git@github.com:netkiller/netkiller.github.io.git		
 		]]>
 		</screen>
+
+		<section id="git.ipv4">
+			<title>IPv4</title>
+			<screen>
+			<![CDATA[
+[root@production neo]# git config --global core.sshCommand "ssh -4"			
+			]]>
+			</screen>
+		</section>
+		<section id="git.ipv6">
+			<title>IPv6</title>
+			<screen>
+			<![CDATA[
+[root@production neo]# git config --global core.sshCommand "ssh -6"			
+			]]>
+			</screen>
+			<para>设置 Git 的 HTTP 传输优先使用 IPv6</para>
+			<screen>
+			<![CDATA[
+git config --global http.version HTTP/1.1
+git config --global http.ipv6 true			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="http.postBuffer">
 		<title>fatal: The remote end hung up unexpectedly</title>
@@ -133,7 +157,8 @@ git config --global merge.ours.driver true
 	<section id="gitignore">
 		<title>.gitignore</title>
 		<screen>
-find ./ -type d -empty | grep -v \.git | xargs -i touch {}/.gitignore
+			find ./ -type d -empty | grep -v \.git | xargs -i touch
+			{}/.gitignore
 		</screen>
 	</section>
 	<section id="gitattributes">
@@ -166,7 +191,8 @@ $ cat test.txt
 		</section>
 		<section>
 			<title>设置文件换行符</title>
-			<para>开发者使用不同的操作系统，不同的开发工具，保存的文件换行符有三种，CR、LF、CRLF，也就是回车CR和换行的组合。</para>
+			<para>开发者使用不同的操作系统，不同的开发工具，保存的文件换行符有三种，CR、LF、CRLF，也就是回车CR和换行的组合。
+			</para>
 			<para>解决方案，在项目根目录下创建 .gitattributes 文件</para>
 			<screen>
 			<![CDATA[ 
@@ -176,12 +202,7 @@ $ cat test.txt
 			]]>
 			</screen>
 		</section>
-		<!-- 
-		<section id="git.command">
-		<title>command</title>
-		
-	</section>
-	-->
+
 	</section>
 	<section>
 		<title>配置模版目录</title>

@@ -43,6 +43,29 @@ sshd:ALL
 # vi /etc/ssh/sshd_config
 			]]>
 			</screen>
+			<section>
+				<title>IPv6</title>
+				<para>去掉 对AddressFamily any 的注释（即删除前面的#），开启 IPv6 监听。</para>
+				<screen>
+				<![CDATA[
+vim /etc/ssh/sshd_config 
+
+#Port 22
+AddressFamily any
+#ListenAddress 0.0.0.0
+#ListenAddress ::		
+				]]>
+				</screen>
+				<screen>
+				<![CDATA[
+[root@netkiller ~]# systemctl restart sshd
+				
+[root@netkiller ~]# ss -lnt | grep 22
+LISTEN 0      128          0.0.0.0:22        0.0.0.0:*          
+LISTEN 0      128             [::]:22           [::]:* 				
+				]]>
+				</screen>
+			</section>
 			<section id="maxauthtries">
 				<title>Authentication 配置</title>
 				<para>连接后2m没有任何键盘输入以及屏幕输出，将自动切换SSH连接。</para>
