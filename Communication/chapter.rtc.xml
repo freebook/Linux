@@ -3,8 +3,30 @@
 	<title>WebRTC/Ortc</title>
 	<section id="coturn">
 		<title>coturn - ICE Server</title>
-		<para>coturn 主要有两个包，分别是 coturn 和 coturn-utils，coturn-client-devel 我们用不到</para>
+		<para>RFC 文档</para>
 		<screen>
+		<![CDATA[
+TURN specs:  
+   RFC 5766 - base TURN specs  
+   RFC 6156 - IPv6 extension for TURN  
+   Experimental DTLS support as client protocol.  
+
+
+STUN specs:  
+   RFC 5389 - base "new" STUN specs  
+   RFC 5769 - test vectors for STUN protocol testing  
+   RFC 5780 - NAT behavior discovery support  
+   RFC 3489 STUN1 		
+		]]>
+		</screen>
+		<section>
+			<title>DNF 安装 coturn</title>
+
+
+			<para>coturn 主要有两个包，分别是 coturn 和 coturn-utils，coturn-client-devel
+				我们用不到
+			</para>
+			<screen>
 			<![CDATA[
 [root@netkiller ~]# dnf search coturn
 Last metadata expiration check: 1:40:06 ago on Fri 07 Feb 2025 10:27:51 PM CST.
@@ -16,15 +38,15 @@ coturn-utils.x86_64 : Coturn utils
 ============================================= Name Matched: coturn =============================================
 coturn-client-libs.x86_64 : TURN client static library			
 			]]>
-		</screen>
-		<para>安装 coturn 服务器</para>
-		<screen>
+			</screen>
+			<para>安装 coturn 服务器</para>
+			<screen>
 			<![CDATA[
 [root@netkiller ~]# dnf install coturn coturn-utils -y			
 			]]>
-		</screen>
-		<para>查看一下包内有那些工具</para>
-		<screen>
+			</screen>
+			<para>查看一下包内有那些工具</para>
+			<screen>
 			<![CDATA[
 [root@netkiller ~]# rpm -ql coturn | egrep "bin|etc"
 /etc/coturn
@@ -45,42 +67,42 @@ coturn-client-libs.x86_64 : TURN client static library
 /usr/bin/turnutils_stunclient
 /usr/bin/turnutils_uclient	
 			]]>
-		</screen>
-		<para>备份配置文件</para>
-		<screen>
+			</screen>
+			<para>备份配置文件</para>
+			<screen>
 			<![CDATA[
 cp /etc/coturn/turnserver.conf{,.original}
 			]]>
-		</screen>
-		<para>生成证书</para>
-		<screen>
+			</screen>
+			<para>生成证书</para>
+			<screen>
 			<![CDATA[
 openssl req -x509 -newkey rsa:2048 -keyout /etc/pki/coturn/private/turn_server_pkey.pem -out /etc/pki/coturn/public/turn_server_cert.pem -days 365 -nodes			
 			]]>
-		</screen>
-		<para>创建用户和密码</para>
-		<screen>
+			</screen>
+			<para>创建用户和密码</para>
+			<screen>
 			<![CDATA[
 turnadmin -a -u netkiller -p 123456 -r rtc.netkiller.cn
 			]]>
-		</screen>
-		<para>也可以通过配置文件 /etc/coturn/turnserver.conf 创建静态用户和密码</para>
-		<screen>
+			</screen>
+			<para>也可以通过配置文件 /etc/coturn/turnserver.conf 创建静态用户和密码</para>
+			<screen>
 			<![CDATA[
 user=netkiller:123456
 realm=rtc.netkiller.cn		
 			]]>
-		</screen>
-		<para>开放防火墙端口</para>
-		<screen>
+			</screen>
+			<para>开放防火墙端口</para>
+			<screen>
 			<![CDATA[
 firewall-cmd --zone=public --add-port=3478/udp --permanent
 firewall-cmd --zone=public --add-port=5349/udp --permanent
 firewall-cmd --reload			
 			]]>
-		</screen>
-		<para>/etc/coturn/turnserver.conf 配置文件</para>
-		<screen>
+			</screen>
+			<para>/etc/coturn/turnserver.conf 配置文件</para>
+			<screen>
 			<![CDATA[
 listening-ip=0.0.0.0 	# 配置为0.0.0.0即可，会监听所有ip请求
 listening-port=3478 	# STUN服务端口为3478
@@ -88,9 +110,9 @@ tls-listening-port=5349	# STUN的 TLS 监听端口
 relay-ip		配置为服务器的外网ip地址
 external-ip 	配置为服务器的外网ip地址			
 			]]>
-		</screen>
-		<para>仅供参考</para>
-		<programlisting>
+			</screen>
+			<para>仅供参考</para>
+			<programlisting>
 		<![CDATA[
 [root@netkiller ~]# grep -v ^# /etc/coturn/turnserver.conf | grep -v "^$"
 relay-ip=192.168.0.71
@@ -108,15 +130,63 @@ no-rfc5780
 no-stun-backward-compatibility
 response-origin-only-with-rfc5780		
 		]]>
-		</programlisting>
-		<para>启动服务</para>
-		<screen>
+			</programlisting>
+			<para>启动服务</para>
+			<screen>
 			<![CDATA[
 systemctl enable coturn
 systemctl start coturn			
 			]]>
-		</screen>
-		<section>
+			</screen>
+			<section>
+				<title>Docker 安装 coturn</title>
+				<para># 使用主机网络模式以支持全范围的端口映射</para>
+				<screen>
+			<![CDATA[
+version: '3'
+
+services:
+  coturn:
+    image: coturn/coturn:latest
+    container_name: coturn_server
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      # 映射配置文件
+      - /srv/etc/coturn/turnserver.conf:/etc/coturn/turnserver.conf:ro
+      # 映射 TLS 证书和私钥（如果使用）
+      - /srv/etc/coturn/certs:/etc/coturn/certs:ro			
+			]]>
+				</screen>
+			</section>
+		</section>
+		<section id="coturn.conf">
+			<title>TUN 配置例子</title>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# grep -v ^# /etc/coturn/turnserver.conf | grep -v "^$"
+relay-ip=192.168.0.1
+external-ip=139.19.154.21
+user=neo:netkiller
+realm=netkiller.cn
+log-file=/var/log/coturn/turnserver.log
+simple-log
+cli-ip=127.0.0.1
+cli-port=5766
+cli-password=qwerty
+no-rfc5780
+no-stun-backward-compatibility
+response-origin-only-with-rfc5780			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+			
+			]]>
+			</screen>
+		</section>
+		<section id="coturn.js">
 			<title>Javascript 连接 ICE Server 例子</title>
 			<programlisting>
 			<![CDATA[
@@ -134,19 +204,8 @@ connection = new RTCPeerConnection(iceServers);
 			]]>
 			</programlisting>
 		</section>
-		<section>
+		<section id="coturn.test">
 			<title>测试</title>
-			<para>确认端口状态</para>
-			<screen>
-			<![CDATA[
-[root@netkiller ~]# lsof -i :3478
-COMMAND       PID   USER   FD   TYPE   DEVICE SIZE/OFF NODE NAME
-turnserve 2003533 coturn   24u  IPv4 25225693      0t0  TCP localhost:stun (LISTEN)
-turnserve 2003533 coturn   25u  IPv4 25231980      0t0  TCP localhost:stun (LISTEN)
-turnserve 2003533 coturn   26u  IPv4 25225694      0t0  TCP netkiller:stun (LISTEN)
-turnserve 2003533 coturn   27u  IPv4 25225695      0t0  TCP netkiller:stun (LISTEN)			
-			]]>
-			</screen>
 			<para>测试程序 turnutils_uclient</para>
 			<screen>
 			<![CDATA[
@@ -167,7 +226,21 @@ turnutils_uclient -v -t -T -u <user> -w <password> xxx.xxx.xxx.xxx
 xxx.xxx.xxx.xxx TURN服务的IP地址
 			]]>
 			</screen>
-			<screen>
+			<section>
+				<title>TUN</title>
+				<para>确认端口状态</para>
+				<screen>
+			<![CDATA[
+[root@netkiller ~]# lsof -i :3478
+COMMAND       PID   USER   FD   TYPE   DEVICE SIZE/OFF NODE NAME
+turnserve 2003533 coturn   24u  IPv4 25225693      0t0  TCP localhost:stun (LISTEN)
+turnserve 2003533 coturn   25u  IPv4 25231980      0t0  TCP localhost:stun (LISTEN)
+turnserve 2003533 coturn   26u  IPv4 25225694      0t0  TCP netkiller:stun (LISTEN)
+turnserve 2003533 coturn   27u  IPv4 25225695      0t0  TCP netkiller:stun (LISTEN)			
+			]]>
+				</screen>
+
+				<screen>
 			<![CDATA[
 [root@netkiller ~]# turnutils_uclient -v -t -T -u neo -w netkiller 127.0.0.1
 0: (2003881): INFO: IPv4. Connected from: 127.0.0.1:58632
@@ -235,16 +308,16 @@ xxx.xxx.xxx.xxx TURN服务的IP地址
 3: (2003881): INFO: Average round trip delay 4.300000 ms; min = 0 ms, max = 21 ms
 3: (2003881): INFO: Average jitter 8.400000 ms; min = 0 ms, max = 21 ms			
 			]]>
-			</screen>
+				</screen>
 
-			<screen>
+				<screen>
 			<![CDATA[
 [root@netkiller ~]# turnutils_stunclient -p 3478 127.0.0.1
 0: (2004030): INFO: IPv4. UDP reflexive addr: 127.0.0.1:45826				
 			]]>
-			</screen>
+				</screen>
 
-			<screen>
+				<screen>
 			<![CDATA[
 [root@netkiller ~]# turnutils_natdiscovery -m 127.0.0.1
 
@@ -258,8 +331,8 @@ xxx.xxx.xxx.xxx TURN服务的IP地址
 0: (2003696): INFO: IPv4. UDP reflexive addr: 127.0.0.1:57186
 0: (2003696): INFO: IPv4. Local addr: : 0.0.0.0:57186			
 			]]>
-			</screen>
-			<screen>
+				</screen>
+				<screen>
 			<![CDATA[
 [root@netkiller ~]# turnutils_peer -v
 0: (2003645): INFO: Start
@@ -271,9 +344,9 @@ xxx.xxx.xxx.xxx TURN服务的IP地址
 0: (2003645): INFO: Start
 0: (2003645): INFO: End			
 			]]>
-			</screen>
-			<para></para>
-			<screen>
+				</screen>
+				<para></para>
+				<screen>
 			<![CDATA[
 [root@netkiller ~]# journalctl -f -u coturn.service
 Feb 09 12:17:58 netkiller systemd[1]: Stopping coturn...
@@ -287,7 +360,126 @@ Feb 09 12:29:53 netkiller systemd[1]: Stopped coturn.
 Feb 09 12:29:53 netkiller systemd[1]: Starting coturn...
 Feb 09 12:29:53 netkiller systemd[1]: Started coturn.			
 			]]>
-			</screen>
+				</screen>
+			</section>
+			<section>
+				<title>STUN</title>
+				<para></para>
+				<screen>
+				<![CDATA[
+[root@netkiller ~]# ss -lnu | grep 5349 | uniq 
+UNCONN 0      0         172.20.0.1:5349       0.0.0.0:*          
+UNCONN 0      0         172.19.0.1:5349       0.0.0.0:*          
+UNCONN 0      0         172.18.0.1:5349       0.0.0.0:*          
+UNCONN 0      0         172.17.0.1:5349       0.0.0.0:*          
+UNCONN 0      0       192.168.0.71:5349       0.0.0.0:*          
+UNCONN 0      0          127.0.0.1:5349       0.0.0.0:*          
+UNCONN 0      0              [::1]:5349          [::]:* 				
+				]]>
+				</screen>
+				<para></para>
+				<screen>
+				<![CDATA[
+[root@netkiller ~]# lsof -i :5349
+COMMAND       PID   USER   FD   TYPE    DEVICE SIZE/OFF NODE NAME
+turnserve 3682428 coturn   17u  IPv4 457568013      0t0  TCP localhost:stuns (LISTEN)
+turnserve 3682428 coturn   23u  IPv4 457568015      0t0  TCP netkiller:stuns (LISTEN)
+turnserve 3682428 coturn   25u  IPv4 457568017      0t0  TCP netkiller:stuns (LISTEN)
+turnserve 3682428 coturn   27u  IPv4 457568019      0t0  TCP netkiller:stuns (LISTEN)
+turnserve 3682428 coturn   33u  IPv4 457568021      0t0  TCP netkiller:stuns (LISTEN)				
+				]]>			
+				</screen>
+				<screen>
+				<![CDATA[
+[root@netkiller ~]# turnutils_stunclient -p 5349 127.0.0.1
+0: (3682626): INFO: IPv4. UDP reflexive addr: 127.0.0.1:56035
+				]]>
+				</screen>
+
+			</section>
+		</section>
+		<section>
+			<title>FAQ</title>
+			<section>
+				<title>cannot find private key file</title>
+				<screen>
+				<![CDATA[
+0: (3681669): WARNING: cannot find private key file: /etc/pki/coturn/private/turn_server_pkey.pem (1)
+0: (3681669): WARNING: cannot start TLS and DTLS listeners because private key file is not set properly			
+				]]>
+				</screen>
+				<para>排除权限</para>
+				<screen>
+				<![CDATA[
+[root@netkiller ~]# ll /etc/pki/coturn/private/turn_server_pkey.pem
+-rw------- 1 root root 1704 Feb  9 12:29 /etc/pki/coturn/private/turn_server_pkey.pem				
+				]]>			
+				</screen>
+				<para>修改权限</para>
+				<screen>
+				<![CDATA[
+[root@netkiller ~]# chown coturn:coturn /etc/pki/coturn/private/turn_server_pkey.pem
+[root@netkiller ~]# ll /etc/pki/coturn/private/
+total 4
+-rw------- 1 coturn coturn 1704 Feb  9 12:29 turn_server_pkey.pem				
+				]]>
+				</screen>
+				<para>重启，然后检查日志</para>
+				<screen>
+				<![CDATA[
+==== Show him the instruments, Practical Frost: ====
+
+0: (3682428): INFO: OpenSSL compile-time version: OpenSSL 3.2.2 4 Jun 2024 (0x30200020)
+0: (3682428): INFO: TLS 1.3 supported
+0: (3682428): INFO: DTLS 1.2 supported
+0: (3682428): INFO: TURN/STUN ALPN supported
+0: (3682428): INFO: Third-party authorization (oAuth) supported
+0: (3682428): INFO: GCM (AEAD) supported
+0: (3682428): INFO: SQLite supported, default database location is /var/lib/coturn/turndb
+0: (3682428): INFO: Redis supported
+0: (3682428): INFO: PostgreSQL supported
+0: (3682428): INFO: MySQL supported
+0: (3682428): INFO: MongoDB is not supported
+0: (3682428): INFO: Default Net Engine version: 3 (UDP thread per CPU core)
+0: (3682428): INFO: Domain name: 
+0: (3682428): INFO: Default realm: stun.netkiller.cn
+0: (3682428): INFO: Certificate file found: /etc/pki/coturn/public/turn_server_cert.pem
+0: (3682428): INFO: Private key file found: /etc/pki/coturn/private/turn_server_pkey.pem
+0: (3682428): INFO: TLS cipher suite: ALL:!COMPLEMENTOFDEFAULT:!eNULL:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256
+0: (3682428): INFO: DTLS cipher suite: ALL:!COMPLEMENTOFDEFAULT:!eNULL:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256
+0: (3682428): WARNING: NO EXPLICIT LISTENER ADDRESS(ES) ARE CONFIGURED
+0: (3682428): INFO: ===========Discovering listener addresses: =========
+0: (3682428): INFO: Listener address to use: 127.0.0.1
+0: (3682428): INFO: Listener address to use: 192.168.0.71
+0: (3682428): INFO: Listener address to use: 172.17.0.1
+0: (3682428): INFO: Listener address to use: 172.18.0.1
+0: (3682428): INFO: Listener address to use: 172.19.0.1
+0: (3682428): INFO: Listener address to use: 172.20.0.1
+0: (3682428): INFO: Listener address to use: ::1
+0: (3682428): INFO: =====================================================
+0: (3682428): INFO: Total: 5 'real' addresses discovered
+0: (3682428): INFO: =====================================================
+0: (3682428): INFO: pid file created: /run/coturn/turnserver.pid
+0: (3682428): INFO: IO method: epoll (with changelist)
+0: (3682428): INFO: RFC5780 disabled! /NAT behavior discovery/
+0: (3682428): INFO: Wait for relay ports initialization...
+0: (3682428): INFO:   relay 192.168.0.71 initialization...
+0: (3682428): INFO:   relay 192.168.0.71 initialization done
+0: (3682428): INFO: Relay ports initialization done
+0: (3682430): DEBUG: turn server id=0 created
+0: (3682432): DEBUG: turn server id=2 created
+0: (3682431): DEBUG: turn server id=1 created
+0: (3682434): DEBUG: turn server id=4 created
+0: (3682433): DEBUG: turn server id=3 created
+0: (3682428): INFO: Total General servers: 8
+0: (3682435): DEBUG: turn server id=5 created
+0: (3682436): DEBUG: turn server id=6 created
+0: (3682437): DEBUG: turn server id=7 created
+0: (3682428): INFO: Total auth threads: 5
+0: (3682428): INFO: turnserver compiled without prometheus support				
+				]]>
+				</screen>
+			</section>
 		</section>
 	</section>
 </chapter>
