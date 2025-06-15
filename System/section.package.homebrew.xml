@@ -10,7 +10,7 @@
 	<para>国内镜像安装</para>
 	<screen>
 	<![CDATA[
-/bin/zsh -c "$(curl -fsSL https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)"	
+/bin/zsh -c "$(curl -fsSL https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)"
 	]]>
 	</screen>
 	<para>运行下面命令，让brew生效</para>
