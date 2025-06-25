@@ -631,6 +631,106 @@ proxy_pass_request_headers on;
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>Proxy SSE(Server-Sent Events)</title>
+		<para>代理走 SSE 需要配置 proxy_buffering off; 和 proxy_cache off;</para>
+		<screen>
+		<![CDATA[
+server {
+    listen       80;
+    listen       443 ssl;
+    server_name  api.netkiller.cn;
+
+    access_log  /var/log/nginx/api.netkiller.cn.access.log;
+    error_log   /var/log/nginx/api.netkiller.cn.error.log;
+
+    include /etc/nginx/ssl.conf;
+
+    #error_page 497 https://$host$uri?$args;
+    if ($scheme = http) {
+         return 301 https://$server_name$request_uri;
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+    location / {
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header REMOTE-HOST $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_connect_timeout 120;
+        proxy_send_timeout 120;
+        proxy_read_timeout 120;
+        proxy_buffering off;
+        proxy_cache off;
+        proxy_pass http://api:8080/;
+    }
+
+    # wechat
+    location /wechat/miniprogram/bind/i2VsUGp64m.txt {
+        charset utf-8;
+        default_type    text/plain;
+        return 200 "c535ea6844f77acf98ea166a160913ee";
+    }
+    location /wechat/miniprogram/voucher/i2VsUGp64m.txt {
+        charset utf-8;
+        default_type    text/plain;
+        return 200 "c535ea6844f77acf98ea166a160913ee";
+    }
+
+#     location /wechat/ {
+#         proxy_http_version 1.1;
+#         proxy_set_header Host $host;
+#         proxy_set_header X-Real-IP $remote_addr;
+#         proxy_set_header REMOTE-HOST $remote_addr;
+#         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+#         proxy_connect_timeout 120;
+#         proxy_send_timeout 120;
+#         proxy_read_timeout 120;
+#         proxy_pass http://wechat:8080/;
+#     }
+
+    # location /ws/ {
+    #     proxy_set_header Upgrade $http_upgrade;
+    #     proxy_set_header Connection "Upgrade";
+    #     proxy_connect_timeout 30s;
+    #     proxy_read_timeout 7200s;
+    #     proxy_send_timeout 30s;
+    #     proxy_pass http://admin;
+    # }
+
+    location /markdown/ {
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header REMOTE-HOST $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_connect_timeout 120;
+        proxy_send_timeout 120;
+        proxy_read_timeout 120;
+        proxy_pass http://document:8080;
+    }
+
+    location /.well-known/ {
+        root   /usr/share/nginx/html;
+        try_files $uri $uri/ /index.html;
+        index  index.html index.htm;
+    }
+
+    location ~ /swagger-ui/ {
+       deny  all;
+    }
+}
+		]]>
+		</screen>
+	</section>
 	<section id="proxy.example">
 		<title>example</title>
 		<para>/api/ 走代理，其他页面走 Nginx</para>
@@ -1063,7 +1163,7 @@ server {
 			</screen>
 		</section>	
 	</section>
-	<section>
+	<section id="proxy.httpauth">
 		<title>HTTP Auth 认证冲突</title>
 		<para>nginx 代理 springboot，Springboot 使用了 JWT 认证，HTTP头为 Authorization: Bearer {BASE64}</para>
 		<para>admin.netkiller.cn 后台需要限制登陆，公司没有固定IP地址，尝试了 VPN 方案，被封。最终决定使用 HTTP Auth，HTTP Auth 使用 HTTP Authorization: Basic {BASE64}。</para>
