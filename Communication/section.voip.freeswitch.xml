@@ -2440,4 +2440,30 @@ PS D:\GitHub\freeswitch> python.exe .\freeswitch.py -r 1000
 			</screen>
 		</section>
 	</section>
+	<section>
+		<title>备份和恢复</title>
+		<para></para>
+		<screen>
+		<![CDATA[
+tar zcvf freeswitch.tgz /etc/freeswitch/		
+		]]>
+		</screen>
+		<para>恢复常用文件</para>
+		<screen>
+		<![CDATA[
+ \cp -f etc/freeswitch/vars.xml /etc/freeswitch/
+ \cp -f etc/freeswitch/sip_profiles/internal.xml /etc/freeswitch/sip_profiles/
+ \cp -f etc/freeswitch/sip_profiles/external.xml /etc/freeswitch/sip_profiles/
+ \cp -f etc/freeswitch/dialplan/default.xml /etc/freeswitch/dialplan/
+ \cp -f etc/freeswitch/dialplan/public.xml /etc/freeswitch/dialplan/		
+		]]>
+		</screen>
+		<para>恢复用户</para>
+		<screen>
+		<![CDATA[
+ \cp -f etc/freeswitch/directory/default/* /etc/freeswitch/directory/default/		
+		]]>
+		</screen>
+	</section>
+	
 </section>
