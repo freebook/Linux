@@ -15,7 +15,7 @@ docker run -d --name chatgpt-next-web -p 3000:3000 \
 			]]>
 		</screen>
 	</section>
-	<section>
+	<section id="chatgpt.docker">
 		<title>ChatGPT 接口</title>
 		<screen>
 			<![CDATA[ 
@@ -26,7 +26,7 @@ docker push netkiller/chatgpt
 docker stop chatgpt
 docker rm chatgpt
 docker run --name chatgpt --restart=unless-stopped -d --network host \
--e OPENAI_API_KEY=sk-1xLgiKe7G7rhCGLDYUkxtXZHHi5NiT3BlbkFJTRBjEsKNNj4 \
+-e OPENAI_API_KEY=sk-XXXXXXX \
 netkiller/chatgpt:1.0.1
 docker logs -f chatgpt
 			]]>
@@ -49,7 +49,7 @@ cat /dev/ttyACM0 | grep GPTXT
 			]]>
 		</screen>
 	</section>
-	<section>
+	<section id="gps.protocol">
 		<title>GPS 协议</title>
 		<screen>
 			<![CDATA[ 
@@ -71,7 +71,7 @@ cat /dev/ttyACM0 | grep GPTXT
 			]]>
 		</screen>
 	</section>
-	<section>
+	<section id="gpsd">
 		<title>安装 gpsd</title>
 
 		<screen>
