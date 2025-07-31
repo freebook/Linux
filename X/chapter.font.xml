@@ -63,7 +63,7 @@ root@netkiller ~# fc-list
 			<title>查看中文字体</title>
 			<screen>
 			<![CDATA[
-fc-list :lang=zh		
+fc-list :lang=zh
 			]]>
 			</screen>
 		</section>
@@ -201,7 +201,7 @@ Pattern has 36 elts (size 48)
 		<![CDATA[
 [root@netkiller fonts]# fc-cache
 或
-[root@netkiller fonts]# fc-cache /usr/share/fonts		
+[root@netkiller fonts]# fc-cache /usr/share/fonts
 		]]>
 		</screen>
 	</section>

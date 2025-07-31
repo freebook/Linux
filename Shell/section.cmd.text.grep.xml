@@ -127,6 +127,30 @@ method = POST, uri = "/project/:projectName/wiki"
 			]]>
 			</screen>
 			<section>
+				<title>stroke="rgb(227, 119, 194)" 取出 rgb(227, 119, 194)</title>
+				<screen>
+				<![CDATA[
+echo 'stroke="rgb(227, 119, 194)"' | egrep -o 'rgb\([0-9]+, [0-9]+, [0-9]+\)'				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>取出 HTML 中的 RGB 色彩 #d62728</title>
+				<screen>
+				<![CDATA[
+echo '<line stroke="#d62728" stroke-width="1.1875" x1="-1" x2="82" y1="20.59375" y2="20.59375">' | egrep -o '#[0-9a-fA-F]{6}'		
+				]]>
+				</screen>
+				<para>禁止跨过标签</para>
+				<screen>
+				<![CDATA[
+echo '<line stroke="#d62728" stroke-width="1.1875" x1="-1" x2="82" y1="20.59375" y2="20.59375"></line><circle stroke-width="1.5" r="6" stroke="#d62728" fill="var(--markmap-circle-open-bg)" cx="80" cy="20.59375">' | egrep -o '<line[^>]+stroke="#([0-9a-fA-F]{6})"' | egrep -o '#[0-9a-fA-F]{6}'				
+
+# 其中 [^>]+ 标识禁止跨越标签，匹配到 > 为止
+				]]>
+				</screen>
+			</section>
+			<section>
 				<title>IP 地址</title>
 				<screen><![CDATA[
 # grep rhost /var/log/secure | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b"
