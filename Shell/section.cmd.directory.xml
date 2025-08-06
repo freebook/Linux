@@ -111,6 +111,19 @@ Modify: 2010-10-28 10:23:13.000000000 +0800
 Change: 2010-10-28 10:23:13.000000000 +0800
 		]]></screen>
 	</section>
+	<section id="shell.file">
+		<title>file – determine file type</title>
+		<para>查看文件信息</para>
+		<screen>
+		<![CDATA[
+[root@development app]# echo $LANG
+en_US.UTF-8
+
+[root@development app]# file -i mindmap.svg 
+mindmap.svg: image/svg+xml; charset=utf-8		
+		]]>
+		</screen>
+	</section>
 	<section id="mkdir">
 		<title>mkdir - make directories</title>
 		<screen><![CDATA[
