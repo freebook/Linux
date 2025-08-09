@@ -5,7 +5,7 @@
 	&chapter.graphicsmagick.xml;
 	&chapter.imagemagick.xml;
 	&chapter.photivo.xml;
-	&section.image.librsvg2.xml;
+	&section.image.xml;
 	<section id="exiftool">
 		<title>How to add metadata to digital pictures from the command line</title>
 		<para>exiftool </para>
