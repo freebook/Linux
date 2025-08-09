@@ -17,6 +17,7 @@
 <!ENTITY chapter.imagemagick.xml 	SYSTEM "Images/chapter.imagemagick.xml">
 <!ENTITY chapter.graphicsmagick.xml SYSTEM "Images/chapter.graphicsmagick.xml">
 <!ENTITY chapter.photivo.xml		SYSTEM "Images/chapter.photivo.xml">
+<!ENTITY section.image.xml			SYSTEM "Images/section.image.xml">
 
 <!ENTITY part.music.xml				SYSTEM "Music/part.music.xml">
 <!ENTITY chapter.lilypond.xml 		SYSTEM "Music/chapter.lilypond.xml">

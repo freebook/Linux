@@ -2,13 +2,15 @@
 <section id="index"><?dbhtml dir="graphicsmagick" ?>
 	<title>GraphicsMagick</title>
 	<para>http://www.graphicsmagick.org/</para>
-	<section id="install">
+	<section id="gm.install">
 		<title>安装</title>
 		<section>
 			<title>CentOS 安装</title>
 			<screen>
 			<![CDATA[
 yum install GraphicsMagick
+
+dnf install GraphicsMagick
 			]]>
 			</screen>
 		</section>
@@ -26,14 +28,24 @@ ln -s /srv/GraphicsMagick-1.3.12/ /srv/GraphicsMagick
 		</section>
 		<section>
 			<title>Mac</title>
+			<para>brew install graphicsmagick</para>
 			<screen>
 			<![CDATA[
 neo@MacBook-Pro-Neo ~ % brew install graphicsmagick			
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>Mac</title>
+			<para>docker 中运行 apt 需要先运行 apt update</para>
+			<screen>
+			<![CDATA[
+sudo apt install graphicsmagick		
+			]]>
+			</screen>
+		</section>
 	</section>
-	<section>
+	<section id="gm.identify">
 		<title>识别图像信息</title>
 		<screen>
 		<![CDATA[
@@ -146,7 +158,7 @@ Image: NEO_5362.JPG
 		]]>
 		</screen>
 	</section>
-	<section id="mogrify">
+	<section id="gm.mogrify">
 		<title>mogrify</title>
 		<para>格式转换</para>
 		<screen>
@@ -155,8 +167,8 @@ gm mogrify -format png *.jpg
 		]]>
 		</screen>
 	</section>
-	<section id="convert">
-		<title>convert</title>
+	<section id="gm.convert">
+		<title>图像格式转换</title>
 		<screen>
 		<![CDATA[
 缩放命令：
@@ -181,6 +193,7 @@ area@ ：按指定的像素区域等比缩放图片
 			<![CDATA[
 gm convert a.bmp a.jpg
 gm convert a.bmp a.pdf			
+gm convert mindmap.svg mindmap.png
 			]]>
 			</screen>
 		</section>
@@ -249,9 +262,90 @@ gm convert -delay 2 frame1.gif -delay 1 frame2.gif -delay 5 frame3.gif animation
 			]]>
 			</screen>
 		</section>
+		<section>
+			<title>字体设置</title>
+			<section>
+				<title>指定字体</title>
+				<screen>
+			<![CDATA[
+[root@netkiller app]# gm convert -font Songti.ttc mindmap.svg mindmap.png			
+			]]>
+				</screen>
+			</section>
+			<section>
+				<title>字体管理</title>
+				<para>通过 include 切换系统字体</para>
+				<screen>
+			<![CDATA[
+[root@netkiller app]# cat /usr/lib64/GraphicsMagick-1.3.38/config/type.mgk 
+<?xml version="1.0"?>
+<typemap>
+   <include file="type-ghostscript.mgk" />
+</typemap>			
+			]]>
+				</screen>
+			</section>
+			<section>
+				<title>新增字体</title>
+				<para>参考下面的 XML 新增字体即可</para>
+				<screen>
+				<![CDATA[
+[root@netkiller app]# ls /usr/lib64/GraphicsMagick-1.3.38/config/
+delegates.mgk  type-ghostscript.mgk  type.mgk  type-solaris.mgk  type-windows.mgk				
+				]]>
+				</screen>
+			</section>
+			<section id="gm.convert.list">
+				<title>查看字体列表</title>
+				<screen>
+		<![CDATA[
+[root@netkiller neo]# gm convert -list type
+Path: /usr/lib64/GraphicsMagick-1.3.38/config/type-ghostscript.mgk
+
+Name                             Family                  Style   Stretch  Weight
+--------------------------------------------------------------------------------
+AvantGarde-Book                  AvantGarde              normal  normal    400
+AvantGarde-BookOblique           AvantGarde              oblique normal    400
+AvantGarde-Demi                  AvantGarde              normal  normal    600
+AvantGarde-DemiOblique           AvantGarde              oblique normal    600
+Bookman-Demi                     Bookman                 normal  normal    600
+Bookman-DemiItalic               Bookman                 italic  normal    600
+Bookman-Light                    Bookman                 normal  normal    300
+Bookman-LightItalic              Bookman                 italic  normal    300
+Courier                          Courier                 normal  normal    400
+Courier-Bold                     Courier                 normal  normal    700
+Courier-Oblique                  Courier                 oblique normal    400
+Courier-BoldOblique              Courier                 oblique normal    700
+Helvetica                        Helvetica               normal  normal    400
+Helvetica-Bold                   Helvetica               normal  normal    700
+Helvetica-Oblique                Helvetica               italic  normal    400
+Helvetica-BoldOblique            Helvetica               italic  normal    700
+Helvetica-Narrow                 Helvetica Narrow        normal  condensed 400
+Helvetica-Narrow-Oblique         Helvetica Narrow        oblique condensed 400
+Helvetica-Narrow-Bold            Helvetica Narrow        normal  condensed 700
+Helvetica-Narrow-BoldOblique     Helvetica Narrow        oblique condensed 700
+NewCenturySchlbk-Roman           NewCenturySchlbk        normal  normal    400
+NewCenturySchlbk-Italic          NewCenturySchlbk        italic  normal    400
+NewCenturySchlbk-Bold            NewCenturySchlbk        normal  normal    700
+NewCenturySchlbk-BoldItalic      NewCenturySchlbk        italic  normal    700
+Palatino-Roman                   Palatino                normal  normal    400
+Palatino-Italic                  Palatino                italic  normal    400
+Palatino-Bold                    Palatino                normal  normal    700
+Palatino-BoldItalic              Palatino                italic  normal    700
+Times-Roman                      Times                   normal  normal    400
+Times-Bold                       Times                   normal  normal    700
+Times-Italic                     Times                   italic  normal    400
+Times-BoldItalic                 Times                   italic  normal    700
+Symbol                           Symbol                  normal  normal    400	
+		]]>
+				</screen>
+				
+			</section>
+		</section>
 		
+
 	</section>
-	<section id="montage">
+	<section id="gm.montage">
 		<title>montage</title>
 		<para>将三幅图像和并为一副图像</para>
 		<screen>
@@ -260,7 +354,7 @@ gm montage -mode concatenate -tile 3x1 image1.ppm image2.ppm image3.ppm concaten
 		]]>
 		</screen>
 	</section>
-	<section>
+	<section id="gm.import">
 		<title>截屏</title>
 		<screen>
 		<![CDATA[
@@ -275,7 +369,7 @@ gm import -frame a.jpg
 		]]>
 		</screen>
 	</section>
-	<section>
+	<section id="gm.display">
 		<title>显示图像</title>
 		<screen>
 		<![CDATA[
@@ -283,4 +377,5 @@ gm display 'vid:*.jpg'
 		]]>
 		</screen>
 	</section>
+
 </section>

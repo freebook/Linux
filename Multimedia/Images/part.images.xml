@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="index"><?dbhtml dir="images" ?>
+<chapter id="images">
+<!-- <?dbhtml dir="images" ?> -->
 	<title>图像处理（Graphics）</title>
 	&chapter.graphicsmagick.xml;
 	&chapter.imagemagick.xml;
 	&chapter.photivo.xml;
+	&section.image.librsvg2.xml;
 	<section id="exiftool">
 		<title>How to add metadata to digital pictures from the command line</title>
 		<para>exiftool </para>

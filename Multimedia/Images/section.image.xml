@@ -1,0 +1,36 @@
+<section id="librsvg2">
+	<title>librsvg2 - 转换 SVG 图像为 PNG</title>
+	<screen>
+	<![CDATA[
+[root@development app]# dnf search svg2
+Last metadata expiration check: 6:29:35 ago on Thu 07 Aug 2025 03:34:03 AM CST.
+===================================================================================================== Name Matched: svg2 =====================================================================================================
+librsvg2.x86_64 : An SVG library based on cairo
+librsvg2.i686 : An SVG library based on cairo
+librsvg2-devel.x86_64 : Libraries and include files for developing with librsvg
+librsvg2-devel.i686 : Libraries and include files for developing with librsvg
+librsvg2-tools.x86_64 : Extra tools for librsvg
+	]]>
+	</screen>
+	
+	<screen>
+	<![CDATA[
+[root@development app]# dnf install librsvg2
+Rocky Linux 9 - BaseOS                                                                                                                                                                        573 kB/s | 4.1 kB     00:00    
+Rocky Linux 9 - BaseOS                                                                                                                                                                        9.9 MB/s | 2.5 MB     00:00    
+Rocky Linux 9 - AppStream                                                                                                                                                                      55 kB/s | 4.5 kB     00:00    
+Rocky Linux 9 - AppStream                                                                                                                                                                      37 MB/s | 9.5 MB     00:00    
+Rocky Linux 9 - Extras                                                                                                                                                                         29 kB/s | 2.9 kB     00:00    
+Package librsvg2-2.50.7-3.el9.x86_64 is already installed.
+Dependencies resolved.
+Nothing to do.
+Complete!
+	]]>
+	</screen>
+	
+	<screen>
+	<![CDATA[
+[root@development app]# rsvg-convert -o tt.png mindmap.svg 
+	]]>
+	</screen>
+</section>
