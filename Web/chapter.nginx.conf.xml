@@ -527,12 +527,14 @@ server {
 	</section>
 	<section id="http.server.location">
 		<title>location</title>
-		<screen><![CDATA[
-				location / {
-				root /www;
-				index index.html index.htm;
-				}
-			]]></screen>
+		<screen>
+		<![CDATA[
+	location / {
+	root /www;
+	index index.html index.htm;
+	}
+			]]>
+			</screen>
 		<section>
 			<title>精确匹配</title>
 			<programlisting>
@@ -635,6 +637,22 @@ location ~* \.(gif|jpg|jpeg)$ {
         proxy_pass http://api.netkiller.cn:8080;
     }				
 				]]>
+			</screen>
+			<para>使用正则表达式匹配多个目录</para>
+			<screen>
+			<![CDATA[
+# 区分大小写匹配 /dir1/ 或 /dir2/ 或 /dir3/
+location ~ ^/(dir1|dir2|dir3)/ {
+    # 配置内容
+    root /var/www;
+    index index.html;
+}
+
+# 不区分大小写匹配（加上 ~*）
+location ~* ^/(dir1|dir2|dir3)/ {
+    # 配置内容
+}
+			]]>
 			</screen>
 		</section>
 

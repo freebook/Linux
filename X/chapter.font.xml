@@ -66,6 +66,85 @@ root@netkiller ~# fc-list
 fc-list :lang=zh
 			]]>
 			</screen>
+			<screen>
+			<![CDATA[
+[root@development meeting]# fc-list :lang=zh
+/usr/share/fonts/google-noto-cjk/NotoSansCJK-DemiLight.ttc: Noto Sans CJK TC,Noto Sans CJK TC DemiLight:style=DemiLight,Regular
+/usr/share/fonts/google-noto-cjk/NotoSerifCJK-Black.ttc: Noto Serif CJK SC,Noto Serif CJK SC Black:style=Black,Regular
+/usr/share/fonts/google-noto-cjk/NotoSansCJK-Light.ttc: Noto Sans CJK SC,Noto Sans CJK SC Light:style=Light,Regular
+/usr/share/fonts/google-noto-cjk/NotoSansCJK-Black.ttc: Noto Sans CJK SC,Noto Sans CJK SC Black:style=Black,Regular
+/usr/share/fonts/google-noto-cjk/NotoSansCJK-Thin.ttc: Noto Sans CJK SC,Noto Sans CJK SC Thin:style=Thin,Regular
+/usr/share/fonts/Songti.ttc: Songti SC,宋體\-簡,宋体\-简:style=Light,細體,细体
+/usr/share/fonts/google-noto-cjk/NotoSerifCJK-ExtraLight.ttc: Noto Serif CJK JP,Noto Serif CJK JP ExtraLight:style=ExtraLight,Regular
+/usr/share/fonts/google-noto-cjk/NotoSerifCJK-Black.ttc: Noto Serif CJK KR,Noto Serif CJK KR Black:style=Black,Regular
+/usr/share/fonts/Songti.ttc: STSong:style=Regular,標準體,Ordinær,Normal,Normaali,Regolare,レギュラー,일반체,Regulier,Обычный,常规体
+/usr/share/fonts/google-noto-cjk/NotoSerifCJK-Bold.ttc: Noto Serif CJK TC:style=Bold
+/usr/share/fonts/google-noto-cjk/NotoSansCJK-Medium.ttc: Noto Sans CJK TC,Noto Sans CJK TC Medium:style=Medium,Regular
+/usr/share/fonts/google-noto-cjk/NotoSerifCJK-Light.ttc: Noto Serif CJK SC,Noto Serif CJK SC Light:style=Light,Regular
+/usr/share/fonts/Songti.ttc: Songti TC,宋體\-繁,宋体\-繁:style=Light,細體,细体
+/usr/share/fonts/google-noto-cjk/NotoSerifCJK-Bold.ttc: Noto Serif CJK SC:style=Bold
+/usr/share/fonts/google-noto-cjk/NotoSerifCJK-Bold.ttc: Noto Serif CJK JP:style=Bold
+/usr/share/fonts/google-noto-cjk/NotoSerifCJK-Bold.ttc: Noto Serif CJK KR:style=Bold
+/usr/share/fonts/google-noto-cjk/NotoSerifCJK-Bold.ttc: Noto Serif CJK HK:style=Bold
+/usr/share/fonts/google-noto-cjk/NotoSerifCJK-Black.ttc: Noto Serif CJK HK,Noto Serif CJK HK Black:style=Black,Regular
+/usr/share/fonts/google-noto-cjk/NotoSansCJK-Black.ttc: Noto Sans CJK TC,Noto Sans CJK TC Black:style=Black,Regular
+/usr/share/fonts/google-noto-cjk/NotoSerifCJK-Medium.ttc: Noto Serif CJK KR,Noto Serif CJK KR Medium:style=Medium,Regular
+/usr/share/fonts/google-noto-cjk/NotoSansCJK-Thin.ttc: Noto Sans CJK TC,Noto Sans CJK TC Thin:style=Thin,Regular
+/usr/share/fonts/google-noto-cjk/NotoSansCJK-Bold.ttc: Noto Sans CJK HK:style=Bold
+/usr/share/fonts/google-noto-cjk/NotoSerifCJK-ExtraLight.ttc: Noto Serif CJK SC,Noto Serif CJK SC ExtraLight:style=ExtraLight,Regular
+/usr/share/fonts/google-noto-cjk/NotoSerifCJK-ExtraLight.ttc: Noto Serif CJK HK,Noto Serif CJK HK ExtraLight:style=ExtraLight,Regular
+/usr/share/fonts/google-noto-cjk/NotoSansCJK-Bold.ttc: Noto Sans Mono CJK SC:style=Bold
+/usr/share/fonts/google-noto-cjk/NotoSansCJK-Bold.ttc: Noto Sans Mono CJK TC:style=Bold
+/usr/share/fonts/google-noto-cjk/NotoSerifCJK-Light.ttc: Noto Serif CJK HK,Noto Serif CJK HK Light:style=Light,Regular
+/usr/share/fonts/google-noto-cjk/NotoSansCJK-Bold.ttc: Noto Sans CJK SC:style=Bold
+/usr/share/fonts/google-noto-cjk/NotoSerifCJK-ExtraLight.ttc: Noto Serif CJK TC,Noto Serif CJK TC ExtraLight:style=ExtraLight,Regular
+/usr/share/fonts/google-noto-cjk/NotoSerifCJK-Medium.ttc: Noto Serif CJK TC,Noto Serif CJK TC Medium:style=Medium,Regular
+/usr/share/fonts/google-noto-cjk/NotoSansCJK-Bold.ttc: Noto Sans CJK TC:style=Bold
+/usr/share/fonts/google-noto-cjk/NotoSansCJK-Bold.ttc: Noto Sans Mono CJK JP:style=Bold
+/usr/share/fonts/google-noto-cjk/NotoSansCJK-Bold.ttc: Noto Sans Mono CJK HK:style=Bold
+/usr/share/fonts/google-noto-cjk/NotoSansCJK-Bold.ttc: Noto Sans Mono CJK KR:style=Bold
+/usr/share/fonts/google-noto-cjk/NotoSerifCJK-Light.ttc: Noto Serif CJK KR,Noto Serif CJK KR Light:style=Light,Regular
+/usr/share/fonts/google-noto-cjk/NotoSerifCJK-Light.ttc: Noto Serif CJK TC,Noto Serif CJK TC Light:style=Light,Regular
+/usr/share/fonts/google-noto-cjk/NotoSerifCJK-ExtraLight.ttc: Noto Serif CJK KR,Noto Serif CJK KR ExtraLight:style=ExtraLight,Regular
+/usr/share/fonts/google-noto-cjk/NotoSansCJK-Light.ttc: Noto Sans CJK HK,Noto Sans CJK HK Light:style=Light,Regular
+/usr/share/fonts/google-noto-cjk/NotoSerifCJK-Black.ttc: Noto Serif CJK TC,Noto Serif CJK TC Black:style=Black,Regular
+/usr/share/fonts/google-noto-cjk/NotoSansCJK-Light.ttc: Noto Sans CJK TC,Noto Sans CJK TC Light:style=Light,Regular
+/usr/share/fonts/google-noto-cjk/NotoSerifCJK-Medium.ttc: Noto Serif CJK JP,Noto Serif CJK JP Medium:style=Medium,Regular
+/usr/share/fonts/google-noto-cjk/NotoSansCJK-Regular.ttc: Noto Sans CJK HK:style=Regular
+/usr/share/fonts/google-noto-cjk/NotoSansCJK-Regular.ttc: Noto Sans CJK SC:style=Regular
+/usr/share/fonts/google-noto-cjk/NotoSansCJK-Regular.ttc: Noto Sans CJK TC:style=Regular
+/usr/share/fonts/google-noto-cjk/NotoSansCJK-Black.ttc: Noto Sans CJK HK,Noto Sans CJK HK Black:style=Black,Regular
+/usr/share/fonts/Songti.ttc: Songti TC,宋體\-繁,宋体\-繁:style=Regular,標準體,常规体
+/usr/share/fonts/google-noto-cjk/NotoSerifCJK-Medium.ttc: Noto Serif CJK HK,Noto Serif CJK HK Medium:style=Medium,Regular
+/usr/share/fonts/google-noto-cjk/NotoSansCJK-Regular.ttc: Noto Sans Mono CJK SC:style=Regular
+/usr/share/fonts/google-noto-cjk/NotoSansCJK-Regular.ttc: Noto Sans Mono CJK TC:style=Regular
+/usr/share/fonts/Songti.ttc: Songti SC,宋體\-簡,宋体\-简:style=Regular,標準體,常规体
+/usr/share/fonts/google-noto-cjk/NotoSerifCJK-Medium.ttc: Noto Serif CJK SC,Noto Serif CJK SC Medium:style=Medium,Regular
+/usr/share/fonts/google-noto-cjk/NotoSerifCJK-SemiBold.ttc: Noto Serif CJK HK,Noto Serif CJK HK SemiBold:style=SemiBold,Regular
+/usr/share/fonts/google-noto-cjk/NotoSansCJK-Regular.ttc: Noto Sans Mono CJK HK:style=Regular
+/usr/share/fonts/google-noto-cjk/NotoSansCJK-Regular.ttc: Noto Sans Mono CJK KR:style=Regular
+/usr/share/fonts/google-noto-cjk/NotoSansCJK-Regular.ttc: Noto Sans Mono CJK JP:style=Regular
+/usr/share/fonts/google-noto-cjk/NotoSerifCJK-SemiBold.ttc: Noto Serif CJK KR,Noto Serif CJK KR SemiBold:style=SemiBold,Regular
+/usr/share/fonts/google-noto-cjk/NotoSansCJK-DemiLight.ttc: Noto Sans CJK HK,Noto Sans CJK HK DemiLight:style=DemiLight,Regular
+/usr/share/fonts/Songti.ttc: Songti SC,宋體\-簡,宋体\-简:style=Black,黑體,黑体
+/usr/share/fonts/Songti.ttc: Songti SC,宋體\-簡,宋体\-简:style=Bold,粗體,粗体
+/usr/share/fonts/google-noto-cjk/NotoSerifCJK-SemiBold.ttc: Noto Serif CJK JP,Noto Serif CJK JP SemiBold:style=SemiBold,Regular
+/usr/share/fonts/Songti.ttc: Songti TC,宋體\-繁,宋体\-繁:style=Bold,粗體,粗体
+/usr/share/fonts/google-noto-cjk/NotoSerifCJK-Light.ttc: Noto Serif CJK JP,Noto Serif CJK JP Light:style=Light,Regular
+/usr/share/fonts/google-noto-cjk/NotoSansCJK-Medium.ttc: Noto Sans CJK SC,Noto Sans CJK SC Medium:style=Medium,Regular
+/usr/share/fonts/google-noto-cjk/NotoSansCJK-Thin.ttc: Noto Sans CJK HK,Noto Sans CJK HK Thin:style=Thin,Regular
+/usr/share/fonts/google-noto-cjk/NotoSansCJK-Medium.ttc: Noto Sans CJK HK,Noto Sans CJK HK Medium:style=Medium,Regular
+/usr/share/fonts/google-noto-cjk/NotoSerifCJK-SemiBold.ttc: Noto Serif CJK TC,Noto Serif CJK TC SemiBold:style=SemiBold,Regular
+/usr/share/fonts/google-noto-cjk/NotoSerifCJK-Black.ttc: Noto Serif CJK JP,Noto Serif CJK JP Black:style=Black,Regular
+/usr/share/fonts/google-noto-cjk/NotoSerifCJK-SemiBold.ttc: Noto Serif CJK SC,Noto Serif CJK SC SemiBold:style=SemiBold,Regular
+/usr/share/fonts/google-noto-cjk/NotoSerifCJK-Regular.ttc: Noto Serif CJK TC:style=Regular
+/usr/share/fonts/google-noto-cjk/NotoSerifCJK-Regular.ttc: Noto Serif CJK SC:style=Regular
+/usr/share/fonts/google-noto-cjk/NotoSansCJK-DemiLight.ttc: Noto Sans CJK SC,Noto Sans CJK SC DemiLight:style=DemiLight,Regular
+/usr/share/fonts/google-noto-cjk/NotoSerifCJK-Regular.ttc: Noto Serif CJK JP:style=Regular
+/usr/share/fonts/google-noto-cjk/NotoSerifCJK-Regular.ttc: Noto Serif CJK KR:style=Regular
+/usr/share/fonts/google-noto-cjk/NotoSerifCJK-Regular.ttc: Noto Serif CJK HK:style=Regular			
+			]]>
+			</screen>
 		</section>
 	</section>
 	<section id="font.fc-match">
@@ -240,8 +319,6 @@ texlive-arphic.noarch : Arphic (Chinese) font packages
 			]]>
 			</screen>
 		</section>
-
-		
 		<section>
 			<title>思源黑体（Adobe 与 Google 联合开发，开源）</title>
 			<screen>
@@ -326,6 +403,12 @@ google-roboto-condensed-fonts.noarch : Google Roboto condensed fonts
 google-roboto-fonts.noarch : Google Roboto fonts
 google-roboto-slab-fonts.noarch : Google Roboto Slab fonts
 google-tinos-fonts.noarch : The croscore Tinos family fonts
+			]]>
+			</screen>
+			<para>中文字体</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# dnf install google-noto-sans-cjk-ttc-fonts			
 			]]>
 			</screen>
 		</section>
