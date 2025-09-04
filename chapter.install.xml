@@ -56,7 +56,7 @@ sudo dd if=Rocky-9.0-x86_64-minimal.iso of=/dev/rdisk4 bs=100m
 		</screen>
 		<para>Rocky Linux 安装过程与 CentOS 8 没有太大差异。</para>
 	</section>
-	<section>
+	<section id="Rocky.ISO">
 		<title>Rocky-9.3-x86_64-minimal.iso 镜像初始化</title>
 		<para></para>
 		<para>首次安装后初始化系统</para>

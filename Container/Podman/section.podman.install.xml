@@ -3,8 +3,10 @@
 	<title>安装 Podman</title>
 	<section>
 		<title>RockyLinux 安装 Podman</title>
-		<para>某些 Redhat 家族的 Linux 是自带 Podman，例如 Almalinux 9.0，RockyLinux没有自带 podman
-			需要自己安装，是方法执行下面的命令</para>
+		<para>某些 Redhat 家族的 Linux 是自带 Podman，例如 Almalinux 9.0，RockyLinux没有自带
+			podman
+			需要自己安装，是方法执行下面的命令
+		</para>
 		<screen>
 			<![CDATA[
 [root@netkiller ~]# dnf install -y podman
@@ -78,48 +80,172 @@ Machine "podman-machine-default" started successfully
             ]]>
 		</screen>
 	</section>
-	<section>
-		<title>让 Podman 支持 Docker Compose</title>
-		<para>启用 socket</para>
+	<section id="podman.docker">
+		<title>兼容 Docker</title>
 		<screen>
+		<![CDATA[
+echo "alias docker='podman'" >> ~/.bashrc
+source ~/.bashrc
+		]]>
+		</screen>
+	</section>
+	
+	<section id="podman-compose">
+		<title>安装 podman-compose</title>
+		<para>安装 python 3.13</para>
+		<screen>
+			<![CDATA[
+[root@netkiller ~]# dnf install python3.13 python3.13-pip
+[root@netkiller ~]# rm -f /usr/bin/python3
+[root@netkiller ~]# ln -s /usr/bin/python3.13 /usr/bin/python3
+			]]>
+		</screen>
+		<screen>
+			<![CDATA[
+[root@netkiller ~]# dnf install -y podman-compose
+[root@netkiller ~]# pip install podman-compose
+			]]>
+		</screen>
+		<para>验证是否正常工作</para>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# podman compose 
+Run compose workloads via an external provider such as docker-compose or podman-compose
+
+Description:
+  This command is a thin wrapper around an external compose provider such as docker-compose or podman-compose.  This means that podman compose is executing another tool that implements the compose functionality but sets up the environment in a way to let the compose provider communicate transparently with the local Podman socket.  The specified options as well the command and argument are passed directly to the compose provider.
+
+The default compose providers are docker-compose and podman-compose.  If installed, docker-compose takes precedence since it is the original implementation of the Compose specification and is widely used on the supported platforms (i.e., Linux, Mac OS, Windows).
+
+If you want to change the default behavior or have a custom installation path for your provider of choice, please change the compose_providers field in containers.conf(5) to compose_providers = ["/path/to/provider"]. You may also set the PODMAN_COMPOSE_PROVIDER environment variable.
+
+Usage:
+  podman compose [options]
+
+Examples:
+  podman compose -f nginx.yaml up --detach
+  podman --log-level=debug compose -f many-images.yaml pull
+
+>>>> Executing external compose provider "/usr/local/bin/podman-compose". Please see podman-compose(1) for how to disable this message. <<<<
+
+usage: podman-compose [-h] [-v] [--in-pod in_pod] [--pod-args pod_args] [--env-file env_file] [-f file] [--profile profile] [-p PROJECT_NAME] [--podman-path PODMAN_PATH]
+                      [--podman-args args] [--podman-pull-args args] [--podman-push-args args] [--podman-build-args args] [--podman-inspect-args args] [--podman-run-args args]
+                      [--podman-start-args args] [--podman-stop-args args] [--podman-rm-args args] [--podman-volume-args args] [--no-ansi] [--no-cleanup] [--dry-run]
+                      [--parallel PARALLEL] [--verbose]
+                      {help,version,wait,systemd,pull,push,build,up,down,ps,run,exec,start,stop,restart,logs,config,port,pause,unpause,kill,stats,images} ...
+
+options:
+  -h, --help            show this help message and exit
+  -v, --version         show version
+  --in-pod in_pod       Specify pod usage:
+                          'true'   - create/use a pod named pod_<project name>
+                          'false'  - do not use a pod
+                          '<name>' - create/use a custom pod with the given name
+  --pod-args pod_args   custom arguments to be passed to `podman pod`
+  --env-file env_file   Specify an alternate environment file
+  -f, --file file       Specify an compose file (default: docker-compose.yml) or '-' to read from stdin.
+  --profile profile     Specify a profile to enable
+  -p, --project-name PROJECT_NAME
+                        Specify an alternate project name (default: directory name)
+  --podman-path PODMAN_PATH
+                        Specify an alternate path to podman (default: use location in $PATH variable)
+  --podman-args args    custom global arguments to be passed to `podman`
+  --podman-pull-args args
+                        custom arguments to be passed to `podman pull`
+  --podman-push-args args
+                        custom arguments to be passed to `podman push`
+  --podman-build-args args
+                        custom arguments to be passed to `podman build`
+  --podman-inspect-args args
+                        custom arguments to be passed to `podman inspect`
+  --podman-run-args args
+                        custom arguments to be passed to `podman run`
+  --podman-start-args args
+                        custom arguments to be passed to `podman start`
+  --podman-stop-args args
+                        custom arguments to be passed to `podman stop`
+  --podman-rm-args args
+                        custom arguments to be passed to `podman rm`
+  --podman-volume-args args
+                        custom arguments to be passed to `podman volume`
+  --no-ansi             Do not print ANSI control characters
+  --no-cleanup          Do not stop and remove existing pod & containers
+  --dry-run             No action; perform a simulation of commands
+  --parallel PARALLEL
+  --verbose             Print debugging output
+
+command:
+  {help,version,wait,systemd,pull,push,build,up,down,ps,run,exec,start,stop,restart,logs,config,port,pause,unpause,kill,stats,images}
+    help                show help
+    version             show version
+    wait                wait running containers to stop
+    systemd             create systemd unit file and register its compose stacks
+    pull                pull stack images
+    push                push stack images
+    build               build stack images
+    up                  Create and start the entire stack or some of its services
+    down                tear down entire stack
+    ps                  show status of containers
+    run                 create a container similar to a service to run a one-off command
+    exec                execute a command in a running container
+    start               start specific services
+    stop                stop specific services
+    restart             restart specific services
+    logs                show logs from services
+    config              displays the compose file
+    port                Prints the public port for a port binding.
+    pause               Pause all running containers
+    unpause             Unpause all running containers
+    kill                Kill one or more running containers with a specific signal
+    stats               Display percentage of CPU, memory, network I/O, block I/O and PIDs for services.
+    images              List images used by the created containers		
+		]]>
+		</screen>
+		<section>
+			<title>让 Podman 支持 Docker Compose(旧版本)</title>
+			<para>启用 socket</para>
+			<screen>
 		<![CDATA[ 
 systemctl enable podman.socket
 systemctl start podman.socket
 systemctl status podman.socket
 		]]>
-		</screen>
-		<para>验证 sock 是否正常工作</para>
-		<screen>
+			</screen>
+			<para>验证 sock 是否正常工作</para>
+			<screen>
 		<![CDATA[ 
 [root@localhost ~]# curl -H "Content-Type: application/json" --unix-socket /run/podman/podman.sock http://localhost/_ping
 OK
 		]]>
-		</screen>
-		<para>此时可以使用 docker compose</para>
-		<screen>
+			</screen>
+			<para>此时可以使用 docker compose</para>
+			<screen>
 		<![CDATA[ 
 [root@localhost ~]# ln -s /run/podman/podman.sock /var/run/docker.sock		
 		]]>
-		</screen>
+			</screen>
+		</section>
 	</section>
-	<section>
-		<title>配置 Podman</title>
-		<para>/etc/containers/registries.conf</para>
-	</section>
-	
-	<section>
-		<title></title>
-		<screen>
-		<![CDATA[ 
-$ podman pull maven
-$ podman run -v ~/.m2:/root/.m2 \
--v /root/bottleneck:/root/bottleneck \
--w /root/bottleneck \
-maven:latest \
-mvn package
 
+	<section id="podmain.config">
+		<title>配置 Podman</title>
+		<section id="registries.conf">
+			<title>Registry</title>
+			<para>/etc/containers/registries.conf</para>
+			<screen>
+		<![CDATA[ 
+mkdir -p /var/lib/registry
+podman run --privileged -d --name registry -p 5000:5000 -v /var/lib/registry:/var/lib/registry --restart=always registry:2		
 		]]>
-		</screen>
+			</screen>
+			<para>修改 /etc/containers/registries.conf 配置文件</para>
+			<screen>
+		<![CDATA[ 
+registries = []
+改为
+registries = ['localhost:5000']		
+		]]>
+			</screen>
+		</section>
 	</section>
-	
 </section>

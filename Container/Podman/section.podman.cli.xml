@@ -34,9 +34,20 @@ $ podman system info
 			]]>
 			</screen>
 		</section>
+		
 	</section>
 	<section>
 		<title>镜像管理</title>
+		<section>
+			<title>搜索镜像</title>
+			<para>docker.io 官方镜像</para>
+			<screen>
+			<![CDATA[
+[root@localhost ~]# podman search httpd --filter=is-official
+			]]>
+			</screen>
+			
+		</section>
 		<section>
 			<title>获取镜像</title>
 			<screen>
@@ -64,21 +75,19 @@ docker.io/library/busybox  latest      334e4a014c81  13 days ago  5.09 MB
 			</screen>
 		</section>
 	</section>
-	<section>
-		<title>Registry</title>
+	<section id="podman.run">
+		<title>运行命令</title>
 		<screen>
 		<![CDATA[ 
-mkdir -p /var/lib/registry
-podman run --privileged -d --name registry -p 5000:5000 -v /var/lib/registry:/var/lib/registry --restart=always registry:2		
-		]]>
-		</screen>
-		<para>修改 /etc/containers/registries.conf 配置文件</para>
-		<screen>
-		<![CDATA[ 
-registries = []
-改为
-registries = ['localhost:5000']		
+$ podman pull maven
+$ podman run -v ~/.m2:/root/.m2 \
+-v /root/bottleneck:/root/bottleneck \
+-w /root/bottleneck \
+maven:latest \
+mvn package
+
 		]]>
 		</screen>
 	</section>
+	
 </section>
