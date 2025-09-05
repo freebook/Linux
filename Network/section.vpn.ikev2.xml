@@ -1,6 +1,105 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section>
+<section id="ikev2">
 	<title>IKEv2 VPN Server</title>
+	<section>
+		<title>OpenVPN Ikev2</title>
+		<screen>
+		<![CDATA[
+[root@development ~]# dnf install openvpn
+[root@development ~]# dnf install easy-rsa
+		]]>
+		</screen>
+		<section>
+			<title>服务器端</title>
+			<screen>
+			<![CDATA[			
+[root@development ~]# cp /usr/share/doc/easy-rsa/vars.example /etc/openvpn/vars			
+[root@development ~]# cd /etc/openvpn/
+[root@development openvpn]# 
+[root@development openvpn]# /usr/share/easy-rsa/3/easyrsa init-pki   				#建立一个空的pki结构，生成一系列的文件和目录
+[root@development openvpn]# /usr/share/easy-rsa/3/easyrsa build-ca nopass			#创建ca  密码 和 cn那么需要记住
+[root@development openvpn]# /usr/share/easy-rsa/3/easyrsa gen-req server nopass  	#创建服务端证书  common name 最好不要跟前面的cn那么一样
+[root@development openvpn]# /usr/share/easy-rsa/3/easyrsa sign server server   	#签约服务端证书
+[root@development openvpn]# /usr/share/easy-rsa/3/easyrsa gen-dh  				#创建Diffie-Hellman			
+
+[root@development ~]# mv pki /etc/openvpn/
+			]]>
+			</screen>
+			<para>服务端所需要的证书文件</para>
+			<screen>
+			<![CDATA[
+[root@development openvpn]# ls -1 pki/ca.crt pki/issued/server.crt pki/private/server.key pki/dh.pem 
+pki/ca.crt
+pki/dh.pem
+pki/issued/server.crt
+pki/private/server.key			
+			]]>
+			</screen>
+			<!-- [root@development openvpn]# openvpn --genkey secret ta.key -->
+			<screen>
+			<![CDATA[
+[root@development openvpn]# openvpn --genkey secret server/ta.key
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+# IKEv2 server configuration
+
+config setup
+    keydir = /etc/openvpn/pki
+
+server 10.8.0.0 255.255.255.0
+        dev tun
+        proto udp
+        port 1194
+        ca ca.crt
+        cert issued/server.crt
+        key private/server.key
+        dh dh.pem
+        keepalive 10 120
+        tls-auth server/ta.key 0
+        server config
+                push "redirect-gateway def1 bypass-dhcp"
+                push "dhcp-option DNS 8.8.8.8"
+                push "dhcp-option DNS 8.8.4.4"
+        ifconfig-pool-persist ipp.txt
+        client config
+                max-clients 100
+                status openvpn-status.log
+                log /var/log/openvpn.log
+        tls-server
+        auth-user-pass-file clients.db
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+[root@development ~]# ls /etc/openvpn/server/ikev2.conf 
+/etc/openvpn/server/ikev2.conf
+
+[root@development ~]# systemctl start openvpn-server@ikev2			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>客户端</title>
+			<screen>
+			<![CDATA[
+[root@development openvpn]# /usr/share/easy-rsa/3/easyrsa gen-req neo nopass
+[root@development openvpn]# /usr/share/easy-rsa/3/easyrsa sign client neo			
+			]]>
+			</screen>
+			<para>客户端所需要的证书文件</para>
+			<screen>
+			<![CDATA[
+[root@development openvpn]# ls -1 pki/ca.crt pki/issued/neo.crt pki/private/neo.key 
+pki/ca.crt
+pki/issued/neo.crt
+pki/private/neo.key	
+			]]>
+			</screen>
+			
+		</section>
+	</section>
 	<section>
 		<title>IKEv2 VPN Server on Docker</title>
 		<para><ulink url="https://github.com/gaomd/docker-ikev2-vpn-server" /></para>
