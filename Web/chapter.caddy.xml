@@ -2,14 +2,14 @@
 <chapter id="index"><?dbhtml dir="caddy" ?>
 	<title>Caddy</title>
 	<subtitle>Caddy is a powerful, enterprise-ready, open source web server with automatic HTTPS written in Go.</subtitle>
-	<section>
+	<section id="caddy.install">
 		<title>安装 Caddy</title>
 		<section>
 			<title>CentOS/Rocky Linux/AlmiLinux</title>
 		</section>
 		<screen>
 		<![CDATA[
-[root@netkiller ~]# dnf install 'dnf-command(copr)'
+[root@netkiller ~]# dnf install dnf-plugins-core
 [root@netkiller ~]# dnf copr enable @caddy/caddy
 [root@netkiller ~]# dnf install caddy
 
@@ -19,8 +19,14 @@
 [root@netkiller ~]# cp /etc/caddy/Caddyfile{,.original}
 		]]>
 		</screen>
+		<para>查看日志</para>
+		<screen>
+		<![CDATA[
+journalctl --no-pager -u caddy		
+		]]>
+		</screen>
 	</section>
-	<section>
+	<section id="caddy.cli">
 		<title>命令行</title>
 		<section>
 			<title>启动 Caddy</title>
@@ -67,12 +73,68 @@ $ caddy file-server --root ~/public_html
 			</screen>
 		</section>
 	</section>
-	<section>
+	<section id="caddy.Caddyfile">
 		<title>/etc/caddy/Caddyfile</title>
 		<para>
 			<ulink url="https://caddyserver.com/docs/caddyfile" />
 		</para>
 		<section>
+			<title>导入配置文件 Caddyfile.d</title>
+			<screen>
+			<![CDATA[
+[root@netkiller caddy]# cat /etc/caddy/Caddyfile
+# The Caddyfile is an easy way to configure your Caddy web server.
+#
+# https://caddyserver.com/docs/caddyfile
+
+
+# The configuration below serves a welcome page over HTTP on port 80.  To use
+# your own domain name with automatic HTTPS, ensure your A/AAAA DNS record is
+# pointing to this machine's public IP, then replace `http://` with your domain
+# name.  Refer to the documentation for full instructions on the address
+# specification.
+#
+# https://caddyserver.com/docs/caddyfile/concepts#addresses
+http:// {
+
+    # Set this path to your site's directory.
+    root * /usr/share/caddy
+
+    # Enable the static file server.
+    file_server
+
+    # Another common task is to set up a reverse proxy:
+    # reverse_proxy localhost:8080
+
+    # Or serve a PHP site through php-fpm:
+    # php_fastcgi localhost:9000
+
+    # Refer to the directive documentation for more options.
+    # https://caddyserver.com/docs/caddyfile/directives
+
+}
+
+
+# As an alternative to editing the above site block, you can add your own site
+# block files in the Caddyfile.d directory, and they will be included as long
+# as they use the .caddyfile extension.
+import Caddyfile.d/*.caddyfile
+			]]>
+			</screen>
+			<para>在 /etc/caddy/Caddyfile.d 下创建虚拟机文件</para>
+			<screen>
+			<![CDATA[
+cat >> /etc/caddy/Caddyfile.d/www.netkiller.cn.caddyfile <<EOF
+www.netkiller.cn {
+	root * /var/www/netkiller
+	encode
+	file_server
+}
+EOF			
+			]]>
+			</screen>
+		</section>
+		<section id="Caddyfile.listen">
 			<title>监听地址</title>
 			<screen>
 			<![CDATA[
@@ -100,7 +162,7 @@ localhost:8080, example.com, www.example.com
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="Caddyfile.reverse_proxy">
 			<title>反向代理</title>
 			<screen>
 			<![CDATA[
@@ -178,7 +240,7 @@ www.netkiller.cn {
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="Caddyfile.ssl">
 			<title>Let's Encrypt 免费 SSL 证书</title>
 			<para>准备域名</para>
 			<screen>
@@ -310,7 +372,7 @@ Hello world!!!
 				<ulink url="https://myssl.com/chat.netkiller.cn?domain=chat.netkiller.cn" />
 			</para>
 		</section>
-		<section>
+		<section id="Caddyfile.respond">
 			<title>返回内容</title>
 			<screen>
 			<![CDATA[
