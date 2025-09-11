@@ -35,7 +35,7 @@ pki/issued/server.crt
 pki/private/server.key			
 			]]>
 			</screen>
-			<!-- [root@development openvpn]# openvpn --genkey secret ta.key -->
+			
 			<screen>
 			<![CDATA[
 [root@development openvpn]# openvpn --genkey secret server/ta.key
