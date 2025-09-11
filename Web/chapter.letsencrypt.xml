@@ -208,4 +208,13 @@ cert.pem  chain.pem  fullchain.pem  privkey.pem  README
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title></title>
+		<screen>
+		<![CDATA[
+curl https://get.acme.sh | sh -s email=my@example.com
+acme.sh=~/.acme.sh/acme.sh		
+		]]>
+		</screen>
+	</section>
 </chapter>
