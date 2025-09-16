@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="podman.manual">
 	<title>podman 管理</title>
+	<screen>
+	<![CDATA[
+cp /etc/containers/registries.conf{,.original}
+	]]>
+	</screen>
 	<section id="podman.machine">
 		<title>虚拟机管理</title>
 		<screen>
@@ -36,8 +41,53 @@ $ podman system info
 		</section>
 		
 	</section>
-	<section>
+	<section id="podman.images">
 		<title>镜像管理</title>
+		<section>
+			<title>切换国内镜像源</title>
+			<screen>
+			<![CDATA[
+cat >> /etc/containers/registries.conf <<EOF
+
+unqualified-search-registries = ["docker.io"]
+
+[[registry]]
+prefix = "docker.io"
+location = "hub-mirror.c.163.com"
+insecure = true
+
+[[registry.mirror]]
+# 百度镜像源
+location = "mirror.baidubce.com"
+insecure = true
+[[registry.mirror]]
+# 网易 163 镜像源
+location = "hub-mirror.c.163.com"
+insecure = true
+[[registry.mirror]]
+# 上海交大镜像源
+location = "docker.mirrors.sjtug.sjtu.edu.cn"
+insecure = true
+[[registry.mirror]]
+# 南京大学镜像源
+location = "docker.nju.edu.cn"
+insecure = true
+EOF
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# podman info | grep Location:
+    Location: hub-mirror.c.163.com
+      Location: hub.uuuadc.top
+      Location: docker.anyhub.us.kg
+      Location: dockerhub.jobcher.com
+      Location: dockerhub.icu
+      Location: docker.ckyl.me
+      Location: docker.awsl9527.cn			
+			]]>
+			</screen>
+		</section>
 		<section>
 			<title>搜索镜像</title>
 			<para>docker.io 官方镜像</para>

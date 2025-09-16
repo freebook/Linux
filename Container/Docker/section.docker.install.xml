@@ -53,7 +53,7 @@ Last login: Mon Mar 21 15:43:39 CST 2022 on pts/3
 [docker@netkiller ~]$ docker ps
 CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES				
 
-[docker@iZt4nazp2u494r8p1dr1zdZ ~]$ sudo ls /sbin
+[docker@netkiller ~]$ sudo ls /sbin
 			]]>
 			</screen>
 		</section>
@@ -90,18 +90,19 @@ Docker Compose version v2.6.0
 			<title>切换镜像</title>
 			<screen>
 			<![CDATA[
-[root@netkiller ~]# cat << EOF > /etc/docker/daemon.json
-> 
-> {
->   "registry-mirrors": [
->     "https://hub-mirror.c.163.com",
->     "https://mirror.baidubce.com",
->     "https://docker.mirrors.ustc.edu.cn/"
->   ]
-> }
-> 
-> EOF
-
+cat << EOF > /etc/docker/daemon.json
+{
+  "registry-mirrors": [
+    "https://hub-mirror.c.163.com",
+    "https://mirror.baidubce.com",
+    "https://docker.mirrors.ustc.edu.cn/"
+  ]
+}
+EOF
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
 [root@netkiller ~]# cat /etc/docker/daemon.json 
 
 {
@@ -435,7 +436,7 @@ docker volume rm $(docker volume ls -q)
 		]]>
 		</screen>
 	</section>
-	<section>
+	<section id="">
 		<title>早期版本</title>
 		<section>
 			<title>CentOS 7 docker-ce</title>
