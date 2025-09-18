@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="caddy" ?>
 	<title>Caddy</title>
-	<subtitle>Caddy is a powerful, enterprise-ready, open source web server with automatic HTTPS written in Go.</subtitle>
+	<subtitle>Caddy is a powerful, enterprise-ready, open source web server
+		with automatic HTTPS written in Go.</subtitle>
 	<section id="caddy.install">
 		<title>安装 Caddy</title>
 		<section>
@@ -161,6 +162,72 @@ localhost:8080, example.com, www.example.com
 *.example.com			
 			]]>
 			</screen>
+		</section>
+		<section id="Caddyfile.log">
+			<title>日志</title>
+			<section>
+				<title>全局日志</title>
+
+				<screen>
+			<![CDATA[
+[root@spiritcloudp ~]# cat /etc/caddy/Caddyfile
+{
+    log {
+        output file /var/log/caddy/access.log
+    }
+}
+:80 {
+        root * /usr/share/caddy
+        file_server
+}    
+
+
+import Caddyfile.d/*.caddyfile
+			]]>
+				</screen>
+				<para>创建日志目录</para>
+				<screen>
+			<![CDATA[
+[root@spiritcloudp ~]# mkdir /var/log/caddy
+[root@spiritcloudp ~]# chown caddy:caddy /var/log/caddy
+			]]>
+				</screen>
+				<para>重启，查看日志</para>
+				<screen>
+			<![CDATA[
+[root@spiritcloudp ~]# systemctl restart caddy.service
+
+[root@spiritcloudp ~]# tail -f /var/log/caddy/access.log 
+{"level":"warn","ts":1758185034.389622,"logger":"http","msg":"HTTP/2 skipped because it requires TLS","network":"tcp","addr":":80"}
+{"level":"warn","ts":1758185034.3896267,"logger":"http","msg":"HTTP/3 skipped because it requires TLS","network":"tcp","addr":":80"}
+{"level":"info","ts":1758185034.3896298,"logger":"http.log","msg":"server running","name":"srv1","protocols":["h1","h2","h3"]}
+{"level":"warn","ts":1758185034.3896565,"logger":"http","msg":"HTTP/2 skipped because it requires TLS","network":"tcp","addr":":8000"}
+{"level":"warn","ts":1758185034.3896601,"logger":"http","msg":"HTTP/3 skipped because it requires TLS","network":"tcp","addr":":8000"}
+{"level":"info","ts":1758185034.3896632,"logger":"http.log","msg":"server running","name":"srv2","protocols":["h1","h2","h3"]}
+{"level":"info","ts":1758185034.3896668,"logger":"http","msg":"enabling automatic TLS certificate management","domains":["lsyj.aigcsst.cn","www.spiritcloudp.cn","api.spiritcloudp.cn"]}
+{"level":"info","ts":1758185034.3909,"msg":"autosaved config (load with --resume flag)","file":"/var/lib/caddy/.config/caddy/autosave.json"}
+{"level":"info","ts":1758185034.3928576,"logger":"tls","msg":"storage cleaning happened too recently; skipping for now","storage":"FileStorage:/var/lib/caddy/.local/share/caddy","instance":"8fff3074-ff2d-42a4-840b-d45b8f27524c","try_again":1758271434.392856,"try_again_in":86399.999999612}
+{"level":"info","ts":1758185034.392918,"logger":"tls","msg":"finished cleaning storage units"}
+			]]>
+				</screen>
+			</section>
+			<section>
+				<title>虚拟主机日志</title>
+				<screen>
+				<![CDATA[
+example.com {
+    reverse_proxy * 127.0.0.1:8080
+    log {
+        output file /var/log/caddy/example.com/access.log {
+            roll_size 25MB
+            roll_keep 10
+            roll_keep_for 24h
+        }
+    }
+}				
+				]]>
+				</screen>
+			</section>
 		</section>
 		<section id="Caddyfile.reverse_proxy">
 			<title>反向代理</title>
@@ -368,8 +435,10 @@ chat.netkiller.cn {
 Hello world!!!
 			]]>
 			</screen>
-			<para>使用 MySSL 工具检查证书
-				<ulink url="https://myssl.com/chat.netkiller.cn?domain=chat.netkiller.cn" />
+			<para>
+				使用 MySSL 工具检查证书
+				<ulink
+					url="https://myssl.com/chat.netkiller.cn?domain=chat.netkiller.cn" />
 			</para>
 		</section>
 		<section id="Caddyfile.respond">
@@ -401,6 +470,30 @@ V7-P_SdeHeXDk3qyj0HhvYrrQ2PFbZrKv4ck6FNQSys.sD2SO-myCgf0JjzYqkA9LA3nN9Pau98bk_fm
 			]]>
 			</screen>
 		</section>
+		<section>
+			<para>route 路由配置</para>
+			<screen>
+			<![CDATA[
+www.netkiller.cn {
+    route /api/* {
+        reverse_proxy localhost:8082
+    }
 
+    route /* {
+        root * /opt/caddy/www
+        file_server
+    }
+    route /78oo3JqVhU.txt {
+        respond "9923fd3daae700df0417f1e4b1b1cbd9"
+    }
+
+    log {
+        output file /var/log/caddy/access.log
+    }
+
+}			
+			]]>
+			</screen>
+		</section>
 	</section>
 </chapter>
