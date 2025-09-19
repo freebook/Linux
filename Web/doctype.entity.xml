@@ -28,9 +28,9 @@
 <!ENTITY chapter.varnish.xml 		SYSTEM "chapter.varnish.xml">
 <!ENTITY chapter.web.cherokee.xml	SYSTEM "chapter.web.cherokee.xml">
 <!ENTITY chapter.web.jetty.xml 		SYSTEM "chapter.web.jetty.xml">
-<!ENTITY chapter.web.app 			SYSTEM "chapter.web.app.xml">
+<!ENTITY chapter.web.app.xml		SYSTEM "chapter.web.app.xml">
 <!ENTITY chapter.web.optimization 	SYSTEM "chapter.web.optimization.xml">
-<!ENTITY chapter.web.analysis 		SYSTEM "chapter.web.analysis.xml">
+<!ENTITY chapter.web.analysis.xml 	SYSTEM "chapter.web.analysis.xml">
 
 <!ENTITY chapter.letsencrypt.xml	SYSTEM "chapter.letsencrypt.xml">
 <!ENTITY chapter.caddy.xml			SYSTEM "chapter.caddy.xml">

@@ -8,8 +8,9 @@
 	&chapter.httpd.xml;
 	&chapter.lighttpd.xml;
 	&chapter.resin.xml;
-	&chapter.web.app;
+	&chapter.web.app.xml;
 	&chapter.varnish.xml;
     &chapter.web.cherokee.xml;
     &chapter.web.jetty.xml;
    	&chapter.web.optimization;
+   	&chapter.web.analysis.xml;
