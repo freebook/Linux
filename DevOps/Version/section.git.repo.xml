@@ -3,7 +3,7 @@
 <section id="repositories">
 	<title>Repositories 仓库管理</title>
 	<section id="git.init">
-		<title>initial setup</title>
+		<title>仓库初始化</title>
 		<para></para>
 		<screen><![CDATA[
 Tell git who you are:
@@ -124,7 +124,8 @@ $ git branch
 		<section>
 			<title>通过 checkout 找回丢失的文件</title>
 			<para>setup.py 不经意间被删除，找到丢失那一刻的提交是
-				fda886b0ae1526020c366cea2b747b3ceda18ff6，通过 checkout 检出该文件</para>
+				fda886b0ae1526020c366cea2b747b3ceda18ff6，通过 checkout 检出该文件
+			</para>
 			<screen>
 				<![CDATA[
 git checkout fda886b0ae1526020c366cea2b747b3ceda18ff6 -- setup.py
@@ -205,7 +206,8 @@ neo@MacBook-Pro-M2 ~/w/netkiller (master) > git pull --force origin master:maste
 	</section>
 
 	<section id="git.add">
-		<title>git-add - Add file contents to the index</title>
+		<title>添加文件</title>
+		<subtitle>git-add - Add file contents to the index</subtitle>
 		<screen>
 		<![CDATA[
 $ echo 'hello world!!!'> newfile
@@ -214,7 +216,7 @@ $ git-add newfile
 		</screen>
 	</section>
 	<section id="git.commit">
-		<title>Creating and Commiting</title>
+		<title>提交文件</title>
 		<screen><![CDATA[
 $ cd (project-directory)
 $ git init
@@ -234,7 +236,7 @@ Created initial commit f6fda79: add a new file
 	</section>
 
 	<section id="git.status">
-		<title>Status</title>
+		<title>查看仓库状态</title>
 		<screen>
 		<![CDATA[
 $ git clone git://10.10.0.5/example.git
@@ -286,7 +288,7 @@ $ git-status newfile
 		</section>
 	</section>
 	<section id="git.diff">
-		<title>Diff</title>
+		<title>比较文件</title>
 		<screen>
 		<![CDATA[
 neo@neo-OptiPlex-380:~/tmp/example$ git diff
@@ -299,7 +301,8 @@ index e69de29..ce01362 100644
 		]]>
 		</screen>
 		<para>比较 nqp-cc/src/QASTCompilerMAST.nqp 文件 当前版本与
-			211ab0b19f25b8c81685a97540f4b1491eb17504 版本的区别</para>
+			211ab0b19f25b8c81685a97540f4b1491eb17504 版本的区别
+		</para>
 		<screen><![CDATA[
 git diff 211ab0b19f25b8c81685a97540f4b1491eb17504 -- nqp-cc/src/QASTCompilerMAST.nqp
 		]]></screen>
@@ -312,7 +315,7 @@ git diff --name-only
 	</section>
 
 	<section id="git.push">
-		<title>Push</title>
+		<title>推送</title>
 		<screen>
 		<![CDATA[
 $ git clone git://10.10.0.5/example.git
@@ -333,7 +336,7 @@ To git://10.10.0.5/example.git
 		</screen>
 	</section>
 	<section id="git.pull">
-		<title>Pull</title>
+		<title>拉去代码</title>
 		<screen><![CDATA[
 $ git pull
 remote: Counting objects: 5, done.
@@ -349,7 +352,7 @@ Fast-forward
 		]]></screen>
 	</section>
 	<section id="git.fetch">
-		<title>fetch</title>
+		<title>同步数据</title>
 		<screen><![CDATA[
 $ git fetch
 remote: Counting objects: 3, done.
@@ -374,14 +377,32 @@ $ git format-patch origin/master
 		</screen>
 	</section>
 	<section id="git.reset">
-		<title>reset</title>
-		<para>重置到上一个版本</para>
-		<screen><![CDATA[
+		<title>重置/回滚到指定版本</title>
+		<para>重置到上一个版本，首先使用 reset 参数重置到某个版本，然后再用 git push -f 覆盖，注意 -f 参数。
+		</para>
+
+		<section>
+			<title>上一个版本</title>
+			<screen>
+			<![CDATA[
 git log
 git reset --hard HEAD^
 git log
 git push -f
-		]]></screen>
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>指定版本</title>
+			<screen>
+			<![CDATA[
+git log
+git reset --hard 9d76fb0922912a47a2d6974f6ad31eb9c8dd5790
+git log
+git push -f
+			]]>
+			</screen>
+		</section>
 		<section>
 			<title>还原文件</title>
 			<screen>

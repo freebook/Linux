@@ -1,7 +1,7 @@
 <chapter id="index"><?dbhtml dir="permission" ?>
 	<title>权限管理</title>
-	<subtitle>Permission</subtitle>
-	<section>
+	<subtitle>用户、组、权限管理</subtitle>
+	<section id="os.user">
 		<title>User 用户管理</title>
 		<section id="adduser">
 			<title>添加用户</title>
@@ -108,7 +108,7 @@ $ userdel -r neo
 			]]>
 			</screen>
 		</section>
-		<section id="usermod">
+		<section id="usermod,group">
 			<title>修改用户组</title>
 			<subtitle>usermod - modify a user account</subtitle>
 			<screen>
@@ -136,6 +136,87 @@ uid=80(www) gid=80(www) groups=80(www),10(wheel)
 			</screen>
 
 		</section>
+		<section id="usermod.shell">
+			<title>修改 shell</title>
+			<para>修改 Shell 使用 usermod --shell /usr/bin/fish adm</para>
+			<screen>
+			<![CDATA[
+[root@development ~]# grep adm /etc/passwd
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+
+[root@netkiller ~]# usermod --shell /usr/bin/fish adm
+
+[root@netkiller ~]# grep adm /etc/passwd
+adm:x:3:4:adm:/var/adm:/usr/bin/fish
+
+[root@netkiller ~]# su - adm
+error: can not save history
+warning-path: Unable to locate data directory derived from $HOME: '/var/adm/.local/share/fish'.
+warning-path: The error was 'Permission denied'.
+warning-path: Please set $HOME to a directory where you have write access.
+
+error: can not save universal variables or functions
+warning-path: Unable to locate config directory derived from $HOME: '/var/adm/.config/fish'.
+warning-path: The error was 'Permission denied'.
+warning-path: Please set $HOME to a directory where you have write access.
+
+mkdir: cannot create directory ‘/completions’: Permission denied
+mkdir: cannot create directory ‘/conf.d’: Permission denied
+mkdir: cannot create directory ‘/functions’: Permission denied
+warning: An error occurred while redirecting file '/config.fish'
+open: Permission denied
+Welcome to fish, the friendly interactive shell
+Type help for instructions on how to use fish			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>修改自己的登陆shell</title>
+			<subtitle>chsh - change your login shell</subtitle>
+			<para>查看系统安装了na xx</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# chsh -l
+/bin/sh
+/bin/bash
+/usr/bin/sh
+/usr/bin/bash
+/usr/bin/fish
+/bin/fish			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# chsh -s /bin/fish
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+[docker@netkiller root]$ chsh
+Changing shell for docker.
+New shell [/bin/bash]: /usr/bin/fish
+Password: 
+Shell changed.
+
+[docker@netkiller root]$ exit
+logout
+
+[root@netkiller ~]# su - docker
+Last login: Thu Sep 25 18:02:36 CST 2025 on pts/2
+Welcome to fish, the friendly interactive shell
+Type help for instructions on how to use fish
+
+docker@netkiller ~> ls -la
+total 0
+drwxr-xr-x  4 docker docker 35 Sep 25 18:04 ./
+drwxr-xr-x. 3 root   root   20 Sep 25 18:04 ../
+drwx------  3 docker docker 18 Sep 25 18:04 .config/
+drwx------  3 docker docker 19 Sep 25 18:04 .local/
+docker@netkiller ~> exit			
+			]]>
+			</screen>
+		</section>
+		
 		<section id="passwd">
 			<title>账号加锁与解锁</title>
 			<para>lock / unlock</para>
@@ -153,7 +234,7 @@ passwd -u neo
 				<title>/etc/passwd</title>
 				<screen>
 		<![CDATA[
-[root@test ~]# cat /etc/passwd
+[root@netkiller ~]# cat /etc/passwd
 root:x:0:0:root:/root:/bin/bash
 bin:x:1:1:bin:/bin:/sbin/nologin
 daemon:x:2:2:daemon:/sbin:/sbin/nologin
@@ -190,7 +271,7 @@ mysql:x:501:501::/home/mysql:/bin/bash
 			</section>
 		</section>
 	</section>
-	<section id="group">
+	<section id="os.group">
 		<title>Group</title>
 		<section>
 			<title>Add a new group</title>
@@ -213,7 +294,7 @@ $ sudo usermod -a -G mygroup user
 			<title>/etc/group</title>
 			<screen>
 		<![CDATA[
-[root@test ~]# cat /etc/group
+[root@netkiller ~]# cat /etc/group
 root:x:0:root
 bin:x:1:root,bin,daemon
 daemon:x:2:root,bin,daemon
@@ -312,11 +393,11 @@ umask 002
 			<para>chown - change file owner and group</para>
 			<screen>
 		<![CDATA[
-[root@test ~]# touch test
-[root@test ~]# adduser neo
-[root@test ~]# chown neo test
-[root@test ~]# ll test
--rw-r--r-- 1 neo root 0 Apr 19 18:15 test
+[root@netkiller ~]# touch netkiller
+[root@netkiller ~]# adduser neo
+[root@netkiller ~]# chown neo netkiller
+[root@netkiller ~]# ll netkiller
+-rw-r--r-- 1 neo root 0 Apr 19 18:15 netkiller
 			]]>
 			</screen>
 		</section>
@@ -349,23 +430,23 @@ x = 1
 			</screen>
 			<screen>
 		<![CDATA[
-[root@test ~]# ll test
--rwxr--r-- 1 neo root 0 Apr 19 18:15 test
-[root@test ~]# chmod g=x test
-[root@test ~]# ll test
--rwx--xr-- 1 neo root 0 Apr 19 18:15 test
-[root@test ~]# chmod go+w test
-[root@test ~]# ll test
--rwx-wxrw- 1 neo root 0 Apr 19 18:15 test
-[root@test ~]# chmod u-wx test
-[root@test ~]# ll test
--r---wxrw- 1 neo root 0 Apr 19 18:15 test
-[root@test ~]# chmod u=rwx test
-[root@test ~]# ll test
--rwx-wxrw- 1 neo root 0 Apr 19 18:15 test
-[root@test ~]# chmod a=rwx test
-[root@test ~]# ll test
--rwxrwxrwx 1 neo root 0 Apr 19 18:15 test
+[root@netkiller ~]# ll netkiller
+-rwxr--r-- 1 neo root 0 Apr 19 18:15 netkiller
+[root@netkiller ~]# chmod g=x netkiller
+[root@netkiller ~]# ll netkiller
+-rwx--xr-- 1 neo root 0 Apr 19 18:15 netkiller
+[root@netkiller ~]# chmod go+w netkiller
+[root@netkiller ~]# ll netkiller
+-rwx-wxrw- 1 neo root 0 Apr 19 18:15 netkiller
+[root@netkiller ~]# chmod u-wx netkiller
+[root@netkiller ~]# ll netkiller
+-r---wxrw- 1 neo root 0 Apr 19 18:15 netkiller
+[root@netkiller ~]# chmod u=rwx netkiller
+[root@netkiller ~]# ll netkiller
+-rwx-wxrw- 1 neo root 0 Apr 19 18:15 netkiller
+[root@netkiller ~]# chmod a=rwx netkiller
+[root@netkiller ~]# ll netkiller
+-rwxrwxrwx 1 neo root 0 Apr 19 18:15 netkiller
 			]]>
 			</screen>
 		</section>
