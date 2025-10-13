@@ -24,6 +24,6 @@
 <!ENTITY section.vpn.openvpn.xml		SYSTEM "section.vpn.openvpn.xml">
 <!ENTITY section.vpn.pptpd.xml 			SYSTEM "section.vpn.pptpd.xml">
 <!ENTITY section.vpn.l2tp.xml 			SYSTEM "section.vpn.l2tp.xml">
-<!ENTITY section.vpn.ipsec.xml			SYSTEM "section.vpn.ipsec.xml">
+<!ENTITY section.vpn.wireguard.xml		SYSTEM "section.vpn.wireguard.xml">
 <!ENTITY section.vpn.openswan.xml	 	SYSTEM "section.vpn.openswan.xml">
 <!ENTITY section.vpn.ikev2.xml	 		SYSTEM "section.vpn.ikev2.xml">

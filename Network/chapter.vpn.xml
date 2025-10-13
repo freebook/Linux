@@ -2,10 +2,10 @@
 <!-- $Id: chapter.vpn.xml 652 2013-07-26 10:06:01Z netkiller $ -->
 <chapter id="index"><?dbhtml dir="vpn" ?>
 	<title>VPN (Virtual Private Network)</title>
+	&section.vpn.wireguard.xml;
 	&section.vpn.openvpn.xml;
 	&section.vpn.pptpd.xml;
 	&section.vpn.l2tp.xml;
-	&section.vpn.ipsec.xml;
 	&section.vpn.ikev2.xml;
 	&section.vpn.openswan.xml;
 	<section id="n2n">

@@ -470,7 +470,7 @@ V7-P_SdeHeXDk3qyj0HhvYrrQ2PFbZrKv4ck6FNQSys.sD2SO-myCgf0JjzYqkA9LA3nN9Pau98bk_fm
 			]]>
 			</screen>
 		</section>
-		<section>
+		<section id="Caddyfile.route"> 
 			<para>route 路由配置</para>
 			<screen>
 			<![CDATA[
@@ -491,6 +491,34 @@ www.netkiller.cn {
         output file /var/log/caddy/access.log
     }
 
+}			
+			]]>
+			</screen>
+		</section>
+		<section id="Caddyfile.domain">
+			<title>绑定域名</title>
+			<para>绑定多个域名</para>
+			<screen>
+			<![CDATA[
+example.com www.example.com example.net {
+    root * /var/www/html
+    file_server
+    # 其他通用配置...
+}
+			]]>
+			</screen>
+			<para>注意多个域名绑定可能影响到 SSL证书，此时需要分开写。</para>
+			<screen>
+			<![CDATA[
+www.example.com {
+    root * /var/www/html
+    file_server
+    # 其他通用配置...
+}			
+www.example.net {
+    root * /var/www/html
+    file_server
+    # 其他通用配置...
 }			
 			]]>
 			</screen>

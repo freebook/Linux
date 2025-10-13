@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="WireGuard">
+	<title>WireGuard</title>
+	<section>
+		<title>安装 WireGuard</title>
+		<screen>
+		<![CDATA[
+[root@development ~]# dnf search wireguard
+Last metadata expiration check: 2:27:54 ago on Mon 13 Oct 2025 03:31:18 PM CST.
+============================ Name Matched: wireguard ==========================
+wireguard-tools.x86_64 : Fast, modern, secure VPN tunnel		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+[root@development ~]# dnf install wireguard-tools -y
+
+[root@development ~]# wg --version
+wireguard-tools v1.0.20210914 - https://git.zx2c4.com/wireguard-tools/		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>创建证书</title>
+		<para>服务端证书</para>
+		<screen>
+		<![CDATA[
+wg genkey | tee server_private.key | wg pubkey > server_public.key		
+		]]>
+		</screen>
+		<para>查看证书</para>
+		<screen>
+		<![CDATA[
+[root@development ~]# cat server_private.key 
+UMZk7+8c1OytK7Am5sumC7T2HT3KPChExoRZqoDioU4=
+
+[root@development ~]# cat server_public.key 
+9VDeng7liU2v5kQl+CdNJJANxiKF/pJPK6bDKNU60EY=
+		]]>
+		</screen>
+		<para>客户端证书</para>
+		<screen>
+		<![CDATA[
+wg genkey | tee client_private.key | wg pubkey > client_public.key		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+[root@development ~]# wg genkey | tee client_private.key | wg pubkey > client_public.key
+
+[root@development ~]# cat client_private.key 
+CEEIeJQKoRFDV+lE+PFtwgn+zHafABWm9sb+IqhCD04=
+
+[root@development ~]# cat client_public.key 
+cr7NFI6tZWhGqXsO8D58GS3WTVqc8dQ/sH1D1WOchDw=		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>服务端</title>
+		<para>服务端配置</para>
+		<screen>
+		<![CDATA[
+[Interface]
+Address = 10.0.0.1/24
+ListenPort = 51820
+PrivateKey = 服务端私钥
+
+[Peer]
+# 客户端
+1PublicKey = 客户端公钥
+AllowedIPs = 10.0.0.2/32		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+cat >> /etc/wireguard/wg0.conf <<EOF
+[Interface]
+Address = 10.0.0.1/24
+ListenPort = 51820
+PrivateKey = UMZk7+8c1OytK7Am5sumC7T2HT3KPChExoRZqoDioU4=
+
+[Peer]
+PublicKey = 9VDeng7liU2v5kQl+CdNJJANxiKF/pJPK6bDKNU60EY=
+AllowedIPs = 10.0.0.2/32
+EOF	
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+[root@development ~]# wg-quick up wg0
+[#] ip link add wg0 type wireguard
+[#] wg setconf wg0 /dev/fd/63
+[#] ip -4 address add 10.0.0.1/24 dev wg0
+[#] ip link set mtu 1420 up dev wg0
+
+[root@development ~]# ifconfig wg0
+wg0: flags=209<UP,POINTOPOINT,RUNNING,NOARP>  mtu 1420
+        inet 10.0.0.1  netmask 255.255.255.0  destination 10.0.0.1
+        unspec 00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00  txqueuelen 1000  (UNSPEC)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+sudo systemctl enable wg-quick@wg0		
+		]]>
+		</screen>
+	</section>
+
+	<section>
+		<title>客户端</title>
+
+		<para></para>
+		<screen>
+		<![CDATA[
+cat >> /etc/wireguard/client.conf <<EOF
+[Interface]
+Address = 10.0.0.2/24
+PrivateKey = 客户端私钥
+DNS = 8.8.8.8
+
+[Peer]
+PublicKey = 服务端公钥
+Endpoint = 服务器公网IP:51820
+AllowedIPs = 0.0.0.0/0
+EOF
+
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+wg-quick up client		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>路由配置</title>
+		<para>通过 AllowedIPs 配置路由策略</para>
+
+		<para>将默认网关指向 VPN 服务器，实现科学上网。</para>
+		<screen>
+		<![CDATA[
+AllowedIPs = 0.0.0.0/0		
+		]]>
+		</screen>
+		<para>只有 Peer 访问走 VPN，其他流量正常走本地网络</para>
+		<screen>
+		<![CDATA[
+[Interface]
+PrivateKey = CEEIeJQKoRFDV+lE+PFtwgn+zHafABWm9sb+IqhCD04=
+Address = 10.0.0.2/24
+DNS = 8.8.8.8
+
+[Peer]
+PublicKey = 9VDeng7liU2v5kQl+CdNJJANxiKF/pJPK6bDKNU60EY=
+AllowedIPs = 10.0.0.0/24
+Endpoint = 120.79.202.61:51820		
+		]]>
+		</screen>
+	</section>
+
+	<section>
+		<title>wireguard-tools 命令</title>
+		<subtitle>wireguard-tools.x86_64 : Fast, modern, secure VPN tunnel
+		</subtitle>
+		<screen>
+		<![CDATA[
+[root@development ~]# wg -h
+Usage: wg <cmd> [<args>]
+
+Available subcommands:
+  show: Shows the current configuration and device information
+  showconf: Shows the current configuration of a given WireGuard interface, for use with `setconf'
+  set: Change the current configuration, add peers, remove peers, or change peers
+  setconf: Applies a configuration file to a WireGuard interface
+  addconf: Appends a configuration file to a WireGuard interface
+  syncconf: Synchronizes a configuration file to a WireGuard interface
+  genkey: Generates a new private key and writes it to stdout
+  genpsk: Generates a new preshared key and writes it to stdout
+  pubkey: Reads a private key from stdin and writes a public key to stdout
+You may pass `--help' to any of these subcommands to view usage.		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+[root@development ~]# wg show
+interface: wg0
+  public key: 9VDeng7liU2v5kQl+CdNJJANxiKF/pJPK6bDKNU60EY=
+  private key: (hidden)
+  listening port: 51820
+[root@development ~]# wg show wg0
+interface: wg0
+  public key: 9VDeng7liU2v5kQl+CdNJJANxiKF/pJPK6bDKNU60EY=
+  private key: (hidden)
+  listening port: 51820		
+		]]>
+		</screen>
+		<section>
+			<title>up/down 启动/停止</title>
+			<screen>
+			<![CDATA[
+wg-quick down wg0
+wg-quick up wg0			
+			]]>
+			</screen>
+		</section>
+
+	</section>
+</section>	
