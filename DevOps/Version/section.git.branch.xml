@@ -43,6 +43,14 @@ Deleted branch staging.
 $ git branch
 * master
 			]]></screen>
+			<para>删除远程分支</para>
+			<screen>
+			<![CDATA[
+neo@Mac ~/A/conference (master|MERGING)> git push origin --delete --force master
+To git.netkiller.cn:meeting/conference.git
+ - [deleted]           master			
+			]]>
+			</screen>
 		</section>
 		<section id="branch.switch">
 			<title>切换分支</title>
@@ -59,7 +67,7 @@ $ git branch
 * testing
 			]]></screen>
 		</section>
-		<section>
+		<section id="branch.rename">
 			<title>重命名分支</title>
 			<screen>
 			<![CDATA[
