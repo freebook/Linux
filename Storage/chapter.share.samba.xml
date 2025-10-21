@@ -4,6 +4,104 @@
 	<section id="install">
 		<title>install</title>
 		<section>
+			<title>Rocky Linux / AlmaLinux</title>
+			<para>确保 SELinux 禁用状态</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# /usr/sbin/sestatus -v
+SELinux status:                 disabled
+			]]>
+			</screen>
+			<para>安装</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# dnf install samba
+[root@netkiller ~]# systemctl enable smb
+[root@netkiller ~]# systemctl start smb
+			]]>
+			</screen>
+			<para>默认配置文件</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# cat /etc/samba/smb.conf
+# See smb.conf.example for a more detailed config file or
+# read the smb.conf manpage.
+# Run 'testparm' to verify the config is correct after
+# you modified it.
+#
+# Note:
+# SMB1 is disabled by default. This means clients without support for SMB2 or
+# SMB3 are no longer able to connect to smbd (by default).
+
+[global]
+	workgroup = SAMBA
+	security = user
+
+	passdb backend = tdbsam
+
+	printing = cups
+	printcap name = cups
+	load printers = yes
+	cups options = raw
+
+[homes]
+	comment = Home Directories
+	valid users = %S, %D%w%S
+	browseable = No
+	read only = No
+	inherit acls = Yes
+
+[printers]
+	comment = All Printers
+	path = /var/tmp
+	printable = Yes
+	create mask = 0600
+	browseable = No
+
+[print$]
+	comment = Printer Drivers
+	path = /var/lib/samba/drivers
+	# printadmin is a local group
+	write list = printadmin root
+	force group = printadmin
+	create mask = 0664
+	directory mask = 0775			
+			]]>
+			</screen>
+			<para>创建用户</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# adduser neo
+
+[root@netkiller ~]# smbpasswd -a neo
+New SMB password:
+Retype new SMB password:
+Added user neo.
+			]]>
+			</screen>
+			<para>配置匿名共享目录</para>
+			<screen>
+			<![CDATA[
+[share]
+        comment = File share
+        path = /opt/share
+        browseable = Yes
+        writable = Yes
+        create mask = 0644
+        directory mask = 0755
+		guest ok = Yes 
+		public = Yes			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# mkdir /opt/share
+[root@netkiller ~]# chmod 777 /opt/share/
+			]]>
+			</screen>
+		</section>
+		<section>
 			<title>Debian 12</title>
 			<screen>
 			<![CDATA[
@@ -35,7 +133,7 @@ sudo smbpasswd -L -a backup
 			</screen>
 		</section>
 		<section id="samba.rocky">
-			<title>CentOS 8 Stream / Rocky Linux 9.2</title>
+			<title>CentOS 8 Stream</title>
 			<para>服务器端</para>
 			<screen>
 			<![CDATA[
@@ -723,6 +821,68 @@ developer  Disk  Development
   '/www' does not exist or permission denied when connecting to [www] Error was Permission denied
 			]]></screen>
 			<para>关闭 SELinux</para>
+		</section>
+		<section>
+			<title>共享目录提示没有权限</title>
+			<para>查看 SELINUX 状态</para>
+			<screen>
+			<![CDATA[
+[root@netkiller samba]# sestatus 
+SELinux status:                 enabled
+SELinuxfs mount:                /sys/fs/selinux
+SELinux root directory:         /etc/selinux
+Loaded policy name:             targeted
+Current mode:                   enforcing
+Mode from config file:          enforcing
+Policy MLS status:              enabled
+Policy deny_unknown status:     allowed
+Memory protection checking:     actual (secure)
+Max kernel policy version:      33			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+[root@netkiller samba]# getenforce
+Enforcing
+			
+[root@netkiller samba]# cat /etc/selinux/config
+
+# This file controls the state of SELinux on the system.
+# SELINUX= can take one of these three values:
+#     enforcing - SELinux security policy is enforced.
+#     permissive - SELinux prints warnings instead of enforcing.
+#     disabled - No SELinux policy is loaded.
+# See also:
+# https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/using_selinux/changing-selinux-states-and-modes_using-selinux#changing-selinux-modes-at-boot-time_changing-selinux-states-and-modes
+#
+# NOTE: Up to RHEL 8 release included, SELINUX=disabled would also
+# fully disable SELinux during boot. If you need a system with SELinux
+# fully disabled instead of SELinux running with no policy loaded, you
+# need to pass selinux=0 to the kernel command line. You can use grubby
+# to persistently set the bootloader to boot with selinux=0:
+#
+#    grubby --update-kernel ALL --args selinux=0
+#
+# To revert back to SELinux enabled:
+#
+#    grubby --update-kernel ALL --remove-args selinux
+#
+SELINUX=enforcing
+# SELINUXTYPE= can take one of these three values:
+#     targeted - Targeted processes are protected,
+#     minimum - Modification of targeted policy. Only selected processes are protected.
+#     mls - Multi Level Security protection.
+SELINUXTYPE=targeted
+			
+			]]>
+			</screen>
+			<para>仅用 SELINUX</para>
+			<screen>
+			<![CDATA[
+sed -i s#SELINUX=enforcing#SELINUX=disabled# /etc/selinux/config			
+			]]>
+			</screen>
 		</section>
 	</section>
 </section>
