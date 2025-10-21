@@ -1,60 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="git.branch">
-		<title>分支管理</title>
-		<subtitle>Manipulating branches</subtitle>
-		<para>git-branch - List, create, or delete branches</para>
-		<section id="branch.list">
-			<title>查看本地分支</title>
-			<screen><![CDATA[
+	<title>分支管理</title>
+	<subtitle>Manipulating branches</subtitle>
+	<para>git-branch - List, create, or delete branches</para>
+	<section id="branch.list">
+		<title>查看本地分支</title>
+		<screen><![CDATA[
 $ git branch
 * master
 			]]></screen>
-			<para>查看远程分支</para>
-			<screen>
+		<para>查看远程分支</para>
+		<screen>
 			<![CDATA[
 git branch -a			
 			]]>
-			</screen>
-		</section>
-		<section id="branch.create">
-			<title>创建分支</title>
-			<screen>
+		</screen>
+	</section>
+	<section id="branch.create">
+		<title>创建分支</title>
+		<screen>
 			<![CDATA[
 $ git branch development
 $ git branch
 * master
   development
 			]]>
-			</screen>
-			<para>机遇分支创建分支</para>
-			<screen>
+		</screen>
+		<para>机遇分支创建分支</para>
+		<screen>
 			<![CDATA[
 $ git checkout -b feature develop
 $ git push --set-upstream origin feature
 			]]>
-			</screen>
-		</section>
-		<section id="branch.delete">
-			<title>删除分支</title>
-			<screen><![CDATA[
+		</screen>
+	</section>
+	<section id="branch.delete">
+		<title>删除分支</title>
+		<screen><![CDATA[
 $ git branch -d staging
 Deleted branch staging.
 
 $ git branch
 * master
 			]]></screen>
-			<para>删除远程分支</para>
-			<screen>
+		<para>删除远程分支</para>
+		<screen>
 			<![CDATA[
 neo@Mac ~/A/conference (master|MERGING)> git push origin --delete --force master
 To git.netkiller.cn:meeting/conference.git
  - [deleted]           master			
 			]]>
-			</screen>
-		</section>
-		<section id="branch.switch">
-			<title>切换分支</title>
-			<screen><![CDATA[
+		</screen>
+	</section>
+	<section id="branch.switch">
+		<title>切换分支</title>
+		<screen><![CDATA[
 $ git branch
 * master
   testing
@@ -66,26 +66,97 @@ $ git branch
   master
 * testing
 			]]></screen>
-		</section>
-		<section id="branch.rename">
-			<title>重命名分支</title>
-			<screen>
+	</section>
+	<section id="branch.rename">
+		<title>重命名分支</title>
+		<screen>
 			<![CDATA[
 neo@MacBook-Pro-Neo ~/workspace/api.netkiller.cn % git checkout test
 neo@MacBook-Pro-Neo ~/workspace/api.netkiller.cn % git branch -m test testing
 neo@MacBook-Pro-Neo ~/workspace/api.netkiller.cn % git push --delete origin test
 neo@MacBook-Pro-Neo ~/workspace/api.netkiller.cn % git push origin testing
 			]]>
-			</screen>
-		</section>
-		<section id="git-show-branch">
-			<title>git-show-branch - Show branches and their commits</title>
-			<screen><![CDATA[
+		</screen>
+	</section>
+	<section id="git-show-branch">
+		<title>git-show-branch - Show branches and their commits</title>
+		<screen>
+		<![CDATA[
 $ git-show-branch
 ! [master] add a new file
  * [mybranch] add a new file
 --
 +* [master] add a new file
-			]]></screen>
-		</section>
+		]]>
+		</screen>
 	</section>
+</section>
+<section id="git.tag">
+	<title>标签管理</title>
+	<section>
+		<title>创建标签</title>
+		<screen>
+		<![CDATA[
+neo@Mac conference % git tag v1.3.0		
+		]]>
+		</screen>
+		<para>创建带有注释信息的标签</para>
+		<screen>
+		<![CDATA[
+git tag -a v1.0.0 -m "正式发布 v1.0.0 版本"  # -a 表示附注标签，-m 指定注释		
+		]]>
+		</screen>
+		<para>为历史提交创建标签</para>
+		<screen>
+		<![CDATA[
+如果需要给过去的某个提交打标签，需指定提交哈希值（可通过 git log 查看）：
+
+git log --oneline  # 查看提交历史，获取目标提交的哈希值（如 abc1234）
+git tag -a v0.9.0 abc1234 -m "为历史提交打标签"  # 为哈希 abc1234 的提交创建标签
+		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>查看标签</title>
+		<screen>
+		<![CDATA[
+neo@Mac conference % git tag 
+debug-20250729
+v1.3.0		
+		]]>
+		</screen>
+		<para>查看标签详情</para>
+		<screen>
+		<![CDATA[
+neo@Mac conference % git show v1.3.0		
+		]]>
+		</screen>
+		<para>筛选标签</para>
+		<screen>
+		<![CDATA[
+git tag -l "v1.*"  # 筛选标签（如只看 v1 开头的）		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>推送标签</title>
+		<para>推送标签到远程仓库</para>
+		<screen>
+		<![CDATA[
+创建的标签默认仅保存在本地，需手动推送到远程：
+git push origin v1.0.0  # 推送单个标签到远程
+git push origin --tags  # 推送所有本地未推送的标签到远程
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>删除标签</title>
+		<screen>
+		<![CDATA[
+git tag -d v1.0.0  # 删除本地标签
+git push origin --delete v1.0.0  # 删除远程标签（需先删除本地标签）		
+		]]>
+		</screen>
+	</section>
+</section>
