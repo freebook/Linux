@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="video" ?>
 	<title>Video</title>
+	&section.ffmpeg.xml;
+	&section.video.webrtc.xml;
 	<para><ulink url="http://openvideoalliance.org/wiki/index.php?title=List_of_Open_Source_Video_Software">List of Open Source Video Software</ulink></para>
 <section id="OpenShot">
 	<title>OpenShot</title>
@@ -10,5 +12,5 @@
 	<title>cinelerra-cv</title>
 	<para><ulink url="http://cinelerra.org/">http://cinelerra.org/</ulink></para>
 </section>
-	&section.ffmpeg.xml;
+	
 </chapter>

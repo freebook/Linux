@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="webrtc">
+	<title>WebRTC</title>
+	<section id="webrtc.janus">
+		<title>Janus</title>
+		<para><ulink url="https://janus.conf.meetecho.com">https://janus.conf.meetecho.com</ulink></para>
+		<para>下载地址：<ulink url="https://github.com/meetecho/janus-gateway" /></para>
+		<para>安装 Janus</para>
+		<screen>
+		<![CDATA[
+git clone https://github.com/meetecho/janus-gateway.git
+cd janus-gatewaysh 
+autogen.sh./configure --prefix=/opt/janus
+make 
+make install		
+		]]>
+		</screen>
+		<para>启动 Janus</para>
+		<screen>
+		<![CDATA[
+/opt/janus/bin/janus		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+{
+    "general": {
+        "configs_folder": "/opt/janus/etc/janus", "plugins_folder": "/opt/janus/lib/janus/plugins"
+    }
+
+    ,
+    "nat": {
+        "stun_server": "stun.l.google.com", "stun_port": 19302
+    }
+
+    ,
+    "media": {
+        "ipv6": false, "enable_media_delivery_stats": true
+    }
+
+    ,
+    "plugins": {
+        "janus.plugin.videocall": {
+            "enabled": true, "admin_key": "mysecretkey"
+        }
+    }
+
+    ,
+    "transports": {
+        "janus.transport.websockets": {
+            "enabled": true, "ws": true, "ws_port": 8188
+        }
+    }
+}
+		]]>
+		</screen>
+		<para>指定配置文件，启动Janus服务器</para>
+		<screen>
+		<![CDATA[
+/opt/janus/bin/janus -c /path/to/janus.jcfg		
+		]]>
+		</screen>
+	</section>
+	
+</section>
