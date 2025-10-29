@@ -63,7 +63,36 @@ server {
 			]]>
 		</screen>
 	</section>
-
+	<section id="server_tokens">
+		<title>server_tokens 隐藏 nginx 版本号</title>
+		<para>隐藏nginx版本号</para>
+		<screen>
+			<![CDATA[
+http {
+...
+server_tokens off;
+...
+}
+			]]>
+		</screen>
+	</section>
+	<section>
+		<title>zstd 压缩</title>
+		<para>Zstandard（简称zstd） 是一种高效的压缩算法，由Facebook推出，旨在提供高压缩比和快速的压缩/解压速度。</para>
+		<screen>
+		<![CDATA[
+server {
+   listen 127.0.0.1:8080;
+   server_name localhost;
+   location / {
+       zstd on; # 启用zstd压缩
+       zstd_min_length 256; # 设置至少256字节才进行压缩
+       zstd_comp_level 3; # 设置压缩级别为3
+   }
+}
+		]]>
+		</screen>
+	</section>
 	<section id="gzip">
 		<title>gzip</title>
 		<screen>
@@ -143,19 +172,7 @@ EOF
 		</section>
 
 	</section>
-	<section id="server_tokens">
-		<title>server_tokens</title>
-		<para>隐藏nginx版本号</para>
-		<screen>
-			<![CDATA[
-http {
-...
-server_tokens off;
-...
-}
-			]]>
-		</screen>
-	</section>
+
 	<section id="ssi">
 		<title>ssi</title>
 		<screen>
