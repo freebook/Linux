@@ -160,7 +160,7 @@ DNS = 8.8.8.8
 [Peer]
 PublicKey = 9VDeng7liU2v5kQl+CdNJJANxiKF/pJPK6bDKNU60EY=
 AllowedIPs = 10.0.0.0/24
-Endpoint = 120.79.202.61:51820		
+Endpoint = 120.179.202.161:51820		
 		]]>
 		</screen>
 	</section>
@@ -211,5 +211,117 @@ wg-quick up wg0
 			</screen>
 		</section>
 
+	</section>
+	<section>
+		<title>案例：Server - Peer 互通，同时 Peer - Peer 也互通</title>
+		<section>
+			<title>准备工作</title>
+			<para>IP 地址规划</para>
+			<para>Server 地址：10.0.0.1</para>
+			<para>Peer 1 地址：10.0.0.2</para>
+			<para>Peer 2 地址：10.0.0.3</para>
+			<para>其他 Peer 以此类推</para>
+			
+			<para>创建服务端证书上</para>
+			<screen>
+			<![CDATA[
+wg genkey | tee server_private.key | wg pubkey > server_public.key			
+			]]>
+			</screen>
+			<para>创建Peer端证书</para>
+			<screen>
+			<![CDATA[
+wg genkey | tee server_private.key | wg pubkey > server_public.key			
+			]]>
+			</screen>
+			
+		</section>
+		<section>
+			<title>Server 端配置</title>
+			
+			<para>创建 Server 配置文件（/etc/wireguard/wg0.conf）</para>
+			<screen>
+			<![CDATA[
+[root@development ~]# cat /etc/wireguard/wg0.conf 
+[Interface]
+Address = 10.0.0.1/24
+ListenPort = 51820
+PrivateKey = UMZk7+8c1OytK7Am5sumC7T2HT3KPChExoRZqoDioU4=
+
+[Peer]
+PublicKey = cr7NFI6tZWhGqXsO8D58GS3WTVqc8dQ/sH1D1WOchDw=
+AllowedIPs = 10.0.0.2/32
+
+[Peer]
+PublicKey = LyLmgsXu/li83yQz58jDqKSFevi01PwNbnUFrynYHkk=
+AllowedIPs = 10.0.0.3/32
+
+[Peer]
+PublicKey = b5PCQGmaCAlSF4C0x1YRUG5ylXJVoQcxhO4ZeuS0Q0A=
+AllowedIPs = 10.0.0.4/32
+			]]>
+			</screen>
+			<para>启用 IP 转发（仅 Server 端）</para>
+			<screen>
+			<![CDATA[
+# 临时启用（立即生效）
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+# 永久生效（Ubuntu/Debian）
+sudo sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/' /etc/sysctl.conf
+sudo sysctl -p  # 重载配置			
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Peer 端配置</title>
+			<para>创建 Peer 1 配置文件（/etc/wireguard/client.conf）</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# cat /etc/wireguard/client.conf 
+[Interface]
+PrivateKey = 4Et96IbLG5U9DQYC5w4q2up5xd25tTlf4rspasgs43s=
+Address = 10.0.0.3/24
+#DNS = 8.8.8.8
+
+[Peer]
+PublicKey = 9VDeng7liU2v5kQl+CdNJJANxiKF/pJPK6bDKNU60EY=
+AllowedIPs = 10.0.0.0/24
+Endpoint = 120.179.202.161:51820
+
+#[Peer]
+#PublicKey = cr7NFI6tZWhGqXsO8D58GS3WTVqc8dQ/sH1D1WOchDw=
+#AllowedIPs = 10.0.0.2/32			
+			]]>
+			</screen>
+			<para>Peer 2</para>
+			<screen>
+			<![CDATA[
+[Interface]
+PrivateKey = CEEIeJQKoRFDV+lE+PFtwgn+zHafABWm9sb+IqhCD04=
+Address = 10.0.0.2/24
+DNS = 8.8.8.8
+
+[Peer]
+PublicKey = 9VDeng7liU2v5kQl+CdNJJANxiKF/pJPK6bDKNU60EY=
+AllowedIPs = 10.0.0.1/32, 10.0.0.3/32
+Endpoint = 120.179.202.161:51820			
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title></title>
+		<screen>
+		<![CDATA[
+		
+		]]>
+		</screen>
 	</section>
 </section>	
