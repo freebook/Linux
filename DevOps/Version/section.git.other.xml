@@ -37,7 +37,30 @@ git archive --format tar.gz --output "./output.tar.gz" 5ca16ac0d603603
 		]]>
 		</screen>
 	</section>
-	
+	<section>
+		<title>导出目录和文件</title>
+		<para>导出目录和文件，而不是 tar 或 tar.gz 包</para>
+		<para>导出当前目录</para>
+		<screen>
+		<![CDATA[
+# 导出最新提交的内容到当前目录（覆盖同名文件，注意备份！）
+git archive HEAD | tar -x
+
+# 导出到指定目录（推荐，避免覆盖当前文件）
+git archive HEAD | tar -x -C /目标目录路径		
+		]]>
+		</screen>
+		<para>导出指定分支</para>
+		<screen>
+		<![CDATA[
+# 导出 develop 分支内容到 /tmp/my-project
+git archive develop | tar -x -C /tmp/my-project
+
+# 导出 v1.0 标签内容到 ./dist
+git archive v1.0 | tar -x -C ./dist		
+		]]>
+		</screen>
+	</section>
 </section>
 
 <section id="git-svn">
