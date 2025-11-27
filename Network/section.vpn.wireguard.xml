@@ -231,7 +231,7 @@ wg genkey | tee server_private.key | wg pubkey > server_public.key
 			<para>创建Peer端证书</para>
 			<screen>
 			<![CDATA[
-wg genkey | tee server_private.key | wg pubkey > server_public.key			
+wg genkey | tee client_private.key | wg pubkey > client_public.key			
 			]]>
 			</screen>
 			
@@ -317,9 +317,68 @@ Endpoint = 120.179.202.161:51820
 		</section>
 	</section>
 	<section>
-		<title></title>
+		<title>MacOS wireguard</title>
 		<screen>
 		<![CDATA[
+neo@netkiller ~ % brew install wireguard-tools		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>Ubuntu</title>
+		<screen>
+		<![CDATA[
+apt update && apt install -y wireguard
+
+# 开启IP转发
+echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
+sysctl -p
+
+cd /etc/wireguard
+
+wg genkey | tee server_privatekey | wg pubkey > server_publickey
+wg genkey | tee client1_privatekey | wg pubkey > client1_publickey
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+# 创建配置文件（注意替换eth0为实际网卡名）
+cat > wg0.conf <<EOF
+[Interface]
+PrivateKey = $(cat server_privatekey)
+Address = 10.0.8.1/24
+ListenPort = 50814
+DNS = 8.8.8.8
+MTU = 1420
+
+# 流量转发规则（eth0需替换）
+PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+
+[Peer]
+# 客户端1配置
+PublicKey = $(cat client1_publickey)
+AllowedIPs = 10.0.8.10/32
+EOF
+		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+# 生成客户端配置
+cat > client1.conf <<EOF
+[Interface]
+PrivateKey = $(cat client1_privatekey)
+Address = 10.0.8.10/32
+DNS = 8.8.8.8
+MTU = 1420
+
+[Peer]
+PublicKey = $(cat server_publickey)
+Endpoint = [服务器公网IP]:50814
+AllowedIPs = 0.0.0.0/0
+PersistentKeepalive = 25
+EOF
 		
 		]]>
 		</screen>
