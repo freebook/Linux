@@ -1,7 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="index"><?dbhtml dir="stream" ?>
-	<title>Stream</title>
-
+	<title>流媒体(Stream)</title>
+	<section>
+		<title>检查是否支持流媒体</title>
+		<para>怎么确认网址上的文件是下载状态，还是流媒体状态</para>
+		<para>检查响应头的 Accept-Ranges 是否为 bytes（表示支持按字节范围请求），响应头中 Accept-Ranges: none 表示不支持流媒体。</para>
+		<screen>
+		<![CDATA[
+curl -i https://www.netkiller.cn/your-mp3-url.mp3
+		]]>
+		</screen>
+		<para>请求的响应状态码为 206 Partial Content（部分内容），且包含 Content-Range: bytes 表示支持流媒体</para>
+		<screen>
+		<![CDATA[
+curl -H "Range: bytes=0-1023" -i https://www.netkiller.cn/your-mp3-url.mp3
+		]]>
+		</screen>
+		<para>演示</para>
+		<screen>
+		<![CDATA[
+HTTP/1.1 206 Partial Content
+Server: AliyunOSS
+Date: Wed, 17 Dec 2025 06:49:01 GMT
+Content-Type: audio/mpeg
+Content-Length: 11
+Connection: keep-alive
+x-oss-request-id: 6942525D68CDBA3136768BE6
+Content-Range: bytes 0-10/15091866
+Accept-Ranges: bytes
+ETag: "1C37E9899A91C9A7450F260CCCDA7A25"
+Last-Modified: Wed, 17 Dec 2025 06:35:00 GMT
+x-oss-object-type: Normal
+x-oss-hash-crc64ecma: 10774986143237905993
+x-oss-storage-class: Standard
+x-oss-ec: 0048-00000113
+Content-Disposition: attachment
+x-oss-force-download: true
+x-oss-server-time: 27		
+		]]>
+		</screen>
+	</section>
 	&chapter.broadcast.xml;
 	&chapter.webrtc.xml;
 	&chapter.rtsp.xml;
