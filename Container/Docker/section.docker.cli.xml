@@ -1413,9 +1413,6 @@ be36eb55d2a7   openjdk:8                     "java -jar /app/neo…"   6 days ag
 # 导出单个镜像（推荐：指定输出文件名，更清晰）
 [root@testing ~]# docker save -o openjdk25.tar openjdk:25
 
-# 导出多个镜像到同一个tar文件
-[root@production ~]# docker save -o multiple-images.tar image1:v1 image2:v2
-
 # 导出镜像并压缩（节省空间，需安装gzip）
 [root@testing ~]# docker save openjdk:25 | gzip > /tmp/openjdk25.tar.gz
 
@@ -1437,6 +1434,18 @@ openjdk                                            8               b273004037cc 
 
 # 导入压缩的tar.gz文件（需先解压或直接管道处理）
 [root@production ~]# gzip -d -c my-image-v1.tar.gz | docker load
+			]]>
+			</screen>
+			<para>迁移多个镜像</para>
+			<screen>
+			<![CDATA[
+# 导出多个镜像到同一个tar文件
+
+[root@development ~]# docker save openjdk:8 openjdk:21 document:latest | gzip > /tmp/openjdk.tar.gz
+[root@development ~]# scp /tmp/openjdk.tar.gz root@172.22.11.170:/tmp
+
+# 导入压缩的tar.gz文件
+[root@production ~]# gzip -d -c /tmp/openjdk.tar.gz | docker load
 			]]>
 			</screen>
 		</section>
