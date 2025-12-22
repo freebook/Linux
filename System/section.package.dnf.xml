@@ -64,7 +64,7 @@ Adding repo from: https://download.docker.com/linux/centos/docker-ce.repo
 		]]>
 		</screen>
 	</section>
-	<section>
+	<section id="dnf.repolist">
 		<title>软件库管理</title>
 
 		<section id="dnf.repolist">
@@ -119,6 +119,17 @@ extras-source             CentOS-8 - Extras Sources                   disabled
 fasttrack                 CentOS-8 - fasttrack                        disabled
 		
 		]]>
+				</screen>
+			</section>
+			<section>
+				<title>appstream 库</title>
+				<screen>
+				<![CDATA[
+[root@netkiller ~]# dnf repolist all | grep appstream
+appstream                  Rocky Linux 10 - AppStream                   enabled
+appstream-debuginfo        Rocky Linux 10 - AppStream - Debug           disabled
+appstream-source           Rocky Linux 10 - AppStream - Source          disabled				
+				]]>
 				</screen>
 			</section>
 		</section>
@@ -645,6 +656,17 @@ mariadb-server-utils.x86_64 : Non-essential server utilities for MariaDB/MySQL a
 mariadb-java-client.noarch : Connects applications developed in Java to MariaDB and MySQL databases
 		]]>
 		</screen>
+		<section>
+			<title>从指定 appstream 库中搜索</title>
+			<screen>
+			<![CDATA[
+[root@rwa ~]# dnf search maven-openjdk25 --repo=appstream
+Last metadata expiration check: 0:06:33 ago on Mon 22 Dec 2025 08:22:15 AM CST.
+=========================================================== Name Exactly Matched: maven-openjdk25 ===========================================================
+maven-openjdk25.noarch : maven binding for openjdk25			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="dnf.info">
 		<title>查看软件包详情</title>
