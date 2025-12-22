@@ -964,7 +964,7 @@ ef52fb1fe610: Download complete
 				<screen>
 				<![CDATA[ 
 docker rmi $(docker images --format "{{.ID}}: {{.Repository}}" | grep fscs | cut -d: -f1)
-				]]>	
+				]]>
 				</screen>
 			</section>
 			<section>
@@ -1216,7 +1216,7 @@ ubuntu@VM-0-13-ubuntu:~$ sudo docker history nginx:latest --format "{{.CreatedBy
 /bin/sh -c #(nop)  LABEL maintainer=NGINX Docker Maintainers <docker-maint@nginx.com>
 /bin/sh -c #(nop)  CMD ["bash"]
 /bin/sh -c #(nop) ADD file:ba1250b6ecd5dd09d4914189d72741c2817988994e7da514bf62be439a34bdb5 in / 			
-			]]>	
+			]]>
 			</screen>
 		</section>
 		<section id="docker.scan">
@@ -1401,6 +1401,44 @@ be36eb55d2a7   openjdk:8                     "java -jar /app/neo…"   6 days ag
 				]]>
 				</screen>
 			</section>
+		</section>
+		<section>
+			<title>镜像迁移 save / load</title>
+			<para>服务器 A</para>
+			<screen>
+			<![CDATA[
+# 查看本地镜像（获取镜像名:标签 或 镜像ID）
+[root@testing ~]# docker images
+
+# 导出单个镜像（推荐：指定输出文件名，更清晰）
+[root@testing ~]# docker save -o openjdk25.tar openjdk:25
+
+# 导出多个镜像到同一个tar文件
+[root@production ~]# docker save -o multiple-images.tar image1:v1 image2:v2
+
+# 导出镜像并压缩（节省空间，需安装gzip）
+[root@testing ~]# docker save openjdk:25 | gzip > /tmp/openjdk25.tar.gz
+
+# 复制到服务器 B
+[root@testing ~]# scp openjdk25.tar.gz root@172.22.11.165:/tmp/
+			]]>
+			</screen>
+			<para>服务器 B</para>
+			<screen>
+			<![CDATA[
+# 导入未压缩的tar文件
+[root@production ~]# gunzip /tmp/openjdk25.tar.gz
+[root@production ~]# docker load -i /tmp/openjdk25.tar
+
+[root@production ~]# docker images | grep openjdk
+openjdk                                            25              d19b487d0613   4 months ago   610MB
+openjdk                                            21              079114de2be1   2 years ago    504MB
+openjdk                                            8               b273004037cc   3 years ago    526MB
+
+# 导入压缩的tar.gz文件（需先解压或直接管道处理）
+[root@production ~]# gzip -d -c my-image-v1.tar.gz | docker load
+			]]>
+			</screen>
 		</section>
 	</section>
 	<section id="docker-compose">
