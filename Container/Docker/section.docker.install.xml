@@ -424,7 +424,74 @@ ea694b443e9e        hello-world         "/hello"            About a minute ago  
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>国内镜像</title>
+		<para>https://1ms.run/</para>
+		<para>安装镜像 bash -c "$(curl -sSL https://n3.ink/helper)"</para>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# cat /etc/docker/daemon.json 
+{
+  "dns": [
+    "119.29.29.29",
+    "114.114.114.114"
+  ],
+  "insecure-registries": [
+    "docker.xuanyuan.me"
+  ],
+  "registry-mirrors": [
+    "https://docker.1ms.run",
+    "https://docker.xuanyuan.me"
+  ]
+}
+		]]>
+		</screen>
+		<para>登录</para>
+		<screen>
+		<![CDATA[
+[root@testing meeting]# docker login docker.1ms.run -u 1ms -p mk-QFdYgcDidcZbUerLLzyGz4ftkxA0tjac6SNeWfhg		
+		]]>
+		</screen>
+		<para>拉取镜像</para>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# docker pull docker.1ms.run/library/openjdk:25		
 
+[root@netkiller ~]# docker images
+                                                                                                                                         i Info →   U  In Use
+IMAGE                                                            ID             DISK USAGE   CONTENT SIZE   EXTRA
+docker.1ms.run/library/openjdk:25                                d19b487d0613        610MB             0B        
+document:latest                                                  3b4f5620aed5       1.31GB             0B    U   
+ghcr.nju.edu.cn/xinnan-tech/xiaozhi-esp32-server:server_latest   4e838409cb10       6.55GB             0B        
+nginx:latest                                                     be69f2940aaf        192MB             0B    U   
+openjdk:21                                                       079114de2be1        504MB             0B    U   
+openjdk:8                                                        b273004037cc        526MB             0B    U   		
+		]]>
+		</screen>
+		<para>制作 tag</para>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# docker tag docker.1ms.run/library/openjdk:25 openjdk:25
+
+[root@netkiller ~]# docker images
+                                                                                                                                         i Info →   U  In Use
+IMAGE                                                            ID             DISK USAGE   CONTENT SIZE   EXTRA
+docker.1ms.run/library/openjdk:25                                d19b487d0613        610MB             0B        
+document:latest                                                  3b4f5620aed5       1.31GB             0B    U   
+ghcr.nju.edu.cn/xinnan-tech/xiaozhi-esp32-server:server_latest   4e838409cb10       6.55GB             0B        
+nginx:latest                                                     be69f2940aaf        192MB             0B    U   
+openjdk:21                                                       079114de2be1        504MB             0B    U   
+openjdk:25                                                       d19b487d0613        610MB             0B        
+openjdk:8                                                        b273004037cc        526MB             0B    U   		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# docker ps | grep 25
+14f27c94fb5b   openjdk:25        "java -jar /app/elas…"   7 minutes ago   Up 6 minutes    0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp                                    api
+		]]>
+		</screen>
+	</section>
 	<section id="docker.reset">
 		<title>重置 Docker</title>
 		<screen>
@@ -436,7 +503,7 @@ docker volume rm $(docker volume ls -q)
 		]]>
 		</screen>
 	</section>
-	<section id="">
+	<section id="docker.old">
 		<title>早期版本</title>
 		<section>
 			<title>CentOS 7 docker-ce</title>
