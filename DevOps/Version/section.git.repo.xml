@@ -350,6 +350,12 @@ Fast-forward
  test1 |    1 +
  1 files changed, 1 insertions(+), 0 deletions(-)
 		]]></screen>
+		<para>拉远程分支</para>
+		<screen>
+		<![CDATA[
+neo@Neo-Mac-mini-M4 common % git pull origin master		
+		]]>
+		</screen>
 	</section>
 	<section id="git.fetch">
 		<title>同步数据</title>
