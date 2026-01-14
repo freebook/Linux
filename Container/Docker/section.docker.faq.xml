@@ -174,4 +174,21 @@ server {
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>删除所有容器</title>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# docker rm -f $(docker ps -aq)
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>删除所有镜像</title>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# docker rmi -f $(docker images)	
+		]]>
+		</screen>
+	</section>
+	
 </section>
