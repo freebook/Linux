@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="freeswitch">
+<chapter id="freeswitch">
 	<title>FreeSWITCH</title>
 	<ulink url="https://www.freeswitch.org/" />
 
@@ -2465,5 +2465,4 @@ tar zcvf freeswitch.tgz /etc/freeswitch/
 		]]>
 		</screen>
 	</section>
-	
-</section>
+</chapter>

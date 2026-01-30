@@ -12,7 +12,7 @@
 	&chapter.queuing.gearman.xml;
 	&chapter.kafka.xml;
 	&section.queue.rocketmq.xml;
-	
+	&section.queue.mosquitto.xml;
 	<section id="celery">
 		<title>Celery</title>
 		<para>http://www.celeryproject.org/</para>

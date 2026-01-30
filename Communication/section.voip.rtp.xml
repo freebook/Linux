@@ -21,12 +21,12 @@ groupadd --system rtpproxy
 useradd -s /sbin/nologin --system -g rtpproxy rtpproxy		
 		]]>
 		</screen>
-		<para>配置 systemd 服务</para>
-		<screen>
-		<![CDATA[
-[root@production rtpproxy]# cp rpm/rtpproxy.sysconfig /etc/sysconfig/rtpproxy
+		<section>
+			<title>手工启动</title>
 
-[root@production rtpproxy]# ifconfig eth0
+			<screen>
+		<![CDATA[
+[root@netkiller ~]# ifconfig eth0
 eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
         inet 192.168.0.230  netmask 255.255.255.0  broadcast 192.168.0.255
         inet6 fe80::f816:3eff:feda:3218  prefixlen 64  scopeid 0x20<link>
@@ -35,13 +35,10 @@ eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
         RX errors 0  dropped 0  overruns 0  frame 0
         TX packets 377750798  bytes 112915670453 (105.1 GiB)
         TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
-
-[root@production rtpproxy]# vim /etc/sysconfig/rtpproxy
-OPTIONS="-A 121.37.215.250 -l 192.168.0.230 -s udp:127.0.0.1:7722 -m 16384 -M 32768"
 		]]>
-		</screen>
-		<para>rtpproxy 参数解释如下：</para>
-		<screen>
+			</screen>
+			<para>rtpproxy 参数解释如下：</para>
+			<screen>
 		<![CDATA[		
 -A 本机外网地址
 -l 本机内网侦听地址
@@ -57,20 +54,33 @@ log_level为日志级别，值如下
 DBUG INFO WARN ERR CRIT
 log_facility为日志输出到哪，利用的系统日志		
 		]]>
-		</screen>
-		<para></para>
-		<screen>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# rtpproxy -A 120.79.202.61 -l 172.22.11.163 -s udp:127.0.0.1:7722 -m 16384 -M 32768 -F
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>TCP/UDP Socket</title>
+			<para>配置 systemd 服务</para>
+			<screen>
 		<![CDATA[
-[root@production rtpproxy]# cp rpm/rtpproxy.socket /etc/systemd/system/sockets.target.wants/
-[root@production rtpproxy]# vim /etc/systemd/system/sockets.target.wants/rtpproxy.socket
+[root@netkiller ~]# cp rpm/rtpproxy.sysconfig /etc/sysconfig/rtpproxy		
+[root@netkiller ~]# vim /etc/sysconfig/rtpproxy
+OPTIONS="-A 121.37.215.250 -l 192.168.0.230 -s udp:127.0.0.1:7722 -m 16384 -M 32768"
+
+[root@netkiller ~]# cp rpm/rtpproxy.socket /etc/systemd/system/sockets.target.wants/
+[root@netkiller ~]# vim /etc/systemd/system/sockets.target.wants/rtpproxy.socket
 ListenStream=127.0.0.1:22222
 		]]>
-		</screen>
-		<para></para>
-		<screen>
+			</screen>
+			<para></para>
+			<screen>
 		<![CDATA[
-[root@production rtpproxy]# cp rpm/rtpproxy.service /etc/systemd/system/
-[root@production rtpproxy]# vim /etc/systemd/system/rtpproxy.service
+[root@netkiller ~]# cp rpm/rtpproxy.service /etc/systemd/system/
+[root@netkiller ~]# vim /etc/systemd/system/rtpproxy.service
 ExecStart=/usr/bin/rtpproxy -f -p /var/run/rtpproxy/rtpproxy.pid $OPTIONS
 改为
 ExecStart=/usr/local/bin/rtpproxy -f -p /var/run/rtpproxy/rtpproxy.pid $OPTIONS
@@ -82,7 +92,7 @@ Type=simple
 注释
 #Also=rtpproxy.socket
 
-[root@production yate]# cat /etc/systemd/system/rtpproxy.service 
+[root@netkiller ~]# cat /etc/systemd/system/rtpproxy.service 
 [Unit]
 Description=A symmetric RTP proxy
 After=network.target
@@ -100,29 +110,26 @@ ExecStart=/usr/local/bin/rtpproxy -f -p /var/run/rtpproxy/rtpproxy.pid $OPTIONS
 #Also=rtpproxy.socket
 WantedBy=multi-user.target
 		]]>
-		</screen>
-		<para></para>
-		<screen>
+			</screen>
+			<para></para>
+			<screen>
 		<![CDATA[
-[root@production yate]# mkdir /var/run/rtpproxy
-[root@production yate]# chown rtpproxy:rtpproxy /var/run/rtpproxy
+[root@netkiller ~]# mkdir /var/run/rtpproxy
+[root@netkiller ~]# chown rtpproxy:rtpproxy /var/run/rtpproxy
 
-[root@production yate]# systemctl restart rtpproxy
-
-
+[root@netkiller ~]# systemctl enable rtpproxy
+[root@netkiller ~]# systemctl restart rtpproxy
 		]]>
-		</screen>
-		
-		
-		<para></para>
-		<screen>
+			</screen>
+			<para></para>
+			<screen>
 		<![CDATA[
 vim /etc/rsyslog.d/50-default.conf
 local5.*        /var/log/rtpproxy.log
 		]]>
-		</screen>
-		<para></para>
-		<screen>
+			</screen>
+			<para></para>
+			<screen>
 		<![CDATA[
 vim /etc/logrotate.d/rtpproxy
 /var/log/rtpproxy.log {
@@ -135,9 +142,13 @@ vim /etc/logrotate.d/rtpproxy
   daily
 }		
 		]]>
-		</screen>
-		<para>UNIX Socket</para>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>UNIX Socket</title>
+
+			<para>UNIX Socket</para>
+			<screen>
 		<![CDATA[
 [Unit]
 Description=RTPProxy media server
@@ -172,9 +183,9 @@ TimeoutStopSec=10
 [Install]
 WantedBy=multi-user.target		
 		]]>
-		</screen>
-		<para>/etc/systemd/system/sockets.target.wants/rtpproxy.socket</para>
-		<screen>
+			</screen>
+			<para>/etc/systemd/system/sockets.target.wants/rtpproxy.socket</para>
+			<screen>
 		<![CDATA[
 [Socket]
 ListenStream=/var/run/rtpproxy/rtpproxy.sock
@@ -187,15 +198,15 @@ ExecStartPost=-/bin/chown rtpproxy:rtpproxy /var/run/rtpproxy
 WantedBy=sockets.target
 		
 		]]>
-		</screen>
-		<para></para>
-		<screen>
+			</screen>
+			<para></para>
+			<screen>
 		<![CDATA[
 systemctl start rtpproxy.socket
 systemctl start rtpproxy.service		
 		]]>
-		</screen>
-		
+			</screen>
+		</section>
 	</section>
 	<section id="rtpengine">
 		<title>rtpengine</title>

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.voip.xml 375 2012-03-21 03:00:42Z netkiller $ -->
-<chapter id="index"><?dbhtml dir="voip" ?>
-	<title>Voice over IP(VoIP)</title>
-	<para>安装环境 ubuntu 13.10</para>
 	&section.voip.freeswitch.xml;
 	&section.voip.kamailio.xml;
+<chapter id="index"><?dbhtml dir="voip" ?>
+	<title>其他 Voice over IP(VoIP)</title>
+	<para>安装环境 ubuntu 13.10</para>
+
 	&section.voip.yate.xml;
 	&section.voip.gatekeeper.xml;
 	&section.voip.opensips.xml;
@@ -14,10 +15,7 @@
 		<title>VOCAL (includes a SIP to H.323 translator)</title>
 		<para>http://www.vovida.org/</para>
 	</section>
-	
-	&section.voip.rtp.xml;
 
-	
 	<section>
 		<title>sngrep - SIP Messages flow viewer</title>
 		<section>
