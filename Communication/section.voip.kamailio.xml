@@ -80,6 +80,7 @@ tcp   LISTEN 0      1024                                                        
 dictionary.kamailio  kamailio.cfg  kamctlrc  pi_framework.xml  tls.cfg		
 		]]>
 		</screen>
+		<para>这里可以看到三个配置文件，kamailio.cfg 核心配置文件，kamctlrc 工具配置文件，主要是用于 kamctl 命令。kamctlrc 配置不影响 kamailio.cfg</para>
 		<para>备份配置文件，防止修改损坏</para>
 		<screen>
 		<![CDATA[
@@ -160,7 +161,7 @@ rtpproxy -A 139.9.54.211 -l 192.168.0.71 -s udp:127.0.0.1:7722 -F -m 35000 -M 65
 [root@netkiller ~]# dnf install -y kamailio-mysql		
 			]]>
 			</screen>
-			<para>配置 kamailio</para>
+			<para>kamailio 数据库连接配置 DBURL</para>
 			<screen>
 			<![CDATA[
 [root@netkiller ~]# cat /etc/kamailio/kamailio.cfg
@@ -182,7 +183,7 @@ listen=udp:192.168.0.71:5060 advertise 139.19.54.21:5060
 listen=tcp:192.168.0.71:5060 advertise 139.19.54.21:5060
 			]]>
 			</screen>
-			<para>配置数据库</para>
+			<para>配置数据库，kamctlrc 配置只作用于 kamctl 命令，不影响 kamailio.cfg 配置，所以kamailio数据库连接还要在 kamailio.cfg 中配置一次 DBURL。</para>
 			<screen>
 			<![CDATA[
 
@@ -869,7 +870,8 @@ tail -f /var/log/kamailio.log
 		</section>
 
 	</section>
-	<section id="kamctl">
+	&section.voip.rtp.xml;
+	<section id="kamailio.kamctl">
 		<title>管理 Kamailio</title>
 		<section>
 			<title>进程管理</title>
@@ -944,8 +946,6 @@ Updated subscriber, rows affected: 1
 			</section>
 		</section>
 
-	&section.voip.rtp.xml;
-
 		<section>
 			<title>监控模式</title>
 			<screen>
@@ -983,6 +983,94 @@ Shared Memory Statistics:
 			]]>
 				</screen>
 			</section>
+		</section>
+	</section>
+	<section id="kamailio.kamcmd">
+		<title>kamcmd</title>
+		<section>
+			<title>tm.stats</title>
+			<screen>
+			<![CDATA[
+[root@development ~]# kamcmd tm.stats
+{
+        current: 0
+        waiting: 0
+        total: 35
+        total_local: 0
+        rpl_received: 55
+        rpl_generated: 24
+        rpl_sent: 63
+        6xx: 0
+        5xx: 0
+        4xx: 8
+        3xx: 0
+        2xx: 27
+        created: 35
+        freed: 35
+        delayed_free: 0
+}			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title></title>
+			<screen>
+			<![CDATA[
+[root@development ~]# kamcmd core.ps
+133723
+main process - attendant
+133725
+udp receiver child=0 sock=172.22.11.163:5061 (120.79.202.61:5061)
+133726
+udp receiver child=1 sock=172.22.11.163:5061 (120.79.202.61:5061)
+133727
+udp receiver child=2 sock=172.22.11.163:5061 (120.79.202.61:5061)
+133728
+udp receiver child=3 sock=172.22.11.163:5061 (120.79.202.61:5061)
+133729
+udp receiver child=4 sock=172.22.11.163:5061 (120.79.202.61:5061)
+133730
+udp receiver child=5 sock=172.22.11.163:5061 (120.79.202.61:5061)
+133731
+udp receiver child=6 sock=172.22.11.163:5061 (120.79.202.61:5061)
+133732
+udp receiver child=7 sock=172.22.11.163:5061 (120.79.202.61:5061)
+133733
+slow timer
+133734
+timer
+133735
+secondary timer
+133736
+JSONRPCS FIFO
+133737
+JSONRPCS DATAGRAM
+133738
+USRLOC Timer
+133742
+ctl handler
+133745
+TIMER NH
+133748
+tcp receiver (generic) child=0
+133749
+tcp receiver (generic) child=1
+133751
+tcp receiver (generic) child=2
+133753
+tcp receiver (generic) child=3
+133755
+tcp receiver (generic) child=4
+133757
+tcp receiver (generic) child=5
+133759
+tcp receiver (generic) child=6
+133761
+tcp receiver (generic) child=7
+133763
+tcp main process			
+			]]>
+			</screen>
 		</section>
 	</section>
 </chapter>
