@@ -376,9 +376,9 @@ Description  : FreeSWITCH is an open source telephony platform designed to facil
 		</para>
 		<screen>
 		<![CDATA[
-[root@netkiller ~]# dnf install -y https://pkgs.sysadmins.ws/el8/extras/x86_64/compat-openssl10-1.0.2o-3.el8.x86_64.rpm
+[root@netkiller ~]# dnf install -y https://pkgs.sysadmins.ws/el9/base/x86_64/compat-openssl10-1.0.2u-1.el9.x86_64.rpm
 [root@netkiller ~]# dnf install -y https://repo.almalinux.org/almalinux/9/CRB/x86_64/os/Packages/libmemcached-awesome-1.1.0-12.el9.x86_64.rpm
-[root@netkiller ~]# dnf install -y https://cdn.amazonlinux.com/2/core/2.0/x86_64/6b0225ccc542f3834c95733dcf321ab9f1e77e6ca6817469771a8af7c49efe6c/../../../../../blobstore/9696af59b58e65548eb6c3256ef10b139190dee9c3efd8a28602db3497a80441/ldns-1.6.16-10.amzn2.x86_64.rpm
+[root@netkiller ~]# dnf install -y https://dl.rockylinux.org/pub/rocky/9/AppStream/x86_64/os/Packages/l/ldns-1.7.1-12.el9.x86_64.rpm
 [root@netkiller ~]# dnf install -y freeswitch-config-vanilla freeswitch-lang-en freeswitch-sounds-en-us-* freeswitch-sounds-music-* freeswitch-codec-opus freeswitch-lua
 		]]>
 		</screen>
