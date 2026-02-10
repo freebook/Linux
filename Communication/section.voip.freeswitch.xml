@@ -2,9 +2,538 @@
 <chapter id="freeswitch">
 	<title>FreeSWITCH</title>
 	<ulink url="https://www.freeswitch.org/" />
+	<section id="freeswitch.docker">
+		<title>Docker 安装</title>
+		<screen>
+		<![CDATA[
+docker volume create --name freeswitch-sounds 		
+docker pull safarov/freeswitch:latest
+docker run --net=host --name freeswitch \
+           -e SOUND_RATES=8000:16000 \
+           -e SOUND_TYPES=music:en-us-callie \
+           -v freeswitch-sounds:/usr/share/freeswitch/sounds \
+           -v /etc/freeswitch/:/etc/freeswitch \
+           safarov/freeswitch	
+		]]>
+		</screen>
+		<para>netkiller-devops Docker 编排工具</para>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# pip install netkiller-devops		
+[root@netkiller ~]# cat freeswitch.py 
+#!/usr/bin/env python3
+##################################################
+# Home  : https://www.netkiller.cn
+# Author: Neo <netkiller@msn.com>
+# Upgrade: 2026-02-09
+# Docker freeswitch
+##################################################
 
-	<section id="freeswitch.signup">
-		<title>注册用户并创建令牌</title>
+import sys
+
+try:
+    sys.path.insert(0, ".")
+    from netkiller.docker import *
+except ModuleNotFoundError as err:
+    print("pip install netkiller-devops, %s" % (err))
+    exit()
+
+# -----------------------------------------------------------------------------------------------
+development = Composes("development")
+testing = Composes("testing")
+production = Composes("production")
+# -----------------------------------------------------------------------------------------------
+volumes = Volumes("freeswitch-sounds")
+
+freeswitch = Services("freeswitch")
+freeswitch.container_name("freeswitch")
+freeswitch.image("safarov/freeswitch:latest")
+freeswitch.restart("unless-stopped")
+freeswitch.environment({"SOUND_RATES": "8000:16000", "SOUND_TYPES": "music:en-us-callie"})
+freeswitch.volumes(["freeswitch-sounds:/usr/share/freeswitch/sounds","/etc/freeswitch/:/etc/freeswitch"])
+freeswitch.network_mode('host')
+#freeswitch.ports(["5060:5060","5060:5060/udp","16384-32768:16384-32768/udp","5066:5066","7443:7443"])
+# freeswitch.working_dir("/app")
+development.services(freeswitch)
+development.volumes(volumes)
+# -----------------------------------------------------------------------------------------------
+if __name__ == "__main__":
+    try:
+        docker = Docker()
+        docker.none()
+        # docker.env({'DOCKER_HOST':'ssh://root@192.168.30.13','COMPOSE_PROJECT_NAME':'experiment'})
+        # docker.sysctl({"vm.overcommit_memory": "1"})
+        docker.environment(development)
+        # docker.environment(testing)
+        # docker.environment(production)
+        docker.main()
+    except KeyboardInterrupt:
+        print("Crtl+C Pressed. Shutting down.")		
+		]]>
+		</screen>
+		<para>安装用户管理工具</para>
+		<screen>
+		<![CDATA[
+pip install freeswitch			
+		]]>
+		</screen>
+		<section>
+			<title>配置 freeswitch</title>
+			<section id="freeswitch.etc">
+				<title>备份 freeswitch 配置文件</title>
+				<screen>
+				<![CDATA[
+cp /etc/freeswitch/vars.xml{,.backup}
+cp /etc/freeswitch/sip_profiles/internal.xml{,.backup}
+cp /etc/freeswitch/sip_profiles/external.xml{,.backup}
+cp /etc/freeswitch/dialplan/default.xml{,.backup}
+cp /etc/freeswitch/dialplan/public.xml{,.backup}
+cp /etc/freeswitch/tls/wss.pem{,.backup}
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>基本配置</title>
+				<para>修改默认密码</para>
+				<screen>
+				<![CDATA[
+  <X-PRE-PROCESS cmd="set" data="default_password=13113668890" />				
+				]]>
+				</screen>
+				<para>配置SIP域</para>
+				<screen>
+				<![CDATA[
+  <X-PRE-PROCESS cmd="set" data="domain=pbx.netkiller.cn"/>				
+				]]>
+				</screen>
+				<para>监听端口修改未 5061</para>
+				<screen>
+				<![CDATA[
+ <X-PRE-PROCESS cmd="set" data="internal_sip_port=5061"/>
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>配置拨出规则号段</title>
+				<screen>
+				<![CDATA[
+    <extension name="Local_Extension">
+        <condition field="destination_number" expression="^(1\d{2,3}|46\d{5})$">
+        <action application="export" data="dialed_extension=$1"/>
+        <!-- bind_meta_app can have these args <key> [a|b|ab] [a|b|o|s] <app> -->
+        <action application="bind_meta_app" data="1 b s execute_extension::dx XML features"/>
+        <action application="bind_meta_app" data="2 b s record_session::$${recordings_dir}/${caller_id_number}.${strftime(%Y-%m-%d-%H-%M-%S)}.wav"/>
+        <action application="bind_meta_app" data="3 b s execute_extension::cf XML features"/>
+        <action application="bind_meta_app" data="4 b s execute_extension::att_xfer XML features"/>
+        <action application="set" data="ringback=${us-ring}"/>
+        <action application="set" data="transfer_ringback=$${hold_music}"/>
+        <action application="set" data="call_timeout=30"/>
+        <!-- <action application="set" data="sip_exclude_contact=${network_addr}"/> -->
+        <action application="set" data="hangup_after_bridge=true"/>
+        <!--<action application="set" data="continue_on_fail=NORMAL_TEMPORARY_FAILURE,USER_BUSY,NO_ANSWER,TIMEOUT,NO_ROUTE_DESTINATION"/> -->
+        <action application="set" data="continue_on_fail=true"/>
+        <action application="hash" data="insert/${domain_name}-call_return/${dialed_extension}/${caller_id_number}"/>
+        <action application="hash" data="insert/${domain_name}-last_dial_ext/${dialed_extension}/${uuid}"/>
+        <action application="set" data="called_party_callgroup=${user_data(${dialed_extension}@${domain_name} var callgroup)}"/>
+        <action application="hash" data="insert/${domain_name}-last_dial_ext/${called_party_callgroup}/${uuid}"/>
+        <action application="hash" data="insert/${domain_name}-last_dial_ext/global/${uuid}"/>
+        <!--<action application="export" data="nolocal:rtp_secure_media=${user_data(${dialed_extension}@${domain_name} var rtp_secure_media)}"/>-->
+        <action application="hash" data="insert/${domain_name}-last_dial/${called_party_callgroup}/${uuid}"/>
+        <action application="bridge" data="user/${dialed_extension}@${domain_name}"/>
+        <action application="answer"/>
+        <action application="sleep" data="1000"/>
+        <action application="bridge" data="loopback/app=voicemail:default ${domain_name} ${dialed_extension}"/>
+      </condition>
+    </extension>				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>禁用外部配置</title>
+				<screen>
+				<![CDATA[
+[root@netkiller ~]# mv /etc/freeswitch/sip_profiles/external.xml /etc/freeswitch/sip_profiles/external.xml.backup 
+[root@netkiller ~]# mv /etc/freeswitch/sip_profiles/external-ipv6.xml /etc/freeswitch/sip_profiles/external-ipv6.xml.backup
+				]]>
+				</screen>
+				<screen>
+				<![CDATA[
+[root@netkiller ~]# docker exec -it freeswitch fs_cli -x "sofia status profile external" 
+Invalid Profile!
+
+[root@netkiller ~]# ss -lnt| grep 5080				
+				]]>
+				</screen>
+			</section>
+			<section>
+				<title>Websocket</title>
+				<para>配置 Websocket 证书，使用 certbot 工具可以创建免费 SSL 证书</para>
+				<para>合并 Let’s Encrypt 证书到 wss.pem 文件</para>
+				<para>Certificate is saved at:
+					/etc/letsencrypt/live/netkiller.cn/fullchain.pem</para>
+				<para>Key is saved at:
+					/etc/letsencrypt/live/netkiller.cn/privkey.pem</para>
+				<screen>
+				<![CDATA[
+[root@netkiller ~]# cat /etc/letsencrypt/live/netkiller.cn/fullchain.pem /etc/letsencrypt/live/netkiller.cn/privkey.pem > /etc/freeswitch/tls/wss.pem
+				]]>
+				</screen>
+				<screen>
+				<![CDATA[
+[root@netkiller ~]# vim /etc/freeswitch/sip_profiles/internal.xml
+<param name="ws-binding"  value=":5066"/>
+<param name="wss-binding" value=":7443"/>
+				]]>
+				</screen>
+				<para>检查证书</para>
+				<screen>
+				<![CDATA[
+neo@Mac workspace % openssl s_client -connect pbx.netkiller.cn:7443 > /tmp/test.txt
+Connecting to 120.79.201.161
+depth=2 C=US, O=Internet Security Research Group, CN=ISRG Root X1
+verify return:1
+depth=1 C=US, O=Let's Encrypt, CN=E7
+verify return:1
+depth=0 CN=*.netkiller.cn
+verify return:1
+
+
+neo@Mac workspace % 
+neo@Mac workspace % cat /tmp/test.txt 
+CONNECTED(00000005)
+---
+Certificate chain
+ 0 s:CN=*.netkiller.cn
+   i:C=US, O=Let's Encrypt, CN=E7
+   a:PKEY: EC, (prime256v1); sigalg: ecdsa-with-SHA384
+   v:NotBefore: Feb 10 00:03:11 2026 GMT; NotAfter: May 11 00:03:10 2026 GMT
+ 1 s:C=US, O=Let's Encrypt, CN=E7
+   i:C=US, O=Internet Security Research Group, CN=ISRG Root X1
+   a:PKEY: EC, (secp384r1); sigalg: sha256WithRSAEncryption
+   v:NotBefore: Mar 13 00:00:00 2024 GMT; NotAfter: Mar 12 23:59:59 2027 GMT
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIIDhzCCAw6gAwIBAgISBYDGIz+ODFmShIvoPOFY6yQHMAoGCCqGSM49BAMDMDIx
+CzAJBgNVBAYTAlVTMRYwFAYDVQQKEw1MZXQncyBFbmNyeXB0MQswCQYDVQQDEwJF
+NzAeFw0yNjAyMTAwMDAzMTFaFw0yNjA1MTEwMDAzMTBaMBkxFzAVBgNVBAMMDiou
+bmV0a2lsbGVyLmNuMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEnEslqbCRqtXc
+aTZthfMQ6a5HEfvlRDBJCSWsUBA2ZaZk+t3uNAtpTtcyRnzbyQDv19uESKdJjdfX
+6FetkZZEF6OCAhswggIXMA4GA1UdDwEB/wQEAwIHgDAdBgNVHSUEFjAUBggrBgEF
+BQcDAQYIKwYBBQUHAwIwDAYDVR0TAQH/BAIwADAdBgNVHQ4EFgQUqo1NperddSTG
+v19EejEFi4KbZZIwHwYDVR0jBBgwFoAUrkie3IcdRKBv2qLlYHQEeMKcAIAwMgYI
+KwYBBQUHAQEEJjAkMCIGCCsGAQUFBzAChhZodHRwOi8vZTcuaS5sZW5jci5vcmcv
+MBkGA1UdEQQSMBCCDioubmV0a2lsbGVyLmNuMBMGA1UdIAQMMAowCAYGZ4EMAQIB
+MCwGA1UdHwQlMCMwIaAfoB2GG2h0dHA6Ly9lNy5jLmxlbmNyLm9yZy84LmNybDCC
+AQQGCisGAQQB1nkCBAIEgfUEgfIA8AB2AEmcm2neHXzs/DbezYdkprhbrwqHgBnR
+VVL76esp3fjDAAABnEURhPYAAAQDAEcwRQIgXdNvyVpWZ19eNM84Hqd0DoJlqcU6
+Z584Sj35nYRtc40CIQC8490w4yxsUjQJKZVdoeSNlLduLzs/tmVXIE+PHphL0wB2
+AMs49xWJfIShRF9bwd37yW7ymlnNRwppBYWwyxTDFFjnAAABnEURhQgAAAQDAEcw
+RQIhANxlZboRKZwSzHs9d6MOspV4vWZGKfEf6CZ2Nyt4O2M+AiA3GD55aFi25DSd
+s1r/kZwBpz7i+UPWY0zHy66Qr7bT1jAKBggqhkjOPQQDAwNnADBkAjAmqbMXOD91
+4Aoe8C4KljbS67LyD/cDcEzP7DmO/BFXNWB8LfWi2YcdXMW1rmlqNGECME4U91tv
+zd+lMc+auF1+dS+RxvJGq46Ddv3aetq/kYRTUWko9/2xPYbpcpKzfGrsEQ==
+-----END CERTIFICATE-----
+subject=CN=*.netkiller.cn
+issuer=C=US, O=Let's Encrypt, CN=E7
+---
+No client certificate CA names sent
+Peer signing digest: SHA256
+Peer signature type: ecdsa_secp256r1_sha256
+Peer Temp Key: X25519, 253 bits
+---
+SSL handshake has read 2398 bytes and written 1627 bytes
+Verification: OK
+---
+New, TLSv1.3, Cipher is TLS_AES_256_GCM_SHA384
+Protocol: TLSv1.3
+Server public key is 256 bit
+This TLS version forbids renegotiation.
+Compression: NONE
+Expansion: NONE
+No ALPN negotiated
+Early data was not sent
+Verify return code: 0 (ok)
+---
+HTTP/1.1 400 Bad Request
+Sec-WebSocket-Version: 13
+
+---
+Post-Handshake New Session Ticket arrived:
+SSL-Session:
+    Protocol  : TLSv1.3
+    Cipher    : TLS_AES_256_GCM_SHA384
+    Session-ID: 9C01DBA1BEC52859B5ACB50D9679B2170745410B8D3F4479A9E0BD93B5ACFB27
+    Session-ID-ctx: 
+    Resumption PSK: 5E56D1354DE5640D683F06A8D5A5BC3860EC9FF190DD71DD84BFD94735A3ECA0F9418D6E308ACCD01F7A1822323FFA2F
+    PSK identity: None
+    PSK identity hint: None
+    SRP username: None
+    TLS session ticket lifetime hint: 7200 (seconds)
+    TLS session ticket:
+    0000 - c6 e4 6e e1 78 48 0b 90-13 7f a5 d5 ee d5 17 92   ..n.xH..........
+    0010 - ed e9 2f d1 27 d9 8e 29-d2 02 a3 2c ee 10 20 48   ../.'..)...,.. H
+    0020 - d6 7d 88 50 9f 81 e2 ab-85 4e 96 17 b5 42 70 0f   .}.P.....N...Bp.
+    0030 - e7 c4 47 64 aa e4 94 60-5d 2a c8 1f 71 bf 47 73   ..Gd...`]*..q.Gs
+    0040 - 24 91 31 49 6c ba e3 79-9d 0f 8b 8f 34 c2 6e ac   $.1Il..y....4.n.
+    0050 - cc b3 e6 f5 26 ee 68 99-b0 04 94 19 79 8a 71 c8   ....&.h.....y.q.
+    0060 - 4b 2b fe 06 42 cc 37 89-7c e7 2a 18 6c d7 bb 36   K+..B.7.|.*.l..6
+    0070 - 69 e4 28 4a d9 ac 51 d1-98 04 73 7a 98 19 87 a6   i.(J..Q...sz....
+    0080 - e9 ef d3 48 6e c4 7b b0-4d da 27 d4 50 fe 39 ab   ...Hn.{.M.'.P.9.
+    0090 - 64 40 f8 e7 6b 27 23 fa-80 06 7f 72 df 58 21 8d   d@..k'#....r.X!.
+    00a0 - 40 67 c6 f6 c7 06 9b ca-a1 21 b5 b1 c2 cf af e8   @g.......!......
+    00b0 - e9 1a 2f de 94 61 c6 3b-7e 3e d7 e6 90 08 b8 28   ../..a.;~>.....(
+    00c0 - 20 31 34 07 64 53 61 5b-8b da 95 37 7f a6 1d de    14.dSa[...7....
+
+    Start Time: 1770698951
+    Timeout   : 7200 (sec)
+    Verify return code: 0 (ok)
+    Extended master secret: no
+    Max Early Data: 0
+---
+read R BLOCK
+---
+Post-Handshake New Session Ticket arrived:
+SSL-Session:
+    Protocol  : TLSv1.3
+    Cipher    : TLS_AES_256_GCM_SHA384
+    Session-ID: 48BBF0CAEA2D59EB2F47501D436B5887285B1612A4D0341FF00E82896C0FDC59
+    Session-ID-ctx: 
+    Resumption PSK: C9018964C38D7A4764FFC0B0A80B38AC7A2969EB61D6180695E5033F3374CA5944D1E74A9E5B91DD177BA5EF47E840D9
+    PSK identity: None
+    PSK identity hint: None
+    SRP username: None
+    TLS session ticket lifetime hint: 7200 (seconds)
+    TLS session ticket:
+    0000 - c6 e4 6e e1 78 48 0b 90-13 7f a5 d5 ee d5 17 92   ..n.xH..........
+    0010 - 43 21 fd 01 6b 00 b4 13-c2 dc 72 9b 3c 0f 7c 2c   C!..k.....r.<.|,
+    0020 - 13 75 0f 1b e9 7f 19 8e-b8 bb 82 f5 39 f0 c4 9a   .u..........9...
+    0030 - 22 d7 bf ee 36 8e e9 e6-09 03 49 4f 13 4a da 9e   "...6.....IO.J..
+    0040 - 29 f3 13 3f 31 e5 75 7e-ba 30 38 d0 d9 e9 aa a8   )..?1.u~.08.....
+    0050 - 56 32 6a 6e d2 f4 76 d9-94 53 3b e8 8f 22 f3 45   V2jn..v..S;..".E
+    0060 - 3f 7f 46 39 0f 01 5e 1e-21 34 ad 77 59 c4 2e e2   ?.F9..^.!4.wY...
+    0070 - 69 48 34 bd ef 53 35 20-28 d4 11 a6 f5 a1 75 f9   iH4..S5 (.....u.
+    0080 - 13 0b 4b a4 1b 1d b9 4c-97 f2 6d f7 f5 03 59 58   ..K....L..m...YX
+    0090 - 12 c2 fb 5c 5b 09 25 37-41 39 62 6f 60 ad 16 93   ...\[.%7A9bo`...
+    00a0 - 4d b8 40 26 65 df 8a f0-36 49 1b 14 29 dd fe 24   M.@&e...6I..)..$
+    00b0 - 86 1e 22 55 ec 97 c9 17-76 44 40 c5 9a 2a 9e 26   .."U....vD@..*.&
+    00c0 - f3 70 5e 19 ee d1 e5 22-73 4b fa 15 89 0e 3c a6   .p^...."sK....<.
+
+    Start Time: 1770698951
+    Timeout   : 7200 (sec)
+    Verify return code: 0 (ok)
+    Extended master secret: no
+    Max Early Data: 0
+---
+read R BLOCK
+closed				
+				]]>
+				</screen>
+				<para>若想禁用 Websocket</para>
+				<screen>
+				<![CDATA[
+[root@netkiller ~]# grep verto autoload_configs/modules.conf.xml 
+          <!-- <load module="mod_verto"/> -->
+          				
+[root@netkiller ~]# cat sip_profiles/internal.xml |egrep "5066|7443"
+            <!-- <param name="ws-binding"  value=":5066"/> -->
+            <!-- <param name="wss-binding" value=":7443"/> -->				
+				]]>
+				</screen>
+				<screen>
+				<![CDATA[
+[root@netkiller ~]# docker exec -it freeswitch fs_cli -x "sofia status profile internal" 
+=================================================================================================
+Name                    internal
+Domain Name             N/A
+Auto-NAT                false
+DBName                  sofia_reg_internal
+Pres Hosts              pbx.netkiller.cn,172.22.11.164
+Dialplan                XML
+Context                 public
+Challenge Realm         auto_from
+RTP-IP                  172.22.11.164
+Ext-RTP-IP              120.79.201.161
+SIP-IP                  172.22.11.164
+Ext-SIP-IP              120.79.201.161
+URL                     sip:mod_sofia@120.79.201.161:5061
+BIND-URL                sip:mod_sofia@120.79.201.161:5061;maddr=172.22.11.164;transport=udp,tcp
+HOLD-MUSIC              local_stream://moh
+OUTBOUND-PROXY          N/A
+CODECS IN               OPUS,G722,PCMU,PCMA,H264,VP8
+CODECS OUT              OPUS,G722,PCMU,PCMA,H264,VP8
+TEL-EVENT               101
+DTMF-MODE               rfc2833
+CNG                     13
+SESSION-TO              0
+MAX-DIALOG              0
+MAX-RECV-RPS            1000
+NOMEDIA                 false
+LATE-NEG                true
+PROXY-MEDIA             false
+AGGRESSIVENAT           false
+CALLS-IN                2
+FAILED-CALLS-IN         0
+CALLS-OUT               1
+FAILED-CALLS-OUT        0
+REGISTRATIONS           9				
+				]]>
+				</screen>
+			</section>
+		</section>
+		<section id="freeswitch.docker.fs_cli">
+			<title>管理 freeswitch</title>
+			<screen>
+			<![CDATA[
+# 解除模块
+docker exec -it freeswitch fs_cli -x "unload mod_signalwire"
+			
+# 查看所有SIP profile的状态
+docker exec -it freeswitch fs_cli -x "sofia status"
+
+# 查看某个profile的详细信息（如internal或external）
+docker exec -it freeswitch fs_cli -x "sofia status profile internal"
+
+# 查看 internal profile 下的所有注册用户信息（已注册的终端列表）
+docker exec -it freeswitch fs_cli -x "sofia status profile internal reg"
+
+# 重新加载XML配置（包括用户、拨号计划等）
+docker exec -it freeswitch fs_cli -x "reloadxml"
+
+# 列出当前所有正在运行的会议室及相关信息
+docker exec -it freeswitch fs_cli -x "conference list"
+
+# 挂断指定UUID的通话
+docker exec -it freeswitch fs_cli -x "uuid_kill <uuid>"
+
+# 显示当前所有活动的通道（channels），包括呼叫详情
+docker exec -it freeswitch fs_cli -x "show channels"
+
+# 查看指定 UUID 的通道详细信息，UUID 是通话的唯一标识符
+docker exec -it freeswitch fs_cli -x "uuid_dump 44e97f0b-bc3c-41d8-9929-936a890c3cb4"
+
+# 使用 Lua 脚本 dissolve_conference.lua 解散会议室，参数是会议室ID和发起者IP（这里示例是会议室12345，IP 154.11.80.119）
+docker exec -it freeswitch fs_cli -x "luarun dissolve_conference.lua 12345-154.11.80.119"			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+[root@testing default]# docker exec -it freeswitch fs_cli -x "sofia status"
+                     Name          Type                                       Data      State
+=================================================================================================
+            external-ipv6       profile   sip:mod_sofia@[2408:4003:1150:2600:5ec0:2ed4:4199:547e]:5080  RUNNING (0)
+            172.22.11.164         alias                                   internal      ALIASED
+                 external       profile          sip:mod_sofia@120.79.201.161:5080      RUNNING (0)
+    external::example.com       gateway                    sip:joeuser@example.com      NOREG
+            internal-ipv6       profile   sip:mod_sofia@[2408:4003:1150:2600:5ec0:2ed4:4199:547e]:5060  RUNNING (0)
+                 internal       profile          sip:mod_sofia@120.79.201.161:5060      RUNNING (0)
+=================================================================================================
+4 profiles 1 alias
+			]]>
+			</screen>
+			<para></para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# docker exec -it freeswitch fs_cli -x "sofia status profile internal"
+=================================================================================================
+Name                    internal
+Domain Name             N/A
+Auto-NAT                false
+DBName                  sofia_reg_internal
+Pres Hosts              pbx.netkiller.cn,172.22.11.164
+Dialplan                XML
+Context                 public
+Challenge Realm         auto_from
+RTP-IP                  172.22.11.164
+Ext-RTP-IP              120.79.201.161
+SIP-IP                  172.22.11.164
+Ext-SIP-IP              120.79.201.161
+URL                     sip:mod_sofia@120.79.201.161:5060
+BIND-URL                sip:mod_sofia@120.79.201.161:5060;maddr=172.22.11.164;transport=udp,tcp
+TLS-URL                 sip:mod_sofia@120.79.201.161:5061
+TLS-BIND-URL            sips:mod_sofia@120.79.201.161:5061;maddr=172.22.11.164;transport=tls
+WS-BIND-URL             sip:mod_sofia@172.22.11.164:5066;transport=ws
+WSS-BIND-URL            sips:mod_sofia@172.22.11.164:7443;transport=wss
+HOLD-MUSIC              local_stream://moh
+OUTBOUND-PROXY          N/A
+CODECS IN               OPUS,G722,PCMU,PCMA,H264,VP8
+CODECS OUT              OPUS,G722,PCMU,PCMA,H264,VP8
+TEL-EVENT               101
+DTMF-MODE               rfc2833
+CNG                     13
+SESSION-TO              0
+MAX-DIALOG              0
+MAX-RECV-RPS            1000
+NOMEDIA                 false
+LATE-NEG                true
+PROXY-MEDIA             false
+AGGRESSIVENAT           false
+CALLS-IN                43
+FAILED-CALLS-IN         43
+CALLS-OUT               0
+FAILED-CALLS-OUT        0
+REGISTRATIONS           4			
+			]]>
+			</screen>
+			<para>查看注册情况</para>
+			<screen>
+			<![CDATA[
+[root@netkiller ~]# docker exec -it freeswitch fs_cli -x "sofia status profile internal reg"
+
+Registrations:
+=================================================================================================
+Call-ID:        4640d1c4-68b2ec4e@192.168.23.21
+User:           1720@pbx.netkiller.cn
+Contact:        "1720" <sip:1720@100.64.56.237:65477;fs_nat=yes;fs_path=sip%3A1720%40183.14.132.54%3A17945>
+Agent:          Linksys/PAP2T-5.1.6(LS)
+Status:         Registered(UDP-NAT)(unknown) EXP(2026-02-10 03:17:18) EXPSECS(860)
+Ping-Status:    Reachable
+Ping-Time:      0.00
+Host:           testing
+IP:             183.14.132.54
+Port:           17945
+Auth-User:      1720
+Auth-Realm:     pbx.netkiller.cn
+MWI-Account:    1720@pbx.netkiller.cn
+
+Call-ID:        shfboftsbn9tnfnmk1ivib
+User:           4600442@pbx.netkiller.cn
+Contact:        "" <sip:0ia9s501@qkr364fkldvi.invalid;transport=ws;fs_nat=yes;fs_path=sip%3A0ia9s501%40116.24.64.62%3A60193%3Btransport%3Dwss>
+Agent:          JsSIP 3.13.4
+Status:         Registered(WSS-NAT)(unknown) EXP(2026-02-10 03:10:22) EXPSECS(444)
+Ping-Status:    Reachable
+Ping-Time:      0.00
+Host:           testing
+IP:             116.24.64.62
+Port:           60193
+Auth-User:      4600442
+Auth-Realm:     pbx.netkiller.cn
+MWI-Account:    4600442@pbx.netkiller.cn
+
+Call-ID:        349CB636C2D53CDC0516A816AA744C0A8FFD08B0
+User:           4600441@pbx.netkiller.cn
+Contact:        "" <sip:4600441@172.16.0.24:43769;rinstance=402A5B8C;transport=tcp;fs_nat=yes;fs_path=sip%3A4600441%40183.14.29.46%3A34738%3Brinstance%3D402A5B8C%3Btransport%3Dtcp>
+Agent:          Groundwire/5.3.6 (build 1431795; Android 8.1.0; arm64-v8a)
+Status:         Registered(TCP-NAT)(unknown) EXP(2026-02-10 03:13:57) EXPSECS(659)
+Ping-Status:    Reachable
+Ping-Time:      0.00
+Host:           testing
+IP:             183.14.29.46
+Port:           34738
+Auth-User:      4600441
+Auth-Realm:     pbx.netkiller.cn
+MWI-Account:    4600441@pbx.netkiller.cn
+
+Total items returned: 3
+=================================================================================================			
+			]]>
+			</screen>
+		</section>
+	</section>
+
+	<section id="freeswitch.dnf">
+		<title>Rocky Linux / AlmiLinux 安装</title>
+		<para>注册用户并创建令牌</para>
 		<para>
 			前往
 			<ulink url="https://signalwire.com" />
@@ -16,9 +545,8 @@
 		</para>
 		<para>Token Name 处输入令牌名称，然后点击 “Generate Token” 生成令牌。</para>
 		<para>PERSONAL ACCESS TOKEN 下面一串字符，就是令牌，请复制出来并保存好。</para>
-	</section>
-	<section id="freeswitch.dnf">
-		<title>Rocky Linux / AlmiLinux 安装</title>
+
+
 		<screen>
 		<![CDATA[
 echo "netkiller" > /etc/yum/vars/signalwireusername
@@ -1373,7 +1901,9 @@ echo '<X-PRE-PROCESS cmd="set" data="proxy_media=true"/>' >> /etc/freeswitch/var
     </extension>
 			]]>
 		</screen>
-		<para>创建一组用户 callgroup 相同，此处的 callgroup 与 组呼叫 没有任何关系，callgroup 是指代接电话组。</para>
+		<para>创建一组用户 callgroup 相同，此处的 callgroup 与 组呼叫 没有任何关系，callgroup
+			是指代接电话组。
+		</para>
 		<screen>
 			<![CDATA[
 [root@production default]# cat /etc/freeswitch/directory/default/177.xml 
@@ -2308,7 +2838,9 @@ Certificate:
 		</section>
 		<section>
 			<title>开启TLS，监听 5061 端口</title>
-			<para>编辑 /etc/freeswitch/vars.xml 配置文件，把 internal_ssl_enable 和 external_ssl_enable 改为 </para>
+			<para>编辑 /etc/freeswitch/vars.xml 配置文件，把 internal_ssl_enable 和
+				external_ssl_enable 改为
+			</para>
 			<screen>
 			<![CDATA[
 [root@production ~]# cat /etc/freeswitch/vars.xml
