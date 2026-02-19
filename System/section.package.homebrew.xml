@@ -1,40 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="homebrew">
-	<title>Homebrew</title>
-	<para>Homebrew 最初是为 Mac 设计的包管理工具，现在已经移植到了Linux系统。</para>
-	<screen>
+	<title>Zerobrew / Homebrew</title>
+	<section>
+		<title>Zerobrew</title>
+		<screen>
+		<![CDATA[
+curl -fsSL https://zerobrew.rs/install | bash		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>Homebrew</title>
+		<para>Homebrew 最初是为 Mac 设计的包管理工具，现在已经移植到了Linux系统。</para>
+		<screen>
 	<![CDATA[
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"	
 	]]>
-	</screen>
-	<para>国内镜像安装</para>
-	<screen>
+		</screen>
+		<para>国内镜像安装</para>
+		<screen>
 	<![CDATA[
 /bin/zsh -c "$(curl -fsSL https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)"
 	]]>
-	</screen>
-	<para>运行下面命令，让brew生效</para>
-	<screen>
+		</screen>
+		<para>运行下面命令，让brew生效</para>
+		<screen>
 	<![CDATA[
 source /Users/neo/.zprofile	
 neo@MacBook-Pro-M2 ops % git config --global --add safe.directory /opt/homebrew/Library/Taps/homebrew/homebrew-core
 neo@MacBook-Pro-M2 ops % git config --global --add safe.directory /opt/homebrew/Library/Taps/homebrew/homebrew-cask
 
 	]]>
-	</screen>
-	<section>
-		<title>OpenJDK 8</title>
-		<screen>
+		</screen>
+		<section>
+			<title>OpenJDK 8</title>
+			<screen>
 		<![CDATA[
 brew install openjdk@8
 sudo ln -sfn /usr/local/opt/openjdk@8/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-8.jdk		
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>Maven</title>
-		<para>配置 Maven</para>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>Maven</title>
+			<para>配置 Maven</para>
+			<screen>
 		<![CDATA[
 Neo-iMac:~ neo$ brew info maven
 maven: stable 3.8.3 (bottled)
@@ -53,9 +63,9 @@ install: 63,168 (30 days), 200,658 (90 days), 634,767 (365 days)
 install-on-request: 62,864 (30 days), 199,051 (90 days), 630,240 (365 days)
 build-error: 0 (30 days)		
 		]]>
-		</screen>
-		<para>找到 /usr/local/Cellar/maven/3.8.3 文件夹</para>
-		<screen>
+			</screen>
+			<para>找到 /usr/local/Cellar/maven/3.8.3 文件夹</para>
+			<screen>
 		<![CDATA[
 Neo-iMac:~ neo$ vim /usr/local/Cellar/maven/3.8.3/libexec/conf/settings.xml
 
@@ -69,26 +79,26 @@ Neo-iMac:~ neo$ vim /usr/local/Cellar/maven/3.8.3/libexec/conf/settings.xml
       <blocked>true</blocked>
     </mirror>		
 		]]>
-		</screen>
-	</section>
-	<section>
-		<title>版本切换</title>
-		<para>例如安装了多个版本的工具</para>
-		<screen>
+			</screen>
+		</section>
+		<section>
+			<title>版本切换</title>
+			<para>例如安装了多个版本的工具</para>
+			<screen>
 		<![CDATA[
 Neo-iMac:~ neo$ brew install gradle
 Neo-iMac:~ neo$ brew install gradle@6		
 		]]>
-		</screen>
-		<para>默认是最新版切换到6版本方法</para>	
-		<screen>
+			</screen>
+			<para>默认是最新版切换到6版本方法</para>
+			<screen>
 		<![CDATA[
 Neo-iMac:~ neo$ brew unlink gradle
 Neo-iMac:~ neo$ brew link gradle@6
 		]]>
-		</screen>
-		<para></para>
-		<screen>
+			</screen>
+			<para></para>
+			<screen>
 		<![CDATA[
 Neo-iMac:~ neo$  gradle -v
 
@@ -116,6 +126,7 @@ Ant:          Apache Ant(TM) version 1.10.9 compiled on September 27 2020
 JVM:          11.0.16.1 (Homebrew 11.0.16.1+0)
 OS:           Mac OS X 12.5 x86_64
 		]]>
-		</screen>
+			</screen>
+		</section>
 	</section>
 </section>
