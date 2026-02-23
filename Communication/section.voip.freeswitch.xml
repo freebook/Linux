@@ -170,9 +170,11 @@ Invalid Profile!
 				<para>配置 Websocket 证书，使用 certbot 工具可以创建免费 SSL 证书</para>
 				<para>合并 Let’s Encrypt 证书到 wss.pem 文件</para>
 				<para>Certificate is saved at:
-					/etc/letsencrypt/live/netkiller.cn/fullchain.pem</para>
+					/etc/letsencrypt/live/netkiller.cn/fullchain.pem
+				</para>
 				<para>Key is saved at:
-					/etc/letsencrypt/live/netkiller.cn/privkey.pem</para>
+					/etc/letsencrypt/live/netkiller.cn/privkey.pem
+				</para>
 				<screen>
 				<![CDATA[
 [root@netkiller ~]# cat /etc/letsencrypt/live/netkiller.cn/fullchain.pem /etc/letsencrypt/live/netkiller.cn/privkey.pem > /etc/freeswitch/tls/wss.pem
@@ -1630,9 +1632,23 @@ EOF
 			]]>
 		</screen>
 	</section>
-	<section id="logfile.conf.xml ">
+	<section id="freeswitch.log">
 		<title>logfile.conf.xml</title>
-		<screen>
+		<para>freeswitch 有多处日志配置，比较分散</para>
+		<section>
+			<title>控制台日志配置</title>
+			<screen>
+			<![CDATA[
+[root@testing freeswitch]# grep loglevel vars.xml
+  <X-PRE-PROCESS cmd="set" data="console_loglevel=err"/>	
+			]]>
+			</screen>
+		</section>
+
+		<section id="logfile.conf.xml">
+			<title>日志文件配置</title>
+			<para>logfile.conf.xml</para>
+			<screen>
 			<![CDATA[
 [root@netkiller ~]# cat /etc/freeswitch/autoload_configs/logfile.conf.xml 
 <configuration name="logfile.conf" description="File Logging">
@@ -1665,7 +1681,35 @@ EOF
   </profiles>
 </configuration>			
 			]]>
-		</screen>
+			</screen>
+		</section>
+		<section>
+			<title>sofia.conf.xml 日志级别配置</title>
+			<para>出现大量登录日志，没几天磁盘满了</para>
+			<screen>
+			<![CDATA[
+2026-02-23 04:35:28.264784 95.50% [WARNING] sofia_reg.c:3210 Can't find user [44@pbx.netkiller.cn] from 103.195.101.98
+You must define a domain called 'pbx.netkiller.cn' in your directory and add a user with the id="44" attribute
+			]]>
+			</screen>
+			<para>配置下面日志级别禁止输出日志</para>
+			<screen>
+			<![CDATA[
+[root@testing freeswitch]# grep log  autoload_configs/sofia.conf.xml 
+    <param name="log-level" value="4"/>			
+			]]>
+			</screen>
+		</section>
+		<section id="switch.conf.xml">
+			<title>switch.conf.xml 日志配置</title>
+			<para>autoload_configs\switch.conf.xml文件中控制着所有的日志输出级别</para>
+			<screen>
+			<![CDATA[
+<!-- Default Global Log Level - value is one of debug,info,notice,warning,err,crit,alert -->
+<param name="loglevel" value="debug"/>			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="freeswitch.h246">
 		<title>视频通话</title>
@@ -2869,6 +2913,7 @@ Certificate:
 			</screen>
 		</section>
 	</section>
+
 	<section id="fusionPBX">
 		<title>fusionPBX</title>
 	</section>
