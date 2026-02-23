@@ -162,7 +162,7 @@ docker kill $(docker ps -a -q)
 		</screen>
 		<section>
 			<title>信号处理</title>
-			<para>--signal, -s	向容器发送信号</para>
+			<para>--signal, -s 向容器发送信号</para>
 			<para>发送一个SIGHUP信号</para>
 			<screen>
 			<![CDATA[
@@ -178,7 +178,7 @@ $ docker kill -s=1 my_container
 			]]>
 			</screen>
 		</section>
-		
+
 	</section>
 	<section id="container.rm">
 		<title>删除容器</title>
@@ -212,13 +212,84 @@ docker rm $(docker ps -a -q)
 		</screen>
 	</section>
 	<section id="container.log-driver">
-		<title>log-driver</title>
-		<para>日志发送到 fluentd</para>
-		<screen>
+		<title>容器日志</title>
+		<section>
+			<title>日志策略配置</title>
+			<para>示例：创建容器时限制日志大小为100MB，最多保留3个日志文件</para>
+			<screen>
+		<![CDATA[
+docker run -d \
+  --name my-container \
+  --log-driver json-file \
+  --log-opt max-size=100m \
+  --log-opt max-file=3 \
+  nginx  # 替换为你的容器镜像		
+		]]>
+			</screen>
+			<para>修改 Docker 全局配置文件 /etc/docker/daemon.json</para>
+			<screen>
+		<![CDATA[
+{
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "100m",    // 单个日志文件最大100MB
+    "max-file": "3",       // 最多保留3个日志文件
+    "compress": "true"     // 压缩旧日志文件（可选）
+  }
+}		
+		]]>
+			</screen>
+			<para>重启 Docker 服务</para>
+			<screen>
+			<![CDATA[
+systemctl daemon-reload
+systemctl restart docker			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>fluentd</title>
+
+			<para>日志发送到 fluentd</para>
+			<screen>
 		<![CDATA[
 docker run --log-driver=fluentd --log-opt fluentd-address=192.168.2.5:24220 ubuntu echo "Hello world"		
 		]]>
-		</screen>
+			</screen>
+		</section>
+		<section>
+			<title>删除日志</title>
+			<para>先清理已有的 Docker 日志</para>
+			<screen>
+			<![CDATA[
+# 清理指定容器的日志（替换 <容器ID/容器名> 为实际值）
+truncate -s 0 /var/lib/docker/containers/*/<容器ID/容器名>-json.log
+
+# 清理所有容器的日志（谨慎使用，会清空所有容器日志）
+find /var/lib/docker/containers/ -name "*.log" -type f -exec truncate -s 0 {} \;			
+			]]>
+			</screen>
+			<para>先找到占用空间最大的日志文件，再选择性删除：</para>
+			<screen>
+			<![CDATA[
+# 1. 查看 Docker 日志文件大小（按大小排序，单位MB）
+du -sh /var/lib/docker/containers/*/*.log | sort -rh
+
+# 2. 删除指定超大日志文件（替换为实际文件路径）
+rm -rf /var/lib/docker/containers/xxxx/xxxx-json.log			
+			]]>
+			</screen>
+			<para>验证清理效果</para>
+			<screen>
+			<![CDATA[
+# 查看磁盘空间使用情况
+df -h
+
+# 查看 Docker 日志目录总大小
+du -sh /var/lib/docker/containers/			
+			]]>
+			</screen>
+		</section>
 	</section>
 	<section id="container.system">
 		<title>操作系统</title>
