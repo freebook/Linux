@@ -2,7 +2,8 @@
 <chapter id="index"><?dbhtml dir="caddy" ?>
 	<title>Caddy</title>
 	<subtitle>Caddy is a powerful, enterprise-ready, open source web server
-		with automatic HTTPS written in Go.</subtitle>
+		with automatic HTTPS written in Go.
+	</subtitle>
 	<section id="caddy.install">
 		<title>安装 Caddy</title>
 		<section>
@@ -79,7 +80,7 @@ $ caddy file-server --root ~/public_html
 		<para>
 			<ulink url="https://caddyserver.com/docs/caddyfile" />
 		</para>
-		<section>
+		<section id="Caddyfile.d">
 			<title>导入配置文件 Caddyfile.d</title>
 			<screen>
 			<![CDATA[
@@ -278,9 +279,12 @@ api.netkiller.cn {
 }
 			]]>
 			</screen>
-			<para>反向代理URL前缀问题</para>
-			<screen>
-			<![CDATA[
+
+			<section>
+				<title>URL 前缀</title>
+				<para>反向代理URL前缀问题</para>
+				<screen>
+				<![CDATA[
 举例：
 www.netkiller.cn {
 	reverse_proxy /api/* http://api.netkiller.cn:8080
@@ -293,19 +297,51 @@ http://api.netkiller.cn:8080/api/adduser
 
 我们需要的URL是：
 http://api.netkiller.cn:8080/adduser
-			]]>
-			</screen>
-			<para>解决方案</para>
-			<screen>
-			<![CDATA[
+				]]>
+				</screen>
+				<para>解决方案</para>
+				<screen>
+				<![CDATA[
 www.netkiller.cn {
 	route /api* {
     	uri strip_prefix /api
 		reverse_proxy api.netkiller.cn:8088
 	}
 }	
-			]]>
-			</screen>
+				]]>
+				</screen>
+				<para>完整的例子</para>
+				<screen>
+				<![CDATA[
+api.netkiller.cn {
+    route /platform/* {
+        reverse_proxy localhost:8082
+    }
+
+    route /* {
+        root * /opt/caddy/www
+        file_server
+    }
+    route /78oo3JqVhU.txt {
+        respond "9923fd3daae700df0417f1e4b1b1cbd9"
+    }
+    route /a7JERONlwF.txt {
+        respond "817130c084cf9e240fc2ca63f278a387"
+    }
+
+    route /wechat/* {
+        uri strip_prefix /wechat
+        reverse_proxy 127.0.0.1:8083
+    }
+
+    log {
+        output file /var/log/caddy/access.log
+    }
+
+}				
+				]]>
+				</screen>
+			</section>
 		</section>
 		<section id="Caddyfile.ssl">
 			<title>Let's Encrypt 免费 SSL 证书</title>
@@ -470,7 +506,7 @@ V7-P_SdeHeXDk3qyj0HhvYrrQ2PFbZrKv4ck6FNQSys.sD2SO-myCgf0JjzYqkA9LA3nN9Pau98bk_fm
 			]]>
 			</screen>
 		</section>
-		<section id="Caddyfile.route"> 
+		<section id="Caddyfile.route">
 			<para>route 路由配置</para>
 			<screen>
 			<![CDATA[
