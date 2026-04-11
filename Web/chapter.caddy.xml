@@ -229,6 +229,47 @@ example.com {
 				]]>
 				</screen>
 			</section>
+			<section>
+				<title>控制台日志</title>
+				<screen>
+				<![CDATA[
+{
+    # 自动 HTTPS（填你的邮箱）
+    email netkiller@msn.com
+    
+    # 日志
+    log {
+        output stdout
+        format console
+    }
+}
+
+www.netkiller.cn {
+    root * /data/www
+    file_server
+    encode gzip zstd
+    try_files {path} {path}/ /index.html
+}
+
+test.netkiller.cn {
+    # 日志
+    log {
+        output stdout
+        format console
+    }
+    reverse_proxy http://test:8080 {
+        header_up Host {host}
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-For {remote_host}
+        transport http {
+            read_timeout 120s
+            write_timeout 120s
+        }
+    }
+}				
+				]]>
+				</screen>
+			</section>
 		</section>
 		<section id="Caddyfile.reverse_proxy">
 			<title>反向代理</title>
