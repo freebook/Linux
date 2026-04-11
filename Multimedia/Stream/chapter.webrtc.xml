@@ -3,4 +3,10 @@
 	<title>WebRTC</title>
 	<para>https://webrtc.org/</para>
 	<para>WebRTC is a free, open project that provides browsers and mobile applications with Real-Time Communications (RTC) capabilities via simple APIs. The WebRTC components have been optimized to best serve this purpose.</para>
+	&section.webrtc.janus.xml;
+
+	<section id="mediasoup">
+		<title>mediasoup</title>
+		<ulink url="https://mediasoup.org/">https://mediasoup.org/</ulink>
+	</section>
 </section>

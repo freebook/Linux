@@ -574,7 +574,20 @@ ssh: connect to host 172.18.100.253 port 22: Operation timed out
 			]]>
 			</screen>
 		</section>
-
+		<section>
+			<title>远程执行 Shell 支持彩色终端输出</title>
+			<screen>
+			<![CDATA[
+mvn package
+scp -f target/*.jar root@www.netkiller.cn:/opt/cordyceps/
+ssh root@www.netkiller.cn "cd /srv/cordyceps && git pull"
+ssh root@www.netkiller.cn "cd /srv/cordyceps && python docker.py -e cordyceps restart"
+ssh -t root@www.netkiller.cn "cd /srv/cordyceps && export TERM=xterm-256color && python docker.py -e cordyceps logs"			
+			]]>
+			</screen>
+			<para>-t：强制 SSH 分配 伪终端（PTY）没有 -t 时，远程认为不是终端，自动禁用 ANSI 颜色</para>
+			<para>export TERM=xterm-256color 告诉远程：“我这终端支持 256 色 ANSI”</para>
+		</section>
 	</section>
 	<section id="ssh.tunnel">
 		<title>OpenSSH Tunnel</title>
