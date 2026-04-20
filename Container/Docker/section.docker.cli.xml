@@ -294,7 +294,8 @@ neo@Netkiller-iMac ~> docker run -it nginx:latest /bin/sh
 			</section>
 			<section id="docker.run.restart">
 				<title>--restart 参数</title>
-				<para>该参数用于指定自动重启docker容器策略，包含3个选项：no，on-failure[:times]，always，unless-stopped</para>
+				<para>该参数用于指定自动重启docker容器策略，包含3个选项：no，on-failure[:times]，always，unless-stopped
+				</para>
 				<screen>
 					<![CDATA[
 no 默认值，表示容器退出时，docker不自动重启容器
@@ -379,6 +380,17 @@ docker run -it -m 200M --memory-swap=400M ubuntu
 				]]>
 				</screen>
 				<para>给ubuntu分配200兆内存和400M交换分区，一般memory-swap默认是内存两倍。</para>
+			</section>
+			<section>
+				<title>查看 python 包位置</title>
+				<screen>
+				<![CDATA[
+[root@netkiller ~]# docker run --rm python:3.14 python -c "import site; print(site.getsitepackages())"
+['/usr/local/lib/python3.14/site-packages']
+
+[root@netkiller ~]# docker run --rm -v site-packages:/data python:3.14 cp -r /usr/local/lib/python3.14/site-packages/ /data/
+				]]>
+				</screen>
 			</section>
 		</section>
 		<section id="docker.start">
@@ -1076,7 +1088,8 @@ docker images -aq | xargs docker rmi -f
 		<section id="docker.cli.registry">
 			<title>仓库操作</title>
 			<para>
-				<ulink url="https://docs.docker.com/engine/reference/commandline/login/" />
+				<ulink
+					url="https://docs.docker.com/engine/reference/commandline/login/" />
 			</para>
 			<para>登陆到一个Docker镜像仓库，如果未指定镜像仓库地址，默认为官方仓库 Docker Hub</para>
 			<section>
@@ -1154,6 +1167,17 @@ neo@MacBook-Pro-Neo ~ % docker cp 13acbc98fb35:/etc/nginx/nginx.conf nginx/conf
 [root@localhost nginx]# docker cp nginx:/etc/nginx/conf.d .			
 			]]>
 			</screen>
+
+			<section>
+				<title></title>
+				<screen>
+	<![CDATA[
+docker create --name tmp python:3.14
+docker cp tmp:/usr/local/lib/python3.14/site-packages ./site-packages
+docker rm tmp		
+	]]>
+				</screen>
+			</section>
 		</section>
 		<section id="docker.history">
 			<title>查看历史记录</title>
@@ -1402,6 +1426,7 @@ be36eb55d2a7   openjdk:8                     "java -jar /app/neo…"   6 days ag
 				</screen>
 			</section>
 		</section>
+
 		<section>
 			<title>镜像迁移 save / load</title>
 			<para>服务器 A</para>
@@ -1451,7 +1476,9 @@ openjdk                                            8               b273004037cc 
 		</section>
 	</section>
 	<section id="docker-compose">
-		<title>docker-compose - Define and run multi-container applications with Docker.</title>
+		<title>docker-compose - Define and run multi-container applications
+			with Docker.
+		</title>
 		<subtitle>Docker Compose v3</subtitle>
 		<!-- https://docs.docker.com/compose/overview/ -->
 		<section>
