@@ -362,4 +362,18 @@ find . -type f -name "*.log" -print0 | xargs -0 rm -f
 		]]>
 		</screen>
 	</section>
+	<section>
+		<title>查看空文件</title>
+		<screen>
+		<![CDATA[
+find . -type f -name "*.txt" -empty		
+		]]>
+		</screen>
+		<para>删除空文件</para>
+		<screen>
+		<![CDATA[
+find . -type f -name "*.txt" -empty -delete				
+		]]>
+		</screen>
+	</section>
 </section>
