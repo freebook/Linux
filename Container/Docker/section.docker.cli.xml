@@ -1074,6 +1074,23 @@ $ docker logs -t --since="2019-02-08T12:20:30" --until "2019-02-09T12:23:30" CON
 				]]>
 				</screen>
 			</section>
+			<section id="删除容器日志">
+				<title>删除容器日志</title>
+				<screen>
+				<![CDATA[
+docker inspect --format='{{.LogPath}}' <container_id_or_name>
+sudo truncate -s 0 $(docker inspect --format='{{.LogPath}}' <container_id_or_name>)				
+				]]>
+				</screen>
+			</section>
+			<section id="删除所有日志">
+				<title>删除所有日志</title>
+				<screen>
+				<![CDATA[
+docker ps -aq | xargs -I {} sh -c 'truncate -s 0 "$(docker inspect --format="{{.LogPath}}" {})"'				
+				]]>
+				</screen>
+			</section>
 		</section>
 
 		<section id="docker.reset">
