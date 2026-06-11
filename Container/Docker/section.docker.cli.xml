@@ -1087,7 +1087,7 @@ sudo truncate -s 0 $(docker inspect --format='{{.LogPath}}' <container_id_or_nam
 				<title>删除所有日志</title>
 				<screen>
 				<![CDATA[
-docker ps -aq | xargs -I {} sh -c 'truncate -s 0 "$(docker inspect --format="{{.LogPath}}" {})"'				
+docker ps -aq | xargs -I {} sh -c 'truncate -s 0 "$(docker inspect --format="{{.LogPath}}" {})"'		
 				]]>
 				</screen>
 			</section>
