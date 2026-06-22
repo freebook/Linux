@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<section id="traffic">
+	<title>影响网络流量的因素</title>
+	<para>数不清的用户在访问你的服务器</para>
+	<para>带宽与服务器可以随时增加，但也有限，如果你不清楚影响流量的因素，增加服务器也无济于事。瓶颈无处不在，你必须将各个瓶颈分析出来，并各个击破，才能达到你的目的。</para>
+	<para>正常的IDC硬件布局</para>
+	<screen>
+	<![CDATA[
+
+user -> \                                     /--1G--> | server |
+user ->  |--1G--> [Firewal] --1G--> [Switch] ----1G--> | server |
+user -> /                                     \--1G--> | server |
+
+	]]>
+	</screen>
+
+	<section id="traffic.bandwidth">
+		<title>带宽</title>
+		<para>主流网络设备带宽均为1G，目前来看10G仍不普及，仅在存储领域封闭使用，价格非常昂贵</para>
+		<para>firewall (1G) - switch (Forwarding bandwidth / 1G) - server (NIC 1G)</para>
+		<section>
+			<title>防火墙带宽</title>
+			<para>怎么能提高带宽呢？</para>
+			<para>首先是防火墙，这个设备非常重要。 100M 基本淘汰，10G 防火墙尚未普及，1G带宽如果不够怎么办？答案是买2个，3个...</para>
+			<para>为什么不买10G的。在下面会谈到会话数，你一看就明白了。10G防火墙会话数不是1G防火墙会话数的十倍。</para>
+		</section>
+		<section>
+			<title>交换机带宽</title>
+			<para>目前主流交换机 Cisco WS-C2960G-48TC-L，48个RJ45口与2或4个SFP光纤口均为1G带宽</para>
+			<para>一般中小企业1台交换机足够，再上一个台阶超过40台服务器，就会有出现多台交换机互连问题，使用以太网口与SFP光纤口的带宽是一样的，唯一区别是传输距离。</para>
+			<para>每个交换机后面都对应几十台服务器，每个服务器1G网卡，如果这些服务器满负荷传输，交换机与交换机间数据传输就会带来瓶颈。</para>
+			<para>通过端口聚合可以解决交换机间数据传输瓶颈，另种方式是交换机堆叠。</para>
+			<screen>
+			<![CDATA[
+          +----------+                          +----------+
+          |          |gi0/0/1            gi0/0/1|          |
+          | Switch A +--------------------------+ Switch B |
+          |          +--------------------------+          |
+          |          |gi0/0/2            gi0/0/2|          |
+          +----------+                          +----------+			
+			]]>
+			</screen>
+			<para>比如你有5个机柜，将交换机放置到3号机柜，处于中间位置，所有交换机放入该机柜，然后堆叠，从中心机柜向两侧分线</para>
+			<graphic format="png" fileref="../images/topology/cabinet-3750.png" srccredit="neo" />
+			<para>对于不大不小的企业，直接采购IDC箱式交换机</para>
+			<graphic format="png" fileref="../images/topology/cabinet-4xxx.png" srccredit="neo" />
+
+			<section>
+				<title>聚合端口</title>
+				<screen>
+				<![CDATA[
+Example 1 : host to host at double speed
+
+          +----------+                          +----------+
+          |          |eth0                  eth0|          |
+          | Host A   +--------------------------+  Host B  |
+          |          +--------------------------+          |
+          |          |eth1                  eth1|          |
+          +----------+                          +----------+
+
+  On each host :
+     # modprobe bonding miimon=100
+     # ifconfig bond0 addr
+     # ifenslave bond0 eth0 eth1
+
+Example 2 : host to switch at double speed
+
+          +----------+                          +----------+
+          |          |eth0                 port1|          |
+          | Host A   +--------------------------+  switch  |
+          |          +--------------------------+          |
+          |          |eth1                 port2|          |
+          +----------+                          +----------+
+
+  On host A :                             On the switch :
+     # modprobe bonding miimon=100           # set up a trunk on port1
+     # ifconfig bond0 addr                     and port2
+     # ifenslave bond0 eth0 eth1
+
+Example 3: High Availability in a Multiple Switch Topology
+               |                                     |
+               |port3                           port3|
+         +-----+----+                          +-----+----+
+         |          |port2       ISL      port2|          |
+         | switch A +--------------------------+ switch B |
+         |          |                          |          |
+         +-----+----+                          +-----++---+
+               |port1                           port1|
+               |             +-------+               |
+               +-------------+ host1 +---------------+
+                        eth0 +-------+ eth1
+
+Example 4: Maximum Throughput in a Multiple Switch Topology
+
+Multiple switches may be utilized to optimize for throughput
+when they are configured in parallel as part of an isolated network
+between two or more systems, for example:
+
+                      +-----------+
+                      |  Host A   |
+                      +-+---+---+-+
+                        |   |   |
+               +--------+   |   +---------+
+               |            |             |
+        +------+---+  +-----+----+  +-----+----+
+        | Switch A |  | Switch B |  | Switch C |
+        +------+---+  +-----+----+  +-----+----+
+               |            |             |
+               +--------+   |   +---------+
+                        |   |   |
+                      +-+---+---+-+
+                      |  Host B   |
+                      +-----------+
+
+Example 5: Using multiple host and multiple switches to build a "no single
+point of failure" solution.
+
+
+                |                                     |
+                |port3                           port3|
+          +-----+----+                          +-----+----+
+          |          |port7       ISL      port7|          |
+          | switch A +--------------------------+ switch B |
+          |          +--------------------------+          |
+          |          |port8                port8|          |
+          +----++----+                          +-----++---+
+          port2||port1                           port1||port2
+               ||             +-------+               ||
+               |+-------------+ host1 +---------------+|
+               |         eth0 +-------+ eth1           |
+               |                                       |
+               |              +-------+                |
+               +--------------+ host2 +----------------+
+                         eth0 +-------+ eth1				
+				]]>
+				</screen>
+			</section>
+
+		</section>
+		<section>
+			<title>服务器带宽</title>
+			<para>目前主流服务都配备2到4个网口，像IBM / HP / DELL 等品牌服务器你无需关心网卡问题.</para>
+			<para>这里主要是针对自行安装或使用PC服务器的用户，因为很多PC服务器使用Realtak网卡。那么Realtak与Broadcom的NetXtreme有什么不同？</para>
+			<para>建议你安装一个windows系统在服务器上，然后看看网卡驱动属性。Realtak 仅仅提供基本网络功能，QOS质量访问服务由驱动程序提供（软QOS）而NetXtreme 提供非常丰富的功能，并且都是硬件实现。</para>
+			<para>话题回到带宽上，linux 支持 bonding 网卡，可以帮你解决服务器网络通信带宽问题，bonding 还可以解决网卡故障转移，传输流量负载均衡等等。</para>
+			<para>在我的《Netkiller Linux 手札》中你可以找到具体的设置方法。</para>
+
+		</section>
+	</section>
+	<section id="traffic.session">
+		<title>会话数</title>
+		<para>firewall (nat session) - switch (Forwarding bandwidth) - os (ulimit,sysctl) - application (httpd,vsftpd,tomcat ...)</para>
+		<para>会话数，国人俗称并发数。当你的带宽没有满，但tcp不能建立连接，这时你就要考虑会话数了。</para>
+		<section>
+			<title>防火墙会话数</title>
+			<para>购买防火墙的时候主要有两个指标，一是会话数，二是带宽，三是配备模块。售前工程师都会交代清楚。</para>
+			<para>例如 Cisco ASA 5550 会话数65万，2个1G接口，可选IPS模块等等...</para>
+			<para>使用下面命令可以查看当前会话数</para>
+			<screen>
+			<![CDATA[
+show conn count
+			]]>
+			</screen>
+			<para>如果你网站或接口有100万访问量，那么即使带宽没有满，也无法在建立TCP连接，这时你需要增加线路，增加防火墙。</para>
+		</section>
+		<section>
+			<title>服务器会话数</title>
+			<para>Linux 影响会话数的的参数与配置文件</para>
+			<para>/etc/security/limits.conf , /etc/security/limits.d</para>
+			<para>nofile - max number of open files 在POSIX系统中硬件，管道，Socket 均被看作是一个设备，如硬盘是块设备，显示器是字符设备，操作这些设备均使用c的open函数，被算作打开一个文件。所有设备都是如此，加上web服务器还要读取很多HTML文件，系统对nofile 开销是非常巨大的。</para>
+			<para>nproc - max number of processes 目前多线程是主流，使用多线程技术这个参数可以不关心。像Oracle,PostgreSQL, Apache prefork,你就需要关心这个参数</para>
+
+			<para>/etc/sysctl.conf , /etc/sysctl.d/</para>
+			<para>net.ipv4.ip_local_port_range = 1024 65500 可用端口范围</para>
+			<para>tcp 协议当你尝试主动与服务器建立连接，如：telnet 172.16.0.1 80,本地会开启一个大于1024小于65500的端口</para>
+			<para>client: localhost:1025 --- 172.16.0.1:80 server</para>
+
+			<para>以上参数要综合你的CPU处理能力，内存空间，硬盘IO等等，才能配置出合理数值</para>
+			<para>配置过大（小马拉大车），超出你的服务器处理能力，导致服务器无响应，最终只能重启</para>
+			<para>配置过小（大马拉小车），你的服务器长时间处于空间状态，CPU，内存没有得到合理使用</para>
+			<para>在我的《Netkiller Linux 手札》中你可以找到具体的设置方法。</para>
+		</section>
+		<section>
+			<title>应用服务器会话数</title>
+			<para>连接数受限与limits与sysctl</para>
+			<para>Nginx</para>
+			<screen>
+			<![CDATA[
+worker_processes 8; 处理器数
+worker_rlimit_nofile 65530; 允许最多打开文件数
+worker_connections 4096; 最大连接数数为
+keepalive_timeout 65; 开启复用连接
+			]]>
+			</screen>
+			<para>apache : httpd/conf/extra/httpd-mpm.conf</para>
+			<screen>
+			<![CDATA[
+<IfModule mpm_worker_module>
+    ServerLimit         16
+    ThreadLimit         256
+    StartServers        8
+    MaxClients          4096
+    MinSpareThreads     64
+    MaxSpareThreads     256
+    ThreadsPerChild     256
+    MaxRequestsPerChild 10000
+</IfModule>
+			]]>
+			</screen>
+			<para>mysql : /etc/my.cnf</para>
+			<screen>
+			<![CDATA[
+[mysqld]
+max_connections=250
+			]]>
+			</screen>
+			<para>不依依列举，有兴趣看我的系列文档。</para>
+		</section>
+	</section>
+	<section id="traffic.io">
+		<title>IO</title>
+		<para>IO (Input/Output) 输入/输出，在国内被泛指硬盘IO，没办法这里也不例外，也被指为硬盘IO</para>
+		<section>
+			<title>硬盘 HDD</title>
+			<para>影响IO的几个参数：</para>
+			<para>硬盘转速与硬盘速率</para>
+			<para>RAID卡速率</para>
+			<para>以Dell为例，去官网查看一下<![CDATA[http://www.dell.com/content/topics/topic.aspx/global/products/pvaul/topics/en/us/raid_controller?c=us&l=en&cs=555]]></para>
+			<para>PERC H700 Integrated / Adapter: 6Gb/s SAS</para>
+			<para>SAS 硬盘接口 3Gbps，理论读写速度300MB/S，实际情况没有这么理想。</para>
+			<para>RAID0 / RAID10是提高IO最有效的手段，但是你从上面数据计算。6块SAS硬盘做Raid 0 传输速率可以达到18Gb/s，但RAID卡H700只能达到6Gb/s，整体带宽并没有提高。</para>
+			<para>这样做的意义是在Raid带宽与硬盘速度不变的情况下，读写所花费的时间减少了，提高了列队处理速度，减少IO排队。</para>
+			<para>IO的问题就是IO排队等待问题，而不是传输带宽不够用</para>
+		</section>
+		<section>
+			<title>固态硬盘 SSD</title>
+			
+		</section>
+		<section>
+			<title>分布IO</title>
+			<para>在经济紧张的情况下，可以使用多块独立硬盘分布IO，每块硬件分别做独立存储，比如数据库可以采用这种方案：可以一块硬盘存数据，一块硬盘做索引，另一块做日志等等，禁止交叉。</para>
+			<para>在经济允许的情况下，你可以配置多个RAID卡，外挂DAS。或者采用集群加分布式文件系统方案</para>
+		</section>
+		<section>
+			<title>FC SAN</title>
+			<para>8Gb Fibre Channel</para>
+			<para>我曾经测试过本地硬盘（146G 15RPM * 8 做RAID10）</para>
+		</section>
+		<section>
+			<title>iSCSI / FCoE</title>
+			<para>http://zh.wikipedia.org/wiki/ISCSI</para>
+			<para>iSCSI 可以提供1GB，10GB数据传输，传输介质可以选择双绞线或者光纤</para>
+			<para>FCoE 通过以太网传输FC协议，与iSCSI有很多相似之处</para>
+		</section>
+		<section>
+			<title>InfiniBand 或 RDMA</title>
+			<para>提供10Gbps ~ 120Gbps 的IO速度</para>
+			<para>http://en.wikipedia.org/wiki/InfiniBand</para>
+			<para>http://www.infinibandta.org/</para>
+		</section>
+	</section>
+</section>

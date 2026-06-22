@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="oscm">
+	<title>环境安装模板化</title>
+	<para>OSCM 是一套操作系统安装与配置SHELL工具箱，</para>
+	<section>
+		<title>云主机初始化</title>
+		<screen>
+		<![CDATA[
+curl -s https://raw.githubusercontent.com/oscm/shell/master/cloud/aliyun/vdb.exp.sh | bash
+curl -s https://raw.githubusercontent.com/oscm/shell/master/cloud/aliyun/srv.sh | bash			
+		]]>
+		</screen>
+	</section>	
+	<section>
+		<title>CentOS 7 初始化</title>
+		<screen>
+		<![CDATA[
+curl -s https://raw.githubusercontent.com/oscm/shell/master/os/personalise.sh | bash
+curl -s https://raw.githubusercontent.com/oscm/shell/master/os/user/www.sh | bash
+		]]>
+		</screen>
+
+	</section>	
+	<section id="nginx">
+		<title>Nginx</title>
+		<para></para>
+		<screen>
+		<![CDATA[
+curl -s https://raw.githubusercontent.com/oscm/shell/master/cloud/aliyun/nginx.sh | bash
+curl -s https://raw.githubusercontent.com/oscm/shell/master/cloud/aliyun/ssi.sh | bash
+		]]>
+		</screen>		
+	</section>	
+	<section id="tomcat">
+		<title>Tomcat</title>
+		<para>8.5.11</para>
+		<screen>
+		<![CDATA[
+curl -s https://raw.githubusercontent.com/oscm/shell/master/web/tomcat/apache-tomcat.sh | bash
+		]]>
+		</screen>
+		<para>systemctl 脚本</para>
+		<screen>
+		<![CDATA[
+curl -s https://raw.githubusercontent.com/oscm/shell/master/web/tomcat/systemctl.sh | bash
+		]]>
+		</screen>
+		<para>logrotate</para>
+		<screen>
+		<![CDATA[
+curl -s https://raw.githubusercontent.com/oscm/shell/master/web/tomcat/logrotate.d/compress | bash
+		]]>
+		</screen>
+	</section>
+	<section id="node.js">
+		<title>Node.js</title>
+		<para>fat</para>
+		<screen>
+		<![CDATA[
+
+yum update -y
+curl -s https://raw.githubusercontent.com/oscm/shell/master/lang/node.js/yum.sh | bash
+		]]>
+		</screen>
+		<para>PM2</para>
+		<screen>
+		<![CDATA[
+
+curl -s https://raw.githubusercontent.com/oscm/shell/master/lang/node.js/npm/pm2.sh | bash
+		]]>
+		</screen>
+	</section>	
+	<section>
+		<title>MongoDB</title>
+		<para>MongoDB 3.4</para>
+		<screen>
+		<![CDATA[
+curl -s https://raw.githubusercontent.com/oscm/shell/master/database/mongodb/mongodb-3.4/install.sh | bash
+		]]>
+		</screen>
+		<para>bind 0.0.0.0</para>
+		<screen>
+		<![CDATA[
+curl -s https://raw.githubusercontent.com/oscm/shell/master/database/mongodb/mongodb-3.4/net.bindIp.all.sh | bash
+		]]>
+		</screen>
+		<para>enable auth</para>
+		<screen>
+		<![CDATA[
+curl -s https://raw.githubusercontent.com/oscm/shell/master/database/mongodb/mongodb-3.4/security.authorization.enabled.sh | bash
+		]]>
+		</screen>
+		<para>Tools</para>
+		<screen>
+		<![CDATA[
+curl -s https://raw.githubusercontent.com/oscm/shell/master/database/mongodb/mongodb-3.4/mongodb-org-tools.sh | bash
+		]]>
+		</screen>
+	</section>
+</section>	

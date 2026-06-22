@@ -5,14 +5,17 @@
 
 	<!ENTITY % common.doctype.entity.xml 		SYSTEM "../common/doctype.entity.xml">
 	%common.doctype.entity.xml;
-	
+
 	<!ENTITY book.info.abstract.xml 			SYSTEM "book.info.abstract.xml">
 
 	<!ENTITY % doctype.entity.xml 				SYSTEM "doctype.entity.xml">
 	%doctype.entity.xml;
-	
+
 	<!ENTITY % project.doctype.entity.xml 		SYSTEM "Management/Project/doctype.entity.xml">
 	%project.doctype.entity.xml;
+
+	<!ENTITY % devops.doctype.entity.xml 		SYSTEM "System/doctype.entity.xml">
+	%devops.doctype.entity.xml;
 
 ]>
 <book xml:base="http://netkiller.github.com/book/version/"
@@ -43,7 +46,7 @@
 		</cover>
 
 		&book.info.legalnotice.xml;
- 		&book.info.abstract.xml; 
+ 		&book.info.abstract.xml;
 
 		<keywordset>
 			<keyword>
@@ -59,4 +62,5 @@ git,git-add,git-add--interactive,git-am,git-annotate,git-apply,git-archive,git-b
 	&book.preface.xml;
 	&part.project.xml;
 	&part.devops.xml;
+	&chapter.system.xml;
 </book>

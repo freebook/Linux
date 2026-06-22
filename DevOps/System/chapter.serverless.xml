@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="Serverless">
+	<title>Serverless</title>
+	<section>
+		<title>Knative</title>
+		<para>在Google Cloud Next 2018上，谷歌发布了 Knative，将其称为“基于“Kubernetes 的平台，用来构建、部署和管理现代 serverless 工作负载”。该框架试图将开发云原生应用在三个领域的最佳实践结合起来，这三个领域指的是构建容器（和函数）、为工作负载提供服务（和动态扩展）以及事件。Knative 是由谷歌与Pivotal、IBM、Red Hat 和SAP紧密协作开发的。</para>
+		<section>
+			<title></title>
+		</section>
+	</section>
+</chapter>

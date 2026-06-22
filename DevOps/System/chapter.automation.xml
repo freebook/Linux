@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="automation">
+	<title>Automation</title>
+	<para><graphic  format="png" fileref="../images/devops/Devops.png" srccredit="neo" width=""/></para>
+	&devops.automation.deployment.xml;
+	&chapter.automation.utility.xml;
+</chapter>

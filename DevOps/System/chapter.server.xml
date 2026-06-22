@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="server"?>
+	<title>Server</title>
+	&section.server.os.xml;
+	&section.server.php.xml;
+	&section.server.tomcat.xml;
+	&section.server.spring.xml;
+	&section.server.oscm.xml;
+	
+	<section id="ntp">
+		<title>时间同步</title>
+		<para>将通信网上各种通信设备或计算机设备的时间信息(年月日时分秒)基于UTC（协调世界时）时间偏差限定在足够小的范围内（如100ms），这种同步过程叫做时间同步。 </para>
+		<orderedlist>
+			<title>关于时间同步我个人的解决方法：</title>
+			<listitem>
+				<para>使用UTC时间，用户加时区来解决。</para>
+			</listitem>
+			<listitem>
+				<para>保证所有服务器的时间是同步的</para>
+			</listitem>
+		</orderedlist>
+		<screen>
+		<![CDATA[
+$ sudo ntpdate asia.pool.ntp.org
+21 May 10:34:18 ntpdate[6687]: adjust time server 203.185.69.60 offset 0.031079 sec
+		]]>
+		</screen>
+	</section>
+	
+	<section id="email">
+		<title>邮件系统</title>
+		<orderedlist>
+			<title>邮件系统：</title>
+			<listitem>
+				<para>站内邮件。</para>
+			</listitem>
+			<listitem>
+				<para>电子邮局服务</para>
+			</listitem>
+			<listitem>
+				<para>订阅/推广邮件</para>
+			</listitem>
+		</orderedlist>
+		<!-- 方案一：使用多个帐号轮循发送邮件并且邮件正文加入干扰字符，使963系统不能做指纹验证，如user1@example.com, user2@example.com 很多个帐号同事进行。可以解决时限问题。 方案二：自己架设邮件服务器 1. 可以解决全公司对邮件空间不足的需求。 2. 可以一并解决批量邮件发送问题 3. 在未来我们可以向example注册会员提供邮箱服务 但我不建议使用一台服务器，把公司邮件和推广邮件放到同一台服务器上，一旦遭到其他邮件提供上封杀，会影响我们正常使用。 我们自己架设邮件服务器可能存在的问题： 1. 垃圾邮件回收，我们的垃圾邮件过滤机制没有商业邮件系统完备，经常误判为垃圾邮件。 2. 邮件病毒处理, 我们使用的病毒匹配库也没有商业邮件系统全，更新也比较慢。 3. 遭遇其他邮件提供商封杀，其他邮件提供商收到我们大量推广邮件，可能认为是垃圾邮件，导致直接封掉我们的IP。 所以我建议如果自己架设邮件服务器，最好是公司邮箱与推广群发邮箱分开。做好域名反向解析与MX邮件交换记录，当遇到IP被封的时候，第一时间与邮件服务商沟通解决，对方是可以放行我们IP的。 技术选型： 我们可以采用Postfix 
+			邮件系统。 架构方面： 我会考虑未来几年可能出现的需求，做到能及时有效应对各种变化。如：系统扩容，并发量，邮件存储以及分布式邮件系统。 安全问题： 另一个不被重视的问题，就是邮件安全问题，internet上的邮件是明文传播，接入方理论上可以看到我们发送的每一封电子邮件内容。在外国都采用数字签名技术加密邮件正文。 数字签名，可以监控邮件是否被中途修改过，另外没有数字证书也无法看到邮件内容。其实不难理解这个系统的原理和招商银行的网银系统原理完全一样。 我们可以从几个方面解决邮件安全问题： 1. 采用SSL POP3 与 SSL SMTP，可以保证邮件在传输过程中的安全 2. 邮件正文采用数字签名，即使获得邮件，也无法看到内容。 -->
+		<section>
+			<title>Mailing List</title>
+			<orderedlist>
+				<title>邮件列表系统：</title>
+				<listitem>
+					<para>订阅功能</para>
+				</listitem>
+				<listitem>
+					<para>确认订阅功能</para>
+				</listitem>
+				<listitem>
+					<para>退订功能</para>
+				</listitem>
+				<listitem>
+					<para>群发功能</para>
+				</listitem>
+				<listitem>
+					<para>浏览功能(国内基本不需要)</para>
+				</listitem>
+			</orderedlist>
+		</section>
+	</section>
+	<section id="server.partition">
+		<title>磁盘规划</title>
+		<para>这里主要讲怎样划分磁盘更合理，要遵循操作系统与数据隔离，尽量避免操作系统与数据区共享空间，</para>
+		<section>
+			<title>物理隔离</title>
+			<para>操作系统与数据库放在不同的硬盘上</para>
+		</section>
+		<section>
+			<title>硬件逻辑卷隔离</title>
+			<para>通过RAID卡所带的功能，划分两个逻辑卷，然后将操作系统与数据分别安装在 不同的逻辑卷上。</para>
+		</section>
+	</section>
+	&section.server.storage.xml;
+	<section id="server.mgmt">
+		<title>iDRAC / iLO / IMM</title>
+		<para>远程管理卡</para>
+	</section>
+</chapter>

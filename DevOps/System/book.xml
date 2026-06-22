@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE subject SYSTEM "/usr/share/xml/docbook/schema/dtd/5.0/docbook.dtd"
+	[
+	<!ENTITY % common.doctype.entity.xml 		SYSTEM "common/doctype.entity.xml">
+	%common.doctype.entity.xml;
+	
+	<!ENTITY book.appendix.xml		    		SYSTEM "book.appendix.xml">
+	
+	<!ENTITY % doctype.entity.xml 				SYSTEM "doctype.entity.xml">
+	%doctype.entity.xml;
+	
+] >
+
+<book xml:base="http://netkiller.sourceforge.net/devops/"
+        xmlns="http://docbook.org/ns/docbook" xml:lang="zh-cn">
+	<info>
+		<title>Netkiller DevOps 手札</title>
+		<subtitle></subtitle>
+
+		&book.info.author.xml;
+
+		<copyright>
+			<year>2019</year>
+			<holder>netkiller</holder>
+		</copyright>
+
+        &book.info.legalnotice.xml;
+
+	</info>
+
+	&book.dedication.xml;
+    &book.preface.xml;
+	
+	&chapter.devops.xml;
+    
+	&book.appendix.xml;
+ </book>

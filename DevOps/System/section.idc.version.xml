@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+	<title>网络设备配置管理与版本控制</title>
+	<subtitle>http://netkiller.github.io/journal/network.ios.html</subtitle>
+
+	<section id="background">
+		<title>背景</title>
+		<para>我们经常会频繁的配置网络设备，但有时候做了某些操作出现了异常，我们不清楚问题出在哪里，还原配置也不起作用，甚至你根本记得你改动了什么。</para>
+		<para>另外我们希望能够监控网络设备的配置变化，一个公司可能有很多网络工程师，他们都有权限操作路由交换或防火墙设备，我们要知道网络设备配置什么时候发生了变化，并通知其他几位同事。同时我们要对修改操作记录归档，方便日后查阅。</para>
+	</section>
+	<section id="overview">
+		<title>怎样实现网络设备配置管理</title>
+		<para>我们每隔一段时间便将网络设备的配置导出存档，然后通过版本控制工具进行版本化管理，远离非常简单。</para>
+		<para>有了版本控制我们可能很方便的回撤操作。下面我来详细讲解怎样安装于配置该软件</para>
+		<screen><![CDATA[
+$ git clone https://github.com/netkiller/logging.git
+$ cd logging
+$ python3 setup.py sdist
+$ python3 setup.py install
+
+$ sudo apt-get install expect
+$ sudo chmod +x /usr/local/libexec/*		
+		]]></screen>
+		<para>配置网络设备地址</para>
+		<para>打开 /usr/local/bin/cisco 文件，修改BACKUP_DIR，改为你的备份目录</para>
+		<screen><![CDATA[
+$ vim /usr/local/bin/cisco
+
+CFGFILE=$BASEDIR/etc/cisco.conf
+BACKUP_DIR=~/.backup
+
+$ cat /usr/local/etc/cisco.conf 
+192.168.50.1 mgmt EBopQ1X2vMkrl M8YJxvDiddG6QK
+192.168.50.2 mgmt EBopQ1X2vMkrl M8YJxvDiddG6QK
+192.168.50.3 mgmt EBopQ1X2vMkrl M8YJxvDiddG6QK
+192.168.50.4 mgmt EBopQ1X2vMkrl M8YJxvDiddG6QK
+
+$ sudo chmod 600 /usr/local/etc/cisco.conf		
+		]]></screen>
+		<para>编辑/usr/local/etc/cisco.conf文件，格式如下：</para>
+		<screen><![CDATA[
+host | username | password | enable password
+		]]></screen>
+		<para>初始化版本仓库</para>
+		<screen><![CDATA[
+# Initialized empty Git repository in local.
+$ cisco init
+
+# Initialized empty Git repository from remote.
+$ cisco init http://xxx.xxx.xxx.xxx/project/xxxx.git
+$ cisco init user@host:/project/xxxx.git		
+		]]></screen>
+		<para>启动，停止等操作</para>
+		<screen><![CDATA[
+$ cisco
+Usage: /usr/local/bin/cisco {init|start|stop|status|restart}
+
+# cisco start
+# cisco stop 		
+		]]></screen>
+		<para>查看网络设备配置变化</para>
+		<para>查看当前与上一个版本的变化</para>
+		<screen><![CDATA[
+$ cd your_backup_dir
+$ git diff HEAD HEAD~ route.running-config		
+		]]></screen>
+		<para>查看当前与前面第三个版本的变化</para>
+		<screen><![CDATA[
+$ cd your_backup_dir
+$ git diff HEAD HEAD~3 route.running-config		
+		]]></screen>
+	</section>
+	<section id="summary">
+		<title>总结</title>
+		<para>该程序主要是备份网络设备的配置文件，当然也能起到监控做用，但备份间隔时间需要根据你的情况设定，如果太频繁也不太好，间隔太长可能起不到很好的监控作用。</para>
+		<para>关于监控与报警，你可以通过git diff 命令对比与上次配置文件的变化，通常是没有变化的，一旦发生变化便通过电子邮件与短信发出警报。至于怎么实现，不再本文讨论范围，有兴趣可以参考笔者的其他技术手札。</para>
+		<para>
+			关于版本控制软件更多细节，延伸阅读
+			<ulink url="http://netkiller.github.io/version/index.html">《Netkiller Version 手札》</ulink>
+		</para>
+	</section>
+</section>

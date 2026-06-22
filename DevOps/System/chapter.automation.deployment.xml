@@ -1,0 +1,685 @@
+<section id="devops.deployment">
+	<title>Automation Deployment</title>
+	<para>传统ftp上传已经不适合在大规模环境下应用。</para>
+	<para>另外我们不得不考虑传输过程中的安全问题。</para>
+	<orderedlist>
+		<title>常用部署工具</title>
+		<listitem><para>FileZilla Client, Winscp</para></listitem>
+		<listitem><para>Wget, ncftp</para></listitem>
+		<listitem><para>Rsync, Csync2</para></listitem>
+		<listitem><para>Unison</para></listitem>
+	</orderedlist>
+	<section id="deployment.toolkit">
+		<title>Deployment Toolkit</title>
+		<graphic  format="png" fileref="../images/deployment/deployment.png" srccredit="neo" />
+			<para>deploy</para>
+			<programlisting role="bash">
+			<![CDATA[
+#!/bin/bash
+. deploy.conf
+
+#datetime=`date '+%Y%m%d-%H%M%S'`
+#pkgname=${project}-${version}-${datetime}.pkg
+#if [ -d /tmp/${project} ];then
+#    rm -rf /tmp/${project}
+#fi
+#echo "clean "
+#svn export ${repository} /tmp/${project} > deploy.log
+#echo export svn from repository
+#tar jcvf ${pkgname} /tmp/${project} --remove-files >> deploy.log
+#echo packaging
+#scp ${pkgname} ${destination}
+#echo uploading
+LOGFILE=deploy.log
+RSYNC="rsync -a -u -z --progress --stats -e ssh --log-file=${LOGFILE}"
+if [ ! -d ${local} ]; then
+    mkdir ${local}
+fi
+
+function stable {
+    local edition=$(basename $stable)
+    svn export ${stable} ${src}/${edition} >> /dev/null
+
+#    for ignore in $( cat excluded.lst ); do
+#        rm -rf ${src}/$edition/$ignore
+#    done
+
+    $RSYNC --exclude-from=excluded.lst ${src}/${edition} ${destination}
+    ssh ${remote} < script/stable > /dev/null 2>&1
+}
+function unstable {
+    local edition=$(basename $unstable)
+    svn export ${unstable} ${src}/$edition
+
+    for ignore in $( cat excluded.lst ); do
+        rm -rf ${src}/$edition/$ignore
+    done
+
+    $RSYNC ${src}/$edition ${destination}
+
+    ssh ${remote} < script/unstable >> ${LOGFILE}
+}
+function nightly {
+    local edition=$(basename $unstable)
+    svn export ${unstable} ${src}/nightly
+    $RSYNC --exclude-from=exclude.conf ${src}/nightly ${destination}
+#    ssh ${remote} < script/unstable
+
+}
+
+function clean {
+    rm -rf ${src}
+}
+
+function switch {
+    ssh $remote "rm /www/example ; ln -s /www/$1 /www/example"
+}
+case "$1" in
+    switch)
+	    switch $2
+        ;;
+    stable)
+    	clean
+        stable
+        ;;
+    unstable)
+        clean
+	    unstable
+        ;;
+    nightly)
+        clean
+        nightly
+        ;;
+    clean)
+        clean
+        ;;
+
+    *)
+        echo $"Usage: $0 {stable|unstable|nightly|clean}"
+        echo $"       $0 switch {stable|unstable|nightly}"
+        exit 1
+esac
+
+			]]>
+			</programlisting>
+			<para>deploy.conf</para>
+			<programlisting role="bash">
+			<![CDATA[
+repository=svn://172.16.0.1/example
+stable=${repository}/trunk
+unstable=${repository}/branches/example-unstable-2.7.0-3
+remote=rsync@www.example.com
+destination=${remote}:/www
+project=$(basename $repository)
+src=/tmp/${project}
+version=1.0
+			]]>
+			</programlisting>
+			<para>excluded.lst/included.lst</para>
+			<programlisting role="bash">
+			<![CDATA[
+install
+images/20*
+images/ads
+temp
+data/config.php
+data
+themes/default/home
+themes/default/block
+themes/default/special/*
+themes/green
+static/*
+			]]>
+			</programlisting>
+			<para>script/stable|unstable|nightly</para>
+			<programlisting role="bash">
+			<![CDATA[
+find /www/ -type d -exec chmod 755 {} \;
+find /www/ -type f -exec chmod 644 {} \;
+chmod 777 -R /www/project/temp > /dev/null
+chmod 777 -R /www/project/data > /dev/null
+chmod 777 -R /www/project/images > /dev/null
+			]]>
+			</programlisting>
+
+	</section>
+	<section id="deployment.script">
+		<title>Deployment Script</title>
+
+		<screen>
+		<![CDATA[
+$ /srv/bin/srvmgr
+Usage: /srv/bin/srvmgr [OPTION] <server-id> <directory/timepoint>
+
+OPTION:
+       list
+       list <name>
+
+       conf list
+       conf new <project>
+       conf remove <project>
+       conf show <project>
+       conf edit <project>
+
+       backup <project>
+       deploy <project> <timepoint>
+
+       import <project> <dir>
+       export <project> <dir>
+       	]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+$ cat /srv/bin/srvmgr
+#!/bin/bash
+#================================================================================
+# netkiller series utilities -  script by Neo <openunix@163.com>
+# http://netkiller.sourceforge.net/
+# $Id: chapter.automation.deployment.xml 334 2012-02-01 05:59:34Z netkiller $
+#================================================================================
+
+PREFIX=/srv
+BACKUP_DIR=~/backup
+TMPDIR=/tmp
+#SUBVERSION=
+UPLOAD_DIR=$TMPDIR/.upload
+SVN=/usr/bin/svn
+REPOSITORIES=http://192.168.0.1/example/deploy
+#================================================================================
+BINDIR=$PREFIX/bin
+SBINDIR=$PREFIX/sbin
+#LIBEXECDIR=$PREFIX/libexec
+#DATADIR=$PREFIX/data
+SYSCONFDIR=$PREFIX/etc
+#MANDIR
+SRCDIR=$PREFIX/src
+#================================================================================
+
+function usage(){
+echo $"Usage: $0 [OPTION] <server-id> <directory/timepoint>"
+echo -ne "
+OPTION:
+       list
+       list <name>
+
+       conf list
+       conf new <project>
+       conf remove <project>
+       conf show <project>
+       conf edit <project>
+
+       backup <project>
+       deploy <project> <timepoint>
+
+       import <project> <dir>
+       export <project> <dir>
+"
+
+    exit
+}
+
+function list(){
+#mkdir deploy
+#mkdir backup
+
+    local prj=$2
+
+    if [ -z $prj ]; then
+        $SVN list $REPOSITORIES
+    else
+        $SVN list $REPOSITORIES/$prj
+    fi
+
+}
+
+function conf(){
+    local cmd=$2
+    local prj=$3
+    case $cmd in
+        list)
+            ls $SYSCONFDIR
+            ;;
+        new)
+            read -p "Project directory: " prjdir
+            if [ -z $prjdir ]; then
+                exit
+            fi
+            if [ -f $SYSCONFDIR/$prjdir.conf ]; then
+                echo "cannot create config $prjdir.conf': File exists"
+                exit 1
+            fi
+
+            read -p "subversion url: $REPOSITORIES/: " svnurl
+            if [ -z $svnurl ]; then
+                svnurl=$REPOSITORIES
+            fi
+            read -p "hostname: " host
+            if [ -z $host ]; then
+                host="localhost"
+                echo "default hostname 'localhost'"
+            fi
+            read -p "upload mode ftp/scp/sftp/rsync: " mode
+            if [ -z $mode ]; then
+                mode=ftp
+            else
+                case $mode in
+                    ftp)
+                        mode="ftpdeploy"
+                        ;;
+                    scp)
+                        mode="scpdeploy"
+                        ;;
+                    sftp)
+                        mode="sftpdeploy"
+                        ;;
+                    rsync)
+                        mode="rsync"
+                        ;;
+                esac
+            fi
+            read -p "Create $prjdir config? [y/n]" -n 1 key
+            echo
+            if [ $key = 'y' ]; then
+                echo -ne "REPOSITORIES=$REPOSITORIES/$svnurl
+COMMAND=$mode
+HOSTNAME=$host
+                " >> $SYSCONFDIR/$prjdir.conf
+            fi
+            ;;
+        remove)
+            if [ -f $SYSCONFDIR/$prj ]; then
+                rm -rf $SYSCONFDIR/$prj
+            fi
+            ;;
+        show)
+            cat $SYSCONFDIR/$prj
+            ;;
+        edit)
+            vim $SYSCONFDIR/$prj
+            ;;
+        *)
+        usage
+        ;;
+    esac
+
+}
+function deploy(){
+    local prj=$2
+    local ver=$3
+    if [ -z $prj ]; then
+        usage
+    fi
+    source $SYSCONFDIR/$prj.conf
+    mkdir -p $UPLOAD_DIR
+    rm -rf $UPLOAD_DIR/*
+    #echo $REPOSITORIES
+    #echo $COMMAND
+    $SVN export $REPOSITORIES/$ver/ $UPLOAD_DIR/$ver
+    $BINDIR/$COMMAND deploy $HOSTNAME $UPLOAD_DIR/$ver/
+}
+function import(){
+    local dir=$3
+    local prj=$2
+    if [ -z $dir ]; then
+        usage
+    fi
+    if [ -z $prj ]; then
+        usage
+    fi
+
+    $SVN import $dir $REPOSITORIES/$prj
+}
+function export(){
+    local prj=$2
+    local dir=$3
+
+    if [ -z $dir ]; then
+        usage
+    fi
+    if [ -z $prj ]; then
+        usage
+    fi
+
+    $SVN export $REPOSITORIES/$prj $dir
+}
+case "$1" in
+    list)
+        list $@
+        ;;
+    conf)
+        conf $@
+        ;;
+    deploy)
+        deploy $@
+        ;;
+    withdraw)
+        withdraw $2 $3
+        ;;
+    history)
+        ls -1 ~/backup
+        ;;
+    import)
+        import $@
+        ;;
+    export)
+        export $@
+        ;;
+    *)
+        usage
+        exit 1
+esac
+
+		]]>
+		</screen>
+		<section>
+			<title>FTP Script</title>
+			<programlisting role="bash">
+			<![CDATA[
+#!/bin/bash
+#===================================
+# http://netkiller.sourceforge.net/
+# Author: neo chen
+#===================================
+BACKUP_DIR=~/backup
+UPLOAD_DIR=~
+
+deploy(){
+
+    local SERVER_ID=$1
+    local FILEDIR=$UPLOAD_DIR/$2
+    #local filelist=$(find $FILEDIR -type f | sed -e "s:^$FILEDIR:/:g" | tr "\n" " ")
+    #local filelist=$(find $FILEDIR -type f | sed -e "s:^$FILEDIR:/:g")
+    cd ~
+    local TIMEPOINT=$(date '+%Y-%m-%d@%H:%M:%S')
+    mkdir $BACKUP_DIR/$SERVER_ID/$TIMEPOINT
+    cd $BACKUP_DIR/$SERVER_ID/$TIMEPOINT
+
+    for dir in $(find $FILEDIR -type d | sed -e "s:^$FILEDIR::g")
+    do
+        mkdir -p $dir
+    done
+
+    #echo $filelist > $BACKUP_DIR/$TIMEPOINT/file.lst
+    echo ===== backup timepont $TIMEPOINT =====
+
+    for file in $(find $FILEDIR -type f | sed -e "s:^$FILEDIR:/:g")
+    do
+        local lfile=$(echo $file | sed "s:^/::g")
+        echo "get -z $file $lfile"
+    done | ncftp $SERVER_ID
+
+    #echo "get $filelist" | ncftp $SERVER_ID
+    #echo "I have finished backup files, I will be uploading files to $SERVER_ID"
+    read -p "Are you ready? [y/n]" -n 1 key
+    echo
+    if [ $key = 'y' ]; then
+        echo ===== upload =====
+        echo "put -R $FILEDIR*" | ncftp $SERVER_ID
+    fi
+    cd ~
+    echo
+}
+
+function withdraw(){
+    local SERVER_ID=$1
+    local TIMEPOINT=$2
+    cd $BACKUP_DIR/$SERVER_ID/$TIMEPOINT
+    #local filelist=$(find  -type f | sed -e "s/^\.//g" | tr "\n" " ")
+    echo "put -R $BACKUP_DIR/$SERVER_ID/$TIMEPOINT/*" | ncftp $SERVER_ID
+    cd ~
+}
+
+usage(){
+    echo $"Usage: $0 {deploy|withdraw|history} <server-id> <directory/timepoint>"
+    exit 1
+}
+
+
+case "$1" in
+    deploy)
+        if [ -z $2 ]; then
+            usage
+            exit
+        fi
+        if [ -z $3 ]; then
+            usage
+            exit
+        fi
+
+		if [ $# -ne 2 ] ; then
+				usage
+				exit 2
+		fi
+
+        deploy $2 $3
+        ;;
+    withdraw)
+        if [ -z $2 ]; then
+            usage
+            exit
+        fi
+        if [ -z $3 ]; then
+            usage
+            exit
+        fi
+
+        withdraw $2 $3
+        ;;
+    history)
+        ls -1 ~/backup/$2
+        ;;
+    *)
+        usage
+        exit 1
+esac
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>SFTP Script</title>
+			<programlisting role="bash">
+			<![CDATA[
+#!/bin/bash
+BACKUP_DIR=/tmp/backup
+REMOTE_DIR=/tmp
+UPLOAD_DIR=''
+LOCAL_DIR=''
+#LOCAL_DIR=$UPLOAD_DIR
+
+deploy(){
+    local host=$1
+    SCP=${host}:$REMOTE_DIR
+    TIMEPOINT=$(date '+%Y-%m-%d,%H:%M:%S')
+    BACKUP_DIR=$BACKUP_DIR/${host}/$TIMEPOINT
+
+#    if [ ! -e $i.log ]; then
+    mkdir -p $BACKUP_DIR
+#    fi
+
+    for dir in $(find $LOCAL_DIR -type d | sed -e "s:^$LOCAL_DIR::g");
+    do
+        mkdir -p $BACKUP_DIR/$dir
+    done
+
+    echo ===== backup timepont $TIMEPOINT =====
+
+#    for file in $(find $LOCAL_DIR -type f | sed -e "s:^$LOCAL_DIR::g");
+#        do
+    #        echo $file
+#            scp $SCP/$file $BACKUP_DIR/$file
+#        done
+
+    for file in $(find $LOCAL_DIR -type f | sed -e "s:^$LOCAL_DIR::g")
+    do
+        local lfile=$BACKUP_DIR/$(echo $file | sed "s:^/::g")
+        echo "get $file $lfile"
+    done | sftp $SCP
+
+
+    read -p "Are you ready? [y/n]" -n 1 key ; echo
+    if [ $key = 'y' ]; then
+        echo ===== upload =====
+        eval scp -r "$LOCAL_DIR*" $SCP
+    fi
+}
+withdraw(){
+    local host=$1
+    local timepoint=$2
+    SCP=${host}:$REMOTE_DIR
+    eval scp -r $BACKUP_DIR/${host}/$timepoint/* $SCP
+}
+restart(){
+    /usr/local/resin-pro-3.1.3/bin/httpd.sh -server payservice restart
+}
+
+history(){
+    if [ -z $1 ]; then
+            usage
+            exit
+    else
+        ls -1 $BACKUP_DIR/$1
+    fi
+}
+
+usage(){
+    echo $"Usage: $0 {deploy|withdraw|history} <server-id> <directory/timepoint>"
+    exit 1
+}
+
+
+case "$1" in
+    deploy)
+
+        if [ $# -ne 3 ] ; then
+            usage
+            exit 2
+        fi
+
+        export UPLOAD_DIR=$3
+        export LOCAL_DIR=$UPLOAD_DIR
+
+        deploy $2
+        ;;
+    withdraw)
+        if [ $# -ne 3 ] ; then
+            usage
+            exit 2
+        fi
+
+        withdraw $2 $3
+        ;;
+    history)
+        history $2
+        ;;
+    *)
+        usage
+        exit 1
+esac
+			]]>
+			</programlisting>
+
+		</section>
+		<section>
+			<title>SCP Script</title>
+			<para>scpdeploy</para>
+			<programlisting role="bash">
+			<![CDATA[
+#!/bin/bash
+BACKUP_DIR=~/backup/java
+UPLOAD_DIR=.
+#IP=""
+#FILEDIR=$UPLOAD_DIR/""
+
+deploy(){
+    SCP=root@${IP}:/www
+    TIMEPOINT=$(date '+%Y-%m-%d,%H:%M:%S')
+    BACKUP_DIR=$BACKUP_DIR/$TIMEPOINT
+    mkdir $BACKUP_DIR
+
+    for dir in $(find $FILEDIR -type d | sed -e "s:^$FILEDIR::g");
+    do
+    #    echo $dir
+        mkdir -p $BACKUP_DIR/$dir
+    #    if [ ! -e $i.log ]; then
+    #        mkdir -p $
+    #    fi
+    done
+
+    echo ===== backup timepont $TIMEPOINT =====
+
+    for file in $(find $FILEDIR -type f | sed -e "s:^$FILEDIR::g");
+        do
+    #        echo $file
+            scp $SCP/$file $BACKUP_DIR/$file
+        done
+
+    read -p "Are you ready? [y/n]" -n 1 key
+        echo
+        if [ $key = 'y' ]; then
+            echo ===== upload =====
+
+            eval scp -r "$FILEDIR*" $SCP
+        fi
+}
+withdraw(){
+    host=$1
+    timepoint=$2
+    SCP=root@${host}:/www
+    eval scp -r $BACKUP_DIR/$timepoint/* $SCP
+}
+restart(){
+    /usr/local/resin-pro-3.1.3/bin/httpd.sh -server payservice restart
+}
+
+usage(){
+    echo $"Usage: $0 {deploy|withdraw|history} <server-id> <directory/timepoint>"
+    exit 1
+}
+
+
+case "$1" in
+    deploy)
+        if [ -z $2 ]; then
+            usage
+            exit
+        else
+            export IP=$2
+        fi
+        if [ -z $3 ]; then
+            usage
+            exit
+        else
+            export FILEDIR=$UPLOAD_DIR/$3
+        fi
+
+        deploy
+        ;;
+    withdraw)
+        if [ -z $2 ]; then
+            usage
+            exit
+        fi
+        if [ -z $3 ]; then
+            usage
+            exit
+        fi
+
+        withdraw $2 $3
+        ;;
+    history)
+        ls -1 $BACKUP_DIR
+        ;;
+    *)
+        usage
+        exit 1
+esac
+			]]>
+			</programlisting>
+		</section>
+	</section>
+	<section id="devops.upgrade">
+		<title>Upgrade</title>
+		<para></para>
+	</section>
+</section>

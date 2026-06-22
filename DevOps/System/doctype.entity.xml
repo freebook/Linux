@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!ENTITY chapter.system.xml 				SYSTEM "chapter.system.xml">
+<!ENTITY chapter.devops.xml				SYSTEM "chapter.devops.xml">
+
+<!ENTITY chapter.server.xml				SYSTEM "chapter.server.xml">
+<!ENTITY section.server.os.xml			SYSTEM "section.server.os.xml">
+<!ENTITY section.server.tomcat.xml		SYSTEM "section.server.tomcat.xml">
+<!ENTITY section.server.php.xml			SYSTEM "section.server.php.xml">
+<!ENTITY section.server.oscm.xml		SYSTEM "section.server.oscm.xml">
+<!ENTITY section.server.spring.xml		SYSTEM "section.server.spring.xml">
+
+<!ENTITY chapter.idc.xml		 		SYSTEM "chapter.idc.xml">
+<!ENTITY section.idc.version.xml 		SYSTEM "section.idc.version.xml">
+<!ENTITY section.idc.logging.xml 		SYSTEM "section.idc.logging.xml">
+<!ENTITY section.idc.move.xml			SYSTEM "section.idc.move.xml">
+<!ENTITY section.idc.cable.xml	 		SYSTEM "section.idc.cable.xml">
+<!ENTITY section.idc.traffic.xml 		SYSTEM "section.idc.traffic.xml">
+
+<!ENTITY section.server.storage.xml 	SYSTEM "section.server.storage.xml">
+<!ENTITY chapter.backup.xml				SYSTEM "chapter.backup.xml">
+<!ENTITY chapter.firewall.xml			SYSTEM "chapter.firewall.xml">

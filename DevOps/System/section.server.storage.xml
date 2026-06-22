@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="storage">
+	<title>Distributed File System(簇文件系统)</title>
+	<para>我吧分布式文件系统分为三类，聚合文件系统，全局文件系统，负载均衡文件系统。</para>
+	<para>除了gfs其他文件系统都是建立在本地文件系统之上的网络文件系统。</para>
+	<para>几乎所有DFS都能通过fuse mount 到本地，但有些DFS mount 后性能不佳。</para>
+	<para>还有一个与分布式文件系统密切相关的，就是块设备，块设备不是文件系统，可以称为裸设备。</para>
+	<section id="server.hba">
+		<title>FC 光纤存储</title>
+		<para>常用 Fibre Channel HBA 卡</para>
+		<para>QLogic QLE2562 - PCI-Express Dual Channel 8Gb Fibre Channel HBA</para>
+		<para>Emulex LightPulse Fibre Channel SCSI driver 8.2.0.87.1p</para>
+		<para>HBA 卡使用SFP+光纤模块，LC-LC光纤跳线</para>
+	</section>
+	<section id="storage.nfs">
+		<title>聚合文件系统</title>
+		<para>以NFS, glusterfs 为代表，其特点是server独立运行，Server与Server间没有通信，然后访问者将其聚合组织并规划目录，为client提供数据共享。</para>
+		<para>glusterfs 可以实现Mirror与Strip等更复杂的组合，但全由client完成，server之间没有交互。</para>
+		<screen>
+		<![CDATA[
+
++-------------------------+        +-----------------------+
+| Client                  |       /| Images Data           |
++-------------------------+      / +-----------------------+
+| /mnt                    |     /  +-----------------------+     +--------------------+
+| /mnt/images             |<----  /| Include Data          |     | Design by neo chen |
+| /mnt/include            |<------ +-----------------------+     +--------------------+
+| /mnt/lib                | ...    netkiller.github.com
+| /mnt/data               | ...    +-----------------------+
+| /mnt/data/backup        |<-------| Backup Data           |
++-------------------------+        +-----------------------+
+
+		]]>
+		</screen>
+	</section>
+	<section id="storage.gfs">
+		<title>全局文件系统</title>
+		<para>如 gfs，它可以提供server间文件系统协商，同步元数据等等。常规文件系统只能用于本地硬盘，如果两个服务器同时mount iscsi存储，会出现A服务器写入后，B服务器无法看到A刚刚写入的数据，如果两台同时写入数据，会损坏文件系统。</para>
+		<screen>
+		<![CDATA[
+
+		    +--------------------------------+
+		    | Server Load Balancing          |
+		    +--------------------------------+
+		                    |
+		                    V
+--------------------- 1Gbps Ethernet ---------------------
+            |                                |
+            |        netkiller.sf.net        |
+            V                                V
++------------------------+        +-----------------------+
+| Server Master          |        | Server Master / Slave |
++------------------------+        +-----------------------+
+| /u01                   |        | /u01                  |     +--------------------+
+| /u02                   |        | /u02                  |     | Design by neo chen |
+| /u03                   |        | /u03                  |     +--------------------+
++------------------------+        +-----------------------+
+          |   |                             |   |
+          V   V                             V   V
+--------------------- 10Gbps Ethernet ---------------------
+                           |  |
+                           V  V
+              +----------------------------+
+              | IP SAN - ISCSI target      |
+              +----------------------------+
+              | LUN0 | LUN1 | LUN2 | ...   |
+              +----------------------------+
+
+		]]>
+		</screen>
+	</section>
+	<section id="storage.cluster">
+		<title>负载均衡文件系统</title>
+		<para>这种文件系统通常至少有三部分组成，存储节点，访问节点，管理节点。不同的系统叫法不同，但其原理相同。</para>
+		<para>存储节点,负责数据存储，数据通过hash散列</para>
+		<para>访问节点，用户通过该节点访问数据，做数据上传下载。访问方式分为点对点与三角方式</para>
+		<para>管理节点，服务数据Mirror,Strip等，元数据同步等等...</para>
+		<para>点到点系统只提供一个访问入口，如：MooseFS</para>
+		<screen>
+		<![CDATA[
+          +--------------------------------+
+          | User                           |
+          +--------------------------------+
+          | mount ip_address => /mnt/test  |
+          +--------------------------------+
+                          |
+                          V
+------------------ 1Gbps Ethernet ---------------------
+         |                                   |
+         V                                   V
++-------------------------+       +----------------------+
+| Manager Node            |       | Access node          |
++-------------------------+       +----------------------+
+| Mirror | Strip |  ...   |       | Index                |
++-------------------------+       +----------------------+
+		 |
+		 V
+--------------------- 1Gbps Ethernet ---------------------
+         |                                     |
+         |            netkiller.sf.net         |
+         V                                     V
++---------------------+              +--------------------+
+| Data Node           |              | Date Node          |
++---------------------+              +--------------------+
+| 01 02 03 ...    10  |              | 01 02 03 ...    10 |     +--------------------+
+| 0A 0B 0C ...    0F  |<-- Mirror -->| 0A 0B 0C ...    0F |     | Design by neo chen |
+| FA FB FC ...    FF  |              | FA FB FC ...    FF |     +--------------------+
++---------------------+              +--------------------+
+
+		]]>
+		</screen>
+		<screen>三角链路</screen>
+		<screen>
+		<![CDATA[
+
+          +--------------------------------+
+          | Server Load Balancing          |
+          +--------------------------------+
+                          |
+                          V
+------------------ 1Gbps Ethernet ----------------------------------
+         |                               |                  |
+         V                               V                  V
++-------------------------+       +-------------+    +-------------+
+| Manager Node            |       | Access Node |    | Access Node |
++-------------------------+       +-------------+    +-------------+
+| Mirror | Strip |  ...   |       | Index       |    | Index       |
++-------------------------+       +-------------+    +-------------+
+		 |
+		 V
+--------------------- 1Gbps Ethernet ---------------------
+         |                                     |
+         |            netkiller.sf.net         |
+         V                                     V
++---------------------+              +--------------------+
+| Data Node           |              | Date Node          |
++---------------------+              +--------------------+
+| 01 02 03 ...    10  |              | 01 02 03 ...    10 |     +--------------------+
+| 0A 0B 0C ...    0F  |<-- Mirror -->| 0A 0B 0C ...    0F |     | Design by neo chen |
+| FA FB FC ...    FF  |              | FA FB FC ...    FF |     +--------------------+
++---------------------+              +--------------------+
+
+		]]>
+		</screen>
+		<para>这种文件系统的特点是，当用户访问文件系统时，首先访问管理节点，管理节点会返回一个数据地址，用户再从访问节点的地址取得数据。</para>
+		<para>以MogileFS为代表</para>
+		<para>某些系统甚至直接使用反向代理或者WEB服务器作为访问节点。这种系统非常适合多媒体数据存储。通过负载均衡可能实现横向与纵向灵活扩展</para>
+	</section>
+	<section id="storage.nbd">
+		<title>网络块设备</title>
+		<para>本地文件系统是建立在块设备之上的。使用块设备，首先配置好块设备，然后你就可以把它当成物理硬盘一样对待，在块设备上分区，格式化。</para>
+		<para>以DRBD,nbd-server为代表，网络块设备可以保证两块物理硬盘的数据同步，常用语HA集群</para>
+		<screen>
+		<![CDATA[
+
+Linux Server A                   Linux Server B
+----------------                 -----------------
+File System                      File System
+Block Device    <--------------> Block Device
+		]]>
+		</screen>
+		<para>更多细节参考 http://netkiller.github.com/storage/</para>
+	</section>
+	<section id="storage">
+		<title>Storage 存储</title>
+		<section>
+			<title>存储种类</title>
+			<para>DAS、NAS、SAN</para>
+
+			<section>
+				<title>Direct Attached Storage</title>
+				<para>PC + Raid Card ====== Array</para>
+			</section>
+
+			<section>
+				<title>Network-attached storage</title>
+				<para>NAS 说白了就是一个嵌入式电脑，经过精简内核的Linux,通过samba,nfs,WebDav,ftp...等等方式实现共享存储</para>
+				<para>如果你有兴趣，可以DIY一个NAS，使用Openfiler</para>
+			</section>
+
+			<section>
+				<title>Storage area network</title>
+				<para>只要你有￥什么都好说</para>
+				<section>
+					<title>FC SAN</title>
+					<para>FC 是光纤通道网络存储，需要专用交换机与HBA卡</para>
+					<para>提供 6G/8G 数据传输</para>
+				</section>
+				<section>
+					<title>IP SAN</title>
+					<para>1G/10G iSCSI，采用TCP/IP协议传输SCSI指令</para>
+					<para>客户端不需要专门的HBA卡，专业iSCSI HBA目前非常昂贵</para>
+				</section>
+				<section>
+					<title>FCoE (Fibre Channel over Ethernet)</title>
+					<para>因为iSCSI很廉价，FC市场被iSCSI蚕食，传统FC收到iSCSI压力。推出新一代协议，希望能在现有光纤通道的成功基础上，借助于以太网的力量重新保持自身在数据中心存储局域网中的霸主地位。</para>
+					<para>iSCSI通过TCP/IP协议在可能产生损耗或阻塞的局域网和宽带网上传送数据存储块。相比之下，FCoE则只是利用了以太网的拓展性，并保留了光纤通道在高可靠性和高效率方面的优势。</para>
+				</section>
+			</section>
+		</section>
+		<section>
+			<title>RAID</title>
+			<section>
+				<title>缓存服务器</title>
+				<para>全部采用RAID 0</para>
+				<para>一旦出现问题，立即将其从集群中踢出去，带节点故障排除后，恢复它的功能。</para>
+			</section>
+			<section>
+				<title>Web 服务器</title>
+				<para>采用RAID 1</para>
+				<para>服务器仅仅存放脚本程序，数据建议放在外挂存储上。</para>
+			</section>
+			<section>
+				<title>数据库</title>
+				<para>主服务器：建议采用 RAID 10</para>
+				<para>数据库节点：建议采用 RAID 10</para>
+				<para>数据库应尽量避免使用RAID 5，RAID 5在做校验过程时，效率会很低。</para>
+				<para>数据库节点一旦出现问题，立即从集群中撤出，排除故障后，在回复使用。</para>
+			</section>
+			<section>
+				<title>数据备份</title>
+				<para>数据备份服务器建议采用RAID 5/6</para>
+				<para>RAID 5 阵列容量计算公式 ：</para>
+				<para>可用容量 =（n-1）/n的总磁盘容量（n为磁盘数）</para>
+			</section>
+		</section>
+
+		<section>
+			<title>File System 文件系统</title>
+			<para>我个人推荐使用 ext4, xfs 或 reiserfs</para>
+			<para>zfs 也不错</para>
+			<section>
+				<title>Distributed File System(DFS)</title>
+				<para>RAID 0提高吞吐能力是有限的，IO也会有瓶颈，NAS吞吐能力一样有限，SAN价格不菲。</para>
+				<para>DFS是一个不错的选择</para>
+			</section>
+		</section>
+		<section>
+			<title>数据访问协议</title>
+			<screen>
+				• 光纤通道管理
+				• iSCSI
+				• IP/RDMA
+				• iSER
+				• SRP
+				• NFS v3 和v4
+				• CIFS
+				• HTTP
+				• WebDAV
+				• FTP
+				• NDMP v4
+			</screen>
+		</section>
+		<section>
+			<title>数据管理</title>
+			<section>
+				<title>Share 共享</title>
+			</section>
+			<section>
+				<title>Mirror 远程镜像同步</title>
+			</section>
+			<section>
+				<title>压缩与重复数据消除</title>
+				<para>EMC Data Domain</para>
+				<para>开源 Opendedup </para>
+			</section>
+			<section>
+				<title>Backup 备份与恢复</title>
+				<para>Bacula/Zmanda</para>
+			</section>
+			<section>
+				<title>故障报告</title>
+			</section>
+
+		</section>
+	</section>
+
+	<section id="snapshot">
+		<title>磁盘快照</title>
+		<para>下面流程是自动化完成，这里分部讲解</para>
+		<procedure>
+			<title>升级操作流程</title>
+			<step>
+				<para>数据备份</para>
+				<para>通常绝大多数人，备份还采用 cp / tar / 以及稍微有点技术含量的rsync做差异备份 例如</para>
+				<screen>
+					<![CDATA[
+cp -r /www/example.com/www.example.com /backup/www.example.com-2016-05-23
+tar zcvf www.example.com-2016-05-23.tgz /www/example.com/www.example.com
+
+rsync -auzv /www/example.com/www.example.com /backup/www.example.com-2016-05-23
+					]]>
+				</screen>
+				<para>这种备份适合比较小的软件包，对于图片服务器什么的就比较耗时。我很早就开始尝试使用快照备份当时使用LVM，后来转为Btrfs文件系统，到2010的时候btrfs快照已经非常成熟.
+				</para>
+				<screen>
+					<![CDATA[
+[root@www.netkiller.cn www]# btrfs subvolume snapshot /www /www/backup_2016-05-23
+Create a snapshot of '/www' in '/www/backup_2016-05-23'
+					]]>
+				</screen>
+				<para>快照瞬间建立，使用下面命令查看快照</para>
+				<screen>
+					<![CDATA[
+[root@www.netkiller.cn www]# btrfs subvolume list /www
+ID 284 gen 18583 top level 5 path backup_2016-05-23
+					]]>
+				</screen>
+				<para>挂载快照</para>
+				<screen>
+					<![CDATA[
+[root@www.netkiller.cn www]# mount -t btrfs -o subvol=backup_2016-05-23 /dev/xvdb1 /mnt
+[root@www.netkiller.cn www]# ll /mnt/
+					]]>
+				</screen>
+				<para>
+					关于BTRFS详细使用方法，请参考
+					<ulink url="http://www.netkiller.cn/linux/index.html">《Netkiller Linux 手札》</ulink>
+				</para>
+			</step>
+			<step>
+				<para></para>
+
+				<para></para>
+			</step>
+			<step>
+				<para></para>
+
+			</step>
+			<step>
+				<para></para>
+				<substeps>
+					<step>
+						<para></para>
+					</step>
+					<step>
+						<para></para>
+					</step>
+				</substeps>
+			</step>
+			<step>
+				<para></para>
+			</step>
+		</procedure>
+
+	</section>
+</section>

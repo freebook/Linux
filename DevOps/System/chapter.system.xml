@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<part id="index"><?dbhtml dir="system"?>
+	<title>运维篇</title>
+	&chapter.idc.xml;
+	&chapter.server.xml;
+	&chapter.backup.xml;
+	&chapter.firewall.xml;
+</part>

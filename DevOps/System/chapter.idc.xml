@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="idc"?>
+	<title>IDC</title>
+	&section.idc.version.xml;
+	&section.idc.move.xml;
+	&section.idc.cable.xml;
+	&section.idc.logging.xml;
+	&section.idc.traffic.xml;
+</chapter>
+

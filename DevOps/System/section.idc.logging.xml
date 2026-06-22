@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="idc.logging">
+	<title>记录思科路由器/防火墙/交换机日志</title>
+	<para>本程序用于收集，防火墙，路由器，交换机等日志</para>
+	<section>
+		<title>开启日志</title>
+		<para>配置 Cisco ASA 5550 Firewall 防火墙，路由器和交换机操作方法大同小异。</para>
+		<screen>
+		<![CDATA[
+logging enable 
+logging timestamp 
+logging trap warnings 
+logging host inside 172.16.0.5
+logging facility local0 
+		]]>
+		</screen>
+		<para>172.16.0.5 改为你的syslogd服务器地址</para>
+	</section>
+	<section>
+		<title>syslogd 服务器脚本</title>
+		<para>*注意：python版本必须3.0以上</para>
+		<para>chmod 700 syslogd</para>
+		<para>./syslogd</para>
+		<screen>
+		<![CDATA[
+#!/srv/python/bin/python3
+# -*- encoding: utf-8 -*-
+# Cisco ASA Firewall - Syslog Server by neo
+# Author: neo<neo.chen@live.com>
+
+import logging
+import socketserver
+import threading
+
+LOG_FILE = '/var/log/asa5550.log'
+
+logging.basicConfig(level=logging.INFO,
+                    format='%(message)s',
+                    datefmt='',
+                    filename=LOG_FILE,
+                    filemode='a')
+
+class SyslogUDPHandler(socketserver.BaseRequestHandler):
+
+    def handle(self):
+        data = bytes.decode(self.request[0].strip())
+        socket = self.request[1]
+        print( "%s : " % self.client_address[0], str(data))
+        logging.info(str(data))
+#        socket.sendto(data.upper(), self.client_address)
+
+if __name__ == "__main__":
+    try:
+        HOST, PORT = "0.0.0.0", 514
+        server = socketserver.UDPServer((HOST, PORT), SyslogUDPHandler)
+        server.serve_forever(poll_interval=0.5)
+    except (IOError, SystemExit):
+        raise
+    except KeyboardInterrupt:
+        print ("Crtl+C Pressed. Shutting down.")
+		]]>
+		</screen>
+	</section>
+</section>
