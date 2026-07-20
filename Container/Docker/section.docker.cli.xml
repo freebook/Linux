@@ -870,7 +870,7 @@ neo@MacBook-Pro ~ % docker inspect --format '{{.State.Pid}}{{print "|"}}{{.State
 
 			</section>
 
-			<section>
+			<section >
 				<title>综合查询</title>
 				<screen>
 					<![CDATA[
@@ -916,6 +916,15 @@ docker inspect --format '{{ .Config.Hostname }}:{{range .NetworkSettings.Network
                 "Mode": "",
                 "RW": true,
                 "Propagation": "rprivate"
+				]]>
+				</screen>
+			</section>
+			<section id="inspect.env">
+				<title>查看容易环境变量</title>
+				<screen>
+				<![CDATA[
+docker inspect agent --format '{{range .Config.Env}}{{println .}}{{end}}' |
+  grep '^APP_ENV='				
 				]]>
 				</screen>
 			</section>
