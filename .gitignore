@@ -2,3 +2,5 @@
 .DS_Store
 Linux.iml
 .idea/
+common
+docbook-xsl
