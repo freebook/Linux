@@ -34,7 +34,7 @@
 <!ENTITY section.text.awk.xml			SYSTEM "section.text.awk.xml">
 <!ENTITY section.text.sed.xml			SYSTEM "section.text.sed.xml">
 
-<!ENTITY chapter.utility.xml		 		SYSTEM "chapter.utility.xml">
+<!ENTITY section.shell.test.xml			SYSTEM "section.shell.test.xml">
 <!ENTITY chapter.curl.xml	 			SYSTEM "chapter.curl.xml">
 <!ENTITY chapter.wget.xml				SYSTEM "chapter.wget.xml">
 <!ENTITY section.text.jq.xml			SYSTEM "section.text.jq.xml">

@@ -1,0 +1,422 @@
+	<section id="cmd.test">
+		<title>test - 条件判断命令</title>
+
+		<para>test 命令用于条件判断，返回 0（真）或非 0（假）。在 shell 脚本中常用于 if、while 等控制结构。方括号 <literal>[ ]</literal> 是 test 命令的另一种写法。</para>
+		<simplesect>
+			<title>判断目录</title>
+			<screen>
+				<![CDATA[
+	test -d /path/to/directory || mkdir -p /path/to/directory
+				]]>
+			</screen>
+		</simplesect>
+		<simplesect>
+			<title>检查环境变量</title>
+			<screen>
+			<![CDATA[
+		test -x $HAPROXY || exit 0
+		test -f "$CONFIG" || exit 0
+			]]>
+			</screen>
+
+		</simplesect>
+		<simplesect>
+			<title>基本语法</title>
+			<screen><![CDATA[
+test EXPRESSION
+[ EXPRESSION ]
+
+# 两种写法等价：
+test -f /etc/passwd
+[ -f /etc/passwd ]
+			]]></screen>
+			<para>注意：<literal>[</literal> 和 <literal>EXPRESSION</literal> 以及 <literal>]</literal> 之间必须有空格。</para>
+		</simplesect>
+
+		<simplesect>
+			<title>文件测试操作符</title>
+			<para>测试文件属性的常用操作符：</para>
+			<itemizedlist>
+				<listitem><para><emphasis>-e file</emphasis> - 文件存在</para></listitem>
+				<listitem><para><emphasis>-f file</emphasis> - 文件存在且是普通文件</para></listitem>
+				<listitem><para><emphasis>-d file</emphasis> - 文件存在且是目录</para></listitem>
+				<listitem><para><emphasis>-r file</emphasis> - 文件存在且可读</para></listitem>
+				<listitem><para><emphasis>-w file</emphasis> - 文件存在且可写</para></listitem>
+				<listitem><para><emphasis>-x file</emphasis> - 文件存在且可执行</para></listitem>
+				<listitem><para><emphasis>-s file</emphasis> - 文件存在且大小大于 0</para></listitem>
+				<listitem><para><emphasis>-L file</emphasis> - 文件存在且是符号链接</para></listitem>
+				<listitem><para><emphasis>-O file</emphasis> - 文件存在且属于当前用户</para></listitem>
+				<listitem><para><emphasis>-G file</emphasis> - 文件存在且属于当前组</para></listitem>
+				<listitem><para><emphasis>-N file</emphasis> - 文件存在且上次读取后被修改过</para></listitem>
+				<listitem><para><emphasis>-c file</emphasis> - 文件存在且是字符特殊文件</para></listitem>
+				<listitem><para><emphasis>-b file</emphasis> - 文件存在且是块特殊文件</para></listitem>
+				<listitem><para><emphasis>-S file</emphasis> - 文件存在且是套接字</para></listitem>
+				<listitem><para><emphasis>-p file</emphasis> - 文件存在且是命名管道</para></listitem>
+			</itemizedlist>
+
+			<para>文件比较：</para>
+			<itemizedlist>
+				<listitem><para><emphasis>file1 -nt file2</emphasis> - file1 比 file2 新（mtime）</para></listitem>
+				<listitem><para><emphasis>file1 -ot file2</emphasis> - file1 比 file2 旧</para></listitem>
+				<listitem><para><emphasis>file1 -ef file2</emphasis> - file1 和 file2 有相同的 device 和 inode</para></listitem>
+			</itemizedlist>
+
+			<para>示例：</para>
+			<screen><![CDATA[
+# 检查文件是否存在
+test -f /etc/passwd && echo "文件存在"
+
+# 检查目录是否存在
+[ -d /var/log ] && echo "目录存在"
+
+# 检查文件是否可执行
+[ -x /usr/bin/munin-cron ] && /usr/bin/munin-cron
+
+# 检查文件是否为空
+if [ ! -s /tmp/log.txt ]; then
+    echo "文件为空或不存在"
+fi
+
+# 比较两个文件的新旧
+if [ file1.txt -nt file2.txt ]; then
+    echo "file1.txt 比 file2.txt 新"
+fi
+			]]></screen>
+		</simplesect>
+
+		<simplesect>
+			<title>字符串测试操作符</title>
+			<para>字符串比较操作符：</para>
+			<itemizedlist>
+				<listitem><para><emphasis>-z string</emphasis> - 字符串长度为 0（空字符串）</para></listitem>
+				<listitem><para><emphasis>-n string</emphasis> - 字符串长度不为 0（非空字符串）</para></listitem>
+				<listitem><para><emphasis>string1 = string2</emphasis> - 字符串相等</para></listitem>
+				<listitem><para><emphasis>string1 != string2</emphasis> - 字符串不等</para></listitem>
+			</itemizedlist>
+
+			<para>示例：</para>
+			<screen><![CDATA[
+# 检查变量是否为空
+name=""
+if [ -z "$name" ]; then
+    echo "变量为空"
+fi
+
+# 检查变量是否非空
+name="neo"
+[ -n "$name" ] && echo "变量非空: $name"
+
+# 字符串相等比较
+user="root"
+if [ "$user" = "root" ]; then
+    echo "是 root 用户"
+fi
+
+# 字符串不等比较
+if [ "$user" != "guest" ]; then
+    echo "不是 guest 用户"
+fi
+
+# 注意：变量应该用引号包裹，防止 word splitting
+[ "$var" = "value" ]  # 正确
+[ $var = "value" ]    # 危险：如果 $var 为空会报错
+			]]></screen>
+		</simplesect>
+
+		<simplesect>
+			<title>整数比较操作符</title>
+			<para>整数比较操作符：</para>
+			<itemizedlist>
+				<listitem><para><emphasis>n1 -eq n2</emphasis> - n1 等于 n2</para></listitem>
+				<listitem><para><emphasis>n1 -ne n2</emphasis> - n1 不等于 n2</para></listitem>
+				<listitem><para><emphasis>n1 -lt n2</emphasis> - n1 小于 n2</para></listitem>
+				<listitem><para><emphasis>n1 -le n2</emphasis> - n1 小于等于 n2</para></listitem>
+				<listitem><para><emphasis>n1 -gt n2</emphasis> - n1 大于 n2</para></listitem>
+				<listitem><para><emphasis>n1 -ge n2</emphasis> - n1 大于等于 n2</para></listitem>
+			</itemizedlist>
+
+			<para>示例：</para>
+			<screen><![CDATA[
+# 检查数字是否相等
+count=5
+if [ "$count" -eq 5 ]; then
+    echo "计数为 5"
+fi
+
+# 检查数字范围
+age=25
+if [ "$age" -ge 18 ] && [ "$age" -le 65 ]; then
+    echo "年龄在 18-65 之间"
+fi
+
+# 检查进程数
+procs=$(ps aux | wc -l)
+if [ "$procs" -gt 100 ]; then
+    echo "进程数过多: $procs"
+fi
+
+# 检查返回值
+command
+if [ $? -ne 0 ]; then
+    echo "命令执行失败"
+fi
+			]]></screen>
+
+			<para>记忆技巧：</para>
+			<itemizedlist>
+				<listitem><para>eq = equal</para></listitem>
+				<listitem><para>ne = not equal</para></listitem>
+				<listitem><para>lt = less than</para></listitem>
+				<listitem><para>le = less than or equal</para></listitem>
+				<listitem><para>gt = greater than</para></listitem>
+				<listitem><para>ge = greater than or equal</para></listitem>
+			</itemizedlist>
+		</simplesect>
+
+		<simplesect>
+			<title>逻辑操作符</title>
+			<para>组合多个条件：</para>
+			<itemizedlist>
+				<listitem><para><emphasis>expr1 -a expr2</emphasis> - 逻辑与（expr1 和 expr2 都为真）</para></listitem>
+				<listitem><para><emphasis>expr1 -o expr2</emphasis> - 逻辑或（expr1 或 expr2 为真）</para></listitem>
+				<listitem><para><emphasis>! expr</emphasis> - 逻辑非</para></listitem>
+			</itemizedlist>
+
+			<para>使用 shell 操作符（推荐）：</para>
+			<itemizedlist>
+				<listitem><para><emphasis>expr1 &amp;&amp; expr2</emphasis> - 逻辑与</para></listitem>
+				<listitem><para><emphasis>expr1 || expr2</emphasis> - 逻辑或</para></listitem>
+				<listitem><para><emphasis>! expr</emphasis> - 逻辑非</para></listitem>
+			</itemizedlist>
+
+			<para>示例：</para>
+			<screen><![CDATA[
+# 逻辑与：文件存在且可执行
+[ -f /usr/bin/munin-cron ] && [ -x /usr/bin/munin-cron ] && /usr/bin/munin-cron
+
+# 使用 test 的 -a 操作符
+test -f /etc/passwd -a -r /etc/passwd && echo "文件存在且可读"
+
+# 逻辑或：目录不存在则创建
+[ -d /tmp/test ] || mkdir /tmp/test
+
+# 逻辑非：文件不存在
+[ ! -f /tmp/lock ] && echo "锁文件不存在"
+
+# 复杂条件组合
+if [ -f "$file" ] && [ -r "$file" ] && [ -s "$file" ]; then
+    echo "文件存在、可读且非空"
+fi
+
+# 嵌套条件
+if [ "$user" = "root" ] || ([ "$user" = "admin" ] && [ -w "$file" ]); then
+    echo "有权限"
+fi
+			]]></screen>
+		</simplesect>
+
+		<simplesect>
+			<title>在 if 语句中使用</title>
+			<screen><![CDATA[
+# 基本 if 结构
+if [ -f /etc/passwd ]; then
+    echo "文件存在"
+fi
+
+# if-else 结构
+if [ -d /var/log ]; then
+    echo "目录存在"
+else
+    echo "目录不存在"
+fi
+
+# if-elif-else 结构
+if [ -f "$file" ]; then
+    echo "是普通文件"
+elif [ -d "$file" ]; then
+    echo "是目录"
+elif [ -L "$file" ]; then
+    echo "是符号链接"
+else
+    echo "未知类型"
+fi
+
+# 多条件判断
+if [ -f "$config" ] && [ -r "$config" ]; then
+    source "$config"
+elif [ -f "$default_config" ]; then
+    source "$default_config"
+else
+    echo "没有配置文件"
+    exit 1
+fi
+			]]></screen>
+		</simplesect>
+
+		<simplesect>
+			<title>在 while/until 循环中使用</title>
+			<screen><![CDATA[
+# while 循环：条件为真时执行
+count=0
+while [ $count -lt 5 ]; do
+    echo "计数: $count"
+    count=$((count + 1))
+done
+
+# until 循环：条件为假时执行
+until [ -f /tmp/ready ]; do
+    echo "等待文件创建..."
+    sleep 2
+done
+
+# 读取用户输入
+while [ "$answer" != "yes" ] && [ "$answer" != "no" ]; do
+    read -p "请输入 yes 或 no: " answer
+done
+			]]></screen>
+		</simplesect>
+
+		<simplesect>
+			<title>实际应用示例</title>
+
+			<screen><![CDATA[
+# 检查命令是否存在
+if [ -x /usr/bin/git ]; then
+    echo "git 已安装"
+else
+    echo "git 未安装"
+    exit 1
+fi
+
+# 检查用户权限
+if [ "$(id -u)" -ne 0 ]; then
+    echo "需要 root 权限运行"
+    exit 1
+fi
+
+# 文件备份脚本
+src="/data/important.db"
+backup="/backup/$(date +%Y%m%d)_important.db"
+if [ -f "$src" ] && [ -s "$src" ]; then
+    cp "$src" "$backup"
+    echo "备份成功: $backup"
+else
+    echo "源文件不存在或为空"
+    exit 1
+fi
+
+# 检查磁盘空间
+available=$(df / | tail -1 | awk '{print $4}')
+threshold=1048576  # 1GB in KB
+if [ "$available" -lt "$threshold" ]; then
+    echo "警告：磁盘空间不足 1GB"
+fi
+
+# 等待服务启动
+timeout=30
+count=0
+while [ $count -lt $timeout ]; do
+    if [ -S /var/run/mysql.sock ]; then
+        echo "MySQL 已启动"
+        break
+    fi
+    sleep 1
+    count=$((count + 1))
+done
+
+if [ $count -eq $timeout ]; then
+    echo "MySQL 启动超时"
+    exit 1
+fi
+			]]></screen>
+		</simplesect>
+
+		<simplesect>
+			<title>[[ ]] 扩展测试（Bash 特有）</title>
+			<para>Bash 提供 <literal>[[ ]]</literal> 作为 <literal>[ ]</literal> 的增强版本：</para>
+			<itemizedlist>
+				<listitem><para>支持正则表达式匹配：<literal>=~</literal></para></listitem>
+				<listitem><para>支持 <literal>&amp;&amp;</literal> 和 <literal>||</literal> 在测试内部使用</para></listitem>
+				<listitem><para>不需要对变量加引号（自动处理）</para></listitem>
+				<listitem><para>支持模式匹配：<literal>==</literal> 配合通配符</para></listitem>
+			</itemizedlist>
+
+			<screen><![CDATA[
+# 正则表达式匹配
+if [[ "$email" =~ ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$ ]]; then
+    echo "有效的邮箱地址"
+fi
+
+# 模式匹配
+if [[ "$filename" == *.jpg ]]; then
+    echo "是 JPEG 图片"
+fi
+
+# 内部使用逻辑操作符
+if [[ -f "$file" && -r "$file" ]]; then
+    echo "文件存在且可读"
+fi
+
+# 字符串比较（不需要引号）
+if [[ $user == root ]]; then
+    echo "是 root 用户"
+fi
+
+# 字典序比较
+if [[ "apple" < "banana" ]]; then
+    echo "apple 在 banana 之前"
+fi
+			]]></screen>
+
+			<para>注意：<literal>[[ ]]</literal> 是 Bash 扩展，不兼容 POSIX sh。如果需要可移植性，使用 <literal>[ ]</literal>。</para>
+		</simplesect>
+
+		<simplesect>
+			<title>常见陷阱</title>
+			<screen><![CDATA[
+# 错误：方括号内没有空格
+if [-f /etc/passwd]; then  # 错误！
+if [ -f /etc/passwd ]; then  # 正确
+
+# 错误：整数比较使用字符串操作符
+if [ "$count" = "5" ]; then  # 字符串比较
+if [ "$count" -eq 5 ]; then  # 整数比较（正确）
+
+# 危险：未加引号的变量
+if [ $file = "test.txt" ]; then  # 如果 $file 为空会报错
+if [ "$file" = "test.txt" ]; then  # 安全
+
+# 错误：使用 = 比较数字
+if [ $age = 18 ]; then  # 字符串比较
+if [ $age -eq 18 ]; then  # 整数比较（正确）
+
+# 错误：在 [ ] 中使用 && 和 ||
+if [ -f file1 && -f file2 ]; then  # 错误！
+if [ -f file1 ] && [ -f file2 ]; then  # 正确
+			]]></screen>
+		</simplesect>
+
+		<simplesect>
+			<title>返回值检查</title>
+			<para>test 命令的返回值（<literal>$?</literal>）：</para>
+			<screen><![CDATA[
+# 0 表示真，非 0 表示假
+test -f /etc/passwd
+echo $?  # 输出: 0（文件存在）
+
+test -f /nonexistent
+echo $?  # 输出: 1（文件不存在）
+
+# 在脚本中检查返回值
+command
+if [ $? -eq 0 ]; then
+    echo "命令成功"
+else
+    echo "命令失败，退出码: $?"
+fi
+
+# 简写形式
+command && echo "成功" || echo "失败"
+			]]></screen>
+		</simplesect>
+	</section>

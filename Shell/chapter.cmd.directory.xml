@@ -3,47 +3,457 @@
 <chapter id="directory">
 	<title>目录和文件</title>
 	<section id="dirname">
-		<title>dirname</title>
-		<screen><![CDATA[
+		<title>dirname - 提取目录部分</title>
+		
+		<para>dirname 命令用于提取文件路径中的目录部分，即去掉最后一个斜杠及其后面的内容。</para>
+		
+		<simplesect>
+			<title>基本语法</title>
+			<screen><![CDATA[
+dirname [选项] 名称...
+dirname [选项]
+			]]></screen>
+			<para>常用选项：</para>
+			<itemizedlist>
+				<listitem><para><emphasis>-z, --zero</emphasis> - 输出以 NUL 结尾而非换行符</para></listitem>
+				<listitem><para><emphasis>--help</emphasis> - 显示帮助信息</para></listitem>
+				<listitem><para><emphasis>--version</emphasis> - 显示版本信息</para></listitem>
+			</itemizedlist>
+		</simplesect>
+		
+		<simplesect>
+			<title>基本用法示例</title>
+			<para>提取文件路径的目录部分：</para>
+			<screen><![CDATA[
 $ dirname /usr/bin/find
 /usr/bin
-    	]]></screen>
+
+$ dirname /etc/nginx/nginx.conf
+/etc/nginx
+
+$ dirname /var/log/
+/var
+
+$ dirname /usr/local/bin/
+/usr/local
+			]]></screen>
+			
+			<para>处理多个路径参数：</para>
+			<screen><![CDATA[
+$ dirname /usr/bin/find /etc/nginx/nginx.conf /var/log/syslog
+/usr/bin
+/etc/nginx
+/var/log
+			]]></screen>
+			
+			<para>相对路径处理：</para>
+			<screen><![CDATA[
+$ dirname ./bin/script.sh
+./bin
+
+$ dirname ../data/file.txt
+..
+
+$ dirname script.sh
+.
+			]]></screen>
+			
+			<para>特殊路径处理：</para>
+			<screen><![CDATA[
+$ dirname /
+/
+
+$ dirname file
+.
+
+$ dirname ""
+.
+
+$ dirname //usr//bin//find
+//usr//bin
+			]]></screen>
+		</simplesect>
+		
+		<simplesect>
+			<title>实际应用</title>
+			<para>在脚本中获取脚本所在目录：</para>
+			<screen><![CDATA[
+#!/bin/bash
+# 获取脚本所在目录的绝对路径
+SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
+echo "脚本目录: $SCRIPT_DIR"
+			]]></screen>
+			
+			<para>批量移动文件到上级目录：</para>
+			<screen><![CDATA[
+for file in /tmp/logs/*.log; do
+    dir=$(dirname "$file")
+    mv "$file" "$dir/../"
+done
+			]]></screen>
+			
+			<para>创建目录结构：</para>
+			<screen><![CDATA[
+file="/var/www/html/index.html"
+mkdir -p "$(dirname "$file")"
+touch "$file"
+			]]></screen>
+			
+			<para>备份文件时保留目录结构：</para>
+			<screen><![CDATA[
+src="/etc/nginx/nginx.conf"
+backup_dir="/backup/$(dirname "$src")"
+mkdir -p "$backup_dir"
+cp "$src" "$backup_dir/"
+			]]></screen>
+		</simplesect>
+		
+		<simplesect>
+			<title>与 basename 对比</title>
+			<para>dirname 提取目录部分，basename 提取文件名部分，两者互补：</para>
+			<screen><![CDATA[
+$ path="/usr/bin/find"
+$ dirname "$path"
+/usr/bin
+$ basename "$path"
+find
+
+# 组合使用
+$ echo "目录: $(dirname "$path"), 文件: $(basename "$path")"
+目录: /usr/bin, 文件: find
+			]]></screen>
+		</simplesect>
+		
+		<simplesect>
+			<title>Shell 参数展开替代</title>
+			<para>在 Bash 中可以使用参数展开实现 dirname 的功能：</para>
+			<screen><![CDATA[
+path="/usr/bin/find"
+
+# dirname 等价于
+echo "${path%/*}"    # 输出: /usr/bin
+
+# basename 等价于
+echo "${path##*/}"   # 输出: find
+
+# 特殊情况处理
+path="file.txt"
+echo "${path%/*}"    # 输出: file.txt (不是 ".")
+dirname "$path"      # 输出: .
+			]]></screen>
+			<para>注意：参数展开在处理不含斜杠的路径时行为与 dirname 不同，dirname 会返回 "."。</para>
+		</simplesect>
+		
+		<simplesect>
+			<title>常见陷阱</title>
+			<para>处理包含空格的路径时必须加引号：</para>
+			<screen><![CDATA[
+# 错误 - 空格会导致参数分割
+dirname /path/with spaces/file.txt
+# 输出: /path/with
+
+# 正确 - 使用引号
+dirname "/path/with spaces/file.txt"
+# 输出: /path/with spaces
+			]]></screen>
+			
+			<para>尾随斜杠的处理：</para>
+			<screen><![CDATA[
+$ dirname /usr/bin/
+/usr
+$ dirname /usr/bin
+/usr
+
+# 如果需要保留尾随斜杠，先去除再处理
+path="/usr/bin/"
+dirname "${path%/}"  # 输出: /usr
+			]]></screen>
+		</simplesect>
 	</section>
 	<section id="filename">
-		<title>filename</title>
-		<screen><![CDATA[
+		<title>basename - 提取文件名部分</title>
+		
+		<para>basename 命令用于提取文件路径中的文件名部分，即去掉目录路径和可选的后缀。</para>
+		
+		<simplesect>
+			<title>基本语法</title>
+			<screen><![CDATA[
+basename 名称 [后缀]
+basename 选项... 名称...
+			]]></screen>
+			<para>常用选项：</para>
+			<itemizedlist>
+				<listitem><para><emphasis>-s, --suffix=SUFFIX</emphasis> - 删除指定的后缀</para></listitem>
+				<listitem><para><emphasis>-a, --multiple</emphasis> - 支持多个参数</para></listitem>
+				<listitem><para><emphasis>-z, --zero</emphasis> - 输出以 NUL 结尾而非换行符</para></listitem>
+				<listitem><para><emphasis>--help</emphasis> - 显示帮助信息</para></listitem>
+				<listitem><para><emphasis>--version</emphasis> - 显示版本信息</para></listitem>
+			</itemizedlist>
+		</simplesect>
+		
+		<simplesect>
+			<title>基本用法示例</title>
+			<para>提取文件名：</para>
+			<screen><![CDATA[
 $ basename /usr/bin/find
 find
-    	]]></screen>
+
+$ basename /etc/nginx/nginx.conf
+nginx.conf
+
+$ basename /var/log/syslog
+syslog
+
+$ basename ./script.sh
+script.sh
+			]]></screen>
+			
+			<para>删除指定后缀：</para>
+			<screen><![CDATA[
+$ basename /etc/nginx/nginx.conf .conf
+nginx
+
+$ basename /path/to/file.tar.gz .gz
+file.tar
+
+$ basename document.pdf .pdf
+document
+			]]></screen>
+			
+			<para>使用 -s 选项删除后缀：</para>
+			<screen><![CDATA[
+$ basename -s .txt readme.txt
+readme
+
+$ basename -s .sh script.sh
+script
+			]]></screen>
+			
+			<para>处理多个文件（使用 -a）：</para>
+			<screen><![CDATA[
+$ basename -a /path/to/file1.txt /path/to/file2.txt
+file1.txt
+file2.txt
+
+$ basename -s .txt -a /path/to/file1.txt /path/to/file2.txt
+file1
+file2
+			]]></screen>
+		</simplesect>
+		
 		<section>
 			<title>排除扩展名</title>
+			<para>使用 basename 命令删除扩展名：</para>
+			<screen><![CDATA[
+$ basename test.txt .txt
+test
+
+$ basename archive.tar.gz .tar.gz
+archive
+			]]></screen>
+			<para>使用 Shell 参数展开删除扩展名：</para>
 			<screen><![CDATA[
 file=test.txt
 b=${file%.*}
 echo $b
-	    	]]></screen>
+			]]></screen>
+			<para>批量重命名文件（删除扩展名或更改扩展名）：</para>
 			<screen><![CDATA[
 $ for file in *.JPG;do mv $file ${file%.*}.jpg;done
-	    	]]></screen>
+
+# 或者使用 rename 命令
+$ rename 's/\.JPG$/.jpg/' *.JPG
+			]]></screen>
 		</section>
+		
 		<section>
 			<title>取扩展名</title>
+			<para>使用 Shell 参数展开提取文件扩展名：</para>
 			<screen><![CDATA[
 file=test.txt
 b=${file##*.}
 echo $b
-	    	]]></screen>
+			]]></screen>
+			<para>更多扩展名处理示例：</para>
+			<screen><![CDATA[
+# 单扩展名
+file=document.pdf
+echo "${file##*.}"  # 输出: pdf
+
+# 多扩展名（取最后一个）
+file=archive.tar.gz
+echo "${file##*.}"  # 输出: gz
+
+# 取所有扩展名
+file=archive.tar.gz
+echo "${file#*.}"   # 输出: tar.gz
+
+# 没有扩展名
+file=Makefile
+echo "${file##*.}"  # 输出: Makefile（与文件名相同）
+
+# 隐藏文件
+file=.gitignore
+echo "${file##*.}"  # 输出: gitignore
+			]]></screen>
 		</section>
+		
+		<simplesect>
+			<title>实际应用</title>
+			<para>在脚本中获取文件名（不含路径）：</para>
+			<screen><![CDATA[
+#!/bin/bash
+for filepath in /var/log/*.log; do
+    filename=$(basename "$filepath")
+    echo "处理文件: $filename"
+done
+			]]></screen>
+			
+			<para>备份文件时保留原始文件名：</para>
+			<screen><![CDATA[
+src="/etc/nginx/nginx.conf"
+filename=$(basename "$src")
+cp "$src" "/backup/${filename}.bak"
+			]]></screen>
+			
+			<para>批量转换文件格式：</para>
+			<screen><![CDATA[
+# 将所有 .txt 文件转换为 .md
+for file in *.txt; do
+    name=$(basename "$file" .txt)
+    mv "$file" "${name}.md"
+done
+			]]></screen>
+			
+			<para>创建日志文件：</para>
+			<screen><![CDATA[
+script_name=$(basename "$0" .sh)
+log_file="/var/log/${script_name}.log"
+echo "$(date): 脚本开始" >> "$log_file"
+			]]></screen>
+		</simplesect>
+		
+		<simplesect>
+			<title>与 dirname 配合使用</title>
+			<para>dirname 和 basename 可以完整分解文件路径：</para>
+			<screen><![CDATA[
+filepath="/usr/local/bin/script.sh"
+
+dir=$(dirname "$filepath")    # /usr/local/bin
+file=$(basename "$filepath")  # script.sh
+
+echo "目录: $dir"
+echo "文件: $file"
+
+# 重新组合
+echo "${dir}/${file}"  # /usr/local/bin/script.sh
+			]]></screen>
+			
+			<para>移动文件到另一个目录但保持文件名：</para>
+			<screen><![CDATA[
+src="/tmp/data.csv"
+dest_dir="/var/data"
+filename=$(basename "$src")
+mv "$src" "${dest_dir}/${filename}"
+			]]></screen>
+		</simplesect>
+		
+		<simplesect>
+			<title>Shell 参数展开替代</title>
+			<para>在 Bash 中可以使用参数展开实现 basename 的功能：</para>
+			<screen><![CDATA[
+filepath="/usr/local/bin/script.sh"
+
+# basename 等价于
+echo "${filepath##*/}"  # 输出: script.sh
+
+# basename 删除后缀等价于
+echo "${filepath##*/}" | sed 's/\.[^.]*$//'  # 输出: script
+# 或使用两层展开
+base="${filepath##*/}"
+echo "${base%.*}"  # 输出: script
+
+# 特殊情况
+filepath="script.sh"
+echo "${filepath##*/}"  # 输出: script.sh
+basename "$filepath"    # 输出: script.sh
+			]]></screen>
+			<para>参数展开比调用 basename 命令更快（无需创建子进程），适合在循环中使用。</para>
+		</simplesect>
+		
+		<simplesect>
+			<title>常见陷阱</title>
+			<para>处理包含空格的文件名时必须加引号：</para>
+			<screen><![CDATA[
+# 错误 - 空格会导致问题
+basename /path/with spaces/file.txt
+# 输出: file.txt（但可能在其他命令中出错）
+
+# 正确 - 使用引号
+basename "/path/with spaces/file.txt"
+# 输出: file.txt
+			]]></screen>
+			
+			<para>后缀匹配是精确的字符串匹配：</para>
+			<screen><![CDATA[
+# .gz 只匹配 .gz，不匹配 .tar.gz
+$ basename archive.tar.gz .gz
+archive.tar
+
+$ basename archive.tar.gz .tar.gz
+archive
+
+# 如果要删除多层后缀，需要多次处理或使用 ${file%.*}
+file=archive.tar.gz
+echo "${file%.*}"  # archive.tar
+echo "${file%%.*}"  # archive（删除所有后缀）
+			]]></screen>
+			
+			<para>路径末尾的斜杠会被忽略：</para>
+			<screen><![CDATA[
+$ basename /usr/bin/
+bin
+
+$ basename /usr/bin
+bin
+			]]></screen>
+		</simplesect>
+		
+		<simplesect>
+			<title>高级技巧</title>
+			<para>提取文件名（不含扩展名）的多种方法：</para>
+			<screen><![CDATA[
+file="/path/to/document.pdf"
+
+# 方法 1: basename + sed
+basename "$file" | sed 's/\.[^.]*$//'
+
+# 方法 2: 参数展开（推荐）
+base=$(basename "$file")
+echo "${base%.*}"
+
+# 方法 3: 纯参数展开
+base="${file##*/}"
+echo "${base%.*}"
+			]]></screen>
+			
+			<para>批量重命名文件：</para>
+			<screen><![CDATA[
+# 将所有 .jpeg 重命名为 .jpg
+for file in *.jpeg; do
+    newname=$(basename "$file" .jpeg).jpg
+    mv "$file" "$newname"
+done
+
+# 为所有文件添加时间戳前缀
+timestamp=$(date +%Y%m%d)
+for file in *.txt; do
+    mv "$file" "${timestamp}_${file}"
+done
+			]]></screen>
+		</simplesect>
 	</section>
 
-	<section id="cmd.test">
-		<title>test - check file types and compare values</title>
-		<screen>
-		<![CDATA[
-test -x /usr/bin/munin-cron && /usr/bin/munin-cron
-		]]>
-		</screen>
-	</section>
 	<section id="cmd.file">
 		<title>file — determine file type</title>
 		<para></para>
