@@ -272,4 +272,5 @@ neo:x:1000:1000:Neo Chen,,,:/home/neo:/bin/zsh
 	</section>
 	&section.shell.zsh.xml;
 	&section.shell.fish.xml;
+	&section.shell.interesting.xml;
 </chapter>
