@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.utility.wget.xml 382 2012-04-05 10:11:58Z netkiller $ -->
-<section id="utility.wget">
+<chapter id="utility.wget">
 	<title>Wget - The non-interactive network downloader.</title>
 	<para>wget各种选项分类列表</para>
 	<screen>
@@ -88,7 +87,7 @@
 -I, –include-directories=LIST 允许目录的列表
 -X, –exclude-directories=LIST 不被包含目录的列表
 -np, –no-parent 不要追溯到父目录
-	</screen>	
+	</screen>
 	<section id="wget.input">
 		<title>Logging and input file</title>
 		<section id="input-file">
@@ -151,7 +150,7 @@ wget -r http://netkiller.github.com
 			<title>-m,  --mirror shortcut for -N -r -l inf --no-remove-listing.</title>
 			<para>我们通常使用-m可以下载整个网站例如我的网站上有很多电子书，你想一次下载下来离线阅读</para>
 			<screen>
-wget -m http://netkiller.github.com/index.html			
+wget -m http://netkiller.github.com/index.html
 			</screen>
 		</section>
 	</section>
@@ -166,7 +165,7 @@ Logging in as ftp ... Logged in!
 ==> SYST ... done.    ==> PWD ... done.
 ==> TYPE I ... done.  ==> CWD not needed.
 ==> SIZE 20120404.zip ... 42023258
-==> PASV ...		
+==> PASV ...
 		</screen>
 		<para>程序一直停留在 PASV 处</para>
 		<screen>
@@ -182,7 +181,7 @@ Logging in as ftp ... Logged in!
 ==> PORT ... done.    ==> RETR test.zip ... done.
 Length: 42023258 (40M) (unauthoritative)
 
-100%[=====================================================================================================================>] 42,023,258   691K/s   in 62s     
+100%[=====================================================================================================================>] 42,023,258   691K/s   in 62s
 
 2012-04-05 15:51:18 (657 KB/s) - `test.zip' saved [42023258]
 		]]>
@@ -197,7 +196,7 @@ http://news.netkiller.cn/2018/1/index.html
 http://news.netkiller.cn/2018/2/index.html
 ...
 ...
-http://news.netkiller.cn/2018/12/index.html		
+http://news.netkiller.cn/2018/12/index.html
 		]]>
 		</screen>
 		<para>下载方法</para>
@@ -207,4 +206,4 @@ wget -c http://news.netkiller.cn/2018/{1..12}/index.html
 		]]>
 		</screen>
 	</section>
-</section>
+</chapter>

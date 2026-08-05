@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section>
+<chapter>
 	<title>信息摘要</title>
 	<section id="cksum">
 		<title>cksum, sum -- display file checksums and block counts</title>
@@ -28,4 +28,4 @@ neo@MacBook-Pro ~ % head -20 /dev/urandom | cksum | cut -f1 -d " "
 		]]>
 		</screen>
 	</section>
-</section>
+</chapter>

@@ -5,7 +5,7 @@
 
 	<!ENTITY % common.doctype.entity.xml 		SYSTEM "../common/doctype.entity.xml">
 	%common.doctype.entity.xml;
-	
+
 	<!ENTITY book.info.abstract.xml 	SYSTEM "../book.info.abstract.xml">
 
 	<!ENTITY book.appendix.xml		 	SYSTEM "book.appendix.xml">
@@ -39,8 +39,28 @@
 
 	&book.dedication.xml;
 	&book.preface.xml;
+	&chapter.bash.xml;
+	&section.shell.xml;
+	&chapter.cmd.man.xml;
+	&chapter.cmd.sys.xml;
+	&chapter.cmd.directory.xml;
+	&chapter.cmd.compress.xml;
+	&chapter.cmd.datetime.xml;
+	&chapter.cmd.numeric.xml;
+	&chapter.cmd.text.xml;
+	&chapter.cmd.table.xml;
+	&chapter.cmd.io.xml;
+	&chapter.cmd.binary.xml;
+	&chapter.cmd.diff.xml;
 
-	&chapter.shell.xml;
+	&chapter.wget.xml;
+	&chapter.curl.xml;
+
+	&chapter.cmd.sum.xml;
+	&chapter.cmd.template.xml;
+
+	&chapter.miscellaneous.xml;
+	&chapter.utility.xml;
 
 	&book.appendix.xml;
 </book>

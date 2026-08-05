@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.cmd.datetime.xml 381 2012-04-03 09:49:08Z netkiller $ -->
-<section id="datatime">
+<chapter id="datatime">
 	<title>日期和时间</title>
 	<subtitle>date and time</subtitle>
 	<section id="data.format">
@@ -242,4 +242,4 @@ Mon Jan  3 14:30:11 CST 2022
 		]]>
 		</screen>
 	</section>
-</section>
+</chapter>

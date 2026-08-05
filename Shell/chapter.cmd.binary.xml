@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="binary">
+<chapter id="binary">
 	<title>进制转换 - 16进制 - 8进制 - 二进制</title>
 
 	<section id="od">
@@ -100,4 +100,4 @@ tcpdump -i eth0 -s 0 -l -w - dst port 80 | strings
 		</section>
 	</section>
 
-</section>
+</chapter>

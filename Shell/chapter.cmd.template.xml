@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="envsubst">
+	<title>envsubst - substitutes environment variables in shell format strings</title>
+
 <section id="envsubst">
 	<title>envsubst - substitutes environment variables in shell format strings</title>
 	<subtitle>替代品在shell环境变量的格式字符串，类似模版替换操作</subtitle>
@@ -300,3 +302,5 @@ Last login: Wed Nov 13 15:24:50 2013
 			
 		</section>
 	</section>
+
+</chapter>

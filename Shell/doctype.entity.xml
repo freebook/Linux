@@ -1,48 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	<!ENTITY chapter.shell.xml					SYSTEM "chapter.shell.xml">
-	<!ENTITY section.shell.xml					SYSTEM "section.shell.xml">
-	<!ENTITY chapter.bash.xml					SYSTEM "chapter.bash.xml">
+	<!ENTITY section.shell.xml				SYSTEM "section.shell.xml">
+	<!ENTITY chapter.bash.xml				SYSTEM "chapter.bash.xml">
 	<!ENTITY section.bash.prompt.xml			SYSTEM "section.bash.prompt.xml">
 	<!ENTITY section.bash.variable.xml	 		SYSTEM "section.bash.variable.xml">
-	<!ENTITY section.bash.conditions.xml		SYSTEM "section.bash.conditions.xml">
-	<!ENTITY section.bash.loop.xml				SYSTEM "section.bash.loop.xml">
-	<!ENTITY section.bash.example.xml	 		SYSTEM "section.bash.example.xml">
-	
-	<!ENTITY chapter.zsh.xml	 				SYSTEM "chapter.zsh.xml">	
-	<!ENTITY section.shell.fish.xml				SYSTEM "section.shell.fish.xml">
-	
+	<!ENTITY section.bash.conditions.xml			SYSTEM "section.bash.conditions.xml">
+	<!ENTITY section.bash.loop.xml			SYSTEM "section.bash.loop.xml">
+	<!ENTITY section.bash.example.xml	 			SYSTEM "section.bash.example.xml">
 
-	<!ENTITY chapter.command.xml				SYSTEM "chapter.command.xml">
-	<!ENTITY section.cmd.sys.xml				SYSTEM "section.cmd.sys.xml">
-	<!ENTITY section.cmd.man.xml				SYSTEM "section.cmd.man.xml">
-	<!ENTITY section.cmd.directory.xml			SYSTEM "section.cmd.directory.xml">
-	<!ENTITY section.cmd.directory.find.xml		SYSTEM "section.cmd.directory.find.xml">
-	<!ENTITY section.cmd.compress.xml			SYSTEM "section.cmd.compress.xml">
-	<!ENTITY section.cmd.numeric.xml			SYSTEM "section.cmd.numeric.xml">
-	<!ENTITY section.cmd.datetime.xml			SYSTEM "section.cmd.datetime.xml">
-	<!ENTITY section.cmd.text.xml		 		SYSTEM "section.cmd.text.xml">
-	<!ENTITY section.cmd.text.grep.xml	 		SYSTEM "section.cmd.text.grep.xml">
-	<!ENTITY section.cmd.text.sort.xml			SYSTEM "section.cmd.text.sort.xml">
-	<!ENTITY section.cmd.table.xml				SYSTEM "section.cmd.table.xml">
-	<!ENTITY section.cmd.io.xml					SYSTEM "section.cmd.io.xml">
-	<!ENTITY section.cmd.binary.xml				SYSTEM "section.cmd.binary.xml">
-	<!ENTITY section.cmd.sum.xml				SYSTEM "section.cmd.sum.xml">
-	<!ENTITY section.cmd.template.xml			SYSTEM "section.cmd.template.xml">
-	<!ENTITY section.cmd.diff.xml				SYSTEM "section.cmd.diff.xml">
-	
-	<!ENTITY chapter.text.vim.xml	 			SYSTEM "chapter.text.vim.xml">
-	<!ENTITY chapter.text.awk.xml				SYSTEM "chapter.text.awk.xml">
-	<!ENTITY chapter.text.sed.xml				SYSTEM "chapter.text.sed.xml">
+	<!ENTITY section.shell.zsh.xml	 			SYSTEM "section.shell.zsh.xml">
+	<!ENTITY section.shell.fish.xml			    SYSTEM "section.shell.fish.xml">
+
+
+	<!ENTITY chapter.cmd.man.xml				SYSTEM "chapter.cmd.man.xml">
+	<!ENTITY chapter.cmd.sys.xml				SYSTEM "chapter.cmd.sys.xml">
+	<!ENTITY chapter.cmd.directory.xml			SYSTEM "chapter.cmd.directory.xml">
+	<!ENTITY section.directory.find.xml		SYSTEM "section.directory.find.xml">
+	<!ENTITY chapter.cmd.compress.xml			SYSTEM "chapter.cmd.compress.xml">
+	<!ENTITY chapter.cmd.numeric.xml			SYSTEM "chapter.cmd.numeric.xml">
+	<!ENTITY chapter.cmd.datetime.xml			SYSTEM "chapter.cmd.datetime.xml">
+	<!ENTITY chapter.cmd.text.xml	 			SYSTEM "chapter.cmd.text.xml">
+	<!ENTITY section.text.grep.xml		SYSTEM "section.text.grep.xml">
+	<!ENTITY section.text.sort.xml		SYSTEM "section.text.sort.xml">
+	<!ENTITY chapter.cmd.table.xml			SYSTEM "chapter.cmd.table.xml">
+	<!ENTITY chapter.cmd.io.xml			SYSTEM "chapter.cmd.io.xml">
+	<!ENTITY chapter.cmd.binary.xml			SYSTEM "chapter.cmd.binary.xml">
+	<!ENTITY chapter.cmd.sum.xml			SYSTEM "chapter.cmd.sum.xml">
+	<!ENTITY chapter.cmd.template.xml			SYSTEM "chapter.cmd.template.xml">
+	<!ENTITY chapter.cmd.diff.xml			SYSTEM "chapter.cmd.diff.xml">
+
+	<!ENTITY section.text.vim.xml	 			SYSTEM "section.text.vim.xml">
+	<!ENTITY section.text.awk.xml			SYSTEM "section.text.awk.xml">
+	<!ENTITY section.text.sed.xml			SYSTEM "section.text.sed.xml">
 
 	<!ENTITY chapter.utility.xml		 		SYSTEM "chapter.utility.xml">
-	<!ENTITY chapter.utility.curl.xml	 		SYSTEM "chapter.utility.curl.xml">
-	<!ENTITY chapter.utility.wget.xml			SYSTEM "chapter.utility.wget.xml">
-	<!ENTITY section.utility.terminal.xml 		SYSTEM "section.utility.terminal.xml">
-	<!ENTITY chapter.utility.jq.xml	 			SYSTEM "chapter.utility.jq.xml">
-	<!ENTITY section.utility.asciinema.xml 		SYSTEM "section.utility.asciinema.xml">
-	<!ENTITY chapter.klish.xml			 		SYSTEM "chapter.klish.xml">
-	<!ENTITY chapter.utility.expect.xml		 	SYSTEM "chapter.utility.expect.xml">
-	<!ENTITY chapter.tui.xml 					SYSTEM "chapter.tui.xml">
+	<!ENTITY chapter.curl.xml	 			SYSTEM "chapter.curl.xml">
+	<!ENTITY chapter.wget.xml				SYSTEM "chapter.wget.xml">
+	<!ENTITY section.text.jq.xml			SYSTEM "section.text.jq.xml">
+	<!ENTITY section.tui.terminal.xml		SYSTEM "section.tui.terminal.xml">
+	<!ENTITY section.tui.asciinema.xml		SYSTEM "section.tui.asciinema.xml">
+	<!ENTITY section.tui.expect.xml			SYSTEM "section.tui.expect.xml">
+	<!ENTITY section.tui.klish.xml			SYSTEM "section.tui.klish.xml">
+	<!ENTITY chapter.tui.xml				SYSTEM "chapter.tui.xml">
 	<!ENTITY section.shell.interesting.xml		SYSTEM "section.shell.interesting.xml">
 
-	<!ENTITY chapter.miscellaneous.xml	 		SYSTEM "chapter.miscellaneous.xml">
+	<!ENTITY chapter.miscellaneous.xml	 			SYSTEM "chapter.miscellaneous.xml">

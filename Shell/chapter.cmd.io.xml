@@ -1,3 +1,6 @@
+<chapter id="io">
+	<title>standard input/output</title>
+
 <section id="io">
 	<title>standard input/output</title>
 	<section id="xargs">
@@ -479,3 +482,5 @@ esac
 	]]>
 	</screen>
 </section>
+
+</chapter>

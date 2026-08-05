@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.cmd.directory.xml 376 2012-03-21 03:35:46Z netkiller $ -->
-<section id="directory">
+<chapter id="directory">
 	<title>目录和文件</title>
 	<section id="dirname">
 		<title>dirname</title>
@@ -424,5 +424,5 @@ split -b 10m large.bin new_file_prefix
 			]]></screen>
 		</section>
 	</section>
-	&section.cmd.directory.find.xml;
-</section>
+	&section.directory.find.xml;
+</chapter>

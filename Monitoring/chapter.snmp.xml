@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="index"><?dbhtml dir="snmp" ?>
+<section id="snmp"><?dbhtml dir="snmp" ?>
 	<title>NET SNMP (Simple Network Management Protocol)</title>
 	<section id="install">
 		<title>安装SNMP</title>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="table">
+<chapter id="table">
 	<title>表格操作/行列转换</title>
 	<section id="column">
 		<title>column - columnate lists</title>
@@ -138,4 +138,4 @@ join 其他用法
 		]]>
 		</screen>
 	</section>
-</section>
+</chapter>

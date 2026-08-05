@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: chapter.cmd.directory.find.xml 634 2013-07-10 11:45:59Z netkiller $ -->
+<section id="find">
+	<title>find - search for files in a directory hierarchy</title>
+	<section>
+		<title>多目录匹配</title>
+		<para>{/System,}/Library/Fonts</para>
+		<para>匹配 /System/Library/Fonts 和 /Library/Fonts 两个目录</para>
+		<screen>
+		<![CDATA[
+find {/System,}/Library/Fonts -name \*ttf		
+		]]>
+		</screen>
+	</section>
+	<section id="find.name">
+		<title>name</title>
+		<para>Find every file under directory /usr ending in "stat".</para>
+		<screen><![CDATA[
+$ find /usr -name *stat
+/usr/src/linux-headers-2.6.24-22-generic/include/config/cpu/freq/stat
+/usr/bin/lnstat
+/usr/bin/sar.sysstat
+/usr/bin/mpstat
+/usr/bin/rtstat
+/usr/bin/nstat
+/usr/bin/lpstat
+/usr/bin/ctstat
+/usr/bin/stat
+/usr/bin/kpsestat
+/usr/bin/pidstat
+/usr/bin/iostat
+/usr/bin/vmstat
+/usr/lib/sysstat
+/usr/share/doc/sysstat
+/usr/share/gnome/help/battstat
+/usr/share/omf/battstat
+/usr/share/zsh/help/stat
+/usr/share/zsh/4.3.4/functions/Completion/Unix/_diffstat
+/usr/share/zsh/4.3.4/functions/Completion/Zsh/_stat
+/usr/share/zsh/4.3.4/functions/Zftp/zfstat
+		]]></screen>
+		<screen><![CDATA[
+find  \( -iname '*.jpg' -o -iname '*.png' -o -iname '*.gif'  \)
+
+find /www/images -type f \( -iname '*.js' -o -iname '*.css' -o -iname '*.html' \) | xargs tar -czf ~/images.tgz
+		]]></screen>
+		<para>使用通配符</para>
+		<screen><![CDATA[
+find . -name "*.jsp" -delete
+find . -name "*.xml" -delete		
+		]]></screen>
+	</section>
+	<section id="find.regex">
+		<title>regex</title>
+		<screen><![CDATA[
+find . -regex ".*\.\(jpg\|png\)"
+		]]></screen>
+		<para>下面regex与name作用相同</para>
+		<screen><![CDATA[
+find . -regex ".*\.\(txt\|sh\)"
+find . -name "*.sh" -o -name "*.txt"
+		]]></screen>
+		<para>-regex参数，使用正则表达式来匹配. 查找当前目录以及子目录中以 ".sh",并改为以".shell"结尾.</para>
+		<screen>
+		<![CDATA[
+[neo@netkiller test]# tree a
+a
+├── a.py
+├── a.sh
+└── b
+    ├── b.py
+    ├── b.sh
+    ├── c
+    │   └── c.sh
+    └── d
+        └── d.sh
+
+[neo@netkiller test]# find ./a -type f  -regex ".*\.sh$" | sed -r -n 's#(.*\.)sh$#mv & \1shell#e'
+[neo@netkiller test]# tree a
+a
+├── a.py
+├── a.shell
+└── b
+    ├── b.py
+    ├── b.shell
+    ├── c
+    │   └── c.shell
+    └── d
+        └── d.shell
+        
+ // 注意 sed s->e  使用方式,官方文档是这样解释的.
+This command allows one to pipe input from a shell command into pattern space. If a substitution was made, the command that is found in pattern space is executed and pattern space is replaced with its output. A trailing newline is suppressed; results are undefined if the command to be executed contains a NUL character. This is a GNU sed extension.
+		]]>
+		</screen>
+	</section>
+	<section id="find.user">
+		<title>user</title>
+		<para>Find every file under /home and /var/www owned by the user neo.</para>
+		<screen><![CDATA[
+$ find /home -user neo
+$ find /var/www -user neo
+$ find . -user nobody -iname '*.php'
+		]]></screen>
+	</section>
+	<section id="find.perm">
+		<title>perm</title>
+		<screen><![CDATA[
+find ./ -perm -7 -print | xargs chmod o-w
+find . -perm -o=w
+		]]></screen>
+		<para>查找当前目录下权限为777的文件并显示到标准输出</para>
+		<screen><![CDATA[
+find ./ -type f -perm 777 -print		
+		]]></screen>
+	</section>
+	<section id="find.type">
+		<title>type</title>
+		<section>
+			<title>分别设置文件与目录的权限</title>
+			<screen><![CDATA[
+find /usr/www/phpmyadmin -type d -exec chmod 755 {} \;
+find /usr/www/phpmyadmin -type f -exec chmod 644 {} \;
+			]]></screen>
+		</section>
+	</section>
+	<section id="find.delete">
+		<title>-delete</title>
+		<screen><![CDATA[
+# find /var/spool/clientmqueue/ -type f -delete
+		]]></screen>
+		<para>保留最近7天的问题，其他全部删除</para>
+		<screen><![CDATA[
+find . -type f -mtime +7 -delete
+		]]></screen>
+		<screen>
+			<![CDATA[
+find . -type f -name "*.xhtml" -delete
+			]]>
+		</screen>
+	</section>
+	<section id="find.exec">
+		<title>exec</title>
+		<para>替换文本</para>
+		<screen><![CDATA[
+# find ./ -exec grep str1 ‘{}’ \; -exec sed -i.bak s/str1/str2/g ‘{}’ \;
+		]]></screen>
+		<screen><![CDATA[
+find -exec ls -l {} \; | grep '2011-01-18'
+		]]></screen>
+		<para>查找*.html文件中aaa替换为bbb</para>
+		<screen><![CDATA[
+find . -name "*.html" -type f -exec sed -i "s/aaa/bbb/" {} \;		
+		]]></screen>
+		<para>查找文件中含有openWindow字符串的文件</para>
+		<screen><![CDATA[
+# find -type f -name "*.js" -exec grep -H -A2 openWindow {} \;
+
+./javascript/commonjs.js:function openWindow(url){
+./javascript/commonjs.js-	window.open(url + "?rand=" + getRandom(), 'gamebinary');
+./javascript/commonjs.js-}
+		]]></screen>
+		<screen><![CDATA[
+find -type f -regex ".*\.\(css\|js\)" -exec yuicompressor {} -o {} \;
+find -type f -name "*.js" -exec yuicompressor --type js {} -o {} \;
+find -type f -name "*.css" -exec yuicompressor --type css {} -o {} \;
+		]]></screen>
+	</section>
+
+	<section id="find.path">
+		<title>排除目录</title>
+		<screen><![CDATA[
+find /usr/local -path "/usr/local/share" -prune -o -print
+
+find /usr/local \( -path /usr/local/bin -o -path /usr/local/sbin \) -prune -o -print
+
+find /usr/local \(-path /usr/local/dir1 -o -path /usr/local/file1 \) -prune -o -name "temp" -print
+		]]></screen>
+		<para>查找当前目录下的php文件,排除子目录templates_c, caches</para>
+		<screen><![CDATA[
+find . \( -path ./templates_c -o -path ./caches \) -prune -o -name "*.php" -print
+		]]></screen>
+	</section>
+	<section id="find.mmin">
+		<title>-mmin n File's data was last modified n minutes ago.</title>
+		<screen><![CDATA[
+# find . -mmin +5 -mmin -10
+		]]></screen>
+		<screen><![CDATA[
+find /www -type f -mtime +60s
+		]]></screen>
+	</section>
+	<section id="find.ctime">
+		<title>-ctime</title>
+		<para>查找当前目录下超过6天且是空文件并删除</para>
+		<screen><![CDATA[
+find ./ -type d -empty -ctime +6 -exec rm -f {} \;	
+		]]></screen>
+		<para>查找7天前的文件并删除</para>
+		<screen><![CDATA[
+find /backup/svn/day -type f -ctime +7 -exec rm -f {} \; 
+find /backup/svn/day -type f -ctime +7 -delete
+find /backup/svn/day -type f -ctime +7 | xargs rm -f	
+		]]></screen>
+	</section>
+	<section id="find.mtime">
+		<title>-mtime / -mmin</title>
+		<para>查询最近3天前内修改的文件</para>
+		<screen><![CDATA[
+find . -type f -mtime -3
+		]]></screen>
+		<para>3天前</para>
+		<screen><![CDATA[
+find . -type f -mtime +3
+		]]></screen>
+		<example>
+			<title>backup(find + tar)</title>
+			<screen><![CDATA[
+find / -type f -mtime -7 | xargs tar -rf weekly_incremental.tar
+gzip weekly_incremental.tar
+			]]></screen>
+		</example>
+		<para>保留7天，删除7天的日志文件</para>
+		<screen><![CDATA[
+COPIES=7
+find /var/log -type f -mtime +$COPIES -delete
+		]]></screen>
+	</section>
+
+	<section id="find.newer">
+		<title>--newer</title>
+		<screen><![CDATA[
+tar --newer="2011-07-04" -zcvf backup.tar.gz /var/www/
+tar cvzf foo.tgz /bak -N "2004-03-03 16:49:17"
+		]]></screen>
+	</section>
+	<section id="find.print">
+		<title>-print / -printf</title>
+		<screen><![CDATA[
+[root@scientific ~]# find / -maxdepth 1 -name '[!.]*' -printf 'Name: %16f Size: %6s\n'
+Name:                / Size:   4096
+Name:             misc Size:      0
+Name:            media Size:   4096
+Name:             home Size:   4096
+Name:              dev Size:   3840
+Name:              net Size:      0
+Name:             proc Size:      0
+Name:             sbin Size:  12288
+Name:             root Size:   4096
+Name:              lib Size:   4096
+Name:           cgroup Size:   4096
+Name:              srv Size:   4096
+Name:              mnt Size:   4096
+Name:              etc Size:  12288
+Name:              usr Size:   4096
+Name:            lib64 Size:  12288
+Name:             boot Size:   1024
+Name:              var Size:   4096
+Name:          selinux Size:      0
+Name:              opt Size:   4096
+Name:              tmp Size:   4096
+Name:       lost+found Size:  16384
+Name:              sys Size:      0
+Name:              bin Size:   4096
+
+# find /etc/ -type f -printf "%CY-%Cm-%Cd %Cr %8s %f\n"
+		]]></screen>
+	</section>
+	<section id="find.size">
+		<title>-size</title>
+		<para>查找0字节文件</para>
+		<screen><![CDATA[
+find /www -type f -size 0
+		]]></screen>
+		<para>查找根目录下大于1G的文件</para>
+		<screen><![CDATA[
+find /  -type f -size +1000M		
+		]]></screen>
+	</section>
+	<section id="find.path">
+		<title>-path</title>
+		<para>搜索当前目录下除了keys目录下所以子目录中的文件</para>
+		<screen><![CDATA[
+find ./ -path "./keys" -prune -o -type f -print 		
+		]]></screen>
+		<para>find排除多个目录</para>
+		<screen><![CDATA[
+find ./ \( -path ./conf -o -path ./logs \) -prune -o -print
+
+find /data/ \( -path /data/data_backup -o -path /data/mysql \) -prune -o -name "core.*" -type f 
+/data/mysql
+/data/data_backup		
+		]]></screen>
+		<para>ps 要么都是绝对路径 要么都是相对路径 /data/ 必须有"/" path 后面的路径必须没有"/"</para>
+		<para>包含 */target/* 目录</para>
+		<screen>
+		<![CDATA[
+[gitlab-runner@localhost cloud.netkiller.cn]$ find . -type f -name "*.jar" -path "*/target/*"
+		]]>
+		</screen>
+		<para>排除 lib 目录</para>
+		<screen>
+		<![CDATA[
+[gitlab-runner@localhost cloud.netkiller.cn]$ find . -type f -name "*.jar" ! -path "lib"		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+[gitlab-runner@localhost cloud.netkiller.cn]$ find . \( ! -path "*/zito-common/*" -a ! -path "./lib/*" \) -type f -name "*.jar"
+		]]>
+		</screen>
+	</section>
+	<section id="find.depth">
+		<title>目录深度控制</title>
+		<screen>
+		<![CDATA[
+neo@MacBook-Pro ~/workspace/Linux % find */images -type d -d 0 -exec echo {} \;
+Cryptography/images
+Monitoring/images
+OpenLDAP/images
+Project/images
+Web/images
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+find */images -type d -d 0 -exec rsync -au {}/* $(PUBLIC_HTML)/linux/images \; 		
+		]]>
+		</screen>
+		<section id="find.maxdepth">
+			<title>-maxdepth</title>
+			<para>-maxdepth和-mindepth，最大深度，最小深度搜索，搜索当前目录下最大深度为1的所以文件</para>
+			<screen><![CDATA[
+find . -maxdepth 1 -type f 		
+		]]></screen>
+		</section>
+	</section>
+	<section id="find.xargs">
+		<title>xargs</title>
+		<screen><![CDATA[
+find /etc -type f|xargs md5sum
+		]]></screen>
+		<para>sha1sum</para>
+		<screen><![CDATA[
+find /etc -type f|xargs sha1sum
+		]]></screen>
+		<screen><![CDATA[
+find ./ -name "*html" | xargs -n 1 sed -i -e 's/aaa/bbb/g'
+		]]></screen>
+		<screen><![CDATA[
+find /tmp -name core -type f -print | xargs /bin/rm -f
+find . -type f -exec file '{}' \;
+		]]></screen>
+		<para>find后执行xargs提示xargs: argument line too long解决方法：</para>
+		<screen><![CDATA[
+find . -type f -name "*.log" -print0 | xargs -0 rm -f		
+		]]></screen>
+		<para>-i 参数可以使用 {}</para>
+		<screen>
+		<![CDATA[
+[gitlab-runner@localhost cloud.sfzito.com]$ find . \( ! -path "*/zito-common/*" -a ! -path "./lib/*" -a ! -path "./dist/*" \) -type f -name "*.jar" | xargs -i cp {} dist/		
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>查看空文件</title>
+		<screen>
+		<![CDATA[
+find . -type f -name "*.txt" -empty		
+		]]>
+		</screen>
+		<para>删除空文件</para>
+		<screen>
+		<![CDATA[
+find . -type f -name "*.txt" -empty -delete				
+		]]>
+		</screen>
+	</section>
+</section>

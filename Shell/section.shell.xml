@@ -18,7 +18,7 @@ Ctrl+h 退格删除一个字符,相当于通常的Backspace键
 Ctrl+u 删除到行首
 Ctrl+k 删除到行尾
 Ctrl+l 类似 clear 命令效果
-Ctrl+y 粘贴		
+Ctrl+y 粘贴
 		]]>
 		</screen>
 		<section id="命令行编辑命令">
@@ -44,7 +44,7 @@ Alt + u ：从光标处更改为全部大写的单词
 Alt + l ：从光标处更改为全部小写的单词
 Ctrl + t ：交换光标处和之前的字符
 Alt + t ：交换光标处和之前的单词
-Alt + Backspace：与 Ctrl + w 相同类似，分隔符有些差别		
+Alt + Backspace：与 Ctrl + w 相同类似，分隔符有些差别
 		]]>
 			</screen>
 		</section>
@@ -56,7 +56,7 @@ Ctrl + r：逆向搜索命令历史
 Ctrl + g：从历史搜索模式退出
 Ctrl + p：历史中的上一条命令
 Ctrl + n：历史中的下一条命令
-Alt + .：使用上一条命令的最后一个参数			
+Alt + .：使用上一条命令的最后一个参数
 			]]>
 			</screen>
 		</section>
@@ -69,7 +69,7 @@ Ctrl + o：执行当前命令，并选择上一条命令
 Ctrl + s：阻止屏幕输出
 Ctrl + q：允许屏幕输出
 Ctrl + c：终止命令
-Ctrl + z：挂起命令			
+Ctrl + z：挂起命令
 			]]>
 			</screen>
 		</section>
@@ -86,7 +86,7 @@ Ctrl + z：挂起命令
 !*:p：打印输出 !* 的内容
 ^neo：删除上一条命令中的 neo
 ^neo^foo：将上一条命令中的 neo 替换为 foo
-^neo^foo^：将上一条命令中所有的 neo 都替换为 foo			
+^neo^foo^：将上一条命令中所有的 neo 都替换为 foo
 			]]>
 			</screen>
 			<para>^ 是 bash/zsh 用法，在 fish 中不能使用</para>
@@ -96,7 +96,7 @@ Ctrl + z：挂起命令
 [root@netkiller ~]# ^ls^ll
 ll /bin
 lrwxrwxrwx. 1 root root 7 2022-05-16 20:28 /bin -> usr/bin
-[root@netkiller ~]#			
+[root@netkiller ~]#
 			]]>
 			</screen>
 		</section>
@@ -266,8 +266,10 @@ neo:x:1000:1000:Neo Chen,,,:/home/neo:/bin/zsh
 "OS error code 128: Key has been revoked"
 "OS error code 129: Key was rejected by service"
 "OS error code 130: Owner died"
-"OS error code 131: State not recoverable"		
+"OS error code 131: State not recoverable"
 		]]>
 		</screen>
 	</section>
+	&section.shell.zsh.xml;
+	&section.shell.fish.xml;
 </chapter>

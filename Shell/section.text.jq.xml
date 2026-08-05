@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <section id="jq">
 	<title>jq - Command-line JSON processor</title>
 	<ulink url="https://stedolan.github.io/jq/">https://stedolan.github.io/jq/</ulink>

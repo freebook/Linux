@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: chapter.cmd.curl.xml 517 2013-01-29 10:08:31Z netkiller $ -->
-<section id="curl">
+<chapter id="curl">
 	<title>CURL - transfer a URL</title>
 	<section id="url">
 		<title>基本用法</title>
@@ -486,4 +485,4 @@ curl -v --cipher rsa_rc4_128_sha https://www.mpaymall.com/MPay/MerchantPay.do
 		]]>
 		</screen>
 	</section>
-</section>
+</chapter>

@@ -1,6 +1,4 @@
-<chapter id="index"><?dbhtml dir="other"?>
-	<title>小众 Shell</title> 
-	&section.shell.fish.xml;
+
 	<section>
 		<title>Z Shell</title>
 		<para>
@@ -9,7 +7,7 @@
 		<section id="install">
 			<title>installing Z shell</title>
 			<screen>
-		<![CDATA[ 
+		<![CDATA[
 $ sudo apt install zsh
 			]]>
 			</screen>
@@ -19,7 +17,7 @@ $ sudo apt install zsh
 			<para>http://ohmyz.sh/</para>
 			<para>Oh My ZSH 是z shell命令主题</para>
 			<screen>
-			<![CDATA[ 
+			<![CDATA[
 $ sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 			]]>
 			</screen>
@@ -29,7 +27,7 @@ $ sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools
 			<section>
 				<title>~/.zshrc</title>
 				<screen>
-				<![CDATA[ 
+				<![CDATA[
 neo@netkiller:~$ cat .zshrc
 # Created by newuser for 4.3.9
 PROMPT='%n@%M:%~$ '
@@ -62,27 +60,27 @@ bindkey "\e[3~" delete-char
 		<section id="prompt">
 			<title>Prompting</title>
 			<screen>
-			<![CDATA[ 
+			<![CDATA[
 $ PROMPT='%n@%M:%~$ '
 neo@netkiller:~$
 			]]>
 			</screen>
 			<screen>
-			<![CDATA[ 
+			<![CDATA[
 autoload colors; colors
 export PS1="%B[%{$fg[red]%}%n%{$reset_color%}%b@%B%{$fg[cyan]%}%m%b%{$reset_color%}:%~%B]%b "
 			]]>
 			</screen>
 			<screen>
-			<![CDATA[ 
-[neo@netkiller:~/.oh-my-zsh/themes] 		
+			<![CDATA[
+[neo@netkiller:~/.oh-my-zsh/themes]
 			]]>
 			</screen>
 		</section>
 		<section id="alias">
 			<title>Aliases</title>
 			<screen>
-			<![CDATA[ 
+			<![CDATA[
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     eval "`dircolors -b`"
@@ -106,12 +104,12 @@ alias l='ls -CF'
 			<title>History</title>
 			<para></para>
 			<screen>
-			<![CDATA[ 
+			<![CDATA[
 $ !$
 			]]>
 			</screen>
 			<screen>
-			<![CDATA[ 
+			<![CDATA[
 $ history
    18  cd workspace/Document
    19  ls
@@ -128,7 +126,7 @@ Docbook  makedoc  Tex
 			<section>
 				<title>Home/End key</title>
 				<screen>
-				<![CDATA[ 
+				<![CDATA[
 bindkey '\e[1~' beginning-of-line
 bindkey '\e[4~' end-of-line
 				]]>
@@ -139,7 +137,7 @@ bindkey '\e[4~' end-of-line
 	<section id="csh">
 		<title>Berkeley UNIX C shell (csh)</title>
 		<section>
-		<![CDATA[ 
+		<![CDATA[
 $ sudo apt install csh
 		]]>
 		</section>
@@ -147,9 +145,8 @@ $ sudo apt install csh
 	<section id="ksh">
 		<title>KornShell</title>
 		<section>
-		<![CDATA[ 
+		<![CDATA[
 $ sudo apt install ksh
 		]]>
 		</section>
 	</section>
-</chapter>

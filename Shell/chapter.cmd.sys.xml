@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="getconf">
+	<title>getconf - Query system configuration variables</title>
+
 <!-- $Id: chapter.cmd.sys.xml 376 2012-03-21 03:35:46Z netkiller $ -->
 <section id="getconf">
 	<title>getconf - Query system configuration variables</title>
@@ -353,3 +355,5 @@ test -d /path/to/directory || mkdir -p /path/to/directory
 		</screen>
 	</section>
 </section>
+
+</chapter>
