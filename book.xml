@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- <?altova_sps http://www.altova.com/sps/template/publishing/DocBook.sps?> <?xml-stylesheet type="text/xsl" href="http://www.altova.com/stylesheets/docbook/xhtml/docbook.xsl"?> <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V5.0//EN" "http://www.oasis-open.org/docbook/xml/5.0b5/dtd/docbook.dtd" [ -->
-<!DOCTYPE subject SYSTEM "/opt/homebrew/Cellar/docbook/5.1_1/docbook/xml/5.0/dtd/docbook.dtd"
+<!DOCTYPE subject SYSTEM "/opt/homebrew/Cellar/docbook/5.2_1/docbook/xml/5.0/dtd/docbook.dtd"
 	[
 	<!-- /usr/share/xml/docbook/schema/dtd/5.0/docbook.dtd -->
 	<!ENTITY homepage "http://netkiller.sf.net/">
@@ -13,7 +13,7 @@
 
 	<!ENTITY % common.doctype.entity.xml 	SYSTEM "common/doctype.entity.xml">
 	%common.doctype.entity.xml;
-	
+
 	<!ENTITY book.info.abstract.xml 		SYSTEM "book.info.abstract.xml">
 
 	<!ENTITY book.preface 					SYSTEM "book.preface.xml">
@@ -30,7 +30,6 @@
 
 	<!ENTITY % shell.doctype.entity.xml		SYSTEM "Shell/doctype.entity.xml">
 	%shell.doctype.entity.xml;
-	<!ENTITY part.shell.xml					SYSTEM "part.shell.xml">
 
 	<!ENTITY % network.doctype.entity.xml	SYSTEM "Network/doctype.entity.xml">
 	%network.doctype.entity.xml;
@@ -69,37 +68,37 @@
 	<!ENTITY % multimedia.doctype.entity.xml 		SYSTEM "Multimedia/doctype.entity.xml">
 	%multimedia.doctype.entity.xml;
 	<!ENTITY part.multimedia.xml 					SYSTEM "part.multimedia.xml">
-	
+
 	<!ENTITY % container.doctype.entity.xml			SYSTEM "Container/doctype.entity.xml">
-	%container.doctype.entity.xml;	
+	%container.doctype.entity.xml;
 	<!ENTITY part.container.xml						SYSTEM "part.container.xml">
-	
+
 	<!ENTITY % devops.doctype.entity.xml 			SYSTEM "DevOps/doctype.entity.xml">
 	%devops.doctype.entity.xml;
-	
+
 	<!ENTITY % queue.doctype.entity.xml				SYSTEM "Queue/doctype.entity.xml">
 	%queue.doctype.entity.xml;
-	
+
 	<!ENTITY % graphics.doctype.entity.xml 			SYSTEM "Graphics/doctype.entity.xml">
 	%graphics.doctype.entity.xml;
-	
+
 	<!ENTITY % sbc.doctype.entity.xml 				SYSTEM "SBC/doctype.entity.xml">
 	%sbc.doctype.entity.xml;
-	
+
 	<!ENTITY % homeassistant.doctype.entity.xml 	SYSTEM "HomeAssistant/doctype.entity.xml">
 	%homeassistant.doctype.entity.xml;
-	
+
 	<!ENTITY % communication.doctype.entity.xml 	SYSTEM "Communication/doctype.entity.xml">
 	%communication.doctype.entity.xml;
 	<!ENTITY part.communication.xml					SYSTEM "part.communication.xml">
 
 	<!ENTITY chapter.gps 							SYSTEM "chapter.gps.xml">
 	<!ENTITY chapter.ibm.websphere.xml		 		SYSTEM "Middleware/chapter.ibm.websphere.xml">
-	
+
 	<!ENTITY % cryptography.doctype.entity.xml		SYSTEM "Cryptography/doctype.entity.xml">
 	%cryptography.doctype.entity.xml;
 	<!ENTITY part.cryptography.xml		 			SYSTEM "part.cryptography.xml">
-	
+
 	<!ENTITY openssl "<![CDATA[<link linkend='openssl'>OpenSSL</link>]]>">
 	<!ENTITY OpenSSL "&openssl;">
 	<!ENTITY md5sum "<![CDATA[ <link linkend='md5sum'>md5sum</link> ]]>">
@@ -121,7 +120,7 @@
 			<year>2006-<?dbtimestamp format="Y"?></year>
 			<holder>Netkiller(Neo Chan). All rights reserved.</holder>
 		</copyright>
-		
+
 		<cover>
 			<para role="tagline">Netkiller Management 手札</para>
 			<mediaobject>
@@ -130,7 +129,7 @@
 				</imageobject>
 			</mediaobject>
 		</cover>
-		
+
 		<publisher>
 			<publishername>Neo</publishername>
 		</publisher>
@@ -188,7 +187,7 @@
 	&part.container.xml;
 	<!-- =========================================================================== -->
 	&part.devops.xml;
-	<!-- =========================================================================== -->	
+	<!-- =========================================================================== -->
 	&part.graphics.xml;
 	&part.multimedia.xml;
 	&part.cryptography.xml;

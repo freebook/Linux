@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="shell">
+<section id="shell">
 	<title>Shell</title>
+	&section.shell.man.xml;
+	&section.shell.sys.xml;
 	<section id="shortcutkey">
 		<title>快捷键</title>
 		<screen>
@@ -273,4 +275,4 @@ neo:x:1000:1000:Neo Chen,,,:/home/neo:/bin/zsh
 	&section.shell.zsh.xml;
 	&section.shell.fish.xml;
 	&section.shell.interesting.xml;
-</chapter>
+</section>

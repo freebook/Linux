@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    &chapter.bash.xml;
+	&section.shell.xml;
+	&chapter.cmd.directory.xml;
+	&chapter.cmd.compress.xml;
+	&chapter.cmd.datetime.xml;
+	&chapter.cmd.numeric.xml;
+	&chapter.cmd.text.xml;
+	&chapter.cmd.table.xml;
+	&chapter.cmd.io.xml;
+	&chapter.cmd.binary.xml;
+	&chapter.cmd.diff.xml;
+
+	&chapter.wget.xml;
+	&chapter.curl.xml;
+
+	&chapter.cmd.sum.xml;
+	&chapter.cmd.template.xml;
+
+	&chapter.miscellaneous.xml;
+	&chapter.utility.xml;

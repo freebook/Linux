@@ -28,7 +28,7 @@
 		<![CDATA[
 #!/bin/bash
 if [[ $EUID -ne 0 ]]; then
-   echo "This script must be run as root" 
+   echo "This script must be run as root"
    exit 1
 fi
 		]]>
@@ -49,7 +49,23 @@ su - $USER -c "$PROG & echo \$! > $PIDFILE"
 		]]>
 		</screen>
 	</section>
-
+	<section id="test">
+		<title>test 命令</title>
+		<screen>
+		<![CDATA[
+	test -x $HAPROXY || exit 0
+	test -f "$CONFIG" || exit 0
+		]]>
+		</screen>
+		<section>
+			<title>判断目录</title>
+			<screen>
+				<![CDATA[
+	test -d /path/to/directory || mkdir -p /path/to/directory
+				]]>
+			</screen>
+		</section>
+	</section>
 	<section id="stdin-stdout-stderr">
 		<title>I/O 重定向</title>
 		<screen>
@@ -153,9 +169,9 @@ id: ethereum: no such user
 [root@localhost ~]# id ethereum > test
 id: ethereum: no such user
 
-我们尝试将他重定向到文件 test，但是结果仍是输出 id: ethereum: no such user 
+我们尝试将他重定向到文件 test，但是结果仍是输出 id: ethereum: no such user
 
-[root@localhost ~]# cat test 
+[root@localhost ~]# cat test
 [root@localhost ~]#
 
 查看 test 文件，内容空。
@@ -164,8 +180,8 @@ id: ethereum: no such user
 			<para>继续做实验</para>
 			<screen>
 			<![CDATA[
-[root@localhost ~]# id ethereum > test 2>&1 
-[root@localhost ~]# cat test 
+[root@localhost ~]# id ethereum > test 2>&1
+[root@localhost ~]# cat test
 id: ethereum: no such user
 			]]>
 			</screen>
@@ -182,6 +198,7 @@ id: ethereum: no such user
 			]]>
 			</screen>
 		</section>
+
 		<section id="tee">
 			<title>tee - read from standard input and write to standard output and files</title>
 			<screen><![CDATA[
@@ -342,7 +359,7 @@ SAVEHIST=50000
 			<title>清理历史记录</title>
 			<screen>
 			<![CDATA[
-# history -cw			
+# history -cw
 			]]>
 			</screen>
 			<para>清楚指定行</para>
@@ -498,7 +515,7 @@ function e {
 e Hello
 e World
 quit
-echo foo			
+echo foo
 			]]>
 			</programlisting>
 		</example>
@@ -553,7 +570,7 @@ fi
 SRCD=$1
 TGTD="/var/backups/"
 OF=home-$(date +%Y%m%d).tgz
-tar -cZf $TGTD$OF $SRCD			
+tar -cZf $TGTD$OF $SRCD
 			]]>
 
 			</programlisting>
@@ -566,7 +583,7 @@ tar -cZf $TGTD$OF $SRCD
 #!/bin/bash
 echo Please, enter your name
 read NAME
-echo "Hi $NAME!"			
+echo "Hi $NAME!"
 			]]>
 			</programlisting>
 			<para>As a variant, you can get multiple values with read, this example may clarify this.</para>
@@ -575,7 +592,7 @@ echo "Hi $NAME!"
 #!/bin/bash
 echo Please, enter your firstname and lastname
 read FN LN
-echo "Hi! $LN, $FN !"			
+echo "Hi! $LN, $FN !"
 			]]>
 			</programlisting>
 		</example>
