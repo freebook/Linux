@@ -8,7 +8,7 @@
 		<para>匹配 /System/Library/Fonts 和 /Library/Fonts 两个目录</para>
 		<screen>
 		<![CDATA[
-find {/System,}/Library/Fonts -name \*ttf		
+find {/System,}/Library/Fonts -name \*ttf
 		]]>
 		</screen>
 	</section>
@@ -47,7 +47,7 @@ find /www/images -type f \( -iname '*.js' -o -iname '*.css' -o -iname '*.html' \
 		<para>使用通配符</para>
 		<screen><![CDATA[
 find . -name "*.jsp" -delete
-find . -name "*.xml" -delete		
+find . -name "*.xml" -delete
 		]]></screen>
 	</section>
 	<section id="find.regex">
@@ -87,7 +87,7 @@ a
     │   └── c.shell
     └── d
         └── d.shell
-        
+
  // 注意 sed s->e  使用方式,官方文档是这样解释的.
 This command allows one to pipe input from a shell command into pattern space. If a substitution was made, the command that is found in pattern space is executed and pattern space is replaced with its output. A trailing newline is suppressed; results are undefined if the command to be executed contains a NUL character. This is a GNU sed extension.
 		]]>
@@ -110,7 +110,7 @@ find . -perm -o=w
 		]]></screen>
 		<para>查找当前目录下权限为777的文件并显示到标准输出</para>
 		<screen><![CDATA[
-find ./ -type f -perm 777 -print		
+find ./ -type f -perm 777 -print
 		]]></screen>
 	</section>
 	<section id="find.type">
@@ -149,7 +149,7 @@ find -exec ls -l {} \; | grep '2011-01-18'
 		]]></screen>
 		<para>查找*.html文件中aaa替换为bbb</para>
 		<screen><![CDATA[
-find . -name "*.html" -type f -exec sed -i "s/aaa/bbb/" {} \;		
+find . -name "*.html" -type f -exec sed -i "s/aaa/bbb/" {} \;
 		]]></screen>
 		<para>查找文件中含有openWindow字符串的文件</para>
 		<screen><![CDATA[
@@ -180,50 +180,258 @@ find /usr/local \(-path /usr/local/dir1 -o -path /usr/local/file1 \) -prune -o -
 find . \( -path ./templates_c -o -path ./caches \) -prune -o -name "*.php" -print
 		]]></screen>
 	</section>
-	<section id="find.mmin">
-		<title>-mmin n File's data was last modified n minutes ago.</title>
-		<screen><![CDATA[
-# find . -mmin +5 -mmin -10
-		]]></screen>
-		<screen><![CDATA[
-find /www -type f -mtime +60s
-		]]></screen>
-	</section>
+
 	<section id="find.ctime">
-		<title>-ctime</title>
-		<para>查找当前目录下超过6天且是空文件并删除</para>
-		<screen><![CDATA[
-find ./ -type d -empty -ctime +6 -exec rm -f {} \;	
-		]]></screen>
-		<para>查找7天前的文件并删除</para>
-		<screen><![CDATA[
-find /backup/svn/day -type f -ctime +7 -exec rm -f {} \; 
+		<title>-ctime / -cmin - 按状态改变时间查找</title>
+
+		<para>ctime (change time) 表示文件状态最后一次被改变的时间。当文件的元数据（metadata）发生变化时，ctime 会更新，包括：</para>
+		<itemizedlist>
+			<listitem><para>文件权限变更（chmod）</para></listitem>
+			<listitem><para>文件所有者变更（chown）</para></listitem>
+			<listitem><para>文件链接数变化</para></listitem>
+			<listitem><para>文件重命名或移动</para></listitem>
+			<listitem><para>文件内容修改（mtime 改变时 ctime 也会同时更新）</para></listitem>
+		</itemizedlist>
+
+		<para>ctime 与 mtime、atime 的区别：</para>
+		<itemizedlist>
+			<listitem><para><emphasis>mtime</emphasis> - 文件内容修改时间</para></listitem>
+			<listitem><para><emphasis>atime</emphasis> - 文件最后访问时间</para></listitem>
+			<listitem><para><emphasis>ctime</emphasis> - 文件状态（元数据）改变时间，不可人为修改</para></listitem>
+		</itemizedlist>
+
+		<para>时间参数的含义：</para>
+		<itemizedlist>
+			<listitem><para><emphasis>-n</emphasis> - 最近 n 天内状态改变的文件</para></listitem>
+			<listitem><para><emphasis>+n</emphasis> - n 天前状态改变的文件</para></listitem>
+			<listitem><para><emphasis>n</emphasis> - 恰好第 n 天状态改变的文件</para></listitem>
+		</itemizedlist>
+
+		<simplesect>
+			<title>-ctime 基本用法</title>
+			<para>查找最近 7 天内状态改变的文件：</para>
+			<screen><![CDATA[
+find . -type f -ctime -7
+			]]></screen>
+
+			<para>查找 30 天前状态改变的文件：</para>
+			<screen><![CDATA[
+find . -type f -ctime +30
+			]]></screen>
+
+			<para>查找恰好第 1 天状态改变的文件：</para>
+			<screen><![CDATA[
+find . -type f -ctime 1
+			]]></screen>
+		</simplesect>
+
+		<simplesect>
+			<title>-cmin 按分钟查找</title>
+			<para>查找最近 60 分钟内状态改变的文件：</para>
+			<screen><![CDATA[
+find . -type f -cmin -60
+			]]></screen>
+
+			<para>查找 5 分钟前状态改变的文件：</para>
+			<screen><![CDATA[
+find . -type f -cmin +5
+			]]></screen>
+		</simplesect>
+
+		<simplesect>
+			<title>常见使用场景</title>
+
+			<para>查找最近权限被修改的文件：</para>
+			<screen><![CDATA[
+find /etc -type f -ctime -1 -ls
+			]]></screen>
+
+			<para>查找并删除 6 天前的空目录：</para>
+			<screen><![CDATA[
+find ./ -type d -empty -ctime +6 -exec rm -rf {} \;
+			]]></screen>
+
+			<para>查找 7 天前状态改变的备份文件并删除：</para>
+			<screen><![CDATA[
+find /backup/svn/day -type f -ctime +7 -exec rm -f {} \;
 find /backup/svn/day -type f -ctime +7 -delete
-find /backup/svn/day -type f -ctime +7 | xargs rm -f	
-		]]></screen>
+find /backup/svn/day -type f -ctime +7 | xargs rm -f
+			]]></screen>
+
+			<para>查找最近 24 小时内所有者变更的文件：</para>
+			<screen><![CDATA[
+find /home -type f -ctime -1 -ls
+			]]></screen>
+		</simplesect>
+
+		<simplesect>
+			<title>ctime 的特殊性</title>
+			<para>ctime 的一个重要特性是：当文件内容被修改时，mtime 和 ctime 会同时更新。例如：</para>
+			<screen><![CDATA[
+# 创建一个测试文件
+$ touch testfile
+$ stat testfile
+Access: 2026-08-05 10:00:00.000000000 +0800
+Modify: 2026-08-05 10:00:00.000000000 +0800  # mtime
+Change: 2026-08-05 10:00:00.000000000 +0800  # ctime
+
+# 修改文件内容
+$ echo "test" > testfile
+$ stat testfile
+Access: 2026-08-05 10:00:00.000000000 +0800
+Modify: 2026-08-05 10:05:00.000000000 +0800  # mtime 更新
+Change: 2026-08-05 10:05:00.000000000 +0800  # ctime 也更新
+
+# 仅修改权限
+$ chmod 755 testfile
+$ stat testfile
+Access: 2026-08-05 10:00:00.000000000 +0800
+Modify: 2026-08-05 10:05:00.000000000 +0800  # mtime 不变
+Change: 2026-08-05 10:10:00.000000000 +0800  # ctime 更新
+			]]></screen>
+		</simplesect>
 	</section>
 	<section id="find.mtime">
-		<title>-mtime / -mmin</title>
-		<para>查询最近3天前内修改的文件</para>
-		<screen><![CDATA[
-find . -type f -mtime -3
-		]]></screen>
-		<para>3天前</para>
-		<screen><![CDATA[
-find . -type f -mtime +3
-		]]></screen>
-		<example>
-			<title>backup(find + tar)</title>
+		<title>-mtime / -mmin - 按修改时间查找</title>
+
+		<para>mtime (modification time) 表示文件内容最后一次被修改的时间。当文件的数据被写入时，mtime 会更新。</para>
+
+		<para>find 命令支持三种时间类型：</para>
+		<itemizedlist>
+			<listitem><para><emphasis>-mtime</emphasis> - 文件内容修改时间 (modification time)</para></listitem>
+			<listitem><para><emphasis>-atime</emphasis> - 文件访问时间 (access time)</para></listitem>
+			<listitem><para><emphasis>-ctime</emphasis> - 文件状态改变时间 (change time，包括权限、所有者等元数据变更)</para></listitem>
+		</itemizedlist>
+
+		<para>时间参数的含义：</para>
+		<itemizedlist>
+			<listitem><para><emphasis>-n</emphasis> - 最近 n 天（24小时为单位）内修改的文件</para></listitem>
+			<listitem><para><emphasis>+n</emphasis> - n 天前修改的文件（超过 n*24 小时）</para></listitem>
+			<listitem><para><emphasis>n</emphasis> - 恰好第 n 天修改的文件（在 n*24 到 (n+1)*24 小时之间）</para></listitem>
+		</itemizedlist>
+
+		<simplesect>
+			<title>-mtime 基本用法</title>
+			<para>查找最近 3 天内修改的文件：</para>
 			<screen><![CDATA[
+find . -type f -mtime -3
+			]]></screen>
+
+			<para>查找 3 天前修改的文件：</para>
+			<screen><![CDATA[
+find . -type f -mtime +3
+			]]></screen>
+
+			<para>查找恰好第 7 天修改的文件：</para>
+			<screen><![CDATA[
+find . -type f -mtime 7
+			]]></screen>
+		</simplesect>
+
+		<simplesect>
+			<title>-mmin 按分钟查找</title>
+			<para>与 -mtime 类似，但以分钟为单位：</para>
+			<screen><![CDATA[
+# 查找最近 30 分钟内修改的文件
+find . -type f -mmin -30
+
+# 查找 60 分钟前修改的文件
+find . -type f -mmin +60
+
+# 查找恰好 15 分钟前修改的文件
+find . -type f -mmin 15
+			]]></screen>
+		</simplesect>
+
+		<simplesect>
+			<title>结合 -exec 执行操作</title>
+			<para>删除 30 天前的日志文件：</para>
+			<screen><![CDATA[
+find /var/log -type f -name "*.log" -mtime +30 -exec rm -f {} \;
+			]]></screen>
+
+			<para>压缩 7 天前的大文件：</para>
+			<screen><![CDATA[
+find /data -type f -size +100M -mtime +7 -exec gzip {} \;
+			]]></screen>
+
+			<para>修改 1 天前的文件权限：</para>
+			<screen><![CDATA[
+find /tmp -type f -mtime +1 -exec chmod 600 {} \;
+			]]></screen>
+		</simplesect>
+
+		<simplesect>
+			<title>结合 xargs 批量处理</title>
+			<para>删除 90 天前的临时文件（性能更好）：</para>
+			<screen><![CDATA[
+find /tmp -type f -mtime +90 | xargs rm -f
+			]]></screen>
+
+			<para>统计最近 1 天内修改的文件数量：</para>
+			<screen><![CDATA[
+find /home -type f -mtime -1 | xargs wc -l | tail -1
+			]]></screen>
+		</simplesect>
+
+		<simplesect>
+			<title>实际应用场景</title>
+			<example>
+				<title>增量备份（find + tar）</title>
+				<screen><![CDATA[
+# 备份最近 7 天修改的文件
 find / -type f -mtime -7 | xargs tar -rf weekly_incremental.tar
 gzip weekly_incremental.tar
-			]]></screen>
-		</example>
-		<para>保留7天，删除7天的日志文件</para>
-		<screen><![CDATA[
+				]]></screen>
+			</example>
+
+			<example>
+				<title>清理过期日志</title>
+				<screen><![CDATA[
+# 保留 7 天，删除更早的日志文件
 COPIES=7
-find /var/log -type f -mtime +$COPIES -delete
-		]]></screen>
+find /var/log -type f -name "*.log" -mtime +$COPIES -delete
+				]]></screen>
+			</example>
+
+			<example>
+				<title>查找并移动旧文件</title>
+				<screen><![CDATA[
+# 将 30 天前的文件移动到归档目录
+find /data -type f -mtime +30 -exec mv {} /archive/ \;
+				]]></screen>
+			</example>
+
+			<example>
+				<title>按时间和大小组合查找</title>
+				<screen><![CDATA[
+# 查找 7 天前且大于 10MB 的文件
+find /var/log -type f -mtime +7 -size +10M -ls
+				]]></screen>
+			</example>
+		</simplesect>
+
+		<simplesect>
+			<title>查看文件时间戳</title>
+			<para>使用 stat 命令查看文件的详细时间信息：</para>
+			<screen><![CDATA[
+$ stat filename
+  File: filename
+  Size: 1234      	Blocks: 8          IO Block: 4096   regular file
+Device: fd01h/64769d	Inode: 1234567     Links: 1
+Access: (0644/-rw-r--r--)  Uid: ( 1000/   user)   Gid: ( 1000/   user)
+Access: 2026-08-05 10:30:00.000000000 +0800  # atime - 访问时间
+Modify: 2026-08-04 15:20:00.000000000 +0800  # mtime - 修改时间
+Change: 2026-08-04 15:20:00.000000000 +0800  # ctime - 状态改变时间
+			]]></screen>
+
+			<screen><![CDATA[
+	# find . -mmin +5 -mmin -10
+			]]></screen>
+			<screen><![CDATA[
+	find /www -type f -mtime +60s
+			]]></screen>
+		</simplesect>
 	</section>
 
 	<section id="find.newer">
@@ -273,22 +481,22 @@ find /www -type f -size 0
 		]]></screen>
 		<para>查找根目录下大于1G的文件</para>
 		<screen><![CDATA[
-find /  -type f -size +1000M		
+find /  -type f -size +1000M
 		]]></screen>
 	</section>
 	<section id="find.path">
 		<title>-path</title>
 		<para>搜索当前目录下除了keys目录下所以子目录中的文件</para>
 		<screen><![CDATA[
-find ./ -path "./keys" -prune -o -type f -print 		
+find ./ -path "./keys" -prune -o -type f -print
 		]]></screen>
 		<para>find排除多个目录</para>
 		<screen><![CDATA[
 find ./ \( -path ./conf -o -path ./logs \) -prune -o -print
 
-find /data/ \( -path /data/data_backup -o -path /data/mysql \) -prune -o -name "core.*" -type f 
+find /data/ \( -path /data/data_backup -o -path /data/mysql \) -prune -o -name "core.*" -type f
 /data/mysql
-/data/data_backup		
+/data/data_backup
 		]]></screen>
 		<para>ps 要么都是绝对路径 要么都是相对路径 /data/ 必须有"/" path 后面的路径必须没有"/"</para>
 		<para>包含 */target/* 目录</para>
@@ -300,7 +508,7 @@ find /data/ \( -path /data/data_backup -o -path /data/mysql \) -prune -o -name "
 		<para>排除 lib 目录</para>
 		<screen>
 		<![CDATA[
-[gitlab-runner@localhost cloud.netkiller.cn]$ find . -type f -name "*.jar" ! -path "lib"		
+[gitlab-runner@localhost cloud.netkiller.cn]$ find . -type f -name "*.jar" ! -path "lib"
 		]]>
 		</screen>
 		<para></para>
@@ -324,14 +532,14 @@ Web/images
 		</screen>
 		<screen>
 		<![CDATA[
-find */images -type d -d 0 -exec rsync -au {}/* $(PUBLIC_HTML)/linux/images \; 		
+find */images -type d -d 0 -exec rsync -au {}/* $(PUBLIC_HTML)/linux/images \;
 		]]>
 		</screen>
 		<section id="find.maxdepth">
 			<title>-maxdepth</title>
 			<para>-maxdepth和-mindepth，最大深度，最小深度搜索，搜索当前目录下最大深度为1的所以文件</para>
 			<screen><![CDATA[
-find . -maxdepth 1 -type f 		
+find . -maxdepth 1 -type f
 		]]></screen>
 		</section>
 	</section>
@@ -353,12 +561,12 @@ find . -type f -exec file '{}' \;
 		]]></screen>
 		<para>find后执行xargs提示xargs: argument line too long解决方法：</para>
 		<screen><![CDATA[
-find . -type f -name "*.log" -print0 | xargs -0 rm -f		
+find . -type f -name "*.log" -print0 | xargs -0 rm -f
 		]]></screen>
 		<para>-i 参数可以使用 {}</para>
 		<screen>
 		<![CDATA[
-[gitlab-runner@localhost cloud.sfzito.com]$ find . \( ! -path "*/zito-common/*" -a ! -path "./lib/*" -a ! -path "./dist/*" \) -type f -name "*.jar" | xargs -i cp {} dist/		
+[gitlab-runner@localhost cloud.sfzito.com]$ find . \( ! -path "*/zito-common/*" -a ! -path "./lib/*" -a ! -path "./dist/*" \) -type f -name "*.jar" | xargs -i cp {} dist/
 		]]>
 		</screen>
 	</section>
@@ -366,13 +574,13 @@ find . -type f -name "*.log" -print0 | xargs -0 rm -f
 		<title>查看空文件</title>
 		<screen>
 		<![CDATA[
-find . -type f -name "*.txt" -empty		
+find . -type f -name "*.txt" -empty
 		]]>
 		</screen>
 		<para>删除空文件</para>
 		<screen>
 		<![CDATA[
-find . -type f -name "*.txt" -empty -delete				
+find . -type f -name "*.txt" -empty -delete
 		]]>
 		</screen>
 	</section>
