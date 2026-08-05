@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="shell">
+<chapter id="shell">
 	<title>Shell</title>
 	&section.shell.man.xml;
 	&section.shell.sys.xml;
@@ -275,4 +275,4 @@ neo:x:1000:1000:Neo Chen,,,:/home/neo:/bin/zsh
 	&section.shell.zsh.xml;
 	&section.shell.fish.xml;
 	&section.shell.interesting.xml;
-</section>
+</chapter>
