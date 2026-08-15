@@ -2,6 +2,47 @@
 <section id="docker.log-driver">
 	<title>日志管理</title>
 	<section>
+		<title>日志选项</title>
+		<screen>
+		<![CDATA[
+sudo nano /etc/docker/daemon.json
+{
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "10m",
+    "max-file": "3"
+  }
+}
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>查看日志位置</title>
+		<screen>
+		<![CDATA[
+[root@netkiller ~]# cat /etc/docker/daemon.json 
+{
+  "dns": [
+    "119.29.29.29",
+    "114.114.114.114"
+  ],
+  "insecure-registries": [
+    "docker.1ms.run"
+  ],
+  "registry-mirrors": [
+    "https://docker.1ms.run",
+    "https://docker.xuanyuan.me"
+  ],
+  "log-driver":"json-file",
+  "log-opts": {"max-size":"100m", "max-file":"10"}
+}
+		
+[root@netkiller ~]# docker inspect --format='{{.LogPath}}' api
+/var/lib/docker/containers/b4633aac7cdbd26fcd7c66312059b5785cee9956f4ad1a73c477dc5359352eca/b4633aac7cdbd26fcd7c66312059b5785cee9956f4ad1a73c477dc5359352eca-json.log	 		
+		]]>
+		</screen>
+	</section>	
+	<section>
 		<title>查看默认驱动</title>
 		<para>查看默认驱动 docker info --format '{{.LoggingDriver}}'</para>
 		<screen>

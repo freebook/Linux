@@ -870,7 +870,7 @@ neo@MacBook-Pro ~ % docker inspect --format '{{.State.Pid}}{{print "|"}}{{.State
 
 			</section>
 
-			<section >
+			<section>
 				<title>综合查询</title>
 				<screen>
 					<![CDATA[
@@ -1071,14 +1071,17 @@ $ docker logs -f CONTAINER_ID
 				<title>显示时间戳</title>
 				<screen>
 					<![CDATA[
+$ docker logs --since 30m
 $ docker logs -t --since="2018-02-08" --tail=100 CONTAINER_ID		
 				]]>
 				</screen>
 			</section>
 			<section>
 				<title>显示一段范围内的日志</title>
+				<para>按时间范围查询日志</para>
 				<screen>
 					<![CDATA[
+$ docker logs --since "2023-01-01" --until "2023-01-02" api
 $ docker logs -t --since="2019-02-08T12:20:30" --until "2019-02-09T12:23:30" CONTAINER_ID		
 				]]>
 				</screen>
