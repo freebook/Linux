@@ -1,7 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section id="docker.config">
-	<title>配置 Docker</title>
-	<section>
+	<title>配置 Docker /etc/docker/daemon.json </title>
+	<subtitle>/etc/docker/daemon.json</subtitle>
+	<section id="daemon.json.log">
+		<title>日志切割</title>
+		<para>在 /etc/docker/daemon.json 下增加配置项</para>
+		<screen>
+		<![CDATA[
+  "log-opts": {
+    "max-size": "10m",
+    "max-file": "3"
+  }		
+		]]>
+		</screen>
+		<para>配置文件格式</para>
+		<screen>
+		<![CDATA[
+{
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "10m",
+    "max-file": "3"
+  }
+}		
+		]]>
+		</screen>
+	</section>
+	<section id="daemon.json.remote">
 		<title>开启远程访问</title>
 		<section>
 			<title>/etc/sysconfig/docker</title>
