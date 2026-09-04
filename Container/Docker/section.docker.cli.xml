@@ -1456,7 +1456,7 @@ be36eb55d2a7   openjdk:8                     "java -jar /app/neo…"   6 days ag
 			</section>
 		</section>
 
-		<section>
+		<section id="docker.save">
 			<title>镜像迁移 save / load</title>
 			<para>服务器 A</para>
 			<screen>
@@ -1502,6 +1502,358 @@ openjdk                                            8               b273004037cc 
 [root@production ~]# gzip -d -c /tmp/openjdk.tar.gz | docker load
 			]]>
 			</screen>
+		</section>
+		<section id="docker.system">
+			<title>system</title>
+			<simplesect id="docker.system.df">
+				<title>df - 查看 Docker 磁盘使用情况</title>
+				<para>查看 Docker 磁盘使用情况，包括镜像、容器、本地卷和构建缓存的占用空间及可回收空间。</para>
+				<screen>
+				<![CDATA[
+[root@netkiller ~]# docker system df
+TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE
+Images          8         4         4.699GB   2.746GB (58%)
+Containers      4         4         51.89GB   0B (0%)
+Local Volumes   0         0         0B        0B
+Build Cache     62        0         1.226GB   524.4MB			
+				]]>
+				</screen>
+				<screen>
+				<![CDATA[
+[root@netkiller ~]# docker system df -v
+Images space usage:
+
+REPOSITORY                               TAG         IMAGE ID       CREATED         SIZE      SHARED SIZE   UNIQUE SIZE   CONTAINERS
+caddy                                    latest      a4ef43ffa2b9   6 months ago    62.1MB    8.442MB       53.67MB       0
+document                                 latest      cc8d5e397871   6 months ago    1.41GB    1.021GB       389MB         1
+<none>                                   <none>      c9c409e53830   6 months ago    1.32GB    1.021GB       296.5MB       0
+docker.1ms.run/library/eclipse-temurin   25-alpine   d7bd1cf31181   7 months ago    302MB     8.442MB       294MB         0
+<none>                                   <none>      c06dce8f1dae   10 months ago   1.31GB    0B            1.308GB       0
+openjdk                                  25          d19b487d0613   12 months ago   610MB     0B            609.5MB       1
+nginx                                    latest      be69f2940aaf   16 months ago   192MB     0B            192.5MB       1
+openjdk                                  8           b273004037cc   4 years ago     526MB     0B            526MB         1
+
+Containers space usage:
+
+CONTAINER ID   IMAGE             COMMAND                  LOCAL VOLUMES   SIZE      CREATED        STATUS        NAMES
+16f6fbc05a69   openjdk:25        "java --enable-nativ…"   0               51.9GB    6 months ago   Up 12 days    api
+d4ef0f0619d1   document:latest   "python main.py"         0               1.12MB    6 months ago   Up 6 months   document
+934efe36807d   nginx:latest      "/docker-entrypoint.…"   0               2B        8 months ago   Up 4 months   nginx
+4549d4942795   openjdk:8         "java -jar /app/admi…"   0               20MB      8 months ago   Up 6 months   admin
+
+Local Volumes space usage:
+
+VOLUME NAME   LINKS     SIZE
+
+Build cache usage: 1.226GB
+
+CACHE ID       CACHE TYPE     SIZE      CREATED         LAST USED       USAGE     SHARED
+avmv0n0rau6x   regular        0B        14 months ago   14 months ago   1         false
+wqvcramp0p9n   regular        0B        14 months ago   14 months ago   1         false
+hylqze185qwe   regular        0B        14 months ago   14 months ago   1         false
+8sur855eel1d   regular        0B        14 months ago   14 months ago   1         false
+zd1mrvr1udwg   regular        0B        14 months ago   14 months ago   1         false
+kgje80lrpd1r   regular        0B        14 months ago   14 months ago   1         false
+lph9e75w06z5   regular        0B        14 months ago   14 months ago   1         false
+42kcl53dof7w   regular        135B      14 months ago   14 months ago   1         false
+imnbcn5q9s5z   regular        0B        14 months ago   14 months ago   1         false
+q6b8x52wiehp   regular        175MB     14 months ago   14 months ago   1         false
+giz9lnrh55rm   regular        2.3kB     14 months ago   14 months ago   1         false
+x4yiw3mlsj55   regular        0B        14 months ago   14 months ago   1         false
+bpnfm9dy2x08   regular        0B        14 months ago   14 months ago   1         false
+1w8wjld6c1ep   regular        0B        14 months ago   14 months ago   1         false
+1ns344vlqw8n   regular        0B        14 months ago   14 months ago   1         false
+qobyghrf8cke   regular        0B        14 months ago   14 months ago   1         false
+m78hxds49uhb   regular        0B        14 months ago   14 months ago   1         false
+laeindd0i3sw   regular        135B      14 months ago   14 months ago   1         false
+l6kayzivurfu   regular        2.3kB     14 months ago   14 months ago   1         false
+eq7eccv3kc0m   regular        0B        14 months ago   14 months ago   1         false
+vrixigru0uqi   regular        0B        14 months ago   14 months ago   1         false
+fnpxdd4q0egq   regular        2.48kB    14 months ago   14 months ago   1         false
+rc7fcfwvir9x   regular        2.78kB    14 months ago   14 months ago   2         false
+wfh2r7kebawc   regular        175MB     14 months ago   14 months ago   4         false
+1u9bqwahu8j7   regular        2.78kB    14 months ago   14 months ago   1         false
+p6cfsdektp0e   regular        2.84kB    13 months ago   13 months ago   1         false
+ko3kx0xoydd7   regular        0B        10 months ago   10 months ago   1         true
+frbeu2qx0svk   regular        0B        10 months ago   10 months ago   1         true
+rs3nbfethmed   regular        0B        10 months ago   10 months ago   1         true
+kmcvtj895uzj   regular        0B        10 months ago   10 months ago   1         true
+abz7gvhas7k2   regular        0B        10 months ago   10 months ago   1         true
+sow2t98v6zwr   regular        0B        10 months ago   10 months ago   1         true
+w2akcyas93yl   regular        0B        10 months ago   10 months ago   1         true
+2zhpwukxdwxg   regular        135B      10 months ago   10 months ago   1         false
+iv23xmhyezsj   regular        175MB     10 months ago   10 months ago   1         false
+k6s22eqobjib   regular        2.84kB    10 months ago   10 months ago   1         false
+i4s9fxngbuci   regular        200B      10 months ago   10 months ago   1         true
+ofjc0rfswtwy   regular        200MB     10 months ago   10 months ago   1         true
+zjg1g44s74lv   regular        9.58kB    10 months ago   10 months ago   1         true
+aoopp964qnuq   regular        0B        10 months ago   10 months ago   2         true
+pb14vymjv8t7   regular        0B        6 months ago    6 months ago    1         true
+uneuqfdndlud   regular        0B        6 months ago    6 months ago    1         true
+xzg5tc0fe1ka   regular        200B      6 months ago    6 months ago    1         true
+pwaauuvg4t41   regular        208MB     6 months ago    6 months ago    1         true
+rowmxaoq5u9l   regular        9.1kB     6 months ago    6 months ago    1         true
+x20zr013g5gc   regular        0B        6 months ago    6 months ago    1         true
+uhwcej1jmyvk   regular        0B        6 months ago    6 months ago    1         true
+nncnejwhb6h8   regular        0B        6 months ago    6 months ago    2         true
+70gksilkltu0   regular        0B        6 months ago    6 months ago    2         true
+dcguperbpujn   regular        0B        6 months ago    6 months ago    2         true
+1y9r118sict9   regular        0B        6 months ago    6 months ago    2         true
+tmuxv2vpajit   regular        0B        6 months ago    6 months ago    1         true
+ndm7oaz0ndjp   regular        0B        6 months ago    6 months ago    1         true
+qsynqhu735sb   regular        200B      6 months ago    6 months ago    1         true
+1qt630k0a7ly   source.local   189B      14 months ago   6 months ago    11        false
+rmz3ejet8y63   regular        210MB     6 months ago    6 months ago    1         true
+kl6u3ltjuyvv   source.local   0B        14 months ago   6 months ago    11        false
+3z4a0a0skhcg   regular        0B        6 months ago    6 months ago    1         true
+0as9bh2sbky3   regular        0B        6 months ago    6 months ago    1         true
+stfzo8fes4t1   source.local   2.43kB    14 months ago   6 months ago    11        false
+wbixf10jnskc   regular        9.1kB     6 months ago    6 months ago    1         true
+|tecvvyx34jcv   regular        83.5MB    6 months ago    6 months ago    1         true			
+			]]>
+			</screen>
+			</simplesect>
+			<simplesect id="docker.system.info">
+				<title>docker system info - 查看 Docker 系统信息</title>
+				<para>显示 Docker 守护进程的系统级信息，包括容器数量、镜像数量、存储驱动、内核版本等。</para>
+				<screen>
+					<![CDATA[
+[root@netkiller ~]# docker system info
+Client: Docker Engine - Community
+ Version:    27.3.1
+ Context:    default
+ Debug Mode: false
+ Plugins:
+  buildx: Docker Buildx (Docker Inc.)
+  compose: Docker Compose (Docker Inc.)
+
+Server:
+ Containers: 4
+  Running: 4
+  Paused: 0
+  Stopped: 0
+ Images: 8
+ Server Version: 27.3.1
+ Storage Driver: overlay2
+  Backing Filesystem: xfs
+  Supports d_type: true
+  Using metacopy: false
+  Native Overlay Diff: true
+ Logging Driver: json-file
+ Cgroup Driver: systemd
+ Cgroup Version: 2
+ Plugins:
+  Volume: local
+  Network: bridge host ipvlan macvlan null overlay
+  Log: awslogs fluentd gcplogs gelf journald json-file local splunk syslog
+ Kernel Version: 5.15.0-134-generic
+ Operating System: Ubuntu 22.04.5 LTS
+ OSType: linux
+ Architecture: x86_64
+ CPUs: 8
+ Total Memory: 15.48GiB
+ Name: netkiller
+ ID: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+ Docker Root Dir: /var/lib/docker
+ Debug Mode: false
+ Registry: https://index.docker.io/v1/
+ Experimental: false
+ Insecure Registries:
+  127.0.0.0/8
+ Registry Mirrors:
+  https://docker.1ms.run/
+ Live Restore Enabled: false
+					]]>
+				</screen>
+			</simplesect>
+
+			<simplesect id="docker.system.prune">
+				<title>docker system prune - 清理无用资源</title>
+				<para>清理所有未使用的资源（已停止的容器、未被任何容器引用的网络、悬空镜像、悬空构建缓存）。</para>
+				<screen>
+					<![CDATA[
+[root@netkiller ~]# docker system prune
+WARNING! This will remove:
+  - all stopped containers
+  - all networks not used by at least one container
+  - all dangling images
+  - all dangling build cache
+
+Are you sure you want to continue? [y/N] y
+Deleted Containers:
+abcdef1234567890...
+
+Total reclaimed space: 1.234GB
+					]]>
+				</screen>
+
+				<simplesect id="docker.system.prune.all">
+					<title>docker system prune -a --volumes - 深度清理</title>
+					<para>使用 -a 参数清理所有未被使用的镜像（不仅是悬空镜像），使用 --volumes 参数同时清理未使用的卷。</para>
+					<screen>
+						<![CDATA[
+[root@netkiller ~]# docker system prune -a --volumes
+WARNING! This will remove:
+  - all stopped containers
+  - all networks not used by at least one container
+  - all volumes not used by at least one container
+  - all images without at least one container associated to them
+  - all build cache
+
+Are you sure you want to continue? [y/N] y
+Deleted Images:
+untagged: openjdk:latest
+deleted: sha256:d19b487d0613...
+
+Total reclaimed space: 2.746GB
+						]]>
+					</screen>
+				</simplesect>
+
+				<simplesect id="docker.system.prune.filter">
+					<title>docker system prune --filter - 条件过滤清理</title>
+					<para>使用 --filter 参数按条件过滤，只清理满足条件的资源。</para>
+					<screen>
+						<![CDATA[
+# 清理超过 24 小时未使用的镜像
+[root@netkiller ~]# docker system prune -a --filter "until=24h"
+
+# 清理指定标签的镜像
+[root@netkiller ~]# docker system prune -a --filter "label=env=test"
+
+# 清理超过 1 周的构建缓存
+[root@netkiller ~]# docker builder prune --filter "until=168h"
+						]]>
+					</screen>
+				</simplesect>
+
+				<simplesect id="docker.system.prune.cron">
+					<title>定时清理 Docker 资源</title>
+					<para>通过 crontab 定期执行清理任务，防止磁盘空间耗尽。</para>
+					<screen>
+						<![CDATA[
+# 每天凌晨 3 点清理悬空镜像和构建缓存
+[root@netkiller ~]# crontab -e
+0 3 * * * docker system prune -f >> /var/log/docker-prune.log 2>&1
+
+# 每周日凌晨 4 点深度清理（包括未使用的镜像和卷）
+0 4 * * 0 docker system prune -a --volumes -f >> /var/log/docker-prune.log 2>&1
+						]]>
+					</screen>
+				</simplesect>
+			</simplesect>
+
+			<simplesect id="docker.system.events">
+				<title>docker system events - 实时监控 Docker 事件</title>
+				<para>实时获取 Docker 守护进程的事件流，包括容器的创建、启动、停止、销毁等操作。</para>
+				<screen>
+					<![CDATA[
+[root@netkiller ~]# docker system events
+2026-08-04T16:30:00.000000000+08:00 container start 16f6fbc05a69 (image=openjdk:25, name=api)
+2026-08-04T16:30:01.000000000+08:00 network connect abcdef123456 (name=bridge, container=16f6fbc05a69)
+2026-08-04T16:31:00.000000000+08:00 container die 16f6fbc05a69 (exitCode=0, image=openjdk:25, name=api)
+2026-08-04T16:31:01.000000000+08:00 container stop 16f6fbc05a69 (image=openjdk:25, name=api)
+					]]>
+				</screen>
+
+				<simplesect id="docker.system.events.filter">
+					<title>按条件过滤事件</title>
+					<screen>
+						<![CDATA[
+# 只监控容器事件
+[root@netkiller ~]# docker system events --filter 'type=container'
+
+# 监控指定容器的事件
+[root@netkiller ~]# docker system events --filter 'container=api'
+
+# 监控指定镜像的事件
+[root@netkiller ~]# docker system events --filter 'image=openjdk:25'
+
+# 只显示特定事件类型
+[root@netkiller ~]# docker system events --filter 'event=start' --filter 'event=stop'
+
+# 指定时间范围查看历史事件
+[root@netkiller ~]# docker system events --since '2026-08-01T00:00:00' --until '2026-08-04T23:59:59'
+						]]>
+					</screen>
+				</simplesect>
+
+				<simplesect id="docker.system.events.format">
+					<title>格式化输出事件</title>
+					<screen>
+						<![CDATA[
+# 以 JSON 格式输出事件
+[root@netkiller ~]# docker system events --format '{{json .}}'
+{"status":"start","id":"16f6fbc05a69","Type":"container","Action":"start","Actor":{"ID":"16f6fbc05a69","Attributes":{"image":"openjdk:25","name":"api"}},"time":1722768600,"timeNano":1722768600000000000}
+
+# 自定义输出格式
+[root@netkiller ~]# docker system events --format '{{.Time}} {{.Type}} {{.Action}} {{.Actor.ID}}'
+						]]>
+					</screen>
+				</simplesect>
+			</simplesect>
+
+			<simplesect id="docker.system.commands">
+				<title>docker system 常用命令汇总</title>
+				<informaltable>
+					<tgroup cols="3">
+						<thead>
+							<row>
+								<entry>命令</entry>
+								<entry>说明</entry>
+								<entry>常用场景</entry>
+							</row>
+						</thead>
+						<tbody>
+							<row>
+								<entry><command>docker system df</command></entry>
+								<entry>查看磁盘使用情况</entry>
+								<entry>排查磁盘空间不足</entry>
+							</row>
+							<row>
+								<entry><command>docker system df -v</command></entry>
+								<entry>查看磁盘使用详情</entry>
+								<entry>定位具体的镜像/容器/卷占用</entry>
+							</row>
+							<row>
+								<entry><command>docker system info</command></entry>
+								<entry>查看 Docker 系统信息</entry>
+								<entry>查看守护进程配置、内核版本等</entry>
+							</row>
+							<row>
+								<entry><command>docker system prune</command></entry>
+								<entry>清理未使用的资源</entry>
+								<entry>释放磁盘空间</entry>
+							</row>
+							<row>
+								<entry><command>docker system prune -a</command></entry>
+								<entry>深度清理（含未使用镜像）</entry>
+								<entry>大规模清理镜像</entry>
+							</row>
+							<row>
+								<entry><command>docker system prune -a --volumes</command></entry>
+								<entry>深度清理（含未使用卷）</entry>
+								<entry>彻底清理无用数据</entry>
+							</row>
+							<row>
+								<entry><command>docker system events</command></entry>
+								<entry>实时监控事件流</entry>
+								<entry>排查容器生命周期问题</entry>
+							</row>
+							<row>
+								<entry><command>docker system events --filter</command></entry>
+								<entry>按条件过滤事件</entry>
+								<entry>定向监控特定容器/镜像</entry>
+							</row>
+							<row>
+								<entry><command>docker system events --format</command></entry>
+								<entry>格式化事件输出</entry>
+								<entry>对接日志收集系统</entry>
+							</row>
+						</tbody>
+					</tgroup>
+				</informaltable>
+			</simplesect>
 		</section>
 	</section>
 	<section id="docker-compose">
