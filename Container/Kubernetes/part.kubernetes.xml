@@ -3,4 +3,21 @@
 	<title>Kubernetes</title>
 	&chapter.kubernetes.xml;
 	&chapter.rancher.xml;
+	<chapter id="aliyun.k8s">
+		<title>阿里云 Kubernetes</title>
+		<section id="链接到 Kubernetes">
+			<title>链接到 Kubernetes</title>
+
+		</section>
+		<section>
+			<title>504 Gateway Time-out</title>
+			<screen>
+		<![CDATA[
+nginx.ingress.kubernetes.io/proxy-connect-timeout: "300"
+nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+nginx.ingress.kubernetes.io/proxy-send-timeout: "300"		
+		]]>
+			</screen>
+		</section>
+	</chapter>
 </part>	

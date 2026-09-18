@@ -69,7 +69,6 @@
 	<!-- &book.preface; -->
 	<!-- =========================================================================== -->
 	&book.preface.xml;
-	&chapter.aliyun.xml;
 	&chapter.docker.xml;
 	&chapter.podman.xml;
 	&chapter.kubernetes.xml;
