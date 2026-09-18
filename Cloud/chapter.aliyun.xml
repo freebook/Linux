@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="index"><?dbhtml dir="aliyun" ?>
+	<title>阿里云</title>
+	<para>时代变了！！！今局面是云计算全面替代自建IDC的时代，所以必须将云计算单列一个章节，严肃对待。</para>
+	&section.aliyun.ecs.xml;
+	&section.aliyun.rds.xml;
+	&section.aliyun.sls.xml;
+	&section.aliyun.bottleneck.xml;
+	&section.aliyun.bastionhost.xml;
+	&section.aliyun.kubernetes.xml;
+</chapter>

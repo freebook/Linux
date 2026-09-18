@@ -98,6 +98,9 @@
 	<!ENTITY % cryptography.doctype.entity.xml		SYSTEM "Cryptography/doctype.entity.xml">
 	%cryptography.doctype.entity.xml;
 	<!ENTITY part.cryptography.xml		 			SYSTEM "part.cryptography.xml">
+	
+	<!ENTITY % cloud.doctype.entity.xml 		SYSTEM "Cloud/doctype.entity.xml">
+	%cloud.doctype.entity.xml;
 
 	<!ENTITY openssl "<![CDATA[<link linkend='openssl'>OpenSSL</link>]]>">
 	<!ENTITY OpenSSL "&openssl;">
@@ -165,6 +168,7 @@
 	&book.preface;
 	<!-- =========================================================================== -->
 	&chapter.introduction.xml;
+	&part.cloud.xml;
 	&part.system.xml;
 	<!-- =========================================================================== -->
 	&part.shell.xml;

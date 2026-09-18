@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+	<title>OSS</title>
+	<section>
+		<title>文件上传</title>
+		<section>
+			<title>byte[]数据上传</title>
+			<programlisting>
+			<![CDATA[
+    public String ossUploadDocument(String objectName, byte[] document) {
+
+        // 创建OSS客户端
+        OSS ossClient = new OSSClientBuilder().build(this.endpoint, this.accessKeyId, this.secretAccessKey);
+
+        try {
+            // 创建输入流
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(document);
+
+            // 设置上传对象的元数据
+//            ObjectMetadata objectMetadata = new ObjectMetadata();
+//            objectMetadata.setContentLength(document.length);
+//            objectMetadata.setContentType(contentType);
+//            objectMetadata.setContentDisposition("inline;filename=".concat(objectName));
+//            ossClient.putObject(this.bucketName, objectName, inputStream, objectMetadata);
+
+            ossClient.putObject(this.bucketName, objectName, inputStream);
+            log.info("Oss object: " + objectName);
+
+            return objectName;
+
+        } catch (Exception e) {
+            log.error("Oss: " + e.getMessage());
+        } finally {
+            // 关闭OSS客户端
+            ossClient.shutdown();
+        }
+        return null;
+    }			
+			]]>
+			</programlisting>
+		</section>
+		<section>
+			<title>Base64内容上传</title>
+			<programlisting>
+			<![CDATA[
+public String uploadPngFromBase64(String base64Image, String objectName) {
+
+        // 创建OSS客户端
+        OSS ossClient = new OSSClientBuilder().build(this.endpoint, this.accessKeyId, this.secretAccessKey);
+
+        try {
+            // 将Base64字符串解码为字节数组
+            byte[] imageBytes = java.util.Base64.getDecoder().decode(base64Image);
+
+            // 创建输入流
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(imageBytes);
+
+            // 设置上传对象的元数据
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            objectMetadata.setContentLength(imageBytes.length);
+            objectMetadata.setContentType("image/png");
+            objectMetadata.setContentDisposition("inline;filename=".concat(objectName));
+            ossClient.putObject(this.bucketName, objectName, inputStream, objectMetadata);
+
+            String image = this.url + "/" + objectName;
+            log.info("Oss image: " + image);
+
+            return image;
+
+        } catch (Exception e) {
+            log.error("Oss image: " + e.getMessage());
+        } finally {
+            // 关闭OSS客户端
+            ossClient.shutdown();
+        }
+        return "";
+    }			
+			]]>
+			</programlisting>
+		</section>
+		
+	</section>
+	<section>
+		<title>打开文档</title>
+		<programlisting>
+		<![CDATA[
+public ResponseEntity<byte[]> ossOpenDocument(String objectName) {
+
+        // 创建OSS客户端
+        OSS ossClient = new OSSClientBuilder().build(this.endpoint, this.accessKeyId, this.secretAccessKey);
+
+
+        try {
+            // 获取OSS文件
+            OSSObject ossObject = ossClient.getObject(bucketName, objectName);
+            try (InputStream inputStream = ossObject.getObjectContent()) {
+
+                Path path = Path.of(objectName);
+                HttpHeaders headers = new HttpHeaders();
+                headers.add("Content-Disposition", "attachment; filename=" + new String(path.getFileName().toString().getBytes(StandardCharsets.UTF_8), "ISO8859-1"));
+                MediaType mediaType = MediaType.parseMediaType("application/octet-stream");
+
+                try {
+                    String mimeType = Files.probeContentType(path);
+                    if (mimeType != null) {
+                        mediaType = MediaType.parseMediaType(mimeType);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+//                InputStream inputStream = aliyunComponent.ossOpenDocument(filepath);
+                return ResponseEntity.ok()
+                        .headers(headers)
+//                .contentLength(inputStream)
+                        .contentType(mediaType)
+                        .body(inputStream.readAllBytes());
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } finally {
+            ossClient.shutdown();
+        }
+
+    }
+		]]>
+		</programlisting>
+	</section>
+	
+	
+	<section>
+		<title>临时访问URL，有过期时间</title>
+		<programlisting>
+		<![CDATA[
+    public String ossOpenDocument(String objectName) {
+
+        // 创建OSS客户端
+        OSS ossClient = new OSSClientBuilder().build(this.endpoint, this.accessKeyId, this.secretAccessKey);
+
+        try {
+            Date expiration = new Date(System.currentTimeMillis() + 3600 * 1000);
+            String url = ossClient.generatePresignedUrl(this.bucketName, objectName, expiration).toString();
+            return url;
+        } catch (Exception e) {
+            log.error("Oss: " + e.getMessage());
+        } finally {
+            // 关闭OSS客户端
+            ossClient.shutdown();
+        }
+        return null;
+    }		
+		]]>
+		</programlisting>
+		<para></para>
+		<programlisting>
+		<![CDATA[
+    @SneakyThrows
+    @GetMapping("open")
+    @TokenPass
+    public String open() {
+        return aliyunComponent.ossOpenDocument("development/2025-10-23/fa815c29c4634b9394e2d0ed0d33f57c/远程办公利弊探讨(会议结论).docx");
+    }		
+		]]>
+		</programlisting>
+	</section>
+	<section>
+		<title>不暴露 OSS 地址，下载 OSS 文件</title>
+		<para>在 Web 应用中，后端生成签名 URL 后，直接通过流的方式将文件返回给前端（避免暴露 OSS 地址）</para>
+		<programlisting>
+		<![CDATA[
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClientBuilder;
+import com.aliyun.oss.model.OSSObject;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.InputStream;
+import java.net.URLEncoder;
+
+@RestController
+public class OSSDownloadController {
+    // 配置参数（建议通过配置文件注入）
+    private String endpoint = "oss-cn-beijing.aliyuncs.com";
+    private String accessKeyId = "yourAccessKeyId";
+    private String accessKeySecret = "yourAccessKeySecret";
+    private String bucketName = "yourBucketName";
+
+    @GetMapping("/download")
+    public void download(@RequestParam String objectName, HttpServletResponse response) throws Exception {
+        OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
+
+        try {
+            // 获取OSS文件
+            OSSObject ossObject = ossClient.getObject(bucketName, objectName);
+            try (InputStream inputStream = ossObject.getObjectContent()) {
+                // 设置响应头，指定文件名（解决中文乱码）
+                String fileName = objectName.substring(objectName.lastIndexOf("/") + 1);
+                String encodedFileName = URLEncoder.encode(fileName, "UTF-8");
+                response.setHeader("Content-Disposition", "attachment;filename*=UTF-8''" + encodedFileName);
+                response.setContentType("application/octet-stream");
+
+                // 写入响应流，供前端下载
+                byte[] buffer = new byte[1024];
+                int len;
+                while ((len = inputStream.read(buffer)) > 0) {
+                    response.getOutputStream().write(buffer, 0, len);
+                }
+            }
+        } finally {
+            ossClient.shutdown();
+        }
+    }
+}		
+		]]>
+		</programlisting>
+		<programlisting>
+		<![CDATA[
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClientBuilder;
+import com.aliyun.oss.model.OSSObject;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.InputStream;
+import java.net.URLEncoder;
+import java.util.Date;
+
+@RestController
+public class DownloadController {
+    // OSS配置参数（建议通过配置文件注入）
+    private String endpoint = "oss-cn-beijing.aliyuncs.com";
+    private String accessKeyId = "yourAccessKeyId";
+    private String accessKeySecret = "yourAccessKeySecret";
+    private String bucketName = "yourBucketName";
+
+    @GetMapping("/download/{filePath}")
+    public void downloadFile(@PathVariable String filePath, HttpServletResponse response) throws Exception {
+        OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
+        try {
+            // 1. 生成签名URL（有效期5分钟）
+            Date expiration = new Date(System.currentTimeMillis() + 5 * 60 * 1000);
+            String signedUrl = ossClient.generatePresignedUrl(bucketName, filePath, expiration).toString();
+
+            // 2. 通过签名URL获取文件流并转发给前端
+            OSSObject ossObject = ossClient.getObject(signedUrl);
+            try (InputStream in = ossObject.getObjectContent()) {
+                // 设置响应头，指定文件名和类型
+                String fileName = URLEncoder.encode(filePath.substring(filePath.lastIndexOf("/") + 1), "UTF-8");
+                response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
+                response.setContentType("application/octet-stream");
+
+                // 写入响应流
+                byte[] buffer = new byte[1024];
+                int len;
+                while ((len = in.read(buffer)) > 0) {
+                    response.getOutputStream().write(buffer, 0, len);
+                }
+            }
+        } finally {
+            ossClient.shutdown();
+        }
+    }
+}		
+		]]>
+		</programlisting>
+	</section>
+</section>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!ENTITY part.cloud.xml 			SYSTEM "part.cloud.xml">
+<!ENTITY chapter.aliyun.xml			SYSTEM "chapter.aliyun.xml">
+<!ENTITY chapter.cloud.xml			SYSTEM "chapter.cloud.xml">
+<!ENTITY section.aliyun.sls.xml		SYSTEM "section.aliyun.sls.xml">
+<!ENTITY section.aliyun.ecs.xml		SYSTEM "section.aliyun.ecs.xml">
+<!ENTITY section.aliyun.rds.xml		SYSTEM "section.aliyun.rds.xml">
+<!ENTITY section.aliyun.bottleneck.xml	SYSTEM "section.aliyun.bottleneck.xml">
+<!ENTITY section.aliyun.bastionhost.xml	SYSTEM "section.aliyun.bastionhost.xml">
+<!ENTITY section.aliyun.kubernetes.xml	SYSTEM "section.aliyun.kubernetes.xml">
+
+<!ENTITY chapter.huawei.xml			SYSTEM "chapter.huawei.xml">

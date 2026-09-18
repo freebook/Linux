@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="日志服务">
+	<title>日志服务</title>
+	<section>
+		<title>SLB 日志</title>
+		<section>
+			<title>IP 地址查看</title>
+			<screen>
+			<![CDATA[
+* | select COALESCE(client_ip, vip_addr, upstream_addr) as source, COALESCE(upstream_addr, vip_addr, client_ip) as dest, sum(request_length) as inflow group by grouping sets( (client_ip, vip_addr), (vip_addr, upstream_addr))			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>Top 100 IP 地址</title>
+			<screen>
+			<![CDATA[
+*|SELECT client_ip, COUNT(*) as number GROUP by client_ip order by number desc limit 100			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>统计 GET/POST/PUT/DELETE/HEAD/OPTIONS</title>
+			<screen>
+			<![CDATA[
+* | SELECT Request_method, COUNT(*) as number GROUP BY Request_method
+
+* | SELECT Request_method, COUNT(*) as number GROUP BY Request_method ORDER BY number DESC  			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>分析接口请求时间</title>
+			<screen>
+			<![CDATA[
+(request_uri = '/v2/api')| select  ROUND(request_time) request_time,  count(ROUND(request_time)) count group by  request_time order by  request_time desc limit  1000000
+
+(request_uri = '/v1/api')| select  ROUND(request_time,2) request_time,  count(ROUND(request_time,2)) count group by  request_time order by  request_time desc limit  100000
+
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>TOP 20 URL</title>
+			<screen>
+			<![CDATA[
+(*)| select  request_uri, count(1) countGROUP by  request_uri ORDER by  count DESC LIMIT  20 			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+(slb_vport not 8080 and request_uri not '/v2/api')| select  request_uri, count(1) countGROUP by  request_uri ORDER by  count DESC LIMIT  20 			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>QPS</title>
+			<screen>
+			<![CDATA[
+* | select time_series(__time__, '100s', '%H:%i:%s', '0') as time, COUNT(1)/100 as QPS GROUP by time ORDER by time LIMIT 1000
+* | select time_series(__time__, '10s', '%H:%i:%s', '0') as time, COUNT(1)/10 as QPS GROUP by time ORDER by time LIMIT 1000		
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>Kubernetes 日志</title>
+	</section>
+	<section>
+		<title>Aliyun LOG Java Producer</title>
+		<para>https://github.com/aliyun/aliyun-log-java-producer</para>
+	</section>
+</section>

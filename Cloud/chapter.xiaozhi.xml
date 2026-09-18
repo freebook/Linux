@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="xiaozhi">
+	<title>小智</title>
+	<section>
+		<title>小智接入点</title>
+		<screen>
+		<![CDATA[
+[root@development ~]# git clone https://github.com/xinnan-tech/xiaozhi-esp32-server.git
+
+[root@development xiaozhi-esp32-server]# sh docker-setup.sh
+		]]>
+		</screen>
+		<para>配置密钥</para>
+		<screen>
+		<![CDATA[
+\033[0;32m\033[0m
+查看日志请运行：
+\033[0;32m\033[0m
+\n\033[0;31m重要提示：\033[0m
+1. 请确保编辑 data/.config.yaml 文件，配置必要的API密钥
+2. 特别是 ChatGLM 和 mem0ai 的密钥必须配置
+3. 配置完成后再启动 docker 服务		
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+docker-compose up -d
+docker logs -f xiaozhi-esp32-server
+		]]>
+		</screen>
+		<section>
+			<para>Linux 环境</para>
+			<screen>
+			<![CDATA[
+# dnf install ffmpeg-free -y			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>苹果开发环境</title>
+			<screen>
+			<![CDATA[
+neo@netkiller ~ % brew install opus
+neo@netkiller ~ % brew install ffmpeg
+
+export DYLD_LIBRARY_PATH="/opt/homebrew/lib:$DYLD_LIBRARY_PATH"
+
+or 
+
+sudo ln -s /opt/homebrew/Cellar/opus/1.5.2/lib/libopus.dylib /usr/local/lib/libopus.dylib
+sudo ln -s /opt/homebrew/Cellar/opus/1.5.2/lib/libopus.0.dylib /usr/local/lib/libopus.0.dylib
+sudo ln -s /opt/homebrew/Cellar/opus/1.5.2/lib/libopus.0.8.0.dylib /usr/local/lib/libopus.0.8.0.dylib
+
+pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple/
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+# 启动 app.py 前执行
+export DYLD_LIBRARY_PATH="/opt/homebrew/lib:$DYLD_LIBRARY_PATH"
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>小智管理后台</title>
+		<section>
+			<title>安装 MySQL 数据库</title>
+			<screen>
+		<![CDATA[
+#!/bin/sh
+dnf install -y https://dev.mysql.com/get/Downloads/MySQL-9.5/mysql-community-common-9.5.0-1.el10.x86_64.rpm
+d
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+[root@beta my.cnf.d]# grep "A temporary password" /var/log/mysqld.log
+2025-11-27T03:23:06.977137Z 6 [Note] [MY-010454] [Server] A temporary password is generated for root@localhost: 48Ukp_j?Ntth
+
+[root@beta my.cnf.d]# mysqladmin -u root -p'48Ukp_j?Ntth' password
+mysqladmin: [Warning] Using a password on the command line interface can be insecure.
+New password: 
+Confirm new password: 
+Warning: Since password will be sent to server in plain text, use ssl connection to ensure password safety.		
+		]]>
+		</screen>
+		</section>
+		<section>
+			<title>小智后台前端</title>
+			<screen>
+		<![CDATA[
+# Download and install nvm:
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+
+# in lieu of restarting the shell
+\. "$HOME/.nvm/nvm.sh"
+
+# Download and install Node.js:
+nvm install 22
+
+# Verify the Node.js version:
+node -v # Should print "v22.16.0".
+nvm current # Should print "v22.16.0".
+
+# Verify npm version:
+npm -v # Should print "10.9.2".		
+		]]>
+			</screen>
+			<screen>
+		<![CDATA[
+[root@development ~]# curl -s -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" 
+
+[root@development ~]# \. "$HOME/.nvm/nvm.sh"
+[root@development ~]# nvm install 22
+		]]>
+			</screen>
+
+			<screen>
+		<![CDATA[
+[root@development ~]# cd xiaozhi-esp32-server/main/manager-web/
+
+		]]>
+			</screen>
+			<screen>
+		<![CDATA[
+
+		]]>
+			</screen>
+		</section>
+		<section>
+			<title>后台接口</title>
+			<screen>
+		<![CDATA[
+[root@development ~]# dnf install java-21-openjdk maven-openjdk21
+[root@development manager-api]# mvn package
+		]]>
+			</screen>
+
+		</section>
+	</section>
+	<section>
+		<title>Websoket 协议调试</title>
+		<screen>
+		<![CDATA[
+ws://localhost:8000/xiaozhi/v1/?authorization=Bearer+GU1PudYYWI9ThyfD1BYN5cvIDqHDUWqva7jPif-9oJg.1769315142&device-id=7F%3AC1%3A2B%3AE3%3ABE%3AEA&client-id=web_test_client
+		]]>
+		</screen>
+		<screen>
+		<![CDATA[
+
+		]]>
+		</screen>
+				<screen>
+		<![CDATA[
+
+		]]>
+		</screen>
+				<screen>
+		<![CDATA[
+
+		]]>
+		</screen>
+	</section>
+</chapter>

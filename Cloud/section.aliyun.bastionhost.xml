@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="bastionhost">
+	<title>堡垒机</title>
+	<section>
+		<title>数据库查询需求解决方案</title>
+		<section>
+			<title>背景和需求</title>
+			<para>部分小组有数据库查询，频次较高，Yearning 平台无法满足需求。目前方式是阿里云RDS挂载公网IP，暴漏3306查询</para>
+			<para>需求：实现谁，什么时间，做了什么操作。</para>
+		</section>
+		<section>
+			<title>方案选型</title>
+			<para>方案一、无影云桌面</para>
+			<para>方案二、堡垒机+远程桌面+视频录屏+操作留痕</para>
+			<para>经过对比两个方案，无影云桌面需要开通 RAM 账号，只能登录一个用户，当有一个用户登录后，其他用户会出现获取 token 失败提示。我们不希望开通 RAM 账号，不便于管理。如果有多用户需求需要使用桌面组，即每登录一个用户就会开启一个实例，成本较高。</para>
+			<para>最终我们选择堡垒机+ECS Windows Server 的方案，windows server 支持多用户。</para>
+		</section>
+	</section>
+
+	<section>
+		<title>解决方案</title>
+		<screenshot>
+			<screeninfo>bastionhost</screeninfo>
+			<graphic format="png" fileref="/architect/images/aliyun/bastionhost/%E5%A0%A1%E5%9E%92%E6%9C%BA%E6%96%B9%E6%A1%88.png" srccredit="neo" />
+		</screenshot>
+
+		<orderedlist>
+			<title>优点：</title>
+			<listitem>堡垒机可以录屏，可以看到整个操作期间的过程，便于事故复盘和追责</listitem>
+			<listitem>经过堡垒机后 RDS 再无挂载公网IP的需求，直接内网链接 RDS 从库，这种方案更安全，RDS彻底摆脱暴力3306端口的风险</listitem>
+			<listitem>三层登录保障，第一层堡垒机，第二层云桌面，如果在家中访问云桌面，还需要登录到公司VPN</listitem>
+		</orderedlist>
+		<orderedlist>
+			<title>缺点：</title>
+			<listitem>产生费用</listitem>
+			<listitem>远程操作稍复杂</listitem>
+			<listitem>下载数据需要中转</listitem>
+		</orderedlist>
+	</section>
+	<section>
+		<title>方案实施</title>
+		<orderedlist>
+			<title>实施方案步骤：</title>
+			<listitem>卸载阿里云RDS数据库公网IP（需要评估影响范围）</listitem>
+			<listitem>准备一个云桌面Windows</listitem>
+			<listitem>设置内网访问策略，允许云桌面从内网链接到指定从库</listitem>
+			<listitem>堡垒机开通链接云桌面权限</listitem>
+			<listitem>云桌面开通登录账号</listitem>
+			<listitem>本地首先登录堡垒机，需要手机号+验证码。然后通过堡垒机链接远程桌面，再登录云桌面的账号。在远程电脑上，大家可以根据自己喜好安装工具，最后从内网访问 RDS 从库查询数据。操作过程会录屏。</listitem>
+		</orderedlist>
+	</section>
+</section>

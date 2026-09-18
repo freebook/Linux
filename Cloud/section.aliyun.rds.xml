@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="RDS">
+	<title>RDS MySQL</title>
+	<section>
+		<title>RDS MySQL =&gt; 本地 MySQL 数据库</title>
+		<para>从 RDS 上下载的物理备份</para>
+		<screen>
+		<![CDATA[
+[root@master backup]# ls
+hins19648946_data_20220913035432_qp.xb		
+		]]>
+		</screen>
+		<section>
+			<title>MySQL 5.7</title>
+			<para>安装依赖库</para>
+			<screen>
+			<![CDATA[
+[root@master backup]# dnf install -y qpress libaio		
+			]]>
+			</screen>
+			<para>安装恢复软件</para>
+			<screen>
+			<![CDATA[
+[root@master backup]# wget https://downloads.percona.com/downloads/Percona-XtraBackup-2.4/Percona-XtraBackup-2.4.24/binary/tarball/percona-xtrabackup-2.4.24-Linux-x86_64.glibc2.12.tar.gz
+[root@master backup]# tar zxvf percona-xtrabackup-2.4.24-Linux-x86_64.glibc2.12.tar.gz
+[root@master backup]# mv percona-xtrabackup-2.4.24-Linux-x86_64.glibc2.12 /srv/
+[root@master backup]# rm -f /srv/percona-xtrabackup
+[root@master backup]# ln -s /srv/percona-xtrabackup-2.4.24-Linux-x86_64.glibc2.12 /srv/percona-xtrabackup			
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+cat >> /etc/profile.d/percona.sh <<EOF
+# Percona Xtrabackup
+export PATH=$PATH:/srv/percona-xtrabackup/bin
+EOF
+
+source /etc/profile.d/percona.sh
+			]]>
+			</screen>
+			<para>恢复数据</para>
+			<screen>
+			<![CDATA[
+[root@master backup]# xbstream -v -x  -C ./rds
+[root@master backup]# xbstream -x -C rds/ < hins19648946_data_20220913035432_qp.xb	
+			]]>
+			</screen>
+			<para>解压</para>
+			<screen>
+			<![CDATA[
+innobackupex --decompress --remove-original rds/
+			]]>
+			</screen>
+			<para>恢复日志</para>
+			<screen>
+			<![CDATA[
+innobackupex --defaults-file=/etc/my.cnf --apply-log rds/
+			]]>
+			</screen>
+			<para>启动 mysql 增加 --skip-grant-tables 选项，然后运行 mysql_upgrade</para>
+			<screen>
+			<![CDATA[
+mysql_upgrade			
+			]]>
+			</screen>
+			<para>去掉 --skip-grant-tables 选项，重启 MySQL，恢复完成。</para>
+		</section>
+		<section>
+			<title>MySQL 8.0</title>
+			<para>安装 percona-xtrabackup 恢复软件</para>
+			<screen>
+			<![CDATA[
+[root@master backup]# tar zxvf percona-xtrabackup-8.0.29-22-Linux-x86_64.glibc2.17.tar.gz
+[root@master backup]# mv percona-xtrabackup-8.0.29-22-Linux-x86_64.glibc2.17 /srv/
+[root@master backup]# rm -f /srv/percona-xtrabackup
+[root@master backup]# ln -s /srv/percona-xtrabackup-8.0.29-22-Linux-x86_64.glibc2.17/ /srv/percona-xtrabackup
+			]]>
+			</screen>
+			<screen>
+			<![CDATA[
+cat >> /etc/profile.d/percona.sh <<EOF
+# Percona Xtrabackup
+export PATH=$PATH:/srv/percona-xtrabackup/bin
+EOF
+
+source /etc/profile.d/percona.sh
+			]]>
+			</screen>
+		</section>
+	</section>
+	<section>
+		<title>换表升级</title>
+		<para>当前表改名，然后再基于旧表创建新的空表</para>
+		<screen>
+		<![CDATA[
+ALTER TABLE old_table_name  RENAME TO new_table_name; 
+CREATE TABLE current_table_name LIKE new_table_name;		
+		]]>
+		</screen>
+		<para></para>
+		<screen>
+		<![CDATA[
+ALTER TABLE old_table_name  RENAME TO new_table_name; 		
+CREATE TABLE old_table_name SELECT * FROM new_table_name WHERE ...;
+		]]>
+		</screen>
+	</section>
+	<section>
+		<title>导出 CSV 文件</title>
+		<para>RDS 目前没有找到导出 csv 的方案，客服让使用 DMS 中的数据导出功能</para>
+		<screen>
+		<![CDATA[
+mysql> show grants for 'root'@'%';
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Grants for root@%                                                                                                                                                                                                                                                                                                                                                                 |
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, RELOAD, PROCESS, REFERENCES, INDEX, ALTER, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, REPLICATION SLAVE, REPLICATION CLIENT, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, CREATE USER, EVENT, TRIGGER ON *.* TO 'root'@'%' IDENTIFIED BY PASSWORD '*F5200743F6F42815CB2DC833C98D6E7730F8E2E2' WITH GRANT OPTION |
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+1 row in set (0.00 sec)		
+		]]>
+		</screen>
+		<para>查询未找到 FILE 权限，官网权限列表中也没有 https://help.aliyun.com/document_detail/146395.html</para>
+		<screen>
+		<![CDATA[
+mysql> GRANT FILE ON *.* to neo@'%' identified by 'chen';
+Query OK, 0 rows affected (0.026 sec)
+		
+		]]>
+		</screen>
+		<para>secure_file_priv 只要不是 null 即可，阿里云配置是 secure_file_priv = ''。</para>
+		<screen>
+		<![CDATA[
+mysql> SHOW VARIABLES LIKE "secure_file_priv";
++------------------+-------+
+| Variable_name    | Value |
++------------------+-------+
+| secure_file_priv |       |
++------------------+-------+
+1 row in set (0.01 sec)		
+		]]>
+		</screen>
+	</section>
+</section>

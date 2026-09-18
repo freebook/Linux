@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="阿里云Kubernetes">
+	<title>阿里云 Kubernetes</title>
+	<section>
+		<title>pod 反复异常重启怎么排查</title>
+		<para>使用 kubernetes 我们常常会遇到 pod 反复不停重启的情况，有些是应用的问题，有些是 k8s 配置问题，那么怎么排查呢？</para>
+
+		<procedure>
+			<title>排查过程：</title>
+			<step>
+				<para>检查 kubernetes 确认重启的原因</para>
+				<para>检查 k8s 限额配置，确认给足了资源，不是因为资源不足导致导应用无响应。</para>
+				<itemizedlist>
+					<title>K8S 检查项：</title>
+					<listitem>确认 CPU 资源</listitem>
+					<listitem>确认 内存 资源</listitem>
+					<listitem>确认 健康检查时间是否合理，很多情况是因为健康检查导致 k8s 强行重启 pod</listitem>
+				</itemizedlist>
+				<para>排查的思路是要搞清楚重启的原因是资源不够，还是因为被健康检查时间设置不合理。</para>
+			</step>
+
+			<step>
+				<para>排查应用</para>
+				<para>排查应用是否因资源配额不足引起的应用崩溃</para>
+				<para>排查 Springboot 配置项</para>
+				<para>监控 Jvm 各项指标</para>
+				<para>结果排查发现，CPU/内存配合没有问题，重启主要原因有两个：</para>
+				<para>JDBC 分表，启动时会检查 meta 数据，耗时有时超过 1 分钟，此时 k8s 健康检查以为应用已死，便重启了应用。</para>
+				<para>问题出在 Springboot Tomcat 线程数，系统默认 200，也就是 Springboot 同时只能处理200个 restful
+					请求（包括了健康检查接口 /actuator/health），再有请求尽量只能排队，当排队的链接超过了 60 秒便超时，导致 k8s 杀死应用重启。</para>
+				<screen>
+				<![CDATA[ 
+neo@MacBook-Pro ~ % curl -s http://www.netkiller.cn:8080/actuator/health | jq
+{
+  "status": "UP"
+}				
+				]]>
+				</screen>
+			</step>
+
+			<step>
+				<para>优化配置</para>
+				<para>综合前面收集的信息，做出判断，并给出优化解决方案。调整 tomcat 线程数即可解决。</para>
+				<screen>
+				<![CDATA[ 
+server.tomcat.max-threads
+				]]>
+				</screen>
+				<para>注意：此配置仅对 springboot web 起作用，这个线程数，并不会影响 hikari，redis 等链接池的最大线程数。</para>
+			</step>
+		</procedure>
+	</section>
+</section>
