@@ -2107,6 +2107,57 @@ eval $${recording_dir}
 			]]>
 			</screen>
 		</section>
+		<section id="fs_cli.codecs">
+			<title>音视频编码</title>
+			<screen>
+			<![CDATA[
+[root@netkiller sip]# docker exec -it freeswitch fs_cli -x "show codecs" 
+type,name,ikey
+codec,ADPCM (IMA),mod_spandsp
+codec,AMR / Bandwidth Efficient,mod_amr
+codec,AMR / Octet Aligned,mod_amr
+codec,B64 (STANDARD),mod_b64
+codec,G.711 alaw,CORE_PCM_MODULE
+codec,G.711 ulaw,CORE_PCM_MODULE
+codec,G.722,mod_spandsp
+codec,G.723.1 6.3k,mod_g723_1
+codec,G.726 16k,mod_spandsp
+codec,G.726 16k (AAL2),mod_spandsp
+codec,G.726 24k,mod_spandsp
+codec,G.726 24k (AAL2),mod_spandsp
+codec,G.726 32k,mod_spandsp
+codec,G.726 32k (AAL2),mod_spandsp
+codec,G.726 40k,mod_spandsp
+codec,G.726 40k (AAL2),mod_spandsp
+codec,G.729,mod_g729
+codec,GSM,mod_spandsp
+codec,H263 Video,mod_av
+codec,H263+ Video,mod_av
+codec,H264 Video,mod_av
+codec,LPC-10,mod_spandsp
+codec,OPUS (STANDARD),mod_opus
+codec,PROXY PASS-THROUGH,CORE_PCM_MODULE
+codec,PROXY VIDEO PASS-THROUGH,CORE_PCM_MODULE
+codec,RAW Signed Linear (16 bit),CORE_PCM_MODULE
+codec,Speex,CORE_SPEEX_MODULE
+codec,VP8 Video,CORE_VPX_MODULE
+codec,VP9 Video,CORE_VPX_MODULE
+
+29 total.			
+			]]>
+			</screen>
+			<para>仅查看视频编码</para>
+			<screen>
+			<![CDATA[
+[root@netkiller sip]# docker exec -it freeswitch fs_cli -x "show codecs" |grep Video
+codec,H263 Video,mod_av
+codec,H263+ Video,mod_av
+codec,H264 Video,mod_av
+codec,VP8 Video,CORE_VPX_MODULE
+codec,VP9 Video,CORE_VPX_MODULE			
+			]]>
+			</screen>
+		</section>
 	</section>
 
 	<section id="freeswitch.lang">
@@ -2730,6 +2781,142 @@ REGISTRATIONS           9
 		</screen>
 	</section>
 
+	<section id="freeswitch.verto">
+		<title>Verto</title>
+		<para>Verto 配置文件</para>
+		<screen>
+			<![CDATA[
+[root@netkiller freeswitch]# cat autoload_configs/verto.conf.xml
+<configuration name="verto.conf" description="HTML5 Verto Endpoint">
+
+  <settings>
+    <param name="debug" value="0"/>
+    <!-- <param name="kslog" value="true"/> -->
+    <!-- seconds to wait before hanging up a disconnected channel -->
+    <!-- <param name="detach-timeout-sec" value="120"/> -->
+    <!-- enable broadcasting all FreeSWITCH events in Verto -->
+    <!-- <param name="enable-fs-events" value="false"/> -->
+    <!-- enable broadcasting FreeSWITCH presence events in Verto -->
+    <!-- <param name="enable-presence" value="true"/> -->
+  </settings>
+
+  <profiles>
+    <profile name="default-v4">
+      <param name="bind-local" value="$${local_ip_v4}:8081"/>
+      <param name="bind-local" value="$${local_ip_v4}:8082" secure="true"/>
+      <param name="force-register-domain" value="$${domain}"/>
+      <param name="secure-combined" value="$${certs_dir}/wss.pem"/>
+      <param name="secure-chain" value="$${certs_dir}/wss.pem"/>
+      <param name="userauth" value="true"/>
+      <!-- setting this to true will allow anyone to register even with no account so use with care -->
+      <param name="blind-reg" value="false"/>
+      <param name="mcast-ip" value="224.1.1.1"/>
+      <param name="mcast-port" value="1337"/>
+      <param name="rtp-ip" value="$${local_ip_v4}"/>
+      <param name="ext-rtp-ip" value="$${external_rtp_ip}"/>
+      <param name="local-network" value="localnet.auto"/>
+      <param name="outbound-codec-string" value="opus,h264,vp8"/>
+      <param name="inbound-codec-string" value="opus,h264,vp8"/>
+
+      <param name="apply-candidate-acl" value="localnet.auto"/>
+      <param name="apply-candidate-acl" value="wan_v4.auto"/>
+      <param name="apply-candidate-acl" value="rfc1918.auto"/>
+      <param name="apply-candidate-acl" value="any_v4.auto"/>
+      <param name="timer-name" value="soft"/>
+      
+    </profile>
+
+    <profile name="default-v6">
+      <param name="bind-local" value="[$${local_ip_v6}]:8081"/>
+      <param name="bind-local" value="[$${local_ip_v6}]:8082" secure="true"/>
+      <param name="force-register-domain" value="$${domain}"/>
+      <param name="secure-combined" value="$${certs_dir}/wss.pem"/>
+      <param name="secure-chain" value="$${certs_dir}/wss.pem"/>
+      <param name="userauth" value="true"/>
+      <!-- setting this to true will allow anyone to register even with no account so use with care -->
+      <param name="blind-reg" value="false"/>
+      <param name="rtp-ip" value="$${local_ip_v6}"/>
+      <!--  <param name="ext-rtp-ip" value=""/> -->
+      <param name="outbound-codec-string" value="opus,h264,vp8"/>
+      <param name="inbound-codec-string" value="opus,h264,vp8"/>
+
+      <param name="apply-candidate-acl" value="wan_v6.auto"/>
+      <param name="apply-candidate-acl" value="rfc1918.auto"/>
+      <param name="apply-candidate-acl" value="any_v6.auto"/>
+      <param name="apply-candidate-acl" value="wan_v4.auto"/>
+      <param name="apply-candidate-acl" value="any_v4.auto"/>
+      <param name="timer-name" value="soft"/>
+      
+    </profile>
+  </profiles>
+</configuration>			
+			]]>
+		</screen>
+		<screen>
+			<![CDATA[
+[root@netkiller freeswitch]# grep -r mod_verto *
+autoload_configs/modules.conf.xml:    <load module="mod_verto"/>	
+
+[root@netkiller freeswitch]# grep -r mod_rtc *
+autoload_configs/modules.conf.xml:    <load module="mod_rtc"/>		
+			]]>
+		</screen>
+		<para>禁用 SSL</para>
+		<screen>
+			<![CDATA[
+<param name="bind-local" value="$${local_ip_v4}:8082" secure="false"/>			
+			]]>
+		</screen>
+		<para>增加 VP9 视频编码</para>
+		<screen>
+			<![CDATA[
+[root@netkiller sip]# vim /etc/freeswitch/autoload_configs/verto.conf.xml			
+<param name="outbound-codec-string" value="opus,vp9,h264,vp8"/>
+<param name="inbound-codec-string" value="opus,vp9,h264,vp8"/>
+
+[root@netkiller opt]# vim /etc/freeswitch/vars.xml
+  <X-PRE-PROCESS cmd="set" data="global_codec_prefs=OPUS,G722,PCMU,PCMA,VP9,H264,VP8"/>
+  <X-PRE-PROCESS cmd="set" data="outbound_codec_prefs=OPUS,G722,PCMU,PCMA,VP9,H264,VP8"/>
+			]]>
+		</screen>
+		<para>调整 verto 编码顺序</para>
+		<screen>
+			<![CDATA[
+```
+// 示例，verto communicator 配置
+var verto = new Verto({
+  ...
+  videoParams: {
+    codecs: ["vp9", "vp8", "h264"]
+  }
+});
+```			
+			]]>
+		</screen>
+		<para>调试 verto</para>
+		<screen>
+			<![CDATA[
+### fs_cli 打开调试看日志：
+verto debug 10
+
+### 查看当前通道使用编码
+show channels
+			
+			]]>
+		</screen>
+		<para></para>
+		<screen>
+			<![CDATA[
+<!-- <param name="enable-fs-events" value="false"/> -->	
+<param name="enable-fs-events" value="true"/>
+			]]>
+		</screen>
+		<screen>
+			<![CDATA[
+			
+			]]>
+		</screen>
+	</section>
 	<section id="fusionPBX">
 		<title>fusionPBX</title>
 	</section>
@@ -2832,6 +3019,31 @@ PS D:\GitHub\freeswitch> python.exe .\freeswitch.py -r 1000
 			]]>
 			</screen>
 		</section>
+	</section>
+	<section id="freeswitch.backup">
+		<title>备份和恢复</title>
+		<para></para>
+		<screen>
+		<![CDATA[
+tar zcvf freeswitch.tgz /etc/freeswitch/		
+		]]>
+		</screen>
+		<para>恢复常用文件</para>
+		<screen>
+		<![CDATA[
+ \cp -f etc/freeswitch/vars.xml /etc/freeswitch/
+ \cp -f etc/freeswitch/sip_profiles/internal.xml /etc/freeswitch/sip_profiles/
+ \cp -f etc/freeswitch/sip_profiles/external.xml /etc/freeswitch/sip_profiles/
+ \cp -f etc/freeswitch/dialplan/default.xml /etc/freeswitch/dialplan/
+ \cp -f etc/freeswitch/dialplan/public.xml /etc/freeswitch/dialplan/		
+		]]>
+		</screen>
+		<para>恢复用户</para>
+		<screen>
+		<![CDATA[
+ \cp -f etc/freeswitch/directory/default/* /etc/freeswitch/directory/default/		
+		]]>
+		</screen>
 	</section>
 	<section id="freeswitch.example">
 		<title>freeswitch Docker 配置案例</title>
@@ -3041,7 +3253,8 @@ openssl s_client -connect webrtc.netkiller.cn:443
 			]]>
 			</screen>
 			<para>检查 HTTP/1.1 101 Switching Protocols，正确响应应该是 HTTP/1.1 101
-				Switching Protocols。</para>
+				Switching Protocols。
+			</para>
 			<screen>
 			<![CDATA[
 root@spiritcloudp ~# curl --http1.1 -i -N \
@@ -3059,106 +3272,10 @@ Upgrade: websocket
 Date: Sun, 20 Sep 2026 10:47:15 GMT			
 			]]>
 			</screen>
-			
+
 
 		</section>
-		<section id="freeswitch.verto">
-			<title>Verto</title>
-			<para>Verto 配置文件</para>
-			<screen>
-			<![CDATA[
-[root@netkiller freeswitch]# cat autoload_configs/verto.conf.xml
-<configuration name="verto.conf" description="HTML5 Verto Endpoint">
-
-  <settings>
-    <param name="debug" value="0"/>
-    <!-- <param name="kslog" value="true"/> -->
-    <!-- seconds to wait before hanging up a disconnected channel -->
-    <!-- <param name="detach-timeout-sec" value="120"/> -->
-    <!-- enable broadcasting all FreeSWITCH events in Verto -->
-    <!-- <param name="enable-fs-events" value="false"/> -->
-    <!-- enable broadcasting FreeSWITCH presence events in Verto -->
-    <!-- <param name="enable-presence" value="true"/> -->
-  </settings>
-
-  <profiles>
-    <profile name="default-v4">
-      <param name="bind-local" value="$${local_ip_v4}:8081"/>
-      <param name="bind-local" value="$${local_ip_v4}:8082" secure="true"/>
-      <param name="force-register-domain" value="$${domain}"/>
-      <param name="secure-combined" value="$${certs_dir}/wss.pem"/>
-      <param name="secure-chain" value="$${certs_dir}/wss.pem"/>
-      <param name="userauth" value="true"/>
-      <!-- setting this to true will allow anyone to register even with no account so use with care -->
-      <param name="blind-reg" value="false"/>
-      <param name="mcast-ip" value="224.1.1.1"/>
-      <param name="mcast-port" value="1337"/>
-      <param name="rtp-ip" value="$${local_ip_v4}"/>
-      <param name="ext-rtp-ip" value="$${external_rtp_ip}"/>
-      <param name="local-network" value="localnet.auto"/>
-      <param name="outbound-codec-string" value="opus,h264,vp8"/>
-      <param name="inbound-codec-string" value="opus,h264,vp8"/>
-
-      <param name="apply-candidate-acl" value="localnet.auto"/>
-      <param name="apply-candidate-acl" value="wan_v4.auto"/>
-      <param name="apply-candidate-acl" value="rfc1918.auto"/>
-      <param name="apply-candidate-acl" value="any_v4.auto"/>
-      <param name="timer-name" value="soft"/>
-      
-    </profile>
-
-    <profile name="default-v6">
-      <param name="bind-local" value="[$${local_ip_v6}]:8081"/>
-      <param name="bind-local" value="[$${local_ip_v6}]:8082" secure="true"/>
-      <param name="force-register-domain" value="$${domain}"/>
-      <param name="secure-combined" value="$${certs_dir}/wss.pem"/>
-      <param name="secure-chain" value="$${certs_dir}/wss.pem"/>
-      <param name="userauth" value="true"/>
-      <!-- setting this to true will allow anyone to register even with no account so use with care -->
-      <param name="blind-reg" value="false"/>
-      <param name="rtp-ip" value="$${local_ip_v6}"/>
-      <!--  <param name="ext-rtp-ip" value=""/> -->
-      <param name="outbound-codec-string" value="opus,h264,vp8"/>
-      <param name="inbound-codec-string" value="opus,h264,vp8"/>
-
-      <param name="apply-candidate-acl" value="wan_v6.auto"/>
-      <param name="apply-candidate-acl" value="rfc1918.auto"/>
-      <param name="apply-candidate-acl" value="any_v6.auto"/>
-      <param name="apply-candidate-acl" value="wan_v4.auto"/>
-      <param name="apply-candidate-acl" value="any_v4.auto"/>
-      <param name="timer-name" value="soft"/>
-      
-    </profile>
-  </profiles>
-</configuration>			
-			]]>
-			</screen>
-			<screen>
-			<![CDATA[
-[root@netkiller freeswitch]# grep -r mod_verto *
-autoload_configs/modules.conf.xml:    <load module="mod_verto"/>	
-
-[root@netkiller freeswitch]# grep -r mod_rtc *
-autoload_configs/modules.conf.xml:    <load module="mod_rtc"/>		
-			]]>
-			</screen>
-			<para>禁用 SSL</para>
-			<screen>
-			<![CDATA[
-<param name="bind-local" value="$${local_ip_v4}:8082" secure="false"/>			
-			]]>
-			</screen>
-			<screen>
-			<![CDATA[
-			
-			]]>
-			</screen>
-			<screen>
-			<![CDATA[
-			
-			]]>
-			</screen>
-		</section>
+		
 		<section id="freeswitch.docker.fs_cli">
 			<title>docker 环境 freeswitch 管理</title>
 			<screen>
@@ -3310,29 +3427,5 @@ Total items returned: 3
 
 
 	</section>
-	<section id="freeswitch.backup">
-		<title>备份和恢复</title>
-		<para></para>
-		<screen>
-		<![CDATA[
-tar zcvf freeswitch.tgz /etc/freeswitch/		
-		]]>
-		</screen>
-		<para>恢复常用文件</para>
-		<screen>
-		<![CDATA[
- \cp -f etc/freeswitch/vars.xml /etc/freeswitch/
- \cp -f etc/freeswitch/sip_profiles/internal.xml /etc/freeswitch/sip_profiles/
- \cp -f etc/freeswitch/sip_profiles/external.xml /etc/freeswitch/sip_profiles/
- \cp -f etc/freeswitch/dialplan/default.xml /etc/freeswitch/dialplan/
- \cp -f etc/freeswitch/dialplan/public.xml /etc/freeswitch/dialplan/		
-		]]>
-		</screen>
-		<para>恢复用户</para>
-		<screen>
-		<![CDATA[
- \cp -f etc/freeswitch/directory/default/* /etc/freeswitch/directory/default/		
-		]]>
-		</screen>
-	</section>
+	
 </chapter>
