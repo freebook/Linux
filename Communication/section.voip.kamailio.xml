@@ -6,22 +6,38 @@
 	</para>
 	<section id="kamailio.docker">
 		<title>Docker 安装 Kamailio</title>
+		<para>https://github.com/kamailio/kamailio-docker/pkgs/container/kamailio</para>
+		<para>6.1.4-resolute</para>
+		<section>
+			<title>Ubuntu 26.04 LTS（Resolute Raccoon）</title>
+			<screen>
+			<![CDATA[
+docker pull ghcr.io/kamailio/kamailio:6.1.4-resolute
+			]]>
+			</screen>
+		</section>
 		<section>
 			<title>Alpine 镜像</title>
-
 			<screen>
-		<![CDATA[
+			<![CDATA[
 docker run --name kamailio --rm \
 -p 5060:6060/udp -p 5060:6060 \
-kamailio/kamailio-ci:latest -m64 -M8		
-		]]>
+kamailio/kamailio-ci:latest -m64 -M8
+			]]>
 			</screen>
-
+			<para>运行 kamailio</para>
 			<screen>
 		<![CDATA[
 docker run --net=host --name kamailio --rm kamailio/kamailio-ci:latest
 		]]>
 			</screen>
+			<para>.bashrc</para>
+			<screen>
+			<![CDATA[
+alias kamctl='docker exec -i -t kamailio /usr/sbin/kamctl'			
+			]]>
+			</screen>
+			
 		</section>
 	</section>
 	<section id="kamailio.rpm">
