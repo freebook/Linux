@@ -314,27 +314,7 @@ git diff --name-only
 		</section>
 	</section>
 
-	<section id="git.push">
-		<title>推送</title>
-		<screen>
-		<![CDATA[
-$ git clone git://10.10.0.5/example.git
-$ cd example
-$ (edit files)
-$ git add (files)
-$ git commit -m 'Explain what I changed'
-
-$ git push origin master
-Counting objects: 5, done.
-Delta compression using up to 2 threads.
-Compressing objects: 100% (2/2), done.
-Writing objects: 100% (3/3), 278 bytes, done.
-Total 3 (delta 0), reused 0 (delta 0)
-To git://10.10.0.5/example.git
-   27f8417..b088cc3  master -> master
-		]]>
-		</screen>
-	</section>
+	
 	<section id="git.pull">
 		<title>拉去代码</title>
 		<screen><![CDATA[
@@ -368,6 +348,37 @@ Unpacking objects: 100% (2/2), done.
 From git://10.10.0.5/example
    b088cc3..7e8c17d  master     -> origin/master
 		]]></screen>
+	</section>
+	<section id="git.push">
+		<title>推送</title>
+		<screen>
+		<![CDATA[
+$ git clone git://10.10.0.5/example.git
+$ cd example
+$ (edit files)
+$ git add (files)
+$ git commit -m 'Explain what I changed'
+
+$ git push origin master
+Counting objects: 5, done.
+Delta compression using up to 2 threads.
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (3/3), 278 bytes, done.
+Total 3 (delta 0), reused 0 (delta 0)
+To git://10.10.0.5/example.git
+   27f8417..b088cc3  master -> master
+		]]>
+		</screen>
+		<section>
+			<title>删除远程</title>
+			<screen>
+			<![CDATA[
+# 删除远程dev分支示例
+git push origin --delete dev			
+			]]>
+			</screen>
+		</section>
+		
 	</section>
 	<section id="git.patch">
 		<title>Creating a Patch</title>
@@ -419,4 +430,5 @@ $ git reset filename
 			</screen>
 		</section>
 	</section>
+	
 </section>

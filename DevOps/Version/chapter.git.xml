@@ -60,12 +60,12 @@ git -C /srv/rct pull
 	</section>
 	&section.git.repo.xml;
 	&section.git.branch.xml;
+	&section.git.switch.xml;
 	&section.git.log.xml;
 	&section.git.merge.xml;
 	&section.git.diff.xml;
 	&section.git.remote.xml;
 	&section.git.submodule.xml;
-	&section.git.lfs.xml;
 	&section.git.config.xml;
 	&section.git.other.xml;
 	&section.git.faq.xml;

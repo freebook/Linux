@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="git.switch">
+	<title>分支切换</title>
+	<screen>
+	<![CDATA[
+功能				旧：git checkout				新：git switch
+切换已有分支		git checkout main			git switch main
+创建并切新分支		git checkout -b feature		git switch -c feature（c=create）
+切回上一个分支		git checkout -				git switch -
+进入分离 HEAD（看某个 commit）		git checkout <commitHash>	git switch --detach <commitHash>
+强制丢弃本地修改切换				git checkout -f main		git switch --discard-changes main	
+	]]>
+	</screen>
+</section>

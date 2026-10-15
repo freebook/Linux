@@ -43,14 +43,33 @@ Deleted branch staging.
 $ git branch
 * master
 			]]></screen>
-		<para>删除远程分支</para>
-		<screen>
+
+		<section>
+			<title>同时删除本地和远程分支</title>
+			<screen>
+			<![CDATA[
+neo@netkiller admin % git branch -D -r temp-main			
+			]]>
+			</screen>
+			<para>如果远程不存在</para>
+			<screen>
+			<![CDATA[
+neo@netkiller admin % git branch -D -r temp-main
+error: remote-tracking branch 'temp-main' not found			
+			]]>
+			</screen>
+		</section>
+		<section>
+			<title>不处理本地，仅仅删除远程分支</title>
+			<para>删除远程分支</para>
+			<screen>
 			<![CDATA[
 neo@Mac ~/A/conference (master|MERGING)> git push origin --delete --force master
 To git.netkiller.cn:meeting/conference.git
  - [deleted]           master			
 			]]>
-		</screen>
+			</screen>
+		</section>
 	</section>
 	<section id="branch.switch">
 		<title>切换分支</title>
@@ -76,18 +95,6 @@ neo@MacBook-Pro-Neo ~/workspace/api.netkiller.cn % git branch -m test testing
 neo@MacBook-Pro-Neo ~/workspace/api.netkiller.cn % git push --delete origin test
 neo@MacBook-Pro-Neo ~/workspace/api.netkiller.cn % git push origin testing
 			]]>
-		</screen>
-	</section>
-	<section id="git-show-branch">
-		<title>git-show-branch - Show branches and their commits</title>
-		<screen>
-		<![CDATA[
-$ git-show-branch
-! [master] add a new file
- * [mybranch] add a new file
---
-+* [master] add a new file
-		]]>
 		</screen>
 	</section>
 </section>
