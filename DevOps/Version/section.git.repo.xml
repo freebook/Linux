@@ -35,6 +35,14 @@ To disable the rename detection limit (which is set "pretty low" according to Li
 $ git config --global   diff.renamelimit "0"
 		]]></screen>
 	</section>
+	<section>
+		<title>指定目录</title>
+		<screen>
+		<![CDATA[
+git -C /srv/rct pull		
+		]]>
+		</screen>
+	</section>
 	<section id="git.clone">
 		<title>克隆代码</title>
 		<para>克隆到指定目录</para>
@@ -314,7 +322,7 @@ git diff --name-only
 		</section>
 	</section>
 
-	
+
 	<section id="git.pull">
 		<title>拉去代码</title>
 		<screen><![CDATA[
@@ -378,7 +386,7 @@ git push origin --delete dev
 			]]>
 			</screen>
 		</section>
-		
+
 	</section>
 	<section id="git.patch">
 		<title>Creating a Patch</title>
@@ -430,5 +438,5 @@ $ git reset filename
 			</screen>
 		</section>
 	</section>
-	
+
 </section>
