@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- http://tkg.im.ncue.edu.tw/?p=755 -->
-<section id="repositories">
+<section id="git.repositories">
 	<title>Repositories 仓库管理</title>
 	<section id="git.init">
 		<title>仓库初始化</title>
