@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="submodule">
+<section id="git.submodule">
 	<title>Submodule 子模块</title>
 	<section id="submodule.add">
 		<title>添加模块</title>

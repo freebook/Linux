@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id: section.git.gitolite.xml 472 2012-10-24 05:30:15Z netkiller $ -->
-<section id="archive">
+<section id="git.archive">
 	<title>archive 代码打包</title>
 	<section>
 		<title>查看支持的格式</title>
