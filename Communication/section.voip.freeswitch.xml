@@ -2911,10 +2911,25 @@ show channels
 <param name="enable-fs-events" value="true"/>
 			]]>
 		</screen>
+		<para>允许事件频道</para>
 		<screen>
 			<![CDATA[
-			
+[root@netkiller ~]# grep channel /etc/freeswitch/directory/default.xml
+      <!-- <param name="jsonrpc-allowed-event-channels" value="demo,conference,presence"/> -->			
+改为
+      <param name="jsonrpc-allowed-event-channels" value="demo,conference,presence"/>
 			]]>
+		</screen>
+		<para>我的例子，我需要user用来订阅在线用户，chat用于聊天</para>
+		<screen>
+		<![CDATA[
+    <params>
+      <param name="dial-string" value="{^^:sip_invite_domain=${dialed_domain}:presence_id=${dialed_user}@${dialed_domain}}${sofia_contact(*/${dialed_user}@${dialed_domain})},${verto_contact(${dialed_user}@${dialed_domain})}"/>
+      <!-- These are required for Verto to function properly -->
+      <param name="jsonrpc-allowed-methods" value="verto"/>
+      <param name="jsonrpc-allowed-event-channels" value="user,chat,demo,conference,presence"/>
+    </params>		
+		]]>
 		</screen>
 	</section>
 	<section id="fusionPBX">
@@ -3079,6 +3094,16 @@ cp /etc/freeswitch/tls/wss.pem{,.backup}
 				<![CDATA[
  <X-PRE-PROCESS cmd="set" data="internal_sip_port=5061"/>
 				]]>
+			</screen>
+		</section>
+		<section>
+			<title>NDLB-force-rport</title>
+			<screen>
+			<![CDATA[
+[root@netkiller opt]# vim /etc/freeswitch/sip_profiles/internal.xml
+			
+<param name="NDLB-force-rport" value="true"/>			
+			]]>
 			</screen>
 		</section>
 		<section>
