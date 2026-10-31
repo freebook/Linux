@@ -542,7 +542,7 @@ cp /etc/freeswitch/dialplan/public.xml{,.backup}
 		]]>
 		</screen>
 	</section>
-	<section id="vars.xml">
+	<section id="freeswitch.vars.xml">
 		<title>基本配置 /etc/freeswitch/vars.xml </title>
 		<section>
 			<title>默认密码</title>
@@ -830,11 +830,7 @@ NLYPx9JjSx
 		</section>
 	</section>
 
-
-
-
-
-	<section id="switch.conf.xml">
+	<section id="freeswitch.switch.conf.xml">
 		<title>switch.conf.xml</title>
 		<screen>
 			<![CDATA[
@@ -863,7 +859,7 @@ NLYPx9JjSx
 			]]>
 		</screen>
 		<section>
-			<title>仅用 mod_signalwire</title>
+			<title>禁用 mod_signalwire</title>
 			<para>mod_signalwire 是 SignalWire 云对接模块，国内几乎不使用这个服务。</para>
 			<screen>
 			<![CDATA[
@@ -3077,6 +3073,7 @@ cp /etc/freeswitch/tls/wss.pem{,.backup}
 		</section>
 		<section>
 			<title>基本配置</title>
+			<subtitle>/etc/freeswitch/vars.xml</subtitle>
 			<para>修改默认密码</para>
 			<screen>
 				<![CDATA[
@@ -3108,6 +3105,8 @@ cp /etc/freeswitch/tls/wss.pem{,.backup}
 		</section>
 		<section>
 			<title>配置拨出规则号段</title>
+			<subtitle>/etc/freeswitch/dialplan/default.xml</subtitle>
+			<para>默认本地分机拨号规则只匹配 1000–1019 修改为需要</para>
 			<screen>
 				<![CDATA[
     <extension name="Local_Extension">
@@ -3190,6 +3189,18 @@ Invalid Profile!
 
 [root@netkiller ~]# ss -lnt| grep 5080				
 				]]>
+			</screen>
+		</section>
+		<section>
+			<title>禁用 mod_signalwire</title>
+			<para>mod_signalwire 是 SignalWire 云对接模块，国内几乎不使用这个服务。</para>
+			<screen>
+			<![CDATA[
+[root@netkiller freeswitch]# vim autoload_configs/modules.conf.xml
+    <!--
+            <load module="mod_signalwire"/>
+    -->	
+			]]>
 			</screen>
 		</section>
 		<section>
