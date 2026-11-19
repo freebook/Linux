@@ -384,3 +384,122 @@ EOF
 		</screen>
 	</section>
 </section>	
+
+<section id="tailscale">
+	<title>tailscale</title>
+	<para></para>
+	<section>
+		<title>使用 tailscale 科学上网</title>
+		<para>需要一台 Linux 服务器，这里使用的是 Rocky Linux</para>
+		<section>
+			<title>Linux 服务器配置</title>
+			<para>开放 UDP 端口，如果是云服务器在安全组中开放 41641/UDP 端口，ipv4/ipv6 全部开通。如果是物理机使用 iptabes 开通。</para>
+			<screen>
+			<![CDATA[
+协议		目标端口		来源
+UDP		41641		0.0.0.0/0
+
+# Rockey Linux
+
+sudo firewall-cmd --permanent --add-port=41641/udp
+sudo firewall-cmd --reload
+
+# Ubuntu 
+
+sudo ufw allow 41641/udp
+sudo ufw status
+			]]>
+			</screen>
+			<para>在 Linux 服务器上安装 tailscale,SSH 登录服务器，执行官方安装命令：</para>
+			<screen>
+			<![CDATA[
+[root@global ~]# curl -fsSL https://tailscale.com/install.sh | sh			
+			]]>
+			</screen>
+			<para>启动 tailscale 看到一个网址 https://login.tailscale.com/a/g8640971a15aeeb3f ,随便在一台电脑上打开这个网址完成登陆，这个页面不要关闭，稍后还会用到。</para>
+			<screen>
+			<![CDATA[
+[root@global ~]# tailscale up
+
+To authenticate, visit:
+
+	https://login.tailscale.com/a/g8640971a15aeeb3f
+
+Success.
+			]]>
+			</screen>
+			<para>看到 Success. 表示登陆成功</para>
+			<para>打开 Tailscale 设备管理页面：</para>
+			<literallayout>
+			<![CDATA[
+- 找到服务器。
+- 点击右侧 … → Edit route settings。
+- 勾选 Use as exit node，保存。				
+			]]>
+			</literallayout>
+			<para>接下来，开启转发，并声明出口节点</para>
+			<screen>
+			<![CDATA[
+echo 'net.ipv4.ip_forward = 1' > /etc/sysctl.d/99-tailscale.conf
+echo 'net.ipv6.conf.all.forwarding = 1' >> /etc/sysctl.d/99-tailscale.conf
+
+sysctl -p /etc/sysctl.d/99-tailscale.conf
+
+tailscale set --advertise-exit-node
+			]]>
+			</screen>
+			<para>检查服务和端口</para>
+			<screen>
+			<![CDATA[
+[root@global ~]# systemctl status tailscaled
+● tailscaled.service - Tailscale node agent
+     Loaded: loaded (/usr/lib/systemd/system/tailscaled.service; enabled; preset: disabled)
+     Active: active (running) since Thu 2026-11-19 15:57:22 CST; 7s ago
+ Invocation: 2d28ade06bb34b9eb7885890178b4fa6
+       Docs: https://tailscale.com/docs/
+   Main PID: 3777241 (tailscaled)
+     Status: "Connected; netkiller@msn.com; 100.74.39.99 fd7a:115c:a1e0::7c2a:2764"
+      Tasks: 15 (limit: 96768)
+     Memory: 23.1M (peak: 26.9M)
+        CPU: 352ms
+     CGroup: /system.slice/tailscaled.service
+             └─3777241 /usr/sbin/tailscaled --state=/var/lib/tailscale/tailscaled.state --socket=/run/tailscale/tails>
+
+Nov 19 15:57:24 global tailscaled[3777241]: magicsock: home is now derp-3 (sin)
+Nov 19 15:57:24 global tailscaled[3777241]: magicsock: adding connection to derp-3 for home-keep-alive
+Nov 19 15:57:24 global tailscaled[3777241]: magicsock: 1 active derp conns: derp-3=cr0s,wr0s
+Nov 19 15:57:24 global tailscaled[3777241]: updating netmap in disk cache
+Nov 19 15:57:24 global tailscaled[3777241]: derphttp.Client.Connect: connecting to derp-3 (sin)
+Nov 19 15:57:24 global tailscaled[3777241]: magicsock: endpoints changed: 47.84.236.144:41641 (stun), [240b:4000:1d:8>
+Nov 19 15:57:24 global tailscaled[3777241]: control: NetInfo: NetInfo{varies=false ipv6=true ipv6os=true udp=true icm>
+Nov 19 15:57:24 global tailscaled[3777241]: Switching ipn state Starting -> Running (WantRunning=true, nm=true)
+Nov 19 15:57:24 global tailscaled[3777241]: health(warnable=warming-up): ok
+Nov 19 15:57:24 global tailscaled[3777241]: magicsock: derp-3 connected; connGen=1
+			
+[root@global ~]# ss -lnu | grep 41641
+UNCONN 0      0                              0.0.0.0:41641      0.0.0.0:*   
+UNCONN 0      0                                 [::]:41641         [::]:* 			
+			]]>
+			</screen>
+			<para>到此 Linux 服务起配置完成，剩下就是配置我们的上网电脑了</para>
+		</section>
+		<section>
+			<title>上网电脑</title>
+			<para>把 Tailscale 客户端安装好，登陆 Tailscale，最好使用与服务器相同的账号。</para>
+			<literallayout>
+			<![CDATA[
+进入 Exit node。
+选择Linux服务器。
+如果还要访问本地路由器、NAS、打印机，勾选 Allow local network access。			
+			]]>
+			</literallayout>
+			<para>也可以使用命令</para>
+			<screen>
+			<![CDATA[
+tailscale set --exit-node=100.101.102.103 --exit-node-allow-lan-access=true			
+			]]>
+			</screen>
+			
+		</section>
+	</section>
+</section>
