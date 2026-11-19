@@ -501,5 +501,10 @@ tailscale set --exit-node=100.101.102.103 --exit-node-allow-lan-access=true
 			</screen>
 			
 		</section>
+		<section>
+			<title>连接正常，无法上网</title>
+			<para>可能是 DNS 问题</para>
+			<para>进入 Tailscale 控制台，进入 DNS 菜单，添加 Global nameservers，开启 Override DNS servers</para>
+		</section>
 	</section>
 </section>
