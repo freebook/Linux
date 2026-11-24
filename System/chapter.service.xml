@@ -673,7 +673,34 @@ EnvironmentFile=-/etc/default/medical
 			]]>
 			</screen>
 		</section>
-		
+		<section>
+			<title>日志管理</title>
+			<para>为了腾空间，清理 /var/log/journal 下面日志，先查看日志占用情况</para>
+			<screen>
+			<![CDATA[
+root@spiritcloudp ~# du -sh /var/log/* | grep G
+1.1G	/var/log/journal
+			
+root@spiritcloudp ~# journalctl --disk-usage
+Archived and active journals take up 1.0G in the file system.
+			]]>
+			</screen>
+			<para>可以清理 /var/log/journal 旧日志，但别直接 rm -rf /var/log/journal/。 因为这个目录里可能有 systemd-journald 正在写入的文件，手动删除后，磁盘空间也可能要等进程关闭文件才会释放。</para>
+			<para>正确的清理方式：</para>			
+			<screen>
+			<![CDATA[
+# 查看 journal 日志总占用
+journalctl --disk-usage
+
+# 轮转日志，再删除超过 7 天的归档文件
+journalctl --rotate --vacuum-time=7d
+
+# 或者按大小清理，把归档日志压到 500 MB 以内
+journalctl --rotate --vacuum-size=100M
+--rotate 会先归档当前日志，再打开新文件继续写入。清理只删除归档文件，活跃文件仍会计入 --disk-usage。如果旧日志还要用于排障或审计，先备份再清理。systemd 官方手册						
+			]]>
+			</screen>
+		</section>
 	</section>
 	
 	&chapter.service.ubuntu.xml;
